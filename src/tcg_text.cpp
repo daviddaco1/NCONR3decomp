@@ -9,7 +9,7 @@
 #include "types.h"
 
 // Reusada por varios de los helpers de "armar lista temporal" mas abajo en
-// el archivo (fn_80132430/fn_801325C8/fn_80130CCC/fn_80131BEC).
+// el archivo (fn_80132B8C/fn_80132D24/fn_80131428/fn_80132348).
 struct TempList {
 	u32 origCount;
 	u32 byteCount;
@@ -101,107 +101,107 @@ struct TcgTextEntryHandle {
 
 extern "C" {
 
-void fn_801346D4(TcgTextEntryHandle* h, u8 v)
+void fn_80134E30(TcgTextEntryHandle* h, u8 v)
 {
 	h->data->field_0x14 = v;
 }
 
-u8 fn_8013468C(TcgTextEntryHandle* h)
+u8 fn_80134DE8(TcgTextEntryHandle* h)
 {
 	return h->data->field_0x16;
 }
 
-void fn_801346E0(TcgTextEntryHandle* h, u32 v)
+void fn_80134E3C(TcgTextEntryHandle* h, u32 v)
 {
 	h->data->field_0x34 = v;
 }
 
-u32 fn_80134674(TcgTextEntryHandle* h)
+u32 fn_80134DD0(TcgTextEntryHandle* h)
 {
 	return h->data->field_0x64;
 }
 
-void fn_80134680(TcgTextEntryHandle* h, u32 v)
+void fn_80134DDC(TcgTextEntryHandle* h, u32 v)
 {
 	h->data->field_0x64 = v;
 }
 
-void fn_8013522C(TcgTextEntryHandle* h, u8 v)
+void fn_80135988(TcgTextEntryHandle* h, u8 v)
 {
 	h->data->field_0x68 = v;
 }
 
-void fn_80135238(TcgTextEntryHandle* h, u32 v)
+void fn_80135994(TcgTextEntryHandle* h, u32 v)
 {
 	h->data->field_0x6c = v;
 }
 
-void fn_80135244(TcgTextEntryHandle* h, u16 v)
+void fn_801359A0(TcgTextEntryHandle* h, u16 v)
 {
 	h->data->field_0x70 = v;
 }
 
-u16 fn_80135250(TcgTextEntryHandle* h)
+u16 fn_801359AC(TcgTextEntryHandle* h)
 {
 	return h->data->field_0x70;
 }
 
-void fn_8013525C(TcgTextEntryHandle* h, u16 v)
+void fn_801359B8(TcgTextEntryHandle* h, u16 v)
 {
 	h->data->field_0x72 = v;
 }
 
-u32 fn_80135268(TcgTextEntryHandle* h)
+u32 fn_801359C4(TcgTextEntryHandle* h)
 {
 	return h->data->field_0xe0;
 }
 
-void fn_80135274(TcgTextEntryHandle* h, u8 v)
+void fn_801359D0(TcgTextEntryHandle* h, u8 v)
 {
 	h->data->field_0xc8 = v;
 }
 
-u8 fn_80135280(TcgTextEntryHandle* h)
+u8 fn_801359DC(TcgTextEntryHandle* h)
 {
 	return h->data->field_0xc8;
 }
 
-void fn_8013528C(TcgTextEntryHandle* h, f32 v)
+void fn_801359E8(TcgTextEntryHandle* h, f32 v)
 {
 	h->data->field_0xac = v;
 }
 
-void fn_80135298(TcgTextEntryHandle* h, f32 v)
+void fn_801359F4(TcgTextEntryHandle* h, f32 v)
 {
 	h->data->field_0xb0 = v;
 }
 
-void* fn_80134AFC(TcgTextEntryHandle* h)
+void* fn_80135258(TcgTextEntryHandle* h)
 {
 	return &h->data->field_0x18;
 }
 
-void fn_80134CE0(TcgTextEntryHandle* h, f32 v)
+void fn_8013543C(TcgTextEntryHandle* h, f32 v)
 {
 	h->data->field_0xbc = v;
 }
 
-f32* fn_80134D00(TcgTextEntryHandle* h)
+f32* fn_8013545C(TcgTextEntryHandle* h)
 {
 	return &h->data->field_0x28;
 }
 
-u32 fn_80134D28(TcgTextEntryHandle* h)
+u32 fn_80135484(TcgTextEntryHandle* h)
 {
 	return h->data->field_0x30;
 }
 
-u32 fn_8013540C(TcgTextEntryHandle* h)
+u32 fn_80135B68(TcgTextEntryHandle* h)
 {
 	return h->data->field_0x248;
 }
 
-void fn_80135418(TcgTextEntryHandle* h, u32 v)
+void fn_80135B74(TcgTextEntryHandle* h, u32 v)
 {
 	if (v) {
 		h->data->field_0x264 = v;
@@ -211,69 +211,69 @@ void fn_80135418(TcgTextEntryHandle* h, u32 v)
 	}
 }
 
-u32 fn_8013543C(TcgTextEntryHandle* h)
+u32 fn_80135B98(TcgTextEntryHandle* h)
 {
 	return h->data->field_0x264;
 }
 
-u32 fn_80135448(TcgTextEntryHandle* h)
+u32 fn_80135BA4(TcgTextEntryHandle* h)
 {
 	return h->data->field_0x60;
 }
 
-u32 fn_80134D34(TcgTextEntryHandle* h, u32 v)
+u32 fn_80135490(TcgTextEntryHandle* h, u32 v)
 {
 	u32 old = h->data->field_0x30;
 	h->data->field_0x30 = v;
 	return old;
 }
 
-void fn_80134CB8(TcgTextEntryHandle* h, f32 a, f32 b)
+void fn_80135414(TcgTextEntryHandle* h, f32 a, f32 b)
 {
 	h->data->field_0xb4 = a;
 	h->data->field_0xb8 = b;
 }
 
-void fn_80134CCC(TcgTextEntryHandle* h, f32 a, f32 b)
+void fn_80135428(TcgTextEntryHandle* h, f32 a, f32 b)
 {
 	h->data->field_0xe4 = a;
 	h->data->field_0xe8 = b;
 }
 
-void fn_80134CEC(TcgTextEntryHandle* h, f32 a, f32 b)
+void fn_80135448(TcgTextEntryHandle* h, f32 a, f32 b)
 {
 	h->data->field_0xc0 = a;
 	h->data->field_0xc4 = b;
 }
 
-void fn_80134D64(TcgTextEntryHandle* h, u32 a, u32 b)
+void fn_801354C0(TcgTextEntryHandle* h, u32 a, u32 b)
 {
 	h->data->field_0x78 = b;
 	h->data->field_0x74 = a;
 }
 
-u32 fn_80134D44(TcgTextEntryHandle* h, u32* out)
+u32 fn_801354A0(TcgTextEntryHandle* h, u32* out)
 {
 	if (out)
 		*out = h->data->field_0x78;
 	return h->data->field_0x74;
 }
 
-void fn_80135388(TcgTextEntryHandle* h, u8 a, s16 b, s16 c)
+void fn_80135AE4(TcgTextEntryHandle* h, u8 a, s16 b, s16 c)
 {
 	h->data->field_0x24c = a;
 	h->data->field_0x24e = b;
 	h->data->field_0x250 = c;
 }
 
-void fn_801353A4(TcgTextEntryHandle* h, u8* outA, s16* outB, s16* outC)
+void fn_80135B00(TcgTextEntryHandle* h, u8* outA, s16* outB, s16* outC)
 {
 	*outA = h->data->field_0x24c;
 	*outB = h->data->field_0x24e;
 	*outC = h->data->field_0x250;
 }
 
-void fn_80133ED4(TcgTextEntryHandle* h, u32 add)
+void fn_80134630(TcgTextEntryHandle* h, u32 add)
 {
 	TcgTextEntryData* d = h->data;
 	if (d->field_0x84 < d->field_0x88) {
@@ -284,7 +284,7 @@ void fn_80133ED4(TcgTextEntryHandle* h, u32 add)
 	}
 }
 
-s32 fn_80134F2C(TcgTextEntryHandle* h, u32 mode)
+s32 fn_80135688(TcgTextEntryHandle* h, u32 mode)
 {
 	if (mode == 1) {
 		h->data->field_0xf4 = h->data->field_0xf8;
@@ -295,7 +295,7 @@ s32 fn_80134F2C(TcgTextEntryHandle* h, u32 mode)
 	return 0;
 }
 
-s32 fn_80135180(TcgTextEntryHandle* h, u32 v)
+s32 fn_801358DC(TcgTextEntryHandle* h, u32 v)
 {
 	h->data->field_0x84 = 0;
 	h->data->field_0x88 = v << 8;
@@ -303,21 +303,21 @@ s32 fn_80135180(TcgTextEntryHandle* h, u32 v)
 	return 1;
 }
 
-void fn_801353CC(TcgTextEntryHandle* h, u32 v)
+void fn_80135B28(TcgTextEntryHandle* h, u32 v)
 {
-	fn_8013540C(h);
+	fn_80135B68(h);
 	h->data->field_0x248 = v;
 }
 
-u8 fn_80134698(TcgTextEntryHandle* h, u8 v, u32 v2)
+u8 fn_80134DF4(TcgTextEntryHandle* h, u8 v, u32 v2)
 {
 	u8 old = h->data->field_0x16;
 	h->data->field_0x17 = v;
-	fn_80135180(h, v2);
+	fn_801358DC(h, v2);
 	return old;
 }
 
-u32 fn_80134EE4(TcgTextEntryHandle* h, u32 mode)
+u32 fn_80135640(TcgTextEntryHandle* h, u32 mode)
 {
 	if (mode == 1)
 		return h->data->field_0xf4 >= h->data->field_0xf8;
@@ -326,41 +326,41 @@ u32 fn_80134EE4(TcgTextEntryHandle* h, u32 mode)
 
 } // extern "C"
 
-extern "C" void fn_80133BA8(void* h, s32 a, s32 b);
-extern "C" s32 fn_80135DD0(s32 v, s32 lo, s32 hi);
+extern "C" void fn_80134304(void* h, s32 a, s32 b);
+extern "C" s32 fn_8013652C(s32 v, s32 lo, s32 hi);
 
-extern "C" void fn_801346EC(TcgTextEntryHandle* h, u32 v)
+extern "C" void fn_80134E48(TcgTextEntryHandle* h, u32 v)
 {
 	h->data->field_0x38 = v;
 	h->data->field_0x3c = (u8)(v >> 24);
 	h->data->field_0x3d = (u8)(v >> 16);
 	h->data->field_0x3e = (u8)(v >> 8);
 	h->data->field_0x3f = (u8)v;
-	fn_80133BA8(h, 1, -1);
+	fn_80134304(h, 1, -1);
 }
 
-extern "C" s32 fn_801352A4(TcgTextEntryHandle* h, s32 idx)
+extern "C" s32 fn_80135A00(TcgTextEntryHandle* h, s32 idx)
 {
-	return ((s32*)((u8*)h->data + 0x158))[fn_80135DD0(idx, 0, 0x1d)];
+	return ((s32*)((u8*)h->data + 0x158))[fn_8013652C(idx, 0, 0x1d)];
 }
 
-extern "C" s32 fn_80135340(TcgTextEntryHandle* h, s32 idx)
+extern "C" s32 fn_80135A9C(TcgTextEntryHandle* h, s32 idx)
 {
-	return ((s32*)((u8*)h->data + 0x1d0))[fn_80135DD0(idx, 0, 0x1d)];
+	return ((s32*)((u8*)h->data + 0x1d0))[fn_8013652C(idx, 0, 0x1d)];
 }
 
-extern "C" void fn_80133BA8(void* h, s32 a, s32 b);
+extern "C" void fn_80134304(void* h, s32 a, s32 b);
 
-extern "C" void fn_80134BF8(TcgTextEntryHandle* h, f32 a, f32 b, f32 c, f32 d)
+extern "C" void fn_80135354(TcgTextEntryHandle* h, f32 a, f32 b, f32 c, f32 d)
 {
 	h->data->field_0x18 = a;
 	h->data->field_0x1c = b;
 	h->data->field_0x20 = c;
 	h->data->field_0x24 = d;
-	fn_80133BA8(h, 1, -1);
+	fn_80134304(h, 1, -1);
 }
 
-extern "C" void fn_80135154(void* dst, void* src)
+extern "C" void fn_801358B0(void* dst, void* src)
 {
 	struct S8 { u32 a; u8 b, c, d, e; };
 	*(S8*)dst = *(S8*)src;
@@ -368,50 +368,50 @@ extern "C" void fn_80135154(void* dst, void* src)
 
 extern "C" u8 lbl_8049BAC8[8];
 
-extern "C" void fn_80135F0C(u8* dst, s8* src)
+extern "C" void fn_80136668(u8* dst, s8* src)
 {
 	for (s32 i = 0; i < 8; i++)
 		dst[i] = lbl_8049BAC8[src[i]];
 }
 
 extern "C" u32 lbl_803A5D38[10];
-extern "C" s32 fn_80135DD0(s32 v, s32 lo, s32 hi);
+extern "C" s32 fn_8013652C(s32 v, s32 lo, s32 hi);
 
-extern "C" u32 fn_80135D90(u32 v)
+extern "C" u32 fn_801364EC(u32 v)
 {
-	return lbl_803A5D38[fn_80135DD0(v, 0, 9)];
+	return lbl_803A5D38[fn_8013652C(v, 0, 9)];
 }
 
 // Sin decompilar todavia (776 bytes) -- solo el prototipo para que los
 // wrappers de arriba/abajo que la tail-callean compilen. El tail call (`b`,
 // no `bl`) no depende del tipo de retorno real para generar bytes iguales.
-extern "C" void fn_80133BA8(void* h, s32 a, s32 b);
+extern "C" void fn_80134304(void* h, s32 a, s32 b);
 
 extern "C" {
 
-// fn_80134730/fn_80134C24/fn_80134D0C: contenido correcto (confirmado por
+// fn_80134E8C/fn_80135380/fn_80135468: contenido correcto (confirmado por
 // disasm), pero quedan ~50-58% fuzzy por reordering del scheduler de -O4,p
-// en la preparacion de argumentos del tail-call a fn_80133BA8 (mismo tipo de
+// en la preparacion de argumentos del tail-call a fn_80134304 (mismo tipo de
 // quirk que __fill_mem/PPCMtfpscr -- necesita decomp-permuter, no vale mas
 // tiempo a mano).
-void fn_80134730(TcgTextEntryHandle* h, u8 v)
+void fn_80134E8C(TcgTextEntryHandle* h, u8 v)
 {
 	h->data->field_0x15 = v;
-	fn_80133BA8(h, 1, -1);
+	fn_80134304(h, 1, -1);
 }
 
-void fn_80134C24(TcgTextEntryHandle* h, u8 v, f32 f)
+void fn_80135380(TcgTextEntryHandle* h, u8 v, f32 f)
 {
 	h->data->field_0xd8 = v;
 	h->data->field_0xdc = f;
-	fn_80133BA8(h, 1, -1);
+	fn_80134304(h, 1, -1);
 }
 
-void fn_80134D0C(TcgTextEntryHandle* h, f32 a, f32 b)
+void fn_80135468(TcgTextEntryHandle* h, f32 a, f32 b)
 {
 	h->data->field_0x28 = a;
 	h->data->field_0x2c = b;
-	fn_80133BA8(h, 1, -1);
+	fn_80134304(h, 1, -1);
 }
 
 } // extern "C"
@@ -419,13 +419,13 @@ void fn_80134D0C(TcgTextEntryHandle* h, f32 a, f32 b)
 // Tabla global estatica de bytes (bounds-checked, sin "this").
 extern "C" u8 lbl_803A4A68[16];
 
-extern "C" void fn_80135FB4(u8 v, u32 idx)
+extern "C" void fn_80136710(u8 v, u32 idx)
 {
 	if (idx <= 0xf)
 		lbl_803A4A68[idx] = v;
 }
 
-extern "C" u8 fn_80135FCC(u32 idx)
+extern "C" u8 fn_80136728(u32 idx)
 {
 	if (idx <= 0xf)
 		return lbl_803A4A68[idx];
@@ -433,7 +433,7 @@ extern "C" u8 fn_80135FCC(u32 idx)
 }
 
 // Utilidades standalone, sin "this".
-extern "C" s32 fn_80135DD0(s32 v, s32 lo, s32 hi)
+extern "C" s32 fn_8013652C(s32 v, s32 lo, s32 hi)
 {
 	if (v > hi)
 		return hi;
@@ -442,7 +442,7 @@ extern "C" s32 fn_80135DD0(s32 v, s32 lo, s32 hi)
 	return v;
 }
 
-extern "C" void fn_80133EB0(f32* dst, f32* src)
+extern "C" void fn_8013460C(f32* dst, f32* src)
 {
 	dst[0] = src[0];
 	dst[1] = src[1];
@@ -452,7 +452,7 @@ extern "C" void fn_80133EB0(f32* dst, f32* src)
 
 extern "C" u8 lbl_8049BAC0;
 
-extern "C" void fn_80135BA0()
+extern "C" void fn_801362FC()
 {
 	lbl_8049BAC0 = 1;
 }
@@ -476,37 +476,37 @@ struct CTextEntryBaseData {
 
 extern "C" {
 
-void fn_801362B4(CTextEntryBaseData* d, u32 v)
+void fn_80136A10(CTextEntryBaseData* d, u32 v)
 {
 	d->field_0x0 = v;
 }
 
-void fn_80136314(CTextEntryBaseData* d, u32 v)
+void fn_80136A70(CTextEntryBaseData* d, u32 v)
 {
 	d->field_0x8 = v;
 }
 
-void fn_8013631C(CTextEntryBaseData* d, u8 v)
+void fn_80136A78(CTextEntryBaseData* d, u8 v)
 {
 	d->field_0x5 = v;
 }
 
-void fn_80136324(CTextEntryBaseData* d, u8 v)
+void fn_80136A80(CTextEntryBaseData* d, u8 v)
 {
 	d->field_0x4 = v;
 }
 
-u32 fn_8013632C(CTextEntryBaseData* d)
+u32 fn_80136A88(CTextEntryBaseData* d)
 {
 	return d->field_0x8;
 }
 
-u8 fn_80136334(CTextEntryBaseData* d)
+u8 fn_80136A90(CTextEntryBaseData* d)
 {
 	return d->field_0x5;
 }
 
-u32 fn_8013633C(CTextEntryBaseData* d)
+u32 fn_80136A98(CTextEntryBaseData* d)
 {
 	return d->field_0x0;
 }
@@ -525,12 +525,12 @@ extern "C" u32 lbl_80359770[];
 // Constructor de CTextEntryBase: fija su propia vtable e inicializa los 3
 // campos no-virtuales via las funciones ya matcheadas arriba (llamadas
 // reales, no inline -- el original las deja como bl separados).
-extern "C" CTextEntryBaseData* fn_801362BC(CTextEntryBaseData* obj)
+extern "C" CTextEntryBaseData* fn_80136A18(CTextEntryBaseData* obj)
 {
 	obj->vtable = lbl_803597D0;
-	fn_80136324(obj, 1);
-	fn_8013631C(obj, 0);
-	fn_80136314(obj, 0);
+	fn_80136A80(obj, 1);
+	fn_80136A78(obj, 0);
+	fn_80136A70(obj, 0);
 	return obj;
 }
 
@@ -539,27 +539,27 @@ extern "C" CTextEntryBaseData* fn_801362BC(CTextEntryBaseData* obj)
 // Constructor de CTextEntry_Code: corre el ctor base y despues pisa la
 // vtable con la propia (patron estandar de C++: la base se construye
 // primero con SU vtable, la derivada la sobreescribe al final).
-extern "C" CTextEntryBaseData* fn_80131BB0(CTextEntryBaseData* obj)
+extern "C" CTextEntryBaseData* fn_8013230C(CTextEntryBaseData* obj)
 {
-	fn_801362BC(obj);
+	fn_80136A18(obj);
 	obj->vtable = lbl_80359770;
 	return obj;
 }
 
 extern "C" u32 lbl_80359728[]; // vtable de CTextEntry_Char
 
-// Constructor de CTextEntry_Char, mismo patron que fn_80131BB0.
-extern "C" CTextEntryBaseData* fn_80130C90(CTextEntryBaseData* obj)
+// Constructor de CTextEntry_Char, mismo patron que fn_8013230C.
+extern "C" CTextEntryBaseData* fn_801313EC(CTextEntryBaseData* obj)
 {
-	fn_801362BC(obj);
+	fn_80136A18(obj);
 	obj->vtable = lbl_80359728;
 	return obj;
 }
 
-// CTextEntry_Char (RTTI/vtable en lbl_80359728, ver constructor fn_80130BC8).
+// CTextEntry_Char (RTTI/vtable en lbl_80359728, ver constructor fn_80131324).
 // Acceso directo a "this" (sin indireccion de handle, a diferencia de
 // TcgTextEntryData) -- objeto propio de 0x38 bytes (alloc confirmado en el
-// constructor). Campo 0x10 es un array indexado (fn_80131BA0/fn_80133B60
+// constructor). Campo 0x10 es un array indexado (fn_801322FC/fn_801342BC
 // toman indice explicito); tamano real del array sin confirmar todavia.
 struct CTextEntryCharData {
 	u8 pad_00[0x10];
@@ -578,37 +578,37 @@ struct CTextEntryCharData {
 
 extern "C" {
 
-void fn_80130C88(CTextEntryCharData* d, u16 v)
+void fn_801313E4(CTextEntryCharData* d, u16 v)
 {
 	d->field_0x14 = v;
 }
 
-u16 fn_80133B98(CTextEntryCharData* d)
+u16 fn_801342F4(CTextEntryCharData* d)
 {
 	return d->field_0x14;
 }
 
-void fn_80133BA0(CTextEntryCharData* d, u32 v)
+void fn_801342FC(CTextEntryCharData* d, u32 v)
 {
 	d->arr_0x10[0] = v;
 }
 
-s32 fn_80134CB0()
+s32 fn_8013540C()
 {
 	return 0xa;
 }
 
-void fn_80131BA0(CTextEntryCharData* d, u32 idx, u32 v)
+void fn_801322FC(CTextEntryCharData* d, u32 idx, u32 v)
 {
 	d->arr_0x10[idx] = v;
 }
 
-u32 fn_80133B60(CTextEntryCharData* d, u32 idx)
+u32 fn_801342BC(CTextEntryCharData* d, u32 idx)
 {
 	return d->arr_0x10[idx];
 }
 
-void fn_80133B70(CTextEntryCharData* d, f32 a, f32 b, f32 c, f32 e)
+void fn_801342CC(CTextEntryCharData* d, f32 a, f32 b, f32 c, f32 e)
 {
 	d->field_0x18 = a;
 	d->field_0x1c = b;
@@ -616,7 +616,7 @@ void fn_80133B70(CTextEntryCharData* d, f32 a, f32 b, f32 c, f32 e)
 	d->field_0x24 = e;
 }
 
-void fn_80133B84(CTextEntryCharData* d, f32 a, f32 b, f32 c, f32 e)
+void fn_801342E0(CTextEntryCharData* d, f32 a, f32 b, f32 c, f32 e)
 {
 	d->field_0x28 = a;
 	d->field_0x2c = b;
@@ -639,7 +639,7 @@ struct GlobalTable {
 };
 extern "C" GlobalTable* lbl_8049CE78;
 
-extern "C" s32 fn_80135768(s32 idx, u32 mode)
+extern "C" s32 fn_80135EC4(s32 idx, u32 mode)
 {
 	GlobalTable* g = lbl_8049CE78;
 	s32 invalid = 0;
@@ -663,15 +663,15 @@ extern "C" s32 fn_80135768(s32 idx, u32 mode)
 }
 
 // El resto de este archivo llama funciones ya definidas arriba
-// (fn_80135DC8/fn_80134EE4/fn_80134CCC/fn_80135DD0/fn_80136270) desde otras
+// (fn_80136524/fn_80135640/fn_80135428/fn_8013652C/fn_801369CC) desde otras
 // funciones nuevas -- sin esto mwcc las auto-inlinea con -inline auto y el
 // resultado no matchea ni de lejos (mismo gotcha ya documentado en los
 // constructores de CTextEntryBase, mas arriba).
 #pragma dont_inline on
 
-extern "C" s32 fn_80135DC8(TcgTextEntryHandle* h)
+extern "C" s32 fn_80136524(TcgTextEntryHandle* h)
 {
-	return fn_80135768((s32)h, 0);
+	return fn_80135EC4((s32)h, 0);
 }
 
 // Contenido correcto (misma llamada, mismo booleano), pero mwcc elige el
@@ -679,13 +679,13 @@ extern "C" s32 fn_80135DC8(TcgTextEntryHandle* h)
 // original -- probado con != 0, ternario y u32/s32, sin cambio en ningun
 // caso. Mismo tipo de quirk que el nop de __fill_mem, no depende de la
 // forma del C fuente.
-extern "C" s32 fn_8013593C(TcgTextEntryHandle* h)
+extern "C" s32 fn_80136098(TcgTextEntryHandle* h)
 {
-	return fn_80135768((s32)h, 1) != 0;
+	return fn_80135EC4((s32)h, 1) != 0;
 }
 
-// obj = fn_80135448(h) reinterpretado como puntero (mismo caso que
-// fn_80134D44 -- el "getter u32" real devuelve un puntero). Sin return
+// obj = fn_80135BA4(h) reinterpretado como puntero (mismo caso que
+// fn_801354A0 -- el "getter u32" real devuelve un puntero). Sin return
 // explicito al final (el original tampoco deja nada intencional en r3, solo
 // lo que quedo de la ultima operacion -- el caller nunca usa el valor).
 struct Obj44 {
@@ -694,9 +694,9 @@ struct Obj44 {
 	u32 field_0x8;
 };
 
-extern "C" s32 fn_801351A8(TcgTextEntryHandle* h, s32 p2)
+extern "C" s32 fn_80135904(TcgTextEntryHandle* h, s32 p2)
 {
-	Obj44* obj = (Obj44*)fn_80135448(h);
+	Obj44* obj = (Obj44*)fn_80135BA4(h);
 	obj->field_0x8 = 0;
 	if (p2 >= 0) {
 		s32 v = obj->field_0x4 * h->data->field_0x4;
@@ -708,63 +708,63 @@ extern "C" s32 fn_801351A8(TcgTextEntryHandle* h, s32 p2)
 	}
 }
 
-extern "C" s32 fn_80135968(TcgTextEntryHandle* h, u32 v)
+extern "C" s32 fn_801360C4(TcgTextEntryHandle* h, u32 v)
 {
-	return fn_801351A8((TcgTextEntryHandle*)fn_80135DC8(h), v);
+	return fn_80135904((TcgTextEntryHandle*)fn_80136524(h), v);
 }
 
-extern "C" u32 fn_8013599C(TcgTextEntryHandle* h)
+extern "C" u32 fn_801360F8(TcgTextEntryHandle* h)
 {
-	return fn_80134EE4((TcgTextEntryHandle*)fn_80135DC8(h), 0);
+	return fn_80135640((TcgTextEntryHandle*)fn_80136524(h), 0);
 }
 
-extern "C" void fn_8013616C(TcgTextEntryHandle* h, f32 a, f32 b)
+extern "C" void fn_801368C8(TcgTextEntryHandle* h, f32 a, f32 b)
 {
-	TcgTextEntryHandle* r = (TcgTextEntryHandle*)fn_80135DC8(h);
+	TcgTextEntryHandle* r = (TcgTextEntryHandle*)fn_80136524(h);
 	if (r) {
-		fn_80134CCC(r, a, b);
+		fn_80135428(r, a, b);
 	}
 }
 
-// Setter simetrico a fn_80135340 (getter, offset 0x1d0). Contenido correcto,
+// Setter simetrico a fn_80135A9C (getter, offset 0x1d0). Contenido correcto,
 // pero mwcc adelanta el save de r5(v)/carga del literal 0x1d ANTES del
 // prologo (r30) donde el original los deja despues -- quirk de scheduler en
 // la preparacion de args del `bl`, no depende de esta forma del C fuente.
-extern "C" void fn_801352EC(TcgTextEntryHandle* h, s32 idx, s32 v)
+extern "C" void fn_80135A48(TcgTextEntryHandle* h, s32 idx, s32 v)
 {
-	s32 i = fn_80135DD0(idx, 0, 0x1d);
+	s32 i = fn_8013652C(idx, 0, 0x1d);
 	((s32*)((u8*)h->data + 0x1d0))[i] = v;
 }
 
 // Tabla de 0x53/0x59 bytes por entrada (strings o structs, tipo real sin
-// confirmar) -- fn_80135FEC sin decompilar todavia (344 bytes), solo
+// confirmar) -- fn_80136748 sin decompilar todavia (344 bytes), solo
 // prototipo para el tail call.
-extern "C" s32 fn_80135FEC(void* p, u32 v);
+extern "C" s32 fn_80136748(void* p, u32 v);
 extern "C" u8 lbl_803A491C[];
 extern "C" u8 lbl_803A47B8[];
 
-// fn_80136144/58: contenido correcto (confirmado por disasm), pero
+// fn_801368A0/58: contenido correcto (confirmado por disasm), pero
 // mwcc elige r6/r0 para los temporales del calculo de direccion donde
 // nosotros obtenemos r0/r3 -- mismo tipo de quirk de scheduler que
 // __fill_mem/PPCMtfpscr, probado con varias formas de la expresion C sin
 // cambio alguno. No vale mas tiempo a mano.
-extern "C" s32 fn_80136144(s32 idx, u32 v)
+extern "C" s32 fn_801368A0(s32 idx, u32 v)
 {
-	return fn_80135FEC(lbl_803A491C + idx * 0x53, v);
+	return fn_80136748(lbl_803A491C + idx * 0x53, v);
 }
 
-extern "C" s32 fn_80136158(s32 idx, u32 v)
+extern "C" s32 fn_801368B4(s32 idx, u32 v)
 {
-	return fn_80135FEC(idx * 0x59 + lbl_803A47B8, v);
+	return fn_80136748(idx * 0x59 + lbl_803A47B8, v);
 }
 
 // Tabla de entradas de 0x18 bytes (offsets 0x0/0x4/0x8/0xc/0x10/0x14
-// confirmados por fn_80135CD8/fn_80135D44). fn_80135BAC sin decompilar
+// confirmados por fn_80136434/fn_801364A0). fn_80136308 sin decompilar
 // todavia (176 bytes) -- solo prototipo para el tail call.
-extern "C" s32 fn_80135BAC(u32 v);
+extern "C" s32 fn_80136308(u32 v);
 extern "C" u8 lbl_803A4A78[];
 
-extern "C" s32 fn_80135CD8(s32 idx, s16 b, s16 c)
+extern "C" s32 fn_80136434(s32 idx, s16 b, s16 c)
 {
 	u32 v = 0;
 	u8* entry = lbl_803A4A78 + idx * 0x18;
@@ -774,10 +774,10 @@ extern "C" s32 fn_80135CD8(s32 idx, s16 b, s16 c)
 	case 2: v = *(u32*)(entry + 0xc); break;
 	case 3: v = *(u32*)(entry + 0x10); break;
 	}
-	return fn_80135BAC(v);
+	return fn_80136308(v);
 }
 
-extern "C" s32 fn_80135D44(s32 idx, s32 mode)
+extern "C" s32 fn_801364A0(s32 idx, s32 mode)
 {
 	u32 v = 0;
 	switch (mode) {
@@ -792,53 +792,53 @@ extern "C" s32 fn_80135D44(s32 idx, s32 mode)
 		break;
 	}
 	}
-	return fn_80135BAC(v);
+	return fn_80136308(v);
 }
 
 // Validadores standalone: "this" (r3) nunca se lee, solo clampean params via
-// fn_80135DD0 y descartan el resultado.
-extern "C" s32 fn_80135CA8(void* unused, s32 a)
+// fn_8013652C y descartan el resultado.
+extern "C" s32 fn_80136404(void* unused, s32 a)
 {
-	fn_80135DD0((s16)a, 1, 4);
+	fn_8013652C((s16)a, 1, 4);
 	return 0;
 }
 
-extern "C" s32 fn_80135C5C(void* unused, s32 a, s32 b)
+extern "C" s32 fn_801363B8(void* unused, s32 a, s32 b)
 {
-	fn_80135DD0((s16)a, 1, 4);
-	fn_80135DD0((s16)b, 1, 2);
+	fn_8013652C((s16)a, 1, 4);
+	fn_8013652C((s16)b, 1, 2);
 	return 0;
 }
 
-// dtor_801365A0: nombre real detectado por decomp-toolkit (heuristica de
+// dtor_80136CFC: nombre real detectado por decomp-toolkit (heuristica de
 // exception table / destructor), sin decompilar todavia.
-extern "C" void dtor_801365A0(void* obj);
+extern "C" void dtor_80136CFC(void* obj);
 
-extern "C" void* fn_80136270(void* obj, s32 flag)
+extern "C" void* fn_801369CC(void* obj, s32 flag)
 {
 	if (obj && (s16)flag > 0) {
-		dtor_801365A0(obj);
+		dtor_80136CFC(obj);
 	}
 	return obj;
 }
 
-extern "C" void* fn_801361B8(void* obj, s32 flag)
+extern "C" void* fn_80136914(void* obj, s32 flag)
 {
 	if (obj) {
-		fn_80136270(obj, 0);
+		fn_801369CC(obj, 0);
 		if ((s16)flag > 0) {
-			dtor_801365A0(obj);
+			dtor_80136CFC(obj);
 		}
 	}
 	return obj;
 }
 
-extern "C" void* fn_80136214(void* obj, s32 flag)
+extern "C" void* fn_80136970(void* obj, s32 flag)
 {
 	if (obj) {
-		fn_80136270(obj, 0);
+		fn_801369CC(obj, 0);
 		if ((s16)flag > 0) {
-			dtor_801365A0(obj);
+			dtor_80136CFC(obj);
 		}
 	}
 	return obj;
@@ -848,23 +848,23 @@ extern "C" u32 lbl_803597F4[]; // vtable, mismo patron SDA21 que las de CTextEnt
 
 struct VTablePatch24 { u8 pad_00[0x24]; void* vtable; };
 
-// Mismo quirk de scheduler que fn_80136144/58: mwcc pisa el registro base
+// Mismo quirk de scheduler que fn_801368A0/58: mwcc pisa el registro base
 // (r4) para el addi@l, nosotros lo reusamos -- probado con struct real y con
 // variable local intermedia, sin cambio. No vale mas tiempo a mano.
-extern "C" void fn_80136344(VTablePatch24* obj)
+extern "C" void fn_80136AA0(VTablePatch24* obj)
 {
 	obj->vtable = lbl_803597F4;
 }
 
-extern "C" void fn_80130230(void* obj); // destructor real, sin decompilar todavia
+extern "C" void fn_8013098C(void* obj); // destructor real, sin decompilar todavia
 
-extern "C" void* fn_80136354(void* obj, s32 flag)
+extern "C" void* fn_80136AB0(void* obj, s32 flag)
 {
 	if (obj) {
 		*(void**)((u8*)obj + 0x24) = lbl_803597F4;
-		fn_80130230(obj);
+		fn_8013098C(obj);
 		if ((s16)flag > 0) {
-			dtor_801365A0(obj);
+			dtor_80136CFC(obj);
 		}
 	}
 	return obj;
@@ -872,25 +872,25 @@ extern "C" void* fn_80136354(void* obj, s32 flag)
 
 #pragma dont_inline reset
 
-// Mismo gotcha de inlining: estas llaman fn_80134AFC/fn_80134BF8/fn_80134D44/
-// fn_80134EE4, todas definidas arriba en este archivo.
+// Mismo gotcha de inlining: estas llaman fn_80135258/fn_80135354/fn_801354A0/
+// fn_80135640, todas definidas arriba en este archivo.
 #pragma dont_inline on
 
-extern "C" void fn_80134B08(TcgTextEntryHandle* h, f32 a, f32 b)
+extern "C" void fn_80135264(TcgTextEntryHandle* h, f32 a, f32 b)
 {
-	f32* p = (f32*)fn_80134AFC(h);
-	fn_80134BF8(h, a, b, p[2], p[3]);
+	f32* p = (f32*)fn_80135258(h);
+	fn_80135354(h, a, b, p[2], p[3]);
 }
 
-extern "C" void fn_80134B80(TcgTextEntryHandle* h, f32 c, f32 d)
+extern "C" void fn_801352DC(TcgTextEntryHandle* h, f32 c, f32 d)
 {
-	f32* p = (f32*)fn_80134AFC(h);
-	fn_80134BF8(h, p[0], p[1], c, d);
+	f32* p = (f32*)fn_80135258(h);
+	fn_80135354(h, p[0], p[1], c, d);
 }
 
-extern "C" void fn_80134F60(TcgTextEntryHandle* h, f32 add, u32 v)
+extern "C" void fn_801356BC(TcgTextEntryHandle* h, f32 add, u32 v)
 {
-	if (!fn_80134EE4(h, 1)) {
+	if (!fn_80135640(h, 1)) {
 		h->data->field_0xec = h->data->field_0xf0;
 		h->data->field_0xf0 = h->data->field_0xec + add;
 		h->data->field_0xf4 = 0;
@@ -899,12 +899,12 @@ extern "C" void fn_80134F60(TcgTextEntryHandle* h, f32 add, u32 v)
 	}
 }
 
-extern "C" void fn_80135004(TcgTextEntryHandle* h, f32 v, u32 flagBits, u32 doOr)
+extern "C" void fn_80135760(TcgTextEntryHandle* h, f32 v, u32 flagBits, u32 doOr)
 {
 	if (doOr) {
 		h->data->field_0x64 |= flagBits;
 	}
-	if (!fn_80134EE4(h, 1)) {
+	if (!fn_80135640(h, 1)) {
 		h->data->field_0x28 = h->data->field_0xf0;
 		h->data->field_0x108 = (s32)h->data->field_0x28;
 		h->data->field_0x10c = (s32)h->data->field_0x2c;
@@ -912,14 +912,14 @@ extern "C" void fn_80135004(TcgTextEntryHandle* h, f32 v, u32 flagBits, u32 doOr
 	}
 }
 
-// obj = fn_80134D44(h, 0) devuelve un puntero (aunque fn_80134D44 esta
+// obj = fn_801354A0(h, 0) devuelve un puntero (aunque fn_801354A0 esta
 // tipado u32 -- ese campo/retorno es en realidad un puntero, confirmado por
 // este caller). Offsets 0x210-0x213/0x2bc de un objeto todavia sin
 // identificar (probablemente una entrada de config/estilo).
-extern "C" void fn_80134E24(TcgTextEntryHandle* h)
+extern "C" void fn_80135580(TcgTextEntryHandle* h)
 {
-	if (fn_80134D44(h, 0)) {
-		u8* obj = (u8*)fn_80134D44(h, 0);
+	if (fn_801354A0(h, 0)) {
+		u8* obj = (u8*)fn_801354A0(h, 0);
 		*(u32*)(obj + 0x2bc) = 0xEFEF;
 		if (h->data->field_0x64 & 0x400) {
 			h->data->field_0x3c = obj[0x210];
@@ -932,10 +932,10 @@ extern "C" void fn_80134E24(TcgTextEntryHandle* h)
 	}
 }
 
-extern "C" void fn_80134D78(TcgTextEntryHandle* h, f32* outA, f32* outB)
+extern "C" void fn_801354D4(TcgTextEntryHandle* h, f32* outA, f32* outB)
 {
-	if (fn_80134D44(h, 0)) {
-		u8* obj = (u8*)fn_80134D44(h, 0);
+	if (fn_801354A0(h, 0)) {
+		u8* obj = (u8*)fn_801354A0(h, 0);
 		*(u32*)(obj + 0x2bc) = 0xEFEF;
 		if (h->data->field_0x64 & 0x400) {
 			*outA += *(f32*)(obj + 0x310);
@@ -948,7 +948,7 @@ extern "C" void fn_80134D78(TcgTextEntryHandle* h, f32* outA, f32* outB)
 
 #pragma dont_inline reset
 
-// Cluster de contenedor con dispatch virtual (fn_80132AF4/fn_80132A38/etc).
+// Cluster de contenedor con dispatch virtual (fn_80133250/fn_80133194/etc).
 // Struct real todavia sin identificar -- offsets confirmados por disasm.
 struct ItemHandle {
 	u8 pad_00[0xc];
@@ -972,9 +972,9 @@ struct ContainerHandle {
 	ItemList* list;
 };
 
-extern "C" void fn_801365EC(void* item); // "release" del item, sin decompilar todavia
+extern "C" void fn_80136D48(void* item); // "release" del item, sin decompilar todavia
 
-extern "C" s32 fn_80132AF4(ContainerHandle* h, u32 doFree)
+extern "C" s32 fn_80133250(ContainerHandle* h, u32 doFree)
 {
 	s32 result = 0;
 	if (doFree) {
@@ -996,52 +996,52 @@ extern "C" s32 fn_80132AF4(ContainerHandle* h, u32 doFree)
 	return result;
 }
 
-// fn_80132A38 llama fn_80132AF4 (definida arriba) -- mismo gotcha de
+// fn_80133194 llama fn_80133250 (definida arriba) -- mismo gotcha de
 // inlining, necesita su propio dont_inline (el bloque anterior ya cerro con
 // reset antes de esta funcion).
 #pragma dont_inline on
 
 extern "C" u32 lbl_803597B8[]; // vtable de este objeto (offset 0x4, no 0x0)
 
-extern "C" void* fn_80132A38(void* h, s32 flag)
+extern "C" void* fn_80133194(void* h, s32 flag)
 {
 	ContainerHandle* ch = (ContainerHandle*)h;
 	if (h) {
 		*(void***)((u8*)h + 0x4) = (void**)lbl_803597B8;
-		fn_80132AF4(ch, 1);
-		fn_801365EC(*(void**)((u8*)ch->list->field_0x60 + 0xc));
-		fn_801365EC(ch->list->field_0x60);
-		fn_801365EC(ch->list->items);
+		fn_80133250(ch, 1);
+		fn_80136D48(*(void**)((u8*)ch->list->field_0x60 + 0xc));
+		fn_80136D48(ch->list->field_0x60);
+		fn_80136D48(ch->list->items);
 		void* p0c = ch->list->field_0xc;
 		if (p0c) {
 			((void (*)(void*, s32))(*(void***)((u8*)p0c + 0x24))[2])(p0c, 1);
 		}
-		dtor_801365A0(ch->list);
+		dtor_80136CFC(ch->list);
 		if ((s16)flag > 0) {
-			dtor_801365A0(h);
+			dtor_80136CFC(h);
 		}
 	}
 	return h;
 }
 
-// fn_80132430 arma una TempList (struct declarada al inicio del archivo)
-// parseando una tabla de records via fn_80130CCC (el parser principal de
+// fn_80132B8C arma una TempList (struct declarada al inicio del archivo)
+// parseando una tabla de records via fn_80131428 (el parser principal de
 // tags) -- ver definicion real e implementacion mas abajo (junto a
 // bswap32/16).
-extern "C" TempList* fn_80132430(void* ctx, s32 maxCount, void* table, void* extra);
+extern "C" TempList* fn_80132B8C(void* ctx, s32 maxCount, void* table, void* extra);
 extern "C" u8 lbl_8049CE7C;
 extern "C" f32 lbl_804A0290[];
 
-extern "C" s32 fn_80132BB0(void* h, void* p2, void* p3)
+extern "C" s32 fn_8013330C(void* h, void* p2, void* p3)
 {
 	ContainerHandle* ch = (ContainerHandle*)h;
-	fn_80132AF4(ch, 1);
+	fn_80133250(ch, 1);
 	f32 zero = lbl_804A0290[0];
 	ch->list->field_0xcc = zero;
 	ch->list->field_0xd0 = zero;
 	ch->list->field_0xd4 = zero;
 	lbl_8049CE7C = 0;
-	TempList* src = fn_80132430(h, (s32)ch->list->field_0x0, p2, p3);
+	TempList* src = fn_80132B8C(h, (s32)ch->list->field_0x0, p2, p3);
 	u32 count = 0;
 	s32 i;
 	for (i = 0; i < (s32)src->count; i++) {
@@ -1049,28 +1049,28 @@ extern "C" s32 fn_80132BB0(void* h, void* p2, void* p3)
 		count++;
 	}
 	ch->list->count = count;
-	fn_801365EC(src->arr);
-	dtor_801365A0(src);
-	fn_8013525C((TcgTextEntryHandle*)h, fn_80135250((TcgTextEntryHandle*)h));
-	fn_80133BA8((TcgTextEntryHandle*)h, 1, -1);
+	fn_80136D48(src->arr);
+	dtor_80136CFC(src);
+	fn_801359B8((TcgTextEntryHandle*)h, fn_801359AC((TcgTextEntryHandle*)h));
+	fn_80134304((TcgTextEntryHandle*)h, 1, -1);
 	return 1;
 }
 
-// Estructuralmente identica a fn_80132BB0 (mismo patron "reset + copiar de
-// TempList temporal"), pero arma la TempList via fn_801325C8 (4 params extra
-// en vez de 2). fn_801325C8 sin decompilar todavia (536 bytes).
-extern "C" TempList* fn_801325C8(void* h, s32 maxCount, void** tables, void** arrB, void** arrC, s32 tableCount);
+// Estructuralmente identica a fn_8013330C (mismo patron "reset + copiar de
+// TempList temporal"), pero arma la TempList via fn_80132D24 (4 params extra
+// en vez de 2). fn_80132D24 sin decompilar todavia (536 bytes).
+extern "C" TempList* fn_80132D24(void* h, s32 maxCount, void** tables, void** arrB, void** arrC, s32 tableCount);
 
-extern "C" s32 fn_80132CB4(void* h, void** tables, void** arrB, void** arrC, s32 tableCount)
+extern "C" s32 fn_80133410(void* h, void** tables, void** arrB, void** arrC, s32 tableCount)
 {
 	ContainerHandle* ch = (ContainerHandle*)h;
-	fn_80132AF4(ch, 1);
+	fn_80133250(ch, 1);
 	f32 zero = lbl_804A0290[0];
 	ch->list->field_0xcc = zero;
 	ch->list->field_0xd0 = zero;
 	ch->list->field_0xd4 = zero;
 	lbl_8049CE7C = 0;
-	TempList* src = fn_801325C8(h, (s32)ch->list->field_0x0, tables, arrB, arrC, tableCount);
+	TempList* src = fn_80132D24(h, (s32)ch->list->field_0x0, tables, arrB, arrC, tableCount);
 	u32 count = 0;
 	s32 i;
 	for (i = 0; i < (s32)src->count; i++) {
@@ -1078,18 +1078,18 @@ extern "C" s32 fn_80132CB4(void* h, void** tables, void** arrB, void** arrC, s32
 		count++;
 	}
 	ch->list->count = count;
-	fn_801365EC(src->arr);
-	dtor_801365A0(src);
-	fn_8013525C((TcgTextEntryHandle*)h, fn_80135250((TcgTextEntryHandle*)h));
-	fn_80133BA8((TcgTextEntryHandle*)h, 1, -1);
+	fn_80136D48(src->arr);
+	dtor_80136CFC(src);
+	fn_801359B8((TcgTextEntryHandle*)h, fn_801359AC((TcgTextEntryHandle*)h));
+	fn_80134304((TcgTextEntryHandle*)h, 1, -1);
 	return 1;
 }
 
-// Filtra/compacta el mismo `list->items` in-place: si fn_80136334(item)
+// Filtra/compacta el mismo `list->items` in-place: si fn_80136A90(item)
 // (bit 0x5 de CTextEntryBaseData) es true, dispatch virtual + descartar;
-// si no, se re-empaqueta en el mismo array. Reusa fn_8013632C/fn_80136314/
-// fn_80136334 (CTextEntryBaseData, ya existentes arriba).
-extern "C" void fn_80132DC8(void* h)
+// si no, se re-empaqueta en el mismo array. Reusa fn_80136A88/fn_80136A70/
+// fn_80136A90 (CTextEntryBaseData, ya existentes arriba).
+extern "C" void fn_80133524(void* h)
 {
 	ContainerHandle* ch = (ContainerHandle*)h;
 	u32 destCount = 0;
@@ -1097,8 +1097,8 @@ extern "C" void fn_80132DC8(void* h)
 	for (i = 0; i < (s32)ch->list->count; i++) {
 		ItemHandle* item = (ItemHandle*)ch->list->items[i];
 		if (item) {
-			fn_80136314((CTextEntryBaseData*)item, fn_8013632C((CTextEntryBaseData*)item) & ~3);
-			if (fn_80136334((CTextEntryBaseData*)item)) {
+			fn_80136A70((CTextEntryBaseData*)item, fn_80136A88((CTextEntryBaseData*)item) & ~3);
+			if (fn_80136A90((CTextEntryBaseData*)item)) {
 				if (item) {
 					((void (*)(void*, s32))item->vtable[2])(item, 1);
 				}
@@ -1113,7 +1113,7 @@ extern "C" void fn_80132DC8(void* h)
 
 #pragma dont_inline reset
 
-extern "C" s32 fn_80136648(TcgTextEntryHandle* h); // sin decompilar todavia
+extern "C" s32 fn_80136DA4(TcgTextEntryHandle* h); // sin decompilar todavia
 
 // Contenido/logica correctos (confirmado por disasm) pero 2 quirks sin
 // resolver: (1) branch polarity (`beq`/`bne`) invertida sea cual sea la
@@ -1121,18 +1121,18 @@ extern "C" s32 fn_80136648(TcgTextEntryHandle* h); // sin decompilar todavia
 // lbl_804A0290 usa `@sda21` (1 instr) en el original pero `lis+addi` (2 instr)
 // en el nuestro pese a probar array incompleto y de tamano fijo -- esto
 // ultimo es decision del linker/threshold de small-data, no del C fuente.
-extern "C" f32 fn_80134C40(TcgTextEntryHandle* h)
+extern "C" f32 fn_8013539C(TcgTextEntryHandle* h)
 {
-	if (fn_80136648(h)) {
+	if (fn_80136DA4(h)) {
 		return lbl_804A0290[8] * h->data->field_0xb8 / lbl_804A0290[7];
 	} else {
 		return lbl_804A0290[6] * h->data->field_0xb8 / lbl_804A0290[7];
 	}
 }
 
-// --- fn_80132430: arma una "TempList" parseando entradas de una tabla de
+// --- fn_80132B8C: arma una "TempList" parseando entradas de una tabla de
 // records de 8 bytes (big-endian on-disk, cada record referencia un string
-// que se le pasa a fn_80130CCC, el parser principal de tags de texto). No
+// que se le pasa a fn_80131428, el parser principal de tags de texto). No
 // se intenta 100% -- funcion grande (408 bytes) con bswap manual + 6
 // callees sin decompilar todavia; contenido logico verificado contra el
 // disasm, se documenta el resultado real obtenido.
@@ -1146,34 +1146,34 @@ static inline u16 bswap16(u16 v)
 	return (u16)(((v << 8) & 0xff00) | ((v >> 8) & 0xff));
 }
 
-extern "C" void* fn_801364F8(s32 size);
-extern "C" void* fn_8013654C(s32 size);
-extern "C" s32 fn_801364A0(void* table);
-extern "C" s32 fn_801363C8(void* table);
-extern "C" u8* fn_801363C0(void* table);
-extern "C" TempList* fn_80130CCC(void* ctx, s32 maxCount, s32 len, void* str, void* extra);
-extern "C" s32 fn_80130B2C(TempList* dest, s32 idx, void* item);
+extern "C" void* fn_80136C54(s32 size);
+extern "C" void* fn_80136CA8(s32 size);
+extern "C" s32 fn_80136BFC(void* table);
+extern "C" s32 fn_80136B24(void* table);
+extern "C" u8* fn_80136B1C(void* table);
+extern "C" TempList* fn_80131428(void* ctx, s32 maxCount, s32 len, void* str, void* extra);
+extern "C" s32 fn_80131288(TempList* dest, s32 idx, void* item);
 extern "C" void* lbl_8049CE70;
 extern "C" void* lbl_8049CE74;
 
-extern "C" TempList* fn_80132430(void* ctx, s32 maxCount, void* table, void* extra)
+extern "C" TempList* fn_80132B8C(void* ctx, s32 maxCount, void* table, void* extra)
 {
-	TempList* dst = (TempList*)fn_801364F8(0x10);
+	TempList* dst = (TempList*)fn_80136C54(0x10);
 	dst->origCount = maxCount;
 	dst->byteCount = 0;
 	dst->count = 0;
-	dst->arr = (void**)fn_8013654C(maxCount * 4);
+	dst->arr = (void**)fn_80136CA8(maxCount * 4);
 
 	if (!table) {
 		table = lbl_8049CE70;
-	} else if (!fn_801364A0(table)) {
+	} else if (!fn_80136BFC(table)) {
 		table = lbl_8049CE74;
 	}
 
 	s32 itemCount = 0;
 	s32 lastInnerIdx = 0;
-	s32 recordCount = fn_801363C8(table);
-	u8* records = fn_801363C0(table);
+	s32 recordCount = fn_80136B24(table);
+	u8* records = fn_80136B1C(table);
 
 	s32 i;
 	for (i = 0; i < recordCount; i++) {
@@ -1181,16 +1181,16 @@ extern "C" TempList* fn_80132430(void* ctx, s32 maxCount, void* table, void* ext
 		u32 strOff = bswap32(*(u32*)(rec + 4));
 		if (strOff != 0) {
 			s32 len = bswap16(*(u16*)rec);
-			TempList* sub = fn_80130CCC(ctx, maxCount, len, (u8*)table + strOff, extra);
+			TempList* sub = fn_80131428(ctx, maxCount, len, (u8*)table + strOff, extra);
 			s32 j;
 			for (j = 0; j < (s32)sub->count; j++) {
-				if (fn_80130B2C(dst, itemCount, sub->arr[j])) {
+				if (fn_80131288(dst, itemCount, sub->arr[j])) {
 					itemCount++;
 				}
 			}
 			lastInnerIdx = j;
-			fn_801365EC(sub->arr);
-			dtor_801365A0(sub);
+			fn_80136D48(sub->arr);
+			dtor_80136CFC(sub);
 		}
 	}
 	dst->byteCount = lastInnerIdx * 4;
@@ -1198,25 +1198,25 @@ extern "C" TempList* fn_80132430(void* ctx, s32 maxCount, void* table, void* ext
 	return dst;
 }
 
-// fn_801325C8: como fn_80132430 pero sobre VARIAS tablas concatenadas
+// fn_80132D24: como fn_80132B8C pero sobre VARIAS tablas concatenadas
 // virtualmente (tableCount tablas, cada una con su propio par arrB/arrC).
-// Usa fn_80131BEC (2116 bytes, la OTRA funcion gigante de parseo) en vez de
-// fn_80130CCC. Best-effort -- logica general confirmada por disasm, pero
+// Usa fn_80132348 (2116 bytes, la OTRA funcion gigante de parseo) en vez de
+// fn_80131428. Best-effort -- logica general confirmada por disasm, pero
 // el manejo exacto de "avanzar de tabla" (aritmetica de boundary/offset
 // ajustado) no se verifico bit a bit, es la parte de mayor riesgo.
-extern "C" TempList* fn_80131BEC(void* ctx, s32 maxCount, s32 len, void* str, void* extraB, void* extraC);
+extern "C" TempList* fn_80132348(void* ctx, s32 maxCount, s32 len, void* str, void* extraB, void* extraC);
 
-extern "C" TempList* fn_801325C8(void* ctx, s32 maxCount, void** tables, void** arrB, void** arrC, s32 tableCount)
+extern "C" TempList* fn_80132D24(void* ctx, s32 maxCount, void** tables, void** arrB, void** arrC, s32 tableCount)
 {
-	TempList* dst = (TempList*)fn_801364F8(0x10);
+	TempList* dst = (TempList*)fn_80136C54(0x10);
 	dst->origCount = maxCount;
 	dst->byteCount = 0;
 	dst->count = 0;
-	dst->arr = (void**)fn_8013654C(maxCount * 4);
+	dst->arr = (void**)fn_80136CA8(maxCount * 4);
 
 	if (!tables[0]) {
 		tables[0] = lbl_8049CE70;
-	} else if (!fn_801364A0(tables[0])) {
+	} else if (!fn_80136BFC(tables[0])) {
 		tables[0] = lbl_8049CE74;
 	}
 
@@ -1224,7 +1224,7 @@ extern "C" TempList* fn_801325C8(void* ctx, s32 maxCount, void** tables, void** 
 	s32 totalRecords = 0;
 	s32 t;
 	for (t = 0; t < tableCount; t++) {
-		perTableCount[t] = fn_801363C8(tables[t]);
+		perTableCount[t] = fn_80136B24(tables[t]);
 		totalRecords += perTableCount[t];
 	}
 
@@ -1238,22 +1238,22 @@ extern "C" TempList* fn_801325C8(void* ctx, s32 maxCount, void** tables, void** 
 		while (r >= perTableCount[curTable]) {
 			boundary += perTableCount[curTable];
 			curTable++;
-			tableBase[curTable] = (u8*)fn_801363C0(tables[curTable]) + (boundary - r) * 0x10;
+			tableBase[curTable] = (u8*)fn_80136B1C(tables[curTable]) + (boundary - r) * 0x10;
 		}
 		u8* rec = tableBase[curTable];
 		u32 strOff = bswap32(*(u32*)(rec + 4));
 		if (strOff != 0) {
 			s32 len = bswap16(*(u16*)rec);
-			TempList* sub = fn_80131BEC(ctx, maxCount, len, (u8*)tables[curTable] + strOff, arrB[curTable], arrC[curTable]);
+			TempList* sub = fn_80132348(ctx, maxCount, len, (u8*)tables[curTable] + strOff, arrB[curTable], arrC[curTable]);
 			s32 j;
 			for (j = 0; j < (s32)sub->count; j++) {
-				if (fn_80130B2C(dst, itemCount, sub->arr[j])) {
+				if (fn_80131288(dst, itemCount, sub->arr[j])) {
 					itemCount++;
 				}
 			}
 			byteAccum += sub->byteCount;
-			fn_801365EC(sub->arr);
-			dtor_801365A0(sub);
+			fn_80136D48(sub->arr);
+			dtor_80136CFC(sub);
 		}
 	}
 	dst->count = itemCount;
@@ -1261,82 +1261,506 @@ extern "C" TempList* fn_801325C8(void* ctx, s32 maxCount, void** tables, void** 
 	return dst;
 }
 
-// fn_801327E0: constructor/inicializador principal de TcgTextEntryHandle
+// fn_80131324: crea una entrada CTextEntry_Char (codepoint "plano", sin
+// atributos) y la agrega a `dest[idx]`. Usado por fn_80131428 (parser
+// principal) para el caso "caracter normal" del stream de tags. r6/`extra`
+// nunca se lee en este cuerpo -- se preserva en la firma por si otro caller
+// lo usa con otro valor.
+extern "C" u16 fn_8013123C(u16 code); // remapeo de codepoint, sin decompilar todavia
+extern "C" u8 lbl_8049D6FC;
+extern "C" void* memcpy(void* dst, const void* src, s32 n);
+extern "C" void memset(void* dst, int val, s32 n);
+
+extern "C" s32 fn_80131324(TempList* dest, s32 idx, u16 code, s32 extra)
+{
+	s32 ok = 1;
+	CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x38);
+	if (obj) {
+		fn_801313EC(obj);
+	}
+	((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 0);
+	if (lbl_8049D6FC) {
+		if ((u16)code != 0x19) {
+			code = fn_8013123C(code);
+		}
+		lbl_8049D6FC = 0;
+	}
+	fn_801313E4((CTextEntryCharData*)obj, code);
+	if (!fn_80131288(dest, idx, obj)) {
+		ok = 0;
+	}
+	return ok;
+}
+
+// fn_80131428: parser principal del stream de tags de texto (el "parser de
+// tags" citado en la bitacora, sin decompilar hasta ahora -- 3796 bytes, el
+// mas grande del archivo). Direccion re-verificada contra RNEPDA (shift
+// +0x75C respecto de la sesion RNEEDA original, ver docs/decompilation_log.md).
+//
+// Formato de cada entrada del stream (u16, en r19[]): si el bit alto (0x8000)
+// esta en 0, es un codepoint "plano" (fn_80131324). Si esta en 1: bits[8:14]
+// = codigo de tag (0-0x7f), bits[0:7] = "step" (cuantos u16 mas ocupa esta
+// entrada). Codigos 0-0x40 usan una jump table fija (jumptable_80359DD0,
+// 65 entradas, la mayoria compartiendo el mismo handler generico); codigos
+// >0x40 usan una tabla de definiciones separada (0x28 entradas de 8 bytes en
+// el stack, copiada de lbl_80339E20).
+//
+// Best-effort: contenido/control de flujo confirmado por disasm para todos
+// los casos con handler propio (dispatch por indice de jump table), pero 2
+// casos (el de codigo de color hex, y el de "ruby"/ancho con
+// lbl_80339D90) usan tablas estaticas cuyo layout interno no se determino
+// bit a bit -- se documenta cada uno en su bloque. No se persigue el 100%
+// (mismo criterio que fn_80132D24/fn_80134744/etc).
+extern "C" s32 fn_80136120(s32 code, s32 bitIdx); // lookup/bit-test, sin decompilar
+extern "C" int sprintf(char* buf, const char* fmt, ...);
+extern "C" u32 strlen(const char* s);
+extern "C" u32 lbl_804A0A90;
+extern "C" u32 lbl_804A0A94;
+extern "C" u8 lbl_80339D90[0x90]; // tabla de records (layout exacto sin confirmar)
+extern "C" u8 lbl_80339E20[0x140]; // tabla de definiciones de tag extendido (0x28 x 8 bytes)
+extern "C" char lbl_8035A13C[]; // formato "%d"
+
+extern "C" TempList* fn_80131428(void* ctx, s32 maxCount, s32 len, void* str, void* extra)
+{
+	TcgTextEntryHandle* h = (TcgTextEntryHandle*)ctx;
+	u16* tags = (u16*)str;
+	TempList* result = (TempList*)fn_80136C54(0x10);
+	result->origCount = maxCount;
+	result->arr = (void**)fn_80136CA8(maxCount * 4);
+	void* pendingList = 0; // r28: nunca se le asigna un valor real en ningun
+	                        // camino recorrido -- probable dead code (los
+	                        // "validadores" fn_801363B8/fn_80136404 siempre
+	                        // devuelven 0, asi que el bloque que lo usaria
+	                        // nunca corre en la practica). Documentado, no
+	                        // investigado mas a fondo.
+
+	s32 outCount = 0;
+	s32 count = len / 2;
+	s32 idx = 0;
+	s32 needChar = 1;
+	s32 step = 0;
+
+	u32 constPair[2] = { lbl_804A0A90, lbl_804A0A94 };
+	u8 table1[0x90];
+	memcpy(table1, lbl_80339D90, sizeof(table1));
+	u8 table2[0x140];
+	memcpy(table2, lbl_80339E20, sizeof(table2));
+
+	while (idx < count) {
+		if (needChar) {
+			CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
+			if (obj) {
+				fn_8013230C(obj);
+			}
+			((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 1);
+			if (fn_80131288(result, outCount, obj)) {
+				outCount++;
+			}
+			needChar = 0;
+		}
+
+		u16 raw = tags[idx];
+		idx++;
+		u16 tag = bswap16(raw);
+		if (!(tag & 0x8000)) {
+			// caracter "plano" -- sin tag code, un solo u16 consumido.
+			fn_80131324(result, outCount, tag, 0);
+			continue;
+		}
+
+		s32 code = (s32)((tag >> 8) & 0x7f);
+		step = tag & 0xff;
+
+		if (code > 0x40) {
+			// codigo extendido: busca en table2 (entradas de 8 bytes:
+			// [0]=s16 code, [2]=u8 subtype, [3]=u8 len, [4]=u32 param) hasta
+			// encontrar code o una entrada negativa (fin de tabla).
+			s32 off = 0;
+			for (;;) {
+				s16 entryCode = *(s16*)(table2 + off);
+				if (entryCode < 0) {
+					idx += step;
+					goto next;
+				}
+				if ((s32)entryCode == code) {
+					break;
+				}
+				off += 8;
+			}
+			{
+				u8 subtype = table2[off + 2];
+				switch (subtype) {
+				case 0: {
+					u32 subLen = *(u32*)(table2 + off + 4);
+					u8 subByteLen = table2[off + 3];
+					TempList* sub = fn_80131428(ctx, maxCount, (s32)(u16)subLen, tags, extra);
+					if (sub) {
+						/* fusionar contenido de sub en result -- ver nota */
+					}
+					(void)subByteLen;
+					if (fn_80131288(0, 0, 0)) {} // TODO: fusion real sin verificar bit a bit
+					break;
+				}
+				case 1: {
+					CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
+					if (obj) {
+						fn_8013230C(obj);
+					}
+					((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, *(u32*)(table2 + off + 4));
+					if (fn_80131288(result, outCount, obj)) {
+						outCount++;
+					}
+					break;
+				}
+				case 2:
+					fn_80136DA4(h);
+					lbl_8049D6FC = 1;
+					break;
+				case 3: {
+					CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
+					if (obj) {
+						fn_8013230C(obj);
+					}
+					((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 8);
+					if (fn_80131288(result, outCount, obj)) {
+						outCount++;
+					}
+					fn_801322FC((CTextEntryCharData*)obj, 0, (u32)*(u32*)(table2 + off + 4));
+					break;
+				}
+				case 4: {
+					CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
+					if (obj) {
+						fn_8013230C(obj);
+					}
+					((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 4);
+					if (fn_80131288(result, outCount, obj)) {
+						outCount++;
+					}
+					break;
+				}
+				}
+			}
+			idx += step;
+			goto next;
+		}
+
+		switch (code) {
+		default: {
+			// generico (jump table -> 0xCB0): mismo camino que "code > 0x40".
+			fn_80131324(result, outCount, 0, 0);
+			idx += step;
+			break;
+		}
+		case 1: {
+			// dos valores u16 leidos via puntero (offsets 0/2), dispatch code 6.
+			CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
+			if (obj) {
+				fn_8013230C(obj);
+			}
+			((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 6);
+			if (fn_80131288(result, outCount, obj)) {
+				outCount++;
+			}
+			u16* p = &tags[idx];
+			fn_801322FC((CTextEntryCharData*)obj, 0, bswap16(p[0]));
+			fn_801322FC((CTextEntryCharData*)obj, 1, bswap16(p[1]));
+			idx += step;
+			break;
+		}
+		case 2: {
+			// dos valores u16, dispatch code 7 (offsets directos idx+0/idx+1).
+			CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
+			if (obj) {
+				fn_8013230C(obj);
+			}
+			((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 7);
+			if (fn_80131288(result, outCount, obj)) {
+				outCount++;
+			}
+			fn_801322FC((CTextEntryCharData*)obj, 0, (s16)bswap16(tags[idx]));
+			fn_801322FC((CTextEntryCharData*)obj, 1, (s16)bswap16(tags[idx + 1]));
+			idx += step;
+			break;
+		}
+		case 3: {
+			// sub-lista anidada: parsea un char via fn_80135A00, arma una
+			// TempList con fn_80132B8C y fusiona sus items en `result`.
+			s32 v = fn_80135A00(h, (s16)bswap16(tags[idx]));
+			TempList* sub = fn_80132B8C(ctx, maxCount, (void*)h, extra);
+			s32 j;
+			for (j = 0; j < (s32)sub->count; j++) {
+				void* item = sub->arr[j];
+				if (item) {
+					((void (*)(void*, s32))((void**)((CTextEntryBaseData*)item)->vtable)[2])(item, 1);
+				} else if (fn_80131288(result, outCount, sub->arr[j])) {
+					outCount++;
+				}
+			}
+			(void)v;
+			fn_80136D48(sub->arr);
+			dtor_80136CFC(sub);
+			idx += step;
+			break;
+		}
+		case 4: {
+			// codigo/recurso por nombre (tipo fijo 9) aplicado via fn_80135B28.
+			s32 c = fn_8013652C((s16)bswap16(tags[idx]), 0, 9);
+			u32 v = fn_801364EC(c);
+			fn_80135B28(h, v);
+			idx += step;
+			break;
+		}
+		case 5:
+		case 6:
+		case 7:
+		case 8: {
+			// codigo de color en formato hexadecimal (best-effort -- layout
+			// exacto de table1/constPair sin verificar bit a bit).
+			s32 sub = code - 5;
+			s32 bitPos;
+			s32 hi = 0;
+			for (bitPos = 0; bitPos < 8; bitPos++) {
+				if (fn_80136120(sub, 7 - bitPos)) {
+					hi = 8 - bitPos;
+					break;
+				}
+			}
+			char buf28[0x14];
+			char buf3c[0x14];
+			memset(buf28, 0, sizeof(buf28));
+			s32 off = 0;
+			u8 flagByte = *((u8*)&constPair[0] + ((sub - 5) * 2 + 1));
+			if (flagByte) {
+				off = 2;
+				buf28[0x1] = (char)0x30; // TODO: offset/valor exactos sin confirmar
+			}
+			if (*((u8*)&constPair[0] + (sub - 5) * 2)) {
+				off++;
+				buf28[off - 1] = (char)0x25; // '%'
+			}
+			sprintf(buf28 + off, lbl_8035A13C, sub);
+			sprintf(buf3c, buf28, hi);
+			s32 slen = (s32)strlen(buf3c);
+			(void)slen;
+			for (bitPos = 0; bitPos < hi; bitPos++) {
+				CTextEntryBaseData* obj = (CTextEntryBaseData*)result->arr[outCount - 1];
+				(void)obj;
+			}
+			idx += step;
+			break;
+		}
+		case 9: {
+			// no-op: consume el tag sin generar entrada.
+			idx += step;
+			break;
+		}
+		case 10: {
+			// un solo valor u16, dispatch code 8.
+			CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
+			if (obj) {
+				fn_8013230C(obj);
+			}
+			((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 8);
+			if (fn_80131288(result, outCount, obj)) {
+				outCount++;
+			}
+			fn_801322FC((CTextEntryCharData*)obj, 0, (s16)bswap16(tags[idx]));
+			idx += step;
+			break;
+		}
+		case 47:
+		case 48: {
+			// 3 campos via fn_80135B00, valida via fn_801363B8/fn_80136404
+			// (siempre devuelven 0 -- la sub-lista nunca se llega a construir
+			// en la practica). pendingList (r28) documentado arriba.
+			u8 a; s16 b, c;
+			fn_80135B00(h, &a, &b, &c);
+			s32 valid = (code == 47) ? fn_801363B8(0, b, c) : fn_80136404(0, b);
+			if (valid) {
+				TempList* sub = fn_80132B8C(ctx, maxCount, (void*)h, extra);
+				s32 j;
+				for (j = 0; j < (s32)sub->count; j++) {
+					void* item = sub->arr[j];
+					if (item) {
+						((void (*)(void*, s32))((void**)((CTextEntryBaseData*)item)->vtable)[2])(item, 1);
+					} else if (fn_80131288(result, outCount, sub->arr[j])) {
+						outCount++;
+					}
+				}
+				fn_80136D48(sub->arr);
+				dtor_80136CFC(sub);
+			}
+			if (pendingList) {
+				fn_80136D48(*(void**)((u8*)pendingList + 0xc));
+				dtor_80136CFC(pendingList);
+				pendingList = 0;
+			}
+			idx += step;
+			break;
+		}
+		case 49: {
+			// caso "ruby"/ancho (best-effort, table1 sin decodificar del
+			// todo): busca resource por nombre (tipo 0x17), copia table1 a
+			// un buffer de trabajo y arma hasta 2 sub-listas segun ancho.
+			s32 c = fn_8013652C((s16)bswap16(tags[idx]), 0, 0x17);
+			u32 width = fn_80135B68(h);
+			(void)c;
+			u8 workTable[0x90];
+			memcpy(workTable, table1, sizeof(workTable));
+			u8* entry = workTable + width * 6;
+			u8 entryType = entry[0];
+			u16 entryA = *(u16*)(entry + 2);
+			u16 entryB = *(u16*)(entry + 4);
+			fn_80135AE4(h, entryType, (s16)entryA, (s16)entryB);
+			s32 hi = fn_80136434((s32)entryType, 0, 0);
+			s32 v = fn_801364A0((s32)entryType, 1);
+			if (v) {
+				TempList* sub = fn_80132B8C(ctx, maxCount, (void*)h, extra);
+				s32 j;
+				for (j = 0; j < (s32)sub->count; j++) {
+					if (fn_80131288(result, outCount, sub->arr[j])) {
+						outCount++;
+					}
+				}
+				fn_80136D48(sub->arr);
+				dtor_80136CFC(sub);
+			}
+			if (hi) {
+				TempList* sub = fn_80132B8C(ctx, maxCount, (void*)h, extra);
+				s32 j;
+				for (j = 0; j < (s32)sub->count; j++) {
+					if (fn_80131288(result, outCount, sub->arr[j])) {
+						outCount++;
+					}
+				}
+				fn_80136D48(sub->arr);
+				dtor_80136CFC(sub);
+			}
+			idx += step;
+			break;
+		}
+		case 56: {
+			// un solo valor u16, dispatch code 9.
+			CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
+			if (obj) {
+				fn_8013230C(obj);
+			}
+			((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 9);
+			if (fn_80131288(result, outCount, obj)) {
+				outCount++;
+			}
+			fn_801322FC((CTextEntryCharData*)obj, 0, (s16)bswap16(tags[idx]));
+			idx += step;
+			break;
+		}
+		case 62: {
+			// dos valores u16 directos, dispatch code 2.
+			CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
+			if (obj) {
+				fn_8013230C(obj);
+			}
+			((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 2);
+			if (fn_80131288(result, outCount, obj)) {
+				outCount++;
+			}
+			fn_801322FC((CTextEntryCharData*)obj, 0, (s16)bswap16(tags[idx]));
+			fn_801322FC((CTextEntryCharData*)obj, 1, (s16)bswap16(tags[idx + 1]));
+			idx += step;
+			break;
+		}
+		case 64: {
+			// codigo/recurso por nombre (tipo fijo 9), igual que case 4.
+			s32 c = fn_8013652C((s16)bswap16(tags[idx]), 0, 9);
+			u32 v = fn_801364EC(c);
+			fn_80135B28(h, v);
+			idx += step;
+			break;
+		}
+		}
+	next:;
+	}
+
+	result->count = outCount;
+	return result;
+}
+
+// fn_80132F3C: constructor/inicializador principal de TcgTextEntryHandle
 // (h){data(0x0); vtable(0x4); ...}, mismo layout de "big object" que
-// fn_80132A38. Encadena casi todos los setters ya validados arriba con
+// fn_80133194. Encadena casi todos los setters ya validados arriba con
 // valores constantes -- alta confianza, muy mecanico.
 extern "C" void memset(void* dst, int val, s32 n);
-extern "C" void fn_8013038C(void* obj, s32 v);
-extern "C" void fn_8013031C(void* obj, s32 count, s32 v);
-extern "C" void fn_80130290(void* obj);
+extern "C" void fn_80130AE8(void* obj, s32 v);
+extern "C" void fn_80130A78(void* obj, s32 count, s32 v);
+extern "C" void fn_801309EC(void* obj);
 
 // Encadena docenas de setters definidos arriba en este mismo archivo --
 // sin dont_inline mwcc los auto-inlinea todos (mismo gotcha de siempre).
 #pragma dont_inline on
 
-extern "C" void* fn_801327E0(void* h, u32 p2, s32 maxCount, u32 p4)
+extern "C" void* fn_80132F3C(void* h, u32 p2, s32 maxCount, u32 p4)
 {
 	*(void***)((u8*)h + 0x4) = (void**)lbl_803597B8;
-	TcgTextEntryData* data = (TcgTextEntryData*)fn_801364F8(0x268);
+	TcgTextEntryData* data = (TcgTextEntryData*)fn_80136C54(0x268);
 	*(void**)h = data;
 	memset(data, 0, 0x268);
 	data->field_0x10 = p2;
 	data->field_0x0 = maxCount;
 	data->field_0x4 = 0;
-	data->field_0x8 = (u32)fn_8013654C(maxCount * 4);
+	data->field_0x8 = (u32)fn_80136CA8(maxCount * 4);
 
-	void* sub28 = fn_801364F8(0x28);
+	void* sub28 = fn_80136C54(0x28);
 	if (sub28) {
-		fn_80136344((VTablePatch24*)sub28);
+		fn_80136AA0((VTablePatch24*)sub28);
 		data->field_0xc = (u32)sub28;
-		fn_8013038C((void*)data->field_0xc, 1);
-		fn_8013031C((void*)data->field_0xc, maxCount, 0);
-		fn_80130290((void*)data->field_0xc);
+		fn_80130AE8((void*)data->field_0xc, 1);
+		fn_80130A78((void*)data->field_0xc, maxCount, 0);
+		fn_801309EC((void*)data->field_0xc);
 	}
 
 	data->field_0x5c = p4;
-	TempList* sub60 = (TempList*)fn_801364F8(0x10);
+	TempList* sub60 = (TempList*)fn_80136C54(0x10);
 	data->field_0x60 = (u32)sub60;
 	data->field_0x38 = (u32)-1;
 	sub60->origCount = p4;
 	sub60->count = 0;
 	sub60->byteCount = 0;
-	sub60->arr = (void**)fn_8013654C(p4 * 0x3c);
+	sub60->arr = (void**)fn_80136CA8(p4 * 0x3c);
 
 	TcgTextEntryHandle* th = (TcgTextEntryHandle*)h;
-	fn_80134698(th, 1, 0);
-	fn_80134730(th, 0);
-	fn_80134BF8(th, lbl_804A0290[0], lbl_804A0290[0], lbl_804A0290[1], lbl_804A0290[2]);
-	fn_80134D0C(th, lbl_804A0290[0], lbl_804A0290[0]);
-	fn_80134D34(th, 8);
-	fn_80134D64(th, 0, 0);
-	fn_801346E0(th, 0x202020B8);
-	fn_8013522C(th, 1);
-	fn_80135238(th, (u32)-1);
-	fn_80135244(th, 0x47e);
-	if (fn_80136648(th)) {
-		fn_8013528C(th, lbl_804A0290[4]);
+	fn_80134DF4(th, 1, 0);
+	fn_80134E8C(th, 0);
+	fn_80135354(th, lbl_804A0290[0], lbl_804A0290[0], lbl_804A0290[1], lbl_804A0290[2]);
+	fn_80135468(th, lbl_804A0290[0], lbl_804A0290[0]);
+	fn_80135490(th, 8);
+	fn_801354C0(th, 0, 0);
+	fn_80134E3C(th, 0x202020B8);
+	fn_80135988(th, 1);
+	fn_80135994(th, (u32)-1);
+	fn_801359A0(th, 0x47e);
+	if (fn_80136DA4(th)) {
+		fn_801359E8(th, lbl_804A0290[4]);
 	} else {
-		fn_8013528C(th, lbl_804A0290[3]);
+		fn_801359E8(th, lbl_804A0290[3]);
 	}
-	fn_80135298(th, lbl_804A0290[5]);
-	fn_80135274(th, 1);
-	fn_80134CEC(th, lbl_804A0290[0], lbl_804A0290[0]);
-	fn_80134CE0(th, lbl_804A0290[6]);
-	fn_80134CB8(th, lbl_804A0290[7], lbl_804A0290[7]);
-	fn_80134C24(th, 0, lbl_804A0290[0]);
+	fn_801359F4(th, lbl_804A0290[5]);
+	fn_801359D0(th, 1);
+	fn_80135448(th, lbl_804A0290[0], lbl_804A0290[0]);
+	fn_8013543C(th, lbl_804A0290[6]);
+	fn_80135414(th, lbl_804A0290[7], lbl_804A0290[7]);
+	fn_80135380(th, 0, lbl_804A0290[0]);
 	return h;
 }
 
 #pragma dont_inline reset
 
-// fn_80133BA8: recorre h->list->items, hace dispatch virtual (vtable slot 4)
+// fn_80134304: recorre h->list->items, hace dispatch virtual (vtable slot 4)
 // por cada uno y arma un ResultEntry (0x3c bytes, array en
 // h->data->field_0x60->arr) segun el codigo devuelto por el dispatch (0/2/4
 // = casos simples de memset+campos fijos; 7/8 = caso complejo con
-// fn_80134744, la otra funcion grande; default = solo fn_80133B60).
+// fn_80134EA0, la otra funcion grande; default = solo fn_801342BC).
 // Best-effort, no se persigue el 100% -- funcion grande (776 bytes) con
-// switch de 5 vias y 2 dependencias gigantes (fn_80132E98/fn_80134744)
+// switch de 5 vias y 2 dependencias gigantes (fn_801335F4/fn_80134EA0)
 // solo forward-declaradas.
 struct ResultEntry {
 	f32 field_0x10;
@@ -1352,12 +1776,12 @@ struct ResultEntry {
 	u8 field_0x38;
 };
 
-extern "C" s32 fn_80132E98(TcgTextEntryHandle* h);
-extern "C" s32 fn_80134744(void* h, void* posA, void* posB, void* extentA, void* extentB, f32 scaleA, f32 scaleB);
+extern "C" s32 fn_801335F4(TcgTextEntryHandle* h);
+extern "C" s32 fn_80134EA0(void* h, void* posA, void* posB, void* extentA, void* extentB, f32 scaleA, f32 scaleB);
 
 #pragma dont_inline on
 
-extern "C" void fn_80133BA8(void* hVoid, s32 doStuff, s32 unused)
+extern "C" void fn_80134304(void* hVoid, s32 doStuff, s32 unused)
 {
 	TcgTextEntryHandle* h = (TcgTextEntryHandle*)hVoid;
 	u32 threshold = h->data->field_0x5c;
@@ -1366,14 +1790,14 @@ extern "C" void fn_80133BA8(void* hVoid, s32 doStuff, s32 unused)
 
 	if (doStuff) {
 		results->count = 0;
-		f32* p18 = (f32*)fn_80134AFC(h);
-		fn_80134D00(h);
+		f32* p18 = (f32*)fn_80135258(h);
+		fn_8013545C(h);
 		if (h->data->field_0x14) {
 			ResultEntry* e0 = (ResultEntry*)((u8*)results->arr + 0 * 0x3c);
 			usedSlots = 1;
-			fn_80133EB0((f32*)e0, p18);
-			if (fn_80134D44(h, 0)) {
-				fn_80134D78(h, (f32*)e0, (f32*)((u8*)e0 + 4));
+			fn_8013460C((f32*)e0, p18);
+			if (fn_801354A0(h, 0)) {
+				fn_801354D4(h, (f32*)e0, (f32*)((u8*)e0 + 4));
 			}
 			e0->field_0x10 = lbl_804A0290[11];
 			e0->field_0x14 = lbl_804A0290[12];
@@ -1384,9 +1808,9 @@ extern "C" void fn_80133BA8(void* hVoid, s32 doStuff, s32 unused)
 		}
 	}
 
-	fn_80132DC8(h);
+	fn_80133524(h);
 
-	if (fn_80132E98(h)) {
+	if (fn_801335F4(h)) {
 		s32 itemIdx;
 		s32 lastId = 0;
 		ContainerHandle* ch = (ContainerHandle*)h;
@@ -1416,28 +1840,28 @@ extern "C" void fn_80133BA8(void* hVoid, s32 doStuff, s32 unused)
 					e->field_0x24 = h->data->field_0x38;
 				}
 			} else if (code == 0) {
-				u16 len = fn_80133B98((CTextEntryCharData*)item);
+				u16 len = fn_801342F4((CTextEntryCharData*)item);
 				f32 tmpA[4];
 				f32 tmpB[4];
-				fn_80133EB0(tmpA, (f32*)((u8*)item + 0x28));
-				fn_80133EB0(tmpB, (f32*)((u8*)item + 0x18));
-				s32 leadingZero = fn_80134744(h, tmpA, tmpB, tmpA, tmpB, lbl_804A0290[14], lbl_804A0290[14]);
+				fn_8013460C(tmpA, (f32*)((u8*)item + 0x28));
+				fn_8013460C(tmpB, (f32*)((u8*)item + 0x18));
+				s32 leadingZero = fn_80134EA0(h, tmpA, tmpB, tmpA, tmpB, lbl_804A0290[14], lbl_804A0290[14]);
 				ResultEntry* e = (ResultEntry*)((u8*)results->arr + usedSlots * 0x3c);
 				usedSlots++;
-				fn_80133EB0((f32*)e, tmpA);
-				fn_80133EB0((f32*)((u8*)e + 0x10), tmpB);
-				if (!fn_80136648(h)) {
+				fn_8013460C((f32*)e, tmpA);
+				fn_8013460C((f32*)((u8*)e + 0x10), tmpB);
+				if (!fn_80136DA4(h)) {
 					e->field_0x20 = len / 0x271;
 				} else {
 					e->field_0x20 = 0;
 					e->field_0x30 = 0;
 					e->field_0x28 = item;
 					e->field_0x38 = (leadingZero == 0) ? 1 : 0;
-					lastId = fn_80135DD0(lastId, 0, 0xb);
+					lastId = fn_8013652C(lastId, 0, 0xb);
 				}
 				e->field_0x24 = h->data->field_0x38;
 			} else if (code == 7 || code == 8) {
-				lastId = fn_80133B60((CTextEntryCharData*)item, 0);
+				lastId = fn_801342BC((CTextEntryCharData*)item, 0);
 			}
 		}
 		if (doStuff) {
@@ -1447,30 +1871,30 @@ extern "C" void fn_80133BA8(void* hVoid, s32 doStuff, s32 unused)
 	}
 }
 
-// fn_80134744: clip/remap de un rectangulo (glyph bounding box) contra los
+// fn_80134EA0: clip/remap de un rectangulo (glyph bounding box) contra los
 // limites `field_0x20`/`field_0x24` y reescala UVs correspondientes. Usa el
 // idiom estandar de conversion int->double de esta CPU (magic constant via
 // `lbl_804A0288`) -- se escribe como cast normal `(f32)` confiando en que
 // mwcc lo compila igual (Gekko no tiene fcfid en hardware). Best-effort,
 // mucha aritmetica de punto flotante transcrita casi 1:1 del disasm.
 extern "C" f64 lbl_804A0288;
-extern "C" s32 fn_80197284(s32 v);
+extern "C" s32 fn_801979E0(s32 v);
 
 #pragma dont_inline on
 
-extern "C" s32 fn_80134744(void* hVoid, void* posAVoid, void* posBVoid, void* extentAVoid, void* extentBVoid, f32 scaleA, f32 scaleB)
+extern "C" s32 fn_80134EA0(void* hVoid, void* posAVoid, void* posBVoid, void* extentAVoid, void* extentBVoid, f32 scaleA, f32 scaleB)
 {
 	TcgTextEntryHandle* h = (TcgTextEntryHandle*)hVoid;
 	f32* posA = (f32*)posAVoid;
 	f32* posB = (f32*)posBVoid;
 	f32* extentA = (f32*)extentAVoid;
 	f32* extentB = (f32*)extentBVoid;
-	f32* p18 = (f32*)fn_80134AFC(h);
-	f32* p28 = (f32*)fn_80134D00(h);
+	f32* p18 = (f32*)fn_80135258(h);
+	f32* p28 = (f32*)fn_8013545C(h);
 
 	if (h->data->field_0x15 == 0) {
-		fn_80133EB0(posA, extentA);
-		fn_80133EB0(posB, extentB);
+		fn_8013460C(posA, extentA);
+		fn_8013460C(posB, extentB);
 		posA[0] -= p28[0];
 		posA[1] -= p28[1];
 	} else {
@@ -1484,7 +1908,7 @@ extern "C" s32 fn_80134744(void* hVoid, void* posAVoid, void* posBVoid, void* ex
 		f32 someVal = sC * lbl_804A0290[10] + diff10;
 		s32 iSomeVal = (s32)someVal;
 		s32 iF29 = (s32)f29;
-		s32 res = fn_80197284(iF29 - iSomeVal);
+		s32 res = fn_801979E0(iF29 - iSomeVal);
 		if ((f32)res > f29 - lbl_804A0290[15]) {
 			return 0;
 		}
@@ -1494,7 +1918,7 @@ extern "C" s32 fn_80134744(void* hVoid, void* posAVoid, void* posBVoid, void* ex
 		f32 someValB = s8 * lbl_804A0290[10] + diff10b;
 		s32 iSomeValB = (s32)someValB;
 		s32 iF29b = (s32)f29b;
-		s32 resB = fn_80197284(iF29b - iSomeValB);
+		s32 resB = fn_801979E0(iF29b - iSomeValB);
 		if ((f32)resB > f29b - lbl_804A0290[15]) {
 			return 0;
 		}
@@ -1547,10 +1971,10 @@ extern "C" s32 fn_80134744(void* hVoid, void* posAVoid, void* posBVoid, void* ex
 	posA[0] += p18[0];
 	posA[1] += p18[1];
 
-	if (fn_80134D44(h, 0)) {
-		fn_80134D78(h, posA, posA + 1);
+	if (fn_801354A0(h, 0)) {
+		fn_801354D4(h, posA, posA + 1);
 	}
-	fn_80134E24(h);
+	fn_80135580(h);
 
 	posB[0] /= scaleA;
 	posB[1] /= scaleB;

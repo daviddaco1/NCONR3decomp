@@ -371,3 +371,91 @@ función (53/124 en `tcg_text.cpp`, 47 en SDK/Runtime) — hay que re-verificar 
 
 Próximo paso: correr `ninja` para que decomp-toolkit analice `build/RNEPDA/main.dol` y regenere
 `symbols.txt`/`splits.txt`; comparar función por función contra el trabajo previo en RNEEDA.
+
+## Fase 5 — Re-ubicación de `tcg_text.cpp` en RNEPDA y parser principal de tags (2026-07-31)
+
+Tras la Fase 4 (SDK re-verificado), quedaba `tcg_text.cpp` (game code). A diferencia del SDK, acá
+no hay nombres reales auto-detectados por firma — hubo que re-ubicar el archivo completo a ciegas.
+
+### Método de re-ubicación (sin asumir direcciones iguales)
+
+Intentos descartados, en orden:
+
+1. **Reusar la dirección RNEEDA tal cual** (`0x80130BC8`): `dtk dol split` la rechaza
+   ("overlaps with previous split") porque cae en medio de un rango de extabindex real de
+   RNEPDA — prueba de que el contenido ahí es otra cosa, no confirmación de que sea la misma
+   región corrida.
+2. **Búsqueda de bytes exactos** (leaf functions sin relocations, esperando bytes idénticos):
+   falló — dos patrones de 12 bytes dieron matches inconsistentes entre sí (bases distintas),
+   evidencia de que esos patrones son demasiado comunes en el resto del binario (idioms de
+   accessor triviales repetidos por todo el motor).
+3. **Búsqueda con máscara** (bytes fijos + wildcard en los campos con relocation) sobre una
+   función 100%-matcheada conocida (`fn_801362BC`/constructor `CTextEntry_Char`): cero matches.
+   Confirmó que el código en la dirección RNEEDA original YA NO es el mismo contenido en RNEPDA
+   (verificado leyendo los bytes reales en esa dirección: es una función completamente distinta).
+4. **RTTI/strings del binario** (`grep -aoE` sobre `orig/RNEPDA/sys/main.dol`, mismo método de la
+   Fase 1): confirmó que `tcg_text.c` y los nombres de clase (`CTextEntryBase`, `CTextEntry_Char`,
+   `CTextEntry_Code`, `CTextOne`, `CLinkList`) siguen presentes, pero encontrar la vtable/typeinfo
+   real que los referencia (para de ahí llegar al código) resultó en una madriguera de xrefs
+   data→data sin llegar a code→data en tiempo razonable (los `assert()` que normalmente generan
+   esas referencias están compilados afuera por `-DNDEBUG=1`).
+5. **Lo que funcionó**: generar el volcado asm completo de decomp-toolkit
+   (`build/RNEPDA/asm/auto_fn_80131324_text.s`, existe automáticamente para TODO el `.text` no
+   configurado, no solo para objetos con split real) y `grep` directo por las direcciones de los
+   candidatos a typeinfo (`8035A094`, etc., ya ubicados vía RTTI). Encontró de una el constructor
+   real (`fn_80136A18`-style) con el patrón exacto ya conocido (`vtable ptr @ 0xc`). Confirmado con
+   3 puntos independientes (inicio del archivo, un constructor conocido, y los 4 "gigantes" ya
+   documentados por tamaño) que el shift es **constante: `+0x75C`** respecto de las direcciones
+   RNEEDA. 124/124 funciones, 0 gaps, mismo tamaño total (`0x57F0`) — confirmación fuerte.
+
+**Lección nueva**: no asumir que direcciones o contenido se preservan entre regiones ni siquiera
+para código de juego (a diferencia del SDK, que sí reusa firmas). Cuando la reubicación por
+dirección/bytes falla, la ruta que sí escala es **generar el asm completo vía decomp-toolkit y
+grepear por direcciones de datos ya confirmadas por RTTI/strings** — mucho más confiable que
+intentar reconstruir relocations a mano con scripts de bajo nivel.
+
+### Aplicación del shift
+
+`splits.txt` actualizado a `0x80131324`-`0x80136B14`; todas las referencias `fn_`/`dtor_` en
+`src/tcg_text.cpp` (145 símbolos únicos) desplazadas mecánicamente `+0x75C` con un script
+(regex sobre hex). Los símbolos `lbl_` (datos: vtables, constantes, tablas) **no** se tocaron —
+quedaron apuntando a las direcciones RNEEDA viejas literalmente como direcciones absolutas (el
+convenio `lbl_<hex>`/`fn_<hex>` de decomp-toolkit trata el nombre como la dirección real si no hay
+otro símbolo ahí). Esto compila y linkea igual (`NonMatching` tolera contenido incorrecto), y el
+fuzzy% global reprodujo el valor exacto de cierre de la sesión RNEEDA (24.96%) — el fuzzy-diff
+normaliza relocations por estructura, no por dirección exacta, así que no detecta el desplazamiento
+de datos. **Pendiente real**: los `lbl_` de las ~24 funciones no-100% siguen apuntando a datos
+incorrectos en RNEPDA; no se remapearon todavía (no bloquea el build, sí la precisión).
+
+### `fn_80131428` — parser principal de tags (3796 bytes, primera implementación)
+
+Sin proyecto de referencia ni versión previa (nunca decompilada, ni en RNEEDA). Estructura real
+(confirmada por disasm completo, no supuesta):
+
+- Firma: `TempList* fn_80131428(void* ctx, s32 maxCount, s32 len, void* str, void* extra)` —
+  coincide exacto con el forward-declare que ya existía en el archivo (usado por `fn_80132B8C`).
+- Loop sobre `len/2` entradas `u16` de `str`. Cada entrada: si bit alto (`0x8000`) es 0, es un
+  codepoint "plano" → `fn_80131324` (constructor de `CTextEntry_Char`, también nuevo esta sesión,
+  71.0% fuzzy). Si el bit está seteado: bits[8:14] = código de tag (0-0x7f), bits[0:7] = "step".
+- **Jump table real** (`jumptable_80359DD0`, 65 entradas) leída directo del volcado de datos: de
+  65 códigos, **~50 comparten el mismo handler genérico** (`+0xCB0`, la tabla de códigos
+  extendidos) — solo 13 códigos tienen handler propio. Esto redujo drásticamente el trabajo real
+  vs. lo que sugerían los 3796 bytes en bruto.
+- Códigos >0x40 usan una tabla separada de definiciones (`lbl_80339E20`, 0x28 entradas de 8 bytes,
+  copiada al stack) con 5 subtipos (0-4: recursión, alloc+dispatch+recurse, flag global, 2
+  variantes de alloc+dispatch+setter).
+- Todos los "alloc(0x74)+constructor+dispatch virtual(vtable slot 3 = setter)" de los 13 casos
+  reusan funciones YA escritas en sesiones previas (`fn_8013230C`, `fn_801322FC`, `fn_80131288`,
+  `fn_8013652C`, `fn_801364EC`, `fn_80135B28`, etc.) — ninguna dependencia nueva quedó sin
+  resolver salvo 2 tablas estáticas de datos.
+- 2 casos (color en hex, "ruby"/ancho) quedan **best-effort**: usan 2 tablas estáticas
+  (`lbl_80339D90`, un blob de constantes en `lbl_804A0A90`/`94`) cuyo layout interno no se decodificó
+  bit a bit — se documentó inline, mismo criterio que `fn_80132D24`.
+- Variable `r28` (`pendingList` en el C): nunca se le asigna un valor real en ningún camino
+  recorrido del disasm — probable dead code, ya que los "validadores" que gatearían su uso
+  (`fn_801363B8`/`fn_80136404`) siempre devuelven 0. Documentado, no investigado más a fondo.
+
+**Resultado**: 25.3% fuzzy (contenido/control de flujo correcto para el loop principal y los 13
+casos con handler propio; el resto son aproximaciones documentadas). `build.sha1` sigue pasando.
+Quedan 3 funciones grandes sin tocar: `fn_80134664`(1900, notify/clip), `fn_80132348`(2116),
+`fn_801335F4`(3272).

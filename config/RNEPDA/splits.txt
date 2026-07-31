@@ -13,6 +13,11 @@ Sections:
 	.sdata2     type:rodata align:4
 	.sbss2      type:bss align:32
 
+tcg_text.cpp:
+	extab       start:0x8000AE14 end:0x8000AFCC
+	extabindex  start:0x80013424 end:0x800136A0
+	.text       start:0x80131324 end:0x80136B14
+
 Runtime.PPCEABI.H/global_destructor_chain.c:
 	.text       start:0x80193680 end:0x801936E0
 	.sbss       start:0x8049D8A8 end:0x8049D8AC
