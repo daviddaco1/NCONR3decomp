@@ -1,0 +1,2 @@
+func_name = "__destroy_global_chain"
+compiler_type = "mwcc"

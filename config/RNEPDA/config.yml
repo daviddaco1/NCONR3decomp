@@ -1,0 +1,25 @@
+# Ver config.example.yml para documentacion completa de cada campo.
+#
+# RNEPDA confirmado contra el header del dump propio (bytes 0x0-0x5: "RNEPDA",
+# version PAL/Europa de Naruto Shippuden: Clash of Ninja Revolution 3).
+object_base: orig/RNEPDA
+object: sys/main.dol
+hash: 982a4f104272d2637fbbabbcad30aeead05d6e6d
+symbols: config/RNEPDA/symbols.txt
+splits: config/RNEPDA/splits.txt
+# 15 es lo que mwcc graba de verdad en la seccion .comment de un objeto real
+# (confirmado con readelf, tanto GC/3.0a5.2 como Wii/1.0 -- este byte es
+# intrinseco al compilador, este campo NO lo controla para objetos compilados
+# de verdad, solo para los objetos "auto" que decomp-toolkit sintetiza). Ver el
+# TODO grande en configure.py junto a config.linker_version para la historia
+# completa del bloqueante de LINK (no resuelto) que esto NO arregla por si solo.
+mw_comment_version: 15
+
+# TODO: si el analisis inicial revela archivos .rel dentro del dump
+# (por ejemplo en files/), agregar aqui la configuracion de "modules".
+# Ver config.example.yml para el formato. Si no hay RELs, dejar comentado.
+# modules:
+# - object: files/module.rel
+#   hash: 0123456789abcdef0123456789abcdef01234567
+#   symbols: config/RNEPDA/module/symbols.txt
+#   splits: config/RNEPDA/module/splits.txt

@@ -1,0 +1,48 @@
+diff --git a/src/analysis/cfa.rs b/src/analysis/cfa.rs
+index df167da..e0e5123 100644
+--- a/src/analysis/cfa.rs
++++ b/src/analysis/cfa.rs
+@@ -350,7 +350,22 @@ impl AnalyzerState {
+                     TailCallResult::Is => {
+                         log::trace!("Finalized tail call @ {:#010X}", block);
+                         slices.possible_blocks.remove(&block);
+-                        slices.function_references.insert(block);
++                        // NCONR3decomp: MWCC sometimes folds identical case-handler
++                        // code across similarly-shaped switch functions, so `block`
++                        // can land inside an already-known *different* function's
++                        // range instead of being a genuine new function. Attribute
++                        // the reference to that function's start instead of
++                        // registering a duplicate/overlapping function at `block`.
++                        let resolved = self
++                            .functions
++                            .range(..=block)
++                            .next_back()
++                            .filter(|&(&start, info)| {
++                                start != function_start && info.end.is_some_and(|end| block < end)
++                            })
++                            .map(|(&start, _)| start)
++                            .unwrap_or(block);
++                        slices.function_references.insert(resolved);
+                         // Start at the beginning of the function again
+                         current = SectionAddress::new(addr.section, 0);
+                     }
+diff --git a/src/analysis/slices.rs b/src/analysis/slices.rs
+index 0e5ed29..e7cae4b 100644
+--- a/src/analysis/slices.rs
++++ b/src/analysis/slices.rs
+@@ -591,8 +591,13 @@ impl FunctionSlices {
+                 // Likely __noreturn
+             }
+             (None, Some(e), false) => {
+-                log::warn!("{:#010X?}", self);
+-                bail!("Unpaired epilogue {:#010X}", e);
++                // NCONR3decomp: MWCC emits small "eh cleanup" thunks (e.g. to call
++                // a runtime __destroy helper while unwinding) that reuse the caller's
++                // stack frame instead of establishing their own with stwu. They have
++                // a normal-looking epilogue (mtlr/addi r1/blr) but no prologue.
++                // Observed ~1925 times in this binary's .text; treat as valid instead
++                // of bailing, matching how the has_r1_load=true case is already handled.
++                log::debug!("Assuming frameless cleanup thunk, epilogue @ {:#010X}", e);
+             }
+             (None, Some(_), true) => {
+                 // Possible stack setup

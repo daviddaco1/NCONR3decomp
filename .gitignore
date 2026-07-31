@@ -1,0 +1,52 @@
+# IDE folders
+.idea/
+.vs/
+
+# macOS
+.DS_Store
+._*
+
+# Caches
+__pycache__
+.mypy_cache
+.cache/
+
+# Original files
+orig/*/*
+!orig/*/.gitkeep
+*.dol
+*.rel
+*.elf
+*.sel
+*.o
+*.map
+*.MAP
+
+# Disc images / dumps (defense in depth: these should only ever live under
+# orig/*/*, already ignored above, but never let one slip in elsewhere)
+*.iso
+*.gcm
+*.rvz
+*.wbfs
+*.ciso
+*.gcz
+*.nfs
+*.tgc
+*.wad
+
+# Build files
+build/
+.ninja_*
+build.ninja
+
+# decompctx output
+ctx.*
+*.ctx
+
+# Generated configs
+objdiff.json
+compile_commands.json
+
+# Miscellaneous
+/*.txt
+*.exe
