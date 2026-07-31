@@ -304,6 +304,37 @@ Sin decompilar, todas >1800 bytes: `fn_80133F08`(1900), `fn_80131BEC`(2116, pars
 principal de tags de texto). Candidatas para sesión dedicada, posiblemente con `decomp-permuter`
 para los tramos de puro scheduler una vez verificado el contenido general.
 
+## Fase 4 — Re-verificación de SDK Code contra RNEPDA (2026-07-31)
+
+Tras la migración a RNEPDA, `symbols.txt`/`splits.txt` se regeneraron desde cero (ver nota de
+migración en `CLAUDE.md`) y `splits.txt` quedó vacío (solo secciones, sin splits de archivo).
+`configure.py` ya tenía los 10 objetos SDK listados (`Object(NonMatching, ...)`, migrados tal
+cual desde RNEEDA) y el código fuente en `src/` no se tocó — solo faltaban las direcciones
+nuevas en `splits.txt`.
+
+**Método**: decomp-toolkit re-detecta la mayoría de nombres reales por firma/tamaño
+independientemente de la región (mismo SDK RVL, solo relocado) — `memcpy`, `__start`,
+`PPCMfmsr`...`PPCMthid4`, `__OSFPRInit`, `DCZeroRange`, `OSResetSystem`, etc. ya aparecían con
+nombre real en el `symbols.txt` recién generado por decomp-toolkit, sin trabajo manual. Se ubicó
+cada función por nombre (`grep`/`Read` sobre `symbols.txt`), se armaron los rangos `start:`/`end:`
+de cada split (`.init`/`.text`/`.sbss`/`.ctors`/`.dtors`) y se corrió `ninja`.
+
+**3 placeholders identificados de nuevo por tamaño/emparejamiento** (mismo método que en
+RNEEDA, direcciones distintas): `fn_802A21D4`(8 bytes, entre `PPCMfhid0`/`PPCMfl2cr`) →
+`PPCMthid0`; `fn_802A21F4`(8 bytes, entre `PPCMtdec`/`PPCHalt`) → `PPCSync`;
+`fn_802A2298`(0xC bytes, entre `PPCMthid2`/`PPCMtwpar`, empareja con el `Mtwpar` adyacente) →
+`PPCMfwpar`.
+
+**Resultado, sin cambiar una sola línea de C fuente**: `ninja` linkea limpio, `build.sha1` pasa,
+y REPORT da exactamente el mismo perfil de matching que en RNEEDA — **48/49 funciones SDK al
+100% fuzzy**, `__fill_mem` en 97.78% (mismo nop de alineación sin resolver, ver Fase 2).
+Confirma que el bloqueo de `Matching=True` en `global_destructor_chain.c`/
+`__init_cpp_exceptions.cpp` (Fase 2) es estructural al linker Wii, no algo específico de la
+región RNEEDA — sigue reproduciéndose igual en RNEPDA.
+
+`tcg_text.cpp` (game code) queda pendiente de la misma re-verificación — direcciones de game code
+no se tocaron en esta ronda.
+
 ## Fase 3 — Migración de región: RNEEDA (USA) → RNEPDA (Europa/PAL)
 
 2026-07-31: se reemplaza el target del proyecto por la versión europea, decisión del usuario, no

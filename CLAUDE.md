@@ -75,11 +75,12 @@ Este NO es un proyecto de aplicación tradicional. El flujo real:
 
 **Nota de migración (2026-07-31):** el proyecto corría sobre `RNEEDA` (USA) y se migró a
 `RNEPDA` (Europa/PAL) — ver `docs/decompilation_log.md`. `symbols.txt`/`splits.txt` se
-resetearon (las direcciones del DOL difieren entre regiones) y se regeneran desde cero contra
-el nuevo `main.dol`. El estado de matching descrito abajo (funciones SDK/Runtime y
-`tcg_text.cpp`) corresponde al trabajo hecho sobre RNEEDA y sirve como punto de partida de
-código fuente, pero **cada función debe re-verificarse contra las nuevas direcciones/offsets**
-antes de asumir que sigue matcheando.
+resetearon (las direcciones del DOL difieren entre regiones) y se regeneraron desde cero contra
+el nuevo `main.dol`. **SDK/Runtime ya re-verificado contra RNEPDA** (mismo día, ver bitácora):
+las 10 fuentes SDK se re-splittearon a las nuevas direcciones sin cambiar una línea de código,
+misma tasa de matching que en RNEEDA. `tcg_text.cpp` (game code) **todavía no** — sigue
+pendiente de re-verificación contra las nuevas direcciones antes de asumir que sigue
+matcheando.
 
 - `config.linker_version`: confirmado con código fuente real (`global_destructor_chain.c` matchea 100%
   tanto con `GC/3.0a5.2` como `Wii/1.0` — mismo resultado, no alcanza para distinguir cuál es la versión
@@ -87,12 +88,13 @@ antes de asumir que sigue matcheando.
 - El juego usa excepciones C++ reales (`extab`/`extabindex`); splits de
   `Runtime.PPCEABI.H/global_destructor_chain.c` y `__init_cpp_exceptions.cpp` configurados y linkeando
   limpio (formato `.ctors$10`/`.dtors$10`/`.dtors$15` agrupado en un solo objeto — ver gotcha abajo).
-- SDK/Runtime: 47 funciones matcheadas 100% (`PPCArch.c` completo, `OS/OSFPRInit.c`, `OS/OSPSInit.c`,
-  `OS/OSCache.c`, `OS/OSReset.c`, `__start.c`, `__ppc_eabi_init.c`, `exit.c`, `__mem.c` salvo
-  `__fill_mem`). `__init_cpp_exceptions` y `__destroy_global_chain` también resueltos a nivel de
-  contenido (100%), pero **no pueden marcarse `Matching=True`** sin romper `build.sha1` — bloqueo de
-  linker Wii sin resolver en la comunidad (ver bitácora).
-- Game code: primer split real, `src/tcg_text.cpp` (0x80130BC8-0x801363B8, 124 funciones, motor de
+- SDK/Runtime: **48/49 funciones matcheadas 100%** contra RNEPDA (`PPCArch.c` completo —24 funciones,
+  incluidas 3 renombradas por tamaño/emparejamiento (`PPCMthid0`/`PPCSync`/`PPCMfwpar`)—,
+  `OS/OSFPRInit.c`, `OS/OSPSInit.c`, `OS/OSCache.c`, `OS/OSReset.c`, `__start.c`, `__ppc_eabi_init.c`,
+  `exit.c`, `__mem.c` salvo `__fill_mem` en 97.8%). `__init_cpp_exceptions` y `__destroy_global_chain`
+  también resueltos a nivel de contenido (100%), pero **no pueden marcarse `Matching=True`** sin
+  romper `build.sha1` — bloqueo de linker Wii sin resolver en la comunidad (ver bitácora).
+- Game code: primer split real, `src/tcg_text.cpp` (direcciones RNEEDA 0x80130BC8-0x801363B8, 124 funciones, motor de
   texto — nombre de archivo probable, no confirmado al 100%). **53/124 al 100% fuzzy**, ~24 funciones
   más con contenido correcto verificado pero <100% (quirks de scheduler no accionables), resto sin
   tocar. Quedan 4 funciones grandes sin decompilar (>1800 bytes): `fn_80133F08`, `fn_80131BEC`,
