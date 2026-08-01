@@ -12,3 +12,45 @@ Sections:
 	.sbss       type:bss align:32
 	.sdata2     type:rodata align:4
 	.sbss2      type:bss align:32
+
+tcg_text.cpp:
+	extab       start:0x8000AE14 end:0x8000AFCC
+	extabindex  start:0x80013424 end:0x800136A0
+	.text       start:0x80131324 end:0x80136B14
+
+Runtime.PPCEABI.H/global_destructor_chain.c:
+	.text       start:0x80193680 end:0x801936E0
+	.sbss       start:0x8049D8A8 end:0x8049D8AC
+
+Runtime.PPCEABI.H/__init_cpp_exceptions.cpp:
+	.text       start:0x8019431C end:0x8019438C
+	.ctors      start:0x803394C0 end:0x803394C4 rename:.ctors$10
+	.dtors      start:0x80339580 end:0x80339584 rename:.dtors$10
+	.dtors      start:0x80339584 end:0x80339588 rename:.dtors$15
+
+PPCArch.c:
+	.text       start:0x802A21BC end:0x802A232C
+
+OS/OSFPRInit.c:
+	.text       start:0x80312A54 end:0x80312B7C
+
+OS/OSPSInit.c:
+	.text       start:0x80313E58 end:0x80313EAC
+
+OS/OSCache.c:
+	.text       start:0x8031514C end:0x803151D0
+
+OS/OSReset.c:
+	.text       start:0x8031BA5C end:0x8031BA78
+
+Runtime.PPCEABI.H/exit.c:
+	.text       start:0x80320CC8 end:0x80320D7C
+
+Runtime.PPCEABI.H/__mem.c:
+	.init       start:0x80004000 end:0x80004380
+
+Runtime.PPCEABI.H/__start.c:
+	.init       start:0x800062B4 end:0x80006594
+
+Runtime.PPCEABI.H/__ppc_eabi_init.c:
+	.init       start:0x80006594 end:0x800065EC

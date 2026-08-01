@@ -75,11 +75,13 @@ Este NO es un proyecto de aplicación tradicional. El flujo real:
 
 **Nota de migración (2026-07-31):** el proyecto corría sobre `RNEEDA` (USA) y se migró a
 `RNEPDA` (Europa/PAL) — ver `docs/decompilation_log.md`. `symbols.txt`/`splits.txt` se
-resetearon (las direcciones del DOL difieren entre regiones) y se regeneran desde cero contra
-el nuevo `main.dol`. El estado de matching descrito abajo (funciones SDK/Runtime y
-`tcg_text.cpp`) corresponde al trabajo hecho sobre RNEEDA y sirve como punto de partida de
-código fuente, pero **cada función debe re-verificarse contra las nuevas direcciones/offsets**
-antes de asumir que sigue matcheando.
+resetearon (las direcciones del DOL difieren entre regiones) y se regeneraron desde cero contra
+el nuevo `main.dol`. **SDK/Runtime ya re-verificado contra RNEPDA** (mismo día, ver bitácora):
+las 10 fuentes SDK se re-splittearon a las nuevas direcciones sin cambiar una línea de código,
+misma tasa de matching que en RNEEDA. **`tcg_text.cpp` (game code) también re-verificado**: split
+real ubicado en `0x80131324`-`0x80136B14` (shift constante `+0x75C` respecto de las direcciones
+RNEEDA — confirmado con 124/124 funciones, 0 gaps), `fn_`/`dtor_` renombrados en masa. Progreso
+igual que antes de migrar (53/124 al 100%, fuzzy global 24.96% antes de tocar nada nuevo).
 
 - `config.linker_version`: confirmado con código fuente real (`global_destructor_chain.c` matchea 100%
   tanto con `GC/3.0a5.2` como `Wii/1.0` — mismo resultado, no alcanza para distinguir cuál es la versión
@@ -87,16 +89,30 @@ antes de asumir que sigue matcheando.
 - El juego usa excepciones C++ reales (`extab`/`extabindex`); splits de
   `Runtime.PPCEABI.H/global_destructor_chain.c` y `__init_cpp_exceptions.cpp` configurados y linkeando
   limpio (formato `.ctors$10`/`.dtors$10`/`.dtors$15` agrupado en un solo objeto — ver gotcha abajo).
-- SDK/Runtime: 47 funciones matcheadas 100% (`PPCArch.c` completo, `OS/OSFPRInit.c`, `OS/OSPSInit.c`,
-  `OS/OSCache.c`, `OS/OSReset.c`, `__start.c`, `__ppc_eabi_init.c`, `exit.c`, `__mem.c` salvo
-  `__fill_mem`). `__init_cpp_exceptions` y `__destroy_global_chain` también resueltos a nivel de
-  contenido (100%), pero **no pueden marcarse `Matching=True`** sin romper `build.sha1` — bloqueo de
-  linker Wii sin resolver en la comunidad (ver bitácora).
-- Game code: primer split real, `src/tcg_text.cpp` (0x80130BC8-0x801363B8, 124 funciones, motor de
+- SDK/Runtime: **48/49 funciones matcheadas 100%** contra RNEPDA (`PPCArch.c` completo —24 funciones,
+  incluidas 3 renombradas por tamaño/emparejamiento (`PPCMthid0`/`PPCSync`/`PPCMfwpar`)—,
+  `OS/OSFPRInit.c`, `OS/OSPSInit.c`, `OS/OSCache.c`, `OS/OSReset.c`, `__start.c`, `__ppc_eabi_init.c`,
+  `exit.c`, `__mem.c` salvo `__fill_mem` en 97.8%). `__init_cpp_exceptions` y `__destroy_global_chain`
+  también resueltos a nivel de contenido (100%), pero **no pueden marcarse `Matching=True`** sin
+  romper `build.sha1` — bloqueo de linker Wii sin resolver en la comunidad (ver bitácora).
+- Game code: `src/tcg_text.cpp` (RNEPDA: `0x80131324`-`0x80136B14`, 124 funciones, motor de
   texto — nombre de archivo probable, no confirmado al 100%). **53/124 al 100% fuzzy**, ~24 funciones
-  más con contenido correcto verificado pero <100% (quirks de scheduler no accionables), resto sin
-  tocar. Quedan 4 funciones grandes sin decompilar (>1800 bytes): `fn_80133F08`, `fn_80131BEC`,
-  `fn_80132E98`, `fn_80130CCC` (parser principal de tags de texto).
+  más con contenido correcto verificado pero <100% (quirks de scheduler no accionables). **Las 4
+  funciones grandes (>1800 bytes) ya tienen primera implementación best-effort** (ninguna al 100%,
+  todas con bloques documentados inline donde la aritmética exacta no se verificó bit a bit):
+  `fn_80131428` (3796 bytes, parser principal de tags, 25.3%), `fn_801335F4` (3272 bytes, motor de
+  layout/word-wrap, 19.9%), `fn_80132348` (2116 bytes, variante del parser sin tabla extendida,
+  26.7%), `fn_80134664` (1900 bytes, tick de animación/reveal de texto, 42.1%). También resuelto
+  `fn_80136748` (344 bytes, arma un recurso de texto — nunca antes decompilada, 22.1%) y corregida
+  su firma real de 3 parámetros, lo que subió `fn_801368A0`/`fn_801368B4` a 96.0% cada una.
+  5 vtables con dirección RNEEDA heredada incorrecta corregidas (`CTextEntryBase`/`Char`/`Code` y
+  2 más) — no cambia el fuzzy% (el diff normaliza el target de relocations) pero es corrección
+  real. Con esto se completó el lote de "10 funciones más grandes" pedido al inicio de esta ronda
+  de trabajo. **Ronda siguiente**: 5 funciones helper citadas por las gigantes que no tenían
+  ningún C (`fn_8013654C` charmap 69.0%, `fn_80136120` lookup+assert 66.5%, `fn_801361FC` tabla de
+  ancho 26.9%, `fn_80135D90` alloc de handle 50.5%, `fn_80135F38` "variádica" 22.2% — sin
+  `stdarg.h` disponible en el toolchain, aproximada con args fijos en vez de `...` real). Fuzzy
+  global de `tcg_text.cpp`: 24.96% → **40.78%**.
 
 Historial completo, ronda por ronda (qué se probó, resultados exactos, hallazgos de estructuras) en
 [`docs/decompilation_log.md`](docs/decompilation_log.md). Actualizar ese archivo al cerrar una sesión de

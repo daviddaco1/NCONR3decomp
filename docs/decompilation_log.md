@@ -304,6 +304,37 @@ Sin decompilar, todas >1800 bytes: `fn_80133F08`(1900), `fn_80131BEC`(2116, pars
 principal de tags de texto). Candidatas para sesión dedicada, posiblemente con `decomp-permuter`
 para los tramos de puro scheduler una vez verificado el contenido general.
 
+## Fase 4 — Re-verificación de SDK Code contra RNEPDA (2026-07-31)
+
+Tras la migración a RNEPDA, `symbols.txt`/`splits.txt` se regeneraron desde cero (ver nota de
+migración en `CLAUDE.md`) y `splits.txt` quedó vacío (solo secciones, sin splits de archivo).
+`configure.py` ya tenía los 10 objetos SDK listados (`Object(NonMatching, ...)`, migrados tal
+cual desde RNEEDA) y el código fuente en `src/` no se tocó — solo faltaban las direcciones
+nuevas en `splits.txt`.
+
+**Método**: decomp-toolkit re-detecta la mayoría de nombres reales por firma/tamaño
+independientemente de la región (mismo SDK RVL, solo relocado) — `memcpy`, `__start`,
+`PPCMfmsr`...`PPCMthid4`, `__OSFPRInit`, `DCZeroRange`, `OSResetSystem`, etc. ya aparecían con
+nombre real en el `symbols.txt` recién generado por decomp-toolkit, sin trabajo manual. Se ubicó
+cada función por nombre (`grep`/`Read` sobre `symbols.txt`), se armaron los rangos `start:`/`end:`
+de cada split (`.init`/`.text`/`.sbss`/`.ctors`/`.dtors`) y se corrió `ninja`.
+
+**3 placeholders identificados de nuevo por tamaño/emparejamiento** (mismo método que en
+RNEEDA, direcciones distintas): `fn_802A21D4`(8 bytes, entre `PPCMfhid0`/`PPCMfl2cr`) →
+`PPCMthid0`; `fn_802A21F4`(8 bytes, entre `PPCMtdec`/`PPCHalt`) → `PPCSync`;
+`fn_802A2298`(0xC bytes, entre `PPCMthid2`/`PPCMtwpar`, empareja con el `Mtwpar` adyacente) →
+`PPCMfwpar`.
+
+**Resultado, sin cambiar una sola línea de C fuente**: `ninja` linkea limpio, `build.sha1` pasa,
+y REPORT da exactamente el mismo perfil de matching que en RNEEDA — **48/49 funciones SDK al
+100% fuzzy**, `__fill_mem` en 97.78% (mismo nop de alineación sin resolver, ver Fase 2).
+Confirma que el bloqueo de `Matching=True` en `global_destructor_chain.c`/
+`__init_cpp_exceptions.cpp` (Fase 2) es estructural al linker Wii, no algo específico de la
+región RNEEDA — sigue reproduciéndose igual en RNEPDA.
+
+`tcg_text.cpp` (game code) queda pendiente de la misma re-verificación — direcciones de game code
+no se tocaron en esta ronda.
+
 ## Fase 3 — Migración de región: RNEEDA (USA) → RNEPDA (Europa/PAL)
 
 2026-07-31: se reemplaza el target del proyecto por la versión europea, decisión del usuario, no
@@ -340,3 +371,259 @@ función (53/124 en `tcg_text.cpp`, 47 en SDK/Runtime) — hay que re-verificar 
 
 Próximo paso: correr `ninja` para que decomp-toolkit analice `build/RNEPDA/main.dol` y regenere
 `symbols.txt`/`splits.txt`; comparar función por función contra el trabajo previo en RNEEDA.
+
+## Fase 5 — Re-ubicación de `tcg_text.cpp` en RNEPDA y parser principal de tags (2026-07-31)
+
+Tras la Fase 4 (SDK re-verificado), quedaba `tcg_text.cpp` (game code). A diferencia del SDK, acá
+no hay nombres reales auto-detectados por firma — hubo que re-ubicar el archivo completo a ciegas.
+
+### Método de re-ubicación (sin asumir direcciones iguales)
+
+Intentos descartados, en orden:
+
+1. **Reusar la dirección RNEEDA tal cual** (`0x80130BC8`): `dtk dol split` la rechaza
+   ("overlaps with previous split") porque cae en medio de un rango de extabindex real de
+   RNEPDA — prueba de que el contenido ahí es otra cosa, no confirmación de que sea la misma
+   región corrida.
+2. **Búsqueda de bytes exactos** (leaf functions sin relocations, esperando bytes idénticos):
+   falló — dos patrones de 12 bytes dieron matches inconsistentes entre sí (bases distintas),
+   evidencia de que esos patrones son demasiado comunes en el resto del binario (idioms de
+   accessor triviales repetidos por todo el motor).
+3. **Búsqueda con máscara** (bytes fijos + wildcard en los campos con relocation) sobre una
+   función 100%-matcheada conocida (`fn_801362BC`/constructor `CTextEntry_Char`): cero matches.
+   Confirmó que el código en la dirección RNEEDA original YA NO es el mismo contenido en RNEPDA
+   (verificado leyendo los bytes reales en esa dirección: es una función completamente distinta).
+4. **RTTI/strings del binario** (`grep -aoE` sobre `orig/RNEPDA/sys/main.dol`, mismo método de la
+   Fase 1): confirmó que `tcg_text.c` y los nombres de clase (`CTextEntryBase`, `CTextEntry_Char`,
+   `CTextEntry_Code`, `CTextOne`, `CLinkList`) siguen presentes, pero encontrar la vtable/typeinfo
+   real que los referencia (para de ahí llegar al código) resultó en una madriguera de xrefs
+   data→data sin llegar a code→data en tiempo razonable (los `assert()` que normalmente generan
+   esas referencias están compilados afuera por `-DNDEBUG=1`).
+5. **Lo que funcionó**: generar el volcado asm completo de decomp-toolkit
+   (`build/RNEPDA/asm/auto_fn_80131324_text.s`, existe automáticamente para TODO el `.text` no
+   configurado, no solo para objetos con split real) y `grep` directo por las direcciones de los
+   candidatos a typeinfo (`8035A094`, etc., ya ubicados vía RTTI). Encontró de una el constructor
+   real (`fn_80136A18`-style) con el patrón exacto ya conocido (`vtable ptr @ 0xc`). Confirmado con
+   3 puntos independientes (inicio del archivo, un constructor conocido, y los 4 "gigantes" ya
+   documentados por tamaño) que el shift es **constante: `+0x75C`** respecto de las direcciones
+   RNEEDA. 124/124 funciones, 0 gaps, mismo tamaño total (`0x57F0`) — confirmación fuerte.
+
+**Lección nueva**: no asumir que direcciones o contenido se preservan entre regiones ni siquiera
+para código de juego (a diferencia del SDK, que sí reusa firmas). Cuando la reubicación por
+dirección/bytes falla, la ruta que sí escala es **generar el asm completo vía decomp-toolkit y
+grepear por direcciones de datos ya confirmadas por RTTI/strings** — mucho más confiable que
+intentar reconstruir relocations a mano con scripts de bajo nivel.
+
+### Aplicación del shift
+
+`splits.txt` actualizado a `0x80131324`-`0x80136B14`; todas las referencias `fn_`/`dtor_` en
+`src/tcg_text.cpp` (145 símbolos únicos) desplazadas mecánicamente `+0x75C` con un script
+(regex sobre hex). Los símbolos `lbl_` (datos: vtables, constantes, tablas) **no** se tocaron —
+quedaron apuntando a las direcciones RNEEDA viejas literalmente como direcciones absolutas (el
+convenio `lbl_<hex>`/`fn_<hex>` de decomp-toolkit trata el nombre como la dirección real si no hay
+otro símbolo ahí). Esto compila y linkea igual (`NonMatching` tolera contenido incorrecto), y el
+fuzzy% global reprodujo el valor exacto de cierre de la sesión RNEEDA (24.96%) — el fuzzy-diff
+normaliza relocations por estructura, no por dirección exacta, así que no detecta el desplazamiento
+de datos. **Pendiente real**: los `lbl_` de las ~24 funciones no-100% siguen apuntando a datos
+incorrectos en RNEPDA; no se remapearon todavía (no bloquea el build, sí la precisión).
+
+### `fn_80131428` — parser principal de tags (3796 bytes, primera implementación)
+
+Sin proyecto de referencia ni versión previa (nunca decompilada, ni en RNEEDA). Estructura real
+(confirmada por disasm completo, no supuesta):
+
+- Firma: `TempList* fn_80131428(void* ctx, s32 maxCount, s32 len, void* str, void* extra)` —
+  coincide exacto con el forward-declare que ya existía en el archivo (usado por `fn_80132B8C`).
+- Loop sobre `len/2` entradas `u16` de `str`. Cada entrada: si bit alto (`0x8000`) es 0, es un
+  codepoint "plano" → `fn_80131324` (constructor de `CTextEntry_Char`, también nuevo esta sesión,
+  71.0% fuzzy). Si el bit está seteado: bits[8:14] = código de tag (0-0x7f), bits[0:7] = "step".
+- **Jump table real** (`jumptable_80359DD0`, 65 entradas) leída directo del volcado de datos: de
+  65 códigos, **~50 comparten el mismo handler genérico** (`+0xCB0`, la tabla de códigos
+  extendidos) — solo 13 códigos tienen handler propio. Esto redujo drásticamente el trabajo real
+  vs. lo que sugerían los 3796 bytes en bruto.
+- Códigos >0x40 usan una tabla separada de definiciones (`lbl_80339E20`, 0x28 entradas de 8 bytes,
+  copiada al stack) con 5 subtipos (0-4: recursión, alloc+dispatch+recurse, flag global, 2
+  variantes de alloc+dispatch+setter).
+- Todos los "alloc(0x74)+constructor+dispatch virtual(vtable slot 3 = setter)" de los 13 casos
+  reusan funciones YA escritas en sesiones previas (`fn_8013230C`, `fn_801322FC`, `fn_80131288`,
+  `fn_8013652C`, `fn_801364EC`, `fn_80135B28`, etc.) — ninguna dependencia nueva quedó sin
+  resolver salvo 2 tablas estáticas de datos.
+- 2 casos (color en hex, "ruby"/ancho) quedan **best-effort**: usan 2 tablas estáticas
+  (`lbl_80339D90`, un blob de constantes en `lbl_804A0A90`/`94`) cuyo layout interno no se decodificó
+  bit a bit — se documentó inline, mismo criterio que `fn_80132D24`.
+- Variable `r28` (`pendingList` en el C): nunca se le asigna un valor real en ningún camino
+  recorrido del disasm — probable dead code, ya que los "validadores" que gatearían su uso
+  (`fn_801363B8`/`fn_80136404`) siempre devuelven 0. Documentado, no investigado más a fondo.
+
+**Resultado**: 25.3% fuzzy (contenido/control de flujo correcto para el loop principal y los 13
+casos con handler propio; el resto son aproximaciones documentadas). `build.sha1` sigue pasando.
+Quedan 3 funciones grandes sin tocar: `fn_80134664`(1900, notify/clip), `fn_80132348`(2116),
+`fn_801335F4`(3272).
+
+### `fn_801335F4` — motor de layout/word-wrap (3272 bytes, primera implementación)
+
+Segunda función gigante de la sesión. Firma ya forward-declarada correctamente
+(`s32 fn_801335F4(TcgTextEntryHandle* h)`, usada por `fn_80134304`) — no hizo falta cambiarla:
+todos los offsets que en una lectura rápida parecían pertenecer a `h` directo (`count`@0x4,
+`items`@0x8) en realidad son de `h->data` (releído con `lwz` redundante antes de cada acceso en
+el original, no cacheado en un temporal).
+
+Estructura confirmada por disasm completo: recorre `h->data->field_0x8[]` (items), salta los que
+tienen el bit `0x2` seteado (`fn_80136A88`), dispatch virtual (vtable slot 4, el "getter" de tipo)
+con 6 casos (4/2/0/6/9/default) que ajustan una "pluma" (posición X/Y) de layout, seguido de 2
+loops de post-proceso casi idénticos (dispatch igual, ajustan `field_0x28` de cada item según un
+flag de `fn_80134DD0(h)`) y un loop final que inserta hasta 2 marcadores nuevos (`alloc(0x74)` +
+`fn_8013230C` + dispatch) al final del array si el último grupo de 3 (o 4) items quedó incompleto.
+
+**Best-effort explícito** (documentado inline, mismo criterio que `fn_80132D24`): la aritmética de
+punto flotante real de cada caso (avance exacto de glifo, fórmula de alineación en el caso 4 con
+sub-switches anidados por `fn_801359C4(h)`/columna acumulada, fórmula exacta de
+ascent/descent) no se verificó bit a bit — es un motor de layout con ~15 constantes de punto
+flotante (`lbl_804A0AA0`/`lbl_804A0AA8[]`) cuyo significado geométrico exacto no se determinó.
+Contenido estructural (loops, dispatch, helpers llamados) sí es fiel al disasm.
+
+**Resultado**: 19.9% fuzzy. `build.sha1` sigue pasando. Quedan 2 funciones grandes:
+`fn_80134664`(1900) y `fn_80132348`(2116).
+
+### `fn_80132348` — variante del parser de tags (2116 bytes, primera implementación)
+
+Tercera función gigante. Ya forward-declarada (usada por `fn_80132D24`, que la llama en vez de
+`fn_80131428` cuando parsea las tablas "concatenadas"). Mismo formato de tag que `fn_80131428`
+(bit alto + código 7 bits + step 8 bits) pero **sin** tabla de códigos extendidos (>0x40 no tiene
+manejo especial — de hecho no hay chequeo de rango en absoluto, el `switch` cubre 0-0x3e vía
+cadena de `cmpwi`/`bge`, no jump table) y con un comportamiento de fallback distinto: los códigos
+sin caso propio se **descartan silenciosamente** (no crean ningún char, a diferencia de
+`fn_80131428` que rellena con un char vacío). El parámetro `extraC` (6to argumento, un `s32*`)
+actúa como selector de modo en 2 puntos (el "char pendiente" inicial y el código `0x3e`).
+
+Best-effort en 2 bloques: código 4 (decodifica un bitmask de hasta 8 bits en entradas
+individuales vía `fn_80136120`, marcadas con flag `0x8`) y códigos 5-8 (bloque "8 posiciones" +
+clasificación de caracteres vía 2 jump tables reales del binario — mismo patrón que el caso
+hex-color de `fn_80131428`, sin verificar bit a bit el `sprintf` dinámico).
+
+**Resultado**: 26.7% fuzzy. `build.sha1` sigue pasando.
+
+### `fn_80134664` — tick de animación/reveal de texto (1900 bytes, primera implementación)
+
+Cuarta y última función gigante de la sesión. A diferencia de las otras 3 (parsers de tags), esta
+es el **tick de animación** que se llama cada frame para avanzar la revelación progresiva del
+texto (efecto "máquina de escribir") y sus efectos asociados. No estaba forward-declarada —
+tampoco es llamada desde ningún otro punto ya decompilado de este archivo (probablemente invocada
+desde fuera de `tcg_text.cpp`, en el loop principal del motor).
+
+Estructura confirmada por disasm completo, 5 sub-sistemas independientes:
+
+1. **Avance de progreso** (`field_0x84`/`0x88` vs contador, `field_0x94`/`0x98`/`0x9c`): si
+   `field_0x90==1`, modo "eventos" — recorre un array de records de 0x3c bytes (`fn_80135BA4(h)`)
+   y dispara los que ya vencieron según `field_0x94`, con 3 sub-casos (0/2/4) que llaman
+   `fn_801356BC` (ya existente) para iniciar transiciones. Si no, modo "progreso continuo" con
+   cálculo de ratio directo.
+2. **Interpolación de color RGBA** (`field_0x44/0x4c`..`0x47/0x4f` → bytes `0x3c-0x3f`, empacados
+   en `field_0x38`) según un contador `field_0x50/0x54` — mismo patrón matemático que el resto del
+   archivo (`mulli`/`srawi`/`addze` para redondeo).
+3. **Fade** (`field_0xf4/0xf8` → `field_0x2c`), mismo esquema de ratio que (1).
+4. **Auto-scroll** (bit `0x200` de `fn_80134DD0`): avanza `field_0x28` por `field_0x104`, clampa
+   contra `field_0x18+field_0xcc`.
+5. **2 "canales" de tween de posición** (`field_0x28`/`field_0x104`) vía keyframes en
+   `h->data+0x110..0x150` — el bloque menos verificado (layout de campos por analogía posicional,
+   no confirmado campo a campo).
+
+3 campos nuevos agregados a `TcgTextEntryData` (antes `pad`): `field_0xa4`/`field_0xa8` (buffer
+doble de progreso). El resto de campos usados en este best-effort (`0x44-0x4f`, `0x50`, `0x54`,
+`0xcc`) siguen sin nombrar — se accedieron vía aritmética de puntero cruda (`(u8*)d + offset`)
+para no comprometer el padding ya usado por otras funciones del archivo.
+
+**Resultado**: 42.1% fuzzy — el mejor de las 4 gigantes, pese a ser (subjetivamente) la más
+intrincada en cantidad de sub-sistemas independientes. `build.sha1` sigue pasando.
+
+### Vtables reales de CTextEntryBase/Char/Code — direcciones RNEEDA heredadas estaban mal
+
+Al trazar `fn_80136A18`/`fn_801313EC`/`fn_8013230C` (constructores ya con C, heredados de RNEEDA)
+contra su disasm REAL de RNEPDA, se confirmó que las 3 vtables (`lbl_803597D0`/`lbl_80359728`/
+`lbl_80359770`, nombres heredados sin re-verificar) apuntan a direcciones que ya no son
+correctas — la re-ubicación de `tcg_text.cpp` (Fase 5) sólo corrigió direcciones de **código**
+(`fn_`/`dtor_`, shift `+0x75C` uniforme), nunca las de **datos** (`lbl_`), que no siguen ningún
+shift uniforme (viven en secciones distintas con padding independiente). Direcciones reales
+confirmadas por disasm: `lbl_803597D0`→`lbl_8035A100` (CTextEntryBase), `lbl_80359728`→
+`lbl_8035A058` (CTextEntry_Char), `lbl_80359770`→`lbl_8035A0A0` (CTextEntry_Code),
+`lbl_803597F4`→`lbl_8035A124`, `lbl_803597B8`→`lbl_8035A0E8`. Aplicado en las 5 funciones que las
+usan. **El fuzzy% no cambió** (confirma que el diff fuzzy normaliza el *target* de una relocation,
+no penaliza que apunte a la dirección equivocada) — el fix es de corrección real, no de score.
+Quedan ~14 `lbl_` más sin re-verificar en el archivo (`lbl_803A47B8`, `lbl_804A0290`, los
+`lbl_8049CE7X`, etc.), usadas por las funciones ya 100%-fuzzy o parcialmente matcheadas — mismo
+riesgo, pendiente para una sesión futura si se persigue matching real (no solo fuzzy).
+
+### `fn_80136748` — arma un recurso de texto desde un string ascii (344 bytes, primera implementación)
+
+Última función pendiente del lote original de "10 más grandes". A diferencia de las otras, nunca
+tuvo ni siquiera un intento previo — sólo un prototipo de 2 parámetros para los 2 tail-calls que
+la usan (`fn_801368A0`/`fn_801368B4`). El disasm reveló que en realidad usa **3** parámetros
+(`buf`, `str`, `len`) — el tercero (`len`) nunca se seteaba explícitamente en esos 2 tail-calls
+(`b`, no `bl`, así que `r5` se propaga intacto desde el caller de cada uno), lo que significa que
+el prototipo viejo de 2 parámetros para `fn_801368A0`/`58` **también estaba incompleto** —
+corregido junto con la función principal.
+
+Cuerpo: copia una plantilla estática de 0x38 bytes (`lbl_80359FA8`, con el largo ya parcheado en
+el byte 0x28) al buffer de salida, le agrega el string re-codificado como pares
+`(fn_8013654C(char), 0)` y 2 bytes terminadores (`0`, `0xBE`), y llama `fn_80135F38(len, buf)`
+para "registrarlo". Si `len<0`, se recalcula vía `fn_80135D90`.
+
+**Resultado**: 22.1% fuzzy para `fn_80136748` (primera vez, contenido/estructura correcta,
+aritmética exacta de offsets no verificada al 100%). Pero el fix de firma (3er parámetro)
+disparó `fn_801368A0`/`fn_801368B4` de su estado previo a **96.0% fuzzy cada una** — la mejora
+más grande de la sesión en proporción al esfuerzo, y evidencia de que revisar firmas de
+funciones "wrapper" ya escritas puede valer más que perseguir la función grande en sí.
+
+### Cierre de la ronda de gigantes
+
+Las 4 funciones >1800 bytes de `tcg_text.cpp` (identificadas desde la Ronda 8, nunca
+decompiladas) tienen ahora primera implementación best-effort: `fn_80131428`(25.3%),
+`fn_801335F4`(19.9%), `fn_80132348`(26.7%), `fn_80134664`(42.1%). Sumado a las correcciones de
+vtable y `fn_80136748`/`fn_801368A0`/`fn_801368B4`, el fuzzy global de `tcg_text.cpp` subió de
+24.96% a **39.13%**. `build.sha1` pasa en todo momento (NonMatching tolera contenido
+aproximado). Ninguna función gigante se persiguió al 100% — todas tienen bloques marcados
+inline como best-effort donde la aritmética exacta (especialmente punto flotante) no se
+verificó bit a bit, siguiendo el mismo criterio ya establecido para `fn_80132D24`. Con esto se
+completa el lote original de "10 funciones más grandes" pedido al inicio de la sesión.
+
+### Ronda de helpers "sin decompilar" citados por las gigantes (2026-07-31)
+
+Tras cerrar el lote de gigantes, se identificaron ~12 funciones citadas como dependencias por las
+funciones best-effort recién escritas que **no tenían ningún C** (ni siquiera best-effort —
+`report.json` las reportaba `fuzzy_match_percent: null`, es decir, puro asm sin tocar). Se
+priorizaron por ser dependencias directas de código ya escrito (mejor relación esfuerzo/impacto
+que perseguir otra función grande nueva):
+
+- **`fn_8013654C`** (284 bytes) — convierte un char ascii al indice de glifo de la fuente propia
+  del juego. Puntuacion comun vía jump table real de 30 entradas (offsets 0x20-0x3d, extraída
+  directo del binario); letras/dígitos por búsqueda posicional en `lbl_8049C344` (contenido no
+  interpretado, no hace falta para replicar la búsqueda). Los chequeos de casos especiales están
+  repetidos dentro del loop en el original (no dependen del índice de iteración) — se preservó así
+  por fidelidad aunque sea lógicamente redundante. **69.0% fuzzy**.
+- **`fn_80136120`** (220 bytes) — lookup en tabla fija `lbl_80359C60[10][8]` (u16) con 4
+  bounds-checks tipo `assert` que **no están gateados por `NDEBUG`** en el binario original (a
+  diferencia de otros validadores ya vistos que sí lo estaban) — se preservan como llamadas reales
+  a `fn_801A9384`, no como macro `assert()` de C (que `-DNDEBUG=1` eliminaría por completo).
+  **66.5% fuzzy**.
+- **`fn_801361FC`** (256 bytes) — getter de una tabla de espaciado/ancho (`lbl_80339F60` o
+  `lbl_8033A25C` según modo), con un fallback fijo (0x14) si `fn_80136DA4` da falso. El original
+  copia ambas tablas completas al stack antes de indexar; se omitió esa copia (irrelevante para el
+  resultado observable) indexando directo sobre los arrays. **26.9% fuzzy**.
+- **`fn_80135D90`** (148 bytes) — crea un `TcgTextEntryHandle` nuevo (reusando `fn_80132F3C`) y lo
+  registra en un pool global (`lbl_8049D6F8`), devolviendo su índice. Depende de `fn_80130D4C`
+  (asignar slot libre), que vive en **otro split fuera de `tcg_text.cpp`** (dirección menor a
+  `0x80131324`) — solo forward-declarada, no implementada aquí. **50.5% fuzzy**.
+- **`fn_80135F38`** (148 bytes) — versión "variádica" que arma texto formateado reusando el mismo
+  pipeline de tags (`fn_8013330C`→`fn_80132B8C`→`fn_80131428`). El original es una función `...`
+  real de mwcc (prólogo con save-area de r3-r10/f1-f8 confirmado por disasm), pero **este
+  toolchain no tiene `stdarg.h` disponible** (`-nosyspath`, sin MSL, búsqueda exhaustiva del
+  filesystem no encontró ninguna versión compatible con mwcc) — sin `va_list` no se puede
+  reproducir el prólogo real. Aproximado con un número fijo de 8 argumentos extra en vez de
+  variadic real; el contenido/orden de la llamada interna sí es fiel. **22.2% fuzzy**. Esto forzó
+  actualizar el único caller conocido (`fn_80136748`), que **bajó** de 22.1% a 13.3% (la forma de
+  armar la llamada cambió) — regresión aceptada porque el neto de la ronda es positivo.
+
+Fuzzy global de `tcg_text.cpp`: 39.13% → **40.78%**. `build.sha1` sigue pasando. Quedan sin
+decompilar de este mismo grupo: `fn_80135BB0`(272, init del pool global), `fn_8013330C` ya
+existía (no confundir), `fn_80135CC0`(208), `fn_80135FCC`(204), `fn_80136308`(176),
+`fn_80135810`(160), `fn_80135E24`(160), `fn_80136694`(124) — candidatas para la próxima ronda.
