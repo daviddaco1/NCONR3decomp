@@ -627,3 +627,246 @@ Fuzzy global de `tcg_text.cpp`: 39.13% → **40.78%**. `build.sha1` sigue pasand
 decompilar de este mismo grupo: `fn_80135BB0`(272, init del pool global), `fn_8013330C` ya
 existía (no confundir), `fn_80135CC0`(208), `fn_80135FCC`(204), `fn_80136308`(176),
 `fn_80135810`(160), `fn_80135E24`(160), `fn_80136694`(124) — candidatas para la próxima ronda.
+
+## Fase 3 — Intento de cierre total de Game Code (53/124 → 54/124) y hallazgo crítico de tooling
+
+Se pidió terminar de decompilar **todas** las funciones de Game Code (quedaban 71/124 sin 100%).
+Tras investigar a fondo, esto no es alcanzable en una sola ronda — varias de las 71 restantes son
+quirks de scheduler ya documentados como no accionables (gotcha 6), y 4 son las funciones gigantes
+(parser/layout, 1800-3800 bytes) que ya tienen best-effort. Se avanzó lo que dio el tiempo, con
+foco en encontrar **bugs reales** (no quirks) antes de tocar código a ciegas.
+
+### Hallazgo crítico: `ninja` sin forzar recompilación puede no detectar ediciones
+
+Varias veces durante la ronda, editar `tcg_text.cpp` y correr `ninja` liso mostró **exactamente el
+mismo** `report.json`/diff que antes del cambio — llevando a conclusiones falsas de "esto no sirvió,
+revertir". La causa: en este entorno (Windows, filesystem con resolución de mtime más gruesa que la
+que usa el chequeo de dependencias de `ninja`), una edición seguida inmediatamente de `ninja` a veces
+no dispara la recompilación de `tcg_text.cpp`. La corrección verificada: **siempre**
+`touch src/tcg_text.cpp && ninja` (nunca `ninja` a secas) después de cualquier edición, antes de leer
+`report.json` o correr un diff. Esto invalida como mínimo un experimento de esta misma ronda (el
+primer intento de inlining manual en `fn_80134DF4`, descartado por "sin cambio" cuando en realidad no
+se había recompilado) — quedó corregido más abajo. **Cualquier sesión futura debe asumir este hábito
+como obligatorio**, no opcional.
+
+Separado de esto: `build/tools/objdiff-cli.exe diff` en modo one-shot (`-1`/`-2` o `-u`) mostró en
+más de una ocasión una instantánea vieja incluso apuntando a un `.o` ya recompilado y verificado
+correcto por `nm`/`objdump` directo — no se identificó la causa exacta (no parece ser el mismo bug de
+mtime, persistió incluso con paths absolutos y borrando el archivo de salida previo). **No confiar
+ciegamente en el diff de instrucciones de `objdiff-cli` para verificar si un fix funcionó** — cruzar
+siempre contra `report.json` regenerado fresco (`touch`+`ninja`) y, en casos dudosos, contra
+`powerpc-eabi-objdump -dr` directo sobre `build/RNEPDA/src/<split>.o` (nuestro) y
+`build/RNEPDA/obj/<split>.o` (target real). En un caso extremo se llegó a extraer bytes crudos
+directo de `orig/RNEPDA/sys/main.dol` (via `dtk.exe dol info` para mapear dirección virtual → offset
+de archivo, más `objdump -b binary -EB -m powerpc:750`) para zanjar una contradicción entre ambas
+herramientas — el DOL crudo es la única fuente 100% confiable cuando hay dudas.
+
+### Bug real (no quirk) encontrado y corregido: direcciones RNEEDA sin migrar en zonas de datos
+
+Repitiendo el patrón ya visto en la migración RNEEDA→RNEPDA de `symbols.txt`/`splits.txt` (ver Fase
+1), varios `extern "C" u8 lbl_XXXXXXXX[]` en `tcg_text.cpp` seguían apuntando a la dirección **vieja**
+de RNEEDA en vez de la nueva de RNEPDA. Confirmado que un extern `lbl_XXXXXXXX` **sin entrada
+correspondiente en `symbols.txt`** no da error de link ni usa la dirección literal del nombre —
+resuelve **silenciosamente a otro símbolo real cualquiera** ya registrado cerca (mecanismo exacto no
+identificado; probablemente relacionado con asignación de símbolos "common"/`.sbss`, ver
+`docs/common_bss.md`, aunque no calza 1:1 con el mecanismo documentado ahí). Esto es indistinguible
+de un quirk de scheduler si no se revisa el nombre de símbolo en el diff de instrucciones — hay que
+mirarlo explícitamente.
+
+Corregidos (shift **+0x880** confirmado, vía `.obj`/`.endobj` auto-generados que sobreviven en
+`build/RNEEDA/asm/*_bss.s`, comparados 1:1 contra `config/RNEPDA/symbols.txt`):
+
+- `lbl_803A491C`→`lbl_803A519C`, `lbl_803A47B8`→`lbl_803A5038` (tabla de 0x53/0x59 bytes/entrada,
+  `fn_801368A0`/`fn_801368B4`): **93.0% → 96.0%** cada una. Resto es quirk de scheduler puro
+  (elección de r0/r6 para el temporal de `mulli`), confirmado no accionable.
+- `lbl_803A4A78` (no es símbolo propio: cae **dentro** de `lbl_803A4830`, offset `0x248` — mismo
+  mecanismo, resuelto vía el contenedor real + offset de campo en vez de offset en la base, para que
+  mwcc pliegue el `+0x248` en el desplazamiento inmediato del load igual que el original):
+  `fn_80136434` 75.7%→76.7%, `fn_801364A0` 64.2%→66.2%.
+- `lbl_804A0290` (no es símbolo propio: cae dentro de `lbl_804A0240`, offset `0x50` — mismo patrón,
+  usado en ~9 sitios de llamada dentro de `fn_80132F3C`): `fn_80132F3C` 56.9%→57.9%,
+  `fn_80134304` 57.9%→58.7%, `fn_80134EA0` 44.0%→46.5%. `fn_8013330C`/`fn_80133410` bajaron ~1.5pp
+  (53.5%→52.0%, 59.6%→58.3%) pese a la dirección ahora correcta — el resto del delta es reordene de
+  instrucciones incidental (ver Fase 3, quirks), se acepta el neto porque la dirección real importa
+  más que el fuzzy% para el objetivo final de portar el código.
+
+**Todavía sin resolver** (mismo bug, no llegó el tiempo): `lbl_8049CE7C`/`lbl_8049D6FC`,
+`lbl_8049CE70`/`lbl_8049D6F0`, `lbl_8049CE74`/`lbl_8049D6F4` (afectan `fn_80132B8C`, `fn_80132D24`,
+`fn_8013330C`, `fn_80133410`), `lbl_8049CE78`/`lbl_8049D6F8` (`fn_80135EC4`), `lbl_803A65B8`→
+`lbl_803A5D38` (`fn_801364EC`), `lbl_804A0AA8` (usado en `fn_801335F4`/área de `fn_80136748`,
+sin confirmar si está roto). **Revisar sistemáticamente todo extern `lbl_XXXXXXXX` de este archivo
+contra `symbols.txt` es la tarea de mayor apalancamiento para la próxima ronda** — no es un quirk,
+es un bug mecánico con un patrón de detección claro (nombre del símbolo distinto entre nuestro
+compilado y el target en el diff de instrucciones).
+
+### Bug real corregido: gotcha 4 (auto-inline) no aplicado en `fn_80134DF4`
+
+`fn_80134DF4` llamaba a `fn_801358DC` (único call site, cuerpo trivial de 3 stores) — `-inline auto`
+lo auto-inlineaba pese a que el original hace un `bl` real (gotcha 4 ya documentado, pero no se había
+aplicado acá). Envuelto en `#pragma dont_inline on`/`reset`: **0% → 100%** (confirmado por
+`report.json` y cruzado con `objdump` de `build/RNEPDA/src/tcg_text.o`; el primer intento de
+"solucionarlo" reescribiendo el cuerpo inline a mano había parecido no tener efecto por el bug de
+`ninja`/mtime de arriba — descartar esa idea, la causa real siempre fue el inlining no deseado).
+
+### Confirmados como no accionables (sin cambio posible desde el C fuente)
+
+- `fn_801360C4` (99.1%): orden de restore `_restgpr`-style en epílogo (r31 antes que r0 vs. al revés)
+  — gotcha 6.
+- `fn_80136AA0` (97.5%): mismo quirk que `fn_801368A0` pero **sin** bug de dirección (símbolo
+  `lbl_8035A058` ya correcto) — puro quirk de scheduler en la elección de r0 vs r4 para el cálculo de
+  dirección.
+- `fn_8013230C`/`fn_801313EC` (85.3%, patrón constructor `obj->vtable=X; return obj;`): probado
+  reestructurar con variable local intermedia, sin cambio (confirmado, no efecto de mtime — se
+  recompiló y verificó). El `mr r3,r31` de retorno se inserta en un punto distinto del cálculo de
+  dirección de vtable independientemente de cómo se escriba el C — scheduler puro.
+- `fn_80135760` (84.4%): `psq_l` directo vs `li`+`psq_lx` en epílogo con floats "quantized" — gotcha 6
+  exacto.
+- `fn_80135A00`/`fn_80135A9C`/`fn_80135A48` (75.1%/75.1%/80.2%): orden de `li` de argumentos antes de
+  un `bl` — gotcha 6, ya documentado en el propio archivo antes de esta ronda.
+- `fn_80133250` (70.0%): probado truthy-check (`if (count)` en vez de `if (count > 0)`) y mover la
+  declaración de `i` — **empeoró** (70.0%→64.2%), revertido. El resto del diff es reordene de loads y
+  de la resta `i++` alrededor del `bctrl` — no accionable sin más evidencia.
+
+Progreso: **53/124 → 54/124 al 100%**, fuzzy global de `tcg_text.cpp` **40.78% → 41.07%**.
+`build.sha1` sigue pasando. Ronda siguiente: terminar el barrido sistemático de `lbl_XXXXXXXX` vs
+`symbols.txt` (alto apalancamiento, patrón ya probado 3 veces), después Tier 3 (50-69%) y Tier 4
+(<50%, incluye funciones sin ningún C real todavía).
+
+## Fase 4 — Cierre del barrido de direcciones + primer bug de loop-unroll
+
+Continuación directa de la Fase 3. Prioridad: terminar el barrido sistemático de `lbl_XXXXXXXX` vs
+`symbols.txt` pendiente (más apalancamiento que perseguir funciones nuevas a ciegas).
+
+### Barrido de direcciones: cerrado, sin más hallazgos tras esta ronda
+
+Se reescribió el script de detección de mismatches de símbolo para usar `powerpc-eabi-objdump -dr`
+directo sobre `build/RNEPDA/src/tcg_text.o` (nuestro) y `build/RNEPDA/obj/tcg_text.o` (target) en vez
+de `objdiff-cli diff` (no confiable, ver gotcha 14) — comparación instrucción a instrucción,
+detectando cuando el token `lbl_`/`fn_` difiere entre ambos lados en la misma posición.
+
+Corregidos (mismo bug de siempre — extern sin entrada en `symbols.txt` resolviendo a otro símbolo
+real cualquiera):
+
+- **`lbl_8049CE70`/`lbl_8049CE74`** (`fn_80132B8C`, `fn_80132D24`): el C fuente YA tenía el nombre
+  correcto (`lbl_8049CE70`/`lbl_8049CE74`, declarados como `void*` en vez del viejo `lbl_8049D6F0`/
+  `lbl_8049D6F4`), pero **faltaba registrarlos en `symbols.txt`** — sin esa entrada, resolvían al
+  símbolo `lbl_8049D6F0`/`lbl_8049D6F4` (ya registrado, dirección distinta) en vez de a su propia
+  dirección literal. Se agregaron ambas entradas (`type:object size:0x4`), reduciendo el `size` de
+  `lbl_8049CE6C` de `0x5` a `0x4` para no solapar (decomp-toolkit **rechaza el link** con error
+  explícito `Symbol X overlaps with symbol Y` si dos entradas se pisan — no es ambigüedad silenciosa
+  como con un extern no registrado, es un error duro). Confirmado por `objdump` que ahora resuelve al
+  símbolo correcto. `fn_80132B8C` 68.4%→68.6%, `fn_80132D24` 58.1%→58.2% (mejora chica: el resto del
+  diff es reordene de registros, no la dirección).
+- **`lbl_8049CE7C`** (`fn_8013330C`, `fn_80133410`): mismo patrón, hueco de 4 bytes entre
+  `lbl_8049CE78` (termina en `0x8049CE7C`) y `lbl_8049CE80` — se agregó la entrada. Confirmado por
+  `objdump` que resuelve correcto; el fuzzy% de ambas funciones no se movió (el diff restante en esas
+  dos ya no es de dirección, es otra cosa — no investigado más a fondo, bajo impacto).
+- **`lbl_8049BAC8` → `lbl_8049C348`** (`fn_80136668`): dirección vieja de RNEEDA sin migrar, nunca
+  antes detectada porque esta función seguía en `fuzzy_match_percent: null` (0%, sin comparar en
+  detalle hasta ahora). Corregida — ver más abajo por qué sigue en 0% pese al fix.
+
+**Verificado como falsas alarmas** de la Fase 3 (ya estaban correctas, el mismatch reportado ahí venía
+del bug de `objdiff-cli` — gotcha 14, no de un error real): `lbl_8049D6F8`/`lbl_8049CE78`
+(`fn_80135EC4`, ya usa el nombre correcto y registrado), `lbl_803A65B8`/`lbl_803A5D38`
+(`fn_801364EC`, ídem). Ambas confirmadas por `objdump` directo — el diff restante en las dos es puro
+quirk de scheduler (`fn_80135EC4`: fusión `bne`+`blr`→`bnelr` más adelanto de constantes, gotcha 6;
+`fn_801364EC`: reordene de `li`/`bl` clásico, gotcha 6 también).
+
+**Barrido completo**: se corrió el detector de mismatches contra las 61 funciones no-100% restantes
+(excluyendo las 4 gigantes ya best-effort) — **cero mismatches de símbolo nuevos**. El bug de
+direcciones RNEEDA-sin-migrar en zonas de datos de `tcg_text.cpp` se considera **cerrado** por ahora;
+si aparece un nuevo mismatch de símbolo en el futuro, es un caso nuevo, no una repetición de este.
+
+### Hallazgo nuevo (no resuelto): loop unrolling automático de mwcc no es desactivable por pragma conocido
+
+`fn_80136668` (8 bytes/iteración, loop fijo de 8 iteraciones sobre una tabla de 8 bytes) — el
+original usa un loop real (`li r0,8`/`mtctr r0`/.../`bdnz`), pero mwcc con `-O4,p` **auto-unrollea**
+el `for` de 8 iteraciones fijas sin importar la forma del C fuente. Probado sin éxito: `for` vs
+`do-while`, `#pragma unroll off`/`reset` alrededor de la función (compila sin error — el pragma
+existe — pero no tiene efecto observable en el unroll). No se encontró la forma de desactivarlo con
+los flags actuales (`-O4,p -inline auto`, sin flag global de unroll en `configure.py`). Dirección de
+tabla corregida (bug real, ver arriba) pero el tamaño no puede acercarse al 100% mientras el unroll
+no se resuelva — **candidato a revisar con más tiempo**: probar `-Opt off` para esta única función
+via `#pragma`, o investigar si existe algún otro pragma mwcc de control de loop (`#pragma
+loop_unswitch`, opciones de `-inline`/`-opt` no documentadas en este repo). Se documenta el intento
+para no repetirlo a ciegas.
+
+### Funciones sin ningún C todavía (revisadas, no implementadas esta ronda)
+
+`fn_80135BB0` (272, init del pool global `lbl_8049D6F8`), `fn_80136308` (176, usado por
+`fn_80136434`/`fn_801364A0` vía tail-call) se leyeron en detalle contra el disasm target.
+`fn_80136308` en particular: recibe un handle, llama `fn_80136B60(v,0)` y `fn_80136B1C(v)`, hace un
+bswap16 + shift aritmético (`/2` redondeado) sobre el resultado de ambas llamadas, y compara contra
+constantes fijas (`1`, `25`) para decidir si zeroed. Lógica no trivial (probablemente decodifica un
+"version"/"code" de 16 bits empaquetado) — **no se implementó a ciegas** porque un best-effort
+incorrecto acá sería peor que dejarlo en asm puro (rompería el entendimiento de `fn_80136B60`/
+`fn_80136B1C` para la próxima sesión). `fn_80135CC0`(208), `fn_80135E24`(160), `fn_80135FCC`(204),
+`fn_80136694`(124) ni se llegaron a abrir — quedan en la misma lista de "candidatas" de la Fase 2.
+
+Progreso de esta fase: sin cambio en funciones al 100% (54/124 se mantiene — ninguno de los fixes de
+dirección de esta ronda cruzó el umbral de 100%, todos eran mejoras parciales o quirks confirmados).
+Fuzzy global de `tcg_text.cpp` sin cambio neto significativo (~41.07%, movimientos chicos que se
+cancelan entre `fn_80132B8C`/`fn_80132D24` positivos y ruido de reordene en otras). `build.sha1` OK.
+Ronda siguiente: implementar `fn_80136308`/`fn_80135BB0` con más tiempo de análisis de
+`fn_80136B60`/`fn_80136B1C`/`fn_80130D4C`, o resolver el bug de loop-unroll de `fn_80136668`.
+
+## Fase 5 — Técnica nueva: swap de if/else + cast a signed en comparaciones, 54→55/124
+
+`fn_80136308` se leyó a fondo contra el disasm target (decodifica un valor de 16 bits vía
+`fn_80136B60(v,0)`/`fn_80136B1C(v)`, bswap16 + división por 2 con redondeo tipo `s16`, compara
+contra constantes `1`/`25`) pero **no se implementó** — la semántica de `fn_80136B60` no está clara
+sin más contexto de callers, y un best-effort mal fundado ahí sería peor que dejarlo en asm puro.
+Igual con `fn_80135BB0`. Se priorizó en cambio revisar sistemáticamente las funciones de Tier 3
+(50-69%) con el comparador `objdump` confiable, buscando **diferencias estructurales** (branch
+distinto, store en otro orden) en vez de solo ruido de scheduler — encontrada una técnica nueva y
+repetible:
+
+### Técnica nueva: invertir la condición del `if`/`else` cambia qué bloque queda primero en el binario
+
+Cuando el diff muestra que el bloque "then" de nuestro C aparece PRIMERO en el binario pero el
+target tiene el bloque "else" primero (mismo branch invertido, `bge` vs `blt`, `beq` vs `bne`, etc.,
+pero misma lógica), **invertir la condición y swapear los cuerpos del `if`/`else` en el C fuente SÍ
+cambia el orden de emisión** — a diferencia del patrón de "polaridad de branch" ya documentado como
+no accionable (gotcha en `fn_8013539C`/constructores de vtable), que es un caso *distinto*: ahí
+invertir tampoco cambia nada porque el compilador normaliza a la misma forma sea cual sea la
+condición escrita. La diferencia: si el diff muestra **contenido realmente distinto** dentro de cada
+mitad del branch (no solo el opcode del branch), vale la pena probar el swap; si el diff muestra el
+mismo contenido en ambas mitades y solo cambia el opcode/target del branch, es el caso ya
+documentado y no vale la pena.
+
+Confirmado en 2 funciones:
+
+- **`fn_80134630`** (39.2%→**100%**): el C ya usaba `h->data->campo` directo (sin variable local
+  cacheando el puntero), pero el orden if/else no coincidía y la comparación de dos `u32` necesitaba
+  cast a `(s32)` para generar `cmpw` (signed) en vez de `cmplw` (unsigned) — el campo es `u32` en el
+  struct pero se compara como cantidad con signo en el original. Con las 2 correcciones juntas:
+  100% exacto, incluida la recarga redundante de `h->data` que el target hace en la rama `else`.
+- **`fn_80135688`** (62.4%→**84.6%**): mismo swap de if/else + cast `(s32)` en la comparación de
+  `mode`. Queda un resto no resuelto: dentro del bloque (dos asignaciones `campo = 0`
+  independientes), el target computa la constante `li r0,0` ANTES de recargar `h->data`, nosotros al
+  revés — probado invertir el orden de las 2 asignaciones en C, sin efecto (cambia cuál campo es
+  cual, no el orden de instrucciones). No accionable por ahora.
+
+**Regla práctica para la próxima ronda**: ante un `if`/`else` con <90% de match, antes de asumir
+"quirk de scheduler", probar primero (a) invertir la condición + swapear cuerpos, (b) castear a
+`(s32)` cualquier comparación entre campos `u32` que en el disasm use `cmpw`/`ble`/`bge` (signed) en
+vez de `cmplw`/`bgt`/`blt` unsigned (u obviamente lo inverso si el patrón es al revés). Si ninguna de
+las dos mueve la aguja, recién ahí es candidato a "no accionable".
+
+### Bug real corregido: `fn_8013539C` usaba la tabla equivocada
+
+`fn_8013539C` leía `lbl_804A0290[6/7/8]` (la tabla usada por `fn_80132F3C`, dentro de
+`lbl_804A0240`) cuando el target usa **`lbl_804A0AA8[6/7/8]`** (tabla separada, ya registrada en
+`symbols.txt`, offsets 0x18/0x1c/0x20 confirmados por disasm crudo) — dos tablas de nombre parecido
+confundidas en una ronda anterior. Corregido; el `fuzzy_match_percent` **no se movió** (61.9% antes
+y después: el resto del diff son 2 quirks separados de la dirección — polaridad de branch
+normalizada igual sea cual sea el C, y esta tabla usa `@sda21` (1 instr) en el target pese a
+`-sdata2 0` en `configure.py` y probar el array con tamaño explícito en vez de incompleto, sin
+efecto observable; es decisión del linker, no del C fuente) — se mantiene el fix igual porque la
+tabla real importa para portar el código aunque el fuzzy% no lo refleje.
+
+Progreso: **54/124 → 55/124 al 100%**, fuzzy global de `tcg_text.cpp` **41.07% → 41.26%**.
+`build.sha1` sigue pasando. Ronda siguiente: aplicar la regla práctica de arriba al resto de Tier 3
+(quedan varias en 15-30% con diffs estructurales sin revisar a fondo: `fn_80135904`, `fn_80135580`,
+`fn_80133524`, `fn_80131324`), y seguir pendiente `fn_80136308`/`fn_80135BB0`/loop-unroll de
+`fn_80136668`.

@@ -112,7 +112,27 @@ igual que antes de migrar (53/124 al 100%, fuzzy global 24.96% antes de tocar na
   ningún C (`fn_8013654C` charmap 69.0%, `fn_80136120` lookup+assert 66.5%, `fn_801361FC` tabla de
   ancho 26.9%, `fn_80135D90` alloc de handle 50.5%, `fn_80135F38` "variádica" 22.2% — sin
   `stdarg.h` disponible en el toolchain, aproximada con args fijos en vez de `...` real). Fuzzy
-  global de `tcg_text.cpp`: 24.96% → **40.78%**.
+  global de `tcg_text.cpp`: 24.96% → 40.78%. **Ronda siguiente** (intento de cierre total del
+  archivo, 53→54/124 al 100%): `fn_80134DF4` cerrada (gotcha 4 —`-inline auto`— no aplicado ahí);
+  4 direcciones RNEEDA sin migrar corregidas en zonas de datos, mismo bug de la Fase 1 pero esta
+  vez fuera de `symbols.txt`/`splits.txt` (`fn_801368A0`/`fn_801368B4`/`fn_80136434`/
+  `fn_801364A0`/`fn_80132F3C`/`fn_80134304`/`fn_80134EA0` mejoraron). Fuzzy global: 40.78% →
+  41.07%. **Ronda siguiente**: cerrado el barrido sistemático de `lbl_XXXXXXXX` vs `symbols.txt`
+  (gotcha 13) — 3 direcciones más corregidas (`fn_80132B8C`/`fn_80132D24`/`fn_8013330C`/
+  `fn_80133410`/`fn_80136668`, agregando 3 entradas nuevas a `symbols.txt`), barrido completo contra
+  las 61 funciones restantes sin más hallazgos de dirección (bug se considera cerrado por ahora).
+  Hallazgo nuevo sin resolver: mwcc auto-unrollea loops de trip-count fijo chico (`fn_80136668`, 8
+  iteraciones) sin flag/pragma conocido para desactivarlo por función — ver gotcha 15.
+  `fn_80136308`/`fn_80135BB0` (sin C todavía) revisados contra el disasm target pero no
+  implementados (lógica de decodificación de 16 bits no trivial, mejor no arriesgar un best-effort
+  incorrecto). Fuzzy global sin cambio neto significativo (~41.07%, 54/124 al 100%). **Ronda
+  siguiente**: técnica nueva confirmada en 2 funciones — invertir condición + swap de cuerpos
+  `if`/`else` cuando el diff muestra contenido *distinto* en cada mitad (no solo el branch
+  invertido), más castear comparaciones de `u32` a `(s32)` cuando el disasm usa `cmpw`/`ble`/`bge`
+  en vez de `cmplw`/unsigned (ver gotcha 17). `fn_80134630` 39.2%→**100%**, `fn_80135688`
+  62.4%→84.6%. Bug de tabla equivocada corregido en `fn_8013539C` (`lbl_804A0290`→`lbl_804A0AA8`,
+  dos tablas de nombre parecido, fuzzy% no se movió pero la tabla real ahora es correcta). Fuzzy
+  global: 41.07% → **41.26%**, 54→**55/124** al 100%.
 
 Historial completo, ronda por ronda (qué se probó, resultados exactos, hallazgos de estructuras) en
 [`docs/decompilation_log.md`](docs/decompilation_log.md). Actualizar ese archivo al cerrar una sesión de
@@ -170,6 +190,55 @@ de perseguir un mismatch a mano:
     literal repetido en el call site** — complementa el gotcha 4; si aparece un inline no deseado que
     el `#pragma dont_inline` no explica, revisar esto antes de asumir que no es accionable (misma
     fuente).
+13. **`extern "C" u8 lbl_XXXXXXXX[]` sin entrada correspondiente en `symbols.txt` no da error de
+    link — resuelve silenciosamente a OTRO símbolo real ya registrado cerca**, indistinguible de un
+    quirk de scheduler si no se mira el NOMBRE del símbolo en el diff de instrucciones (el `%` de
+    match cae igual que con cualquier otro mismatch). Confirmado 3 veces en la migración RNEEDA→
+    RNEPDA de zonas de datos (`lbl_803A491C`/`lbl_803A47B8`/`lbl_804A0290`/`lbl_803A4A78`, ver
+    `docs/decompilation_log.md` Fase 3). Dos causas distintas, mismo síntoma: (a) dirección vieja
+    de RNEEDA sin migrar — fix: usar el nombre correcto ya registrado en `symbols.txt` (confirmar
+    shift comparando `.obj`/`.endobj` sobrevivientes en `build/RNEEDA/asm/*_bss.s` contra las
+    entradas de `config/RNEPDA/symbols.txt`); (b) la dirección real cae **dentro** de un símbolo más
+    grande ya registrado (offset dentro de un array/struct que decomp-toolkit no partió en sub-
+    símbolos) — fix: declarar extern el símbolo CONTENEDOR y sumar el offset **en el punto de uso**
+    (no pre-sumado a la base), para que mwcc lo pliegue en el desplazamiento inmediato del load
+    igual que el original. Cualquier `lbl_` nuevo debe verificarse contra `symbols.txt` antes de
+    asumir que compila correctamente solo porque no tira error.
+14. **`ninja` a secas puede no detectar una edición de código fuente** en este entorno (Windows,
+    resolución de mtime más gruesa que el chequeo de dependencias de ninja) — el build "parece"
+    exitoso pero compila el `.o` viejo, llevando a falsos "este fix no sirvió". Usar siempre
+    `touch src/<archivo> && ninja` después de cualquier edición, nunca `ninja` solo, antes de leer
+    `report.json` o correr un diff. Además, `build/tools/objdiff-cli.exe diff` en modo one-shot
+    mostró más de una vez una instantánea vieja pese a apuntar a un `.o` ya recompilado y verificado
+    correcto por `objdump` directo (causa no identificada) — en casos dudosos, no confiar en el diff
+    de instrucciones de `objdiff-cli` solo; cruzar contra `report.json` fresco y, si persiste la
+    duda, contra `powerpc-eabi-objdump -dr` directo sobre los `.o` de `build/RNEPDA/src/` (nuestro)
+    y `build/RNEPDA/obj/` (target), o en el caso extremo contra bytes crudos de
+    `orig/RNEPDA/sys/main.dol` (mapear dirección virtual→offset de archivo con `dtk.exe dol info`,
+    luego `objdump -b binary -EB -m powerpc:750`).
+15. **Registrar un símbolo nuevo en `symbols.txt` que se solape con uno existente es un error duro
+    de link** (`Symbol X overlaps with symbol Y`), no una ambigüedad silenciosa — a diferencia de un
+    extern SIN entrada (gotcha 13), que sí resuelve mal en silencio. Si el símbolo real cae dentro
+    del tamaño declarado de otro ya registrado, hay que **reducir el `size:` del contenedor** para
+    dejarle hueco antes de agregar la entrada nueva (confirmado con `lbl_8049CE6C` 0x5→0x4 para
+    poder registrar `lbl_8049CE70`).
+16. **mwcc con `-O4,p` auto-unrollea loops de trip-count fijo chico** (confirmado con un `for`/
+    `do-while` de 8 iteraciones, `fn_80136668`) incluso cuando el original usa un loop real
+    (`mtctr`/`bdnz`) — probado sin éxito `#pragma unroll off`/`reset` (compila, pero no cambia el
+    unroll observado). No se encontró la forma de desactivarlo con los flags de este proyecto; si
+    aparece de nuevo, no perder tiempo repitiendo `#pragma unroll` — probar en cambio si el trip
+    count puede dejar de ser una constante literal para el compilador (variable/no-inline), o
+    aceptarlo como no accionable con el flag set actual.
+17. **Invertir la condición de un `if`/`else` y swapear los cuerpos SÍ puede cambiar qué bloque
+    queda primero en el binario** — pero solo quando el diff muestra contenido REALMENTE DISTINTO
+    en cada mitad del branch (no solo el opcode invertido, `beq`/`bne`/`blt`/`bge`). Si el diff
+    muestra el mismo contenido en ambas mitades y solo el branch cambia de opcode/target, es el otro
+    caso (polaridad de branch que mwcc normaliza igual sea cual sea la condición escrita — no
+    accionable, visto en constructores de vtable y en `fn_8013539C`) y el swap NO sirve. Confirmado
+    que sí sirve en `fn_80134630`/`fn_80135688` (ver `docs/decompilation_log.md` Fase 5).
+    Complementario: si el diff muestra `cmpw`/`ble`/`bge` (signed) en el target donde nosotros
+    generamos `cmplw`/unsigned para un campo declarado `u32`, castear la comparación a `(s32)` — el
+    campo puede ser `u32` en el struct pero compararse con signo en el original.
 
 ## Documentación de referencia (ya incluida en `docs/`)
 

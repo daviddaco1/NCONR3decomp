@@ -276,22 +276,21 @@ void fn_80135B00(TcgTextEntryHandle* h, u8* outA, s16* outB, s16* outC)
 
 void fn_80134630(TcgTextEntryHandle* h, u32 add)
 {
-	TcgTextEntryData* d = h->data;
-	if (d->field_0x84 < d->field_0x88) {
-		d->field_0x84 += add;
+	if ((s32)h->data->field_0x84 >= (s32)h->data->field_0x88) {
+		h->data->field_0x84 = h->data->field_0x88;
+		h->data->field_0x16 = h->data->field_0x17;
 	} else {
-		d->field_0x84 = d->field_0x88;
-		d->field_0x16 = d->field_0x17;
+		h->data->field_0x84 += add;
 	}
 }
 
 s32 fn_80135688(TcgTextEntryHandle* h, u32 mode)
 {
-	if (mode == 1) {
-		h->data->field_0xf4 = h->data->field_0xf8;
-	} else {
+	if ((s32)mode != 1) {
 		h->data->field_0x9c = 0;
 		h->data->field_0x94 = 0;
+	} else {
+		h->data->field_0xf4 = h->data->field_0xf8;
 	}
 	return 0;
 }
@@ -310,6 +309,10 @@ void fn_80135B28(TcgTextEntryHandle* h, u32 v)
 	h->data->field_0x248 = v;
 }
 
+// fn_801358DC tiene un unico call site (aca) y mwcc lo auto-inlinea con
+// -inline auto pese a ser real un bl en el original (gotcha de inlining no
+// deseado, confirmado contra bytes crudos del DOL).
+#pragma dont_inline on
 u8 fn_80134DF4(TcgTextEntryHandle* h, u8 v, u32 v2)
 {
 	u8 old = h->data->field_0x16;
@@ -317,6 +320,7 @@ u8 fn_80134DF4(TcgTextEntryHandle* h, u8 v, u32 v2)
 	fn_801358DC(h, v2);
 	return old;
 }
+#pragma dont_inline reset
 
 u32 fn_80135640(TcgTextEntryHandle* h, u32 mode)
 {
@@ -367,12 +371,18 @@ extern "C" void fn_801358B0(void* dst, void* src)
 	*(S8*)dst = *(S8*)src;
 }
 
-extern "C" u8 lbl_8049BAC8[8];
+// lbl_8049BAC8 (direccion vieja RNEEDA, sin migrar) resolvia mal -- la tabla
+// real es lbl_8049C348 (mismo bug de siempre, ver bitacora).
+extern "C" u8 lbl_8049C348[8];
 
+// El original usa un loop real (mtctr/bdnz, sin unroll); mwcc con -O4,p
+// auto-unrollea este for de 8 iteraciones fijas pese a probar for/do-while y
+// `#pragma unroll off` (no tiene efecto aca) -- contenido correcto, tamano
+// distinto por el unroll, no accionable con el flag set actual.
 extern "C" void fn_80136668(u8* dst, s8* src)
 {
 	for (s32 i = 0; i < 8; i++)
-		dst[i] = lbl_8049BAC8[src[i]];
+		dst[i] = lbl_8049C348[src[i]];
 }
 
 extern "C" u32 lbl_803A5D38[10];
@@ -738,9 +748,11 @@ extern "C" void fn_80135A48(TcgTextEntryHandle* h, s32 idx, s32 v)
 }
 
 // Tabla de 0x53/0x59 bytes por entrada (strings o structs, tipo real sin
-// confirmar).
-extern "C" u8 lbl_803A491C[];
-extern "C" u8 lbl_803A47B8[];
+// confirmar). Direcciones re-verificadas contra RNEPDA (shift +0x880 en esta
+// zona de bss respecto de RNEEDA; las viejas 803A491C/803A47B8 quedaron sin
+// migrar y resolvian contra el simbolo incorrecto).
+extern "C" u8 lbl_803A519C[];
+extern "C" u8 lbl_803A5038[];
 
 // fn_80136748: arma un "recurso de texto" a partir de un string ascii: copia
 // una plantilla estatica de 0x38 bytes (lbl_80359FA8, con el largo ya
@@ -880,36 +892,41 @@ extern "C" s32 fn_80136748(void* pVoid, char* str, s32 len)
 	return fn_80135F38(len, (const char*)p, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
-// fn_801368A0/58: contenido correcto (confirmado por disasm), pero
-// mwcc elige r6/r0 para los temporales del calculo de direccion donde
-// nosotros obtenemos r0/r3 -- mismo tipo de quirk de scheduler que
+// fn_801368A0/58: contenido correcto (confirmado por disasm); resta solo
+// quirk de scheduler para el calculo de direccion (mulli/lis/addi/add usa
+// r6/r0 donde nosotros obtenemos r0/r3 -- mismo tipo de quirk que
 // __fill_mem/PPCMtfpscr, probado con varias formas de la expresion C sin
-// cambio alguno. No vale mas tiempo a mano.
+// cambio alguno. No vale mas tiempo a mano).
 extern "C" s32 fn_801368A0(s32 idx, char* str, s32 len)
 {
-	return fn_80136748(lbl_803A491C + idx * 0x53, str, len);
+	return fn_80136748(lbl_803A519C + idx * 0x53, str, len);
 }
 
 extern "C" s32 fn_801368B4(s32 idx, char* str, s32 len)
 {
-	return fn_80136748(idx * 0x59 + lbl_803A47B8, str, len);
+	return fn_80136748(idx * 0x59 + lbl_803A5038, str, len);
 }
 
-// Tabla de entradas de 0x18 bytes (offsets 0x0/0x4/0x8/0xc/0x10/0x14
-// confirmados por fn_80136434/fn_801364A0). fn_80136308 sin decompilar
-// todavia (176 bytes) -- solo prototipo para el tail call.
+// Tabla de entradas de 0x18 bytes, base real lbl_803A4830 (0x400 bytes) +
+// 0x248 (el nombre viejo "lbl_803A4A78" no es simbolo propio -- cae dentro
+// de lbl_803A4830 y decomp-toolkit lo auto-etiqueta por la relocation exacta
+// del original, pero linkear un extern con ese nombre sin entrada en
+// symbols.txt lo resuelve mal, a otro simbolo real cualquiera). El +0x248 se
+// deja como offset de campo (no en la base) para que mwcc lo pliegue en el
+// desplazamiento inmediato del load, igual que el original.
+// offsets 0x0/0x4/0x8/0xc/0x10/0x14 confirmados por fn_80136434/fn_801364A0.
 extern "C" s32 fn_80136308(u32 v);
-extern "C" u8 lbl_803A4A78[];
+extern "C" u8 lbl_803A4830[];
 
 extern "C" s32 fn_80136434(s32 idx, s16 b, s16 c)
 {
 	u32 v = 0;
-	u8* entry = lbl_803A4A78 + idx * 0x18;
+	u8* entry = lbl_803A4830 + idx * 0x18;
 	switch (c * 2 + b) {
-	case 0: v = *(u32*)(entry + 0x0); break;
-	case 1: v = *(u32*)(entry + 0x4); break;
-	case 2: v = *(u32*)(entry + 0xc); break;
-	case 3: v = *(u32*)(entry + 0x10); break;
+	case 0: v = *(u32*)(entry + 0x248); break;
+	case 1: v = *(u32*)(entry + 0x24c); break;
+	case 2: v = *(u32*)(entry + 0x254); break;
+	case 3: v = *(u32*)(entry + 0x258); break;
 	}
 	return fn_80136308(v);
 }
@@ -919,13 +936,13 @@ extern "C" s32 fn_801364A0(s32 idx, s32 mode)
 	u32 v = 0;
 	switch (mode) {
 	case 0: {
-		u8* entry = lbl_803A4A78 + idx * 0x18;
-		v = *(u32*)(entry + 0x8);
+		u8* entry = lbl_803A4830 + idx * 0x18;
+		v = *(u32*)(entry + 0x250);
 		break;
 	}
 	case 1: {
-		u8* entry = lbl_803A4A78 + idx * 0x18;
-		v = *(u32*)(entry + 0x14);
+		u8* entry = lbl_803A4830 + idx * 0x18;
+		v = *(u32*)(entry + 0x25c);
 		break;
 	}
 	}
@@ -1167,7 +1184,13 @@ extern "C" void* fn_80133194(void* h, s32 flag)
 // bswap32/16).
 extern "C" TempList* fn_80132B8C(void* ctx, s32 maxCount, void* table, void* extra);
 extern "C" u8 lbl_8049CE7C;
-extern "C" f32 lbl_804A0290[];
+// lbl_804A0290 no es simbolo propio en symbols.txt: cae dentro de
+// lbl_804A0240 (0x68 floats, offset 0x50) -- un extern "lbl_804A0290[]" sin
+// entrada registrada resuelve silenciosamente a OTRO simbolo real cualquiera
+// (mismo bug que lbl_803A4A78/lbl_803A491C, ver bitacora). Se expresa via el
+// contenedor real para que el link sea correcto.
+extern "C" u8 lbl_804A0240[];
+#define lbl_804A0290 ((f32*)(lbl_804A0240 + 0x50))
 
 extern "C" s32 fn_8013330C(void* h, void* p2, void* p3)
 {
@@ -1252,18 +1275,22 @@ extern "C" void fn_80133524(void* h)
 
 extern "C" s32 fn_80136DA4(TcgTextEntryHandle* h); // sin decompilar todavia
 
-// Contenido/logica correctos (confirmado por disasm) pero 2 quirks sin
-// resolver: (1) branch polarity (`beq`/`bne`) invertida sea cual sea la
-// forma del if/else en C -- mwcc elige distinto sin importar la fuente; (2)
-// lbl_804A0290 usa `@sda21` (1 instr) en el original pero `lis+addi` (2 instr)
-// en el nuestro pese a probar array incompleto y de tamano fijo -- esto
-// ultimo es decision del linker/threshold de small-data, no del C fuente.
+// Tabla real es lbl_804A0AA8 (no lbl_804A0290 -- confusion de la ronda
+// anterior entre 2 tablas de nombre parecido). offsets 0x18/0x1c/0x20 =
+// indices 6/7/8, confirmado por disasm crudo del target. Fuzzy% no se movio
+// (61.9% antes y despues) -- quedan 2 quirks sin resolver, ninguno depende
+// de la tabla: (1) polaridad de branch invertida sea cual sea el if/else en
+// C; (2) esta tabla usa @sda21 (1 instr) en el target pese a -sdata2 0 en
+// configure.py -- probado array con tamano explicito, sin efecto. Es
+// decision del linker (relax?), no del C fuente.
+extern "C" f32 lbl_804A0AA8[];
+
 extern "C" f32 fn_8013539C(TcgTextEntryHandle* h)
 {
 	if (fn_80136DA4(h)) {
-		return lbl_804A0290[8] * h->data->field_0xb8 / lbl_804A0290[7];
+		return lbl_804A0AA8[8] * h->data->field_0xb8 / lbl_804A0AA8[7];
 	} else {
-		return lbl_804A0290[6] * h->data->field_0xb8 / lbl_804A0290[7];
+		return lbl_804A0AA8[6] * h->data->field_0xb8 / lbl_804A0AA8[7];
 	}
 }
 
