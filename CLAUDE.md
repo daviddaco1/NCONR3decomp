@@ -97,13 +97,22 @@ igual que antes de migrar (53/124 al 100%, fuzzy global 24.96% antes de tocar na
   romper `build.sha1` — bloqueo de linker Wii sin resolver en la comunidad (ver bitácora).
 - Game code: `src/tcg_text.cpp` (RNEPDA: `0x80131324`-`0x80136B14`, 124 funciones, motor de
   texto — nombre de archivo probable, no confirmado al 100%). **53/124 al 100% fuzzy**, ~24 funciones
-  más con contenido correcto verificado pero <100% (quirks de scheduler no accionables). De las 4
-  funciones grandes (>1800 bytes) sin decompilar: **`fn_80131428` (3796 bytes, el parser principal
-  de tags) ya tiene primera implementación** (25.3% fuzzy — contenido/control de flujo correcto
-  para el loop principal y ~13 de los 65 casos de dispatch con handler propio; 2 casos (color hex,
-  "ruby"/ancho) quedan best-effort por 2 tablas estáticas sin decodificar del todo). Quedan 3 sin
-  tocar: `fn_80134664`(1900, antes `fn_80133F08`), `fn_80132348`(2116, antes `fn_80131BEC`),
-  `fn_801335F4`(3272, antes `fn_80132E98`).
+  más con contenido correcto verificado pero <100% (quirks de scheduler no accionables). **Las 4
+  funciones grandes (>1800 bytes) ya tienen primera implementación best-effort** (ninguna al 100%,
+  todas con bloques documentados inline donde la aritmética exacta no se verificó bit a bit):
+  `fn_80131428` (3796 bytes, parser principal de tags, 25.3%), `fn_801335F4` (3272 bytes, motor de
+  layout/word-wrap, 19.9%), `fn_80132348` (2116 bytes, variante del parser sin tabla extendida,
+  26.7%), `fn_80134664` (1900 bytes, tick de animación/reveal de texto, 42.1%). También resuelto
+  `fn_80136748` (344 bytes, arma un recurso de texto — nunca antes decompilada, 22.1%) y corregida
+  su firma real de 3 parámetros, lo que subió `fn_801368A0`/`fn_801368B4` a 96.0% cada una.
+  5 vtables con dirección RNEEDA heredada incorrecta corregidas (`CTextEntryBase`/`Char`/`Code` y
+  2 más) — no cambia el fuzzy% (el diff normaliza el target de relocations) pero es corrección
+  real. Con esto se completó el lote de "10 funciones más grandes" pedido al inicio de esta ronda
+  de trabajo. **Ronda siguiente**: 5 funciones helper citadas por las gigantes que no tenían
+  ningún C (`fn_8013654C` charmap 69.0%, `fn_80136120` lookup+assert 66.5%, `fn_801361FC` tabla de
+  ancho 26.9%, `fn_80135D90` alloc de handle 50.5%, `fn_80135F38` "variádica" 22.2% — sin
+  `stdarg.h` disponible en el toolchain, aproximada con args fijos en vez de `...` real). Fuzzy
+  global de `tcg_text.cpp`: 24.96% → **40.78%**.
 
 Historial completo, ronda por ronda (qué se probó, resultados exactos, hallazgos de estructuras) en
 [`docs/decompilation_log.md`](docs/decompilation_log.md). Actualizar ese archivo al cerrar una sesión de

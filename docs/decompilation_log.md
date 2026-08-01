@@ -459,3 +459,171 @@ Sin proyecto de referencia ni versión previa (nunca decompilada, ni en RNEEDA).
 casos con handler propio; el resto son aproximaciones documentadas). `build.sha1` sigue pasando.
 Quedan 3 funciones grandes sin tocar: `fn_80134664`(1900, notify/clip), `fn_80132348`(2116),
 `fn_801335F4`(3272).
+
+### `fn_801335F4` — motor de layout/word-wrap (3272 bytes, primera implementación)
+
+Segunda función gigante de la sesión. Firma ya forward-declarada correctamente
+(`s32 fn_801335F4(TcgTextEntryHandle* h)`, usada por `fn_80134304`) — no hizo falta cambiarla:
+todos los offsets que en una lectura rápida parecían pertenecer a `h` directo (`count`@0x4,
+`items`@0x8) en realidad son de `h->data` (releído con `lwz` redundante antes de cada acceso en
+el original, no cacheado en un temporal).
+
+Estructura confirmada por disasm completo: recorre `h->data->field_0x8[]` (items), salta los que
+tienen el bit `0x2` seteado (`fn_80136A88`), dispatch virtual (vtable slot 4, el "getter" de tipo)
+con 6 casos (4/2/0/6/9/default) que ajustan una "pluma" (posición X/Y) de layout, seguido de 2
+loops de post-proceso casi idénticos (dispatch igual, ajustan `field_0x28` de cada item según un
+flag de `fn_80134DD0(h)`) y un loop final que inserta hasta 2 marcadores nuevos (`alloc(0x74)` +
+`fn_8013230C` + dispatch) al final del array si el último grupo de 3 (o 4) items quedó incompleto.
+
+**Best-effort explícito** (documentado inline, mismo criterio que `fn_80132D24`): la aritmética de
+punto flotante real de cada caso (avance exacto de glifo, fórmula de alineación en el caso 4 con
+sub-switches anidados por `fn_801359C4(h)`/columna acumulada, fórmula exacta de
+ascent/descent) no se verificó bit a bit — es un motor de layout con ~15 constantes de punto
+flotante (`lbl_804A0AA0`/`lbl_804A0AA8[]`) cuyo significado geométrico exacto no se determinó.
+Contenido estructural (loops, dispatch, helpers llamados) sí es fiel al disasm.
+
+**Resultado**: 19.9% fuzzy. `build.sha1` sigue pasando. Quedan 2 funciones grandes:
+`fn_80134664`(1900) y `fn_80132348`(2116).
+
+### `fn_80132348` — variante del parser de tags (2116 bytes, primera implementación)
+
+Tercera función gigante. Ya forward-declarada (usada por `fn_80132D24`, que la llama en vez de
+`fn_80131428` cuando parsea las tablas "concatenadas"). Mismo formato de tag que `fn_80131428`
+(bit alto + código 7 bits + step 8 bits) pero **sin** tabla de códigos extendidos (>0x40 no tiene
+manejo especial — de hecho no hay chequeo de rango en absoluto, el `switch` cubre 0-0x3e vía
+cadena de `cmpwi`/`bge`, no jump table) y con un comportamiento de fallback distinto: los códigos
+sin caso propio se **descartan silenciosamente** (no crean ningún char, a diferencia de
+`fn_80131428` que rellena con un char vacío). El parámetro `extraC` (6to argumento, un `s32*`)
+actúa como selector de modo en 2 puntos (el "char pendiente" inicial y el código `0x3e`).
+
+Best-effort en 2 bloques: código 4 (decodifica un bitmask de hasta 8 bits en entradas
+individuales vía `fn_80136120`, marcadas con flag `0x8`) y códigos 5-8 (bloque "8 posiciones" +
+clasificación de caracteres vía 2 jump tables reales del binario — mismo patrón que el caso
+hex-color de `fn_80131428`, sin verificar bit a bit el `sprintf` dinámico).
+
+**Resultado**: 26.7% fuzzy. `build.sha1` sigue pasando.
+
+### `fn_80134664` — tick de animación/reveal de texto (1900 bytes, primera implementación)
+
+Cuarta y última función gigante de la sesión. A diferencia de las otras 3 (parsers de tags), esta
+es el **tick de animación** que se llama cada frame para avanzar la revelación progresiva del
+texto (efecto "máquina de escribir") y sus efectos asociados. No estaba forward-declarada —
+tampoco es llamada desde ningún otro punto ya decompilado de este archivo (probablemente invocada
+desde fuera de `tcg_text.cpp`, en el loop principal del motor).
+
+Estructura confirmada por disasm completo, 5 sub-sistemas independientes:
+
+1. **Avance de progreso** (`field_0x84`/`0x88` vs contador, `field_0x94`/`0x98`/`0x9c`): si
+   `field_0x90==1`, modo "eventos" — recorre un array de records de 0x3c bytes (`fn_80135BA4(h)`)
+   y dispara los que ya vencieron según `field_0x94`, con 3 sub-casos (0/2/4) que llaman
+   `fn_801356BC` (ya existente) para iniciar transiciones. Si no, modo "progreso continuo" con
+   cálculo de ratio directo.
+2. **Interpolación de color RGBA** (`field_0x44/0x4c`..`0x47/0x4f` → bytes `0x3c-0x3f`, empacados
+   en `field_0x38`) según un contador `field_0x50/0x54` — mismo patrón matemático que el resto del
+   archivo (`mulli`/`srawi`/`addze` para redondeo).
+3. **Fade** (`field_0xf4/0xf8` → `field_0x2c`), mismo esquema de ratio que (1).
+4. **Auto-scroll** (bit `0x200` de `fn_80134DD0`): avanza `field_0x28` por `field_0x104`, clampa
+   contra `field_0x18+field_0xcc`.
+5. **2 "canales" de tween de posición** (`field_0x28`/`field_0x104`) vía keyframes en
+   `h->data+0x110..0x150` — el bloque menos verificado (layout de campos por analogía posicional,
+   no confirmado campo a campo).
+
+3 campos nuevos agregados a `TcgTextEntryData` (antes `pad`): `field_0xa4`/`field_0xa8` (buffer
+doble de progreso). El resto de campos usados en este best-effort (`0x44-0x4f`, `0x50`, `0x54`,
+`0xcc`) siguen sin nombrar — se accedieron vía aritmética de puntero cruda (`(u8*)d + offset`)
+para no comprometer el padding ya usado por otras funciones del archivo.
+
+**Resultado**: 42.1% fuzzy — el mejor de las 4 gigantes, pese a ser (subjetivamente) la más
+intrincada en cantidad de sub-sistemas independientes. `build.sha1` sigue pasando.
+
+### Vtables reales de CTextEntryBase/Char/Code — direcciones RNEEDA heredadas estaban mal
+
+Al trazar `fn_80136A18`/`fn_801313EC`/`fn_8013230C` (constructores ya con C, heredados de RNEEDA)
+contra su disasm REAL de RNEPDA, se confirmó que las 3 vtables (`lbl_803597D0`/`lbl_80359728`/
+`lbl_80359770`, nombres heredados sin re-verificar) apuntan a direcciones que ya no son
+correctas — la re-ubicación de `tcg_text.cpp` (Fase 5) sólo corrigió direcciones de **código**
+(`fn_`/`dtor_`, shift `+0x75C` uniforme), nunca las de **datos** (`lbl_`), que no siguen ningún
+shift uniforme (viven en secciones distintas con padding independiente). Direcciones reales
+confirmadas por disasm: `lbl_803597D0`→`lbl_8035A100` (CTextEntryBase), `lbl_80359728`→
+`lbl_8035A058` (CTextEntry_Char), `lbl_80359770`→`lbl_8035A0A0` (CTextEntry_Code),
+`lbl_803597F4`→`lbl_8035A124`, `lbl_803597B8`→`lbl_8035A0E8`. Aplicado en las 5 funciones que las
+usan. **El fuzzy% no cambió** (confirma que el diff fuzzy normaliza el *target* de una relocation,
+no penaliza que apunte a la dirección equivocada) — el fix es de corrección real, no de score.
+Quedan ~14 `lbl_` más sin re-verificar en el archivo (`lbl_803A47B8`, `lbl_804A0290`, los
+`lbl_8049CE7X`, etc.), usadas por las funciones ya 100%-fuzzy o parcialmente matcheadas — mismo
+riesgo, pendiente para una sesión futura si se persigue matching real (no solo fuzzy).
+
+### `fn_80136748` — arma un recurso de texto desde un string ascii (344 bytes, primera implementación)
+
+Última función pendiente del lote original de "10 más grandes". A diferencia de las otras, nunca
+tuvo ni siquiera un intento previo — sólo un prototipo de 2 parámetros para los 2 tail-calls que
+la usan (`fn_801368A0`/`fn_801368B4`). El disasm reveló que en realidad usa **3** parámetros
+(`buf`, `str`, `len`) — el tercero (`len`) nunca se seteaba explícitamente en esos 2 tail-calls
+(`b`, no `bl`, así que `r5` se propaga intacto desde el caller de cada uno), lo que significa que
+el prototipo viejo de 2 parámetros para `fn_801368A0`/`58` **también estaba incompleto** —
+corregido junto con la función principal.
+
+Cuerpo: copia una plantilla estática de 0x38 bytes (`lbl_80359FA8`, con el largo ya parcheado en
+el byte 0x28) al buffer de salida, le agrega el string re-codificado como pares
+`(fn_8013654C(char), 0)` y 2 bytes terminadores (`0`, `0xBE`), y llama `fn_80135F38(len, buf)`
+para "registrarlo". Si `len<0`, se recalcula vía `fn_80135D90`.
+
+**Resultado**: 22.1% fuzzy para `fn_80136748` (primera vez, contenido/estructura correcta,
+aritmética exacta de offsets no verificada al 100%). Pero el fix de firma (3er parámetro)
+disparó `fn_801368A0`/`fn_801368B4` de su estado previo a **96.0% fuzzy cada una** — la mejora
+más grande de la sesión en proporción al esfuerzo, y evidencia de que revisar firmas de
+funciones "wrapper" ya escritas puede valer más que perseguir la función grande en sí.
+
+### Cierre de la ronda de gigantes
+
+Las 4 funciones >1800 bytes de `tcg_text.cpp` (identificadas desde la Ronda 8, nunca
+decompiladas) tienen ahora primera implementación best-effort: `fn_80131428`(25.3%),
+`fn_801335F4`(19.9%), `fn_80132348`(26.7%), `fn_80134664`(42.1%). Sumado a las correcciones de
+vtable y `fn_80136748`/`fn_801368A0`/`fn_801368B4`, el fuzzy global de `tcg_text.cpp` subió de
+24.96% a **39.13%**. `build.sha1` pasa en todo momento (NonMatching tolera contenido
+aproximado). Ninguna función gigante se persiguió al 100% — todas tienen bloques marcados
+inline como best-effort donde la aritmética exacta (especialmente punto flotante) no se
+verificó bit a bit, siguiendo el mismo criterio ya establecido para `fn_80132D24`. Con esto se
+completa el lote original de "10 funciones más grandes" pedido al inicio de la sesión.
+
+### Ronda de helpers "sin decompilar" citados por las gigantes (2026-07-31)
+
+Tras cerrar el lote de gigantes, se identificaron ~12 funciones citadas como dependencias por las
+funciones best-effort recién escritas que **no tenían ningún C** (ni siquiera best-effort —
+`report.json` las reportaba `fuzzy_match_percent: null`, es decir, puro asm sin tocar). Se
+priorizaron por ser dependencias directas de código ya escrito (mejor relación esfuerzo/impacto
+que perseguir otra función grande nueva):
+
+- **`fn_8013654C`** (284 bytes) — convierte un char ascii al indice de glifo de la fuente propia
+  del juego. Puntuacion comun vía jump table real de 30 entradas (offsets 0x20-0x3d, extraída
+  directo del binario); letras/dígitos por búsqueda posicional en `lbl_8049C344` (contenido no
+  interpretado, no hace falta para replicar la búsqueda). Los chequeos de casos especiales están
+  repetidos dentro del loop en el original (no dependen del índice de iteración) — se preservó así
+  por fidelidad aunque sea lógicamente redundante. **69.0% fuzzy**.
+- **`fn_80136120`** (220 bytes) — lookup en tabla fija `lbl_80359C60[10][8]` (u16) con 4
+  bounds-checks tipo `assert` que **no están gateados por `NDEBUG`** en el binario original (a
+  diferencia de otros validadores ya vistos que sí lo estaban) — se preservan como llamadas reales
+  a `fn_801A9384`, no como macro `assert()` de C (que `-DNDEBUG=1` eliminaría por completo).
+  **66.5% fuzzy**.
+- **`fn_801361FC`** (256 bytes) — getter de una tabla de espaciado/ancho (`lbl_80339F60` o
+  `lbl_8033A25C` según modo), con un fallback fijo (0x14) si `fn_80136DA4` da falso. El original
+  copia ambas tablas completas al stack antes de indexar; se omitió esa copia (irrelevante para el
+  resultado observable) indexando directo sobre los arrays. **26.9% fuzzy**.
+- **`fn_80135D90`** (148 bytes) — crea un `TcgTextEntryHandle` nuevo (reusando `fn_80132F3C`) y lo
+  registra en un pool global (`lbl_8049D6F8`), devolviendo su índice. Depende de `fn_80130D4C`
+  (asignar slot libre), que vive en **otro split fuera de `tcg_text.cpp`** (dirección menor a
+  `0x80131324`) — solo forward-declarada, no implementada aquí. **50.5% fuzzy**.
+- **`fn_80135F38`** (148 bytes) — versión "variádica" que arma texto formateado reusando el mismo
+  pipeline de tags (`fn_8013330C`→`fn_80132B8C`→`fn_80131428`). El original es una función `...`
+  real de mwcc (prólogo con save-area de r3-r10/f1-f8 confirmado por disasm), pero **este
+  toolchain no tiene `stdarg.h` disponible** (`-nosyspath`, sin MSL, búsqueda exhaustiva del
+  filesystem no encontró ninguna versión compatible con mwcc) — sin `va_list` no se puede
+  reproducir el prólogo real. Aproximado con un número fijo de 8 argumentos extra en vez de
+  variadic real; el contenido/orden de la llamada interna sí es fiel. **22.2% fuzzy**. Esto forzó
+  actualizar el único caller conocido (`fn_80136748`), que **bajó** de 22.1% a 13.3% (la forma de
+  armar la llamada cambió) — regresión aceptada porque el neto de la ronda es positivo.
+
+Fuzzy global de `tcg_text.cpp`: 39.13% → **40.78%**. `build.sha1` sigue pasando. Quedan sin
+decompilar de este mismo grupo: `fn_80135BB0`(272, init del pool global), `fn_8013330C` ya
+existía (no confundir), `fn_80135CC0`(208), `fn_80135FCC`(204), `fn_80136308`(176),
+`fn_80135810`(160), `fn_80135E24`(160), `fn_80136694`(124) — candidatas para la próxima ronda.
