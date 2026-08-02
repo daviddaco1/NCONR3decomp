@@ -40,7 +40,15 @@ struct TcgTextEntryData {
 	u8 field_0x3d;
 	u8 field_0x3e;
 	u8 field_0x3f;
-	u8 pad_40[0x5c - 0x40];
+	u8 field_0x40[8]; // struct S8 (u32+4xu8), copiado via fn_801358B0 -- ver fn_80135810
+	u32 field_0x48;
+	u8 field_0x4c;
+	u8 field_0x4d;
+	u8 field_0x4e;
+	u8 field_0x4f;
+	u32 field_0x50;
+	u32 field_0x54;
+	u32 field_0x58;
 	u32 field_0x5c;
 	u32 field_0x60;
 	u32 field_0x64;
@@ -303,10 +311,12 @@ s32 fn_801358DC(TcgTextEntryHandle* h, u32 v)
 	return 1;
 }
 
+#pragma dont_inline on
 void fn_80135B28(TcgTextEntryHandle* h, u32 v)
 {
 	fn_80135B68(h);
 	h->data->field_0x248 = v;
+#pragma dont_inline reset
 }
 
 // fn_801358DC tiene un unico call site (aca) y mwcc lo auto-inlinea con
@@ -324,9 +334,14 @@ u8 fn_80134DF4(TcgTextEntryHandle* h, u8 v, u32 v2)
 
 u32 fn_80135640(TcgTextEntryHandle* h, u32 mode)
 {
-	if (mode == 1)
-		return h->data->field_0xf4 >= h->data->field_0xf8;
-	return h->data->field_0x94 >= h->data->field_0x9c;
+	if (mode == 1) {
+		if ((s32)h->data->field_0xf4 < (s32)h->data->field_0xf8)
+			return 0;
+		return 1;
+	}
+	if ((s32)h->data->field_0x94 < (s32)h->data->field_0x9c)
+		return 0;
+	return 1;
 }
 
 } // extern "C"
@@ -340,7 +355,7 @@ extern "C" void fn_80134E48(TcgTextEntryHandle* h, u32 v)
 	h->data->field_0x3c = (u8)(v >> 24);
 	h->data->field_0x3d = (u8)(v >> 16);
 	h->data->field_0x3e = (u8)(v >> 8);
-	h->data->field_0x3f = (u8)v;
+	h->data->field_0x3f = (u8)(v & 0xff);
 	fn_80134304(h, 1, -1);
 }
 
@@ -368,7 +383,32 @@ extern "C" void fn_80135354(TcgTextEntryHandle* h, f32 a, f32 b, f32 c, f32 d)
 extern "C" void fn_801358B0(void* dst, void* src)
 {
 	struct S8 { u32 a; u8 b, c, d, e; };
-	*(S8*)dst = *(S8*)src;
+	S8* d = (S8*)dst;
+	S8* s = (S8*)src;
+	d->a = s->a;
+	d->b = s->b;
+	d->c = s->c;
+	d->d = s->d;
+	d->e = s->e;
+}
+
+// fn_80135810: copia el bloque de 8 bytes field_0x38..0x3f a field_0x40..0x47
+// (via fn_801358B0), guarda `v` crudo y descompuesto en 4 bytes big-endian
+// (0x4c-0x4f), y `p2` crudo (0x58) mas shifteado (0x50). Nunca antes
+// decompilada.
+#pragma dont_inline on
+extern "C" void fn_80135810(TcgTextEntryHandle* h, u32 p2, u32 v)
+{
+	fn_801358B0(h->data->field_0x40, &h->data->field_0x38);
+#pragma dont_inline reset
+	h->data->field_0x48 = v;
+	h->data->field_0x4c = (u8)(v >> 24);
+	h->data->field_0x4d = (u8)(v >> 16);
+	h->data->field_0x4e = (u8)(v >> 8);
+	h->data->field_0x4f = (u8)v;
+	h->data->field_0x54 = 0;
+	h->data->field_0x50 = p2 << 8;
+	h->data->field_0x58 = p2;
 }
 
 // lbl_8049BAC8 (direccion vieja RNEEDA, sin migrar) resolvia mal -- la tabla
@@ -385,12 +425,45 @@ extern "C" void fn_80136668(u8* dst, s8* src)
 		dst[i] = lbl_8049C348[src[i]];
 }
 
-extern "C" u32 lbl_803A5D38[10];
+// fn_80136694: escanea hasta 9 "grupos" (n<=8), buscando en `lbl_8049C348`
+// (mismo array que fn_80136668, indexado esta vez por scan lineal en vez de
+// lookup directo) un byte igual a `*src`; si lo encuentra escribe el indice
+// de la entrada, si llega a un byte 0 (terminador, fuera del tamano
+// declarado 0x8 -- el layout real de datos linkeado sigue mas alla) escribe
+// el centinela 0x1f. Retorna `dst` avanzado. Nunca antes decompilada.
+extern "C" u8* fn_80136694(u8* dst, s8* src)
+{
+	s32 n = 0;
+	while (n <= 8) {
+		s32 state = 0;
+		for (;;) {
+			s8 tableVal = (s8)lbl_8049C348[state];
+			if (tableVal == 0) {
+				*dst = 0x1f;
+				n++;
+				src++;
+				dst++;
+				break;
+			}
+			if (*src == tableVal) {
+				*dst = (u8)state;
+				n++;
+				src++;
+				dst++;
+				break;
+			}
+			state++;
+		}
+	}
+	return dst;
+}
+
+extern "C" u32 lbl_803A65B8[10];
 extern "C" s32 fn_8013652C(s32 v, s32 lo, s32 hi);
 
 extern "C" u32 fn_801364EC(u32 v)
 {
-	return lbl_803A5D38[fn_8013652C(v, 0, 9)];
+	return lbl_803A65B8[fn_8013652C(v, 0, 9)];
 }
 
 // Sin decompilar todavia (776 bytes) -- solo el prototipo para que los
@@ -644,15 +717,18 @@ void fn_801342E0(CTextEntryCharData* d, f32 a, f32 b, f32 c, f32 e)
 // TcgTextEntryHandle* reinterpretado (cast gratis a nivel de bytes, el
 // binario original hace lo mismo: nunca desreferencia ese valor como
 // puntero en este call path).
-struct GlobalTable {
-	s32 count;
-	s32* arr;
+struct GlobalHandlePool {
+	u32 field_0x0;
+	void** arr;
+	void* field_0x8;
 };
-extern "C" GlobalTable* lbl_8049CE78;
+// lbl_8049D6F8 declarada acá para uso temprano por fn_80135EC4 (mismo pool
+// global usado luego por fn_80135D90/fn_80135BB0/fn_80135CC0/fn_80135E24).
+extern "C" GlobalHandlePool* lbl_8049D6F8;
 
 extern "C" s32 fn_80135EC4(s32 idx, u32 mode)
 {
-	GlobalTable* g = lbl_8049CE78;
+	GlobalHandlePool* g = lbl_8049D6F8;
 	s32 invalid = 0;
 	if (!g) {
 		invalid = 1;
@@ -660,7 +736,7 @@ extern "C" s32 fn_80135EC4(s32 idx, u32 mode)
 		if (idx < 0) {
 			invalid = 1;
 		}
-		if (idx >= g->count) {
+		if (idx >= (s32)g->field_0x0) {
 			invalid = 1;
 		}
 		if (mode == 0 && g->arr[idx] == 0) {
@@ -670,7 +746,7 @@ extern "C" s32 fn_80135EC4(s32 idx, u32 mode)
 	if (invalid) {
 		return idx;
 	}
-	return g->arr[idx];
+	return (s32)g->arr[idx];
 }
 
 // El resto de este archivo llama funciones ya definidas arriba
@@ -808,16 +884,96 @@ extern "C" s8 fn_8013654C(u8 c)
 // en un pool global (`lbl_8049D6F8`), devolviendo su indice. `fn_80130D4C`
 // (asignar un slot libre) es de otro archivo/split (direccion menor a
 // 0x80131324, fuera de tcg_text.cpp) -- solo forward-declarada.
-struct GlobalHandlePool {
-	u32 field_0x0;
-	void** arr;
-	void* field_0x8;
-};
-extern "C" GlobalHandlePool* lbl_8049D6F8;
-extern "C" void fn_80135BB0(s32 poolSize); // inicializa lbl_8049D6F8, sin decompilar
+// GlobalHandlePool / lbl_8049D6F8 ya declaradas arriba (ver fn_80135EC4).
 extern "C" void* fn_80130D4C(void* pool, s32 unused); // de otro split, sin decompilar
 extern "C" void* fn_80136C54(s32 size);
 extern "C" void* fn_80132F3C(void* h, u32 p2, s32 maxCount, u32 p4);
+extern "C" void fn_80136D48(void* item);
+extern "C" void dtor_80136CFC(void* obj);
+extern "C" void fn_801A9384(const char* cond, s32 line, const char* file);
+extern "C" char lbl_8035A13C[];
+extern "C" void memset(void* dst, int val, s32 n);
+extern "C" void* fn_80136CA8(s32 size);
+struct VTablePatch24;
+extern "C" void fn_80136AA0(VTablePatch24* obj);
+extern "C" void fn_80130A78(void* obj, s32 count, s32 v);
+extern "C" void fn_801309EC(void* obj);
+
+// fn_80135CC0: destruye el pool global (`lbl_8049D6F8`) si existe -- recorre
+// `arr` llamando el metodo virtual indice 2 (offset 0x4 del item, no 0xc como
+// `ItemHandle`) de cada slot no nulo. El "limpiar arr[i]=0" esta gateado por
+// un `if (item)` SEPARADO del que gatea la llamada virtual (mismo cmpwi
+// reusado via CSE, pero 2 `beq` fisicos distintos) -- mismo patron de doble
+// chequeo redundante-pero-no-colapsado que en fn_80135BB0. Nunca antes
+// decompilada.
+extern "C" void fn_80135CC0(void)
+{
+	if (!lbl_8049D6F8) {
+		return;
+	}
+	s32 i;
+	for (i = 0; i < (s32)lbl_8049D6F8->field_0x0; i++) {
+		void* item = lbl_8049D6F8->arr[i];
+		if (item) {
+			void** vt = *(void***)((u8*)item + 4);
+			((void (*)(void*, s32))vt[2])(item, 1);
+		}
+		if (item) {
+			lbl_8049D6F8->arr[i] = 0;
+		}
+	}
+	fn_80136D48(lbl_8049D6F8->arr);
+
+	void* p8 = lbl_8049D6F8->field_0x8;
+	if (p8) {
+		void** vt = *(void***)((u8*)p8 + 0x24);
+		((void (*)(void*, s32))vt[2])(p8, 1);
+	}
+	dtor_80136CFC(lbl_8049D6F8);
+	lbl_8049D6F8 = 0;
+}
+
+extern "C" void* fn_801771D4(s32 count, void* callback, s32 size);
+extern "C" void fn_801773E0(void* obj);
+extern "C" void fn_8013108C(void);
+
+// fn_80135BB0: (re)inicializa el pool global. Si ya existia, lo destruye
+// primero (fn_80135CC0). El bloque final (`fn_801771D4`/`fn_801773E0` +
+// assert `fn_801A9384`) es codigo muerto por construccion -- el `if
+// (!result) return;` inicial garantiza `result != 0` en todo lo que sigue,
+// pero el `if (!result) assert(...)` de mas abajo es un chequeo SEPARADO en
+// el C original que mwcc no colapsa (mismo patron ya visto en
+// fn_80136308/fn_80135CC0). Nunca antes decompilada.
+extern "C" void fn_80135BB0(s32 poolSize)
+{
+	if (lbl_8049D6F8) {
+		fn_80135CC0();
+	}
+	lbl_8049D6F8 = (GlobalHandlePool*)fn_80136C54(0xc);
+	memset(lbl_8049D6F8, 0, 0xc);
+	lbl_8049D6F8->field_0x0 = poolSize;
+	lbl_8049D6F8->arr = (void**)fn_80136CA8(poolSize * 4);
+
+	void* p = fn_80136C54(0x28);
+	if (p) {
+		fn_80136AA0((VTablePatch24*)p);
+	}
+	lbl_8049D6F8->field_0x8 = p;
+
+	fn_80130A78(lbl_8049D6F8->field_0x8, poolSize, 0);
+	fn_801309EC(lbl_8049D6F8->field_0x8);
+
+	void* result = fn_801771D4(5, (void*)fn_8013108C, 4);
+	if (!result) {
+		return;
+	}
+	memset(result, 0, 4);
+	*(u32*)result = 0xff;
+	fn_801773E0(result);
+	if (!result) {
+		fn_801A9384(lbl_8035A13C + 4, 0x141e, lbl_8035A13C + 0x3c);
+	}
+}
 
 extern "C" s32 fn_80135D90(s32 maxCount, s32 p4)
 {
@@ -832,6 +988,26 @@ extern "C" s32 fn_80135D90(s32 maxCount, s32 p4)
 	}
 	lbl_8049D6F8->arr[idx] = h;
 	return idx;
+}
+
+extern "C" s32 fn_80130F40(void* obj, s32 idx);
+extern "C" s32 fn_80130DB0(void* obj, s32 v);
+
+// fn_80135E24: libera un slot del pool global por indice (contraparte de
+// fn_80135D90). Nunca antes decompilada.
+extern "C" s32 fn_80135E24(s32 idx)
+{
+	s32 v = fn_80130F40(lbl_8049D6F8->field_0x8, idx);
+	if (!fn_80130DB0(lbl_8049D6F8->field_0x8, v)) {
+		return 0;
+	}
+	void* item = lbl_8049D6F8->arr[idx];
+	if (item) {
+		void** vt = *(void***)((u8*)item + 4);
+		((void (*)(void*, s32))vt[2])(item, 1);
+	}
+	lbl_8049D6F8->arr[idx] = 0;
+	return 1;
 }
 
 // fn_80135F38: version "variadica" que arma un string via el mismo parser
@@ -907,26 +1083,49 @@ extern "C" s32 fn_801368B4(s32 idx, char* str, s32 len)
 	return fn_80136748(idx * 0x59 + lbl_803A5038, str, len);
 }
 
-// Tabla de entradas de 0x18 bytes, base real lbl_803A4830 (0x400 bytes) +
-// 0x248 (el nombre viejo "lbl_803A4A78" no es simbolo propio -- cae dentro
-// de lbl_803A4830 y decomp-toolkit lo auto-etiqueta por la relocation exacta
-// del original, pero linkear un extern con ese nombre sin entrada en
-// symbols.txt lo resuelve mal, a otro simbolo real cualquiera). El +0x248 se
-// deja como offset de campo (no en la base) para que mwcc lo pliegue en el
-// desplazamiento inmediato del load, igual que el original.
-// offsets 0x0/0x4/0x8/0xc/0x10/0x14 confirmados por fn_80136434/fn_801364A0.
-extern "C" s32 fn_80136308(u32 v);
-extern "C" u8 lbl_803A4830[];
+// Correccion (sesion posterior): la tabla real de fn_80136434/fn_801364A0 NO
+// es lbl_803A4830+0x248 -- es un simbolo totalmente distinto, lbl_803A52F8
+// (confirmado por el nombre real que resuelve la relocation en el disasm del
+// target, ver fn_801364A0 mas abajo), con offsets de campo chicos (0x0/0x4/
+// 0xc/0x10 para fn_80136434, 0x8/0x14 para fn_801364A0). El comentario previo
+// (basado en lbl_803A4830+0x248) era incorrecto -- posiblemente confundido
+// con el patron real de gotcha 13b visto en otras tablas del archivo.
+extern "C" void* fn_80136B60(u32 v, s32 flag);
+extern "C" u8* fn_80136B1C(void* table);
+
+// fn_80136308: nunca antes decompilada. Ambas ramas retornan 0 pese a las
+// comparaciones reales (mismo patron de "assert/validacion cuyo resultado se
+// descarta" que fn_80136404/fn_801363B8) -- se preserva el calculo tal cual
+// (swap de 16 bits + division con redondeo hacia cero, idiom srawi/addze)
+// por fidelidad aunque el valor de retorno no dependa de el.
+extern "C" s32 fn_80136308(u32 v)
+{
+	if (v == 0) {
+		return 0;
+	}
+	void* p1 = fn_80136B60(v, 0);
+	u8* p2 = fn_80136B1C((void*)v);
+	u16 raw2 = *(u16*)p2;
+	s32 a = (s32)(s16)((raw2 << 8) | (raw2 >> 8)) / 2;
+	u16 raw1 = *(u16*)p1;
+	u16 b = (u16)((raw1 << 8) | (raw1 >> 8));
+	if (a - 1 == 1 && b == 0x19) {
+		return 0;
+	}
+	return 0;
+}
+
+extern "C" u8 lbl_803A52F8[];
 
 extern "C" s32 fn_80136434(s32 idx, s16 b, s16 c)
 {
 	u32 v = 0;
-	u8* entry = lbl_803A4830 + idx * 0x18;
+	u8* entry = lbl_803A52F8 + idx * 0x18;
 	switch (c * 2 + b) {
-	case 0: v = *(u32*)(entry + 0x248); break;
-	case 1: v = *(u32*)(entry + 0x24c); break;
-	case 2: v = *(u32*)(entry + 0x254); break;
-	case 3: v = *(u32*)(entry + 0x258); break;
+	case 0: v = *(u32*)(entry + 0x0); break;
+	case 1: v = *(u32*)(entry + 0x4); break;
+	case 2: v = *(u32*)(entry + 0xc); break;
+	case 3: v = *(u32*)(entry + 0x10); break;
 	}
 	return fn_80136308(v);
 }
@@ -936,13 +1135,13 @@ extern "C" s32 fn_801364A0(s32 idx, s32 mode)
 	u32 v = 0;
 	switch (mode) {
 	case 0: {
-		u8* entry = lbl_803A4830 + idx * 0x18;
-		v = *(u32*)(entry + 0x250);
+		u8* entry = lbl_803A52F8 + idx * 0x18;
+		v = *(u32*)(entry + 0x8);
 		break;
 	}
 	case 1: {
-		u8* entry = lbl_803A4830 + idx * 0x18;
-		v = *(u32*)(entry + 0x25c);
+		u8* entry = lbl_803A52F8 + idx * 0x18;
+		v = *(u32*)(entry + 0x14);
 		break;
 	}
 	}
@@ -970,8 +1169,10 @@ extern "C" void dtor_80136CFC(void* obj);
 
 extern "C" void* fn_801369CC(void* obj, s32 flag)
 {
-	if (obj && (s16)flag > 0) {
-		dtor_80136CFC(obj);
+	if (obj) {
+		if ((s16)flag > 0) {
+			dtor_80136CFC(obj);
+		}
 	}
 	return obj;
 }
@@ -1091,7 +1292,8 @@ extern "C" void fn_801354D4(TcgTextEntryHandle* h, f32* outA, f32* outB)
 	if (fn_801354A0(h, 0)) {
 		u8* obj = (u8*)fn_801354A0(h, 0);
 		*(u32*)(obj + 0x2bc) = 0xEFEF;
-		if (h->data->field_0x64 & 0x400) {
+		u32 flag = h->data->field_0x64 & 0x400;
+		if (flag != 0) {
 			*outA += *(f32*)(obj + 0x310);
 			*outB += *(f32*)(obj + 0x320);
 			h->data->field_0xb4 = *(f32*)(obj + 0xf0);
@@ -1317,8 +1519,8 @@ extern "C" s32 fn_80136B24(void* table);
 extern "C" u8* fn_80136B1C(void* table);
 extern "C" TempList* fn_80131428(void* ctx, s32 maxCount, s32 len, void* str, void* extra);
 extern "C" s32 fn_80131288(TempList* dest, s32 idx, void* item);
-extern "C" void* lbl_8049CE70;
-extern "C" void* lbl_8049CE74;
+extern "C" void* lbl_8049D6F0;
+extern "C" void* lbl_8049D6F4;
 
 extern "C" TempList* fn_80132B8C(void* ctx, s32 maxCount, void* table, void* extra)
 {
@@ -1329,9 +1531,9 @@ extern "C" TempList* fn_80132B8C(void* ctx, s32 maxCount, void* table, void* ext
 	dst->arr = (void**)fn_80136CA8(maxCount * 4);
 
 	if (!table) {
-		table = lbl_8049CE70;
+		table = lbl_8049D6F0;
 	} else if (!fn_80136BFC(table)) {
-		table = lbl_8049CE74;
+		table = lbl_8049D6F4;
 	}
 
 	s32 itemCount = 0;
@@ -1579,9 +1781,9 @@ extern "C" TempList* fn_80132D24(void* ctx, s32 maxCount, void** tables, void** 
 	dst->arr = (void**)fn_80136CA8(maxCount * 4);
 
 	if (!tables[0]) {
-		tables[0] = lbl_8049CE70;
+		tables[0] = lbl_8049D6F0;
 	} else if (!fn_80136BFC(tables[0])) {
-		tables[0] = lbl_8049CE74;
+		tables[0] = lbl_8049D6F4;
 	}
 
 	s32 perTableCount[16];
@@ -1639,12 +1841,14 @@ extern "C" s32 fn_80131324(TempList* dest, s32 idx, u16 code, s32 extra)
 {
 	s32 ok = 1;
 	CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x38);
+#pragma dont_inline on
 	if (obj) {
 		fn_801313EC(obj);
 	}
+#pragma dont_inline reset
 	((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 0);
 	if (lbl_8049D6FC) {
-		if ((u16)code != 0x19) {
+		if (code != 0x19) {
 			code = fn_8013123C(code);
 		}
 		lbl_8049D6FC = 0;
@@ -2118,8 +2322,8 @@ extern "C" void* fn_80132F3C(void* h, u32 p2, s32 maxCount, u32 p4)
 	TcgTextEntryHandle* th = (TcgTextEntryHandle*)h;
 	fn_80134DF4(th, 1, 0);
 	fn_80134E8C(th, 0);
-	fn_80135354(th, lbl_804A0290[0], lbl_804A0290[0], lbl_804A0290[1], lbl_804A0290[2]);
-	fn_80135468(th, lbl_804A0290[0], lbl_804A0290[0]);
+	fn_80135354(th, lbl_804A0AA8[0], lbl_804A0AA8[0], lbl_804A0AA8[1], lbl_804A0AA8[2]);
+	fn_80135468(th, lbl_804A0AA8[0], lbl_804A0AA8[0]);
 	fn_80135490(th, 8);
 	fn_801354C0(th, 0, 0);
 	fn_80134E3C(th, 0x202020B8);
@@ -2127,16 +2331,16 @@ extern "C" void* fn_80132F3C(void* h, u32 p2, s32 maxCount, u32 p4)
 	fn_80135994(th, (u32)-1);
 	fn_801359A0(th, 0x47e);
 	if (fn_80136DA4(th)) {
-		fn_801359E8(th, lbl_804A0290[4]);
+		fn_801359E8(th, lbl_804A0AA8[4]);
 	} else {
-		fn_801359E8(th, lbl_804A0290[3]);
+		fn_801359E8(th, lbl_804A0AA8[3]);
 	}
-	fn_801359F4(th, lbl_804A0290[5]);
+	fn_801359F4(th, lbl_804A0AA8[5]);
 	fn_801359D0(th, 1);
-	fn_80135448(th, lbl_804A0290[0], lbl_804A0290[0]);
-	fn_8013543C(th, lbl_804A0290[6]);
-	fn_80135414(th, lbl_804A0290[7], lbl_804A0290[7]);
-	fn_80135380(th, 0, lbl_804A0290[0]);
+	fn_80135448(th, lbl_804A0AA8[0], lbl_804A0AA8[0]);
+	fn_8013543C(th, lbl_804A0AA8[6]);
+	fn_80135414(th, lbl_804A0AA8[7], lbl_804A0AA8[7]);
+	fn_80135380(th, 0, lbl_804A0AA8[0]);
 	return h;
 }
 
@@ -2180,24 +2384,29 @@ extern "C" s32 fn_80134EA0(void* h, void* posA, void* posB, void* extentA, void*
 // fn_801361FC: getter de una tabla de espaciado (ancho `lbl_80339F60` para
 // modo!=1, `lbl_8033A25C` para modo==1), indexada por `fn_8013652C(code,0,0xbe)`.
 // Si `fn_80136DA4(codeAsHandle)` da falso, devuelve el default fijo 0x14 sin
-// consultar tabla. El original copia ambas tablas completas al stack antes
-// de indexar (irrelevante para el resultado observable) -- se omite esa
-// copia y se indexa directo sobre los arrays (+1, saltando la 1ra word que
-// el copy-loop trata como "header").
+// consultar tabla. El original copia ambas tablas completas (0x2fc bytes
+// cada una, confirmado por `symbols.txt`) a buffers de stack antes de
+// indexar -- reproducido literalmente con `memcpy` para matchear tamano de
+// stack frame, aunque el resultado observable sea identico a indexar la
+// tabla global directo.
 extern "C" s32 lbl_80339F60[];
 extern "C" s32 lbl_8033A25C[];
 
 extern "C" s32 fn_801361FC(s32 code, s32 unused, s32 mode)
 {
 	(void)unused;
+	u8 bufA[0x2fc];
+	u8 bufB[0x2fc];
 	if (!fn_80136DA4((TcgTextEntryHandle*)code)) {
 		return 0x14;
 	}
+	memcpy(bufA, lbl_80339F60, 0x2fc);
+	memcpy(bufB, lbl_8033A25C, 0x2fc);
 	s32 idx = fn_8013652C(code, 0, 0xbe);
 	if (mode == 1) {
-		return lbl_8033A25C[idx + 1];
+		return ((s32*)bufB)[idx + 1];
 	}
-	return lbl_80339F60[idx + 1];
+	return ((s32*)bufA)[idx + 1];
 }
 extern "C" f32 lbl_804A0AA8[]; // constantes de layout (offsets 0x18/0x1c/0x20/0x24/0x28 usados)
 extern "C" f64 lbl_804A0AA0; // constante "magica" de conversion int->float (0x4330_0000...)
@@ -2385,10 +2594,10 @@ extern "C" void fn_80134304(void* hVoid, s32 doStuff, s32 unused)
 			if (fn_801354A0(h, 0)) {
 				fn_801354D4(h, (f32*)e0, (f32*)((u8*)e0 + 4));
 			}
-			e0->field_0x10 = lbl_804A0290[11];
-			e0->field_0x14 = lbl_804A0290[12];
-			e0->field_0x18 = lbl_804A0290[13];
-			e0->field_0x1c = lbl_804A0290[13];
+			e0->field_0x10 = lbl_804A0AA8[11];
+			e0->field_0x14 = lbl_804A0AA8[12];
+			e0->field_0x18 = lbl_804A0AA8[13];
+			e0->field_0x1c = lbl_804A0AA8[13];
 			e0->field_0x20 = 0;
 			e0->field_0x24 = h->data->field_0x38;
 		}
@@ -2431,7 +2640,7 @@ extern "C" void fn_80134304(void* hVoid, s32 doStuff, s32 unused)
 				f32 tmpB[4];
 				fn_8013460C(tmpA, (f32*)((u8*)item + 0x28));
 				fn_8013460C(tmpB, (f32*)((u8*)item + 0x18));
-				s32 leadingZero = fn_80134EA0(h, tmpA, tmpB, tmpA, tmpB, lbl_804A0290[14], lbl_804A0290[14]);
+				s32 leadingZero = fn_80134EA0(h, tmpA, tmpB, tmpA, tmpB, lbl_804A0AA8[14], lbl_804A0AA8[14]);
 				ResultEntry* e = (ResultEntry*)((u8*)results->arr + usedSlots * 0x3c);
 				usedSlots++;
 				fn_8013460C((f32*)e, tmpA);
@@ -2489,23 +2698,23 @@ extern "C" s32 fn_80134EA0(void* hVoid, void* posAVoid, void* posBVoid, void* ex
 		f32 s10 = extentA[2];
 		f32 s14 = extentA[3];
 
-		f32 diff10 = s14 * lbl_804A0290[10];
-		f32 f29 = p18[3] * lbl_804A0290[10] + diff10;
-		f32 someVal = sC * lbl_804A0290[10] + diff10;
+		f32 diff10 = s14 * lbl_804A0AA8[10];
+		f32 f29 = p18[3] * lbl_804A0AA8[10] + diff10;
+		f32 someVal = sC * lbl_804A0AA8[10] + diff10;
 		s32 iSomeVal = (s32)someVal;
 		s32 iF29 = (s32)f29;
 		s32 res = fn_801979E0(iF29 - iSomeVal);
-		if ((f32)res > f29 - lbl_804A0290[15]) {
+		if ((f32)res > f29 - lbl_804A0AA8[15]) {
 			return 0;
 		}
 
-		f32 diff10b = s10 * lbl_804A0290[10];
-		f32 f29b = p18[2] * lbl_804A0290[10] + diff10b;
-		f32 someValB = s8 * lbl_804A0290[10] + diff10b;
+		f32 diff10b = s10 * lbl_804A0AA8[10];
+		f32 f29b = p18[2] * lbl_804A0AA8[10] + diff10b;
+		f32 someValB = s8 * lbl_804A0AA8[10] + diff10b;
 		s32 iSomeValB = (s32)someValB;
 		s32 iF29b = (s32)f29b;
 		s32 resB = fn_801979E0(iF29b - iSomeValB);
-		if ((f32)resB > f29b - lbl_804A0290[15]) {
+		if ((f32)resB > f29b - lbl_804A0AA8[15]) {
 			return 0;
 		}
 
@@ -2514,14 +2723,14 @@ extern "C" s32 fn_80134EA0(void* hVoid, void* posAVoid, void* posBVoid, void* ex
 		posA[2] = s10;
 		posA[3] = s14;
 
-		f32 clampedX = (posA[0] >= lbl_804A0290[0]) ? posA[0] : lbl_804A0290[0];
+		f32 clampedX = (posA[0] >= lbl_804A0AA8[0]) ? posA[0] : lbl_804A0AA8[0];
 		posA[0] = clampedX;
 		posA[2] = (s14 + s8) - clampedX;
 		if (clampedX + s14 > p18[2]) {
 			posA[2] = p18[2] - clampedX;
 		}
 
-		f32 clampedY = (posA[1] >= lbl_804A0290[0]) ? posA[1] : lbl_804A0290[0];
+		f32 clampedY = (posA[1] >= lbl_804A0AA8[0]) ? posA[1] : lbl_804A0AA8[0];
 		posA[1] = clampedY;
 		posA[3] = (s14 + sC) - clampedY;
 		if (clampedY + s14 > p18[3]) {
