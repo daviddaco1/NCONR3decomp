@@ -870,3 +870,242 @@ Progreso: **54/124 → 55/124 al 100%**, fuzzy global de `tcg_text.cpp` **41.07%
 (quedan varias en 15-30% con diffs estructurales sin revisar a fondo: `fn_80135904`, `fn_80135580`,
 `fn_80133524`, `fn_80131324`), y seguir pendiente `fn_80136308`/`fn_80135BB0`/loop-unroll de
 `fn_80136668`.
+
+## Fase 6 — Lote de 12 funciones (5 nuevas + 7 corregidas), pedido explícito "20 a 50 si es posible"
+
+Objetivo del usuario: decompilar un lote grande de funciones en una sola pasada. Resultado real:
+**12 funciones con cambio de contenido verificado** (5 implementaciones nuevas desde 0%/asm puro, 7
+correcciones/mejoras sobre funciones ya existentes), más ~10 funciones adicionales investigadas y
+descartadas como "no accionable" (mismo diff que gotcha 6, puro reorden de scheduler/regalloc sin
+diferencia de contenido). No se llegó a 20-50 funciones *matcheadas*; el techo real de este archivo
+para trabajo manual función-por-función (sin decomp-permuter) parece estar en ese orden de magnitud
+por sesión, dado el costo de leer disasm + verificar símbolos por función.
+
+### 5 funciones nunca antes decompiladas (0% → contenido real)
+
+Herramienta usada para leer disasm real sin depender de `build/RNEEDA|RNEPDA/asm/*.s` (que puede
+quedar obsoleto una vez que un split tiene `.c` — ver nota abajo): `objdiff-cli.exe diff -p . -u
+"main/tcg_text" <symbol> -o archivo.json` vuelca ambos lados (`left`=target original, `right`=build
+propio) con instrucciones completas; un script chico (`showfn.py`, en el scratchpad de la sesión, no
+committeado) imprime ambos lados en texto plano por símbolo. Más confiable que releer
+`build/RNEPDA/asm/tcg_text.s` a mano, que resultó estar desactualizado (no contiene ya las funciones
+que tienen `.c`, y no se regenera automáticamente).
+
+- **`fn_80136308`** (0%→37.9%, 176 bytes): valida un valor via `fn_80136B60`/`fn_80136B1C` + swap de
+  16 bits + división con redondeo (idiom `srawi`/`addze`), pero **ambas ramas del `if` final
+  retornan 0** — mismo patrón "assert/validación cuyo resultado se descarta" que
+  `fn_80136404`/`fn_801363B8` (ver `docs/AGENT_MATCHING_TIPS.md`-style ya usado en el archivo). Se
+  preserva el cálculo completo por fidelidad aunque el retorno no dependa de él.
+- **`fn_80135BB0`** (0%→76.8%): (re)inicializa el pool global `lbl_8049D6F8` (llama a `fn_80135CC0`
+  primero si ya existía). El bloque final (`fn_801771D4`/`fn_801773E0` + assert `fn_801A9384`) es
+  código muerto **por construcción**: un `if (!result) return;` inicial ya garantiza `result != 0`
+  en todo lo que sigue, pero el `if (!result) assert(...)` de más abajo es un chequeo SEPARADO en el
+  C original que mwcc no colapsa — mismo patrón de "doble chequeo redundante no fusionado" confirmado
+  ahora 3 veces en el archivo (ver también `fn_80136308` y `fn_80135CC0`). Reusa el mismo idiom de
+  assert ya documentado (`fn_801A9384(cond, line, file)`, ver `fn_80136120`).
+- **`fn_80135CC0`** (0%→46.4%): destructor del pool global. Recorre `arr` llamando al método virtual
+  índice 2 (vtable en offset **0x4** del item, no 0xc como `ItemHandle` en `fn_80133250`/`fn_80133194`
+  — misma llamada indirecta ya idiomatizada en el archivo, `((void(*)(void*,s32))vt[2])(item,1)`, solo
+  que el offset del puntero a vtable varía por tipo de objeto). El `arr[i]=0` está gateado por un
+  `if(item)` **separado** del que gatea la llamada virtual — mismo patrón de doble chequeo que
+  `fn_80135BB0`, confirmado por CSE real en el disasm (un solo `cmpwi` compartido, pero 2 `beq`
+  físicos distintos apuntando a lugares distintos).
+- **`fn_80135E24`** (0%→55.0%): libera un slot del pool por índice (contraparte de `fn_80135D90`
+  vía `fn_80130F40`/`fn_80130DB0`). Aquí el `arr[idx]=0` SÍ es incondicional (a diferencia de
+  `fn_80135CC0`) — confirma que el patrón de doble-chequeo no es universal, depende de cómo esté
+  escrito cada call site en el original.
+- **`fn_80136694`** (0%→51.4%): escanea hasta 9 "grupos" contra la tabla `lbl_8049C348` (la MISMA
+  tabla de 8 bytes que usa `fn_80136668`, pero aquí con scan lineal en vez de lookup directo por
+  índice) buscando un byte igual al del string de entrada; si encuentra un terminador (0, fuera del
+  tamaño declarado `size:0x8` de `symbols.txt` — el layout real linkeado sigue más allá, técnica ya
+  aceptada en el proyecto, ver gotcha 13) escribe un centinela `0x1f`.
+
+`fn_80135FCC` (204 bytes, variádica real con save-area de `f1-f8`/`r3-r10`) se dejó **sin
+implementar** — mismo bloqueo ya documentado para `fn_80135F38` (sin `stdarg.h` en el toolchain no se
+puede reproducir el prólogo real), agravado porque el call site final reusa `fn_80133410` con roles
+de parámetro que no cuadran con su firma ya establecida (`void**` genéricos vs. lo que este call site
+necesita pasar) — no se pudo confirmar sin arriesgar una implementación probablemente incorrecta.
+
+### 3 bugs reales de tabla/símbolo equivocado corregidos
+
+- **`fn_801364EC`**: usaba `lbl_803A5D38` (símbolo **sin entrada en `symbols.txt`**, resolviendo mal
+  en silencio — exactamente gotcha 13a) en vez de `lbl_803A65B8` (real, `.bss` size 0x28, sí
+  registrado). Contenido idéntico tras el fix, resto es quirk de scheduler (elección de r3 vs r4 para
+  el puntero de tabla).
+- **`fn_80136434`** y **`fn_801364A0`**: el comentario/código heredado de una ronda anterior afirmaba
+  que ambas usaban `lbl_803A4830 + 0x248` (offset grande, técnica de gotcha 13b). Falso: el disasm del
+  target resuelve la relocation contra **`lbl_803A52F8`** (símbolo totalmente distinto, ya registrado
+  en `symbols.txt`, `.bss` size 0x12C0), con offsets de campo chicos y propios (0x0/0x4/0xc/0x10 para
+  `fn_80136434`, 0x8/0x14 para `fn_801364A0`). El comentario viejo se corrigió; ambas funciones
+  compilan con la tabla/offsets correctos ahora (76.7%→76.85% y 64.1%→66.3% respectivamente — la
+  correctud de la tabla no garantiza fuzzy alto por sí sola, el resto sigue siendo scheduler, pero es
+  la base de datos correcta para portar el código, igual que el precedente de `fn_8013539C`).
+  **Gotcha nuevo**: `objdiff-cli` resuelve el nombre real del símbolo en cada relocation del lado
+  target — es la forma más confiable de detectar "tabla equivocada" (no hace falta adivinar por
+  offset/tamaño, el nombre aparece directo en el disasm volcado).
+
+### 2 mejoras de contenido
+
+- **`fn_80135B28`** (17.5%→**86.25%**, +68.75 puntos, el mayor salto del lote): el call site a
+  `fn_80135B68(h)` (getter puro, `return h->data->field_0x248;`) se estaba **inlineando y luego
+  eliminando por completo** (dead-code, resultado sin uso) porque `-inline auto` conoce el cuerpo
+  (misma unidad) y como no tiene efectos secundarios el compilador lo borra — pero el target SÍ hace
+  un `bl` real con resultado descartado. Wrapeado en `#pragma dont_inline on/reset` (gotcha 4, primer
+  caso donde el efecto no es "cambia el inlining" sino "cambia si el compilador se anima a
+  dead-code-eliminar tras inlinear"): tamaño ya exacto (64/64), resta solo swap de 2 registros
+  (r30/r31 vs r31/r30 y r3 vs r4 reusado) — no accionable, mismo tipo de quirk de regalloc de
+  siempre.
+- **`fn_80135640`** (44.5%→56.17%, tamaño 80→72 ya exacto): el original usa branch real (`cmpw`/`blt`
+  con `li` de 0/1) para dos comparaciones `>=`; nuestro `u32 >= u32` directo generaba el idiom
+  branchless unsigned (`subf`/`orc`/`srwi`). Cast a `(s32)` en ambas comparaciones (gotcha 17)
+  corrigió el tamaño a exacto y subió bastante el fuzzy, pero el compilador sigue eligiendo OTRO
+  idiom branchless (con signo, `srawi`/`subfc`/`adde`) en vez del branch real — probado también con
+  `if`/`if` anidado en vez de la expresión `>=` directa, sin cambio adicional. Mismo techo que
+  `fn_80135688`/`fn_80134630`: el cast a signed es la parte accionable, el idiom final elegido por
+  mwcc para "boolean desde comparación" no se controla más allá de eso.
+
+### Funciones investigadas y descartadas (confirmado no accionable, mismo contenido)
+
+`fn_80136404`, `fn_80136AB0`, `fn_80136A18`, `fn_801368C8`, `fn_80135A48`, `fn_801313EC`,
+`fn_8013230C`, `fn_80135A00`, `fn_80135A9C`, `fn_801363B8`: diff idéntico en contenido/cantidad de
+instrucciones, solo reordenadas alrededor de `bl`/prólogo-epílogo o con registro temporal distinto —
+gotcha 6 puro, no vale la pena reintentar a mano.
+
+Progreso total: **55/124 al 100%** (sin cambio — ninguna de las 12 llegó a 100% exacto en esta
+ronda, todas quedaron en mejora parcial o son código nuevo sin precedente para comparar contra 100%),
+fuzzy global de `tcg_text.cpp` **41.26% → 43.82%**. `build.sha1` sigue pasando. Pendiente para la
+próxima ronda: `fn_80135FCC` (variádica, ver arriba), y revisar si `fn_80135BB0`/`fn_80135CC0`
+comparten algún quirk adicional de tabla ahora que tienen contenido real para comparar (quedaron
+39-77%, con margen).
+
+## Fase 7 — Continuación del lote (misma sesión, mismo pedido de usuario repetido)
+
+- **`fn_80135810`** (la 6ª función 0% de la Fase 6, quedó pendiente por error): copia 8 bytes
+  `field_0x38..0x3f`→`field_0x40..0x47` (via `fn_801358B0`), guarda `v` crudo+descompuesto en 4 bytes
+  y `p2` crudo+shifteado. Requirió partir `pad_40[0x1c]` de `TcgTextEntryData` en campos reales
+  (`field_0x40[8]`, `field_0x48`, `field_0x4c..0x4f`, `field_0x50`, `field_0x54`, `field_0x58`) — sin
+  romper nada más (nadie más referenciaba el pad por nombre). 0%→**53.98%** (tamaño ya exacto,
+  192→160 vs 160 target — resta solo elección `_savegpr_29` vs saves manuales, gotcha 6 puro).
+
+- **Gotcha nuevo (importante): forzar `#pragma dont_inline` en un call site puede romper el
+  matching de OTRO call site del MISMO callee.** Al envolver la llamada a `fn_801358B0` desde
+  `fn_80135810` en `dont_inline`, el compiler dejó de generar el cuerpo manual byte-a-byte de
+  `fn_801358B0` (que coincidía 100% con el target) y en su lugar emitió una llamada a
+  `__as__18S8$...` (el operador de asignación sintetizado por mwcc para el struct local anónimo
+  `S8`, invocado porque el código usaba `*(S8*)dst = *(S8*)src;`), haciendo caer `fn_801358B0` de
+  100% a 3.6% — una regresión real en OTRA función, causada por dar a `fn_801358B0` un segundo call
+  site "real" (no inlineable). Fix: reescribir `fn_801358B0` con asignación campo-por-campo
+  (`d->a=s->a; d->b=s->b; ...`) en vez de asignación de struct completa, evitando el operador
+  sintetizado sin importar cuántos call sites reales tenga. **Lección**: `#pragma dont_inline` en un
+  call site puede cambiar cómo mwcc compila el CUERPO PROPIO del callee (no solo si se inlinea o
+  no) — verificar el `report.json` completo (no solo la función tocada) después de cualquier cambio
+  de inlining, un salto de función matcheada (55→54) es la señal de alarma.
+
+- **`fn_801354D4`** (62.6%, sin cambio de %): el disasm target usa forma NO fusionada
+  (`rlwinm`+`cmpwi`+`beq` separados) para el bit-test `field_0x64 & 0x400`, nuestro C generaba la
+  forma fusionada `rlwinm.` (record bit). Asignar el resultado a una variable local intermedia
+  (`u32 flag = ...; if (flag != 0)`) fuerza la forma separada — tamaño ahora exacto (172/172,
+  antes 176), aunque el `fuzzy_match_percent` no se movió (el resto es la misma elección
+  `_savegpr_29` de siempre). Complementa gotcha 10 (que ya cubría cadenas `&&`/`||`): el mismo truco
+  de "materializar en variable" también sirve para des-fusionar un bit-test simple.
+
+- **`fn_80131324`** (constructor de `CTextEntry_Char`, 70.94%→71.04%, tamaño 196→**192 exacto**):
+  el call site a `fn_801313EC(obj)` se auto-inlineaba (mismo gotcha 4 de siempre); envuelto en
+  `#pragma dont_inline`. Además, `(u16)code != 0x19` generaba un `clrlwi` redundante (el parámetro
+  ya es `u16`) que el target no tiene — cast eliminado. Nota aparte confirmada: la llamada a
+  `fn_801313E4(obj, code)` (un setter de una sola línea, `d->field_0x14=v`, único call site en todo
+  el archivo) SÍ está inlineada en el propio target (`sth` directo sin `bl`) — no es un bug, es
+  inlining real y correcto del compilador original, no tocar.
+
+Progreso acumulado de la sesión completa (Fase 6+7): **55/124 al 100%** (sin cambio neto — todas las
+mejoras quedaron por debajo de 100%, salvo restaurar `fn_801358B0` que ya estaba en 100% y por poco
+se regresiona), fuzzy global **41.26% → 44.20%**. `build.sha1` sigue pasando. Total de funciones con
+cambio de contenido verificado hasta acá: **16**. Techo real observado para este archivo trabajando
+función-por-función a mano en una sesión: del orden de 15-20 funciones, no 20-50 — el costo de leer
+disasm + verificar símbolos + evitar regresiones cruzadas (ver gotcha del `dont_inline` de arriba)
+domina el tiempo por función.
+
+## Fase 8 — Tercera continuación: auditoría sistemática de tablas equivocadas en las funciones grandes
+
+Mismo pedido de usuario repetido una tercera vez. Con el patrón "tabla equivocada" ya confirmado 3
+veces (Fase 5/6: `fn_8013539C`, y de rebote en Fase 6), se decidió auditar sistemáticamente el resto
+de usos de `lbl_804A0290` (macro `(f32*)(lbl_804A0240+0x50)`) contra el nombre real que resuelve la
+relocation en el disasm del target vía `objdiff-cli` — resultó ser la técnica de mayor ROI de toda
+la sesión.
+
+- **`fn_80132F3C`** (una de las "4 funciones grandes" del estado agregado, 600 bytes): las 8
+  referencias de constantes de layout (`lbl_804A0290[0..7]`, pasadas a
+  `fn_80135354`/`fn_80135468`/`fn_801359E8`/`fn_801359F4`/`fn_80135448`/`fn_8013543C`/
+  `fn_80135414`/`fn_80135380`) resolvían contra la tabla equivocada — el target usa
+  **`lbl_804A0AA8`** (ya registrada en `symbols.txt`, confirmado por el nombre real en cada
+  relocation) con los MISMOS índices (0,0,1,2 / 0,0 / 3,4 / 5 / 0,0 / 6 / 7,7 / 0 — ningún índice
+  cambió, solo el nombre de la tabla). 55.6%→**58.8%**.
+- **`fn_80134304`** (776 bytes, otra de las "4 grandes"): mismo bug, 2 sitios —
+  `e0->field_0x10..0x1c` (índices 11/12/13/13) y el 6º/7º argumento de la llamada a
+  `fn_80134EA0` (índice 14) — ambos usaban `lbl_804A0290` en vez de `lbl_804A0AA8`. 57.8%→**58.8%**.
+- **`fn_80134EA0`** (952 bytes, la 4ª de las "grandes", ya marcada `best-effort`/aproximada): 3
+  bloques de aritmética de clipping usaban `lbl_804A0290[10]`/`[15]`/`[0]` en vez de
+  `lbl_804A0AA8[10]`/`[15]`/`[0]` (confirmado por 4 relocations reales distintas en el disasm target,
+  offsets 0x28/0x3c/0x0 de `lbl_804A0AA8`). El `fuzzy_match_percent` **bajó** ligeramente
+  (45.8%→44.5%) pese a la corrección — mismo caso ya documentado con `fn_8013539C`: el fuzzy score no
+  es monotónico con la corrección de un símbolo, se mantiene el fix igual porque es la tabla real
+  (importa para portar el código, no para el score).
+- Auditoría completa: tras estos 3 fixes, `grep lbl_804A0290\[` en todo el archivo solo deja los 2
+  usos ya confirmados correctos anteriormente (`fn_8013330C`/`fn_80133410`, el reset de
+  `field_0xcc/0xd0/0xd4` a "zero", que SÍ resuelve contra `lbl_804A0240+0x50` en el target — verificado
+  con el nombre real en el disasm). Bug cerrado por completo para esta tabla.
+- **`fn_80132B8C`** y **`fn_80132D24`** (funciones "gemelas", arman `TempList` desde 1 o N tablas de
+  tags): ambas usaban `lbl_8049CE70`/`lbl_8049CE74` (símbolos reales, `.sdata` size 0x4, pero NO los
+  correctos para este caso) en vez de **`lbl_8049D6F0`**/**`lbl_8049D6F4`** (`.sbss` size 0x4 cada
+  uno, también reales — dos pares de símbolos de 4 bytes con nombres parecidos, la misma clase de
+  confusión que gotcha 13 pero esta vez entre DOS símbolos reales en vez de uno real y uno
+  inventado). `fn_80132B8C` 68.4%→**68.6%**; `fn_80132D24` sin cambio de score (58.2%) pero
+  corregido.
+- **`fn_80133250`** intento de fix revertido: el diff del target muestra ahí el patrón de doble
+  `beq` sobre el mismo `cmpwi` (CSE) que ya se vio en `fn_80135CC0`/`fn_80135BB0` — se probó separar
+  el `if(item) items[i]=0` del `if(item){llamada virtual}` para replicarlo, pero mwcc generó un
+  **segundo `cmpwi` real** (no CSE'd) en vez de reusar el flag, empeorando el tamaño (188→196) y el
+  score (70.0%→66.3%). Revertido a la forma original de un solo `if` (welcomeback a 70.04%). Lección:
+  el patrón "doble `if` redundante" NO es automáticamente reproducible reescribiendo el C — depende
+  de si mwcc decide CSE'ar el `cmpwi` a través de la llamada `bctrl` intermedia, y eso no parece
+  controlable con reordenamiento de sentencias simple. Añadido a la lista de intentos documentados
+  para no repetir.
+
+Progreso acumulado de toda la sesión (Fase 6+7+8): **55/124 al 100%** (sin cambio neto), fuzzy global
+**41.26% → 44.14%**. `build.sha1` sigue pasando. Total de funciones con cambio de contenido
+verificado en la sesión completa: **21** (16 de Fase 6+7, 5 más de Fase 8, sin contar el intento
+revertido de `fn_80133250`). La técnica de "cruzar el nombre real de la relocation contra lo que
+declara el `.cpp`" (via `objdiff-cli diff ... -o archivo.json`, sin necesitar adivinar offsets) fue,
+de lejos, la de mayor retorno por minuto invertido en las tres rondas — más rentable que perseguir
+quirks de scheduler en funciones ya con contenido correcto.
+
+## Fase 9 — Cuarta continuación
+
+- **`fn_80135EC4`** (getter validado del pool global, 83.8%→**84.0%**, tamaño ya exacto 116/116):
+  usaba un símbolo separado `lbl_8049CE78` (`GlobalTable`, struct local con solo `count`/`arr`) en
+  vez de **`lbl_8049D6F8`** — el mismo `GlobalHandlePool` ya usado por `fn_80135D90`/`fn_80135BB0`/
+  `fn_80135CC0`/`fn_80135E24` (layout compatible en los primeros 2 campos). Se consolidó: la
+  declaración de `struct GlobalHandlePool`/`extern lbl_8049D6F8` se movió más arriba en el archivo
+  (antes de su primer uso real, en `fn_80135EC4`) para evitar 2 declaraciones `extern "C"` del mismo
+  símbolo con tipos distintos (error de compilación) — la definición original más abajo se dejó como
+  comentario apuntando a la de arriba.
+- **`fn_801361FC`** (26.8%→**31.9%**, tamaño de la función ya en la clase correcta): el original
+  copia ambas tablas de ancho (`lbl_80339F60`/`lbl_8033A25C`, 0x2fc bytes cada una, confirmado por
+  `symbols.txt`) a buffers de stack ANTES de indexar — una ronda anterior había decidido "omitir la
+  copia por ser irrelevante al resultado observable" e indexar directo sobre la tabla global, lo cual
+  es correcto en CONTENIDO pero le costaba la mitad del tamaño de la función en el diff. Reproducido
+  con `memcpy(buf, tabla, 0x2fc)` — probado también con un loop manual `for` explícito
+  (`buf[i]=tabla[i]`), que dio **peor** resultado (43.85% global vs 44.21% con memcpy) — revertido.
+  El resto del gap (180 vs 256 bytes reales) es que el original compila el copy a un loop real
+  `mtctr`/`bdnz` en vez de una llamada a `memcpy`, y no se encontró la forma de forzar ese idiom
+  desde este C (no accionable con el tiempo disponible, documentado para no repetir el intento del
+  loop manual).
+- Nota (no perseguida): `fn_80136748` (ya resuelta en una sesión anterior, documentada en el estado
+  agregado como 22.1%) ahora mide 13.3% — una función ya implementada cuyo score cambió sin que esta
+  sesión tocara su código directamente (posible efecto colateral de cambios de layout/registros en
+  otras partes del mismo archivo). No investigado a fondo por tiempo; señalado para revisar en la
+  próxima ronda si se busca cerrar el archivo por completo.
+
+Progreso acumulado de toda la sesión (Fase 6+7+8+9): **55/124 al 100%** (sin cambio neto), fuzzy
+global **41.26% → 44.21%**. `build.sha1` sigue pasando. Total de funciones con cambio de contenido
+verificado en la sesión completa: **23**.

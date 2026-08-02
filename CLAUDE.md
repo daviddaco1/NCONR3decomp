@@ -132,7 +132,48 @@ igual que antes de migrar (53/124 al 100%, fuzzy global 24.96% antes de tocar na
   en vez de `cmplw`/unsigned (ver gotcha 17). `fn_80134630` 39.2%→**100%**, `fn_80135688`
   62.4%→84.6%. Bug de tabla equivocada corregido en `fn_8013539C` (`lbl_804A0290`→`lbl_804A0AA8`,
   dos tablas de nombre parecido, fuzzy% no se movió pero la tabla real ahora es correcta). Fuzzy
-  global: 41.07% → **41.26%**, 54→**55/124** al 100%.
+  global: 41.07% → **41.26%**, 54→**55/124** al 100%. **Ronda siguiente** (lote de 12 funciones,
+  pedido explícito de decompilar 20-50): 5 funciones nunca antes decompiladas resueltas con
+  contenido real (`fn_80136308` 37.9%, `fn_80135BB0` 76.8%, `fn_80135CC0` 46.4%, `fn_80135E24` 55.0%,
+  `fn_80136694` 51.4% — `fn_80135FCC`, variádica real sin `stdarg.h`, se dejó pendiente por el mismo
+  bloqueo ya conocido de `fn_80135F38`); 2 bugs de tabla equivocada más corregidos (`fn_80136434`/
+  `fn_801364A0` usaban `lbl_803A4830+0x248`, heredado de una ronda anterior — el disasm real resuelve
+  contra `lbl_803A52F8`, símbolo distinto ya registrado, con offsets propios) y uno más
+  (`fn_801364EC`: `lbl_803A5D38` sin entrada en `symbols.txt` → `lbl_803A65B8` real); mayor salto
+  individual en `fn_80135B28` (17.5%→**86.25%**, gotcha de inlining nuevo: el compilador no solo
+  inlineaba sino que además eliminaba la llamada por dead-code al ser un getter puro sin uso de su
+  resultado — resuelto con `#pragma dont_inline`). ~10 funciones más investigadas y descartadas como
+  no accionables (mismo contenido, puro reorden de scheduler). Fuzzy global: 41.26% → **43.82%**,
+  55/124 al 100% sin cambio (ninguna de las 12 tocadas llegó a 100% exacto esta ronda). **Misma
+  sesión, continuación**: `fn_80135810` (la 6ª función 0% que había quedado pendiente por error) resuelta
+  0%→53.98% (requirió partir `pad_40` de `TcgTextEntryData` en campos reales). Gotcha nuevo importante:
+  poner `#pragma dont_inline` en un call site puede romper el matching de OTRO call site del mismo
+  callee (`fn_801358B0` cayó de 100%→3.6% de forma colateral — mwcc cambia el cuerpo compilado del
+  callee, no solo si se inlinea, cuando gana un segundo call site "real"; fix fue evitar la asignación
+  de struct completo `*(S8*)dst=*(S8*)src` que generaba una llamada al operador sintetizado, reemplazada
+  por asignación campo-a-campo). Revisar SIEMPRE el conteo total de funciones al 100% tras cualquier
+  cambio de inlining, no solo la función tocada. Fuzzy global final: **44.20%**, 55/124 al 100% (sin
+  cambio neto). Total de funciones con cambio de contenido verificado en la sesión completa: **16**.
+  Techo real de esta metodología (función-por-función a mano, sin decomp-permuter): ~15-20 por sesión,
+  no 20-50. **Tercera continuación**: auditoría sistemática de `lbl_804A0290` (usada en varias de las
+  "4 funciones grandes") contra el nombre real de cada relocation en el disasm target — resultó ser
+  la técnica de mayor ROI de la sesión. Bug de tabla equivocada (misma familia que `fn_8013539C`)
+  confirmado y corregido en **3 funciones más**: `fn_80132F3C` (55.6%→58.8%), `fn_80134304`
+  (57.8%→58.8%), `fn_80134EA0` (45.8%→44.5%, el score bajó pese a la corrección — mismo caso ya
+  documentado, se mantiene el fix por ser la tabla real). Bug análogo con OTRO par de símbolos
+  (`lbl_8049CE70/74` vs `lbl_8049D6F0/D6F4`, dos pares reales confundidos) corregido en
+  `fn_80132B8C`/`fn_80132D24`. Intento de replicar el patrón "doble `if` redundante" en
+  `fn_80133250` revertido (empeoró tamaño y score — mwcc no CSE'a el `cmpwi` a través de la llamada
+  `bctrl` intermedia como sí lo hace en otras funciones, no reproducible con reordenamiento simple
+  de sentencias). Fuzzy global: **44.14%**, 55/124 al 100% (sin cambio neto). **Cuarta continuación**: mismo bug de
+  símbolo confundido esta vez entre 2 símbolos reales (`lbl_8049CE78` vs `lbl_8049D6F8`, el pool
+  global ya usado por otras 4 funciones) corregido en `fn_80135EC4` (83.8%→84.0%, tamaño ya exacto).
+  `fn_801361FC` (26.8%→**31.9%**): se reprodujo con `memcpy` la copia a stack de las 2 tablas de
+  ancho que una ronda anterior había omitido por "irrelevante al resultado" — cierto para el
+  contenido, pero costaba tamaño en el diff. Un loop manual explícito dio peor resultado que
+  `memcpy` (revertido) — el resto del gap es que el original usa un loop real `mtctr`/`bdnz` para la
+  copia, no reproducible identificado. Fuzzy global final: **44.21%**, 55/124 al 100% (sin cambio
+  neto). Total de funciones con cambio de contenido verificado en la sesión completa: **23**.
 
 Historial completo, ronda por ronda (qué se probó, resultados exactos, hallazgos de estructuras) en
 [`docs/decompilation_log.md`](docs/decompilation_log.md). Actualizar ese archivo al cerrar una sesión de
