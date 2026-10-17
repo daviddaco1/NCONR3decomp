@@ -388,6 +388,7 @@ config.libs = [
             Object(NonMatching, "clinklist.cpp"),
             Object(NonMatching, "tcg_text.cpp"),
             Object(NonMatching, "movie.cpp"),
+            Object(NonMatching, "seq.cpp"),
         ],
     },
 ]
