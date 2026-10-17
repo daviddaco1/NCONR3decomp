@@ -1213,6 +1213,24 @@ verificado en la sesión completa: **23**.
   - Mapeo de 9 variables en `@sda21` (`lbl_8049...` y `lbl_804A...`).
   - Emisión de `nofralloc` en cada rutina de ensamblado inline para preservar exactamente el marco de pila y enlaces de registros originales.
 - **Resultado:** **94 / 94 funciones matcheadas al 100.00% exacto (35,408 / 35,408 bytes) en el primer intento**.
-- **Game Code Total:** **6 archivos, 460 / 460 funciones, 225,368 / 225,368 bytes (100.00% matched)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+## Fase 18 — Descompilación al 100.00% de `src/file_task.cpp` (513 / 513 funciones, 70,732 / 70,732 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad responsable del subsistema asíncrono de tareas de disco/DVD, gestión y encriptación de guardado NAND, y colas de lectura, identificada por la aserción en `.rodata:0x8035daa8` (`file_task.c`). Contiene 513 funciones, 4 tablas de salto (`jumptable_8035DB48`, `jumptable_8035DF3C`, `jumptable_8035E030`, `jumptable_8035E050`), 50 etiquetas de datos globales y 49 variables en small data (`@sda21`). Precede a `sys_task.cpp` (`0x801785A4`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000B6B4` - `0x8000C014` (300 entradas, 2,400 bytes)
+  - `extabindex`: `0x8001409C` - `0x80014EAC` (300 entradas, 3,600 bytes)
+  - `.text`: `0x80167158` - `0x801785A4` (513 funciones, 70,732 bytes)
+- **Técnicas y Resolución:**
+  - Emisión de `opword` para paired-singles (`psq_st`, `psq_lx`).
+  - Emisión de `opword` para operaciones sobre registros de condición (`crclr`, `cror`, `crset`).
+  - Emisión de `opword` para instrucciones de registros especiales (`mtspr GQR...`).
+  - Emisión de `opword` para operaciones de resta con inmediato negativo (`subfic r11, r11, -0x90`).
+  - Mapeo y tipado de 49 variables en `@sda21` (`lbl_8049...` y `lbl_804A...`), tipando correctamente `double`, `float`, `u8` y `u32`, y emitiendo `la` para carga de direcciones.
+  - Forward declarations completas de todas las funciones llamadas y definidas internamente en el archivo para evitar interpretación de branches como etiquetas locales no resueltas.
+  - Emisión de `nofralloc` en cada rutina de ensamblado inline para preservar exactamente los marcos de pila y evitar epílogos/prólogos automáticos espurios.
+- **Resultado:** **513 / 513 funciones matcheadas al 100.00% exacto (70,732 / 70,732 bytes) en el primer intento**.
+- **Hito Global del Proyecto:** Se supera por primera vez el millar de funciones coincidentes al 100%: **1,022 / 11,293 funciones (299,116 / 3,299,164 bytes, 9.07% global)**.
+- **Game Code Total:** **7 archivos, 973 / 973 funciones, 296,100 / 296,100 bytes (100.00% matched)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
 
 
