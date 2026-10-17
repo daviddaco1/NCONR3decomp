@@ -389,6 +389,7 @@ config.libs = [
             Object(NonMatching, "tcg_text.cpp"),
             Object(NonMatching, "movie.cpp"),
             Object(NonMatching, "seq.cpp"),
+            Object(NonMatching, "seq_cmdeft.cpp"),
         ],
     },
 ]
