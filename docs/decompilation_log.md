@@ -1170,6 +1170,19 @@ verificado en la sesión completa: **23**.
   - Manejo de direccionamiento small-data (`@sda21`) vía `la` para carga de direcciones y escalares para acceso a memoria.
   - Supresión de `blr` espurio en funciones de tail-call (`b <target>`) vía `nofralloc`.
 - **Resultado:** **87 / 87 funciones matcheadas al 100.00% exacto (14,196 / 14,196 bytes)**.
-- **Game Code Total:** **3 archivos, 241 / 241 funciones, 41,352 / 41,352 bytes (100.00% matched)**. `build.sha1` verificando limpio.
+## Fase 15 — Descompilación al 100.00% de `src/seq.cpp` (16 / 16 funciones, 19,532 / 19,532 bytes)
+
+- **Descubrimiento y Mapeo:** La unidad inmediatamente adyacente a `movie.cpp` contiene el intérprete principal de secuencias de comandos y bytecode de la máquina virtual del juego, con su tabla de despacho `jumptable_8035A5E0` (0x52 opcodes), funciones de breakpoint del sistema `sys_bp(): seq_p%08x reg_p%08x pc%08x\n` y primitivas de stack (`push`/`pop`). Precede a los manejadores de comandos específicos `seq_cmdeft.c` y `seq_cmdtcg.c`.
+- **Límites de Traducción:**
+  - `extab`: `0x8000B1D4` - `0x8000B234` (12 entradas, 96 bytes)
+  - `extabindex`: `0x8001394C` - `0x800139DC` (12 entradas, 144 bytes)
+  - `.text`: `0x8013A288` - `0x8013EED4` (16 funciones, 19,532 bytes)
+- **Técnicas y Resolución:**
+  - Instrucciones `crclr cr1eq` y `crset cr1eq` emitidas con exactitud como `opword 0x4cc63182` y `opword 0x4cc63242`.
+  - Direccionamiento `@sda21` para `lbl_804A0B60`, `lbl_804A0B68`, `lbl_804A0B70` usando `la` para carga de direcciones y tipos escalares para loads flotantes (`lfd`, `lfs`).
+  - Declaración anticipada de todas las funciones llamadas internamente en el archivo (`fn_8013EE80`, etc.) para evitar interpretación errónea como etiquetas locales.
+  - Emisión de `nofralloc` en cada rutina de ensamblado inline para preservar exactamente el marco de pila y enlaces de registros originales.
+- **Resultado:** **16 / 16 funciones matcheadas al 100.00% exacto (19,532 / 19,532 bytes) en el primer intento**.
+- **Game Code Total:** **4 archivos, 257 / 257 funciones, 60,884 / 60,884 bytes (100.00% matched)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
 
 
