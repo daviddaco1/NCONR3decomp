@@ -1,6 +1,8 @@
 # IDE folders
 .idea/
 .vs/
+.vscode/
+.agents/
 
 # macOS
 .DS_Store

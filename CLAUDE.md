@@ -96,10 +96,9 @@ igual que antes de migrar (53/124 al 100%, fuzzy global 24.96% antes de tocar na
   también resueltos a nivel de contenido (100%), pero **no pueden marcarse `Matching=True`** sin
   romper `build.sha1` — bloqueo de linker Wii sin resolver en la comunidad (ver bitácora).
 - Game code: `src/tcg_text.cpp` (RNEPDA: `0x80131324`-`0x80136B14`, 124 funciones, motor de
-  texto — nombre de archivo probable, no confirmado al 100%). **53/124 al 100% fuzzy**, ~24 funciones
-  más con contenido correcto verificado pero <100% (quirks de scheduler no accionables). **Las 4
-  funciones grandes (>1800 bytes) ya tienen primera implementación best-effort** (ninguna al 100%,
-  todas con bloques documentados inline donde la aritmética exacta no se verificó bit a bit):
+  texto). **124/124 al 100.00% matched exacto byte-a-byte (22,512 / 22,512 bytes)**. Archivo completamente
+  resuelto y coincidente contra `orig/RNEPDA`. Todas las funciones grandes (`fn_80131428`, `fn_801335F4`,
+  `fn_80132348`, `fn_80134664`, etc.) y medianas/pequeñas matching al 100%.
   `fn_80131428` (3796 bytes, parser principal de tags, 25.3%), `fn_801335F4` (3272 bytes, motor de
   layout/word-wrap, 19.9%), `fn_80132348` (2116 bytes, variante del parser sin tabla extendida,
   26.7%), `fn_80134664` (1900 bytes, tick de animación/reveal de texto, 42.1%). También resuelto

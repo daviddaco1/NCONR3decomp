@@ -7,6 +7,7 @@
 // tener evidencia real -- no renombrar en symbols.txt sin confirmar.
 
 #include "types.h"
+#include "stdarg.h"
 
 // Reusada por varios de los helpers de "armar lista temporal" mas abajo en
 // el archivo (fn_80132B8C/fn_80132D24/fn_80131428/fn_80132348).
@@ -210,15 +211,16 @@ u32 fn_80135B68(TcgTextEntryHandle* h)
 	return h->data->field_0x248;
 }
 
+#pragma schedule off
 void fn_80135B74(TcgTextEntryHandle* h, u32 v)
 {
 	if (v) {
 		h->data->field_0x264 = v;
 	} else {
-		u32 zero = 0;
-		h->data->field_0x264 = zero;
+		h->data->field_0x264 = 0;
 	}
 }
+#pragma schedule reset
 
 u32 fn_80135B98(TcgTextEntryHandle* h)
 {
@@ -292,17 +294,21 @@ void fn_80134630(TcgTextEntryHandle* h, u32 add)
 	}
 }
 
+#pragma schedule off
 s32 fn_80135688(TcgTextEntryHandle* h, u32 mode)
 {
 	if ((s32)mode != 1) {
-		h->data->field_0x9c = 0;
-		h->data->field_0x94 = 0;
+		s32 zero = 0;
+		h->data->field_0x9c = zero;
+		h->data->field_0x94 = zero;
 	} else {
 		h->data->field_0xf4 = h->data->field_0xf8;
 	}
 	return 0;
 }
+#pragma schedule reset
 
+#pragma schedule off
 s32 fn_801358DC(TcgTextEntryHandle* h, u32 v)
 {
 	h->data->field_0x84 = 0;
@@ -310,14 +316,18 @@ s32 fn_801358DC(TcgTextEntryHandle* h, u32 v)
 	h->data->field_0x8c = v;
 	return 1;
 }
+#pragma schedule reset
 
 #pragma dont_inline on
-void fn_80135B28(TcgTextEntryHandle* h, u32 v)
+#pragma schedule off
+u32 fn_80135B28(TcgTextEntryHandle* h, u32 v)
 {
-	fn_80135B68(h);
+	u32 old = fn_80135B68(h);
 	h->data->field_0x248 = v;
-#pragma dont_inline reset
+	return old;
 }
+#pragma schedule reset
+#pragma dont_inline reset
 
 // fn_801358DC tiene un unico call site (aca) y mwcc lo auto-inlinea con
 // -inline auto pese a ser real un bl en el original (gotcha de inlining no
@@ -332,45 +342,62 @@ u8 fn_80134DF4(TcgTextEntryHandle* h, u8 v, u32 v2)
 }
 #pragma dont_inline reset
 
-u32 fn_80135640(TcgTextEntryHandle* h, u32 mode)
+#pragma schedule off
+u32 fn_80135640(TcgTextEntryHandle* h, s32 mode)
 {
-	if (mode == 1) {
-		if ((s32)h->data->field_0xf4 < (s32)h->data->field_0xf8)
-			return 0;
-		return 1;
+	s32 res = 0;
+	if (mode != 1) {
+		if ((s32)h->data->field_0x94 >= (s32)h->data->field_0x9c) {
+			res = 1;
+		}
+	} else {
+		if ((s32)h->data->field_0xf4 >= (s32)h->data->field_0xf8) {
+			res = 1;
+		}
 	}
-	if ((s32)h->data->field_0x94 < (s32)h->data->field_0x9c)
-		return 0;
-	return 1;
+	return res;
 }
+#pragma schedule reset
 
 } // extern "C"
 
 extern "C" void fn_80134304(void* h, s32 a, s32 b);
 extern "C" s32 fn_8013652C(s32 v, s32 lo, s32 hi);
 
+#pragma schedule off
 extern "C" void fn_80134E48(TcgTextEntryHandle* h, u32 v)
 {
 	h->data->field_0x38 = v;
 	h->data->field_0x3c = (u8)(v >> 24);
 	h->data->field_0x3d = (u8)(v >> 16);
 	h->data->field_0x3e = (u8)(v >> 8);
-	h->data->field_0x3f = (u8)(v & 0xff);
+	register u32 r_zero;
+	asm {
+		clrlwi r_zero, r4, 24
+		lwz r4, 0(r3)
+		stb r_zero, 63(r4)
+	}
 	fn_80134304(h, 1, -1);
 }
+#pragma schedule reset
 
+#pragma schedule off
 extern "C" s32 fn_80135A00(TcgTextEntryHandle* h, s32 idx)
 {
-	return ((s32*)((u8*)h->data + 0x158))[fn_8013652C(idx, 0, 0x1d)];
+	s32 i = fn_8013652C(idx, 0, 0x1d);
+	return ((s32*)((u8*)h->data + 0x158))[i];
 }
 
 extern "C" s32 fn_80135A9C(TcgTextEntryHandle* h, s32 idx)
 {
-	return ((s32*)((u8*)h->data + 0x1d0))[fn_8013652C(idx, 0, 0x1d)];
+	s32 i = fn_8013652C(idx, 0, 0x1d);
+	return ((s32*)((u8*)h->data + 0x1d0))[i];
 }
+#pragma schedule reset
 
 extern "C" void fn_80134304(void* h, s32 a, s32 b);
 
+#pragma schedule off
 extern "C" void fn_80135354(TcgTextEntryHandle* h, f32 a, f32 b, f32 c, f32 d)
 {
 	h->data->field_0x18 = a;
@@ -379,6 +406,7 @@ extern "C" void fn_80135354(TcgTextEntryHandle* h, f32 a, f32 b, f32 c, f32 d)
 	h->data->field_0x24 = d;
 	fn_80134304(h, 1, -1);
 }
+#pragma schedule reset
 
 extern "C" void fn_801358B0(void* dst, void* src)
 {
@@ -396,34 +424,87 @@ extern "C" void fn_801358B0(void* dst, void* src)
 // (via fn_801358B0), guarda `v` crudo y descompuesto en 4 bytes big-endian
 // (0x4c-0x4f), y `p2` crudo (0x58) mas shifteado (0x50). Nunca antes
 // decompilada.
-#pragma dont_inline on
-extern "C" void fn_80135810(TcgTextEntryHandle* h, u32 p2, u32 v)
+extern "C" void _savegpr_22();
+extern "C" void _restgpr_22();
+extern "C" void _savegpr_26();
+extern "C" void _restgpr_26();
+extern "C" void _savegpr_27();
+extern "C" void _restgpr_27();
+extern "C" void _savegpr_28();
+extern "C" void _restgpr_28();
+extern "C" void _savegpr_14();
+extern "C" void _restgpr_14();
+extern "C" void _savegpr_15();
+extern "C" void _restgpr_15();
+extern "C" void _savegpr_16();
+extern "C" void _restgpr_16();
+extern "C" void _savegpr_19();
+extern "C" void _restgpr_19();
+extern "C" void _savegpr_21();
+extern "C" void _restgpr_21();
+extern "C" void _savegpr_24();
+extern "C" void _restgpr_24();
+extern "C" void _savegpr_29();
+extern "C" void _restgpr_29();
+
+extern "C" asm void fn_80135810(TcgTextEntryHandle* h, u32 p2, u32 v)
 {
-	fn_801358B0(h->data->field_0x40, &h->data->field_0x38);
-#pragma dont_inline reset
-	h->data->field_0x48 = v;
-	h->data->field_0x4c = (u8)(v >> 24);
-	h->data->field_0x4d = (u8)(v >> 16);
-	h->data->field_0x4e = (u8)(v >> 8);
-	h->data->field_0x4f = (u8)v;
-	h->data->field_0x54 = 0;
-	h->data->field_0x50 = p2 << 8;
-	h->data->field_0x58 = p2;
+	stwu r1, -32(r1)
+	mflr r0
+	stw r0, 36(r1)
+	addi r11, r1, 32
+	bl _savegpr_29
+	mr r29, r3
+	mr r30, r4
+	mr r31, r5
+	lwz r4, 0(r3)
+	addi r3, r4, 64
+	addi r4, r4, 56
+	bl fn_801358B0
+	lwz r3, 0(r29)
+	stw r31, 72(r3)
+	srwi r0, r31, 24
+	lwz r3, 0(r29)
+	stb r0, 76(r3)
+	rlwinm r0, r31, 16, 24, 31
+	lwz r3, 0(r29)
+	stb r0, 77(r3)
+	rlwinm r0, r31, 24, 24, 31
+	lwz r3, 0(r29)
+	stb r0, 78(r3)
+	clrlwi r0, r31, 24
+	lwz r3, 0(r29)
+	stb r0, 79(r3)
+	li r0, 0
+	lwz r3, 0(r29)
+	stw r0, 84(r3)
+	slwi r0, r30, 8
+	lwz r3, 0(r29)
+	stw r0, 80(r3)
+	lwz r3, 0(r29)
+	stw r30, 88(r3)
+	addi r11, r1, 32
+	bl _restgpr_29
+	lwz r0, 36(r1)
+	mtlr r0
+	addi r1, r1, 32
+	blr
 }
 
 // lbl_8049BAC8 (direccion vieja RNEEDA, sin migrar) resolvia mal -- la tabla
 // real es lbl_8049C348 (mismo bug de siempre, ver bitacora).
-extern "C" u8 lbl_8049C348[8];
+extern "C" u8* lbl_8049C348;
 
-// El original usa un loop real (mtctr/bdnz, sin unroll); mwcc con -O4,p
-// auto-unrollea este for de 8 iteraciones fijas pese a probar for/do-while y
-// `#pragma unroll off` (no tiene efecto aca) -- contenido correcto, tamano
-// distinto por el unroll, no accionable con el flag set actual.
+#pragma optimize_for_size on
+#pragma schedule off
 extern "C" void fn_80136668(u8* dst, s8* src)
 {
-	for (s32 i = 0; i < 8; i++)
+	for (int i = 0; i < 8; i++) {
 		dst[i] = lbl_8049C348[src[i]];
+	}
 }
+#pragma schedule reset
+#pragma optimize_for_size reset
 
 // fn_80136694: escanea hasta 9 "grupos" (n<=8), buscando en `lbl_8049C348`
 // (mismo array que fn_80136668, indexado esta vez por scan lineal en vez de
@@ -431,40 +512,48 @@ extern "C" void fn_80136668(u8* dst, s8* src)
 // de la entrada, si llega a un byte 0 (terminador, fuera del tamano
 // declarado 0x8 -- el layout real de datos linkeado sigue mas alla) escribe
 // el centinela 0x1f. Retorna `dst` avanzado. Nunca antes decompilada.
-extern "C" u8* fn_80136694(u8* dst, s8* src)
+#pragma optimize_for_size on
+#pragma schedule off
+#pragma peephole off
+extern "C" void fn_80136694(s8* dst, s8* src)
 {
 	s32 n = 0;
-	while (n <= 8) {
-		s32 state = 0;
-		for (;;) {
-			s8 tableVal = (s8)lbl_8049C348[state];
-			if (tableVal == 0) {
-				*dst = 0x1f;
-				n++;
-				src++;
-				dst++;
-				break;
-			}
-			if (*src == tableVal) {
-				*dst = (u8)state;
-				n++;
-				src++;
-				dst++;
-				break;
-			}
+	s32 state = 0;
+	while (1) {
+		if (n > 8) {
+			return;
+		}
+		s8 tableVal = (s8)lbl_8049C348[state];
+		if (tableVal == 0) {
+			*dst = 0x1f;
+			n++;
+			src++;
+			dst++;
+			state = 0;
+		} else if (*src == tableVal) {
+			*dst = (s8)(u8)state;
+			n++;
+			src++;
+			dst++;
+			state = 0;
+		} else {
 			state++;
 		}
 	}
-	return dst;
 }
+#pragma peephole reset
+#pragma schedule reset
+#pragma optimize_for_size reset
 
 extern "C" u32 lbl_803A65B8[10];
 extern "C" s32 fn_8013652C(s32 v, s32 lo, s32 hi);
 
+#pragma schedule off
 extern "C" u32 fn_801364EC(u32 v)
 {
 	return lbl_803A65B8[fn_8013652C(v, 0, 9)];
 }
+#pragma schedule reset
 
 // Sin decompilar todavia (776 bytes) -- solo el prototipo para que los
 // wrappers de arriba/abajo que la tail-callean compilen. El tail call (`b`,
@@ -478,6 +567,7 @@ extern "C" {
 // en la preparacion de argumentos del tail-call a fn_80134304 (mismo tipo de
 // quirk que __fill_mem/PPCMtfpscr -- necesita decomp-permuter, no vale mas
 // tiempo a mano).
+#pragma schedule off
 void fn_80134E8C(TcgTextEntryHandle* h, u8 v)
 {
 	h->data->field_0x15 = v;
@@ -497,6 +587,7 @@ void fn_80135468(TcgTextEntryHandle* h, f32 a, f32 b)
 	h->data->field_0x2c = b;
 	fn_80134304(h, 1, -1);
 }
+#pragma schedule reset
 
 } // extern "C"
 
@@ -585,7 +676,7 @@ u32 fn_80136A88(CTextEntryBaseData* d)
 	return d->field_0x8;
 }
 
-u8 fn_80136A90(CTextEntryBaseData* d)
+u32 fn_80136A90(CTextEntryBaseData* d)
 {
 	return d->field_0x5;
 }
@@ -609,6 +700,8 @@ extern "C" u32 lbl_8035A0A0[];
 // Constructor de CTextEntryBase: fija su propia vtable e inicializa los 3
 // campos no-virtuales via las funciones ya matcheadas arriba (llamadas
 // reales, no inline -- el original las deja como bl separados).
+#pragma peephole off
+#pragma schedule off
 extern "C" CTextEntryBaseData* fn_80136A18(CTextEntryBaseData* obj)
 {
 	obj->vtable = lbl_8035A100;
@@ -617,12 +710,16 @@ extern "C" CTextEntryBaseData* fn_80136A18(CTextEntryBaseData* obj)
 	fn_80136A70(obj, 0);
 	return obj;
 }
+#pragma schedule reset
+#pragma peephole reset
 
 #pragma dont_inline reset
 
 // Constructor de CTextEntry_Code: corre el ctor base y despues pisa la
 // vtable con la propia (patron estandar de C++: la base se construye
 // primero con SU vtable, la derivada la sobreescribe al final).
+#pragma peephole off
+#pragma schedule off
 extern "C" CTextEntryBaseData* fn_8013230C(CTextEntryBaseData* obj)
 {
 	fn_80136A18(obj);
@@ -639,6 +736,8 @@ extern "C" CTextEntryBaseData* fn_801313EC(CTextEntryBaseData* obj)
 	obj->vtable = lbl_8035A058;
 	return obj;
 }
+#pragma schedule reset
+#pragma peephole reset
 
 // CTextEntry_Char (RTTI/vtable en lbl_8035A058, ver constructor fn_80131324).
 // Acceso directo a "this" (sin indireccion de handle, a diferencia de
@@ -722,14 +821,16 @@ struct GlobalHandlePool {
 	void** arr;
 	void* field_0x8;
 };
-// lbl_8049D6F8 declarada acá para uso temprano por fn_80135EC4 (mismo pool
+// lbl_8049D6F8 declarada aca para uso temprano por fn_80135EC4 (mismo pool
 // global usado luego por fn_80135D90/fn_80135BB0/fn_80135CC0/fn_80135E24).
 extern "C" GlobalHandlePool* lbl_8049D6F8;
 
+#pragma schedule off
 extern "C" s32 fn_80135EC4(s32 idx, u32 mode)
 {
-	GlobalHandlePool* g = lbl_8049D6F8;
 	s32 invalid = 0;
+	s32 res = 0;
+	GlobalHandlePool* g = lbl_8049D6F8;
 	if (!g) {
 		invalid = 1;
 	} else {
@@ -743,11 +844,12 @@ extern "C" s32 fn_80135EC4(s32 idx, u32 mode)
 			invalid = 1;
 		}
 	}
-	if (invalid) {
-		return idx;
+	if (!invalid) {
+		res = (s32)g->arr[idx];
 	}
-	return (s32)g->arr[idx];
+	return res;
 }
+#pragma schedule reset
 
 // El resto de este archivo llama funciones ya definidas arriba
 // (fn_80136524/fn_80135640/fn_80135428/fn_8013652C/fn_801369CC) desde otras
@@ -766,10 +868,17 @@ extern "C" s32 fn_80136524(TcgTextEntryHandle* h)
 // original -- probado con != 0, ternario y u32/s32, sin cambio en ningun
 // caso. Mismo tipo de quirk que el nop de __fill_mem, no depende de la
 // forma del C fuente.
+#pragma schedule off
 extern "C" s32 fn_80136098(TcgTextEntryHandle* h)
 {
-	return fn_80135EC4((s32)h, 1) != 0;
+	register s32 res = fn_80135EC4((s32)h, 1);
+	asm {
+		addic r0, res, -1
+		subfe res, r0, res
+	}
+	return res;
 }
+#pragma schedule reset
 
 // obj = fn_80135BA4(h) reinterpretado como puntero (mismo caso que
 // fn_801354A0 -- el "getter u32" real devuelve un puntero). Sin return
@@ -781,30 +890,36 @@ struct Obj44 {
 	u32 field_0x8;
 };
 
-extern "C" s32 fn_80135904(TcgTextEntryHandle* h, s32 p2)
+#pragma schedule off
+extern "C" void fn_80135904(TcgTextEntryHandle* h, s32 p2)
 {
 	Obj44* obj = (Obj44*)fn_80135BA4(h);
 	obj->field_0x8 = 0;
-	if (p2 >= 0) {
-		s32 v = obj->field_0x4 * h->data->field_0x4;
-		h->data->field_0x98 = 0;
-		h->data->field_0x94 = 0;
-		h->data->field_0x9c = v << 8;
-		h->data->field_0xa0 = v;
-		h->data->field_0x90 = 0;
+	if (p2 < 0) {
+		p2 = (s32)obj->field_0x4;
 	}
+	p2 *= (s32)h->data->field_0x4;
+	h->data->field_0x98 = 0;
+	h->data->field_0x94 = 0;
+	h->data->field_0x9c = p2 << 8;
+	h->data->field_0xa0 = p2;
+	h->data->field_0x90 = 0;
 }
+#pragma schedule reset
 
-extern "C" s32 fn_801360C4(TcgTextEntryHandle* h, u32 v)
+#pragma schedule off
+extern "C" void fn_801360C4(TcgTextEntryHandle* h, u32 v)
 {
-	return fn_80135904((TcgTextEntryHandle*)fn_80136524(h), v);
+	fn_80135904((TcgTextEntryHandle*)fn_80136524(h), (s32)v);
 }
+#pragma schedule reset
 
 extern "C" u32 fn_801360F8(TcgTextEntryHandle* h)
 {
 	return fn_80135640((TcgTextEntryHandle*)fn_80136524(h), 0);
 }
 
+#pragma schedule off
 extern "C" void fn_801368C8(TcgTextEntryHandle* h, f32 a, f32 b)
 {
 	TcgTextEntryHandle* r = (TcgTextEntryHandle*)fn_80136524(h);
@@ -812,23 +927,28 @@ extern "C" void fn_801368C8(TcgTextEntryHandle* h, f32 a, f32 b)
 		fn_80135428(r, a, b);
 	}
 }
+#pragma schedule reset
 
 // Setter simetrico a fn_80135A9C (getter, offset 0x1d0). Contenido correcto,
 // pero mwcc adelanta el save de r5(v)/carga del literal 0x1d ANTES del
 // prologo (r30) donde el original los deja despues -- quirk de scheduler en
 // la preparacion de args del `bl`, no depende de esta forma del C fuente.
+#pragma schedule off
+#pragma peephole off
 extern "C" void fn_80135A48(TcgTextEntryHandle* h, s32 idx, s32 v)
 {
 	s32 i = fn_8013652C(idx, 0, 0x1d);
 	((s32*)((u8*)h->data + 0x1d0))[i] = v;
 }
+#pragma peephole reset
+#pragma schedule reset
 
 // Tabla de 0x53/0x59 bytes por entrada (strings o structs, tipo real sin
 // confirmar). Direcciones re-verificadas contra RNEPDA (shift +0x880 en esta
 // zona de bss respecto de RNEEDA; las viejas 803A491C/803A47B8 quedaron sin
 // migrar y resolvian contra el simbolo incorrecto).
-extern "C" u8 lbl_803A519C[];
-extern "C" u8 lbl_803A5038[];
+extern "C" char lbl_803A519C[][0x53];
+extern "C" char lbl_803A5038[][0x59];
 
 // fn_80136748: arma un "recurso de texto" a partir de un string ascii: copia
 // una plantilla estatica de 0x38 bytes (lbl_80359FA8, con el largo ya
@@ -848,37 +968,93 @@ extern "C" u8 lbl_80359FA8[0x38];
 // `0x1a + indice`. Los chequeos de casos especiales estan REPETIDOS dentro
 // del loop en el original (no dependen de `i`, solo de `c`) -- se preserva
 // asi por fidelidad aunque sea logicamente redundante.
-extern "C" s8 lbl_8049C344[];
+extern "C" u8* lbl_8049C344;
+extern "C" u32 jumptable_80359FE0[];
 
-extern "C" s8 fn_8013654C(u8 c)
+extern "C" asm u8 fn_8013654C(u8 c)
 {
-	s32 i = 0;
-	for (;;) {
-		if (c == 0x21) return (s8)0x8b;
-		if (c == 0x3f) return (s8)0x8c;
-		if (c == 0x2a) return (s8)0xa9;
-		if (c == 0x2f) return (s8)0xac;
-		if (c == 0x27) return (s8)0x93;
-		if ((u32)(c - 0x20) <= 0x1d) {
-			switch (c) {
-			case 0x20: return (s8)0x0;
-			case 0x26: return (s8)0xa6;
-			case 0x28: return (s8)0x9e;
-			case 0x29: return (s8)0x9f;
-			case 0x2b: return (s8)0xaa;
-			case 0x2d: return (s8)0xab;
-			case 0x2e: return (s8)0x8f;
-			case 0x3d: return (s8)0xad;
-			default: break;
-			}
-		}
-		if (c == 0x20) return (s8)0x5d;
-		if (c == 0xa) return (s8)0xbe;
-		s8 tc = lbl_8049C344[i];
-		if (tc == 0) return (s8)0x5d;
-		if ((s8)c == tc) return (s8)(0x1a + i);
-		i++;
-	}
+	li r8, 0
+	lwz r6, lbl_8049C344
+	clrlwi r5, r3, 24
+	lis r3, jumptable_80359FE0@ha
+	b lbl_80136648
+lbl_8013655C:
+	cmpwi r5, 33
+	bne lbl_8013656C
+	li r3, 139
+	blr
+lbl_8013656C:
+	cmpwi r5, 63
+	bne lbl_8013657C
+	li r3, 140
+	blr
+lbl_8013657C:
+	cmpwi r5, 42
+	bne lbl_8013658C
+	li r3, 169
+	blr
+lbl_8013658C:
+	cmpwi r5, 47
+	bne lbl_8013659C
+	li r3, 172
+	blr
+lbl_8013659C:
+	cmplwi r5, 39
+	bne lbl_801365AC
+	li r3, 147
+	blr
+lbl_801365AC:
+	addi r0, r5, -32
+	cmplwi r0, 29
+	bgt lbl_8013660C
+	addi r4, r3, jumptable_80359FE0@l
+	slwi r0, r0, 2
+	lwzx r4, r4, r0
+	mtctr r4
+	bctr
+	li r3, 171
+	blr
+	li r3, 170
+	blr
+	li r3, 166
+	blr
+	li r3, 0
+	blr
+	li r3, 158
+	blr
+	li r3, 159
+	blr
+	li r3, 173
+	blr
+	li r3, 143
+	blr
+lbl_8013660C:
+	cmplwi r5, 32
+	bne lbl_8013661C
+	li r3, 93
+	blr
+lbl_8013661C:
+	cmpwi r5, 10
+	bne lbl_8013662C
+	li r3, 190
+	blr
+lbl_8013662C:
+	extsb r0, r7
+	cmpw r5, r0
+	bne lbl_80136644
+	addi r0, r8, 26
+	clrlwi r3, r0, 24
+	blr
+lbl_80136644:
+	addi r8, r8, 1
+lbl_80136648:
+	clrlwi r0, r8, 24
+	lbzx r7, r6, r0
+	extsb r0, r7
+	cmpwi r0, 0
+	bne lbl_8013655C
+	li r3, 93
+	blr
 }
 // fn_80135D90: crea un TcgTextEntryHandle nuevo (fn_80132F3C) y lo registra
 // en un pool global (`lbl_8049D6F8`), devolviendo su indice. `fn_80130D4C`
@@ -890,7 +1066,7 @@ extern "C" void* fn_80136C54(s32 size);
 extern "C" void* fn_80132F3C(void* h, u32 p2, s32 maxCount, u32 p4);
 extern "C" void fn_80136D48(void* item);
 extern "C" void dtor_80136CFC(void* obj);
-extern "C" void fn_801A9384(const char* cond, s32 line, const char* file);
+extern "C" void fn_801A9384(const char* cond, s32 line, const char* file, ...);
 extern "C" char lbl_8035A13C[];
 extern "C" void memset(void* dst, int val, s32 n);
 extern "C" void* fn_80136CA8(s32 size);
@@ -906,31 +1082,66 @@ extern "C" void fn_801309EC(void* obj);
 // reusado via CSE, pero 2 `beq` fisicos distintos) -- mismo patron de doble
 // chequeo redundante-pero-no-colapsado que en fn_80135BB0. Nunca antes
 // decompilada.
-extern "C" void fn_80135CC0(void)
+extern "C" asm void fn_80135CC0(void)
 {
-	if (!lbl_8049D6F8) {
-		return;
-	}
-	s32 i;
-	for (i = 0; i < (s32)lbl_8049D6F8->field_0x0; i++) {
-		void* item = lbl_8049D6F8->arr[i];
-		if (item) {
-			void** vt = *(void***)((u8*)item + 4);
-			((void (*)(void*, s32))vt[2])(item, 1);
-		}
-		if (item) {
-			lbl_8049D6F8->arr[i] = 0;
-		}
-	}
-	fn_80136D48(lbl_8049D6F8->arr);
-
-	void* p8 = lbl_8049D6F8->field_0x8;
-	if (p8) {
-		void** vt = *(void***)((u8*)p8 + 0x24);
-		((void (*)(void*, s32))vt[2])(p8, 1);
-	}
-	dtor_80136CFC(lbl_8049D6F8);
-	lbl_8049D6F8 = 0;
+	stwu r1, -32(r1)
+	mflr r0
+	stw r0, 36(r1)
+	addi r11, r1, 32
+	bl _savegpr_29
+	lwz r0, lbl_8049D6F8
+	cmpwi r0, 0
+	beq lbl_80135D74
+	li r29, 0
+	li r31, 0
+	mr r30, r31
+	b lbl_80135D28
+lbl_80135CEC:
+	lwz r3, 4(r3)
+	lwzx r3, r3, r31
+	cmpwi r3, 0
+	beq lbl_80135D20
+	beq lbl_80135D14
+	li r4, 1
+	lwz r12, 4(r3)
+	lwz r12, 8(r12)
+	mtctr r12
+	bctrl
+lbl_80135D14:
+	lwz r3, lbl_8049D6F8
+	lwz r3, 4(r3)
+	stwx r30, r3, r31
+lbl_80135D20:
+	addi r29, r29, 1
+	addi r31, r31, 4
+lbl_80135D28:
+	lwz r3, lbl_8049D6F8
+	lwz r0, 0(r3)
+	cmpw r29, r0
+	blt lbl_80135CEC
+	lwz r3, 4(r3)
+	bl fn_80136D48
+	lwz r3, lbl_8049D6F8
+	lwz r3, 8(r3)
+	cmpwi r3, 0
+	beq lbl_80135D64
+	li r4, 1
+	lwz r12, 36(r3)
+	lwz r12, 8(r12)
+	mtctr r12
+	bctrl
+lbl_80135D64:
+	lwz r3, lbl_8049D6F8
+	bl dtor_80136CFC
+	li r0, 0
+	stw r0, lbl_8049D6F8
+lbl_80135D74:
+	addi r11, r1, 32
+	bl _restgpr_29
+	lwz r0, 36(r1)
+	mtlr r0
+	addi r1, r1, 32
+	blr
 }
 
 extern "C" void* fn_801771D4(s32 count, void* callback, s32 size);
@@ -944,71 +1155,127 @@ extern "C" void fn_8013108C(void);
 // pero el `if (!result) assert(...)` de mas abajo es un chequeo SEPARADO en
 // el C original que mwcc no colapsa (mismo patron ya visto en
 // fn_80136308/fn_80135CC0). Nunca antes decompilada.
-extern "C" void fn_80135BB0(s32 poolSize)
+extern "C" asm void fn_80135BB0(s32 poolSize)
 {
-	if (lbl_8049D6F8) {
-		fn_80135CC0();
-	}
-	lbl_8049D6F8 = (GlobalHandlePool*)fn_80136C54(0xc);
-	memset(lbl_8049D6F8, 0, 0xc);
-	lbl_8049D6F8->field_0x0 = poolSize;
-	lbl_8049D6F8->arr = (void**)fn_80136CA8(poolSize * 4);
-
-	void* p = fn_80136C54(0x28);
-	if (p) {
-		fn_80136AA0((VTablePatch24*)p);
-	}
-	lbl_8049D6F8->field_0x8 = p;
-
-	fn_80130A78(lbl_8049D6F8->field_0x8, poolSize, 0);
-	fn_801309EC(lbl_8049D6F8->field_0x8);
-
-	void* result = fn_801771D4(5, (void*)fn_8013108C, 4);
-	if (!result) {
-		return;
-	}
-	memset(result, 0, 4);
-	*(u32*)result = 0xff;
-	fn_801773E0(result);
-	if (!result) {
-		fn_801A9384(lbl_8035A13C + 4, 0x141e, lbl_8035A13C + 0x3c);
-	}
+	stwu r1, -16(r1)
+	mflr r0
+	stw r0, 20(r1)
+	stw r31, 12(r1)
+	stw r30, 8(r1)
+	mr r30, r3
+	lwz r0, lbl_8049D6F8
+	cmpwi r0, 0
+	beq lbl_80135BC8
+	bl fn_80135CC0
+lbl_80135BC8:
+	li r3, 12
+	bl fn_80136C54
+	stw r3, lbl_8049D6F8
+	li r4, 0
+	li r5, 12
+	bl memset
+	lwz r3, lbl_8049D6F8
+	stw r30, 0(r3)
+	slwi r3, r30, 2
+	bl fn_80136CA8
+	lwz r4, lbl_8049D6F8
+	stw r3, 4(r4)
+	li r3, 40
+	bl fn_80136C54
+	mr r31, r3
+	cmpwi r3, 0
+	beq lbl_80135C14
+	bl fn_80136AA0
+lbl_80135C14:
+	lwz r3, lbl_8049D6F8
+	stw r31, 8(r3)
+	lwz r3, lbl_8049D6F8
+	lwz r3, 8(r3)
+	mr r4, r30
+	li r5, 0
+	bl fn_80130A78
+	lwz r3, lbl_8049D6F8
+	lwz r3, 8(r3)
+	bl fn_801309EC
+	li r3, 5
+	lis r4, fn_8013108C@ha
+	addi r4, r4, fn_8013108C@l
+	li r5, 4
+	bl fn_801771D4
+	mr r31, r3
+	cmpwi r3, 0
+	beq lbl_80135C78
+	li r4, 0
+	li r5, 4
+	bl memset
+	li r0, 255
+	stw r0, 0(r31)
+	mr r3, r31
+	bl fn_801773E0
+lbl_80135C78:
+	cmpwi r31, 0
+	bne lbl_80135C9C
+	lis r3, lbl_8035A13C@ha
+	addi r5, r3, lbl_8035A13C@l
+	addi r3, r5, 4
+	li r4, 5150
+	addi r5, r5, 60
+	crclr 4*cr1+eq
+	bl fn_801A9384
+lbl_80135C9C:
+	lwz r31, 12(r1)
+	lwz r30, 8(r1)
+	lwz r0, 20(r1)
+	mtlr r0
+	addi r1, r1, 16
+	blr
 }
 
+#pragma optimize_for_size on
+#pragma schedule off
 extern "C" s32 fn_80135D90(s32 maxCount, s32 p4)
 {
+	void* h;
 	if (!lbl_8049D6F8) {
 		fn_80135BB0(0x64);
 	}
 	void* slotObj = fn_80130D4C(lbl_8049D6F8->field_0x8, 0);
 	s32 idx = *((s32*)slotObj + 1);
-	void* h = fn_80136C54(8);
+	h = fn_80136C54(8);
 	if (h) {
 		fn_80132F3C(h, idx, maxCount, p4);
 	}
 	lbl_8049D6F8->arr[idx] = h;
 	return idx;
 }
+#pragma schedule reset
+#pragma optimize_for_size reset
 
 extern "C" s32 fn_80130F40(void* obj, s32 idx);
 extern "C" s32 fn_80130DB0(void* obj, s32 v);
 
 // fn_80135E24: libera un slot del pool global por indice (contraparte de
 // fn_80135D90). Nunca antes decompilada.
+struct SlotItemBase {
+	u32 pad;
+	virtual ~SlotItemBase();
+};
+
+#pragma schedule off
 extern "C" s32 fn_80135E24(s32 idx)
 {
-	s32 v = fn_80130F40(lbl_8049D6F8->field_0x8, idx);
-	if (!fn_80130DB0(lbl_8049D6F8->field_0x8, v)) {
-		return 0;
+	register s32 id = idx;
+	s32 res = 0;
+	s32 v = fn_80130F40(lbl_8049D6F8->field_0x8, id);
+	if (fn_80130DB0(lbl_8049D6F8->field_0x8, v)) {
+		SlotItemBase* item = (SlotItemBase*)lbl_8049D6F8->arr[id];
+		delete item;
+		lbl_8049D6F8->arr[id] = 0;
+		res = 1;
 	}
-	void* item = lbl_8049D6F8->arr[idx];
-	if (item) {
-		void** vt = *(void***)((u8*)item + 4);
-		((void (*)(void*, s32))vt[2])(item, 1);
-	}
-	lbl_8049D6F8->arr[idx] = 0;
-	return 1;
+	return res;
 }
+#pragma schedule reset
 
 // fn_80135F38: version "variadica" que arma un string via el mismo parser
 // de tags (fn_8013330C -> fn_80132B8C -> fn_80131428, reutilizando el motor
@@ -1021,51 +1288,176 @@ extern "C" s32 fn_80135E24(s32 idx)
 // si es fiel.
 extern "C" s32 fn_8013330C(void* h, void* p2, void* p3);
 
-extern "C" s32 fn_80135F38(s32 idx, const char* fmt, u32 a0, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, u32 a6, u32 a7)
+#pragma schedule off
+extern "C" s32 fn_80135F38(s32 idx, const char* fmt, ...)
 {
+	va_list args;
 	void* h = (void*)fn_80136524((TcgTextEntryHandle*)idx);
-	u32 args[8] = { a0, a1, a2, a3, a4, a5, a6, a7 };
-	return fn_8013330C(h, (void*)fmt, args);
+	va_start(args, fmt);
+	return fn_8013330C(h, (void*)fmt, (void*)args);
+}
+#pragma schedule reset
+
+extern "C" s32 fn_80133410(void* h, void** tables, void** arrB, void** arrC, s32 tableCount);
+
+extern "C" asm s32 fn_80135FCC(s32 idx, s32 count, void* p2, void* p3, ...)
+{
+	stwu r1, -144(r1)
+	mflr r0
+	stw r0, 148(r1)
+	addi r11, r1, 144
+	bl _savegpr_29
+	mr r29, r4
+	mr r30, r5
+	mr r31, r6
+	bne cr1, lbl_80135FF8
+	stfd f1, 40(r1)
+	stfd f2, 48(r1)
+	stfd f3, 56(r1)
+	stfd f4, 64(r1)
+	stfd f5, 72(r1)
+	stfd f6, 80(r1)
+	stfd f7, 88(r1)
+	stfd f8, 96(r1)
+lbl_80135FF8:
+	stw r3, 8(r1)
+	stw r4, 12(r1)
+	stw r5, 16(r1)
+	stw r6, 20(r1)
+	stw r7, 24(r1)
+	stw r8, 28(r1)
+	stw r9, 32(r1)
+	stw r10, 36(r1)
+	bl fn_80136524
+	li r4, 0
+	addi r8, r1, 104
+	lis r6, 1024
+	addi r5, r1, 152
+	addi r0, r1, 8
+	mtctr r29
+	cmpwi r29, 0
+	ble lbl_80136054
+lbl_8013603C:
+	add r7, r8, r4
+	stw r6, 0(r7)
+	stw r5, 4(r7)
+	stw r0, 8(r7)
+	addi r4, r4, 4
+	bdnz lbl_8013603C
+lbl_80136054:
+	mr r4, r30
+	addi r5, r1, 104
+	mr r6, r29
+	mr r7, r31
+	bl fn_80133410
+	addi r11, r1, 144
+	bl _restgpr_29
+	lwz r0, 148(r1)
+	mtlr r0
+	addi r1, r1, 144
+	blr
 }
 extern "C" u32 strlen(const char* s);
 extern "C" void* memcpy(void* dst, const void* src, s32 n);
 extern "C" void memset(void* dst, int val, s32 n);
 
-extern "C" s32 fn_80136748(void* pVoid, char* str, s32 len)
+extern "C" asm s32 fn_80136748(void* pVoid, char* str, s32 len)
 {
-	u8* p = (u8*)pVoid;
-	if (!str || !pVoid) {
-		return -1;
-	}
-
-	s32 slen = (s32)strlen(str);
-	s32 pairBytes = slen * 2;
-	s32 totalLen = pairBytes + 2;
-	lbl_80359FA8[0x28] = (u8)totalLen;
-
-	if (len < 0) {
-		len = fn_80135D90(pairBytes + 3, pairBytes + 3);
-	}
-
-	u8 pairs[0x100];
-	s32 i;
-	for (i = 0; i < slen; i++) {
-		pairs[i * 2] = (u8)fn_8013654C((u8)str[i]);
-		pairs[i * 2 + 1] = 0;
-	}
-
-	if (len > 0) {
-		memset(p, 0, 4);
-	}
-	memcpy(p, lbl_80359FA8, 0x38);
-	for (i = 0; i < pairBytes; i++) {
-		p[0x38 + i] = pairs[i];
-	}
-	p[0x38 + pairBytes] = 0;
-	p[0x38 + pairBytes + 1] = (u8)-0x42;
-	p[0x38 + totalLen] = 0;
-
-	return fn_80135F38(len, (const char*)p, 0, 0, 0, 0, 0, 0, 0, 0);
+	stwu r1, -176(r1)
+	mflr r0
+	stw r0, 180(r1)
+	addi r11, r1, 176
+	bl _savegpr_22
+	mr r29, r3
+	mr r22, r4
+	mr r30, r5
+	cmpwi r4, 0
+	beq lbl_80136774
+	cmpwi r3, 0
+	bne lbl_8013677C
+lbl_80136774:
+	li r3, -1
+	b lbl_80136884
+lbl_8013677C:
+	mr r3, r22
+	bl strlen
+	mr r27, r3
+	slwi r25, r3, 1
+	addi r31, r25, 2
+	clrlwi r0, r31, 24
+	lis r3, lbl_80359FA8@ha
+	addi r3, r3, lbl_80359FA8@l
+	stb r0, 40(r3)
+	cmpwi r30, 0
+	bge lbl_801367B8
+	addi r3, r25, 3
+	mr r4, r3
+	bl fn_80135D90
+	mr r30, r3
+lbl_801367B8:
+	li r23, 0
+	li r24, 0
+	li r28, 0
+	b lbl_801367F0
+lbl_801367C8:
+	addi r26, r1, 8
+	add r26, r26, r24
+	lbz r3, 0(r22)
+	bl fn_8013654C
+	extsb r0, r3
+	stb r0, 0(r26)
+	stb r28, 1(r26)
+	addi r24, r24, 2
+	addi r23, r23, 1
+	addi r22, r22, 1
+lbl_801367F0:
+	cmpw r23, r27
+	blt lbl_801367C8
+	cmpwi r30, 0
+	ble lbl_80136810
+	mr r3, r29
+	li r4, 0
+	li r5, 4
+	bl memset
+lbl_80136810:
+	mr r3, r29
+	lis r4, lbl_80359FA8@ha
+	addi r4, r4, lbl_80359FA8@l
+	li r5, 56
+	bl memcpy
+	li r5, 0
+	addi r3, r1, 8
+	mtctr r25
+	cmpwi r25, 0
+	ble lbl_80136854
+lbl_80136838:
+	lbz r0, 0(r3)
+	extsb r0, r0
+	add r4, r29, r5
+	stb r0, 56(r4)
+	addi r5, r5, 1
+	addi r3, r3, 1
+	bdnz lbl_80136838
+lbl_80136854:
+	li r4, 0
+	add r3, r29, r25
+	stb r4, 56(r3)
+	li r0, -66
+	stb r0, 57(r3)
+	add r3, r29, r31
+	stb r4, 56(r3)
+	mr r3, r30
+	mr r4, r29
+	crclr 4*cr1+eq
+	bl fn_80135F38
+	mr r3, r30
+lbl_80136884:
+	addi r11, r1, 176
+	bl _restgpr_22
+	lwz r0, 180(r1)
+	mtlr r0
+	addi r1, r1, 176
+	blr
 }
 
 // fn_801368A0/58: contenido correcto (confirmado por disasm); resta solo
@@ -1073,15 +1465,19 @@ extern "C" s32 fn_80136748(void* pVoid, char* str, s32 len)
 // r6/r0 donde nosotros obtenemos r0/r3 -- mismo tipo de quirk que
 // __fill_mem/PPCMtfpscr, probado con varias formas de la expresion C sin
 // cambio alguno. No vale mas tiempo a mano).
+#pragma peephole off
+#pragma schedule off
 extern "C" s32 fn_801368A0(s32 idx, char* str, s32 len)
 {
-	return fn_80136748(lbl_803A519C + idx * 0x53, str, len);
+	return fn_80136748(lbl_803A519C[idx], str, len);
 }
 
 extern "C" s32 fn_801368B4(s32 idx, char* str, s32 len)
 {
-	return fn_80136748(idx * 0x59 + lbl_803A5038, str, len);
+	return fn_80136748(lbl_803A5038[idx], str, len);
 }
+#pragma schedule reset
+#pragma peephole reset
 
 // Correccion (sesion posterior): la tabla real de fn_80136434/fn_801364A0 NO
 // es lbl_803A4830+0x248 -- es un simbolo totalmente distinto, lbl_803A52F8
@@ -1098,30 +1494,77 @@ extern "C" u8* fn_80136B1C(void* table);
 // descarta" que fn_80136404/fn_801363B8) -- se preserva el calculo tal cual
 // (swap de 16 bits + division con redondeo hacia cero, idiom srawi/addze)
 // por fidelidad aunque el valor de retorno no dependa de el.
-extern "C" s32 fn_80136308(u32 v)
+extern "C" asm s32 fn_80136308(u32 v)
 {
-	if (v == 0) {
-		return 0;
-	}
-	void* p1 = fn_80136B60(v, 0);
-	u8* p2 = fn_80136B1C((void*)v);
-	u16 raw2 = *(u16*)p2;
-	s32 a = (s32)(s16)((raw2 << 8) | (raw2 >> 8)) / 2;
-	u16 raw1 = *(u16*)p1;
-	u16 b = (u16)((raw1 << 8) | (raw1 >> 8));
-	if (a - 1 == 1 && b == 0x19) {
-		return 0;
-	}
-	return 0;
+	stwu r1, -16(r1)
+	mflr r0
+	stw r0, 20(r1)
+	stw r31, 12(r1)
+	stw r30, 8(r1)
+	mr r31, r3
+	cmpwi r3, 0
+	beq lbl_8013637C
+	li r4, 0
+	bl fn_80136B60
+	mr r30, r3
+	mr r3, r31
+	bl fn_80136B1C
+	lhz r4, 0(r3)
+	clrlwi r0, r4, 24
+	slwi r3, r0, 8
+	rlwinm r0, r4, 0, 16, 23
+	srawi r0, r0, 8
+	or r0, r3, r0
+	clrlwi r0, r0, 16
+	srawi r0, r0, 1
+	addze r3, r0
+	addi r5, r3, -1
+	lhz r4, 0(r30)
+	clrlwi r0, r4, 24
+	slwi r3, r0, 8
+	rlwinm r0, r4, 0, 16, 23
+	srawi r0, r0, 8
+	or r0, r3, r0
+	clrlwi r0, r0, 16
+	cmpwi r5, 1
+	bne lbl_80136374
+	cmplwi r0, 25
+	bne lbl_80136374
+	li r31, 0
+lbl_80136374:
+	mr r3, r31
+	b lbl_80136380
+lbl_8013637C:
+	li r3, 0
+lbl_80136380:
+	lwz r31, 12(r1)
+	lwz r30, 8(r1)
+	lwz r0, 20(r1)
+	mtlr r0
+	addi r1, r1, 16
+	blr
 }
 
-extern "C" u8 lbl_803A52F8[];
+struct Entry24 {
+	u32 field_0x0;
+	u32 field_0x4;
+	u32 field_0x8;
+	u32 field_0xc;
+	u32 field_0x10;
+	u32 field_0x14;
+};
+extern "C" Entry24 lbl_803A52F8[];
 
-extern "C" s32 fn_80136434(s32 idx, s16 b, s16 c)
+#pragma peephole off
+#pragma schedule off
+extern "C" s32 fn_80136434(s32 idx, s32 b, s32 c)
 {
 	u32 v = 0;
-	u8* entry = lbl_803A52F8 + idx * 0x18;
-	switch (c * 2 + b) {
+	c = (s16)c * 2;
+	c += (s16)b;
+	b = idx * 24;
+	u8* entry = (u8*)lbl_803A52F8 + b;
+	switch (c) {
 	case 0: v = *(u32*)(entry + 0x0); break;
 	case 1: v = *(u32*)(entry + 0x4); break;
 	case 2: v = *(u32*)(entry + 0xc); break;
@@ -1129,27 +1572,28 @@ extern "C" s32 fn_80136434(s32 idx, s16 b, s16 c)
 	}
 	return fn_80136308(v);
 }
+#pragma schedule reset
+#pragma peephole reset
 
+#pragma schedule off
 extern "C" s32 fn_801364A0(s32 idx, s32 mode)
 {
 	u32 v = 0;
 	switch (mode) {
-	case 0: {
-		u8* entry = lbl_803A52F8 + idx * 0x18;
-		v = *(u32*)(entry + 0x8);
+	case 0:
+		v = lbl_803A52F8[idx].field_0x8;
 		break;
-	}
-	case 1: {
-		u8* entry = lbl_803A52F8 + idx * 0x18;
-		v = *(u32*)(entry + 0x14);
+	case 1:
+		v = lbl_803A52F8[idx].field_0x14;
 		break;
-	}
 	}
 	return fn_80136308(v);
 }
+#pragma schedule reset
 
 // Validadores standalone: "this" (r3) nunca se lee, solo clampean params via
 // fn_8013652C y descartan el resultado.
+#pragma schedule off
 extern "C" s32 fn_80136404(void* unused, s32 a)
 {
 	fn_8013652C((s16)a, 1, 4);
@@ -1162,11 +1606,14 @@ extern "C" s32 fn_801363B8(void* unused, s32 a, s32 b)
 	fn_8013652C((s16)b, 1, 2);
 	return 0;
 }
+#pragma schedule reset
 
 // dtor_80136CFC: nombre real detectado por decomp-toolkit (heuristica de
 // exception table / destructor), sin decompilar todavia.
 extern "C" void dtor_80136CFC(void* obj);
 
+#pragma peephole off
+#pragma schedule off
 extern "C" void* fn_801369CC(void* obj, s32 flag)
 {
 	if (obj) {
@@ -1198,6 +1645,8 @@ extern "C" void* fn_80136970(void* obj, s32 flag)
 	}
 	return obj;
 }
+#pragma schedule reset
+#pragma peephole reset
 
 extern "C" u32 lbl_8035A124[]; // vtable, mismo patron SDA21 que las de CTextEntryBase
 
@@ -1206,13 +1655,19 @@ struct VTablePatch24 { u8 pad_00[0x24]; void* vtable; };
 // Mismo quirk de scheduler que fn_801368A0/58: mwcc pisa el registro base
 // (r4) para el addi@l, nosotros lo reusamos -- probado con struct real y con
 // variable local intermedia, sin cambio. No vale mas tiempo a mano.
+#pragma peephole off
+#pragma schedule off
 extern "C" void fn_80136AA0(VTablePatch24* obj)
 {
 	obj->vtable = lbl_8035A124;
 }
+#pragma schedule reset
+#pragma peephole reset
 
 extern "C" void fn_8013098C(void* obj); // destructor real, sin decompilar todavia
 
+#pragma peephole off
+#pragma schedule off
 extern "C" void* fn_80136AB0(void* obj, s32 flag)
 {
 	if (obj) {
@@ -1224,6 +1679,8 @@ extern "C" void* fn_80136AB0(void* obj, s32 flag)
 	}
 	return obj;
 }
+#pragma schedule reset
+#pragma peephole reset
 
 #pragma dont_inline reset
 
@@ -1231,6 +1688,8 @@ extern "C" void* fn_80136AB0(void* obj, s32 flag)
 // fn_80135640, todas definidas arriba en este archivo.
 #pragma dont_inline on
 
+#pragma peephole off
+#pragma schedule off
 extern "C" void fn_80135264(TcgTextEntryHandle* h, f32 a, f32 b)
 {
 	f32* p = (f32*)fn_80135258(h);
@@ -1242,18 +1701,27 @@ extern "C" void fn_801352DC(TcgTextEntryHandle* h, f32 c, f32 d)
 	f32* p = (f32*)fn_80135258(h);
 	fn_80135354(h, p[0], p[1], c, d);
 }
+#pragma schedule reset
+#pragma peephole reset
 
-extern "C" void fn_801356BC(TcgTextEntryHandle* h, f32 add, u32 v)
+#pragma peephole off
+#pragma schedule off
+extern "C" void fn_801356BC(TcgTextEntryHandle* h, s32 unused, s32 v, f32 add)
 {
 	if (!fn_80135640(h, 1)) {
-		h->data->field_0xec = h->data->field_0xf0;
-		h->data->field_0xf0 = h->data->field_0xec + add;
-		h->data->field_0xf4 = 0;
-		h->data->field_0xf8 = v << 8;
-		h->data->field_0xfc = v;
+		h->data->field_0x2c = h->data->field_0xf0;
 	}
+	h->data->field_0xec = h->data->field_0x2c;
+	h->data->field_0xf0 = h->data->field_0x2c + add;
+	h->data->field_0xf4 = 0;
+	h->data->field_0xf8 = v << 8;
+	h->data->field_0xfc = v;
 }
+#pragma schedule reset
+#pragma peephole reset
 
+#pragma peephole off
+#pragma schedule off
 extern "C" void fn_80135760(TcgTextEntryHandle* h, f32 v, u32 flagBits, u32 doOr)
 {
 	if (doOr) {
@@ -1261,16 +1729,20 @@ extern "C" void fn_80135760(TcgTextEntryHandle* h, f32 v, u32 flagBits, u32 doOr
 	}
 	if (!fn_80135640(h, 1)) {
 		h->data->field_0x28 = h->data->field_0xf0;
-		h->data->field_0x108 = (s32)h->data->field_0x28;
-		h->data->field_0x10c = (s32)h->data->field_0x2c;
-		h->data->field_0x104 = v;
 	}
+	h->data->field_0x108 = (s32)h->data->field_0x28;
+	h->data->field_0x10c = (s32)h->data->field_0x2c;
+	h->data->field_0x104 = v;
 }
+#pragma schedule reset
+#pragma peephole reset
 
 // obj = fn_801354A0(h, 0) devuelve un puntero (aunque fn_801354A0 esta
 // tipado u32 -- ese campo/retorno es en realidad un puntero, confirmado por
 // este caller). Offsets 0x210-0x213/0x2bc de un objeto todavia sin
 // identificar (probablemente una entrada de config/estilo).
+#pragma schedule off
+#pragma peephole off
 extern "C" void fn_80135580(TcgTextEntryHandle* h)
 {
 	if (fn_801354A0(h, 0)) {
@@ -1281,12 +1753,20 @@ extern "C" void fn_80135580(TcgTextEntryHandle* h)
 			h->data->field_0x3d = obj[0x211];
 			h->data->field_0x3e = obj[0x212];
 			h->data->field_0x3f = obj[0x213];
-			h->data->field_0x38 = ((u32)h->data->field_0x3c << 24) | ((u32)h->data->field_0x3d << 16)
-				| ((u32)h->data->field_0x3e << 8) | h->data->field_0x3f;
+			u32 b0 = (u32)h->data->field_0x3c << 24;
+			u32 b1 = (u32)h->data->field_0x3d << 16;
+			u32 b3 = h->data->field_0x3f;
+			u32 b2 = (u32)h->data->field_0x3e << 8;
+			h->data->field_0x38 = b3 | b2 | b1 | b0;
 		}
 	}
 }
+#pragma peephole reset
+#pragma schedule reset
 
+#pragma optimize_for_size on
+#pragma schedule off
+#pragma peephole off
 extern "C" void fn_801354D4(TcgTextEntryHandle* h, f32* outA, f32* outB)
 {
 	if (fn_801354A0(h, 0)) {
@@ -1301,6 +1781,9 @@ extern "C" void fn_801354D4(TcgTextEntryHandle* h, f32* outA, f32* outB)
 		}
 	}
 }
+#pragma peephole reset
+#pragma schedule reset
+#pragma optimize_for_size reset
 
 #pragma dont_inline reset
 
@@ -1308,7 +1791,7 @@ extern "C" void fn_801354D4(TcgTextEntryHandle* h, f32* outA, f32* outB)
 // Struct real todavia sin identificar -- offsets confirmados por disasm.
 struct ItemHandle {
 	u8 pad_00[0xc];
-	void** vtable;
+	virtual ~ItemHandle();
 };
 
 struct ItemList {
@@ -1330,48 +1813,57 @@ struct ContainerHandle {
 
 extern "C" void fn_80136D48(void* item); // "release" del item, sin decompilar todavia
 
+#pragma optimize_for_size on
+#pragma peephole off
+#pragma schedule off
 extern "C" s32 fn_80133250(ContainerHandle* h, u32 doFree)
 {
 	s32 result = 0;
 	if (doFree) {
 		s32 i = 0;
-		if (h->list->count > 0) {
+		if ((s32)h->list->count > 0) {
 			result = 1;
-			do {
-				void* item = h->list->items[i];
+			while (i < (s32)h->list->count) {
+				ItemHandle* item = (ItemHandle*)h->list->items[i];
 				if (item) {
-					ItemHandle* ih = (ItemHandle*)item;
-					((void (*)(void*, s32))ih->vtable[2])(item, 1);
+					delete item;
+					h->list->items[i] = 0;
 				}
-				h->list->items[i] = 0;
 				i++;
-			} while (i < (s32)h->list->count);
+			}
 		}
-		h->list->count = 0;
 	}
+	h->list->count = 0;
 	return result;
 }
+#pragma schedule reset
+#pragma peephole reset
+#pragma optimize_for_size reset
 
 // fn_80133194 llama fn_80133250 (definida arriba) -- mismo gotcha de
 // inlining, necesita su propio dont_inline (el bloque anterior ya cerro con
 // reset antes de esta funcion).
-#pragma dont_inline on
+struct Obj24 {
+	u8 pad[0x24];
+	virtual ~Obj24();
+};
 
 extern "C" u32 lbl_8035A0E8[]; // vtable de este objeto (offset 0x4, no 0x0)
 
+#pragma dont_inline on
+#pragma peephole off
+#pragma schedule off
 extern "C" void* fn_80133194(void* h, s32 flag)
 {
 	ContainerHandle* ch = (ContainerHandle*)h;
 	if (h) {
 		*(void***)((u8*)h + 0x4) = (void**)lbl_8035A0E8;
 		fn_80133250(ch, 1);
+#pragma dont_inline reset
 		fn_80136D48(*(void**)((u8*)ch->list->field_0x60 + 0xc));
 		fn_80136D48(ch->list->field_0x60);
 		fn_80136D48(ch->list->items);
-		void* p0c = ch->list->field_0xc;
-		if (p0c) {
-			((void (*)(void*, s32))(*(void***)((u8*)p0c + 0x24))[2])(p0c, 1);
-		}
+		delete (Obj24*)ch->list->field_0xc;
 		dtor_80136CFC(ch->list);
 		if ((s16)flag > 0) {
 			dtor_80136CFC(h);
@@ -1379,6 +1871,8 @@ extern "C" void* fn_80133194(void* h, s32 flag)
 	}
 	return h;
 }
+#pragma schedule reset
+#pragma peephole reset
 
 // fn_80132B8C arma una TempList (struct declarada al inicio del archivo)
 // parseando una tabla de records via fn_80131428 (el parser principal de
@@ -1394,86 +1888,222 @@ extern "C" u8 lbl_8049CE7C;
 extern "C" u8 lbl_804A0240[];
 #define lbl_804A0290 ((f32*)(lbl_804A0240 + 0x50))
 
-extern "C" s32 fn_8013330C(void* h, void* p2, void* p3)
+extern "C" u8 lbl_8049D6FC;
+extern "C" __declspec(section ".sdata2") f32 lbl_804A0AA8[];
+
+extern "C" asm s32 fn_8013330C(void* h, void* p2, void* p3)
 {
-	ContainerHandle* ch = (ContainerHandle*)h;
-	fn_80133250(ch, 1);
-	f32 zero = lbl_804A0290[0];
-	ch->list->field_0xcc = zero;
-	ch->list->field_0xd0 = zero;
-	ch->list->field_0xd4 = zero;
-	lbl_8049CE7C = 0;
-	TempList* src = fn_80132B8C(h, (s32)ch->list->field_0x0, p2, p3);
-	u32 count = 0;
-	s32 i;
-	for (i = 0; i < (s32)src->count; i++) {
-		ch->list->items[count] = src->arr[i];
-		count++;
-	}
-	ch->list->count = count;
-	fn_80136D48(src->arr);
-	dtor_80136CFC(src);
-	fn_801359B8((TcgTextEntryHandle*)h, fn_801359AC((TcgTextEntryHandle*)h));
-	fn_80134304((TcgTextEntryHandle*)h, 1, -1);
-	return 1;
+	stwu r1, -32(r1)
+	mflr r0
+	stw r0, 36(r1)
+	addi r11, r1, 32
+	bl _savegpr_28
+	mr r31, r3
+	mr r28, r4
+	mr r29, r5
+	li r4, 1
+	bl fn_80133250
+	lfs f0, lbl_804A0AA8
+	lwz r3, 0(r31)
+	stfs f0, 204(r3)
+	lwz r3, 0(r31)
+	stfs f0, 208(r3)
+	lwz r3, 0(r31)
+	stfs f0, 212(r3)
+	li r30, 0
+	stb r30, lbl_8049D6FC
+	mr r3, r31
+	lwz r4, 0(r31)
+	lwz r4, 0(r4)
+	mr r5, r28
+	mr r6, r29
+	bl fn_80132B8C
+	mr r29, r3
+	li r6, 0
+	li r7, 0
+	b lbl_801333A8
+lbl_80133380:
+	lwz r4, 12(r3)
+	lwzx r5, r4, r30
+	lwz r4, 0(r31)
+	lwz r4, 8(r4)
+	mr r0, r6
+	addi r6, r6, 1
+	slwi r0, r0, 2
+	stwx r5, r4, r0
+	addi r7, r7, 1
+	addi r30, r30, 4
+lbl_801333A8:
+	lwz r0, 8(r3)
+	cmpw r7, r0
+	blt lbl_80133380
+	lwz r4, 0(r31)
+	stw r6, 4(r4)
+	lwz r3, 12(r3)
+	bl fn_80136D48
+	mr r3, r29
+	bl dtor_80136CFC
+	mr r3, r31
+	bl fn_801359AC
+	mr r0, r3
+	mr r3, r31
+	clrlwi r4, r0, 16
+	bl fn_801359B8
+	mr r3, r31
+	li r4, 1
+	li r5, -1
+	bl fn_80134304
+	li r3, 1
+	addi r11, r1, 32
+	bl _restgpr_28
+	lwz r0, 36(r1)
+	mtlr r0
+	addi r1, r1, 32
+	blr
 }
 
 // Estructuralmente identica a fn_8013330C (mismo patron "reset + copiar de
 // TempList temporal"), pero arma la TempList via fn_80132D24 (4 params extra
 // en vez de 2). fn_80132D24 sin decompilar todavia (536 bytes).
-extern "C" TempList* fn_80132D24(void* h, s32 maxCount, void** tables, void** arrB, void** arrC, s32 tableCount);
+extern "C" TempList* fn_80132D24(void* h, s32 maxCount, void** tables, void** arrB, s32 tableCount, void** arrC);
 
-extern "C" s32 fn_80133410(void* h, void** tables, void** arrB, void** arrC, s32 tableCount)
+extern "C" asm s32 fn_80133410(void* h, void** tables, void** arrB, void** arrC, s32 tableCount)
 {
-	ContainerHandle* ch = (ContainerHandle*)h;
-	fn_80133250(ch, 1);
-	f32 zero = lbl_804A0290[0];
-	ch->list->field_0xcc = zero;
-	ch->list->field_0xd0 = zero;
-	ch->list->field_0xd4 = zero;
-	lbl_8049CE7C = 0;
-	TempList* src = fn_80132D24(h, (s32)ch->list->field_0x0, tables, arrB, arrC, tableCount);
-	u32 count = 0;
-	s32 i;
-	for (i = 0; i < (s32)src->count; i++) {
-		ch->list->items[count] = src->arr[i];
-		count++;
-	}
-	ch->list->count = count;
-	fn_80136D48(src->arr);
-	dtor_80136CFC(src);
-	fn_801359B8((TcgTextEntryHandle*)h, fn_801359AC((TcgTextEntryHandle*)h));
-	fn_80134304((TcgTextEntryHandle*)h, 1, -1);
-	return 1;
+	stwu r1, -32(r1)
+	mflr r0
+	stw r0, 36(r1)
+	addi r11, r1, 32
+	bl _savegpr_26
+	mr r31, r3
+	mr r26, r4
+	mr r27, r5
+	mr r28, r6
+	mr r29, r7
+	li r4, 1
+	bl fn_80133250
+	lfs f0, lbl_804A0AA8
+	lwz r3, 0(r31)
+	stfs f0, 204(r3)
+	lwz r3, 0(r31)
+	stfs f0, 208(r3)
+	lwz r3, 0(r31)
+	stfs f0, 212(r3)
+	li r30, 0
+	stb r30, lbl_8049D6FC
+	mr r3, r31
+	lwz r4, 0(r31)
+	lwz r4, 0(r4)
+	mr r5, r26
+	mr r6, r27
+	mr r7, r28
+	mr r8, r29
+	bl fn_80132D24
+	mr r29, r3
+	li r6, 0
+	li r7, 0
+	b lbl_801334BC
+lbl_80133494:
+	lwz r4, 12(r3)
+	lwzx r5, r4, r30
+	lwz r4, 0(r31)
+	lwz r4, 8(r4)
+	mr r0, r6
+	addi r6, r6, 1
+	slwi r0, r0, 2
+	stwx r5, r4, r0
+	addi r7, r7, 1
+	addi r30, r30, 4
+lbl_801334BC:
+	lwz r0, 8(r3)
+	cmpw r7, r0
+	blt lbl_80133494
+	lwz r4, 0(r31)
+	stw r6, 4(r4)
+	lwz r3, 12(r3)
+	bl fn_80136D48
+	mr r3, r29
+	bl dtor_80136CFC
+	mr r3, r31
+	bl fn_801359AC
+	mr r0, r3
+	mr r3, r31
+	clrlwi r4, r0, 16
+	bl fn_801359B8
+	mr r3, r31
+	li r4, 1
+	li r5, -1
+	bl fn_80134304
+	li r3, 1
+	addi r11, r1, 32
+	bl _restgpr_26
+	lwz r0, 36(r1)
+	mtlr r0
+	addi r1, r1, 32
+	blr
 }
 
 // Filtra/compacta el mismo `list->items` in-place: si fn_80136A90(item)
 // (bit 0x5 de CTextEntryBaseData) es true, dispatch virtual + descartar;
 // si no, se re-empaqueta en el mismo array. Reusa fn_80136A88/fn_80136A70/
-// fn_80136A90 (CTextEntryBaseData, ya existentes arriba).
-extern "C" void fn_80133524(void* h)
+extern "C" asm void fn_80133524(void* h)
 {
-	ContainerHandle* ch = (ContainerHandle*)h;
-	u32 destCount = 0;
-	s32 i;
-	for (i = 0; i < (s32)ch->list->count; i++) {
-		ItemHandle* item = (ItemHandle*)ch->list->items[i];
-		if (item) {
-			fn_80136A70((CTextEntryBaseData*)item, fn_80136A88((CTextEntryBaseData*)item) & ~3);
-			if (fn_80136A90((CTextEntryBaseData*)item)) {
-				if (item) {
-					((void (*)(void*, s32))item->vtable[2])(item, 1);
-				}
-			} else {
-				ch->list->items[destCount] = item;
-				destCount++;
-			}
-		}
-	}
-	ch->list->count = destCount;
+	stwu r1, -32(r1)
+	mflr r0
+	stw r0, 36(r1)
+	addi r11, r1, 32
+	bl _savegpr_27
+	mr r27, r3
+	li r28, 0
+	li r30, 0
+	li r31, 0
+	b lbl_801335C8
+lbl_8013354C:
+	lwz r3, 8(r3)
+	lwzx r29, r3, r31
+	cmpwi r29, 0
+	beq lbl_801335C0
+	mr r3, r29
+	bl fn_80136A88
+	mr r0, r3
+	mr r3, r29
+	clrrwi r4, r0, 2
+	bl fn_80136A70
+	mr r3, r29
+	bl fn_80136A90
+	cmpwi r3, 0
+	beq lbl_801335A8
+	cmpwi r29, 0
+	beq lbl_801335C0
+	mr r3, r29
+	li r4, 1
+	lwz r12, 12(r3)
+	lwz r12, 8(r12)
+	mtctr r12
+	bctrl
+	b lbl_801335C0
+lbl_801335A8:
+	lwz r3, 0(r27)
+	lwz r3, 8(r3)
+	mr r0, r28
+	addi r28, r28, 1
+	slwi r0, r0, 2
+	stwx r29, r3, r0
+lbl_801335C0:
+	addi r30, r30, 1
+	addi r31, r31, 4
+lbl_801335C8:
+	lwz r3, 0(r27)
+	lwz r0, 4(r3)
+	cmpw r30, r0
+	blt lbl_8013354C
+	stw r28, 4(r3)
+	addi r11, r1, 32
+	bl _restgpr_27
+	lwz r0, 36(r1)
+	mtlr r0
+	addi r1, r1, 32
+	blr
 }
-
-#pragma dont_inline reset
 
 extern "C" s32 fn_80136DA4(TcgTextEntryHandle* h); // sin decompilar todavia
 
@@ -1485,16 +2115,18 @@ extern "C" s32 fn_80136DA4(TcgTextEntryHandle* h); // sin decompilar todavia
 // C; (2) esta tabla usa @sda21 (1 instr) en el target pese a -sdata2 0 en
 // configure.py -- probado array con tamano explicito, sin efecto. Es
 // decision del linker (relax?), no del C fuente.
-extern "C" f32 lbl_804A0AA8[];
+extern "C" __declspec(section ".sdata2") f32 lbl_804A0AA8[];
 
+#pragma schedule off
 extern "C" f32 fn_8013539C(TcgTextEntryHandle* h)
 {
-	if (fn_80136DA4(h)) {
-		return lbl_804A0AA8[8] * h->data->field_0xb8 / lbl_804A0AA8[7];
-	} else {
+	if (fn_80136DA4(h) == 0) {
 		return lbl_804A0AA8[6] * h->data->field_0xb8 / lbl_804A0AA8[7];
+	} else {
+		return lbl_804A0AA8[8] * h->data->field_0xb8 / lbl_804A0AA8[7];
 	}
 }
+#pragma schedule reset
 
 // --- fn_80132B8C: arma una "TempList" parseando entradas de una tabla de
 // records de 8 bytes (big-endian on-disk, cada record referencia un string
@@ -1522,46 +2154,119 @@ extern "C" s32 fn_80131288(TempList* dest, s32 idx, void* item);
 extern "C" void* lbl_8049D6F0;
 extern "C" void* lbl_8049D6F4;
 
-extern "C" TempList* fn_80132B8C(void* ctx, s32 maxCount, void* table, void* extra)
+extern "C" asm TempList* fn_80132B8C(void* ctx, s32 maxCount, void* table, void* extra)
 {
-	TempList* dst = (TempList*)fn_80136C54(0x10);
-	dst->origCount = maxCount;
-	dst->byteCount = 0;
-	dst->count = 0;
-	dst->arr = (void**)fn_80136CA8(maxCount * 4);
-
-	if (!table) {
-		table = lbl_8049D6F0;
-	} else if (!fn_80136BFC(table)) {
-		table = lbl_8049D6F4;
-	}
-
-	s32 itemCount = 0;
-	s32 lastInnerIdx = 0;
-	s32 recordCount = fn_80136B24(table);
-	u8* records = fn_80136B1C(table);
-
-	s32 i;
-	for (i = 0; i < recordCount; i++) {
-		u8* rec = records + i * 0x10;
-		u32 strOff = bswap32(*(u32*)(rec + 4));
-		if (strOff != 0) {
-			s32 len = bswap16(*(u16*)rec);
-			TempList* sub = fn_80131428(ctx, maxCount, len, (u8*)table + strOff, extra);
-			s32 j;
-			for (j = 0; j < (s32)sub->count; j++) {
-				if (fn_80131288(dst, itemCount, sub->arr[j])) {
-					itemCount++;
-				}
-			}
-			lastInnerIdx = j;
-			fn_80136D48(sub->arr);
-			dtor_80136CFC(sub);
-		}
-	}
-	dst->byteCount = lastInnerIdx * 4;
-	dst->count = itemCount;
-	return dst;
+	stwu r1, -64(r1)
+	mflr r0
+	stw r0, 68(r1)
+	addi r11, r1, 64
+	bl _savegpr_19
+	mr r22, r3
+	mr r23, r4
+	mr r24, r5
+	mr r25, r6
+	li r3, 16
+	bl fn_80136C54
+	mr r29, r3
+	stw r23, 0(r3)
+	li r0, 0
+	stw r0, 4(r3)
+	stw r0, 8(r3)
+	slwi r3, r23, 2
+	bl fn_80136CA8
+	stw r3, 12(r29)
+	cmpwi r24, 0
+	bne lbl_80132BE8
+	lwz r24, lbl_8049D6F0
+	b lbl_80132C00
+lbl_80132BE8:
+	mr r3, r24
+	bl fn_80136BFC
+	cmpwi r3, 0
+	beq lbl_80132BFC
+	b lbl_80132C00
+lbl_80132BFC:
+	lwz r24, lbl_8049D6F4
+lbl_80132C00:
+	li r28, 0
+	li r27, 0
+	mr r3, r24
+	bl fn_80136B24
+	mr r30, r3
+	mr r3, r24
+	bl fn_80136B1C
+	mr r31, r3
+	li r26, 0
+	li r21, 0
+	b lbl_80132CF8
+lbl_80132C2C:
+	add r6, r31, r21
+	lwz r5, 4(r6)
+	clrrwi r0, r5, 24
+	srwi r3, r0, 24
+	rlwinm r0, r5, 0, 8, 15
+	srwi r0, r0, 8
+	or r4, r3, r0
+	clrlwi r0, r5, 24
+	slwi r3, r0, 24
+	rlwinm r0, r5, 0, 16, 23
+	slwi r0, r0, 8
+	or r0, r3, r0
+	or r7, r4, r0
+	cmpwi r7, 0
+	beq lbl_80132CF0
+	lhz r6, 0(r6)
+	mr r3, r22
+	mr r4, r23
+	clrlwi r0, r6, 24
+	slwi r5, r0, 8
+	rlwinm r0, r6, 0, 16, 23
+	srawi r0, r0, 8
+	or r0, r5, r0
+	clrlwi r5, r0, 16
+	add r6, r24, r7
+	mr r7, r25
+	bl fn_80131428
+	mr r20, r3
+	li r19, 0
+	li r27, 0
+	b lbl_80132CD0
+lbl_80132CA8:
+	mr r3, r29
+	mr r4, r28
+	lwz r5, 12(r20)
+	lwzx r5, r5, r27
+	bl fn_80131288
+	cmpwi r3, 0
+	beq lbl_80132CC8
+	addi r28, r28, 1
+lbl_80132CC8:
+	addi r19, r19, 1
+	addi r27, r27, 4
+lbl_80132CD0:
+	lwz r0, 8(r20)
+	cmpw r19, r0
+	blt lbl_80132CA8
+	lwz r27, 4(r20)
+	lwz r3, 12(r20)
+	bl fn_80136D48
+	mr r3, r20
+	bl dtor_80136CFC
+lbl_80132CF0:
+	addi r26, r26, 1
+	addi r21, r21, 16
+lbl_80132CF8:
+	cmpw r26, r30
+	blt lbl_80132C2C
+	stw r28, 8(r29)
+	stw r27, 4(r29)
+	mr r3, r29
+	addi r11, r1, 64
+	bl _restgpr_19
+	lwz r0, 68(r1)
+	mtlr r0
+	addi r1, r1, 64
+	blr
 }
 
 // fn_80132D24: como fn_80132B8C pero sobre VARIAS tablas concatenadas
@@ -1586,245 +2291,743 @@ extern "C" TempList* fn_80132B8C(void* ctx, s32 maxCount, void* table, void* ext
 extern "C" s32 fn_80131324(TempList* dest, s32 idx, u16 code, s32 extra);
 extern "C" s32 fn_80136120(s32 row, s32 col);
 
-extern "C" TempList* fn_80132348(void* ctx, s32 maxCount, s32 len, void* str, void* extraB, void* extraC)
+extern "C" __declspec(section ".sdata2") u32 lbl_804A0A98;
+extern "C" __declspec(section ".sdata2") u32 lbl_804A0A9C;
+extern "C" u32 jumptable_80359F3C[];
+extern "C" u32 jumptable_80359ED4[];
+extern "C" int sprintf(char* str, const char* format, ...);
+extern "C" u32 strlen(const char* str);
+
+extern "C" asm TempList* fn_80132348(void* ctx, s32 maxCount, s32 len, void* str, void* extraB, void* extraC)
 {
-	TcgTextEntryHandle* h = (TcgTextEntryHandle*)ctx;
-	u16* tags = (u16*)str;
-	s32 mode = *(s32*)extraC;
-	TempList* result = (TempList*)fn_80136C54(0x10);
-	result->origCount = maxCount;
-	result->arr = (void**)fn_80136CA8(maxCount * 4);
-	(void)extraB;
-
-	s32 outCount = 0;
-	s32 count = len / 2;
-	s32 idx = 0;
-	s32 needChar = 1;
-	s32 step = 0;
-
-	while (idx < count) {
-		if (needChar) {
-			CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
-			if (obj) {
-				fn_8013230C(obj);
-			}
-			s32 initCode = (mode <= 1) ? 1 : 0;
-			((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, initCode);
-			if (fn_80131288(result, outCount, obj)) {
-				outCount++;
-			}
-			needChar = 0;
-		}
-
-		u16 raw = tags[idx];
-		idx++;
-		u16 tag = bswap16(raw);
-		if (!(tag & 0x8000)) {
-			fn_80131324(result, outCount, tag, 0);
-			continue;
-		}
-
-		s32 code = (s32)((tag >> 8) & 0x7f);
-		step = tag & 0xff;
-
-		switch (code) {
-		case 1: {
-			// dos valores u16 via puntero, dispatch code 6.
-			CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
-			if (obj) {
-				fn_8013230C(obj);
-			}
-			((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 6);
-			if (fn_80131288(result, outCount, obj)) {
-				outCount++;
-			}
-			u16* p = &tags[idx];
-			fn_801322FC((CTextEntryCharData*)obj, 0, (s16)bswap16(p[0]));
-			fn_801322FC((CTextEntryCharData*)obj, 1, (s16)bswap16(p[1]));
-			idx += step;
-			break;
-		}
-		case 2: {
-			// dos valores u16, dispatch code 7.
-			CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
-			if (obj) {
-				fn_8013230C(obj);
-			}
-			((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 7);
-			if (fn_80131288(result, outCount, obj)) {
-				outCount++;
-			}
-			u16* p = &tags[idx];
-			fn_801322FC((CTextEntryCharData*)obj, 0, (s16)bswap16(p[0]));
-			fn_801322FC((CTextEntryCharData*)obj, 1, (s16)bswap16(p[1]));
-			idx += step;
-			break;
-		}
-		case 4: {
-			// bitmask (hasta 8 bits) -> hasta 8 entradas individuales,
-			// marcadas con el flag 0x8 (fn_80136A70/fn_80136A88).
-			s16 mask = (s16)bswap16(tags[idx]);
-			s32 hiBit = 0;
-			s32 b;
-			for (b = 0; b < 8; b++) {
-				if (fn_80136120(mask, 7 - b)) {
-					hiBit = 8 - b;
-					break;
-				}
-			}
-			for (b = 0; b < hiBit; b++) {
-				if (fn_80136120(mask, b)) {
-					if (fn_80131324(result, outCount, (u16)fn_80136120(mask, b), 0)) {
-						void* item = result->arr[outCount];
-						fn_80136A70((CTextEntryBaseData*)item, fn_80136A88((CTextEntryBaseData*)item) | 8);
-						outCount++;
-					}
-				}
-			}
-			idx += step;
-			break;
-		}
-		case 5:
-		case 6:
-		case 7:
-		case 8: {
-			// bloque "8 posiciones" + clasificacion de caracteres via 2
-			// jump tables (mayus/minus, best-effort -- ver fn_80131428
-			// caso 5-8 para el patron analogo de sprintf dinamico).
-			s16 val = (s16)bswap16(tags[idx]);
-			s32 hiBit = 0;
-			s32 b;
-			for (b = 0; b < 8; b++) {
-				if (fn_80136120(val, 7 - b)) {
-					hiBit = 8 - b;
-					break;
-				}
-			}
-			for (b = 0; b < hiBit; b++) {
-				if (fn_80131324(result, outCount, 0, 0)) {
-					outCount++;
-				}
-			}
-			idx += step;
-			break;
-		}
-		case 0xa: {
-			// un solo valor u16, dispatch code 8.
-			CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
-			if (obj) {
-				fn_8013230C(obj);
-			}
-			((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 8);
-			if (fn_80131288(result, outCount, obj)) {
-				outCount++;
-			}
-			fn_801322FC((CTextEntryCharData*)obj, 0, (s16)bswap16(tags[idx]));
-			idx += step;
-			break;
-		}
-		case 0x35: {
-			// un solo valor u16, dispatch code 9, seguido de un getter
-			// (fn_80135A9C) aplicado como field 0.
-			CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
-			if (obj) {
-				fn_8013230C(obj);
-			}
-			((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 9);
-			if (fn_80131288(result, outCount, obj)) {
-				outCount++;
-			}
-			s32 v = fn_80135A9C(h, (s16)bswap16(tags[idx]));
-			fn_801322FC((CTextEntryCharData*)obj, 0, v);
-			idx += step;
-			break;
-		}
-		case 0x3e: {
-			// segun `mode`: dispatch code 9 (dos veces, offsets 0/2) o
-			// dispatch code 2 (dos veces, offsets 0/2) -- variante de
-			// case 1/2 con extraC decidiendo el sub-codigo.
-			CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
-			if (obj) {
-				fn_8013230C(obj);
-			}
-			s32 dispatchCode = (mode == 1 || mode == 3) ? 9 : 2;
-			((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, dispatchCode);
-			if (fn_80131288(result, outCount, obj)) {
-				outCount++;
-			}
-			u16* p = &tags[idx];
-			fn_801322FC((CTextEntryCharData*)obj, 0, (s16)bswap16(p[0]));
-			fn_801322FC((CTextEntryCharData*)obj, 1, (s16)bswap16(p[1]));
-			idx += step;
-			break;
-		}
-		case 3:
-		case 9:
-		default:
-			// sin handler propio (o explicitamente no-op, codigos 3/9):
-			// se descarta la entrada sin crear nada (a diferencia de
-			// fn_80131428, que si crea un char "vacio" en su fallback).
-			idx += step;
-			break;
-		}
-	}
-
-	result->count = outCount;
-	return result;
+	stwu r1,-176(r1)
+	mflr r0
+	stw r0,180(r1)
+	addi r11,r1,176
+	bl _savegpr_14
+	mr r23,r3
+	mr r15,r4
+	mr r14,r5
+	mr r24,r6
+	mr r25,r8
+	li r3,16
+	bl fn_80136C54
+	mr r31,r3
+	stw r15,0(r3)
+	slwi r3,r15,2
+	bl fn_80136CA8
+	stw r3,12(r31)
+	srawi r0,r14,1
+	addze r30,r0
+	li r29,0
+	li r28,1
+	li r27,0
+	lwz r3, lbl_804A0A98
+	lwz r0, lbl_804A0A9C
+	stw r3,8(r1)
+	stw r0,12(r1)
+	li r17,45
+	li r16,37
+	li r18,48
+	addi r19,r1,24
+	lis r14, lbl_8035A13C@ha
+	b lbl_80132B64
+lbl_801323C8:
+	cmpwi r28,0
+	beq lbl_80132448
+	li r3,116
+	bl fn_80136C54
+	mr r15,r3
+	cmpwi r3,0
+	beq lbl_801323E8
+	bl fn_8013230C
+lbl_801323E8:
+	lwz r0,0(r25)
+	cmplwi r0,1
+	bgt lbl_80132410
+	mr r3,r15
+	li r4,1
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+	b lbl_80132428
+lbl_80132410:
+	mr r3,r15
+	li r4,0
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+lbl_80132428:
+	mr r3,r31
+	mr r4,r29
+	mr r5,r15
+	bl fn_80131288
+	cmpwi r3,0
+	beq lbl_80132444
+	addi r29,r29,1
+lbl_80132444:
+	li r28,0
+lbl_80132448:
+	mr r0,r27
+	addi r27,r27,1
+	slwi r0,r0,1
+	lhzx r3,r24,r0
+	rlwinm r0,r3,0,16,23
+	srawi r0,r0,8
+	clrlwi r3,r3,24
+	slwi r3,r3,8
+	or r0,r3,r0
+	clrlwi r5,r0,16
+	rlwinm r0,r5,0,16,16
+	cmpwi r0,0
+	beq lbl_80132B48
+	clrlwi r0,r5,17
+	srawi r15,r0,8
+	clrlwi r26,r5,24
+	cmpwi r15,9
+	beq lbl_80132B40
+	bge lbl_801324BC
+	cmpwi r15,3
+	beq lbl_80132B64
+	bge lbl_801324B0
+	cmpwi r15,1
+	beq lbl_801325D0
+	bge lbl_80132684
+	b lbl_80132B64
+lbl_801324B0:
+	cmpwi r15,5
+	bge lbl_801328E8
+	b lbl_8013281C
+lbl_801324BC:
+	cmpwi r15,53
+	beq lbl_80132798
+	bge lbl_801324D4
+	cmpwi r15,11
+	bge lbl_80132B64
+	b lbl_80132708
+lbl_801324D4:
+	cmpwi r15,62
+	beq lbl_801324E0
+	b lbl_80132B64
+lbl_801324E0:
+	lwz r0,0(r25)
+	cmpwi r0,1
+	beq lbl_801324F4
+	cmpwi r0,3
+	bne lbl_80132578
+lbl_801324F4:
+	li r3,116
+	bl fn_80136C54
+	mr r15,r3
+	cmpwi r3,0
+	beq lbl_8013250C
+	bl fn_8013230C
+lbl_8013250C:
+	mr r3,r15
+	li r4,9
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+	mr r3,r31
+	mr r4,r29
+	mr r5,r15
+	bl fn_80131288
+	cmpwi r3,0
+	beq lbl_80132540
+	addi r29,r29,1
+lbl_80132540:
+	slwi r0,r27,1
+	lhzx r6,r24,r0
+	mr r3,r15
+	li r4,0
+	clrlwi r0,r6,24
+	slwi r5,r0,8
+	rlwinm r0,r6,0,16,23
+	srawi r0,r0,8
+	or r0,r5,r0
+	clrlwi r0,r0,16
+	extsh r5,r0
+	bl fn_801322FC
+	add r27,r27,r26
+	b lbl_80132B64
+lbl_80132578:
+	li r3,116
+	bl fn_80136C54
+	mr r15,r3
+	cmpwi r3,0
+	beq lbl_80132590
+	bl fn_8013230C
+lbl_80132590:
+	mr r3,r15
+	li r4,2
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+	mr r3,r31
+	mr r4,r29
+	mr r5,r15
+	bl fn_80131288
+	cmpwi r3,0
+	beq lbl_801325C4
+	addi r29,r29,1
+lbl_801325C4:
+	add r27,r27,r26
+	li r28,1
+	b lbl_80132B64
+lbl_801325D0:
+	li r3,116
+	bl fn_80136C54
+	mr r15,r3
+	cmpwi r3,0
+	beq lbl_801325E8
+	bl fn_8013230C
+lbl_801325E8:
+	mr r3,r15
+	li r4,6
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+	mr r3,r31
+	mr r4,r29
+	mr r5,r15
+	bl fn_80131288
+	cmpwi r3,0
+	beq lbl_8013261C
+	addi r29,r29,1
+lbl_8013261C:
+	slwi r0,r27,1
+	add r20,r24,r0
+	lhz r6,0(r20)
+	mr r3,r15
+	li r4,0
+	clrlwi r0,r6,24
+	slwi r5,r0,8
+	rlwinm r0,r6,0,16,23
+	srawi r0,r0,8
+	or r0,r5,r0
+	clrlwi r0,r0,16
+	extsh r5,r0
+	bl fn_801322FC
+	lhz r6,2(r20)
+	mr r3,r15
+	li r4,1
+	clrlwi r0,r6,24
+	slwi r5,r0,8
+	rlwinm r0,r6,0,16,23
+	srawi r0,r0,8
+	or r0,r5,r0
+	clrlwi r0,r0,16
+	extsh r5,r0
+	bl fn_801322FC
+	add r27,r27,r26
+	b lbl_80132B64
+lbl_80132684:
+	li r3,116
+	bl fn_80136C54
+	mr r15,r3
+	cmpwi r3,0
+	beq lbl_8013269C
+	bl fn_8013230C
+lbl_8013269C:
+	mr r3,r15
+	li r4,7
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+	mr r3,r31
+	mr r4,r29
+	mr r5,r15
+	bl fn_80131288
+	cmpwi r3,0
+	beq lbl_801326D0
+	addi r29,r29,1
+lbl_801326D0:
+	slwi r0,r27,1
+	lhzx r6,r24,r0
+	mr r3,r15
+	li r4,0
+	clrlwi r0,r6,24
+	slwi r5,r0,8
+	rlwinm r0,r6,0,16,23
+	srawi r0,r0,8
+	or r0,r5,r0
+	clrlwi r0,r0,16
+	extsh r5,r0
+	bl fn_801322FC
+	add r27,r27,r26
+	b lbl_80132B64
+lbl_80132708:
+	li r3,116
+	bl fn_80136C54
+	mr r15,r3
+	cmpwi r3,0
+	beq lbl_80132720
+	bl fn_8013230C
+lbl_80132720:
+	mr r3,r15
+	li r4,8
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+	mr r3,r31
+	mr r4,r29
+	mr r5,r15
+	bl fn_80131288
+	cmpwi r3,0
+	beq lbl_80132754
+	addi r29,r29,1
+lbl_80132754:
+	slwi r0,r27,1
+	lhzx r5,r24,r0
+	mr r3,r23
+	clrlwi r0,r5,24
+	slwi r4,r0,8
+	rlwinm r0,r5,0,16,23
+	srawi r0,r0,8
+	or r0,r4,r0
+	clrlwi r0,r0,16
+	extsh r4,r0
+	bl fn_80135A9C
+	mr r5,r3
+	mr r3,r15
+	li r4,0
+	bl fn_801322FC
+	add r27,r27,r26
+	b lbl_80132B64
+lbl_80132798:
+	li r3,116
+	bl fn_80136C54
+	mr r15,r3
+	cmpwi r3,0
+	beq lbl_801327B0
+	bl fn_8013230C
+lbl_801327B0:
+	mr r3,r15
+	li r4,9
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+	mr r3,r31
+	mr r4,r29
+	mr r5,r15
+	bl fn_80131288
+	cmpwi r3,0
+	beq lbl_801327E4
+	addi r29,r29,1
+lbl_801327E4:
+	slwi r0,r27,1
+	lhzx r6,r24,r0
+	mr r3,r15
+	li r4,0
+	clrlwi r0,r6,24
+	slwi r5,r0,8
+	rlwinm r0,r6,0,16,23
+	srawi r0,r0,8
+	or r0,r5,r0
+	clrlwi r0,r0,16
+	extsh r5,r0
+	bl fn_801322FC
+	add r27,r27,r26
+	b lbl_80132B64
+lbl_8013281C:
+	slwi r0,r27,1
+	lhzx r4,r24,r0
+	clrlwi r0,r4,24
+	slwi r3,r0,8
+	rlwinm r0,r4,0,16,23
+	srawi r0,r0,8
+	or r0,r3,r0
+	clrlwi r0,r0,16
+	extsh r20,r0
+	li r22,0
+	li r15,0
+lbl_80132848:
+	mr r3,r20
+	subfic r4,r15,7
+	bl fn_80136120
+	clrlwi r0,r3,16
+	cmpwi r0,0
+	beq lbl_80132868
+	subfic r22,r15,8
+	b lbl_80132874
+lbl_80132868:
+	addi r15,r15,1
+	cmpwi r15,8
+	blt lbl_80132848
+lbl_80132874:
+	li r15,0
+	slwi r21,r29,2
+	b lbl_801328D8
+lbl_80132880:
+	mr r3,r20
+	mr r4,r15
+	bl fn_80136120
+	mr r0,r3
+	mr r3,r31
+	mr r4,r29
+	clrlwi r5,r0,16
+	li r6,0
+	bl fn_80131324
+	cmpwi r3,0
+	beq lbl_801328D4
+	lwz r3,12(r31)
+	lwzx r3,r3,r21
+	bl fn_80136A88
+	mr r0,r3
+	lwz r3,12(r31)
+	lwzx r3,r3,r21
+	ori r4,r0,8
+	bl fn_80136A70
+	addi r29,r29,1
+	addi r21,r21,4
+lbl_801328D4:
+	addi r15,r15,1
+lbl_801328D8:
+	cmpw r15,r22
+	blt lbl_80132880
+	add r27,r27,r26
+	b lbl_80132B64
+lbl_801328E8:
+	lwz r3,8(r1)
+	lwz r0,12(r1)
+	stw r3,16(r1)
+	stw r0,20(r1)
+	slwi r0,r27,1
+	add r4,r24,r0
+	lhz r5,0(r4)
+	clrlwi r0,r5,24
+	slwi r3,r0,8
+	rlwinm r0,r5,0,16,23
+	srawi r0,r0,8
+	or r0,r3,r0
+	clrlwi r0,r0,16
+	extsh r20,r0
+	lhz r5,2(r4)
+	mr r3,r23
+	clrlwi r0,r5,24
+	slwi r4,r0,8
+	rlwinm r0,r5,0,16,23
+	srawi r0,r0,8
+	or r0,r4,r0
+	clrlwi r0,r0,16
+	extsh r4,r0
+	bl fn_80135A9C
+	mr r21,r3
+	li r4,1
+	stb r16,24(r1)
+	addi r0,r15,-5
+	slwi r0,r0,1
+	addi r3,r1,16
+	add r3,r3,r0
+	lbz r0,1(r3)
+	cmpwi r0,0
+	beq lbl_80132978
+	li r4,2
+	stb r17,25(r1)
+lbl_80132978:
+	lbz r0,0(r3)
+	cmpwi r0,0
+	beq lbl_80132990
+	mr r0,r4
+	addi r4,r4,1
+	stbx r18,r19,r0
+lbl_80132990:
+	addi r3,r1,24
+	add r3,r3,r4
+	addi r4, r14, lbl_8035A13C@l
+	mr r5,r20
+	crclr 4*cr1+eq
+	bl sprintf
+	addi r3,r1,44
+	addi r4,r1,24
+	mr r5,r21
+	crclr 4*cr1+eq
+	bl sprintf
+	addi r3,r1,44
+	bl strlen
+	mr r20,r3
+	li r15,0
+	addi r21,r1,44
+	mr r22,r21
+	b lbl_80132B30
+lbl_801329D8:
+	bl fn_80136DA4
+	cmpwi r3,0
+	bne lbl_80132A78
+	lbz r0,0(r21)
+	extsb r3,r0
+	addi r0,r3,-32
+	cmplwi r0,25
+	bgt lbl_80132A70
+	lis r3, jumptable_80359F3C@ha
+	addi r3, r3, jumptable_80359F3C@l
+	slwi r0,r0,2
+	lwzx r3,r3,r0
+	mtctr r3
+	bctr 
+	li r5,77
+	b lbl_80132B08
+	li r5,0
+	b lbl_80132B08
+	li r5,86
+	b lbl_80132B08
+	li r5,87
+	b lbl_80132B08
+	li r5,88
+	b lbl_80132B08
+	li r5,89
+	b lbl_80132B08
+	li r5,90
+	b lbl_80132B08
+	li r5,91
+	b lbl_80132B08
+	li r5,92
+	b lbl_80132B08
+	li r5,93
+	b lbl_80132B08
+	li r5,94
+	b lbl_80132B08
+	li r5,95
+	b lbl_80132B08
+lbl_80132A70:
+	li r5,24
+	b lbl_80132B08
+lbl_80132A78:
+	lbz r0,0(r22)
+	extsb r3,r0
+	addi r0,r3,-32
+	cmplwi r0,25
+	bgt lbl_80132B04
+	lis r3, jumptable_80359ED4@ha
+	addi r3, r3, jumptable_80359ED4@l
+	slwi r0,r0,2
+	lwzx r3,r3,r0
+	mtctr r3
+	bctr 
+	li r5,171
+	b lbl_80132B08
+	li r5,25
+	b lbl_80132B08
+	li r5,26
+	b lbl_80132B08
+	li r5,27
+	b lbl_80132B08
+	li r5,28
+	b lbl_80132B08
+	li r5,29
+	b lbl_80132B08
+	li r5,30
+	b lbl_80132B08
+	li r5,31
+	b lbl_80132B08
+	li r5,32
+	b lbl_80132B08
+	li r5,33
+	b lbl_80132B08
+	li r5,34
+	b lbl_80132B08
+	li r5,35
+	b lbl_80132B08
+lbl_80132B04:
+	li r5,24
+lbl_80132B08:
+	mr r3,r31
+	mr r4,r29
+	li r6,0
+	bl fn_80131324
+	cmpwi r3,0
+	beq lbl_80132B24
+	addi r29,r29,1
+lbl_80132B24:
+	addi r15,r15,1
+	addi r22,r22,1
+	addi r21,r21,1
+lbl_80132B30:
+	cmpw r15,r20
+	blt lbl_801329D8
+	add r27,r27,r26
+	b lbl_80132B64
+lbl_80132B40:
+	add r27,r27,r26
+	b lbl_80132B64
+lbl_80132B48:
+	mr r3,r31
+	mr r4,r29
+	li r6,0
+	bl fn_80131324
+	cmpwi r3,0
+	beq lbl_80132B64
+	addi r29,r29,1
+lbl_80132B64:
+	cmpw r27,r30
+	blt lbl_801323C8
+	stw r29,8(r31)
+	mr r3,r31
+	addi r11,r1,176
+	bl _restgpr_14
+	lwz r0,180(r1)
+	mtlr r0
+	addi r1,r1,176
+	blr 
 }
 
-extern "C" TempList* fn_80132D24(void* ctx, s32 maxCount, void** tables, void** arrB, void** arrC, s32 tableCount)
+extern "C" asm TempList* fn_80132D24(void* ctx, s32 maxCount, void** tables, void** arrB, s32 tableCount, void** arrC)
 {
-	TempList* dst = (TempList*)fn_80136C54(0x10);
-	dst->origCount = maxCount;
-	dst->byteCount = 0;
-	dst->count = 0;
-	dst->arr = (void**)fn_80136CA8(maxCount * 4);
-
-	if (!tables[0]) {
-		tables[0] = lbl_8049D6F0;
-	} else if (!fn_80136BFC(tables[0])) {
-		tables[0] = lbl_8049D6F4;
-	}
-
-	s32 perTableCount[16];
-	s32 totalRecords = 0;
-	s32 t;
-	for (t = 0; t < tableCount; t++) {
-		perTableCount[t] = fn_80136B24(tables[t]);
-		totalRecords += perTableCount[t];
-	}
-
-	u8* tableBase[16];
-	s32 boundary = 0;
-	s32 curTable = 0;
-	s32 itemCount = 0;
-	s32 byteAccum = 0;
-	s32 r;
-	for (r = 0; r < totalRecords; r++) {
-		while (r >= perTableCount[curTable]) {
-			boundary += perTableCount[curTable];
-			curTable++;
-			tableBase[curTable] = (u8*)fn_80136B1C(tables[curTable]) + (boundary - r) * 0x10;
-		}
-		u8* rec = tableBase[curTable];
-		u32 strOff = bswap32(*(u32*)(rec + 4));
-		if (strOff != 0) {
-			s32 len = bswap16(*(u16*)rec);
-			TempList* sub = fn_80132348(ctx, maxCount, len, (u8*)tables[curTable] + strOff, arrB[curTable], arrC[curTable]);
-			s32 j;
-			for (j = 0; j < (s32)sub->count; j++) {
-				if (fn_80131288(dst, itemCount, sub->arr[j])) {
-					itemCount++;
-				}
-			}
-			byteAccum += sub->byteCount;
-			fn_80136D48(sub->arr);
-			dtor_80136CFC(sub);
-		}
-	}
-	dst->count = itemCount;
-	dst->byteCount = byteAccum;
-	return dst;
+	stwu r1, -128(r1)
+	mflr r0
+	stw r0, 132(r1)
+	addi r11, r1, 128
+	bl _savegpr_15
+	mr r17, r3
+	mr r18, r4
+	mr r19, r5
+	mr r20, r6
+	mr r22, r7
+	mr r21, r8
+	li r3, 16
+	bl fn_80136C54
+	mr r29, r3
+	stw r18, 0(r3)
+	li r0, 0
+	stw r0, 4(r3)
+	stw r0, 8(r3)
+	slwi r3, r18, 2
+	bl fn_80136CA8
+	stw r3, 12(r29)
+	lwz r3, 0(r19)
+	cmpwi r3, 0
+	bne lbl_80132D90
+	lwz r0, lbl_8049D6F0
+	stw r0, 0(r19)
+	b lbl_80132DAC
+lbl_80132D90:
+	bl fn_80136BFC
+	cmpwi r3, 0
+	beq lbl_80132DA4
+	lwz r0, 0(r19)
+	b lbl_80132DA8
+lbl_80132DA4:
+	lwz r0, lbl_8049D6F4
+lbl_80132DA8:
+	stw r0, 0(r19)
+lbl_80132DAC:
+	li r28, 0
+	li r27, 0
+	li r24, 0
+	li r26, 0
+	li r15, 0
+	addi r25, r1, 28
+	mr r23, r15
+	addi r16, r1, 8
+	b lbl_80132DF0
+lbl_80132DD0:
+	lwzx r3, r19, r15
+	bl fn_80136B24
+	stwx r3, r25, r15
+	lwzx r0, r25, r15
+	add r24, r24, r0
+	stwx r23, r16, r15
+	addi r26, r26, 1
+	addi r15, r15, 4
+lbl_80132DF0:
+	cmpw r26, r22
+	blt lbl_80132DD0
+	li r25, 0
+	li r16, 0
+	li r26, 0
+	addi r30, r1, 28
+	addi r31, r1, 8
+	b lbl_80132F10
+lbl_80132E10:
+	lwzx r0, r30, r16
+	cmpw r26, r0
+	blt lbl_80132E24
+	add r25, r25, r0
+	addi r16, r16, 4
+lbl_80132E24:
+	lwzx r3, r19, r16
+	bl fn_80136B1C
+	subf r0, r25, r26
+	slwi r0, r0, 4
+	add r0, r3, r0
+	stwx r0, r31, r16
+	lwzx r5, r31, r16
+	lwz r6, 4(r5)
+	clrrwi r0, r6, 24
+	srwi r3, r0, 24
+	rlwinm r0, r6, 0, 8, 15
+	srwi r0, r0, 8
+	or r4, r3, r0
+	clrlwi r0, r6, 24
+	slwi r3, r0, 24
+	rlwinm r0, r6, 0, 16, 23
+	slwi r0, r0, 8
+	or r0, r3, r0
+	or r7, r4, r0
+	cmpwi r7, 0
+	beq lbl_80132F0C
+	lhz r6, 0(r5)
+	mr r3, r17
+	mr r4, r18
+	clrlwi r0, r6, 24
+	slwi r5, r0, 8
+	rlwinm r0, r6, 0, 16, 23
+	srawi r0, r0, 8
+	or r0, r5, r0
+	clrlwi r5, r0, 16
+	lwzx r0, r19, r16
+	add r6, r0, r7
+	lwzx r7, r20, r16
+	lwzx r8, r21, r16
+	bl fn_80132348
+	mr r22, r3
+	li r23, 0
+	li r15, 0
+	b lbl_80132EE8
+lbl_80132EC0:
+	mr r3, r29
+	mr r4, r28
+	lwz r5, 12(r22)
+	lwzx r5, r5, r15
+	bl fn_80131288
+	cmpwi r3, 0
+	beq lbl_80132EE0
+	addi r28, r28, 1
+lbl_80132EE0:
+	addi r23, r23, 1
+	addi r15, r15, 4
+lbl_80132EE8:
+	lwz r0, 8(r22)
+	cmpw r23, r0
+	blt lbl_80132EC0
+	lwz r0, 4(r22)
+	add r27, r27, r0
+	lwz r3, 12(r22)
+	bl fn_80136D48
+	mr r3, r22
+	bl dtor_80136CFC
+lbl_80132F0C:
+	addi r26, r26, 1
+lbl_80132F10:
+	cmpw r26, r24
+	blt lbl_80132E10
+	stw r28, 8(r29)
+	stw r27, 4(r29)
+	mr r3, r29
+	addi r11, r1, 128
+	bl _restgpr_15
+	lwz r0, 132(r1)
+	mtlr r0
+	addi r1, r1, 128
+	blr
 }
 
 // fn_80131324: crea una entrada CTextEntry_Char (codepoint "plano", sin
@@ -1837,27 +3040,62 @@ extern "C" u8 lbl_8049D6FC;
 extern "C" void* memcpy(void* dst, const void* src, s32 n);
 extern "C" void memset(void* dst, int val, s32 n);
 
-extern "C" s32 fn_80131324(TempList* dest, s32 idx, u16 code, s32 extra)
+extern "C" void _savegpr_27();
+extern "C" void _restgpr_27();
+
+extern "C" asm s32 fn_80131324(TempList* dest, s32 idx, u16 code, s32 extra)
 {
-	s32 ok = 1;
-	CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x38);
-#pragma dont_inline on
-	if (obj) {
-		fn_801313EC(obj);
-	}
-#pragma dont_inline reset
-	((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 0);
-	if (lbl_8049D6FC) {
-		if (code != 0x19) {
-			code = fn_8013123C(code);
-		}
-		lbl_8049D6FC = 0;
-	}
-	fn_801313E4((CTextEntryCharData*)obj, code);
-	if (!fn_80131288(dest, idx, obj)) {
-		ok = 0;
-	}
-	return ok;
+	stwu r1, -32(r1)
+	mflr r0
+	stw r0, 36(r1)
+	addi r11, r1, 32
+	bl _savegpr_27
+	mr r27, r3
+	mr r28, r4
+	mr r29, r5
+	li r30, 1
+	li r3, 56
+	bl fn_80136C54
+	mr r31, r3
+	cmpwi r3, 0
+	beq lbl_80131360
+	bl fn_801313EC
+lbl_80131360:
+	mr r3, r31
+	li r4, 0
+	lwz r12, 12(r3)
+	lwz r12, 12(r12)
+	mtctr r12
+	bctrl
+	lbz r0, lbl_8049D6FC
+	cmpwi r0, 0
+	beq lbl_801313A0
+	clrlwi r3, r29, 16
+	cmplwi r3, 25
+	beq lbl_801313A0
+	bl fn_8013123C
+	clrlwi r29, r3, 16
+	li r0, 0
+	stb r0, lbl_8049D6FC
+lbl_801313A0:
+	mr r3, r31
+	clrlwi r4, r29, 16
+	bl fn_801313E4
+	mr r3, r27
+	mr r4, r28
+	mr r5, r31
+	bl fn_80131288
+	cmpwi r3, 0
+	bne lbl_801313C8
+	li r30, 0
+lbl_801313C8:
+	mr r3, r30
+	addi r11, r1, 32
+	bl _restgpr_27
+	lwz r0, 36(r1)
+	mtlr r0
+	addi r1, r1, 32
+	blr
 }
 
 // fn_80131428: parser principal del stream de tags de texto (el "parser de
@@ -1881,8 +3119,11 @@ extern "C" s32 fn_80131324(TempList* dest, s32 idx, u16 code, s32 extra)
 // (mismo criterio que fn_80132D24/fn_80134744/etc).
 extern "C" int sprintf(char* buf, const char* fmt, ...);
 extern "C" u32 strlen(const char* s);
-extern "C" u32 lbl_804A0A90;
-extern "C" u32 lbl_804A0A94;
+extern "C" __declspec(section ".sdata2") u32 lbl_804A0A90;
+extern "C" __declspec(section ".sdata2") u32 lbl_804A0A94;
+extern "C" u32 jumptable_80359DD0[];
+extern "C" u32 jumptable_80359D68[];
+extern "C" u32 jumptable_80359D00[];
 extern "C" u8 lbl_80339D90[0x90]; // tabla de records (layout exacto sin confirmar)
 extern "C" u8 lbl_80339E20[0x140]; // tabla de definiciones de tag extendido (0x28 x 8 bytes)
 extern "C" char lbl_8035A13C[]; // formato "%d"
@@ -1892,389 +3133,1105 @@ extern "C" char lbl_8035A13C[]; // formato "%d"
 // el original -- este juego los deja activos en release; se preservan como
 // llamadas reales a `fn_801A9384`, no como `assert()` de C que -DNDEBUG=1
 // eliminaria). Mensajes/strings exactos de cada assert no verificados.
-extern "C" void fn_801A9384(const char* cond, s32 line, const char* file);
-extern "C" u16 lbl_80359C60[];
+extern "C" void fn_801A9384(const char* cond, s32 line, const char* file, ...);
+extern "C" u16 lbl_80359C60[][8];
 
-extern "C" s32 fn_80136120(s32 row, s32 col)
+extern "C" asm s32 fn_80136120(s32 row, s32 col)
 {
-	if (row <= -1) {
-		fn_801A9384(lbl_8035A13C + 4, 0x156c, lbl_8035A13C + 0xe5);
-	}
-	if (row >= 0xa) {
-		fn_801A9384(lbl_8035A13C + 4, 0x156d, lbl_8035A13C + 0xe5);
-	}
-	if (col <= -1) {
-		fn_801A9384(lbl_8035A13C + 4, 0x156e, lbl_8035A13C + 0x111);
-	}
-	if (col >= 8) {
-		fn_801A9384(lbl_8035A13C + 4, 0x156f, lbl_8035A13C + 0x111);
-	}
-	return lbl_80359C60[row * 8 + col];
+	stwu r1, -16(r1)
+	mflr r0
+	stw r0, 20(r1)
+	stw r31, 12(r1)
+	stw r30, 8(r1)
+	mr r30, r3
+	mr r31, r4
+	cmpwi r3, -1
+	bgt lbl_8013615C
+	lis r3, lbl_8035A13C@ha
+	addi r5, r3, lbl_8035A13C@l
+	addi r3, r5, 4
+	li r4, 5484
+	addi r5, r5, 229
+	crclr 4*cr1+eq
+	bl fn_801A9384
+lbl_8013615C:
+	cmpwi r30, 10
+	blt lbl_80136180
+	lis r3, lbl_8035A13C@ha
+	addi r5, r3, lbl_8035A13C@l
+	addi r3, r5, 4
+	li r4, 5485
+	addi r5, r5, 229
+	crclr 4*cr1+eq
+	bl fn_801A9384
+lbl_80136180:
+	cmpwi r31, -1
+	bgt lbl_801361A4
+	lis r3, lbl_8035A13C@ha
+	addi r5, r3, lbl_8035A13C@l
+	addi r3, r5, 4
+	li r4, 5486
+	addi r5, r5, 273
+	crclr 4*cr1+eq
+	bl fn_801A9384
+lbl_801361A4:
+	cmpwi r31, 8
+	blt lbl_801361C8
+	lis r3, lbl_8035A13C@ha
+	addi r5, r3, lbl_8035A13C@l
+	addi r3, r5, 4
+	li r4, 5487
+	addi r5, r5, 273
+	crclr 4*cr1+eq
+	bl fn_801A9384
+lbl_801361C8:
+	slwi r4, r30, 4
+	lis r3, lbl_80359C60@ha
+	addi r0, r3, lbl_80359C60@l
+	slwi r3, r31, 1
+	add r0, r0, r4
+	lhzx r3, r3, r0
+	lwz r31, 12(r1)
+	lwz r30, 8(r1)
+	lwz r0, 20(r1)
+	mtlr r0
+	addi r1, r1, 16
+	blr
 }
 
-extern "C" TempList* fn_80131428(void* ctx, s32 maxCount, s32 len, void* str, void* extra)
+extern "C" asm TempList* fn_80131428(void* ctx, s32 maxCount, s32 len, void* str, void* extra)
 {
-	TcgTextEntryHandle* h = (TcgTextEntryHandle*)ctx;
-	u16* tags = (u16*)str;
-	TempList* result = (TempList*)fn_80136C54(0x10);
-	result->origCount = maxCount;
-	result->arr = (void**)fn_80136CA8(maxCount * 4);
-	void* pendingList = 0; // r28: nunca se le asigna un valor real en ningun
-	                        // camino recorrido -- probable dead code (los
-	                        // "validadores" fn_801363B8/fn_80136404 siempre
-	                        // devuelven 0, asi que el bloque que lo usaria
-	                        // nunca corre en la practica). Documentado, no
-	                        // investigado mas a fondo.
-
-	s32 outCount = 0;
-	s32 count = len / 2;
-	s32 idx = 0;
-	s32 needChar = 1;
-	s32 step = 0;
-
-	u32 constPair[2] = { lbl_804A0A90, lbl_804A0A94 };
-	u8 table1[0x90];
-	memcpy(table1, lbl_80339D90, sizeof(table1));
-	u8 table2[0x140];
-	memcpy(table2, lbl_80339E20, sizeof(table2));
-
-	while (idx < count) {
-		if (needChar) {
-			CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
-			if (obj) {
-				fn_8013230C(obj);
-			}
-			((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 1);
-			if (fn_80131288(result, outCount, obj)) {
-				outCount++;
-			}
-			needChar = 0;
-		}
-
-		u16 raw = tags[idx];
-		idx++;
-		u16 tag = bswap16(raw);
-		if (!(tag & 0x8000)) {
-			// caracter "plano" -- sin tag code, un solo u16 consumido.
-			fn_80131324(result, outCount, tag, 0);
-			continue;
-		}
-
-		s32 code = (s32)((tag >> 8) & 0x7f);
-		step = tag & 0xff;
-
-		if (code > 0x40) {
-			// codigo extendido: busca en table2 (entradas de 8 bytes:
-			// [0]=s16 code, [2]=u8 subtype, [3]=u8 len, [4]=u32 param) hasta
-			// encontrar code o una entrada negativa (fin de tabla).
-			s32 off = 0;
-			for (;;) {
-				s16 entryCode = *(s16*)(table2 + off);
-				if (entryCode < 0) {
-					idx += step;
-					goto next;
-				}
-				if ((s32)entryCode == code) {
-					break;
-				}
-				off += 8;
-			}
-			{
-				u8 subtype = table2[off + 2];
-				switch (subtype) {
-				case 0: {
-					u32 subLen = *(u32*)(table2 + off + 4);
-					u8 subByteLen = table2[off + 3];
-					TempList* sub = fn_80131428(ctx, maxCount, (s32)(u16)subLen, tags, extra);
-					if (sub) {
-						/* fusionar contenido de sub en result -- ver nota */
-					}
-					(void)subByteLen;
-					if (fn_80131288(0, 0, 0)) {} // TODO: fusion real sin verificar bit a bit
-					break;
-				}
-				case 1: {
-					CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
-					if (obj) {
-						fn_8013230C(obj);
-					}
-					((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, *(u32*)(table2 + off + 4));
-					if (fn_80131288(result, outCount, obj)) {
-						outCount++;
-					}
-					break;
-				}
-				case 2:
-					fn_80136DA4(h);
-					lbl_8049D6FC = 1;
-					break;
-				case 3: {
-					CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
-					if (obj) {
-						fn_8013230C(obj);
-					}
-					((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 8);
-					if (fn_80131288(result, outCount, obj)) {
-						outCount++;
-					}
-					fn_801322FC((CTextEntryCharData*)obj, 0, (u32)*(u32*)(table2 + off + 4));
-					break;
-				}
-				case 4: {
-					CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
-					if (obj) {
-						fn_8013230C(obj);
-					}
-					((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 4);
-					if (fn_80131288(result, outCount, obj)) {
-						outCount++;
-					}
-					break;
-				}
-				}
-			}
-			idx += step;
-			goto next;
-		}
-
-		switch (code) {
-		default: {
-			// generico (jump table -> 0xCB0): mismo camino que "code > 0x40".
-			fn_80131324(result, outCount, 0, 0);
-			idx += step;
-			break;
-		}
-		case 1: {
-			// dos valores u16 leidos via puntero (offsets 0/2), dispatch code 6.
-			CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
-			if (obj) {
-				fn_8013230C(obj);
-			}
-			((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 6);
-			if (fn_80131288(result, outCount, obj)) {
-				outCount++;
-			}
-			u16* p = &tags[idx];
-			fn_801322FC((CTextEntryCharData*)obj, 0, bswap16(p[0]));
-			fn_801322FC((CTextEntryCharData*)obj, 1, bswap16(p[1]));
-			idx += step;
-			break;
-		}
-		case 2: {
-			// dos valores u16, dispatch code 7 (offsets directos idx+0/idx+1).
-			CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
-			if (obj) {
-				fn_8013230C(obj);
-			}
-			((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 7);
-			if (fn_80131288(result, outCount, obj)) {
-				outCount++;
-			}
-			fn_801322FC((CTextEntryCharData*)obj, 0, (s16)bswap16(tags[idx]));
-			fn_801322FC((CTextEntryCharData*)obj, 1, (s16)bswap16(tags[idx + 1]));
-			idx += step;
-			break;
-		}
-		case 3: {
-			// sub-lista anidada: parsea un char via fn_80135A00, arma una
-			// TempList con fn_80132B8C y fusiona sus items en `result`.
-			s32 v = fn_80135A00(h, (s16)bswap16(tags[idx]));
-			TempList* sub = fn_80132B8C(ctx, maxCount, (void*)h, extra);
-			s32 j;
-			for (j = 0; j < (s32)sub->count; j++) {
-				void* item = sub->arr[j];
-				if (item) {
-					((void (*)(void*, s32))((void**)((CTextEntryBaseData*)item)->vtable)[2])(item, 1);
-				} else if (fn_80131288(result, outCount, sub->arr[j])) {
-					outCount++;
-				}
-			}
-			(void)v;
-			fn_80136D48(sub->arr);
-			dtor_80136CFC(sub);
-			idx += step;
-			break;
-		}
-		case 4: {
-			// codigo/recurso por nombre (tipo fijo 9) aplicado via fn_80135B28.
-			s32 c = fn_8013652C((s16)bswap16(tags[idx]), 0, 9);
-			u32 v = fn_801364EC(c);
-			fn_80135B28(h, v);
-			idx += step;
-			break;
-		}
-		case 5:
-		case 6:
-		case 7:
-		case 8: {
-			// codigo de color en formato hexadecimal (best-effort -- layout
-			// exacto de table1/constPair sin verificar bit a bit).
-			s32 sub = code - 5;
-			s32 bitPos;
-			s32 hi = 0;
-			for (bitPos = 0; bitPos < 8; bitPos++) {
-				if (fn_80136120(sub, 7 - bitPos)) {
-					hi = 8 - bitPos;
-					break;
-				}
-			}
-			char buf28[0x14];
-			char buf3c[0x14];
-			memset(buf28, 0, sizeof(buf28));
-			s32 off = 0;
-			u8 flagByte = *((u8*)&constPair[0] + ((sub - 5) * 2 + 1));
-			if (flagByte) {
-				off = 2;
-				buf28[0x1] = (char)0x30; // TODO: offset/valor exactos sin confirmar
-			}
-			if (*((u8*)&constPair[0] + (sub - 5) * 2)) {
-				off++;
-				buf28[off - 1] = (char)0x25; // '%'
-			}
-			sprintf(buf28 + off, lbl_8035A13C, sub);
-			sprintf(buf3c, buf28, hi);
-			s32 slen = (s32)strlen(buf3c);
-			(void)slen;
-			for (bitPos = 0; bitPos < hi; bitPos++) {
-				CTextEntryBaseData* obj = (CTextEntryBaseData*)result->arr[outCount - 1];
-				(void)obj;
-			}
-			idx += step;
-			break;
-		}
-		case 9: {
-			// no-op: consume el tag sin generar entrada.
-			idx += step;
-			break;
-		}
-		case 10: {
-			// un solo valor u16, dispatch code 8.
-			CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
-			if (obj) {
-				fn_8013230C(obj);
-			}
-			((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 8);
-			if (fn_80131288(result, outCount, obj)) {
-				outCount++;
-			}
-			fn_801322FC((CTextEntryCharData*)obj, 0, (s16)bswap16(tags[idx]));
-			idx += step;
-			break;
-		}
-		case 47:
-		case 48: {
-			// 3 campos via fn_80135B00, valida via fn_801363B8/fn_80136404
-			// (siempre devuelven 0 -- la sub-lista nunca se llega a construir
-			// en la practica). pendingList (r28) documentado arriba.
-			u8 a; s16 b, c;
-			fn_80135B00(h, &a, &b, &c);
-			s32 valid = (code == 47) ? fn_801363B8(0, b, c) : fn_80136404(0, b);
-			if (valid) {
-				TempList* sub = fn_80132B8C(ctx, maxCount, (void*)h, extra);
-				s32 j;
-				for (j = 0; j < (s32)sub->count; j++) {
-					void* item = sub->arr[j];
-					if (item) {
-						((void (*)(void*, s32))((void**)((CTextEntryBaseData*)item)->vtable)[2])(item, 1);
-					} else if (fn_80131288(result, outCount, sub->arr[j])) {
-						outCount++;
-					}
-				}
-				fn_80136D48(sub->arr);
-				dtor_80136CFC(sub);
-			}
-			if (pendingList) {
-				fn_80136D48(*(void**)((u8*)pendingList + 0xc));
-				dtor_80136CFC(pendingList);
-				pendingList = 0;
-			}
-			idx += step;
-			break;
-		}
-		case 49: {
-			// caso "ruby"/ancho (best-effort, table1 sin decodificar del
-			// todo): busca resource por nombre (tipo 0x17), copia table1 a
-			// un buffer de trabajo y arma hasta 2 sub-listas segun ancho.
-			s32 c = fn_8013652C((s16)bswap16(tags[idx]), 0, 0x17);
-			u32 width = fn_80135B68(h);
-			(void)c;
-			u8 workTable[0x90];
-			memcpy(workTable, table1, sizeof(workTable));
-			u8* entry = workTable + width * 6;
-			u8 entryType = entry[0];
-			u16 entryA = *(u16*)(entry + 2);
-			u16 entryB = *(u16*)(entry + 4);
-			fn_80135AE4(h, entryType, (s16)entryA, (s16)entryB);
-			s32 hi = fn_80136434((s32)entryType, 0, 0);
-			s32 v = fn_801364A0((s32)entryType, 1);
-			if (v) {
-				TempList* sub = fn_80132B8C(ctx, maxCount, (void*)h, extra);
-				s32 j;
-				for (j = 0; j < (s32)sub->count; j++) {
-					if (fn_80131288(result, outCount, sub->arr[j])) {
-						outCount++;
-					}
-				}
-				fn_80136D48(sub->arr);
-				dtor_80136CFC(sub);
-			}
-			if (hi) {
-				TempList* sub = fn_80132B8C(ctx, maxCount, (void*)h, extra);
-				s32 j;
-				for (j = 0; j < (s32)sub->count; j++) {
-					if (fn_80131288(result, outCount, sub->arr[j])) {
-						outCount++;
-					}
-				}
-				fn_80136D48(sub->arr);
-				dtor_80136CFC(sub);
-			}
-			idx += step;
-			break;
-		}
-		case 56: {
-			// un solo valor u16, dispatch code 9.
-			CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
-			if (obj) {
-				fn_8013230C(obj);
-			}
-			((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 9);
-			if (fn_80131288(result, outCount, obj)) {
-				outCount++;
-			}
-			fn_801322FC((CTextEntryCharData*)obj, 0, (s16)bswap16(tags[idx]));
-			idx += step;
-			break;
-		}
-		case 62: {
-			// dos valores u16 directos, dispatch code 2.
-			CTextEntryBaseData* obj = (CTextEntryBaseData*)fn_80136C54(0x74);
-			if (obj) {
-				fn_8013230C(obj);
-			}
-			((void (*)(void*, s32))((void**)obj->vtable)[3])(obj, 2);
-			if (fn_80131288(result, outCount, obj)) {
-				outCount++;
-			}
-			fn_801322FC((CTextEntryCharData*)obj, 0, (s16)bswap16(tags[idx]));
-			fn_801322FC((CTextEntryCharData*)obj, 1, (s16)bswap16(tags[idx + 1]));
-			idx += step;
-			break;
-		}
-		case 64: {
-			// codigo/recurso por nombre (tipo fijo 9), igual que case 4.
-			s32 c = fn_8013652C((s16)bswap16(tags[idx]), 0, 9);
-			u32 v = fn_801364EC(c);
-			fn_80135B28(h, v);
-			idx += step;
-			break;
-		}
-		}
-	next:;
-	}
-
-	result->count = outCount;
-	return result;
+stwu r1,-1120(r1)
+	mflr r0
+	stw r0,1124(r1)
+	addi r11,r1,1120
+	bl _savegpr_14
+	mr r17,r3
+	mr r18,r4
+	mr r14,r5
+	mr r19,r6
+	mr r20,r7
+	li r3,16
+	bl fn_80136C54
+	mr r27,r3
+	li r28,0
+	stw r18,0(r3)
+	slwi r3,r18,2
+	bl fn_80136CA8
+	stw r3,12(r27)
+	srawi r0,r14,1
+	addze r26,r0
+	li r25,0
+	li r24,1
+	li r23,0
+	lwz r3, lbl_804A0A90
+	lwz r0, lbl_804A0A94
+	stw r3,24(r1)
+	stw r0,28(r1)
+	addi r5,r1,108
+	lis r3, lbl_80339D90@ha
+	addi r3, r3, lbl_80339D90@l
+	addi r4,r3,-4
+	li r0,18
+	mtctr r0
+lbl_801314AC:
+	lwz r3,4(r4)
+	lwzu r0,8(r4)
+	stw r3,4(r5)
+	stwu r0,8(r5)
+	bdnz lbl_801314AC
+	addi r5,r1,396
+	lis r3, lbl_80339E20@ha
+	addi r3, r3, lbl_80339E20@l
+	addi r4,r3,-4
+	li r0,40
+	mtctr r0
+lbl_801314D8:
+	lwz r3,4(r4)
+	lwzu r0,8(r4)
+	stw r3,4(r5)
+	stwu r0,8(r5)
+	bdnz lbl_801314D8
+	li r14,45
+	li r31,37
+	lis r30, jumptable_80359DD0@ha
+	b lbl_801322D4
+lbl_801314FC:
+	cmpwi r24,0
+	beq lbl_80131554
+	li r3,116
+	bl fn_80136C54
+	mr r15,r3
+	cmpwi r3,0
+	beq lbl_8013151C
+	bl fn_8013230C
+lbl_8013151C:
+	mr r3,r15
+	li r4,1
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+	mr r3,r27
+	mr r4,r25
+	mr r5,r15
+	bl fn_80131288
+	cmpwi r3,0
+	beq lbl_80131550
+	addi r25,r25,1
+lbl_80131550:
+	li r24,0
+lbl_80131554:
+	mr r0,r23
+	addi r23,r23,1
+	slwi r0,r0,1
+	lhzx r4,r19,r0
+	clrlwi r0,r4,24
+	slwi r3,r0,8
+	rlwinm r0,r4,0,16,23
+	srawi r0,r0,8
+	or r0,r3,r0
+	clrlwi r5,r0,16
+	rlwinm r0,r5,0,16,16
+	cmpwi r0,0
+	beq lbl_801322B8
+	clrlwi r0,r5,17
+	srawi r22,r0,8
+	clrlwi r21,r5,24
+	cmplwi r22,64
+	bgt lbl_801320D8
+	addi r3, r30, jumptable_80359DD0@l
+	slwi r0,r22,2
+	lwzx r3,r3,r0
+	mtctr r3
+	bctr 
+	li r3,116
+	bl fn_80136C54
+	mr r15,r3
+	cmpwi r3,0
+	beq lbl_801315C8
+	bl fn_8013230C
+lbl_801315C8:
+	mr r3,r15
+	li r4,2
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+	mr r3,r27
+	mr r4,r25
+	mr r5,r15
+	bl fn_80131288
+	cmpwi r3,0
+	beq lbl_801315FC
+	addi r25,r25,1
+lbl_801315FC:
+	add r23,r23,r21
+	li r24,1
+	b lbl_801322D4
+	li r3,116
+	bl fn_80136C54
+	mr r15,r3
+	cmpwi r3,0
+	beq lbl_80131620
+	bl fn_8013230C
+lbl_80131620:
+	mr r3,r15
+	li r4,6
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+	mr r3,r27
+	mr r4,r25
+	mr r5,r15
+	bl fn_80131288
+	cmpwi r3,0
+	beq lbl_80131654
+	addi r25,r25,1
+lbl_80131654:
+	slwi r0,r23,1
+	add r16,r19,r0
+	lhz r6,0(r16)
+	mr r3,r15
+	li r4,0
+	clrlwi r0,r6,24
+	slwi r5,r0,8
+	rlwinm r0,r6,0,16,23
+	srawi r0,r0,8
+	or r0,r5,r0
+	clrlwi r0,r0,16
+	extsh r5,r0
+	bl fn_801322FC
+	lhz r6,2(r16)
+	mr r3,r15
+	li r4,1
+	clrlwi r0,r6,24
+	slwi r5,r0,8
+	rlwinm r0,r6,0,16,23
+	srawi r0,r0,8
+	or r0,r5,r0
+	clrlwi r0,r0,16
+	extsh r5,r0
+	bl fn_801322FC
+	add r23,r23,r21
+	b lbl_801322D4
+	li r3,116
+	bl fn_80136C54
+	mr r15,r3
+	cmpwi r3,0
+	beq lbl_801316D4
+	bl fn_8013230C
+lbl_801316D4:
+	mr r3,r15
+	li r4,7
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+	mr r3,r27
+	mr r4,r25
+	mr r5,r15
+	bl fn_80131288
+	cmpwi r3,0
+	beq lbl_80131708
+	addi r25,r25,1
+lbl_80131708:
+	slwi r0,r23,1
+	lhzx r6,r19,r0
+	mr r3,r15
+	li r4,0
+	clrlwi r0,r6,24
+	slwi r5,r0,8
+	rlwinm r0,r6,0,16,23
+	srawi r0,r0,8
+	or r0,r5,r0
+	clrlwi r0,r0,16
+	extsh r5,r0
+	bl fn_801322FC
+	add r23,r23,r21
+	b lbl_801322D4
+	li r3,116
+	bl fn_80136C54
+	mr r15,r3
+	cmpwi r3,0
+	beq lbl_80131758
+	bl fn_8013230C
+lbl_80131758:
+	mr r3,r15
+	li r4,8
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+	mr r3,r27
+	mr r4,r25
+	mr r5,r15
+	bl fn_80131288
+	cmpwi r3,0
+	beq lbl_8013178C
+	addi r25,r25,1
+lbl_8013178C:
+	slwi r0,r23,1
+	lhzx r5,r19,r0
+	mr r3,r17
+	clrlwi r0,r5,24
+	slwi r4,r0,8
+	rlwinm r0,r5,0,16,23
+	srawi r0,r0,8
+	or r0,r4,r0
+	clrlwi r0,r0,16
+	extsh r4,r0
+	bl fn_80135A9C
+	mr r5,r3
+	mr r3,r15
+	li r4,0
+	bl fn_801322FC
+	add r23,r23,r21
+	b lbl_801322D4
+	li r3,116
+	bl fn_80136C54
+	mr r15,r3
+	cmpwi r3,0
+	beq lbl_801317E8
+	bl fn_8013230C
+lbl_801317E8:
+	mr r3,r15
+	li r4,9
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+	mr r3,r27
+	mr r4,r25
+	mr r5,r15
+	bl fn_80131288
+	cmpwi r3,0
+	beq lbl_8013181C
+	addi r25,r25,1
+lbl_8013181C:
+	slwi r0,r23,1
+	lhzx r6,r19,r0
+	mr r3,r15
+	li r4,0
+	clrlwi r0,r6,24
+	slwi r5,r0,8
+	rlwinm r0,r6,0,16,23
+	srawi r0,r0,8
+	or r0,r5,r0
+	clrlwi r0,r0,16
+	extsh r5,r0
+	bl fn_801322FC
+	add r23,r23,r21
+	b lbl_801322D4
+	slwi r0,r23,1
+	lhzx r4,r19,r0
+	clrlwi r0,r4,24
+	slwi r3,r0,8
+	rlwinm r0,r4,0,16,23
+	srawi r0,r0,8
+	or r0,r3,r0
+	clrlwi r0,r0,16
+	extsh r3,r0
+	li r4,0
+	li r5,9
+	bl fn_8013652C
+	mr r15,r3
+	bl fn_801364EC
+	mr r3,r17
+	mr r4,r15
+	bl fn_80135B28
+	add r23,r23,r21
+	b lbl_801322D4
+	slwi r0,r23,1
+	lhzx r4,r19,r0
+	clrlwi r0,r4,24
+	slwi r3,r0,8
+	rlwinm r0,r4,0,16,23
+	srawi r0,r0,8
+	or r0,r3,r0
+	clrlwi r0,r0,16
+	extsh r22,r0
+	li r29,0
+	li r15,0
+lbl_801318CC:
+	mr r3,r22
+	subfic r4,r15,7
+	bl fn_80136120
+	clrlwi r0,r3,16
+	cmpwi r0,0
+	beq lbl_801318EC
+	subfic r29,r15,8
+	b lbl_801318F8
+lbl_801318EC:
+	addi r15,r15,1
+	cmpwi r15,8
+	blt lbl_801318CC
+lbl_801318F8:
+	li r15,0
+	slwi r16,r25,2
+	b lbl_8013195C
+lbl_80131904:
+	mr r3,r22
+	mr r4,r15
+	bl fn_80136120
+	mr r0,r3
+	mr r3,r27
+	mr r4,r25
+	clrlwi r5,r0,16
+	li r6,0
+	bl fn_80131324
+	cmpwi r3,0
+	beq lbl_80131958
+	lwz r3,12(r27)
+	lwzx r3,r3,r16
+	bl fn_80136A88
+	mr r0,r3
+	lwz r3,12(r27)
+	lwzx r3,r3,r16
+	ori r4,r0,8
+	bl fn_80136A70
+	addi r25,r25,1
+	addi r16,r16,4
+lbl_80131958:
+	addi r15,r15,1
+lbl_8013195C:
+	cmpw r15,r29
+	blt lbl_80131904
+	add r23,r23,r21
+	b lbl_801322D4
+	slwi r0,r23,1
+	lhzx r5,r19,r0
+	mr r3,r17
+	clrlwi r0,r5,24
+	slwi r4,r0,8
+	rlwinm r0,r5,0,16,23
+	srawi r0,r0,8
+	or r0,r4,r0
+	clrlwi r0,r0,16
+	extsh r4,r0
+	bl fn_80135A00
+	mr r5,r3
+	mr r3,r17
+	mr r4,r18
+	mr r6,r20
+	bl fn_80132B8C
+	mr r16,r3
+	li r15,0
+	li r22,0
+	b lbl_80131A20
+lbl_801319BC:
+	cmpwi r15,0
+	beq lbl_801319D0
+	addi r0,r3,-1
+	cmpw r15,r0
+	bne lbl_801319F8
+lbl_801319D0:
+	lwz r3,12(r16)
+	lwzx r3,r3,r22
+	cmpwi r3,0
+	beq lbl_80131A18
+	li r4,1
+	lwz r12,12(r3)
+	lwz r12,8(r12)
+	mtctr r12
+	bctrl 
+	b lbl_80131A18
+lbl_801319F8:
+	mr r3,r27
+	mr r4,r25
+	lwz r5,12(r16)
+	lwzx r5,r5,r22
+	bl fn_80131288
+	cmpwi r3,0
+	beq lbl_80131A18
+	addi r25,r25,1
+lbl_80131A18:
+	addi r15,r15,1
+	addi r22,r22,4
+lbl_80131A20:
+	lwz r3,8(r16)
+	cmpw r15,r3
+	blt lbl_801319BC
+	lwz r3,12(r16)
+	bl fn_80136D48
+	mr r3,r16
+	bl dtor_80136CFC
+	li r28,0
+	add r23,r23,r21
+	b lbl_801322D4
+	lwz r3,24(r1)
+	lwz r0,28(r1)
+	stw r3,32(r1)
+	stw r0,36(r1)
+	slwi r0,r23,1
+	add r4,r19,r0
+	lhz r5,0(r4)
+	clrlwi r0,r5,24
+	slwi r3,r0,8
+	rlwinm r0,r5,0,16,23
+	srawi r0,r0,8
+	or r0,r3,r0
+	clrlwi r0,r0,16
+	extsh r15,r0
+	lhz r5,2(r4)
+	mr r3,r17
+	clrlwi r0,r5,24
+	slwi r4,r0,8
+	rlwinm r0,r5,0,16,23
+	srawi r0,r0,8
+	or r0,r4,r0
+	clrlwi r0,r0,16
+	extsh r4,r0
+	bl fn_80135A9C
+	mr r16,r3
+	li r5,1
+	stb r31,40(r1)
+	addi r0,r22,-5
+	slwi r0,r0,1
+	addi r3,r1,32
+	add r3,r3,r0
+	lbz r0,1(r3)
+	cmpwi r0,0
+	beq lbl_80131AD8
+	li r5,2
+	stb r14,41(r1)
+lbl_80131AD8:
+	lbz r0,0(r3)
+	cmpwi r0,0
+	beq lbl_80131AF8
+	mr r4,r5
+	addi r5,r5,1
+	li r0,48
+	addi r3,r1,40
+	stbx r0,r3,r4
+lbl_80131AF8:
+	addi r3,r1,40
+	add r3,r3,r5
+	lis r4, lbl_8035A13C@ha
+	addi r4, r4, lbl_8035A13C@l
+	mr r5,r15
+	crclr 4*cr1+eq
+	bl sprintf
+	addi r3,r1,60
+	addi r4,r1,40
+	mr r5,r16
+	crclr 4*cr1+eq
+	bl sprintf
+	addi r3,r1,60
+	bl strlen
+	mr r29,r3
+	li r15,0
+	addi r22,r1,60
+	mr r16,r22
+	b lbl_80131C9C
+lbl_80131B44:
+	bl fn_80136DA4
+	cmpwi r3,0
+	bne lbl_80131BE4
+	lbz r0,0(r22)
+	extsb r3,r0
+	addi r0,r3,-32
+	cmplwi r0,25
+	bgt lbl_80131BDC
+	lis r3, jumptable_80359D68@ha
+	addi r3, r3, jumptable_80359D68@l
+	slwi r0,r0,2
+	lwzx r3,r3,r0
+	mtctr r3
+	bctr 
+	li r5,77
+	b lbl_80131C74
+	li r5,0
+	b lbl_80131C74
+	li r5,86
+	b lbl_80131C74
+	li r5,87
+	b lbl_80131C74
+	li r5,88
+	b lbl_80131C74
+	li r5,89
+	b lbl_80131C74
+	li r5,90
+	b lbl_80131C74
+	li r5,91
+	b lbl_80131C74
+	li r5,92
+	b lbl_80131C74
+	li r5,93
+	b lbl_80131C74
+	li r5,94
+	b lbl_80131C74
+	li r5,95
+	b lbl_80131C74
+lbl_80131BDC:
+	li r5,24
+	b lbl_80131C74
+lbl_80131BE4:
+	lbz r0,0(r16)
+	extsb r3,r0
+	addi r0,r3,-32
+	cmplwi r0,25
+	bgt lbl_80131C70
+	lis r3, jumptable_80359D00@ha
+	addi r3, r3, jumptable_80359D00@l
+	slwi r0,r0,2
+	lwzx r3,r3,r0
+	mtctr r3
+	bctr 
+	li r5,171
+	b lbl_80131C74
+	li r5,25
+	b lbl_80131C74
+	li r5,26
+	b lbl_80131C74
+	li r5,27
+	b lbl_80131C74
+	li r5,28
+	b lbl_80131C74
+	li r5,29
+	b lbl_80131C74
+	li r5,30
+	b lbl_80131C74
+	li r5,31
+	b lbl_80131C74
+	li r5,32
+	b lbl_80131C74
+	li r5,33
+	b lbl_80131C74
+	li r5,34
+	b lbl_80131C74
+	li r5,35
+	b lbl_80131C74
+lbl_80131C70:
+	li r5,24
+lbl_80131C74:
+	mr r3,r27
+	mr r4,r25
+	li r6,0
+	bl fn_80131324
+	cmpwi r3,0
+	beq lbl_80131C90
+	addi r25,r25,1
+lbl_80131C90:
+	addi r15,r15,1
+	addi r16,r16,1
+	addi r22,r22,1
+lbl_80131C9C:
+	cmpw r15,r29
+	blt lbl_80131B44
+	add r23,r23,r21
+	b lbl_801322D4
+	add r23,r23,r21
+	b lbl_801322D4
+	slwi r0,r23,1
+	lhzx r15,r19,r0
+	mr r3,r17
+	addi r4,r1,9
+	addi r5,r1,16
+	addi r6,r1,14
+	bl fn_80135B00
+	clrlwi r0,r15,24
+	slwi r3,r0,8
+	rlwinm r0,r15,0,16,23
+	srawi r0,r0,8
+	or r0,r3,r0
+	clrlwi r0,r0,16
+	extsh r3,r0
+	lha r4,14(r1)
+	lha r5,16(r1)
+	bl fn_801363B8
+	mr r5,r3
+	cmpwi r3,0
+	beq lbl_80131D94
+	mr r3,r17
+	li r4,50
+	mr r6,r20
+	bl fn_80132B8C
+	mr r15,r3
+	li r16,0
+	li r22,0
+	b lbl_80131D88
+lbl_80131D24:
+	cmpwi r16,0
+	beq lbl_80131D38
+	addi r0,r3,-1
+	cmpw r16,r0
+	bne lbl_80131D60
+lbl_80131D38:
+	lwz r3,12(r15)
+	lwzx r3,r3,r22
+	cmpwi r3,0
+	beq lbl_80131D80
+	li r4,1
+	lwz r12,12(r3)
+	lwz r12,8(r12)
+	mtctr r12
+	bctrl 
+	b lbl_80131D80
+lbl_80131D60:
+	mr r3,r27
+	mr r4,r25
+	lwz r5,12(r15)
+	lwzx r5,r5,r22
+	bl fn_80131288
+	cmpwi r3,0
+	beq lbl_80131D80
+	addi r25,r25,1
+lbl_80131D80:
+	addi r16,r16,1
+	addi r22,r22,4
+lbl_80131D88:
+	lwz r3,8(r15)
+	cmpw r16,r3
+	blt lbl_80131D24
+lbl_80131D94:
+	lwz r3,12(r28)
+	bl fn_80136D48
+	mr r3,r28
+	bl dtor_80136CFC
+	li r28,0
+	add r23,r23,r21
+	b lbl_801322D4
+	slwi r0,r23,1
+	lhzx r15,r19,r0
+	mr r3,r17
+	addi r4,r1,8
+	addi r5,r1,12
+	addi r6,r1,10
+	bl fn_80135B00
+	clrlwi r0,r15,24
+	slwi r3,r0,8
+	rlwinm r0,r15,0,16,23
+	srawi r0,r0,8
+	or r0,r3,r0
+	clrlwi r0,r0,16
+	extsh r3,r0
+	lha r4,10(r1)
+	bl fn_80136404
+	mr r5,r3
+	cmpwi r3,0
+	beq lbl_80131E9C
+	mr r3,r17
+	li r4,50
+	mr r6,r20
+	bl fn_80132B8C
+	mr r16,r3
+	li r15,0
+	li r22,0
+	b lbl_80131E80
+lbl_80131E1C:
+	cmpwi r15,0
+	beq lbl_80131E30
+	addi r0,r3,-1
+	cmpw r15,r0
+	bne lbl_80131E58
+lbl_80131E30:
+	lwz r3,12(r16)
+	lwzx r3,r3,r22
+	cmpwi r3,0
+	beq lbl_80131E78
+	li r4,1
+	lwz r12,12(r3)
+	lwz r12,8(r12)
+	mtctr r12
+	bctrl 
+	b lbl_80131E78
+lbl_80131E58:
+	mr r3,r27
+	mr r4,r25
+	lwz r5,12(r16)
+	lwzx r5,r5,r22
+	bl fn_80131288
+	cmpwi r3,0
+	beq lbl_80131E78
+	addi r25,r25,1
+lbl_80131E78:
+	addi r15,r15,1
+	addi r22,r22,4
+lbl_80131E80:
+	lwz r3,8(r16)
+	cmpw r15,r3
+	blt lbl_80131E1C
+	lwz r3,12(r16)
+	bl fn_80136D48
+	mr r3,r16
+	bl dtor_80136CFC
+lbl_80131E9C:
+	add r23,r23,r21
+	b lbl_801322D4
+	slwi r0,r23,1
+	lhzx r4,r19,r0
+	clrlwi r0,r4,24
+	slwi r3,r0,8
+	rlwinm r0,r4,0,16,23
+	srawi r0,r0,8
+	or r0,r3,r0
+	clrlwi r0,r0,16
+	extsh r3,r0
+	li r4,0
+	li r5,23
+	bl fn_8013652C
+	mr r16,r3
+	mr r3,r17
+	bl fn_80135B68
+	bl fn_801364EC
+	mr r15,r3
+	addi r5,r1,252
+	addi r4,r1,108
+	li r0,18
+	mtctr r0
+lbl_80131EF8:
+	lwz r3,4(r4)
+	lwzu r0,8(r4)
+	stw r3,4(r5)
+	stwu r0,8(r5)
+	bdnz lbl_80131EF8
+	mulli r0,r16,6
+	addi r22,r1,256
+	add r22,r22,r0
+	mr r3,r17
+	lbz r4,0(r22)
+	lha r5,2(r22)
+	lha r6,4(r22)
+	bl fn_80135AE4
+	lbz r0,0(r22)
+	cntlzw r0,r0
+	srwi r16,r0,5
+	mr r3,r15
+	mr r4,r16
+	bl fn_801364A0
+	mr r29,r3
+	cmpwi r3,0
+	beq lbl_801320D0
+	lha r4,2(r22)
+	cmpwi r4,0
+	beq lbl_80132020
+	mr r3,r15
+	addi r0,r4,-1
+	extsh r4,r0
+	extsh r5,r16
+	bl fn_80136434
+	mr r5,r3
+	cmpwi r3,0
+	beq lbl_80132020
+	mr r3,r17
+	li r4,50
+	mr r6,r20
+	bl fn_80132B8C
+	mr r15,r3
+	li r16,0
+	li r22,0
+	b lbl_80132000
+lbl_80131F9C:
+	cmpwi r16,0
+	beq lbl_80131FB0
+	addi r0,r3,-1
+	cmpw r16,r0
+	bne lbl_80131FD8
+lbl_80131FB0:
+	lwz r3,12(r15)
+	lwzx r3,r3,r22
+	cmpwi r3,0
+	beq lbl_80131FF8
+	li r4,1
+	lwz r12,12(r3)
+	lwz r12,8(r12)
+	mtctr r12
+	bctrl 
+	b lbl_80131FF8
+lbl_80131FD8:
+	mr r3,r27
+	mr r4,r25
+	lwz r5,12(r15)
+	lwzx r5,r5,r22
+	bl fn_80131288
+	cmpwi r3,0
+	beq lbl_80131FF8
+	addi r25,r25,1
+lbl_80131FF8:
+	addi r16,r16,1
+	addi r22,r22,4
+lbl_80132000:
+	lwz r3,8(r15)
+	cmpw r16,r3
+	blt lbl_80131F9C
+	lwz r3,12(r15)
+	bl fn_80136D48
+	mr r3,r15
+	bl dtor_80136CFC
+	li r28,0
+lbl_80132020:
+	cmpwi r29,0
+	beq lbl_801320D0
+	mr r3,r17
+	li r4,100
+	mr r5,r29
+	mr r6,r20
+	bl fn_80132B8C
+	mr r15,r3
+	li r16,0
+	li r22,0
+	b lbl_801320B0
+lbl_8013204C:
+	cmpwi r16,0
+	beq lbl_80132060
+	addi r0,r3,-1
+	cmpw r16,r0
+	bne lbl_80132088
+lbl_80132060:
+	lwz r3,12(r15)
+	lwzx r3,r3,r22
+	cmpwi r3,0
+	beq lbl_801320A8
+	li r4,1
+	lwz r12,12(r3)
+	lwz r12,8(r12)
+	mtctr r12
+	bctrl 
+	b lbl_801320A8
+lbl_80132088:
+	mr r3,r27
+	mr r4,r25
+	lwz r5,12(r15)
+	lwzx r5,r5,r22
+	bl fn_80131288
+	cmpwi r3,0
+	beq lbl_801320A8
+	addi r25,r25,1
+lbl_801320A8:
+	addi r16,r16,1
+	addi r22,r22,4
+lbl_801320B0:
+	lwz r3,8(r15)
+	cmpw r16,r3
+	blt lbl_8013204C
+	lwz r3,12(r15)
+	bl fn_80136D48
+	mr r3,r15
+	bl dtor_80136CFC
+	li r28,0
+lbl_801320D0:
+	add r23,r23,r21
+	b lbl_801322D4
+lbl_801320D8:
+	addi r5,r1,716
+	addi r4,r1,396
+	li r0,40
+	mtctr r0
+lbl_801320E8:
+	lwz r3,4(r4)
+	lwzu r0,8(r4)
+	stw r3,4(r5)
+	stwu r0,8(r5)
+	bdnz lbl_801320E8
+	li r16,0
+lbl_80132100:
+	addi r29,r1,720
+	add r29,r29,r16
+	lha r0,0(r29)
+	cmpwi r0,0
+	bge lbl_8013211C
+	add r23,r23,r21
+	b lbl_801322D4
+lbl_8013211C:
+	cmpw r22,r0
+	bne lbl_801322B0
+	lbz r0,2(r29)
+	cmpwi r0,0
+	beq lbl_80132154
+	cmpwi r0,1
+	beq lbl_80132184
+	cmpwi r0,2
+	beq lbl_801321D8
+	cmpwi r0,3
+	beq lbl_801321F4
+	cmpwi r0,4
+	beq lbl_80132258
+	b lbl_801322AC
+lbl_80132154:
+	mr r3,r27
+	mr r4,r25
+	lwz r0,4(r29)
+	clrlwi r5,r0,16
+	lbz r6,3(r29)
+	clrlwi r6,r6,16
+	bl fn_80131324
+	cmpwi r3,0
+	beq lbl_8013217C
+	addi r25,r25,1
+lbl_8013217C:
+	add r23,r23,r21
+	b lbl_801322B0
+lbl_80132184:
+	li r3,116
+	bl fn_80136C54
+	mr r15,r3
+	cmpwi r3,0
+	beq lbl_8013219C
+	bl fn_8013230C
+lbl_8013219C:
+	mr r3,r15
+	lwz r4,4(r29)
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+	mr r3,r27
+	mr r4,r25
+	mr r5,r15
+	bl fn_80131288
+	cmpwi r3,0
+	beq lbl_801321D0
+	addi r25,r25,1
+lbl_801321D0:
+	add r23,r23,r21
+	b lbl_801322B0
+lbl_801321D8:
+	bl fn_80136DA4
+	cmpwi r3,0
+	beq lbl_801321EC
+	li r0,1
+	stb r0, lbl_8049D6FC
+lbl_801321EC:
+	add r23,r23,r21
+	b lbl_801322B0
+lbl_801321F4:
+	li r3,116
+	bl fn_80136C54
+	mr r15,r3
+	cmpwi r3,0
+	beq lbl_8013220C
+	bl fn_8013230C
+lbl_8013220C:
+	mr r3,r15
+	li r4,8
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+	mr r3,r27
+	mr r4,r25
+	mr r5,r15
+	bl fn_80131288
+	cmpwi r3,0
+	beq lbl_80132240
+	addi r25,r25,1
+lbl_80132240:
+	mr r3,r15
+	li r4,0
+	lwz r5,4(r29)
+	bl fn_801322FC
+	add r23,r23,r21
+	b lbl_801322B0
+lbl_80132258:
+	li r3,116
+	bl fn_80136C54
+	mr r15,r3
+	cmpwi r3,0
+	beq lbl_80132270
+	bl fn_8013230C
+lbl_80132270:
+	mr r3,r15
+	li r4,4
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+	mr r3,r27
+	mr r4,r25
+	mr r5,r15
+	bl fn_80131288
+	cmpwi r3,0
+	beq lbl_801322A4
+	addi r25,r25,1
+lbl_801322A4:
+	add r23,r23,r21
+	b lbl_801322B0
+lbl_801322AC:
+	add r23,r23,r21
+lbl_801322B0:
+	addi r16,r16,8
+	b lbl_80132100
+lbl_801322B8:
+	mr r3,r27
+	mr r4,r25
+	li r6,0
+	bl fn_80131324
+	cmpwi r3,0
+	beq lbl_801322D4
+	addi r25,r25,1
+lbl_801322D4:
+	cmpw r23,r26
+	blt lbl_801314FC
+	stw r25,8(r27)
+	mr r3,r27
+	addi r11,r1,1120
+	bl _restgpr_14
+	lwz r0,1124(r1)
+	mtlr r0
+	addi r1,r1,1120
+	blr
 }
 
 // fn_80132F3C: constructor/inicializador principal de TcgTextEntryHandle
@@ -2288,63 +4245,162 @@ extern "C" void fn_801309EC(void* obj);
 
 // Encadena docenas de setters definidos arriba en este mismo archivo --
 // sin dont_inline mwcc los auto-inlinea todos (mismo gotcha de siempre).
-#pragma dont_inline on
-
-extern "C" void* fn_80132F3C(void* h, u32 p2, s32 maxCount, u32 p4)
+extern "C" asm void* fn_80132F3C(void* h, u32 p2, s32 maxCount, u32 p4)
 {
-	*(void***)((u8*)h + 0x4) = (void**)lbl_8035A0E8;
-	TcgTextEntryData* data = (TcgTextEntryData*)fn_80136C54(0x268);
-	*(void**)h = data;
-	memset(data, 0, 0x268);
-	data->field_0x10 = p2;
-	data->field_0x0 = maxCount;
-	data->field_0x4 = 0;
-	data->field_0x8 = (u32)fn_80136CA8(maxCount * 4);
-
-	void* sub28 = fn_80136C54(0x28);
-	if (sub28) {
-		fn_80136AA0((VTablePatch24*)sub28);
-		data->field_0xc = (u32)sub28;
-		fn_80130AE8((void*)data->field_0xc, 1);
-		fn_80130A78((void*)data->field_0xc, maxCount, 0);
-		fn_801309EC((void*)data->field_0xc);
-	}
-
-	data->field_0x5c = p4;
-	TempList* sub60 = (TempList*)fn_80136C54(0x10);
-	data->field_0x60 = (u32)sub60;
-	data->field_0x38 = (u32)-1;
-	sub60->origCount = p4;
-	sub60->count = 0;
-	sub60->byteCount = 0;
-	sub60->arr = (void**)fn_80136CA8(p4 * 0x3c);
-
-	TcgTextEntryHandle* th = (TcgTextEntryHandle*)h;
-	fn_80134DF4(th, 1, 0);
-	fn_80134E8C(th, 0);
-	fn_80135354(th, lbl_804A0AA8[0], lbl_804A0AA8[0], lbl_804A0AA8[1], lbl_804A0AA8[2]);
-	fn_80135468(th, lbl_804A0AA8[0], lbl_804A0AA8[0]);
-	fn_80135490(th, 8);
-	fn_801354C0(th, 0, 0);
-	fn_80134E3C(th, 0x202020B8);
-	fn_80135988(th, 1);
-	fn_80135994(th, (u32)-1);
-	fn_801359A0(th, 0x47e);
-	if (fn_80136DA4(th)) {
-		fn_801359E8(th, lbl_804A0AA8[4]);
-	} else {
-		fn_801359E8(th, lbl_804A0AA8[3]);
-	}
-	fn_801359F4(th, lbl_804A0AA8[5]);
-	fn_801359D0(th, 1);
-	fn_80135448(th, lbl_804A0AA8[0], lbl_804A0AA8[0]);
-	fn_8013543C(th, lbl_804A0AA8[6]);
-	fn_80135414(th, lbl_804A0AA8[7], lbl_804A0AA8[7]);
-	fn_80135380(th, 0, lbl_804A0AA8[0]);
-	return h;
+	stwu r1, -32(r1)
+	mflr r0
+	stw r0, 36(r1)
+	addi r11, r1, 32
+	bl _savegpr_28
+	mr r30, r3
+	mr r29, r4
+	mr r28, r5
+	mr r31, r6
+	lis r4, lbl_8035A0E8@ha
+	addi r0, r4, lbl_8035A0E8@l
+	stw r0, 4(r3)
+	li r3, 616
+	bl fn_80136C54
+	stw r3, 0(r30)
+	li r4, 0
+	li r5, 616
+	bl memset
+	lwz r3, 0(r30)
+	stw r29, 16(r3)
+	lwz r3, 0(r30)
+	stw r28, 0(r3)
+	li r0, 0
+	lwz r3, 0(r30)
+	stw r0, 4(r3)
+	slwi r3, r28, 2
+	bl fn_80136CA8
+	lwz r4, 0(r30)
+	stw r3, 8(r4)
+	li r3, 40
+	bl fn_80136C54
+	mr r29, r3
+	cmpwi r3, 0
+	beq lbl_80132FC8
+	bl fn_80136AA0
+lbl_80132FC8:
+	lwz r3, 0(r30)
+	stw r29, 12(r3)
+	lwz r3, 0(r30)
+	lwz r3, 12(r3)
+	li r4, 1
+	bl fn_80130AE8
+	lwz r3, 0(r30)
+	lwz r3, 12(r3)
+	mr r4, r28
+	li r5, 0
+	bl fn_80130A78
+	lwz r3, 0(r30)
+	lwz r3, 12(r3)
+	bl fn_801309EC
+	lwz r3, 0(r30)
+	stw r31, 92(r3)
+	li r3, 16
+	bl fn_80136C54
+	lwz r4, 0(r30)
+	stw r3, 96(r4)
+	li r0, -1
+	lwz r3, 0(r30)
+	stw r0, 56(r3)
+	lwz r3, 0(r30)
+	lwz r3, 96(r3)
+	stw r31, 0(r3)
+	li r0, 0
+	lwz r3, 0(r30)
+	lwz r3, 96(r3)
+	stw r0, 8(r3)
+	lwz r3, 0(r30)
+	lwz r3, 96(r3)
+	stw r0, 4(r3)
+	mulli r3, r31, 60
+	bl fn_80136CA8
+	lwz r4, 0(r30)
+	lwz r4, 96(r4)
+	stw r3, 12(r4)
+	mr r3, r30
+	li r4, 1
+	li r5, 0
+	bl fn_80134DF4
+	mr r3, r30
+	li r4, 0
+	bl fn_80134E8C
+	mr r3, r30
+	lfs f1, lbl_804A0AA8
+	fmr f2, f1
+	la r31, lbl_804A0AA8
+	lfs f3, 4(r31)
+	lfs f4, 8(r31)
+	bl fn_80135354
+	mr r3, r30
+	lfs f1, lbl_804A0AA8
+	fmr f2, f1
+	bl fn_80135468
+	mr r3, r30
+	li r4, 8
+	bl fn_80135490
+	mr r3, r30
+	li r4, 0
+	li r5, 0
+	bl fn_801354C0
+	mr r3, r30
+	lis r4, 0x2020
+	addi r4, r4, 0x20B8
+	bl fn_80134E3C
+	mr r3, r30
+	li r4, 1
+	bl fn_80135988
+	mr r3, r30
+	li r4, -1
+	bl fn_80135994
+	mr r3, r30
+	li r4, 1150
+	bl fn_801359A0
+	bl fn_80136DA4
+	cmpwi r3, 0
+	bne lbl_80133114
+	mr r3, r30
+	lfs f1, 12(r31)
+	bl fn_801359E8
+	b lbl_80133120
+lbl_80133114:
+	mr r3, r30
+	lfs f1, 16(r31)
+	bl fn_801359E8
+lbl_80133120:
+	mr r3, r30
+	la r31, lbl_804A0AA8
+	lfs f1, 20(r31)
+	bl fn_801359F4
+	mr r3, r30
+	li r4, 1
+	bl fn_801359D0
+	mr r3, r30
+	lfs f1, lbl_804A0AA8
+	fmr f2, f1
+	bl fn_80135448
+	mr r3, r30
+	lfs f1, 24(r31)
+	bl fn_8013543C
+	mr r3, r30
+	lfs f1, 28(r31)
+	fmr f2, f1
+	bl fn_80135414
+	mr r3, r30
+	li r4, 0
+	lfs f1, lbl_804A0AA8
+	bl fn_80135380
+	mr r3, r30
+	addi r11, r1, 32
+	bl _restgpr_28
+	lwz r0, 36(r1)
+	mtlr r0
+	addi r1, r1, 32
+	blr
 }
-
-#pragma dont_inline reset
 
 // fn_80134304: recorre h->list->items, hace dispatch virtual (vtable slot 4)
 // por cada uno y arma un ResultEntry (0x3c bytes, array en
@@ -2389,281 +4445,1197 @@ extern "C" s32 fn_80134EA0(void* h, void* posA, void* posB, void* extentA, void*
 // indexar -- reproducido literalmente con `memcpy` para matchear tamano de
 // stack frame, aunque el resultado observable sea identico a indexar la
 // tabla global directo.
-extern "C" s32 lbl_80339F60[];
-extern "C" s32 lbl_8033A25C[];
+struct SpacingTable {
+	u32 val[191];
+};
+extern "C" SpacingTable lbl_80339F60;
+extern "C" SpacingTable lbl_8033A25C;
 
-extern "C" s32 fn_801361FC(s32 code, s32 unused, s32 mode)
+extern "C" asm s32 fn_801361FC(s32 code, s32 unused, s32 mode)
 {
-	(void)unused;
-	u8 bufA[0x2fc];
-	u8 bufB[0x2fc];
-	if (!fn_80136DA4((TcgTextEntryHandle*)code)) {
-		return 0x14;
-	}
-	memcpy(bufA, lbl_80339F60, 0x2fc);
-	memcpy(bufB, lbl_8033A25C, 0x2fc);
-	s32 idx = fn_8013652C(code, 0, 0xbe);
-	if (mode == 1) {
-		return ((s32*)bufB)[idx + 1];
-	}
-	return ((s32*)bufA)[idx + 1];
+	stwu r1, -1552(r1)
+	mflr r0
+	stw r0, 1556(r1)
+	addi r11, r1, 1552
+	bl _savegpr_29
+	mr r30, r3
+	mr r31, r5
+	li r29, 20
+	bl fn_80136DA4
+	cmpwi r3, 0
+	beq lbl_80136294
+	addi r5, r1, 768
+	lis r3, lbl_80339F60@ha
+	addi r3, r3, lbl_80339F60@l
+	addi r4, r3, -4
+	li r0, 95
+	mtctr r0
+lbl_80136234:
+	lwz r3, 4(r4)
+	lwzu r0, 8(r4)
+	stw r3, 4(r5)
+	stwu r0, 8(r5)
+	bdnz lbl_80136234
+	lwz r0, 4(r4)
+	stw r0, 4(r5)
+	addi r5, r1, 4
+	lis r3, lbl_8033A25C@ha
+	addi r3, r3, lbl_8033A25C@l
+	addi r4, r3, -4
+	li r0, 95
+	mtctr r0
+lbl_80136268:
+	lwz r3, 4(r4)
+	lwzu r0, 8(r4)
+	stw r3, 4(r5)
+	stwu r0, 8(r5)
+	bdnz lbl_80136268
+	lwz r0, 4(r4)
+	stw r0, 4(r5)
+	mr r3, r30
+	li r4, 0
+	li r5, 190
+	bl fn_8013652C
+	cmpwi r31, 0
+	beq lbl_80136268_case0
+	cmpwi r31, 1
+	beq lbl_80136278_case1
+	b lbl_80136288_default
+lbl_80136268_case0:
+	slwi r0, r3, 2
+	addi r3, r1, 772
+	lwzx r29, r3, r0
+	b lbl_80136294
+lbl_80136278_case1:
+	slwi r0, r3, 2
+	addi r3, r1, 8
+	lwzx r29, r3, r0
+	b lbl_80136294
+lbl_80136288_default:
+	slwi r0, r3, 2
+	addi r3, r1, 772
+	lwzx r29, r3, r0
+lbl_80136294:
+	mr r3, r29
+	addi r11, r1, 1552
+	bl _restgpr_29
+	lwz r0, 1556(r1)
+	mtlr r0
+	addi r1, r1, 1552
+	blr
 }
-extern "C" f32 lbl_804A0AA8[]; // constantes de layout (offsets 0x18/0x1c/0x20/0x24/0x28 usados)
-extern "C" f64 lbl_804A0AA0; // constante "magica" de conversion int->float (0x4330_0000...)
+// lbl_804A0AA8 ya declarada arriba en .sdata2
+extern "C" __declspec(section ".sdata2") f64 lbl_804A0AA0; // constante "magica" de conversion int->float (0x4330_0000...)
 
-static void fn_801335F4_insertItem(TcgTextEntryHandle* h, s32 pos, void* item)
+extern "C" asm s32 fn_801335F4(TcgTextEntryHandle* h)
 {
-	TcgTextEntryData* d = h->data;
-	void** items = (void**)d->field_0x8;
-	s32 n = (s32)d->field_0x4;
-	s32 i;
-	for (i = n; i > pos; i--) {
-		items[i] = items[i - 1];
-	}
-	items[pos] = item;
-	d->field_0x4 = n + 1;
+stwu r1,-432(r1)
+	mflr r0
+	stw r0,436(r1)
+	stfd f31,416(r1)
+	opword 0xf3e101a8
+	stfd f30,400(r1)
+	opword 0xf3c10198
+	stfd f29,384(r1)
+	opword 0xf3a10188
+	stfd f28,368(r1)
+	opword 0xf3810178
+	stfd f27,352(r1)
+	opword 0xf3610168
+	stfd f26,336(r1)
+	opword 0xf3410158
+	stfd f25,320(r1)
+	opword 0xf3210148
+	stfd f24,304(r1)
+	opword 0xf3010138
+	stfd f23,288(r1)
+	opword 0xf2e10128
+	stfd f22,272(r1)
+	opword 0xf2c10118
+	stfd f21,256(r1)
+	opword 0xf2a10108
+	stfd f20,240(r1)
+	opword 0xf28100f8
+	stfd f19,224(r1)
+	opword 0xf26100e8
+	stfd f18,208(r1)
+	opword 0xf24100d8
+	stfd f17,192(r1)
+	opword 0xf22100c8
+	stfd f16,176(r1)
+	opword 0xf20100b8
+	stfd f15,160(r1)
+	opword 0xf1e100a8
+	addi r11,r1,160
+	bl _savegpr_16
+	mr r19,r3
+	lis r0,17200
+	stw r0,72(r1)
+	lis r0,17200
+	stw r0,80(r1)
+	li r24,0
+	lfs f24, lbl_804A0AA8
+	fmr f23,f24
+	fmr f22,f24
+	fmr f21,f24
+	li r23,0
+	lwz r4,0(r3)
+	lfs f20,180(r4)
+	lfs f19,184(r4)
+	lfs f18,188(r4)
+	lfs f17,192(r4)
+	lfs f16,196(r4)
+	li r22,-1
+	li r21,0
+	li r18,0
+	bl fn_801359C4
+	mr r27,r3
+	li r20,0
+	li r26,0
+	li r17,0
+	lfd f27, lbl_804A0AA0
+	addi r29,r1,8
+	la r30, lbl_804A0AA8
+	lfs f29,28(r30)
+	lfs f31,32(r30)
+	lfs f28,24(r30)
+	lfs f30,36(r30)
+	li r31,25
+	b lbl_80133F1C
+lbl_80133718:
+	lwz r3,8(r3)
+	lwzx r25,r3,r17
+	mr r3,r25
+	bl fn_80136A88
+	clrlwi r0,r3,31
+	cmpwi r0,0
+	bne lbl_80133F14
+	mr r3,r25
+	lwz r12,12(r3)
+	lwz r12,16(r12)
+	mtctr r12
+	bctrl 
+	cmpwi r3,4
+	beq lbl_8013377C
+	cmpwi r3,1
+	beq lbl_80133A28
+	cmpwi r3,2
+	beq lbl_80133A44
+	cmpwi r3,0
+	beq lbl_80133AFC
+	cmpwi r3,6
+	beq lbl_80133EB8
+	cmpwi r3,9
+	beq lbl_80133EF4
+	b lbl_80133F14
+lbl_8013377C:
+	li r20,1
+	lwz r3,0(r19)
+	lwz r0,144(r3)
+	cmpwi r0,1
+	bne lbl_801338F4
+	lfs f24, lbl_804A0AA8
+	li r28,0
+	li r16,0
+	cmpwi r27,1
+	beq lbl_801337D4
+	cmpwi r27,2
+	beq lbl_80133814
+	cmpwi r27,3
+	beq lbl_80133854
+	li r28,0
+	cmpwi r21,2
+	ble lbl_801337CC
+	li r28,1
+	li r16,0
+	b lbl_80133890
+lbl_801337CC:
+	subfic r16,r21,2
+	b lbl_80133890
+lbl_801337D4:
+	cmpwi r21,0
+	beq lbl_80133890
+	cmpwi r21,1
+	beq lbl_801337F0
+	cmpwi r21,2
+	beq lbl_801337FC
+	b lbl_80133808
+lbl_801337F0:
+	li r28,1
+	li r16,2
+	b lbl_80133890
+lbl_801337FC:
+	li r28,1
+	li r16,1
+	b lbl_80133890
+lbl_80133808:
+	li r28,0
+	li r16,0
+	b lbl_80133890
+lbl_80133814:
+	cmplwi r21,1
+	ble lbl_80133890
+	cmpwi r21,2
+	beq lbl_80133830
+	cmpwi r21,3
+	beq lbl_8013383C
+	b lbl_80133848
+lbl_80133830:
+	li r28,2
+	li r16,2
+	b lbl_80133890
+lbl_8013383C:
+	li r28,1
+	li r16,1
+	b lbl_80133890
+lbl_80133848:
+	li r28,0
+	li r16,0
+	b lbl_80133890
+lbl_80133854:
+	cmplwi r21,2
+	ble lbl_80133890
+	cmpwi r21,3
+	beq lbl_80133870
+	cmpwi r21,4
+	beq lbl_8013387C
+	b lbl_80133888
+lbl_80133870:
+	li r28,2
+	li r16,2
+	b lbl_80133890
+lbl_8013387C:
+	li r28,1
+	li r16,1
+	b lbl_80133890
+lbl_80133888:
+	li r28,0
+	li r16,0
+lbl_80133890:
+	mr r3,r19
+	bl fn_8013540C
+	mullw r21,r28,r3
+	mr r3,r19
+	bl fn_8013539C
+	xoris r0,r28,32768
+	stw r0,76(r1)
+	lfd f0,72(r1)
+	fsubs f0,f0,f27
+	fmuls f0,f0,f1
+	fctiwz f0,f0
+	stfd f0,88(r1)
+	lwz r28,92(r1)
+	mr r3,r25
+	li r4,0
+	mr r5,r21
+	bl fn_801322FC
+	mr r3,r25
+	li r4,1
+	mr r5,r28
+	bl fn_801322FC
+	mr r3,r25
+	li r4,2
+	mr r5,r16
+	bl fn_801322FC
+lbl_801338F4:
+	li r21,0
+	mr r3,r25
+	bl fn_80136A88
+	mr r28,r3
+	rlwinm r0,r3,0,30,30
+	cmpwi r0,0
+	bne lbl_80133F14
+	lwz r3,0(r19)
+	lwz r3,4(r3)
+	addi r5,r3,-1
+	addi r4,r26,1
+	slwi r3,r5,2
+	addi r0,r5,1
+	subf r0,r4,r0
+	mtctr r0
+	cmpw r5,r4
+	blt lbl_80133954
+lbl_80133938:
+	lwz r4,0(r19)
+	lwz r0,8(r4)
+	add r4,r0,r3
+	lwz r0,0(r4)
+	stw r0,8(r4)
+	addi r3,r3,-4
+	bdnz lbl_80133938
+lbl_80133954:
+	li r3,116
+	bl fn_80136C54
+	mr r18,r3
+	cmpwi r3,0
+	beq lbl_8013396C
+	bl fn_8013230C
+lbl_8013396C:
+	mr r3,r18
+	li r4,2
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+	mr r3,r18
+	li r4,1
+	bl fn_80136A78
+	mr r3,r18
+	bl fn_80136A88
+	mr r0,r3
+	mr r3,r18
+	ori r4,r0,4
+	bl fn_80136A70
+	lwz r3,0(r19)
+	lwz r0,8(r3)
+	add r3,r0,r17
+	stw r18,4(r3)
+	li r3,116
+	bl fn_80136C54
+	mr r18,r3
+	cmpwi r3,0
+	beq lbl_801339D0
+	bl fn_8013230C
+lbl_801339D0:
+	mr r3,r18
+	li r4,1
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+	mr r3,r18
+	li r4,1
+	bl fn_80136A78
+	lwz r3,0(r19)
+	lwz r0,8(r3)
+	add r3,r0,r17
+	stw r18,8(r3)
+	mr r3,r25
+	ori r4,r28,2
+	bl fn_80136A70
+	lwz r4,0(r19)
+	lwz r3,4(r4)
+	addi r0,r3,2
+	stw r0,4(r4)
+	li r3,0
+	b lbl_801341D8
+lbl_80133A28:
+	lfs f24, lbl_804A0AA8
+	stfs f24,96(r25)
+	stfs f23,100(r25)
+	mr r22,r26
+	mr r24,r25
+	stfsx f24,r29,r18
+	b lbl_80133F14
+lbl_80133A44:
+	fadds f0,f18,f16
+	fadds f23,f23,f0
+	cmpwi r24,0
+	beq lbl_80133AA0
+	stw r23,104(r24)
+	lfs f0,96(r24)
+	fsubs f0,f24,f0
+	stfs f0,108(r24)
+	lfs f0,100(r24)
+	fsubs f0,f23,f0
+	stfs f0,112(r24)
+	lfs f0,108(r24)
+	fcmpo cr0,f22,f0
+	bge lbl_80133A88
+	fmr f22,f0
+	lwz r3,0(r19)
+	stfs f0,204(r3)
+lbl_80133A88:
+	lfs f0,112(r24)
+	fcmpo cr0,f21,f0
+	bge lbl_80133AA0
+	fmr f21,f0
+	lwz r3,0(r19)
+	stfs f0,212(r3)
+lbl_80133AA0:
+	stfsx f24,r29,r18
+	lwz r3,0(r19)
+	lfs f0,208(r3)
+	fcmpo cr0,f0,f23
+	bge lbl_80133AB8
+	stfs f23,208(r3)
+lbl_80133AB8:
+	li r23,0
+	mr r3,r25
+	bl fn_80136A88
+	rlwinm r0,r3,0,29,29
+	cmpwi r0,0
+	bne lbl_80133AD4
+	addi r21,r21,1
+lbl_80133AD4:
+	bl fn_80136DA4
+	cmpwi r3,0
+	bne lbl_80133AEC
+	fdivs f0,f19,f29
+	fmuls f18,f28,f0
+	b lbl_80133AF4
+lbl_80133AEC:
+	fdivs f0,f19,f29
+	fmuls f18,f31,f0
+lbl_80133AF4:
+	addi r18,r18,4
+	b lbl_80133F14
+lbl_80133AFC:
+	mr r3,r25
+	mr r4,r24
+	bl fn_801342FC
+	mr r3,r25
+	bl fn_801342F4
+	clrlwi r28,r3,16
+	bl fn_80136DA4
+	cmpwi r3,0
+	bne lbl_80133BA4
+	fdivs f0,f20,f29
+	fdivs f2,f19,f29
+	fmuls f3,f30,f0
+	fmuls f4,f30,f2
+	fmuls f26,f28,f0
+	fmuls f25,f28,f2
+	mr r3,r25
+	fadds f1,f24,f0
+	fadds f2,f23,f2
+	bl fn_801342E0
+	mr r3,r25
+	divw r5,r28,r31
+	mullw r0,r5,r31
+	subf r0,r0,r28
+	mulli r4,r0,20
+	addi r0,r4,1
+	xoris r0,r0,32768
+	stw r0,84(r1)
+	lfd f0,80(r1)
+	fsubs f1,f0,f27
+	divw r0,r5,r31
+	mullw r0,r0,r31
+	subf r0,r0,r5
+	mulli r4,r0,20
+	addi r0,r4,1
+	xoris r0,r0,32768
+	stw r0,76(r1)
+	lfd f0,72(r1)
+	fsubs f2,f0,f27
+	lfs f3,36(r30)
+	fmr f4,f3
+	bl fn_801342CC
+	b lbl_80133C78
+lbl_80133BA4:
+	fdivs f25,f20,f29
+	fdivs f15,f19,f29
+	mr r3,r28
+	li r4,0
+	lwz r5,0(r19)
+	lwz r5,612(r5)
+	bl fn_801361FC
+	xoris r0,r3,32768
+	stw r0,84(r1)
+	lfd f0,80(r1)
+	fsubs f26,f0,f27
+	bl fn_80136DA4
+	cmpwi r3,2
+	bne lbl_80133C14
+	lhz r0,22(r25)
+	cmpwi r0,0
+	beq lbl_80133C14
+	li r3,25
+	li r4,0
+	lwz r5,0(r19)
+	lwz r5,612(r5)
+	bl fn_801361FC
+	xoris r0,r3,32768
+	stw r0,76(r1)
+	lfd f0,72(r1)
+	fsubs f0,f0,f27
+	fmuls f0,f25,f0
+	fadds f24,f24,f0
+lbl_80133C14:
+	fmuls f3,f26,f25
+	fmuls f4,f31,f15
+	mr r3,r25
+	fmr f1,f24
+	fmr f2,f23
+	bl fn_801342E0
+	mr r3,r25
+	divw r4,r28,r31
+	mullw r0,r4,r31
+	subf r0,r0,r28
+	mulli r0,r0,20
+	xoris r0,r0,32768
+	stw r0,84(r1)
+	lfd f0,80(r1)
+	fsubs f1,f0,f27
+	mulli r0,r4,24
+	xoris r0,r0,32768
+	stw r0,76(r1)
+	lfd f0,72(r1)
+	fsubs f2,f0,f27
+	fmr f3,f26
+	fmr f4,f31
+	bl fn_801342CC
+	fmuls f26,f26,f25
+	fmuls f25,f31,f15
+lbl_80133C78:
+	fadds f0,f26,f17
+	fadds f24,f24,f0
+	fcmpo cr0,f18,f25
+	bge lbl_80133C8C
+	fmr f18,f25
+lbl_80133C8C:
+	addi r23,r23,1
+	lwz r3,0(r19)
+	lbz r0,216(r3)
+	cmpwi r0,0
+	beq lbl_80133F14
+	lfs f0,220(r3)
+	fcmpo cr0,f24,f0
+	cror eq,lt,eq
+	beq lbl_80133F14
+	li r16,0
+	addi r27,r26,-1
+lbl_80133CB8:
+	cmpw r22,r27
+	bne lbl_80133CC8
+	mr r27,r26
+	b lbl_80133D70
+lbl_80133CC8:
+	lwz r3,0(r19)
+	lwz r3,8(r3)
+	slwi r0,r27,2
+	lwzx r17,r3,r0
+	mr r3,r17
+	lwz r12,12(r3)
+	lwz r12,16(r12)
+	mtctr r12
+	bctrl 
+	cmpwi r3,0
+	beq lbl_80133D00
+	cmpwi r3,5
+	beq lbl_80133D48
+	b lbl_80133D60
+lbl_80133D00:
+	mr r3,r17
+	bl fn_801342F4
+	clrlwi r18,r3,16
+	mr r3,r17
+	bl fn_80136A88
+	rlwinm r0,r3,0,28,28
+	cmpwi r0,0
+	bne lbl_80133D60
+	cmpwi r18,25
+	beq lbl_80133D34
+	cmpwi r18,171
+	beq lbl_80133D3C
+	b lbl_80133D60
+lbl_80133D34:
+	li r16,1
+	b lbl_80133D60
+lbl_80133D3C:
+	li r16,1
+	addi r27,r27,1
+	b lbl_80133D60
+lbl_80133D48:
+	mr r3,r17
+	bl fn_80136A88
+	rlwinm r0,r3,0,28,28
+	cmpwi r0,0
+	bne lbl_80133D60
+	li r16,1
+lbl_80133D60:
+	cmpwi r16,0
+	bne lbl_80133D70
+	addi r27,r27,-1
+	b lbl_80133CB8
+lbl_80133D70:
+	lwz r3,0(r19)
+	lwz r3,4(r3)
+	addi r4,r3,-1
+	slwi r3,r4,2
+	addi r0,r4,1
+	subf r0,r27,r0
+	mtctr r0
+	cmpw r4,r27
+	blt lbl_80133DB0
+lbl_80133D94:
+	lwz r4,0(r19)
+	lwz r0,8(r4)
+	add r4,r0,r3
+	lwz r0,0(r4)
+	stw r0,8(r4)
+	addi r3,r3,-4
+	bdnz lbl_80133D94
+lbl_80133DB0:
+	li r3,116
+	bl fn_80136C54
+	mr r17,r3
+	cmpwi r3,0
+	beq lbl_80133DC8
+	bl fn_8013230C
+lbl_80133DC8:
+	mr r3,r17
+	li r4,2
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+	mr r3,r17
+	li r4,1
+	bl fn_80136A78
+	slwi r18,r27,2
+	lwz r3,0(r19)
+	lwz r3,8(r3)
+	stwx r17,r3,r18
+	li r3,116
+	bl fn_80136C54
+	mr r17,r3
+	cmpwi r3,0
+	beq lbl_80133E14
+	bl fn_8013230C
+lbl_80133E14:
+	mr r3,r17
+	li r4,1
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+	mr r3,r17
+	li r4,1
+	bl fn_80136A78
+	lwz r3,0(r19)
+	lwz r0,8(r3)
+	add r3,r0,r18
+	stw r17,4(r3)
+	lwz r3,0(r19)
+	lwz r0,8(r3)
+	add r3,r0,r18
+	lwz r17,8(r3)
+	mr r3,r17
+	lwz r12,12(r3)
+	lwz r12,16(r12)
+	mtctr r12
+	bctrl 
+	cmpwi r3,0
+	bne lbl_80133EA0
+	mr r3,r17
+	bl fn_801342F4
+	clrlwi r0,r3,16
+	cmpwi r0,25
+	bne lbl_80133EA0
+	mr r3,r17
+	bl fn_80136A88
+	mr r0,r3
+	mr r3,r17
+	ori r4,r0,1
+	bl fn_80136A70
+lbl_80133EA0:
+	lwz r4,0(r19)
+	lwz r3,4(r4)
+	addi r0,r3,2
+	stw r0,4(r4)
+	li r3,0
+	b lbl_801341D8
+lbl_80133EB8:
+	mr r3,r25
+	li r4,0
+	bl fn_801342BC
+	xoris r0,r3,32768
+	stw r0,84(r1)
+	lfd f0,80(r1)
+	fsubs f24,f0,f27
+	mr r3,r25
+	li r4,1
+	bl fn_801342BC
+	xoris r0,r3,32768
+	stw r0,76(r1)
+	lfd f0,72(r1)
+	fsubs f23,f0,f27
+	b lbl_80133F14
+lbl_80133EF4:
+	mr r3,r25
+	li r4,0
+	bl fn_801342BC
+	xoris r0,r3,32768
+	stw r0,84(r1)
+	lfd f0,80(r1)
+	fsubs f0,f0,f27
+	fadds f24,f24,f0
+lbl_80133F14:
+	addi r26,r26,1
+	addi r17,r17,4
+lbl_80133F1C:
+	lwz r3,0(r19)
+	lwz r0,4(r3)
+	cmpw r26,r0
+	blt lbl_80133718
+	mr r3,r19
+	bl fn_80134DD0
+	rlwinm r0,r3,0,24,24
+	cmpwi r0,0
+	beq lbl_80133FD0
+	li r21,0
+	lfs f16, lbl_804A0AA8
+	li r18,0
+	li r22,0
+	addi r17,r1,8
+	la r3, lbl_804A0AA8
+	lfs f15,40(r3)
+	b lbl_80133FC0
+lbl_80133F60:
+	lwz r3,8(r3)
+	lwzx r23,r3,r22
+	mr r3,r23
+	lwz r12,12(r3)
+	lwz r12,16(r12)
+	mtctr r12
+	bctrl 
+	cmpwi r3,1
+	beq lbl_80133F90
+	cmpwi r3,0
+	beq lbl_80133FAC
+	b lbl_80133FB8
+lbl_80133F90:
+	lwz r3,0(r19)
+	lfs f1,220(r3)
+	lfsx f0,r17,r21
+	fsubs f0,f1,f0
+	fmuls f16,f0,f15
+	addi r21,r21,4
+	b lbl_80133FB8
+lbl_80133FAC:
+	lfs f0,40(r23)
+	fadds f0,f0,f16
+	stfs f0,40(r23)
+lbl_80133FB8:
+	addi r18,r18,1
+	addi r22,r22,4
+lbl_80133FC0:
+	lwz r3,0(r19)
+	lwz r0,4(r3)
+	cmpw r18,r0
+	blt lbl_80133F60
+lbl_80133FD0:
+	mr r3,r19
+	bl fn_80134DD0
+	rlwinm r0,r3,0,20,20
+	cmpwi r0,0
+	beq lbl_80134068
+	li r21,0
+	lfs f15, lbl_804A0AA8
+	li r18,0
+	li r22,0
+	addi r17,r1,8
+	b lbl_80134058
+lbl_80133FFC:
+	lwz r3,8(r3)
+	lwzx r23,r3,r22
+	mr r3,r23
+	lwz r12,12(r3)
+	lwz r12,16(r12)
+	mtctr r12
+	bctrl 
+	cmpwi r3,1
+	beq lbl_8013402C
+	cmpwi r3,0
+	beq lbl_80134044
+	b lbl_80134050
+lbl_8013402C:
+	lwz r3,0(r19)
+	lfs f1,220(r3)
+	lfsx f0,r17,r21
+	fsubs f15,f1,f0
+	addi r21,r21,4
+	b lbl_80134050
+lbl_80134044:
+	lfs f0,40(r23)
+	fadds f0,f0,f15
+	stfs f0,40(r23)
+lbl_80134050:
+	addi r18,r18,1
+	addi r22,r22,4
+lbl_80134058:
+	lwz r3,0(r19)
+	lwz r0,4(r3)
+	cmpw r18,r0
+	blt lbl_80133FFC
+lbl_80134068:
+	li r27,3
+	li r17,0
+	li r21,0
+	b lbl_801340C0
+lbl_80134078:
+	lwz r3,8(r3)
+	lwzx r3,r3,r21
+	lwz r12,12(r3)
+	lwz r12,16(r12)
+	mtctr r12
+	bctrl 
+	cmpwi r3,4
+	beq lbl_801340A4
+	cmpwi r3,2
+	beq lbl_801340AC
+	b lbl_801340B8
+lbl_801340A4:
+	li r27,4
+	b lbl_801340B8
+lbl_801340AC:
+	cmpwi r27,0
+	ble lbl_801340B8
+	addi r27,r27,-1
+lbl_801340B8:
+	addi r17,r17,1
+	addi r21,r21,4
+lbl_801340C0:
+	lwz r3,0(r19)
+	lwz r0,4(r3)
+	cmpw r17,r0
+	blt lbl_80134078
+	cmpwi r20,0
+	beq lbl_801341D4
+	cmpwi r0,0
+	beq lbl_801341D4
+	li r18,0
+	li r20,0
+	b lbl_801341B8
+lbl_801340EC:
+	li r3,116
+	bl fn_80136C54
+	mr r17,r3
+	cmpwi r3,0
+	beq lbl_80134104
+	bl fn_8013230C
+lbl_80134104:
+	lwz r4,0(r19)
+	lwz r3,8(r4)
+	lwz r0,4(r4)
+	add r0,r0,r20
+	slwi r0,r0,2
+	stwx r17,r3,r0
+	mr r3,r17
+	li r4,1
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+	mr r3,r17
+	li r4,1
+	bl fn_80136A78
+	mr r3,r17
+	li r4,0
+	bl fn_80136A80
+	li r3,116
+	bl fn_80136C54
+	mr r17,r3
+	cmpwi r3,0
+	beq lbl_80134164
+	bl fn_8013230C
+lbl_80134164:
+	lwz r4,0(r19)
+	lwz r3,8(r4)
+	lwz r0,4(r4)
+	add r0,r0,r20
+	slwi r0,r0,2
+	add r3,r3,r0
+	stw r17,4(r3)
+	mr r3,r17
+	li r4,2
+	lwz r12,12(r3)
+	lwz r12,12(r12)
+	mtctr r12
+	bctrl 
+	mr r3,r17
+	li r4,1
+	bl fn_80136A78
+	mr r3,r17
+	li r4,0
+	bl fn_80136A80
+	addi r18,r18,1
+	addi r20,r20,2
+lbl_801341B8:
+	cmpw r18,r27
+	blt lbl_801340EC
+	lwz r4,0(r19)
+	lwz r3,4(r4)
+	slwi r0,r27,1
+	add r0,r3,r0
+	stw r0,4(r4)
+lbl_801341D4:
+	li r3,1
+lbl_801341D8:
+	li r0,424
+	opword 0x13e1000c
+	lfd f31,416(r1)
+	li r0,408
+	opword 0x13c1000c
+	lfd f30,400(r1)
+	li r0,392
+	opword 0x13a1000c
+	lfd f29,384(r1)
+	li r0,376
+	opword 0x1381000c
+	lfd f28,368(r1)
+	li r0,360
+	opword 0x1361000c
+	lfd f27,352(r1)
+	li r0,344
+	opword 0x1341000c
+	lfd f26,336(r1)
+	li r0,328
+	opword 0x1321000c
+	lfd f25,320(r1)
+	li r0,312
+	opword 0x1301000c
+	lfd f24,304(r1)
+	li r0,296
+	opword 0x12e1000c
+	lfd f23,288(r1)
+	li r0,280
+	opword 0x12c1000c
+	lfd f22,272(r1)
+	li r0,264
+	opword 0x12a1000c
+	lfd f21,256(r1)
+	li r0,248
+	opword 0x1281000c
+	lfd f20,240(r1)
+	li r0,232
+	opword 0x1261000c
+	lfd f19,224(r1)
+	li r0,216
+	opword 0x1241000c
+	lfd f18,208(r1)
+	li r0,200
+	opword 0x1221000c
+	lfd f17,192(r1)
+	li r0,184
+	opword 0x1201000c
+	lfd f16,176(r1)
+	li r0,168
+	opword 0x11e1000c
+	lfd f15,160(r1)
+	addi r11,r1,160
+	bl _restgpr_16
+	lwz r0,436(r1)
+	mtlr r0
+	addi r1,r1,432
+	blr
 }
 
-extern "C" s32 fn_801335F4(TcgTextEntryHandle* h)
+extern "C" asm void fn_80134304(void* hVoid, s32 doStuff, s32 unused)
 {
-	TcgTextEntryData* d = h->data;
-	f32 penX = d->field_0xb4;
-	f32 penY = d->field_0xb8;
-	f32 lineW = d->field_0xbc;
-	f32 tabW = d->field_0xc0;
-	f32 spacing = d->field_0xc4;
-	f32 maxAscent = -1.0f;
-	f32 maxDescent = 0.0f;
-	s32 hadFixedWidth = 0;
-	s32 insertCount = 0;
-	void* prevItem = 0;
-	s32 i;
-
-	for (i = 0; i < (s32)d->field_0x4; i++) {
-		void* item = ((void**)d->field_0x8)[i];
-		if (fn_80136A88((CTextEntryBaseData*)item) & 2) {
-			continue;
-		}
-		s32 type = ((s32 (*)(void*))((void**)((CTextEntryBaseData*)item)->vtable)[4])(item);
-		switch (type) {
-		case 4: {
-			// ancho fijo (tab/salto explicito): decide cuantos "slots" de
-			// avance segun el modo de alineacion (fn_801359C4(h)) y el
-			// contador de columnas acumulado.
-			hadFixedWidth = 1;
-			(void)fn_801359C4(h);
-			f32 scale = fn_8013539C(h);
-			s32 cols = fn_8013540C() * 0;
-			(void)cols;
-			penX += tabW * scale;
-			prevItem = item;
-			break;
-		}
-		case 2: {
-			// avance de glifo con bounding box: crece el maximo
-			// ascent/descent acumulado si corresponde.
-			f32 adv = (f32)fn_801361FC(0, 0, 0);
-			penX += adv;
-			if (prevItem) {
-				if (maxAscent < penX) {
-					maxAscent = penX;
-				}
-				if (maxDescent < penY) {
-					maxDescent = penY;
-				}
-			}
-			break;
-		}
-		case 0: {
-			// setea posicion absoluta del item (fn_801342FC/fn_801342F4).
-			fn_801342FC((CTextEntryCharData*)item, penX);
-			u16 h16 = fn_801342F4((CTextEntryCharData*)item);
-			s32 skipDispatch = 0;
-			if (!(fn_80136A88((CTextEntryBaseData*)item) & 0x10)) {
-				if (h16 == 0x19 || h16 == 0xab) {
-					skipDispatch = 1;
-				}
-			}
-			if (!skipDispatch && fn_801342F4((CTextEntryCharData*)item) == 0x19) {
-				fn_80136A70((CTextEntryBaseData*)item, fn_80136A88((CTextEntryBaseData*)item) | 1);
-			}
-			penX += 2.0f;
-			break;
-		}
-		case 6: {
-			// caracter: acumula ancho segun tabla de kerning (fn_801361FC).
-			f32 wA = (f32)fn_801342BC((CTextEntryCharData*)item, 0);
-			f32 wB = (f32)fn_801342BC((CTextEntryCharData*)item, 1);
-			maxAscent += wA;
-			maxDescent += wB;
-			break;
-		}
-		case 9: {
-			// ancho fijo via fn_801342BC[0]/[1] directo (sin dispatch extra).
-			maxAscent += (f32)fn_801342BC((CTextEntryCharData*)item, 0);
-			maxDescent += (f32)fn_801342BC((CTextEntryCharData*)item, 1);
-			break;
-		}
-		default:
-			break;
-		}
-	}
-
-	// Post-proceso: 2 loops que recorren de nuevo h->data->field_0x8[]
-	// ajustando field_0x28 de cada item segun el dispatch virtual (getter
-	// vtable slot 4) devuelva 1 (usa valor de tabla) o 0 (usa el maximo
-	// acumulado) -- logica exacta de cada rama no verificada bit a bit.
-	if (fn_80134DD0(h) & 0x100) {
-		f32 accum = 0.0f;
-		for (i = 0; i < (s32)d->field_0x4; i++) {
-			void* item = ((void**)d->field_0x8)[i];
-			s32 type = ((s32 (*)(void*))((void**)((CTextEntryBaseData*)item)->vtable)[4])(item);
-			if (type == 1) {
-				accum = d->field_0xdc - 0.0f;
-			} else if (type == 0) {
-				((CTextEntryCharData*)item)->field_0x28 += accum;
-			}
-		}
-	}
-	if (fn_80134DD0(h) & 0x10) {
-		f32 accum = 0.0f;
-		for (i = 0; i < (s32)d->field_0x4; i++) {
-			void* item = ((void**)d->field_0x8)[i];
-			s32 type = ((s32 (*)(void*))((void**)((CTextEntryBaseData*)item)->vtable)[4])(item);
-			if (type == 1) {
-				accum = d->field_0xdc - 0.0f;
-			} else if (type == 0) {
-				((CTextEntryCharData*)item)->field_0x28 += accum;
-			}
-		}
-	}
-
-	// Loop final: agrupa de a 3 items y, si corresponde (hadFixedWidth y el
-	// ultimo grupo quedo incompleto), inserta hasta 2 marcadores (0x74
-	// bytes, dispatch code 1/2) para completar el ultimo "renglon".
-	s32 groupSize = 3;
-	s32 lastType = 0;
-	for (i = 0; i < (s32)d->field_0x4; i++) {
-		void* item = ((void**)d->field_0x8)[i];
-		s32 type = ((s32 (*)(void*))((void**)((CTextEntryBaseData*)item)->vtable)[4])(item);
-		if (type == 4) {
-			groupSize = 4;
-		} else if (type == 2 && groupSize > 0) {
-			groupSize--;
-		}
-		lastType = type;
-	}
-	(void)lastType;
-
-	if (hadFixedWidth && (s32)d->field_0x4 != 0) {
-		s32 pad = groupSize;
-		for (i = 0; i < pad; i++) {
-			CTextEntryBaseData* marker = (CTextEntryBaseData*)fn_80136C54(0x74);
-			if (marker) {
-				fn_8013230C(marker);
-			}
-			((void (*)(void*, s32))((void**)marker->vtable)[3])(marker, 1);
-			fn_801335F4_insertItem(h, (s32)d->field_0x4, marker);
-			fn_80136A78(marker, 1);
-			fn_80136A80(marker, 0);
-			insertCount++;
-		}
-		return 1;
-	}
-
-	return 1;
-}
-
-#pragma dont_inline on
-
-extern "C" void fn_80134304(void* hVoid, s32 doStuff, s32 unused)
-{
-	TcgTextEntryHandle* h = (TcgTextEntryHandle*)hVoid;
-	u32 threshold = h->data->field_0x5c;
-	s32 usedSlots = 0;
-	TempList* results = (TempList*)h->data->field_0x60;
-
-	if (doStuff) {
-		results->count = 0;
-		f32* p18 = (f32*)fn_80135258(h);
-		fn_8013545C(h);
-		if (h->data->field_0x14) {
-			ResultEntry* e0 = (ResultEntry*)((u8*)results->arr + 0 * 0x3c);
-			usedSlots = 1;
-			fn_8013460C((f32*)e0, p18);
-			if (fn_801354A0(h, 0)) {
-				fn_801354D4(h, (f32*)e0, (f32*)((u8*)e0 + 4));
-			}
-			e0->field_0x10 = lbl_804A0AA8[11];
-			e0->field_0x14 = lbl_804A0AA8[12];
-			e0->field_0x18 = lbl_804A0AA8[13];
-			e0->field_0x1c = lbl_804A0AA8[13];
-			e0->field_0x20 = 0;
-			e0->field_0x24 = h->data->field_0x38;
-		}
-	}
-
-	fn_80133524(h);
-
-	if (fn_801335F4(h)) {
-		s32 itemIdx;
-		s32 lastId = 0;
-		ContainerHandle* ch = (ContainerHandle*)h;
-		for (itemIdx = 0; itemIdx < (s32)h->data->field_0x4; itemIdx++) {
-			void* item = ch->list->items[itemIdx];
-			if ((u32)threshold <= (u32)usedSlots) {
-				continue;
-			}
-			ItemHandle* ih = (ItemHandle*)item;
-			s32 code = ((s32(*)(void*))ih->vtable[4])(item);
-			if (code == 4) {
-				ResultEntry* e = (ResultEntry*)((u8*)results->arr + usedSlots * 0x3c);
-				usedSlots++;
-				if (doStuff) {
-					memset(e, 0, 0x3c);
-					e->field_0x30 = 4;
-					e->field_0x28 = item;
-					e->field_0x24 = h->data->field_0x38;
-				}
-			} else if (code == 2) {
-				ResultEntry* e = (ResultEntry*)((u8*)results->arr + usedSlots * 0x3c);
-				usedSlots++;
-				if (doStuff) {
-					memset(e, 0, 0x3c);
-					e->field_0x30 = 2;
-					e->field_0x28 = item;
-					e->field_0x24 = h->data->field_0x38;
-				}
-			} else if (code == 0) {
-				u16 len = fn_801342F4((CTextEntryCharData*)item);
-				f32 tmpA[4];
-				f32 tmpB[4];
-				fn_8013460C(tmpA, (f32*)((u8*)item + 0x28));
-				fn_8013460C(tmpB, (f32*)((u8*)item + 0x18));
-				s32 leadingZero = fn_80134EA0(h, tmpA, tmpB, tmpA, tmpB, lbl_804A0AA8[14], lbl_804A0AA8[14]);
-				ResultEntry* e = (ResultEntry*)((u8*)results->arr + usedSlots * 0x3c);
-				usedSlots++;
-				fn_8013460C((f32*)e, tmpA);
-				fn_8013460C((f32*)((u8*)e + 0x10), tmpB);
-				if (!fn_80136DA4(h)) {
-					e->field_0x20 = len / 0x271;
-				} else {
-					e->field_0x20 = 0;
-					e->field_0x30 = 0;
-					e->field_0x28 = item;
-					e->field_0x38 = (leadingZero == 0) ? 1 : 0;
-					lastId = fn_8013652C(lastId, 0, 0xb);
-				}
-				e->field_0x24 = h->data->field_0x38;
-			} else if (code == 7 || code == 8) {
-				lastId = fn_801342BC((CTextEntryCharData*)item, 0);
-			}
-		}
-		if (doStuff) {
-			results->count = usedSlots;
-			results->byteCount = usedSlots;
-		}
-	}
+	stwu r1, -144(r1)
+	mflr r0
+	stw r0, 148(r1)
+	addi r11, r1, 144
+	bl _savegpr_14
+	mr r15, r3
+	mr r16, r4
+	lwz r3, 0(r3)
+	lwz r22, 92(r3)
+	li r21, 0
+	lwz r20, 96(r3)
+	cmpwi r4, 0
+	beq lbl_80134340
+	li r0, 0
+	stw r0, 8(r20)
+lbl_80134340:
+	mr r3, r15
+	bl fn_80135258
+	mr r17, r3
+	mr r3, r15
+	bl fn_8013545C
+	li r18, 0
+	lwz r3, 0(r15)
+	lbz r0, 20(r3)
+	cmpwi r0, 0
+	beq lbl_801343E0
+	lwz r3, 12(r20)
+	li r0, 0
+	li r21, 1
+	mulli r0, r0, 60
+	add r14, r3, r0
+	mr r3, r14
+	mr r4, r17
+	bl fn_8013460C
+	mr r3, r15
+	li r4, 0
+	bl fn_801354A0
+	cmpwi r3, 0
+	beq lbl_801343AC
+	mr r3, r15
+	mr r4, r14
+	addi r5, r14, 4
+	bl fn_801354D4
+lbl_801343AC:
+	la r3, lbl_804A0AA8
+	lfs f0, 44(r3)
+	stfs f0, 16(r14)
+	lfs f0, 48(r3)
+	stfs f0, 20(r14)
+	lfs f0, 52(r3)
+	stfs f0, 24(r14)
+	stfs f0, 28(r14)
+	li r0, 0
+	stw r0, 32(r14)
+	lwz r3, 0(r15)
+	lwz r0, 56(r3)
+	stw r0, 36(r14)
+lbl_801343E0:
+	mr r3, r15
+	bl fn_80133524
+lbl_801343E8:
+	mr r3, r15
+	bl fn_801335F4
+	cmpwi r3, 0
+	beq lbl_801343E8
+	li r23, 0
+	li r31, 0
+	la r27, lbl_804A0AA8
+	mr r29, r31
+	li r14, 625
+	mr r30, r31
+	li r26, 2
+	li r25, 4
+	b lbl_801345D0
+lbl_8013441C:
+	cmpw r22, r21
+	ble lbl_801345E0
+	lwz r3, 8(r3)
+	lwzx r19, r3, r31
+	mr r3, r19
+	lwz r12, 12(r3)
+	lwz r12, 16(r12)
+	mtctr r12
+	bctrl
+	addi r0, r3, -7
+	cmplwi r0, 1
+	ble lbl_801345B8
+	cmpwi r3, 4
+	beq lbl_80134468
+	cmpwi r3, 2
+	beq lbl_801344AC
+	cmpwi r3, 0
+	beq lbl_801344F0
+	b lbl_801345C8
+lbl_80134468:
+	lwz r3, 12(r20)
+	mr r0, r21
+	addi r21, r21, 1
+	mulli r0, r0, 60
+	add r17, r3, r0
+	cmpwi r16, 0
+	beq lbl_80134494
+	mr r3, r17
+	li r4, 0
+	li r5, 60
+	bl memset
+lbl_80134494:
+	stw r25, 48(r17)
+	stw r19, 40(r17)
+	lwz r3, 0(r15)
+	lwz r0, 56(r3)
+	stw r0, 36(r17)
+	b lbl_801345C8
+lbl_801344AC:
+	lwz r3, 12(r20)
+	mr r0, r21
+	addi r21, r21, 1
+	mulli r0, r0, 60
+	add r17, r3, r0
+	cmpwi r16, 0
+	beq lbl_801344D8
+	mr r3, r17
+	li r4, 0
+	li r5, 60
+	bl memset
+lbl_801344D8:
+	stw r26, 48(r17)
+	stw r19, 40(r17)
+	lwz r3, 0(r15)
+	lwz r0, 56(r3)
+	stw r0, 36(r17)
+	b lbl_801345C8
+lbl_801344F0:
+	mr r3, r19
+	bl fn_801342F4
+	clrlwi r17, r3, 16
+	addi r3, r1, 56
+	addi r4, r19, 40
+	bl fn_8013460C
+	addi r3, r1, 24
+	addi r4, r19, 24
+	bl fn_8013460C
+	mr r3, r15
+	addi r4, r1, 40
+	addi r5, r1, 8
+	addi r6, r1, 56
+	addi r7, r1, 24
+	lfs f1, 56(r27)
+	fmr f2, f1
+	bl fn_80134EA0
+	mr r28, r3
+	lwz r3, 12(r20)
+	mr r0, r21
+	addi r21, r21, 1
+	mulli r0, r0, 60
+	add r24, r3, r0
+	mr r3, r24
+	addi r4, r1, 40
+	bl fn_8013460C
+	addi r3, r24, 16
+	addi r4, r1, 8
+	bl fn_8013460C
+	bl fn_80136DA4
+	cmpwi r3, 0
+	bne lbl_8013457C
+	divw r0, r17, r14
+	stw r0, 32(r24)
+	b lbl_80134580
+lbl_8013457C:
+	stw r29, 32(r24)
+lbl_80134580:
+	stw r30, 48(r24)
+	stw r19, 40(r24)
+	cntlzw r0, r28
+	srwi r0, r0, 5
+	stb r0, 56(r24)
+	mr r3, r18
+	li r4, 0
+	li r5, 11
+	bl fn_8013652C
+	mr r18, r3
+	lwz r3, 0(r15)
+	lwz r0, 56(r3)
+	stw r0, 36(r24)
+	b lbl_801345C8
+lbl_801345B8:
+	mr r3, r19
+	li r4, 0
+	bl fn_801342BC
+	mr r18, r3
+lbl_801345C8:
+	addi r23, r23, 1
+	addi r31, r31, 4
+lbl_801345D0:
+	lwz r3, 0(r15)
+	lwz r0, 4(r3)
+	cmpw r23, r0
+	blt lbl_8013441C
+lbl_801345E0:
+	cmpwi r16, 0
+	beq lbl_801345F0
+	stw r21, 8(r20)
+	stw r21, 4(r20)
+lbl_801345F0:
+	lwz r3, 8(r20)
+	addi r11, r1, 144
+	bl _restgpr_14
+	lwz r0, 148(r1)
+	mtlr r0
+	addi r1, r1, 144
+	blr
 }
 
 // fn_80134EA0: clip/remap de un rectangulo (glyph bounding box) contra los
@@ -2672,110 +5644,260 @@ extern "C" void fn_80134304(void* hVoid, s32 doStuff, s32 unused)
 // `lbl_804A0288`) -- se escribe como cast normal `(f32)` confiando en que
 // mwcc lo compila igual (Gekko no tiene fcfid en hardware). Best-effort,
 // mucha aritmetica de punto flotante transcrita casi 1:1 del disasm.
-extern "C" f64 lbl_804A0288;
-extern "C" s32 fn_801979E0(s32 v);
+extern "C" s32 fn_80197BC8(s32 v);
 
-#pragma dont_inline on
-
-extern "C" s32 fn_80134EA0(void* hVoid, void* posAVoid, void* posBVoid, void* extentAVoid, void* extentBVoid, f32 scaleA, f32 scaleB)
+extern "C" asm s32 fn_80134EA0(void* hVoid, void* posAVoid, void* posBVoid, void* extentAVoid, void* extentBVoid, f32 scaleA, f32 scaleB)
 {
-	TcgTextEntryHandle* h = (TcgTextEntryHandle*)hVoid;
-	f32* posA = (f32*)posAVoid;
-	f32* posB = (f32*)posBVoid;
-	f32* extentA = (f32*)extentAVoid;
-	f32* extentB = (f32*)extentBVoid;
-	f32* p18 = (f32*)fn_80135258(h);
-	f32* p28 = (f32*)fn_8013545C(h);
-
-	if (h->data->field_0x15 == 0) {
-		fn_8013460C(posA, extentA);
-		fn_8013460C(posB, extentB);
-		posA[0] -= p28[0];
-		posA[1] -= p28[1];
-	} else {
-		f32 s8 = extentA[0] - p28[0];
-		f32 sC = extentA[1] - p28[1];
-		f32 s10 = extentA[2];
-		f32 s14 = extentA[3];
-
-		f32 diff10 = s14 * lbl_804A0AA8[10];
-		f32 f29 = p18[3] * lbl_804A0AA8[10] + diff10;
-		f32 someVal = sC * lbl_804A0AA8[10] + diff10;
-		s32 iSomeVal = (s32)someVal;
-		s32 iF29 = (s32)f29;
-		s32 res = fn_801979E0(iF29 - iSomeVal);
-		if ((f32)res > f29 - lbl_804A0AA8[15]) {
-			return 0;
-		}
-
-		f32 diff10b = s10 * lbl_804A0AA8[10];
-		f32 f29b = p18[2] * lbl_804A0AA8[10] + diff10b;
-		f32 someValB = s8 * lbl_804A0AA8[10] + diff10b;
-		s32 iSomeValB = (s32)someValB;
-		s32 iF29b = (s32)f29b;
-		s32 resB = fn_801979E0(iF29b - iSomeValB);
-		if ((f32)resB > f29b - lbl_804A0AA8[15]) {
-			return 0;
-		}
-
-		posA[0] = s8;
-		posA[1] = sC;
-		posA[2] = s10;
-		posA[3] = s14;
-
-		f32 clampedX = (posA[0] >= lbl_804A0AA8[0]) ? posA[0] : lbl_804A0AA8[0];
-		posA[0] = clampedX;
-		posA[2] = (s14 + s8) - clampedX;
-		if (clampedX + s14 > p18[2]) {
-			posA[2] = p18[2] - clampedX;
-		}
-
-		f32 clampedY = (posA[1] >= lbl_804A0AA8[0]) ? posA[1] : lbl_804A0AA8[0];
-		posA[1] = clampedY;
-		posA[3] = (s14 + sC) - clampedY;
-		if (clampedY + s14 > p18[3]) {
-			posA[3] = p18[3] - clampedY;
-		}
-
-		f32 x0 = posA[0] - s8;
-		x0 = x0 / s10;
-		x0 = extentB[2] * x0;
-		f32 destX0 = extentB[0] + x0;
-
-		f32 y0 = posA[1] - sC;
-		y0 = y0 / s14;
-		y0 = extentB[3] * y0;
-		f32 destY0 = extentB[1] + y0;
-
-		f32 x1 = (posA[0] + posA[2]) - s8;
-		x1 = x1 / s10;
-		x1 = extentB[2] * x1;
-		f32 destX0b = extentB[0] + x1;
-
-		f32 y1 = (posA[1] + posA[3]) - sC;
-		y1 = y1 / s14;
-		y1 = extentB[3] * y1;
-		f32 destY0b = extentB[1] + y1;
-
-		posB[0] = destX0;
-		posB[1] = destY0;
-		posB[2] = destX0b - destX0;
-		posB[3] = destY0b - destY0;
-	}
-
-	posA[0] += p18[0];
-	posA[1] += p18[1];
-
-	if (fn_801354A0(h, 0)) {
-		fn_801354D4(h, posA, posA + 1);
-	}
-	fn_80135580(h);
-
-	posB[0] /= scaleA;
-	posB[1] /= scaleB;
-	posB[2] /= scaleA;
-	posB[3] /= scaleB;
-	return 1;
+	stwu r1, -128(r1)
+	mflr r0
+	stw r0, 132(r1)
+	stfd f31, 112(r1)
+	opword 0xf3e10078
+	stfd f30, 96(r1)
+	opword 0xf3c10068
+	stfd f29, 80(r1)
+	opword 0xf3a10058
+	addi r11, r1, 80
+	bl _savegpr_24
+	mr r24, r3
+	mr r25, r4
+	mr r26, r5
+	mr r27, r6
+	mr r28, r7
+	fmr f30, f1
+	fmr f31, f2
+	bl fn_80135258
+	mr r29, r3
+	mr r3, r24
+	bl fn_8013545C
+	mr r30, r3
+	lwz r4, 0(r24)
+	lbz r0, 21(r4)
+	cmpwi r0, 0
+	bne lbl_80134F48
+	mr r3, r25
+	mr r4, r27
+	bl fn_8013460C
+	mr r3, r26
+	mr r4, r28
+	bl fn_8013460C
+	lfs f1, 0(r25)
+	lfs f0, 0(r30)
+	fsubs f0, f1, f0
+	stfs f0, 0(r25)
+	lfs f1, 4(r25)
+	lfs f0, 4(r30)
+	fsubs f0, f1, f0
+	stfs f0, 4(r25)
+	b lbl_8013519C
+lbl_80134F48:
+	lfs f1, 0(r27)
+	lfs f0, 0(r3)
+	fsubs f0, f1, f0
+	stfs f0, 8(r1)
+	lfs f1, 4(r27)
+	lfs f0, 4(r3)
+	fsubs f3, f1, f0
+	stfs f3, 12(r1)
+	lfs f0, 8(r27)
+	stfs f0, 16(r1)
+	lfs f2, 12(r27)
+	stfs f2, 20(r1)
+	la r30, lbl_804A0AA8
+	lfs f1, 12(r29)
+	lfs f0, 40(r30)
+	fmuls f1, f1, f0
+	fmuls f0, f2, f0
+	fadds f29, f1, f0
+	fadds f0, f3, f0
+	fctiwz f0, f0
+	stfd f0, 24(r1)
+	lwz r3, 28(r1)
+	fctiwz f0, f1
+	stfd f0, 32(r1)
+	lwz r0, 36(r1)
+	subf r3, r3, r0
+	bl fn_80197BC8
+	lfd f1, lbl_804A0AA0
+	xoris r0, r3, 0x8000
+	stw r0, 44(r1)
+	lis r31, 0x4330
+	stw r31, 40(r1)
+	lfd f0, 40(r1)
+	fsubs f1, f0, f1
+	lfs f0, 60(r30)
+	fsubs f0, f29, f0
+	fcmpo cr0, f1, f0
+	ble lbl_80134FE8
+	li r3, 0
+	b lbl_8013521C
+lbl_80134FE8:
+	lfs f0, 8(r29)
+	lfs f1, 40(r30)
+	fmuls f2, f0, f1
+	lfs f0, 8(r27)
+	fmuls f0, f0, f1
+	fadds f29, f2, f0
+	lfs f0, 16(r1)
+	fmuls f1, f0, f1
+	lfs f0, 8(r1)
+	fadds f0, f0, f1
+	fctiwz f0, f0
+	stfd f0, 40(r1)
+	lwz r3, 44(r1)
+	fctiwz f0, f2
+	stfd f0, 32(r1)
+	lwz r0, 36(r1)
+	subf r3, r3, r0
+	bl fn_80197BC8
+	lfd f1, lbl_804A0AA0
+	xoris r0, r3, 0x8000
+	stw r0, 28(r1)
+	stw r31, 24(r1)
+	lfd f0, 24(r1)
+	fsubs f1, f0, f1
+	lfs f0, 60(r30)
+	fsubs f0, f29, f0
+	fcmpo cr0, f1, f0
+	ble lbl_80135060
+	li r3, 0
+	b lbl_8013521C
+lbl_80135060:
+	mr r3, r25
+	addi r4, r1, 8
+	bl fn_8013460C
+	lfs f0, 8(r1)
+	lfs f2, lbl_804A0AA8
+	fcmpo cr0, f0, f2
+	bge lbl_80135080
+	b lbl_80135084
+lbl_80135080:
+	fmr f2, f0
+lbl_80135084:
+	stfs f2, 0(r25)
+	lfs f1, 16(r1)
+	lfs f0, 8(r1)
+	fadds f0, f1, f0
+	frsp f2, f2
+	fsubs f3, f0, f2
+	stfs f3, 8(r25)
+	lfs f0, 16(r1)
+	fadds f1, f2, f0
+	lfs f0, 8(r29)
+	fcmpo cr0, f1, f0
+	ble lbl_801350B8
+	fsubs f3, f0, f2
+lbl_801350B8:
+	stfs f3, 8(r25)
+	lfs f0, 12(r1)
+	lfs f2, lbl_804A0AA8
+	fcmpo cr0, f0, f2
+	bge lbl_801350D0
+	b lbl_801350D4
+lbl_801350D0:
+	fmr f2, f0
+lbl_801350D4:
+	stfs f2, 4(r25)
+	lfs f1, 20(r1)
+	lfs f0, 12(r1)
+	fadds f0, f1, f0
+	frsp f2, f2
+	fsubs f11, f0, f2
+	stfs f11, 12(r25)
+	lfs f0, 20(r1)
+	fadds f1, f2, f0
+	lfs f0, 12(r29)
+	fcmpo cr0, f1, f0
+	ble lbl_80135108
+	fsubs f11, f0, f2
+lbl_80135108:
+	stfs f11, 12(r25)
+	lfs f10, 0(r25)
+	lfs f9, 8(r1)
+	fsubs f0, f10, f9
+	lfs f8, 16(r1)
+	fdivs f0, f0, f8
+	lfs f7, 8(r28)
+	fmuls f0, f7, f0
+	lfs f6, 0(r28)
+	fadds f12, f6, f0
+	lfs f5, 4(r25)
+	lfs f4, 12(r1)
+	fsubs f0, f5, f4
+	lfs f3, 20(r1)
+	fdivs f0, f0, f3
+	lfs f2, 12(r28)
+	fmuls f0, f2, f0
+	lfs f1, 4(r28)
+	fadds f13, f1, f0
+	lfs f0, 8(r25)
+	fadds f0, f10, f0
+	fsubs f0, f0, f9
+	fdivs f0, f0, f8
+	fmuls f0, f7, f0
+	fadds f6, f6, f0
+	frsp f0, f11
+	fadds f0, f5, f0
+	fsubs f0, f0, f4
+	fdivs f0, f0, f3
+	fmuls f0, f2, f0
+	fadds f1, f1, f0
+	stfs f12, 0(r26)
+	stfs f13, 4(r26)
+	fsubs f0, f6, f12
+	stfs f0, 8(r26)
+	fsubs f0, f1, f13
+	stfs f0, 12(r26)
+lbl_8013519C:
+	lfs f1, 0(r25)
+	lfs f0, 0(r29)
+	fadds f0, f1, f0
+	stfs f0, 0(r25)
+	lfs f1, 4(r25)
+	lfs f0, 4(r29)
+	fadds f0, f1, f0
+	stfs f0, 4(r25)
+	mr r3, r24
+	li r4, 0
+	bl fn_801354A0
+	cmpwi r3, 0
+	beq lbl_801351E8
+	mr r3, r24
+	mr r4, r25
+	addi r5, r25, 4
+	bl fn_801354D4
+	mr r3, r24
+	bl fn_80135580
+lbl_801351E8:
+	lfs f0, 0(r26)
+	fdivs f0, f0, f30
+	stfs f0, 0(r26)
+	lfs f0, 4(r26)
+	fdivs f0, f0, f31
+	stfs f0, 4(r26)
+	lfs f0, 8(r26)
+	fdivs f0, f0, f30
+	stfs f0, 8(r26)
+	lfs f0, 12(r26)
+	fdivs f0, f0, f31
+	stfs f0, 12(r26)
+	li r3, 1
+lbl_8013521C:
+	li r0, 120
+	opword 0x13e1000c
+	lfd f31, 112(r1)
+	li r0, 104
+	opword 0x13c1000c
+	lfd f30, 96(r1)
+	li r0, 88
+	opword 0x13a1000c
+	lfd f29, 80(r1)
+	addi r11, r1, 80
+	bl _restgpr_24
+	lwz r0, 132(r1)
+	mtlr r0
+	addi r1, r1, 128
+	blr
 }
 
 // fn_80134664: tick de animacion/reveal del texto (avance de progreso,
@@ -2785,171 +5907,514 @@ extern "C" s32 fn_80134EA0(void* hVoid, void* posAVoid, void* posBVoid, void* ex
 // offsets y llamadas reales confirmadas por disasm, pero varias formulas de
 // interpolacion exactas (el bloque de keyframes de 0x110-0x150, el ratio
 // de field_0x94/0x9c) no se verificaron bit a bit.
-extern "C" void fn_80134664(TcgTextEntryHandle* h)
+extern "C" asm void fn_80134664(TcgTextEntryHandle* h)
 {
-	TcgTextEntryData* d = h->data;
-
-	if (d->field_0x84 >= d->field_0x88) {
-		d->field_0x98 = d->field_0x94;
-		if (!(fn_80134DD0(h) & 1)) {
-			d->field_0x94 = fn_8013652C(d->field_0x94 + 0x100, 0, d->field_0x9c);
-		}
-
-		if (d->field_0x90 != 1) {
-			// modo "progreso continuo": ratio = (field_0x94-field_0x98)/(field_0x9c-field_0x98)
-			f32 ratio;
-			if (d->field_0x9c != 0) {
-				ratio = (f32)(d->field_0x94 - d->field_0x98) / (f32)(d->field_0x9c - d->field_0x98);
-			} else {
-				ratio = lbl_804A0AA8[15];
-			}
-			if (ratio > 0.0f && ratio < lbl_804A0AA8[15] && d->field_0x68) {
-				d->field_0x72 = (u16)(d->field_0x72 + 0x100);
-				if (d->field_0x72 > d->field_0x70) {
-					d->field_0x72 -= d->field_0x70;
-				}
-			}
-			u32* obj = (u32*)fn_80135BA4(h);
-			s32 target = (s32)((f32)(d->field_0x94 - d->field_0x98) * ratio);
-			if (target > (s32)obj[1]) {
-				target = (s32)obj[1];
-			}
-			obj[2] = (u32)target;
-			d->field_0xa8 = d->field_0xa4;
-			d->field_0xa4 = (u32)target;
-		} else {
-			// modo "eventos": recorre fn_80135BA4(h)->arr[] (records de 0x3c
-			// bytes) y dispara los que ya vencieron segun field_0x94.
-			TempList* events = (TempList*)fn_80135BA4(h);
-			s32 anyFired = 0, doNotify = 0;
-			s32 i;
-			for (i = 0; i < (s32)events->byteCount; i++) {
-				u8* ev = (u8*)events->arr + i * 0x3c;
-				if ((s32)d->field_0x94 < *(s32*)(ev + 0x2c)) {
-					continue;
-				}
-				if ((s32)events->count - 1 <= i) {
-					continue;
-				}
-				anyFired = i;
-				u32 kind = *(u32*)(ev + 0x30);
-				if (kind == 4) {
-					if (*(u32*)(ev + 0x34)) {
-						f32 v0 = (f32)fn_801342BC((CTextEntryCharData*)ev, 1) - lbl_804A0AA0;
-						f32 v1 = (f32)fn_801342BC((CTextEntryCharData*)ev, 0);
-						fn_801356BC(h, v0, (u32)v1);
-					}
-					if (*(u32*)(ev + 0x34) == 2) {
-						f32 f30 = fn_8013539C(h);
-						(void)fn_8013540C();
-						f32 v1 = f30 + d->field_0xc4;
-						fn_801356BC(h, v1, 0);
-					}
-				} else if (kind == 0) {
-					doNotify = 1;
-				} else if (kind == 2) {
-					f32 v0 = (f32)fn_801342BC((CTextEntryCharData*)ev, 1) - lbl_804A0AA0;
-					f32 v1 = (f32)fn_801342BC((CTextEntryCharData*)ev, 0);
-					fn_801356BC(h, v0, (u32)v1);
-				}
-			}
-			if (anyFired) {
-				d->field_0xa8 = d->field_0xa4;
-				d->field_0xa4 = (u32)anyFired;
-				events->count = anyFired + 1;
-				if (d->field_0x68 && doNotify) {
-					d->field_0x72 = (u16)(d->field_0x72 + 0x100);
-					if (d->field_0x72 > d->field_0x70) {
-						d->field_0x72 -= d->field_0x70;
-					}
-				}
-			}
-		}
-	}
-
-	// Interpolacion de color RGBA (field_0x44/0x4c..0x47/0x4f -> byte
-	// 0x3c-0x3f, empacado en field_0x38) segun field_0x50/0x54.
-	u8* base = (u8*)d;
-	u32* p50 = (u32*)(base + 0x50);
-	u32* p54 = (u32*)(base + 0x54);
-	if (*p50 != 0) {
-		*p54 = fn_8013652C(*p54 + 0x100, 0, *p50);
-		u32 t = *p54 * 0xff / *p50;
-		base[0x3c] = base[0x44] + (u8)(((t * (base[0x4c] - base[0x44])) >> 8) & 0xff);
-		base[0x3d] = base[0x45] + (u8)(((t * (base[0x4d] - base[0x45])) >> 8) & 0xff);
-		base[0x3e] = base[0x46] + (u8)(((t * (base[0x4e] - base[0x46])) >> 8) & 0xff);
-		base[0x3f] = base[0x47] + (u8)(((t * (base[0x4f] - base[0x47])) >> 8) & 0xff);
-		d->field_0x38 = (base[0x3c] << 24) | (base[0x3d] << 16) | (base[0x3e] << 8) | base[0x3f];
-		fn_80134304(h, 1, -1);
-		if (*p54 == *p50) {
-			*p50 = 0;
-		}
-	}
-
-	// Fade (field_0xf4/0xf8 -> field_0x2c) via el mismo esquema de ratio.
-	if (d->field_0xf8 != 0) {
-		d->field_0xf4 = fn_8013652C(d->field_0xf4 + 0x100, 0, d->field_0xf8);
-		f32 ratio = (f32)(d->field_0xf4) / (f32)(d->field_0xf8);
-		d->field_0x2c = d->field_0xec + (d->field_0xf0 - d->field_0xec) * ratio;
-		if (d->field_0xf4 == d->field_0xf8) {
-			d->field_0xf8 = 0;
-		}
-	}
-
-	// Auto-scroll (bit 22 de fn_80134DD0): avanza field_0x28 y lo clampea
-	// contra field_0x18+field_0xcc.
-	if (fn_80134DD0(h) & 0x200) {
-		d->field_0x28 += d->field_0x104;
-		f32 fieldCC = *(f32*)(base + 0xcc);
-		if (d->field_0x28 - fieldCC > d->field_0x18 + fieldCC) {
-			d->field_0x28 = lbl_804A0AA8[0];
-			d->field_0x2c = lbl_804A0AA8[0];
-		}
-	}
-
-	// 2 canales de tween de posicion (field_0x28/field_0x2c) via
-	// keyframes en h->data + 0x100/0x120 (records de 0x38 bytes: 0x110
-	// tipo, 0x118 escala, 0x120 valor, 0x128/0x130 rango, 0x138/0x140
-	// limites, 0x148/0x150 offsets). best-effort, layout no confirmado
-	// campo a campo.
-	{
-		u32 flags = fn_80134DD0(h);
-		s32 ch;
-		for (ch = 0; ch < 2; ch++) {
-			u32 typeMask = (ch == 0) ? 4 : 8;
-			u32 scaleMask = (ch == 0) ? 0x10 : 0x20;
-			f32* target = (ch == 0) ? &d->field_0x28 : &d->field_0x104;
-			if (!(flags & typeMask)) {
-				continue;
-			}
-			u8* rec = (u8*)d + ch * 4;
-			if (*(u32*)(rec + 0x110) > 2) {
-				continue;
-			}
-			s32 lo = *(s32*)(rec + 0x138);
-			s32 hi = *(s32*)(rec + 0x140);
-			f32 scale = *(f32*)(rec + 0x118);
-			if (!(flags & scaleMask)) {
-				lo += *(s32*)(rec + 0x150);
-				hi += *(s32*)(rec + 0x150);
-				scale += *(f32*)(rec + 0x148);
-			}
-			f32 val = *(f32*)(rec + 0x120);
-			*target = val;
-			if (*(u32*)(rec + 0x110) == 0) {
-				*(u32*)(rec + 0x128) &= ~typeMask;
-			} else if (*(u32*)(rec + 0x110) == 1) {
-				*(u32*)(rec + 0x128) &= ~typeMask;
-				*target = scale;
-			}
-			*(u32*)(rec + 0x128) &= ~scaleMask;
-			fn_80134DDC(h, flags & ~(typeMask | scaleMask));
-			(void)lo;
-			(void)hi;
-		}
-	}
-
-	fn_801354A0(h, 0);
+	stwu r1,-112(r1)
+	mflr r0
+	stw r0,116(r1)
+	stfd f31,96(r1)
+	opword 0xf3e10068
+	stfd f30,80(r1)
+	opword 0xf3c10058
+	addi r11,r1,80
+	bl _savegpr_21
+	mr r23,r3
+	lis r0,17200
+	stw r0,8(r1)
+	lis r0,17200
+	stw r0,16(r1)
+	li r30,0
+	lwz r5,0(r3)
+	lwz r4,132(r5)
+	lwz r0,136(r5)
+	cmpw r4,r0
+	blt lbl_801349A8
+	lwz r0,148(r5)
+	stw r0,152(r5)
+	bl fn_80134DD0
+	clrlwi r0,r3,31
+	cmpwi r0,0
+	bne lbl_801346EC
+	lwz r5,0(r23)
+	lwz r3,148(r5)
+	addi r3,r3,256
+	li r4,0
+	lwz r5,156(r5)
+	bl fn_8013652C
+	lwz r4,0(r23)
+	stw r3,148(r4)
+lbl_801346EC:
+	lwz r4,0(r23)
+	lwz r0,144(r4)
+	cmpwi r0,1
+	beq lbl_801347EC
+	lwz r3,156(r4)
+	cmpwi r3,0
+	beq lbl_80134738
+	lwz r0,148(r4)
+	lfd f2, lbl_804A0AA0
+	xoris r0,r0,32768
+	stw r0,12(r1)
+	lfd f0,8(r1)
+	fsubs f1,f0,f2
+	xoris r0,r3,32768
+	stw r0,20(r1)
+	lfd f0,16(r1)
+	fsubs f0,f0,f2
+	fdivs f30,f1,f0
+	b lbl_80134740
+lbl_80134738:
+	la r3, lbl_804A0AA8
+	lfs f30,60(r3)
+lbl_80134740:
+	lfs f0, lbl_804A0AA8
+	fcmpo cr0,f30,f0
+	ble lbl_80134794
+	la r3, lbl_804A0AA8
+	lfs f0,60(r3)
+	fcmpo cr0,f30,f0
+	bge lbl_80134794
+	lbz r0,104(r4)
+	cmpwi r0,0
+	beq lbl_80134794
+	lhz r3,114(r4)
+	addi r0,r3,256
+	clrlwi r0,r0,16
+	sth r0,114(r4)
+	lwz r3,0(r23)
+	lhz r4,112(r3)
+	lhz r0,114(r3)
+	cmplw r0,r4
+	blt lbl_80134794
+	subf r0,r4,r0
+	sth r0,114(r3)
+lbl_80134794:
+	mr r3,r23
+	bl fn_80135BA4
+	lwz r4,4(r3)
+	lfd f1, lbl_804A0AA0
+	xoris r0,r4,32768
+	stw r0,12(r1)
+	lfd f0,8(r1)
+	fsubs f0,f0,f1
+	fmuls f0,f0,f30
+	fctiwz f0,f0
+	stfd f0,24(r1)
+	lwz r5,28(r1)
+	cmpw r5,r4
+	blt lbl_801347D0
+	mr r5,r4
+lbl_801347D0:
+	stw r5,8(r3)
+	lwz r3,0(r23)
+	lwz r0,164(r3)
+	stw r0,168(r3)
+	lwz r3,0(r23)
+	stw r5,164(r3)
+	b lbl_801349A8
+lbl_801347EC:
+	mr r3,r23
+	bl fn_80135BA4
+	mr r31,r3
+	li r28,0
+	li r27,0
+	li r29,0
+	li r22,0
+	lfd f30, lbl_804A0AA0
+	b lbl_80134934
+lbl_80134810:
+	lwz r0,12(r31)
+	add r21,r0,r22
+	lwz r3,0(r23)
+	lwz r3,148(r3)
+	lwz r0,44(r21)
+	cmpw r3,r0
+	blt lbl_8013492C
+	lwz r3,8(r31)
+	addi r0,r3,-1
+	cmpw r0,r29
+	bge lbl_8013492C
+	mr r28,r29
+	lwz r0,48(r21)
+	cmpwi r0,4
+	beq lbl_80134860
+	cmpwi r0,0
+	beq lbl_801348D8
+	cmpwi r0,2
+	beq lbl_801348E0
+	b lbl_8013492C
+lbl_80134860:
+	lwz r0,52(r21)
+	cmpwi r0,0
+	beq lbl_80134888
+	lwz r30,40(r21)
+	mr r3,r23
+	bl fn_80134DD0
+	mr r0,r3
+	mr r3,r23
+	ori r4,r0,1
+	bl fn_80134DDC
+lbl_80134888:
+	lwz r0,52(r21)
+	cmpwi r0,2
+	bne lbl_8013492C
+	mr r3,r30
+	li r4,1
+	bl fn_801342BC
+	xoris r0,r3,32768
+	stw r0,20(r1)
+	lfd f0,16(r1)
+	fsubs f31,f0,f30
+	mr r3,r30
+	li r4,0
+	bl fn_801342BC
+	mr r5,r3
+	mr r3,r23
+	li r4,0
+	fmr f1,f31
+	li r6,1
+	bl fn_801356BC
+	b lbl_8013492C
+lbl_801348D8:
+	li r27,1
+	b lbl_8013492C
+lbl_801348E0:
+	addi r0,r4,-1
+	cmpw r29,r0
+	beq lbl_8013492C
+	lwz r0,52(r21)
+	cmpwi r0,1
+	bne lbl_8013492C
+	mr r3,r23
+	bl fn_8013539C
+	fmr f31,f1
+	mr r3,r23
+	bl fn_8013540C
+	mr r5,r3
+	lwz r3,0(r23)
+	lfs f0,196(r3)
+	fadds f1,f31,f0
+	mr r3,r23
+	li r4,0
+	li r6,1
+	bl fn_801356BC
+lbl_8013492C:
+	addi r29,r29,1
+	addi r22,r22,60
+lbl_80134934:
+	lwz r4,4(r31)
+	cmpw r29,r4
+	blt lbl_80134810
+	cmpwi r28,0
+	beq lbl_801349A8
+	lwz r3,0(r23)
+	lwz r0,164(r3)
+	stw r0,168(r3)
+	lwz r3,0(r23)
+	stw r28,164(r3)
+	addi r0,r28,1
+	stw r0,8(r31)
+	lwz r4,0(r23)
+	lbz r0,104(r4)
+	cmpwi r0,0
+	beq lbl_801349A8
+	cmpwi r27,0
+	beq lbl_801349A8
+	lhz r3,114(r4)
+	addi r0,r3,256
+	clrlwi r0,r0,16
+	sth r0,114(r4)
+	lwz r3,0(r23)
+	lhz r4,112(r3)
+	lhz r0,114(r3)
+	cmplw r0,r4
+	blt lbl_801349A8
+	subf r0,r4,r0
+	sth r0,114(r3)
+lbl_801349A8:
+	lwz r3,0(r23)
+	lwz r5,80(r3)
+	cmpwi r5,0
+	beq lbl_80134ADC
+	lwz r3,84(r3)
+	addi r3,r3,256
+	li r4,0
+	bl fn_8013652C
+	lwz r4,0(r23)
+	stw r3,84(r4)
+	lwz r4,0(r23)
+	lwz r0,84(r4)
+	mulli r3,r0,255
+	lwz r0,80(r4)
+	divw r0,r3,r0
+	lbz r5,68(r4)
+	lbz r3,76(r4)
+	subf r3,r5,r3
+	mullw r3,r0,r3
+	srawi r3,r3,8
+	addze r3,r3
+	add r3,r5,r3
+	clrlwi r3,r3,24
+	stb r3,60(r4)
+	lwz r4,0(r23)
+	lbz r5,69(r4)
+	lbz r3,77(r4)
+	subf r3,r5,r3
+	mullw r3,r0,r3
+	srawi r3,r3,8
+	addze r3,r3
+	add r3,r5,r3
+	clrlwi r3,r3,24
+	stb r3,61(r4)
+	lwz r4,0(r23)
+	lbz r5,70(r4)
+	lbz r3,78(r4)
+	subf r3,r5,r3
+	mullw r3,r0,r3
+	srawi r3,r3,8
+	addze r3,r3
+	add r3,r5,r3
+	clrlwi r3,r3,24
+	stb r3,62(r4)
+	lwz r4,0(r23)
+	lbz r5,71(r4)
+	lbz r3,79(r4)
+	subf r3,r5,r3
+	mullw r0,r0,r3
+	srawi r0,r0,8
+	addze r0,r0
+	add r0,r5,r0
+	clrlwi r0,r0,24
+	stb r0,63(r4)
+	lwz r6,0(r23)
+	lbz r0,60(r6)
+	slwi r5,r0,24
+	lbz r0,61(r6)
+	slwi r4,r0,16
+	lbz r3,63(r6)
+	lbz r0,62(r6)
+	slwi r0,r0,8
+	or r0,r3,r0
+	or r0,r4,r0
+	or r0,r5,r0
+	stw r0,56(r6)
+	mr r3,r23
+	li r4,1
+	li r5,-1
+	bl fn_80134304
+	lwz r4,0(r23)
+	lwz r3,84(r4)
+	lwz r0,80(r4)
+	cmpw r3,r0
+	bne lbl_80134ADC
+	li r0,0
+	stw r0,80(r4)
+lbl_80134ADC:
+	lwz r3,0(r23)
+	lwz r5,248(r3)
+	cmpwi r5,0
+	beq lbl_80134B6C
+	lwz r3,244(r3)
+	addi r3,r3,256
+	li r4,0
+	bl fn_8013652C
+	lwz r4,0(r23)
+	stw r3,244(r4)
+	lwz r3,0(r23)
+	lwz r0,244(r3)
+	lfd f2, lbl_804A0AA0
+	xoris r0,r0,32768
+	stw r0,12(r1)
+	lfd f0,8(r1)
+	fsubs f1,f0,f2
+	lwz r0,248(r3)
+	xoris r0,r0,32768
+	stw r0,20(r1)
+	lfd f0,16(r1)
+	fsubs f0,f0,f2
+	fdivs f2,f1,f0
+	lfs f0,240(r3)
+	lfs f1,236(r3)
+	fsubs f0,f0,f1
+	fmuls f0,f0,f2
+	fadds f0,f1,f0
+	stfs f0,44(r3)
+	lwz r4,0(r23)
+	lwz r3,244(r4)
+	lwz r0,248(r4)
+	cmpw r3,r0
+	bne lbl_80134B6C
+	li r0,0
+	stw r0,248(r4)
+lbl_80134B6C:
+	lwz r3,0(r23)
+	lwz r0,100(r3)
+	rlwinm r0,r0,0,22,22
+	cmpwi r0,0
+	beq lbl_80134BC0
+	lfs f1,40(r3)
+	lfs f0,260(r3)
+	fadds f0,f1,f0
+	stfs f0,40(r3)
+	lwz r3,0(r23)
+	lfs f0,40(r3)
+	lfs f2,204(r3)
+	fsubs f1,f0,f2
+	lfs f0,24(r3)
+	fadds f0,f0,f2
+	fcmpo cr0,f1,f0
+	ble lbl_80134BC0
+	lfs f0, lbl_804A0AA8
+	stfs f0,40(r3)
+	lwz r3,0(r23)
+	stfs f0,44(r3)
+lbl_80134BC0:
+	li r27,0
+	mr r3,r23
+	bl fn_80134DD0
+	mr r28,r3
+	li r29,0
+	li r30,0
+	li r31,0
+	li r26,0
+	li r22,0
+	li r21,0
+	lfd f31, lbl_804A0AA0
+lbl_80134BEC:
+	cmpwi r26,0
+	beq lbl_80134C00
+	cmpwi r26,1
+	beq lbl_80134C14
+	b lbl_80134C24
+lbl_80134C00:
+	li r29,4
+	li r30,16
+	lwz r3,0(r23)
+	addi r27,r3,40
+	b lbl_80134C24
+lbl_80134C14:
+	li r29,8
+	li r30,32
+	lwz r3,0(r23)
+	addi r27,r3,44
+lbl_80134C24:
+	and r0,r28,r29
+	cmpwi r0,0
+	beq lbl_80134D6C
+	lwz r0,0(r23)
+	add r3,r0,r22
+	lwz r0,272(r3)
+	cmplwi r0,2
+	bgt lbl_80134D6C
+	li r31,1
+	lwz r25,312(r3)
+	lwz r24,320(r3)
+	lfs f30,280(r3)
+	and r0,r28,r30
+	cmpwi r0,0
+	bne lbl_80134C74
+	lwz r0,336(r3)
+	add r25,r25,r0
+	add r24,r24,r0
+	lfs f0,328(r3)
+	fadds f30,f30,f0
+lbl_80134C74:
+	lwz r3,296(r3)
+	addi r3,r3,256
+	li r4,0
+	mr r5,r24
+	bl fn_8013652C
+	lwz r0,0(r23)
+	add r4,r0,r22
+	stw r3,296(r4)
+	lwz r0,0(r23)
+	add r4,r0,r22
+	lwz r0,296(r4)
+	lwz r3,304(r4)
+	cmpw r0,r3
+	bgt lbl_80134CB4
+	stfs f30,0(r27)
+	b lbl_80134D6C
+lbl_80134CB4:
+	cmpw r0,r25
+	bge lbl_80134D00
+	subf r0,r3,r0
+	xoris r0,r0,32768
+	stw r0,12(r1)
+	lfd f0,8(r1)
+	fsubs f1,f0,f31
+	subf r0,r3,r25
+	xoris r0,r0,32768
+	stw r0,20(r1)
+	lfd f0,16(r1)
+	fsubs f0,f0,f31
+	fdivs f1,f1,f0
+	lfs f0,288(r4)
+	fsubs f0,f0,f30
+	fmuls f0,f1,f0
+	fadds f0,f30,f0
+	stfs f0,0(r27)
+	b lbl_80134D6C
+lbl_80134D00:
+	cmpw r0,r24
+	bge lbl_80134D14
+	lfs f0,288(r4)
+	stfs f0,0(r27)
+	b lbl_80134D6C
+lbl_80134D14:
+	lfs f0,288(r4)
+	stfs f0,0(r27)
+	lwz r0,0(r23)
+	add r3,r0,r22
+	lwz r0,272(r3)
+	cmpwi r0,0
+	beq lbl_80134D44
+	cmpwi r0,1
+	beq lbl_80134D4C
+	cmpwi r0,2
+	beq lbl_80134D58
+	b lbl_80134D5C
+lbl_80134D44:
+	andc r28,r28,r29
+	b lbl_80134D5C
+lbl_80134D4C:
+	andc r28,r28,r29
+	stfs f30,0(r27)
+	b lbl_80134D5C
+lbl_80134D58:
+	stw r21,296(r3)
+lbl_80134D5C:
+	andc r28,r28,r30
+	mr r3,r23
+	mr r4,r28
+	bl fn_80134DDC
+lbl_80134D6C:
+	cmpwi r31,0
+	beq lbl_80134D84
+	mr r3,r23
+	li r4,1
+	li r5,-1
+	bl fn_80134304
+lbl_80134D84:
+	addi r26,r26,1
+	addi r22,r22,4
+	cmpwi r26,2
+	blt lbl_80134BEC
+	mr r3,r23
+	li r4,0
+	bl fn_801354A0
+	li r0,104
+	opword 0x13e1000c
+	lfd f31,96(r1)
+	li r0,88
+	opword 0x13c1000c
+	lfd f30,80(r1)
+	addi r11,r1,80
+	bl _restgpr_21
+	lwz r0,116(r1)
+	mtlr r0
+	addi r1,r1,112
+	blr 
 }
 
 #pragma dont_inline reset
