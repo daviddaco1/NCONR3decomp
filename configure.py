@@ -390,6 +390,7 @@ config.libs = [
             Object(NonMatching, "movie.cpp"),
             Object(NonMatching, "seq.cpp"),
             Object(NonMatching, "seq_cmdeft.cpp"),
+            Object(NonMatching, "seq_cmdtcg.cpp"),
         ],
     },
 ]
