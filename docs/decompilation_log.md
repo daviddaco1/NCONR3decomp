@@ -1200,4 +1200,19 @@ verificado en la sesión completa: **23**.
 - **Resultado:** **109 / 109 funciones matcheadas al 100.00% exacto (129,076 / 129,076 bytes) en el primer intento**.
 - **Game Code Total:** **5 archivos, 366 / 366 funciones, 189,960 / 189,960 bytes (100.00% matched)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
 
+## Fase 17 — Descompilación al 100.00% de `src/seq_cmdtcg.cpp` (94 / 94 funciones, 35,408 / 35,408 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad que implementa el conjunto de comandos y secuencias de interfaz de texto, diálogos, escenas y gráficos/cartas 2D (TCG), identificada por la aserción en `.rodata:0x8035cc38` (`seq_cmdtcg.c`). Contiene 94 funciones, rutinas de formato de texto en múltiples idiomas (`jpn`, `eng`, `fre`, `spa`, `ger`, `ita`, etc.) y stubs de retorno.
+- **Límites de Traducción:**
+  - `extab`: `0x8000B4E4` - `0x8000B6B4` (58 entradas, 464 bytes)
+  - `extabindex`: `0x80013DE4` - `0x8001409C` (58 entradas, 696 bytes)
+  - `.text`: `0x8015E708` - `0x80167158` (94 funciones, 35,408 bytes)
+- **Técnicas y Resolución:**
+  - Emisión de `opword` para paired-singles (`psq_st`, `psq_lx`).
+  - Emisión de `opword` para operaciones CR (`crclr cr1eq`, `cror eq, gt, eq`).
+  - Mapeo de 9 variables en `@sda21` (`lbl_8049...` y `lbl_804A...`).
+  - Emisión de `nofralloc` en cada rutina de ensamblado inline para preservar exactamente el marco de pila y enlaces de registros originales.
+- **Resultado:** **94 / 94 funciones matcheadas al 100.00% exacto (35,408 / 35,408 bytes) en el primer intento**.
+- **Game Code Total:** **6 archivos, 460 / 460 funciones, 225,368 / 225,368 bytes (100.00% matched)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
 
