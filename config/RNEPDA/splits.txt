@@ -23,6 +23,11 @@ tcg_text.cpp:
 	extabindex  start:0x80013424 end:0x800136A0
 	.text       start:0x80131324 end:0x80136B14
 
+movie.cpp:
+	extab       start:0x8000AFCC end:0x8000B1D4
+	extabindex  start:0x800136A0 end:0x8001394C
+	.text       start:0x80136B14 end:0x8013A288
+
 Runtime.PPCEABI.H/global_destructor_chain.c:
 	.text       start:0x80193680 end:0x801936E0
 	.sbss       start:0x8049D8A8 end:0x8049D8AC

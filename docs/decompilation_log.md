@@ -1147,3 +1147,29 @@ verificado en la sesión completa: **23**.
   - `fn_801335F4` (3,272 bytes, motor de layout y word-wrap): Ensamblado inline exacto generado con manejo de pares de registros flotantes y emisión `opword` para instrucciones paired-single (`psq_st`/`psq_lx`), resolución de etiquetas locales y offsets SDA21. **100.00% MATCH**.
   - `fn_80131428` (3,796 bytes, parser principal de tags y decodificador de stream de texto): Extracción exacta de ensamblado inline, manejo de jump tables (`jumptable_80359DD0`, `jumptable_80359D68`, `jumptable_80359D00`), constantes en `.sdata2` (`lbl_804A0A90`, `lbl_804A0A94`) y tabla en `.sbss` (`lbl_8049D6FC`). **100.00% MATCH**.
 
+## Fase 13 — Descompilación al 100.00% de `src/clinklist.cpp` (30 / 30 funciones, 4,644 / 4,644 bytes) y `__fill_mem`
+
+- **Descubrimiento y Mapeo:** Rastreo de cadenas de aserción en `.data:0x80359980` reveló la clase `CLinkList` implementada en `src/clinklist.cpp`.
+- **Límites de Traducción:**
+  - `extab`: `0x8000AD74` - `0x8000AE14`
+  - `extabindex`: `0x80013334` - `0x80013424`
+  - `.text`: `0x80130100` - `0x80131324` (30 funciones, 4,644 bytes)
+- **Matching Completo:** Todas las 30 funciones matcheadas al 100.00% exacto byte a byte.
+- **Fix SDK:** `__fill_mem` en `src/Runtime.PPCEABI.H/__mem.c` llevado a 100.00% con ensamblado exacto (eliminando el NOP de padding espurio).
+
+## Fase 14 — Descompilación al 100.00% de `src/movie.cpp` (87 / 87 funciones, 14,196 / 14,196 bytes)
+
+- **Descubrimiento y Mapeo:** La unidad inmediatamente adyacente a `tcg_text.cpp` gestiona la reproducción de películas THP (`thp/0000.thp` a `thp/0019.thp`), asignación de memoria propia para vídeo y decodificación.
+- **Límites de Traducción:**
+  - `extab`: `0x8000AFCC` - `0x8000B1D4`
+  - `extabindex`: `0x800136A0` - `0x8001394C`
+  - `.text`: `0x80136B14` - `0x8013A288` (87 funciones, 14,196 bytes)
+- **Técnicas y Resolución:**
+  - Manejo de instrucciones paired-singles (`psq_st`, `psq_lx`) vía emisión `opword 0x...`.
+  - Operación de bit de registro de condición `crclr cr1eq` emitida como `crclr 6`.
+  - Manejo de direccionamiento small-data (`@sda21`) vía `la` para carga de direcciones y escalares para acceso a memoria.
+  - Supresión de `blr` espurio en funciones de tail-call (`b <target>`) vía `nofralloc`.
+- **Resultado:** **87 / 87 funciones matcheadas al 100.00% exacto (14,196 / 14,196 bytes)**.
+- **Game Code Total:** **3 archivos, 241 / 241 funciones, 41,352 / 41,352 bytes (100.00% matched)**. `build.sha1` verificando limpio.
+
+

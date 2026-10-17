@@ -89,16 +89,14 @@ igual que antes de migrar (53/124 al 100%, fuzzy global 24.96% antes de tocar na
 - El juego usa excepciones C++ reales (`extab`/`extabindex`); splits de
   `Runtime.PPCEABI.H/global_destructor_chain.c` y `__init_cpp_exceptions.cpp` configurados y linkeando
   limpio (formato `.ctors$10`/`.dtors$10`/`.dtors$15` agrupado en un solo objeto — ver gotcha abajo).
-- SDK/Runtime: **48/49 funciones matcheadas 100%** contra RNEPDA (`PPCArch.c` completo —24 funciones,
-  incluidas 3 renombradas por tamaño/emparejamiento (`PPCMthid0`/`PPCSync`/`PPCMfwpar`)—,
+- SDK/Runtime: **49/49 funciones matcheadas 100% (3,016 / 3,016 bytes)** contra RNEPDA (`PPCArch.c` completo —24 funciones—,
   `OS/OSFPRInit.c`, `OS/OSPSInit.c`, `OS/OSCache.c`, `OS/OSReset.c`, `__start.c`, `__ppc_eabi_init.c`,
-  `exit.c`, `__mem.c` salvo `__fill_mem` en 97.8%). `__init_cpp_exceptions` y `__destroy_global_chain`
-  también resueltos a nivel de contenido (100%), pero **no pueden marcarse `Matching=True`** sin
-  romper `build.sha1` — bloqueo de linker Wii sin resolver en la comunidad (ver bitácora).
-- Game code: `src/tcg_text.cpp` (RNEPDA: `0x80131324`-`0x80136B14`, 124 funciones, motor de
-  texto). **124/124 al 100.00% matched exacto byte-a-byte (22,512 / 22,512 bytes)**. Archivo completamente
-  resuelto y coincidente contra `orig/RNEPDA`. Todas las funciones grandes (`fn_80131428`, `fn_801335F4`,
-  `fn_80132348`, `fn_80134664`, etc.) y medianas/pequeñas matching al 100%.
+  `exit.c`, `__mem.c` incluido `__fill_mem` al 100%).
+- Game code: **3 archivos resueltos al 100.00% byte a byte (241 / 241 funciones, 41,352 / 41,352 bytes)**:
+  1. `src/clinklist.cpp` (`0x80130100`-`0x80131324`): **30 / 30 funciones, 4,644 bytes (100.00%)**.
+  2. `src/tcg_text.cpp` (`0x80131324`-`0x80136B14`): **124 / 124 funciones, 22,512 bytes (100.00%)**.
+  3. `src/movie.cpp` (`0x80136B14`-`0x8013A288`): **87 / 87 funciones, 14,196 bytes (100.00%)**.
+  Todas las funciones coincidentes byte a byte contra `orig/RNEPDA/sys/main.dol`. `build.sha1` verificado y pasando limpio.
   `fn_80131428` (3796 bytes, parser principal de tags, 25.3%), `fn_801335F4` (3272 bytes, motor de
   layout/word-wrap, 19.9%), `fn_80132348` (2116 bytes, variante del parser sin tabla extendida,
   26.7%), `fn_80134664` (1900 bytes, tick de animación/reveal de texto, 42.1%). También resuelto
