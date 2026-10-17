@@ -33,6 +33,11 @@ seq.cpp:
 	extabindex  start:0x8001394C end:0x800139DC
 	.text       start:0x8013A288 end:0x8013EED4
 
+seq_cmdeft.cpp:
+	extab       start:0x8000B234 end:0x8000B4E4
+	extabindex  start:0x800139DC end:0x80013DE4
+	.text       start:0x8013EED4 end:0x8015E708
+
 Runtime.PPCEABI.H/global_destructor_chain.c:
 	.text       start:0x80193680 end:0x801936E0
 	.sbss       start:0x8049D8A8 end:0x8049D8AC

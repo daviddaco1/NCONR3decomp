@@ -1185,4 +1185,19 @@ verificado en la sesión completa: **23**.
 - **Resultado:** **16 / 16 funciones matcheadas al 100.00% exacto (19,532 / 19,532 bytes) en el primer intento**.
 - **Game Code Total:** **4 archivos, 257 / 257 funciones, 60,884 / 60,884 bytes (100.00% matched)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
 
+## Fase 16 — Descompilación al 100.00% de `src/seq_cmdeft.cpp` (109 / 109 funciones, 129,076 / 129,076 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad que implementa el conjunto de comandos y secuencias de efectos gráficos y partículas basados en `nw4r::eft` (Nintendo Northwest for Revolution Effects Library), identificada por la aserción en `.rodata:0x8035aecc` (`seq_cmdeft.c`). Contiene 109 rutinas, subcomandos y manejadores de animación de partículas.
+- **Límites de Traducción:**
+  - `extab`: `0x8000B234` - `0x8000B4E4` (86 entradas, 688 bytes)
+  - `extabindex`: `0x800139DC` - `0x80013DE4` (86 entradas, 1,032 bytes)
+  - `.text`: `0x8013EED4` - `0x8015E708` (109 funciones, 129,076 bytes)
+- **Técnicas y Resolución:**
+  - Emisión de `opword` para instrucciones paired-single (`psq_st`, `psq_lx`) extrayendo el opcode hexadecimal directo del ensamblado.
+  - Emisión de `opword` para operaciones sobre registros de condición (`crclr cr1eq`, `cror eq, ...`).
+  - Mapeo de 20 variables en `@sda21` (`lbl_8049...` y `lbl_804A...`) diferenciando escalares `u32`, `float` y `double`, y usando `la` para carga de direcciones.
+  - Supresión de prólogos y epílogos espurios en funciones tail-call (`fn_80141254`, etc.) vía `nofralloc`.
+- **Resultado:** **109 / 109 funciones matcheadas al 100.00% exacto (129,076 / 129,076 bytes) en el primer intento**.
+- **Game Code Total:** **5 archivos, 366 / 366 funciones, 189,960 / 189,960 bytes (100.00% matched)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
 
