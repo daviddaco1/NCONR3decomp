@@ -230,59 +230,62 @@ reverse_byte_loop_3:
 	blr
 }
 
-void __fill_mem(void* dst, int val, u32 n)
+asm void __fill_mem(void* dst, int val, u32 n)
 {
-	u32 v = (u8)val;
-	u32 i;
-
-	((u8*)dst) = ((u8*)dst) - 1;
-
-	if (n >= 32) {
-		i = (~(u32)dst) & 3;
-
-		if (i) {
-			n -= i;
-
-			do
-				*++(((u8*)dst)) = v;
-			while (--i);
-		}
-
-		if (v)
-			v |= v << 24 | v << 16 | v << 8;
-
-		((u32*)dst) = ((u32*)(((u8*)dst) + 1)) - 1;
-
-		i = n >> 5;
-
-		if (i)
-			do {
-				*++(((u32*)dst)) = v;
-				*++(((u32*)dst)) = v;
-				*++(((u32*)dst)) = v;
-				*++(((u32*)dst)) = v;
-				*++(((u32*)dst)) = v;
-				*++(((u32*)dst)) = v;
-				*++(((u32*)dst)) = v;
-				*++(((u32*)dst)) = v;
-			} while (--i);
-
-		i = (n & 31) >> 2;
-
-		if (i)
-			do
-				*++(((u32*)dst)) = v;
-			while (--i);
-
-		((u8*)dst) = ((u8*)(((u32*)dst) + 1)) - 1;
-
-		n &= 3;
-	}
-
-	if (n)
-		do
-			*++(((u8*)dst)) = v;
-		while (--n);
+	cmplwi  r5, 32
+	clrlwi  r7, r4, 24
+	addi    r6, r3, -1
+	blt     lbl_tail
+	not     r0, r6
+	clrlwi. r0, r0, 30
+	beq     lbl_2c
+	subf    r5, r0, r5
+lbl_20:
+	addic.  r0, r0, -1
+	stbu    r7, 1(r6)
+	bne     lbl_20
+lbl_2c:
+	cmpwi   r7, 0
+	beq     lbl_4c
+	slwi    r4, r7, 8
+	slwi    r3, r7, 24
+	slwi    r0, r7, 16
+	or      r4, r7, r4
+	or      r0, r3, r0
+	or      r7, r4, r0
+lbl_4c:
+	srwi.   r0, r5, 5
+	addi    r3, r6, -3
+	beq     lbl_80
+lbl_58:
+	stw     r7, 4(r3)
+	addic.  r0, r0, -1
+	stw     r7, 8(r3)
+	stw     r7, 12(r3)
+	stw     r7, 16(r3)
+	stw     r7, 20(r3)
+	stw     r7, 24(r3)
+	stw     r7, 28(r3)
+	stwu    r7, 32(r3)
+	bne     lbl_58
+lbl_80:
+	rlwinm. r0, r5, 30, 29, 31
+	beq     lbl_94
+lbl_88:
+	addic.  r0, r0, -1
+	stwu    r7, 4(r3)
+	bne     lbl_88
+lbl_94:
+	addi    r6, r3, 3
+	clrlwi  r5, r5, 30
+lbl_tail:
+	cmpwi   r5, 0
+	beqlr
+lbl_a4:
+	addic.  r5, r5, -1
+	stbu    r7, 1(r6)
+	bne     lbl_a4
+	blr
 }
 
 void* memset(void* dst, int val, size_t n)
