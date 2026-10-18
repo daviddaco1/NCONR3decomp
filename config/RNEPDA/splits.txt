@@ -65,6 +65,11 @@ gl_model.cpp:
 	extabindex  start:0x8001547C end:0x80015650
 	.text       start:0x80182FE0 end:0x80186C78
 
+gl_effect.cpp:
+	extab       start:0x8000C52C end:0x8000CB38
+	extabindex  start:0x80015650 end:0x80015BFC
+	.text       start:0x80186C78 end:0x8018D5A8
+
 Runtime.PPCEABI.H/global_destructor_chain.c:
 	.text       start:0x80193680 end:0x801936E0
 	.sbss       start:0x8049D8A8 end:0x8049D8AC

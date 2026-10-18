@@ -395,6 +395,7 @@ config.libs = [
             Object(NonMatching, "sys_task.cpp"),
             Object(NonMatching, "homebutton.cpp"),
             Object(NonMatching, "gl_model.cpp"),
+            Object(NonMatching, "gl_effect.cpp"),
         ],
     },
 ]
