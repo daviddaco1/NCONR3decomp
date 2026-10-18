@@ -14,6 +14,12 @@ Sections:
 	.sbss2      type:bss align:32
 
 tcg_cell.cpp:
+	extab       start:0x8000A9BC end:0x8000AC4C
+	extabindex  start:0x80012E00 end:0x80013178
+	.text       start:0x801272F4 end:0x8012E268
+	.ctors      start:0x803394D4 end:0x803394D8
+
+tcg_list.cpp:
 	extab       start:0x8000AC4C end:0x8000AD74
 	extabindex  start:0x80013178 end:0x80013334
 	.text       start:0x8012E268 end:0x80130100

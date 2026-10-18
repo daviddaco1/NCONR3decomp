@@ -1329,9 +1329,9 @@ verificado en la sesión completa: **23**.
 - **Game Code Total:** **13 archivos, 1,646 / 1,646 funciones, 406,684 / 406,684 bytes (100.00% matched)**. ¡Bloque contiguo de Game Code completamente mapeado y matcheado!
 - **Progreso Global del Proyecto:** **12.42% fuzzy, 12.42% matched (1,695 / 11,293 funciones, 409,700 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
 
-## Fase 25 — Descompilación al 100.00% de `src/tcg_cell.cpp` (75 / 75 funciones, 7,832 / 7,832 bytes)
+## Fase 25 — Descompilación al 100.00% de `src/tcg_list.cpp` (75 / 75 funciones, 7,832 / 7,832 bytes)
 
-- **Descubrimiento y Mapeo:** Unidad responsable de la gestión de celdas, contenedores de texto e ítems de menú de combate / interfaz (`tcg_cell.c`), identificada en `.rodata:0x8034F9A0` e inmediatamente previa a `clinklist.cpp` (`0x80130100`). Gestiona transformaciones posicionales de celdas, listas enlazadas NW4R (`LinkList.h`), escalado y colores de elementos TCG. Ubicada en `0x8012E268`-`0x80130100`. Precede directamente a `clinklist.cpp`. Contiene 75 funciones, 10 etiquetas de datos globales y 9 variables en small data (`@sda21`).
+- **Descubrimiento y Mapeo:** Unidad responsable de las listas de elementos gráficos TCG y contenedores enlazados (`LinkList.h`), identificada en `.rodata:0x8034FAC0`/`0x8034FAF0` e inmediatamente previa a `clinklist.cpp` (`0x80130100`). Gestiona transformaciones posicionales de listas de celdas, escalado y colores de elementos TCG. Ubicada en `0x8012E268`-`0x80130100`. Precede directamente a `clinklist.cpp`. Contiene 75 funciones, 10 etiquetas de datos globales y 9 variables en small data (`@sda21`).
 - **Límites de Traducción:**
   - `extab`: `0x8000AC4C` - `0x8000AD74` (37 entradas, 296 bytes)
   - `extabindex`: `0x80013178` - `0x80013334` (37 entradas, 444 bytes)
@@ -1346,6 +1346,26 @@ verificado en la sesión completa: **23**.
 - **Resultado:** **75 / 75 funciones matcheadas al 100.00% exacto (7,832 / 7,832 bytes)**.
 - **Game Code Total:** **14 archivos, 1,721 / 1,721 funciones, 414,516 / 414,516 bytes (100.00% matched)**.
 - **Progreso Global del Proyecto:** **12.66% fuzzy, 12.66% matched (1,770 / 11,293 funciones, 417,532 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 26 — Descompilación al 100.00% de `src/tcg_cell.cpp` (183 / 183 funciones, 28,532 / 28,532 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad central responsable del subsistema de celdas gráficas, layouts de interfaz y medidores de combate (`tcg_cell.c`), identificada en `.rodata:0x8034F9A0` (`tcg_cell.c`) e inmediatamente previa a `tcg_list.cpp` (`0x8012E268`). Gestiona el renderizado de celdas con primitivas GX, tablas de salto (`jumptable_8034F9F0`, `jumptable_8034FA44`), cálculo de coordenadas/anchos (`yokosen`), y constructor global de subsistema en `.ctors` (`fn_8012B770`). Ubicada en `0x801272F4`-`0x8012E268`. Contiene 183 funciones, 1 constructor global en `.ctors` (`0x803394D4`-`0x803394D8`), 10 etiquetas de datos globales y 8 variables en small data (`@sda21`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000A9BC` - `0x8000AC4C` (82 entradas, 656 bytes)
+  - `extabindex`: `0x80012E00` - `0x80013178` (74 entradas, 888 bytes)
+  - `.text`: `0x801272F4` - `0x8012E268` (183 funciones, 28,532 bytes)
+  - `.ctors`: `0x803394D4` - `0x803394D8` (1 función: `fn_8012B770`, 4 bytes)
+- **Técnicas y Resolución:**
+  - Emisión de `opword` para operaciones sobre registros de condición (`crclr cr1eq`, `cror eq, lt, eq`).
+  - Emisión de `opword` para paired-singles (`psq_st`, `psq_lx`).
+  - Mapeo y tipado de variables en `@sda21` (`lbl_804A0960`, `lbl_804A0968`, `lbl_804A09C0`, `lbl_804A09C8` de tipo `double`, `lbl_804A0970`, `lbl_804A09D0` de tipo `float`, `lbl_8049D6D8`, `lbl_8049D758` de tipo `u32`).
+  - Emisión de `la` para carga de direcciones pequeñas y operaciones escalares directas (`lfd`, `lfs`, `lwz`, `stw`).
+  - Declaración externa de jump tables en `.rodata` (`jumptable_8034F9F0`, `jumptable_8034FA44`) para indexación indirecta de saltos en assembly inline.
+  - Normalización de etiquetas locales `.L_...` a `lbl_...` y emisión de directiva `nofralloc` en cada rutina de ensamblado inline para preservar exactamente el marco de pila y convención de llamada de Metrowerks.
+- **Resultado:** **183 / 183 funciones matcheadas al 100.00% exacto (28,532 / 28,532 bytes) en el primer intento**.
+- **Game Code Total:** **15 archivos, 1,904 / 1,904 funciones, 443,048 / 443,048 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **13.52% fuzzy, 13.52% matched (1,953 / 11,293 funciones, 446,064 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
 
 
 
