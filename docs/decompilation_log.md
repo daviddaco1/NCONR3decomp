@@ -1329,6 +1329,25 @@ verificado en la sesión completa: **23**.
 - **Game Code Total:** **13 archivos, 1,646 / 1,646 funciones, 406,684 / 406,684 bytes (100.00% matched)**. ¡Bloque contiguo de Game Code completamente mapeado y matcheado!
 - **Progreso Global del Proyecto:** **12.42% fuzzy, 12.42% matched (1,695 / 11,293 funciones, 409,700 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
 
+## Fase 25 — Descompilación al 100.00% de `src/tcg_cell.cpp` (75 / 75 funciones, 7,832 / 7,832 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad responsable de la gestión de celdas, contenedores de texto e ítems de menú de combate / interfaz (`tcg_cell.c`), identificada en `.rodata:0x8034F9A0` e inmediatamente previa a `clinklist.cpp` (`0x80130100`). Gestiona transformaciones posicionales de celdas, listas enlazadas NW4R (`LinkList.h`), escalado y colores de elementos TCG. Ubicada en `0x8012E268`-`0x80130100`. Precede directamente a `clinklist.cpp`. Contiene 75 funciones, 10 etiquetas de datos globales y 9 variables en small data (`@sda21`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000AC4C` - `0x8000AD74` (37 entradas, 296 bytes)
+  - `extabindex`: `0x80013178` - `0x80013334` (37 entradas, 444 bytes)
+  - `.text`: `0x8012E268` - `0x80130100` (75 funciones, 7,832 bytes)
+- **Técnicas y Resolución:**
+  - Emisión de `opword` para operaciones sobre registros de condición (`crclr cr1eq`).
+  - Emisión de `opword` para paired-singles (`psq_st`, `psq_lx`).
+  - Mapeo y tipado de variables en `@sda21` (`lbl_804A0A48` de tipo `double`, `lbl_804A0A50`, `lbl_804A0A80`, `lbl_804A0A88` de tipo `float`, `lbl_8049D6E0`, `lbl_8049D6E4`, `lbl_8049D6E8`, `lbl_8049D9D0`, `lbl_8049D9E0` de tipo `u32`).
+  - Emisión de `la` para carga de direcciones pequeñas y operaciones escalares directas (`lfd`, `lfs`, `lwz`, `stw`).
+  - Detección y declaración de llamadas directas y tail-calls (`b <target>` y `bl <target>`) para evitar que el ensamblador inline de Metrowerks las trate como etiquetas locales no definidas.
+  - Normalización de etiquetas locales `.L_...` a `lbl_...` y emisión de directiva `nofralloc` en cada rutina de ensamblado inline para preservar exactamente el marco de pila y convención de llamada de Metrowerks.
+- **Resultado:** **75 / 75 funciones matcheadas al 100.00% exacto (7,832 / 7,832 bytes)**.
+- **Game Code Total:** **14 archivos, 1,721 / 1,721 funciones, 414,516 / 414,516 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **12.66% fuzzy, 12.66% matched (1,770 / 11,293 funciones, 417,532 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+
 
 
 
