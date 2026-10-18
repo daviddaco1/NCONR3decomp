@@ -397,6 +397,7 @@ config.libs = [
             Object(NonMatching, "gl_model.cpp"),
             Object(NonMatching, "gl_effect.cpp"),
             Object(NonMatching, "gl_sound.cpp"),
+            Object(NonMatching, "gauge.cpp"),
         ],
     },
 ]
