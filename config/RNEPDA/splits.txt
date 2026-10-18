@@ -13,6 +13,11 @@ Sections:
 	.sdata2     type:rodata align:4
 	.sbss2      type:bss align:32
 
+n2d_main.cpp:
+	extab       start:0x8000A764 end:0x8000A794
+	extabindex  start:0x80012A7C end:0x80012AC4
+	.text       start:0x80120784 end:0x80122394
+
 tcg_main.cpp:
 	extab       start:0x8000A794 end:0x8000A9BC
 	extabindex  start:0x80012AC4 end:0x80012E00

@@ -1,0 +1,2121 @@
+#include "types.h"
+
+// Translation unit: src/n2d_main.cpp
+// Total functions: 24
+
+// Small Data symbols (@sda21)
+extern "C" u32 lbl_8049D6C0;
+extern "C" u32 lbl_8049D6C4;
+extern "C" u32 lbl_8049D6C8;
+extern "C" u32 lbl_8049D6CC;
+extern "C" u32 lbl_8049E180;
+extern "C" float lbl_804A08E8;
+
+// Global data symbols (@ha/@l)
+extern "C" u8 jumptable_8034EBA8[];
+extern "C" u8 lbl_8034F470[];
+extern "C" u8 lbl_8034F540[];
+extern "C" u8 lbl_8034F560[];
+extern "C" u8 lbl_8034F5A0[];
+extern "C" u8 lbl_80390580[];
+extern "C" u8 lbl_803C1A40[];
+
+// Forward declarations
+extern "C" void DCFlushRange();
+extern "C" void DCInvalidateRange();
+extern "C" void _restgpr_24();
+extern "C" void _restgpr_25();
+extern "C" void _savegpr_24();
+extern "C" void _savegpr_25();
+extern "C" void fn_80018B0C();
+extern "C" void fn_80019D1C();
+extern "C" void fn_80019DAC();
+extern "C" void fn_8008396C();
+extern "C" void fn_80120784();
+extern "C" void fn_80121D4C();
+extern "C" void fn_80121D98();
+extern "C" void fn_80121DAC();
+extern "C" void fn_801220B4();
+extern "C" void fn_8012212C();
+extern "C" void fn_80122138();
+extern "C" void fn_80122168();
+extern "C" void fn_80122174();
+extern "C" void fn_80122188();
+extern "C" void fn_801221C0();
+extern "C" void fn_801221D8();
+extern "C" void fn_801221F8();
+extern "C" void fn_80122240();
+extern "C" void fn_80122254();
+extern "C" void fn_8012225C();
+extern "C" void fn_8012226C();
+extern "C" void fn_80122274();
+extern "C" void fn_80122278();
+extern "C" void fn_801222B4();
+extern "C" void fn_801222BC();
+extern "C" void fn_801222C4();
+extern "C" void fn_801222CC();
+extern "C" void fn_80122330();
+extern "C" void fn_80170DFC();
+extern "C" void fn_801A9384();
+extern "C" void fn_802DD0D0();
+extern "C" void fn_802DD0E8();
+extern "C" void fn_802DD0F8();
+extern "C" void fn_802DD210();
+extern "C" void fn_802DD228();
+extern "C" void fn_802DD804();
+extern "C" void fn_802DDE28();
+extern "C" void fn_802DE02C();
+extern "C" void fn_802E5314();
+extern "C" void fn_803150C4();
+
+// ----------------------------------------------------------------------------
+// fn_80120784
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_80120784() {
+    nofralloc
+    stwu r1, -0x40(r1)
+    mflr r0
+    stw r0, 0x44(r1)
+    addi r11, r1, 0x40
+    bl _savegpr_24
+    mr r27, r3
+    mr r28, r4
+    mr r29, r5
+    mr r30, r6
+    lwz r7, 0x4c(r1)
+    lwz r31, 0x3d8(r3)
+    subi r6, r7, 0x3e8
+    cmpwi r6, 0xa
+    bge lbl_80121D34
+    lwz r0, 0x18(r3)
+    cmplwi r0, 0x30
+    bgt lbl_80121D34
+    lis r5, jumptable_8034EBA8@ha
+    addi r5, r5, jumptable_8034EBA8@l
+    slwi r0, r0, 2
+    lwzx r5, r5, r0
+    mtctr r5
+    bctr
+    cmpwi r6, 0x0
+    beq lbl_801207F4
+    cmpwi r6, 0x2
+    beq lbl_80120890
+    b lbl_80121D34
+lbl_801207F4:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    cmpwi r31, 0x0
+    beq lbl_80120830
+    cmpwi r31, 0x1
+    beq lbl_8012083C
+    cmpwi r31, 0x2
+    beq lbl_80120848
+    b lbl_80120854
+lbl_80120830:
+    li r0, 0x1
+    stw r0, 0x134(r24)
+    b lbl_8012085C
+lbl_8012083C:
+    li r0, 0x2
+    stw r0, 0x134(r24)
+    b lbl_8012085C
+lbl_80120848:
+    li r0, 0x3
+    stw r0, 0x134(r24)
+    b lbl_8012085C
+lbl_80120854:
+    li r0, 0x1
+    stw r0, 0x134(r24)
+lbl_8012085C:
+    lis r3, lbl_803C1A40@ha
+    addi r3, r3, lbl_803C1A40@l
+    stw r28, 0x338(r3)
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0x12
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_80120890:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    stw r28, 0x338(r24)
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0x14
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    beq lbl_801208F0
+    cmpwi r6, 0x1
+    beq lbl_80120920
+    b lbl_80121D34
+lbl_801208F0:
+    lis r5, lbl_803C1A40@ha
+    addi r5, r5, lbl_803C1A40@l
+    stw r4, 0x334(r5)
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0x9
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_80120920:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    cmpwi r31, 0x0
+    beq lbl_8012095C
+    cmpwi r31, 0x1
+    beq lbl_80120968
+    cmpwi r31, 0x2
+    beq lbl_80120974
+    b lbl_80120980
+lbl_8012095C:
+    li r0, 0x1
+    stw r0, 0x134(r24)
+    b lbl_80120988
+lbl_80120968:
+    li r0, 0x2
+    stw r0, 0x134(r24)
+    b lbl_80120988
+lbl_80120974:
+    li r0, 0x3
+    stw r0, 0x134(r24)
+    b lbl_80120988
+lbl_80120980:
+    li r0, 0x1
+    stw r0, 0x134(r24)
+lbl_80120988:
+    lis r3, lbl_803C1A40@ha
+    addi r3, r3, lbl_803C1A40@l
+    stw r28, 0x338(r3)
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0xd
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    bne lbl_80121D34
+    lis r3, lbl_803C1A40@ha
+    addi r25, r3, lbl_803C1A40@l
+    addi r3, r25, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r25, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    li r0, 0xa
+    stw r0, 0x130(r25)
+    li r0, 0x3
+    stw r0, 0x134(r25)
+    stw r28, 0x338(r25)
+    mr r3, r27
+    li r4, 0x0
+    li r5, 0x0
+    lis r24, 0x1
+    addi r6, r24, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    addi r3, r25, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r25, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    stw r28, 0x338(r25)
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0x4
+    addi r6, r24, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    bne lbl_80121D34
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    stw r28, 0x338(r24)
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0xc
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    beq lbl_80120ABC
+    cmpwi r6, 0x1
+    beq lbl_80120B08
+    b lbl_80121D34
+lbl_80120ABC:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    stw r28, 0x338(r24)
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0x3
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_80120B08:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    stw r28, 0x338(r24)
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0x11
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    beq lbl_80120B80
+    cmpwi r6, 0x1
+    beq lbl_80120BDC
+    cmpwi r6, 0x2
+    beq lbl_80120C0C
+    cmpwi r6, 0x3
+    beq lbl_80120C3C
+    cmpwi r6, 0x4
+    beq lbl_80120C84
+    b lbl_80121D34
+lbl_80120B80:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    li r0, 0xa
+    stw r0, 0x130(r24)
+    li r0, 0x3
+    stw r0, 0x134(r24)
+    stw r28, 0x338(r24)
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0x0
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_80120BDC:
+    lis r5, lbl_803C1A40@ha
+    addi r5, r5, lbl_803C1A40@l
+    stw r4, 0x334(r5)
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0x3
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_80120C0C:
+    lis r5, lbl_803C1A40@ha
+    addi r5, r5, lbl_803C1A40@l
+    stw r4, 0x334(r5)
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0x1
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_80120C3C:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0xb
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_80120C84:
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0xd
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    beq lbl_80120CBC
+    cmpwi r6, 0x1
+    beq lbl_80120CEC
+    b lbl_80121D34
+lbl_80120CBC:
+    lis r5, lbl_803C1A40@ha
+    addi r5, r5, lbl_803C1A40@l
+    stw r4, 0x334(r5)
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0x3
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_80120CEC:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    li r0, 0xa
+    stw r0, 0x130(r24)
+    cmpwi r31, 0x0
+    beq lbl_80120D30
+    cmpwi r31, 0x1
+    beq lbl_80120D3C
+    cmpwi r31, 0x2
+    beq lbl_80120D48
+    b lbl_80120D54
+lbl_80120D30:
+    li r0, 0x1
+    stw r0, 0x134(r24)
+    b lbl_80120D5C
+lbl_80120D3C:
+    li r0, 0x2
+    stw r0, 0x134(r24)
+    b lbl_80120D5C
+lbl_80120D48:
+    li r0, 0x3
+    stw r0, 0x134(r24)
+    b lbl_80120D5C
+lbl_80120D54:
+    li r0, 0x1
+    stw r0, 0x134(r24)
+lbl_80120D5C:
+    li r0, 0x0
+    lis r3, lbl_803C1A40@ha
+    addi r3, r3, lbl_803C1A40@l
+    stw r0, 0x138(r3)
+    stw r28, 0x338(r3)
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0x7
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    beq lbl_80120DB4
+    cmpwi r6, 0x1
+    beq lbl_80120EF8
+    cmpwi r6, 0x2
+    beq lbl_80120F20
+    b lbl_80121D34
+lbl_80120DB4:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    li r0, 0xa
+    stw r0, 0x130(r24)
+    cmpwi r31, 0x0
+    beq lbl_80120DF8
+    cmpwi r31, 0x1
+    beq lbl_80120E04
+    cmpwi r31, 0x2
+    beq lbl_80120E10
+    b lbl_80120E1C
+lbl_80120DF8:
+    li r0, 0x1
+    stw r0, 0x134(r24)
+    b lbl_80120E24
+lbl_80120E04:
+    li r0, 0x2
+    stw r0, 0x134(r24)
+    b lbl_80120E24
+lbl_80120E10:
+    li r0, 0x3
+    stw r0, 0x134(r24)
+    b lbl_80120E24
+lbl_80120E1C:
+    li r0, 0x1
+    stw r0, 0x134(r24)
+lbl_80120E24:
+    li r0, 0x0
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    stw r0, 0x138(r24)
+    stw r28, 0x338(r24)
+    mr r3, r27
+    li r4, 0x0
+    li r5, 0x2
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    li r0, 0xa
+    stw r0, 0x130(r24)
+    cmpwi r31, 0x0
+    beq lbl_80120E90
+    cmpwi r31, 0x1
+    beq lbl_80120E9C
+    cmpwi r31, 0x2
+    beq lbl_80120EA8
+    b lbl_80120EB4
+lbl_80120E90:
+    li r0, 0x1
+    stw r0, 0x134(r24)
+    b lbl_80120EBC
+lbl_80120E9C:
+    li r0, 0x2
+    stw r0, 0x134(r24)
+    b lbl_80120EBC
+lbl_80120EA8:
+    li r0, 0x3
+    stw r0, 0x134(r24)
+    b lbl_80120EBC
+lbl_80120EB4:
+    li r0, 0x1
+    stw r0, 0x134(r24)
+lbl_80120EBC:
+    li r0, 0x0
+    lis r3, lbl_803C1A40@ha
+    addi r3, r3, lbl_803C1A40@l
+    stw r0, 0x138(r3)
+    stw r28, 0x338(r3)
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0x0
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_80120EF8:
+    mr r3, r28
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0x3
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_80120F20:
+    lis r5, lbl_803C1A40@ha
+    addi r5, r5, lbl_803C1A40@l
+    stw r4, 0x334(r5)
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0x5
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    beq lbl_80120F64
+    cmpwi r6, 0x1
+    beq lbl_80120FB0
+    b lbl_80121D34
+lbl_80120F64:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    stw r28, 0x338(r24)
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0xb
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_80120FB0:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    stw r28, 0x338(r24)
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0x13
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    bne lbl_80121D34
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    stw r28, 0x338(r24)
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0xc
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    beq lbl_8012107C
+    cmpwi r6, 0x1
+    beq lbl_801210C4
+    cmpwi r6, 0x2
+    beq lbl_80121168
+    cmpwi r6, 0x3
+    beq lbl_801211B0
+    cmpwi r6, 0x4
+    beq lbl_801211FC
+    b lbl_80121D34
+lbl_8012107C:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0x2
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_801210C4:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    li r0, 0xa
+    stw r0, 0x130(r24)
+    cmpwi r31, 0x0
+    beq lbl_80121108
+    cmpwi r31, 0x1
+    beq lbl_80121114
+    cmpwi r31, 0x2
+    beq lbl_80121120
+    b lbl_8012112C
+lbl_80121108:
+    li r0, 0x1
+    stw r0, 0x134(r24)
+    b lbl_80121134
+lbl_80121114:
+    li r0, 0x2
+    stw r0, 0x134(r24)
+    b lbl_80121134
+lbl_80121120:
+    li r0, 0x3
+    stw r0, 0x134(r24)
+    b lbl_80121134
+lbl_8012112C:
+    li r0, 0x1
+    stw r0, 0x134(r24)
+lbl_80121134:
+    lis r3, lbl_803C1A40@ha
+    addi r3, r3, lbl_803C1A40@l
+    stw r28, 0x338(r3)
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0xc
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_80121168:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0xd
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_801211B0:
+    lis r4, lbl_803C1A40@ha
+    addi r24, r4, lbl_803C1A40@l
+    stw r3, 0x334(r24)
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0xe
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_801211FC:
+    lis r4, lbl_803C1A40@ha
+    addi r24, r4, lbl_803C1A40@l
+    stw r3, 0x334(r24)
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0x8
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    beq lbl_8012125C
+    cmpwi r6, 0x1
+    beq lbl_801212A4
+    b lbl_80121D34
+lbl_8012125C:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0x2
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_801212A4:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0x11
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    beq lbl_80121300
+    cmpwi r6, 0x1
+    beq lbl_80121348
+    b lbl_80121D34
+lbl_80121300:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0x5
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_80121348:
+    lis r4, lbl_803C1A40@ha
+    addi r24, r4, lbl_803C1A40@l
+    stw r3, 0x334(r24)
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0x1a
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    beq lbl_801213A8
+    cmpwi r6, 0x1
+    beq lbl_801213F0
+    b lbl_80121D34
+lbl_801213A8:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0x5
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_801213F0:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0x15
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    blt lbl_80121448
+    cmpwi r6, 0x1
+    ble lbl_80121458
+lbl_80121448:
+    subi r0, r7, 0x3e8
+    cmpwi r0, 0x2
+    beq lbl_801214A0
+    b lbl_80121D34
+lbl_80121458:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0x9
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_801214A0:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0x1d
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    bne lbl_80121D34
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0x3
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    beq lbl_8012154C
+    cmpwi r6, 0x1
+    beq lbl_80121598
+    b lbl_80121D34
+lbl_8012154C:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    stw r28, 0x338(r24)
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0xc
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_80121598:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    stw r28, 0x338(r24)
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0xd
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    beq lbl_80121600
+    cmpwi r6, 0x1
+    beq lbl_80121648
+    cmpwi r6, 0x2
+    beq lbl_80121690
+    b lbl_80121D34
+lbl_80121600:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0x3
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_80121648:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0x4
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_80121690:
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    li r0, 0x1
+    stw r0, 0x138(r24)
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0x5
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    bne lbl_80121D34
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0x4
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    bne lbl_80121D34
+    lis r3, lbl_803C1A40@ha
+    addi r24, r3, lbl_803C1A40@l
+    stw r4, 0x334(r24)
+    la r25, lbl_804A08E8
+    lfs f0, 0x8(r25)
+    stfs f0, 0x230(r24)
+    lfs f1, 0x4(r25)
+    stfs f1, 0x234(r24)
+    addi r3, r1, 0x8
+    fmr f2, f1
+    fmr f3, f1
+    bl fn_80018B0C
+    addi r3, r24, 0x5b0
+    addi r4, r1, 0x8
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0x9
+    lis r26, 0x1
+    addi r6, r26, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    lfs f0, lbl_804A08E8
+    stfs f0, 0x230(r24)
+    addi r3, r1, 0x8
+    lfs f1, 0xc(r25)
+    lfs f2, 0x4(r25)
+    fmr f3, f2
+    bl fn_80018B0C
+    addi r3, r24, 0x5b0
+    addi r4, r1, 0x8
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0x9
+    addi r6, r26, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    lfs f0, lbl_804A08E8
+    stfs f0, 0x230(r24)
+    addi r3, r1, 0x8
+    lfs f1, 0x10(r25)
+    lfs f2, 0x4(r25)
+    fmr f3, f2
+    bl fn_80018B0C
+    addi r3, r24, 0x5b0
+    addi r4, r1, 0x8
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0x9
+    addi r6, r26, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    lfs f0, 0x14(r25)
+    stfs f0, 0x230(r24)
+    li r0, 0x14
+    stw r0, 0x13c(r24)
+    addi r3, r1, 0x8
+    lfs f1, 0x4(r25)
+    fmr f2, f1
+    fmr f3, f1
+    bl fn_80018B0C
+    addi r3, r24, 0x5b0
+    addi r4, r1, 0x8
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0xa
+    addi r6, r26, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    lfs f0, 0x14(r25)
+    stfs f0, 0x230(r24)
+    li r0, 0x2d
+    stw r0, 0x13c(r24)
+    addi r3, r1, 0x8
+    lfs f1, 0x4(r25)
+    fmr f2, f1
+    fmr f3, f1
+    bl fn_80018B0C
+    addi r3, r24, 0x5b0
+    addi r4, r1, 0x8
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0xa
+    addi r6, r26, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    addi r3, r24, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r24, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    li r0, 0xa
+    stw r0, 0x130(r24)
+    cmpwi r31, 0x0
+    beq lbl_80121904
+    cmpwi r31, 0x1
+    beq lbl_80121910
+    cmpwi r31, 0x2
+    beq lbl_8012191C
+    b lbl_80121928
+lbl_80121904:
+    li r0, 0x1
+    stw r0, 0x134(r24)
+    b lbl_80121930
+lbl_80121910:
+    li r0, 0x2
+    stw r0, 0x134(r24)
+    b lbl_80121930
+lbl_8012191C:
+    li r0, 0x3
+    stw r0, 0x134(r24)
+    b lbl_80121930
+lbl_80121928:
+    li r0, 0x1
+    stw r0, 0x134(r24)
+lbl_80121930:
+    li r0, 0x0
+    lis r3, lbl_803C1A40@ha
+    addi r3, r3, lbl_803C1A40@l
+    stw r0, 0x138(r3)
+    stw r28, 0x338(r3)
+    mr r3, r27
+    li r4, 0x0
+    li r5, 0x1
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    beq lbl_80121978
+    cmpwi r6, 0x1
+    beq lbl_801219C8
+    b lbl_80121D34
+lbl_80121978:
+    lis r3, lbl_803C1A40@ha
+    addi r28, r3, lbl_803C1A40@l
+    addi r3, r28, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r28, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    li r0, 0x0
+    stw r0, 0x13c(r28)
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0x2
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_801219C8:
+    lis r3, lbl_803C1A40@ha
+    addi r28, r3, lbl_803C1A40@l
+    addi r3, r28, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r28, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    li r0, 0x1
+    stw r0, 0x13c(r28)
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0x2
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    beq lbl_80121A2C
+    cmpwi r6, 0x1
+    beq lbl_80121A74
+    b lbl_80121D34
+lbl_80121A2C:
+    lis r3, lbl_803C1A40@ha
+    addi r31, r3, lbl_803C1A40@l
+    addi r3, r31, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r31, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0x6
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_80121A74:
+    lis r3, lbl_803C1A40@ha
+    addi r31, r3, lbl_803C1A40@l
+    addi r3, r31, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r31, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0xf
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    bne lbl_80121D34
+    lis r3, lbl_803C1A40@ha
+    addi r28, r3, lbl_803C1A40@l
+    addi r3, r28, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r28, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0xb
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    bne lbl_80121D34
+    lis r3, lbl_803C1A40@ha
+    addi r28, r3, lbl_803C1A40@l
+    addi r3, r28, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r28, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0x2
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    bne lbl_80121D34
+    lis r3, lbl_803C1A40@ha
+    addi r28, r3, lbl_803C1A40@l
+    addi r3, r28, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r28, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0xd
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    bne lbl_80121D34
+    lis r3, lbl_803C1A40@ha
+    addi r31, r3, lbl_803C1A40@l
+    addi r3, r31, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r31, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0x1
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    beq lbl_80121C18
+    cmpwi r6, 0x1
+    beq lbl_80121C60
+    cmpwi r6, 0x2
+    beq lbl_80121CA8
+    b lbl_80121D34
+lbl_80121C18:
+    lis r3, lbl_803C1A40@ha
+    addi r31, r3, lbl_803C1A40@l
+    addi r3, r31, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r31, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0x4
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_80121C60:
+    lis r3, lbl_803C1A40@ha
+    addi r31, r3, lbl_803C1A40@l
+    addi r3, r31, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r31, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0x5
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+lbl_80121CA8:
+    lis r3, lbl_803C1A40@ha
+    addi r3, r3, lbl_803C1A40@l
+    addi r3, r3, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r28
+    li r5, 0x8
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+    b lbl_80121D34
+    cmpwi r6, 0x0
+    bne lbl_80121D34
+    lis r3, lbl_803C1A40@ha
+    addi r31, r3, lbl_803C1A40@l
+    addi r3, r31, 0x5b0
+    mr r4, r29
+    bl fn_80019DAC
+    addi r3, r31, 0x5c0
+    mr r4, r30
+    bl fn_80019DAC
+    stw r28, 0x338(r31)
+    mr r3, r27
+    bl fn_80019D1C
+    mr r4, r3
+    mr r3, r27
+    li r5, 0x5
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    bl fn_8008396C
+lbl_80121D34:
+    addi r11, r1, 0x40
+    bl _restgpr_24
+    lwz r0, 0x44(r1)
+    mtlr r0
+    addi r1, r1, 0x40
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_80121D4C
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_80121D4C() {
+    nofralloc
+    lwz r4, 0xc(r1)
+    subi r5, r4, 0x321
+    cmpwi r5, 0xc7
+    bgelr
+    lis r4, lbl_80390580@ha
+    addi r4, r4, lbl_80390580@l
+    lwz r4, 0xc(r4)
+    lwz r0, 0x28(r4)
+    cmpwi r0, 0x6
+    bnelr
+    cmpwi r5, 0x0
+    bnelr
+    li r4, 0xa
+    li r5, 0x4
+    lis r6, 0x1
+    addi r6, r6, -0x8000
+    li r7, 0x1
+    b fn_8008396C
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_80121D98
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_80121D98() {
+    nofralloc
+    slwi r0, r3, 2
+    lis r3, lbl_8034F470@ha
+    addi r3, r3, lbl_8034F470@l
+    lfsx f1, r3, r0
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_80121DAC
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_80121DAC() {
+    nofralloc
+    stwu r1, -0x30(r1)
+    mflr r0
+    stw r0, 0x34(r1)
+    addi r11, r1, 0x30
+    bl _savegpr_25
+    mr r25, r3
+    lwz r0, lbl_8049D6C0
+    cmpwi r0, 0x0
+    beq lbl_80121DE8
+    lis r3, lbl_8034F5A0@ha
+    addi r3, r3, lbl_8034F5A0@l
+    li r4, 0x3e
+    addi r5, r3, 0xb
+    opword 0x4CC63182
+    bl fn_801A9384
+lbl_80121DE8:
+    cmpwi r25, 0x0
+    bne lbl_80121E08
+    lis r3, lbl_8034F5A0@ha
+    addi r3, r3, lbl_8034F5A0@l
+    li r4, 0x3f
+    addi r5, r3, 0x2d
+    opword 0x4CC63182
+    bl fn_801A9384
+lbl_80121E08:
+    mulli r26, r25, 0xa0
+    slwi r0, r25, 7
+    add r3, r26, r0
+    bl fn_80170DFC
+    stw r3, lbl_8049D6C0
+    cmpwi r3, 0x0
+    bne lbl_80121E3C
+    lis r3, lbl_8034F5A0@ha
+    addi r3, r3, lbl_8034F5A0@l
+    li r4, 0x45
+    addi r5, r3, 0x43
+    opword 0x4CC63182
+    bl fn_801A9384
+lbl_80121E3C:
+    lwz r0, lbl_8049D6C0
+    add r0, r0, r26
+    stw r0, lbl_8049D6C4
+    stw r25, lbl_8049D6C8
+    bl fn_8012212C
+    li r29, 0x0
+    li r27, 0x0
+    li r26, 0x0
+    lis r30, lbl_8034F540@ha
+    lis r31, lbl_8034F560@ha
+    b lbl_80122090
+lbl_80121E68:
+    lwz r0, lbl_8049D6C0
+    add r3, r0, r27
+    li r4, 0x60
+    bl DCInvalidateRange
+    lwz r0, lbl_8049D6C0
+    add r4, r0, r27
+    addi r3, r4, 0x74
+    li r5, 0x60
+    bl fn_802DD0D0
+    lwz r0, lbl_8049D6C0
+    add r3, r0, r27
+    addi r3, r3, 0x74
+    bl fn_80122254
+    bl fn_80122240
+    addi r3, r30, lbl_8034F540@l
+    bl fn_802DD228
+    li r3, 0x0
+    addi r4, r31, lbl_8034F560@l
+    bl fn_802DD804
+    bl fn_80122240
+    addi r4, r3, 0x2
+    lwz r0, lbl_8049D6C0
+    add r3, r0, r27
+    stw r4, 0x68(r3)
+    li r3, 0x9
+    li r4, 0x0
+    li r5, 0xc
+    bl fn_802DDE28
+    bl fn_80122240
+    addi r4, r3, 0x2
+    lwz r0, lbl_8049D6C0
+    add r3, r0, r27
+    stw r4, 0x6c(r3)
+    li r3, 0xb
+    li r4, 0x0
+    li r5, 0x4
+    bl fn_802DDE28
+    bl fn_80122240
+    addi r4, r3, 0x2
+    lwz r0, lbl_8049D6C0
+    add r3, r0, r27
+    stw r4, 0x70(r3)
+    li r3, 0xd
+    li r4, 0x0
+    li r5, 0x8
+    bl fn_802DDE28
+    li r3, 0x80
+    li r4, 0x0
+    li r5, 0x4
+    bl fn_80122278
+    li r3, 0x0
+    bl fn_801222C4
+    li r3, 0x0
+    bl fn_801222BC
+    li r3, 0x0
+    bl fn_801222B4
+    li r3, 0x1
+    bl fn_801222C4
+    li r3, 0x1
+    bl fn_801222BC
+    li r3, 0x1
+    bl fn_801222B4
+    li r3, 0x2
+    bl fn_801222C4
+    li r3, 0x2
+    bl fn_801222BC
+    li r3, 0x2
+    bl fn_801222B4
+    li r3, 0x3
+    bl fn_801222C4
+    li r3, 0x3
+    bl fn_801222BC
+    li r3, 0x3
+    bl fn_801222B4
+    bl fn_80122274
+    bl fn_802DD0F8
+    bl fn_802DD0E8
+    li r3, 0x0
+    bl fn_80122254
+    lwz r0, lbl_8049D6C4
+    add r4, r0, r26
+    lwz r0, lbl_8049D6C0
+    add r3, r0, r27
+    stw r4, 0x60(r3)
+    lwz r0, lbl_8049D6C0
+    add r3, r0, r27
+    addi r3, r3, 0x74
+    bl fn_80122254
+    bl fn_80122240
+    mr r28, r3
+    lwz r0, lbl_8049D6C0
+    add r3, r0, r27
+    lwz r3, 0x68(r3)
+    bl fn_80122174
+    bl fn_80122168
+    mr r25, r3
+    lwz r0, lbl_8049D6C0
+    add r3, r0, r27
+    lwz r3, 0x60(r3)
+    addi r3, r3, 0x40
+    bl fn_802DE02C
+    mr r3, r25
+    li r4, 0x4
+    bl fn_803150C4
+    lwz r0, lbl_8049D6C0
+    add r3, r0, r27
+    lwz r3, 0x6c(r3)
+    bl fn_80122174
+    bl fn_80122168
+    mr r25, r3
+    lwz r0, lbl_8049D6C0
+    add r3, r0, r27
+    lwz r3, 0x60(r3)
+    addi r3, r3, 0x20
+    bl fn_802DE02C
+    mr r3, r25
+    li r4, 0x4
+    bl fn_803150C4
+    lwz r0, lbl_8049D6C0
+    add r3, r0, r27
+    lwz r3, 0x70(r3)
+    bl fn_80122174
+    bl fn_80122168
+    mr r25, r3
+    lwz r0, lbl_8049D6C0
+    add r3, r0, r27
+    lwz r3, 0x60(r3)
+    bl fn_802DE02C
+    mr r3, r25
+    li r4, 0x4
+    bl fn_803150C4
+    mr r3, r28
+    bl fn_80122174
+    li r3, 0x0
+    bl fn_80122254
+    addi r29, r29, 0x1
+    addi r27, r27, 0xa0
+    addi r26, r26, 0x80
+lbl_80122090:
+    lwz r0, lbl_8049D6C8
+    cmplw r29, r0
+    blt lbl_80121E68
+    addi r11, r1, 0x30
+    bl _restgpr_25
+    lwz r0, 0x34(r1)
+    mtlr r0
+    addi r1, r1, 0x30
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_801220B4
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_801220B4() {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    stw r0, 0x14(r1)
+    stw r31, 0xc(r1)
+    stw r30, 0x8(r1)
+    mr r30, r3
+    cmpwi r3, 0x0
+    bne lbl_801220EC
+    lis r3, lbl_8034F5A0@ha
+    addi r3, r3, lbl_8034F5A0@l
+    li r4, 0xa6
+    addi r5, r3, 0x53
+    opword 0x4CC63182
+    bl fn_801A9384
+lbl_801220EC:
+    lwz r3, 0x60(r30)
+    li r4, 0x80
+    bl DCFlushRange
+    addi r3, r30, 0x74
+    bl fn_8012225C
+    mr r31, r3
+    addi r3, r30, 0x74
+    bl fn_8012226C
+    mr r4, r31
+    bl fn_802E5314
+    lwz r31, 0xc(r1)
+    lwz r30, 0x8(r1)
+    lwz r0, 0x14(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_8012212C
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_8012212C() {
+    nofralloc
+    li r0, 0x0
+    stw r0, lbl_8049D6CC
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_80122138
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_80122138() {
+    nofralloc
+    lwz r4, lbl_8049D6CC
+    lwz r0, lbl_8049D6C8
+    cmplw r4, r0
+    blt lbl_80122150
+    li r3, 0x0
+    blr
+lbl_80122150:
+    addi r0, r4, 0x1
+    stw r0, lbl_8049D6CC
+    lwz r3, lbl_8049D6C0
+    mulli r0, r4, 0xa0
+    add r3, r3, r0
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_80122168
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_80122168() {
+    nofralloc
+    lwz r3, lbl_8049E180
+    lwz r3, 0x8(r3)
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_80122174
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_80122174() {
+    nofralloc
+    lwz r4, lbl_8049E180
+    lwz r0, 0x0(r4)
+    add r0, r0, r3
+    stw r0, 0x8(r4)
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_80122188
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_80122188() {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    stw r0, 0x14(r1)
+    stw r31, 0xc(r1)
+    mr r31, r3
+    li r3, 0x1
+    bl fn_801221D8
+    clrlwi r3, r31, 24
+    bl fn_801221C0
+    lwz r31, 0xc(r1)
+    lwz r0, 0x14(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_801221C0
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_801221C0() {
+    nofralloc
+    lwz r5, lbl_8049E180
+    lwz r4, 0x8(r5)
+    stb r3, 0x0(r4)
+    addi r0, r4, 0x1
+    stw r0, 0x8(r5)
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_801221D8
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_801221D8() {
+    nofralloc
+    lwz r4, lbl_8049E180
+    lwz r0, 0x8(r4)
+    add r3, r0, r3
+    lwz r0, 0xc(r4)
+    cmplw r3, r0
+    blelr
+    b fn_802DD210
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_801221F8
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_801221F8() {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    stw r0, 0x14(r1)
+    stw r31, 0xc(r1)
+    mr r31, r3
+    li r3, 0x2
+    bl fn_801221D8
+    clrlwi r0, r31, 16
+    srawi r0, r0, 8
+    clrlwi r3, r0, 24
+    bl fn_801221C0
+    clrlwi r3, r31, 24
+    bl fn_801221C0
+    lwz r31, 0xc(r1)
+    lwz r0, 0x14(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_80122240
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_80122240() {
+    nofralloc
+    lwz r4, lbl_8049E180
+    lwz r3, 0x0(r4)
+    lwz r0, 0x8(r4)
+    subf r3, r3, r0
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_80122254
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_80122254() {
+    nofralloc
+    stw r3, lbl_8049E180
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_8012225C
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_8012225C() {
+    nofralloc
+    lwz r4, 0x0(r3)
+    lwz r0, 0x8(r3)
+    subf r3, r4, r0
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_8012226C
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_8012226C() {
+    nofralloc
+    lwz r3, 0x0(r3)
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_80122274
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_80122274() {
+    nofralloc
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_80122278
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_80122278() {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    stw r0, 0x14(r1)
+    stw r31, 0xc(r1)
+    mr r31, r5
+    or r0, r4, r3
+    clrlwi r3, r0, 24
+    bl fn_80122188
+    clrlwi r3, r31, 16
+    bl fn_801221F8
+    lwz r31, 0xc(r1)
+    lwz r0, 0x14(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_801222B4
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_801222B4() {
+    nofralloc
+    clrlwi r3, r3, 24
+    b fn_80122188
+}
+
+// ----------------------------------------------------------------------------
+// fn_801222BC
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_801222BC() {
+    nofralloc
+    clrlwi r3, r3, 24
+    b fn_80122188
+}
+
+// ----------------------------------------------------------------------------
+// fn_801222C4
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_801222C4() {
+    nofralloc
+    clrlwi r3, r3, 24
+    b fn_80122188
+}
+
+// ----------------------------------------------------------------------------
+// fn_801222CC
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_801222CC() {
+    nofralloc
+    lfs f0, 0x0(r4)
+    stfs f0, 0x0(r3)
+    lfs f0, 0x4(r4)
+    stfs f0, 0x4(r3)
+    lfs f0, 0x8(r4)
+    stfs f0, 0x8(r3)
+    lfs f0, 0x10(r4)
+    stfs f0, 0x10(r3)
+    lfs f0, 0x14(r4)
+    stfs f0, 0x14(r3)
+    lfs f0, 0x18(r4)
+    stfs f0, 0x18(r3)
+    lfs f0, 0x20(r4)
+    stfs f0, 0x20(r3)
+    lfs f0, 0x24(r4)
+    stfs f0, 0x24(r3)
+    lfs f0, 0x28(r4)
+    stfs f0, 0x28(r3)
+    lfs f0, 0xc(r4)
+    stfs f0, 0x30(r3)
+    lfs f0, 0x1c(r4)
+    stfs f0, 0x34(r3)
+    lfs f0, 0x2c(r4)
+    stfs f0, 0x38(r3)
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_80122330
+// ----------------------------------------------------------------------------
+extern "C" asm void fn_80122330() {
+    nofralloc
+    lfs f0, 0x0(r4)
+    stfs f0, 0x0(r3)
+    lfs f0, 0x4(r4)
+    stfs f0, 0x4(r3)
+    lfs f0, 0x8(r4)
+    stfs f0, 0x8(r3)
+    lfs f0, 0x10(r4)
+    stfs f0, 0x10(r3)
+    lfs f0, 0x14(r4)
+    stfs f0, 0x14(r3)
+    lfs f0, 0x18(r4)
+    stfs f0, 0x18(r3)
+    lfs f0, 0x20(r4)
+    stfs f0, 0x20(r3)
+    lfs f0, 0x24(r4)
+    stfs f0, 0x24(r3)
+    lfs f0, 0x28(r4)
+    stfs f0, 0x28(r3)
+    lfs f0, 0x30(r4)
+    stfs f0, 0xc(r3)
+    lfs f0, 0x34(r4)
+    stfs f0, 0x1c(r3)
+    lfs f0, 0x38(r4)
+    stfs f0, 0x2c(r3)
+    blr
+}
+

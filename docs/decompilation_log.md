@@ -1384,6 +1384,23 @@ verificado en la sesión completa: **23**.
 - **Game Code Total:** **16 archivos, 2,002 / 2,002 funciones, 463,368 / 463,368 bytes (100.00% matched)**. ¡Superada la barrera de 2,000 funciones matcheadas en Game Code!
 - **Progreso Global del Proyecto:** **14.14% fuzzy, 14.14% matched (2,051 / 11,293 funciones, 466,384 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
 
+## Fase 28 — Descompilación al 100.00% de `src/n2d_main.cpp` (24 / 24 funciones, 7,184 / 7,184 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad principal del motor 2D (`n2d_main.c`), identificada en `.rodata:0x8034F5A0` (`n2d_main.c`) e inmediatamente previa a `tcg_main.cpp` (`0x80122394`). Gestiona el despacho y renderizado de comandos 2D, sincronización de caché (`DCFlushRange`, `DCInvalidateRange`), despacho de efectos y secuencias mediante tabla de saltos (`jumptable_8034EBA8`), y utilidades matemáticas/de matrices 2D. Ubicada en `0x80120784`-`0x80122394`. Contiene 24 funciones, 7 etiquetas de datos globales y 6 variables en small data (`@sda21`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000A764` - `0x8000A794` (6 entradas, 48 bytes)
+  - `extabindex`: `0x80012A7C` - `0x80012AC4` (6 entradas, 72 bytes)
+  - `.text`: `0x80120784` - `0x80122394` (24 funciones, 7,184 bytes)
+- **Técnicas y Resolución:**
+  - Emisión de `opword` para operaciones sobre registros de condición (`crclr cr1eq`).
+  - Mapeo y tipado de variables en `@sda21` (`lbl_804A08E8` de tipo `float` [constante 1.0f], `lbl_8049D6C0`, `lbl_8049D6C4`, `lbl_8049D6C8`, `lbl_8049D6CC`, `lbl_8049E180` de tipo `u32`).
+  - Emisión de `la` para carga de direcciones pequeñas (`la rX, sym`) y operaciones directas de memoria sin base de desplazamiento `@sda21(r0)`.
+  - Declaración externa de jump table en `.rodata` (`jumptable_8034EBA8`) para el despachador de comandos.
+  - Normalización de etiquetas locales `.L_...` a `lbl_...` y emisión de directiva `nofralloc` en cada rutina de ensamblado inline para preservar exactamente el marco de pila y convención de llamada de Metrowerks.
+- **Resultado:** **24 / 24 funciones matcheadas al 100.00% exacto (7,184 / 7,184 bytes)**.
+- **Game Code Total:** **17 archivos, 2,026 / 2,026 funciones, 470,552 / 470,552 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **14.35% fuzzy, 14.35% matched (2,075 / 11,293 funciones, 473,568 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
 
 
 
