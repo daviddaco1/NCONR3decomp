@@ -385,6 +385,7 @@ config.libs = [
         "cflags": cflags_base,
         "progress_category": "game",
         "objects": [
+            Object(NonMatching, "tcg_main.cpp"),
             Object(NonMatching, "tcg_cell.cpp"),
             Object(NonMatching, "tcg_list.cpp"),
             Object(NonMatching, "clinklist.cpp"),
