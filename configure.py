@@ -386,6 +386,7 @@ config.libs = [
         "progress_category": "game",
         "objects": [
             Object(NonMatching, "tcg_cell.cpp"),
+            Object(NonMatching, "tcg_list.cpp"),
             Object(NonMatching, "clinklist.cpp"),
             Object(NonMatching, "tcg_text.cpp"),
             Object(NonMatching, "movie.cpp"),
