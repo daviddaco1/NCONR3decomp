@@ -49,6 +49,12 @@ file_task.cpp:
 	extabindex  start:0x8001409C end:0x80014EAC
 	.text       start:0x80167158 end:0x801785A4
 
+sys_task.cpp:
+	extab       start:0x8000C014 end:0x8000C224
+	extabindex  start:0x80014EAC end:0x800151C4
+	.text       start:0x801785A4 end:0x8017CF48
+	.ctors      start:0x803394DC end:0x803394E0
+
 Runtime.PPCEABI.H/global_destructor_chain.c:
 	.text       start:0x80193680 end:0x801936E0
 	.sbss       start:0x8049D8A8 end:0x8049D8AC

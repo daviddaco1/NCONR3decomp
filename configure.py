@@ -392,6 +392,7 @@ config.libs = [
             Object(NonMatching, "seq_cmdeft.cpp"),
             Object(NonMatching, "seq_cmdtcg.cpp"),
             Object(NonMatching, "file_task.cpp"),
+            Object(NonMatching, "sys_task.cpp"),
         ],
     },
 ]
