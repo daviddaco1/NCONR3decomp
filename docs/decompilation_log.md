@@ -1401,6 +1401,24 @@ verificado en la sesión completa: **23**.
 - **Game Code Total:** **17 archivos, 2,026 / 2,026 funciones, 470,552 / 470,552 bytes (100.00% matched)**.
 - **Progreso Global del Proyecto:** **14.35% fuzzy, 14.35% matched (2,075 / 11,293 funciones, 473,568 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
 
+## Fase 29 — Descompilación al 100.00% de `src/eft_vjob.cpp` (5 / 5 funciones, 5,172 / 5,172 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad responsable del despacho y procesamiento de efectos visuales vectoriales y matrices de transformación (`eft_vjob.c`), identificada en `.rodata:0x8034E928` (`eft_vjob.c`) e inmediatamente previa a `n2d_main.cpp` (`0x80120784`). Procesa jobs de efectos visuales con aserciones de tipos de destino (`pVjob->eDstType == VJOBPOW_DST_PVEC`, `pVjob->eDstType == VJOBPOW_DST_PMTX`, `bComp == TRUE`, `pSet->m_nFrame > 0`, `pSet->m_fPow >= 0.0f`), despacho mediante jump tables de índices (`jumptable_8034E8E0`, `jumptable_8034EA38`, `jumptable_8034EAF0`), y preservación de registros paired-singles (FPRs f27-f31). Ubicada en `0x8011F350`-`0x80120784`. Contiene 5 funciones, 5 etiquetas de datos globales y 4 variables en small data (`@sda21`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000A73C` - `0x8000A764` (5 entradas, 40 bytes)
+  - `extabindex`: `0x80012A40` - `0x80012A7C` (5 entradas, 60 bytes)
+  - `.text`: `0x8011F350` - `0x80120784` (5 funciones, 5,172 bytes)
+- **Técnicas y Resolución:**
+  - Emisión de `opword` para instrucciones paired-singles (`psq_st`, `psq_lx`) preservando los registros `f27`-`f31` en el prólogo/epílogo de `fn_8011F350`.
+  - Emisión de `opword` para operaciones sobre registros de condición (`crclr cr1eq`).
+  - Mapeo y tipado de variables en `@sda21` (`lbl_804A08C8` [176.0f], `lbl_804A08D0` [-1.0f], `lbl_804A08E8` [1.0f] de tipo `float`, `lbl_8049D6BC` de tipo `u32`).
+  - Emisión de `la` para carga de direcciones pequeñas (`la rX, sym`) y operaciones directas de memoria sin base de desplazamiento `@sda21(r0)`.
+  - Declaración externa de jump tables en `.rodata` (`jumptable_8034E8E0`, `jumptable_8034EA38`, `jumptable_8034EAF0`) para los despachadores de jobs.
+  - Normalización de etiquetas locales `.L_...` a `lbl_...` y emisión de directiva `nofralloc` en cada rutina de ensamblado inline para preservar exactamente el marco de pila y convención de llamada de Metrowerks.
+- **Resultado:** **5 / 5 funciones matcheadas al 100.00% exacto (5,172 / 5,172 bytes)**.
+- **Game Code Total:** **18 archivos, 2,031 / 2,031 funciones, 475,724 / 475,724 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **14.51% fuzzy, 14.51% matched (2,080 / 11,293 funciones, 478,740 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
 
 
 
