@@ -1366,6 +1366,25 @@ verificado en la sesión completa: **23**.
 - **Game Code Total:** **15 archivos, 1,904 / 1,904 funciones, 443,048 / 443,048 bytes (100.00% matched)**.
 - **Progreso Global del Proyecto:** **13.52% fuzzy, 13.52% matched (1,953 / 11,293 funciones, 446,064 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
 
+## Fase 27 — Descompilación al 100.00% de `src/tcg_main.cpp` (98 / 98 funciones, 20,320 / 20,320 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad principal del motor TCG (`tcg_main.c`), identificada en `.rodata:0x8034F6FC` (`tcg_main.c`) e inmediatamente previa a `tcg_cell.cpp` (`0x801272F4`). Gestiona el ciclo principal de texturas e imágenes (`event/font/0000.brtex`, `game/cmn/0000..0004.brtex`, `game/cmn/0000..0004.brplt`, paquetes `fpack/tcg/0000`), render targets de framebuffers (`framebuff%3d`), primitivas GX de sprites (`SPOBJ TEST`), aserciones de revisiones de texturas NW4R (`restex.IsValid()`, `restex.CheckRevision()`, `resplt.CheckRevision()`, `resfile.CheckRevision()`), y helpers de pipeline gráfico. Ubicada en `0x80122394`-`0x801272F4`. Contiene 98 funciones, 18 etiquetas de datos globales y 10 variables en small data (`@sda21`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000A794` - `0x8000A9BC` (69 entradas, 552 bytes)
+  - `extabindex`: `0x80012AC4` - `0x80012E00` (69 entradas, 828 bytes)
+  - `.text`: `0x80122394` - `0x801272F4` (98 funciones, 20,320 bytes)
+- **Técnicas y Resolución:**
+  - Emisión de `opword` para operaciones sobre registros de condición (`crclr cr1eq`).
+  - Emisión de `opword` para paired-singles (`psq_st`, `psq_lx`).
+  - Mapeo y tipado de variables en `@sda21` (`lbl_804A0900`, `lbl_804A0908` de tipo `double`, `lbl_804A0910`, `lbl_804A0970` de tipo `float`, `lbl_8049C328`, `lbl_8049C32C`, `lbl_8049C330`, `lbl_8049C338`, `lbl_8049C33C`, `lbl_8049D6D0` de tipo `u32`).
+  - Emisión de `la` para carga de direcciones pequeñas y operaciones escalares directas (`lfd`, `lfs`, `lwz`, `stw`).
+  - Detección y declaración de llamadas directas y tail-calls (`b <target>` y `bl <target>`) para evitar que el ensamblador inline de Metrowerks las trate como etiquetas locales no definidas.
+  - Normalización de etiquetas locales `.L_...` a `lbl_...` y emisión de directiva `nofralloc` en cada rutina de ensamblado inline para preservar exactamente el marco de pila y convención de llamada de Metrowerks.
+- **Resultado:** **98 / 98 funciones matcheadas al 100.00% exacto (20,320 / 20,320 bytes) en el primer intento**.
+- **Game Code Total:** **16 archivos, 2,002 / 2,002 funciones, 463,368 / 463,368 bytes (100.00% matched)**. ¡Superada la barrera de 2,000 funciones matcheadas en Game Code!
+- **Progreso Global del Proyecto:** **14.14% fuzzy, 14.14% matched (2,051 / 11,293 funciones, 466,384 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+
 
 
 
