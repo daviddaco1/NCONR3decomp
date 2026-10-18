@@ -394,6 +394,7 @@ config.libs = [
             Object(NonMatching, "file_task.cpp"),
             Object(NonMatching, "sys_task.cpp"),
             Object(NonMatching, "homebutton.cpp"),
+            Object(NonMatching, "gl_model.cpp"),
         ],
     },
 ]
