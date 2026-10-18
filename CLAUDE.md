@@ -92,7 +92,7 @@ igual que antes de migrar (53/124 al 100%, fuzzy global 24.96% antes de tocar na
 - SDK/Runtime: **49/49 funciones matcheadas 100% (3,016 / 3,016 bytes)** contra RNEPDA (`PPCArch.c` completo —24 funciones—,
   `OS/OSFPRInit.c`, `OS/OSPSInit.c`, `OS/OSCache.c`, `OS/OSReset.c`, `__start.c`, `__ppc_eabi_init.c`,
   `exit.c`, `__mem.c` incluido `__fill_mem` al 100%).
-- Game code: **12 archivos resueltos al 100.00% byte a byte (1,559 / 1,559 funciones, 394,068 / 394,068 bytes)**:
+- Game code: **13 archivos resueltos al 100.00% byte a byte (1,646 / 1,646 funciones, 406,684 / 406,684 bytes)**:
   1. `src/clinklist.cpp` (`0x80130100`-`0x80131324`): **30 / 30 funciones, 4,644 bytes (100.00%)**.
   2. `src/tcg_text.cpp` (`0x80131324`-`0x80136B14`): **124 / 124 funciones, 22,512 bytes (100.00%)**.
   3. `src/movie.cpp` (`0x80136B14`-`0x8013A288`): **87 / 87 funciones, 14,196 bytes (100.00%)**.
@@ -105,8 +105,9 @@ igual que antes de migrar (53/124 al 100%, fuzzy global 24.96% antes de tocar na
   10. `src/gl_model.cpp` (`0x80182FE0`-`0x80186C78`): **53 / 53 funciones, 15,512 bytes (100.00%)**.
   11. `src/gl_effect.cpp` (`0x80186C78`-`0x8018D5A8`): **203 / 203 funciones, 26,928 bytes (100.00%)**.
   12. `src/gl_sound.cpp` (`0x8018D5A8`-`0x80190454`): **123 / 123 funciones, 11,948 bytes (100.00%)**.
+  13. `src/gauge.cpp` (`0x80190454`-`0x8019359C`): **87 / 87 funciones, 12,616 bytes (100.00%)**.
   Todas las funciones coincidentes byte a byte contra `orig/RNEPDA/sys/main.dol`. `build.sha1` verificado y pasando limpio.
-  Progreso global: **12.04% fuzzy, 12.04% matched (1,608 / 11,293 funciones, 397,084 / 3,299,164 bytes)**.
+  Progreso global: **12.42% fuzzy, 12.42% matched (1,695 / 11,293 funciones, 409,700 / 3,299,164 bytes)**.
   `fn_80131428` (3796 bytes, parser principal de tags, 25.3%), `fn_801335F4` (3272 bytes, motor de
   layout/word-wrap, 19.9%), `fn_80132348` (2116 bytes, variante del parser sin tabla extendida,
   26.7%), `fn_80134664` (1900 bytes, tick de animación/reveal de texto, 42.1%). También resuelto

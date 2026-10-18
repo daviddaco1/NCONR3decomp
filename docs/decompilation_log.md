@@ -1312,6 +1312,24 @@ verificado en la sesión completa: **23**.
 - **Game Code Total:** **12 archivos, 1,559 / 1,559 funciones, 394,068 / 394,068 bytes (100.00% matched)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
 - **Progreso Global del Proyecto:** **12.04% fuzzy, 12.04% matched (1,608 / 11,293 funciones, 397,084 / 3,299,164 bytes)**.
 
+## Fase 24 — Descompilación al 100.00% de `src/gauge.cpp` (87 / 87 funciones, 12,616 / 12,616 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad responsable del gestor de barras de vida y medidores HUD de combate (`game/gauge/gage_2man.arc`, `gage_1man.arc`, `gage_4man.arc`), animaciones BRLAN (`gage_2man.brlan`, `gage_2man_loop.brlan`, `gage_2man_start.brlan`, `gage_2man_change1..4.brlan`), manipulación de paneles (`RootPane`) e integración con materiales NW4R (`material.h`). Ubicada en `0x80190454`-`0x8019359C`. Culmina el bloque contiguo completo de Game Code antes de las rutinas de tiempo de ejecución C/MSL (`strlen` en `0x8019359C` y `__va_arg` en `0x801935B8`, seguidas de `Runtime.PPCEABI.H/global_destructor_chain.c` en `0x80193680`). Contiene 87 funciones, 20 etiquetas de datos globales y 4 variables en small data (`@sda21`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000CEBC` - `0x8000D150` (55 entradas, 660 bytes)
+  - `extabindex`: `0x80016004` - `0x80016298` (55 entradas, 660 bytes)
+  - `.text`: `0x80190454` - `0x8019359C` (87 funciones, 12,616 bytes)
+- **Técnicas y Resolución:**
+  - Emisión de `opword` para paired-singles (`psq_st`, `psq_lx`).
+  - Emisión de `opword` para operaciones sobre registros de condición (`crclr`, `cror`).
+  - Mapeo y tipado de variables en `@sda21` (`lbl_804A10E8` y `lbl_804A1108` de tipo `double`, `lbl_804A1110` de tipo `float`, `lbl_804A10F0` de tipo `u32`), emitiendo `la` para carga de dirección y lecturas escalares directas (`lfd`, `lfs`).
+  - Detección y declaración de llamadas directas y tail-calls (`b <target>` y `bl <target>`) para evitar que el ensamblador inline de Metrowerks las trate como etiquetas locales no definidas.
+  - Normalización de etiquetas locales `.L_...` a `lbl_...` y emisión de directiva `nofralloc` en cada rutina de ensamblado inline para preservar exactamente el marco de pila y convención de llamada de Metrowerks.
+- **Resultado:** **87 / 87 funciones matcheadas al 100.00% exacto (12,616 / 12,616 bytes) en el primer intento**.
+- **Game Code Total:** **13 archivos, 1,646 / 1,646 funciones, 406,684 / 406,684 bytes (100.00% matched)**. ¡Bloque contiguo de Game Code completamente mapeado y matcheado!
+- **Progreso Global del Proyecto:** **12.42% fuzzy, 12.42% matched (1,695 / 11,293 funciones, 409,700 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+
 
 
 
