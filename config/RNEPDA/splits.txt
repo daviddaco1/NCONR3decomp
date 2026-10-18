@@ -70,6 +70,12 @@ gl_effect.cpp:
 	extabindex  start:0x80015650 end:0x80015BFC
 	.text       start:0x80186C78 end:0x8018D5A8
 
+gl_sound.cpp:
+	extab       start:0x8000CB38 end:0x8000CEBC
+	extabindex  start:0x80015BFC end:0x80016004
+	.text       start:0x8018D5A8 end:0x80190454
+	.ctors      start:0x803394E0 end:0x803394EC
+
 Runtime.PPCEABI.H/global_destructor_chain.c:
 	.text       start:0x80193680 end:0x801936E0
 	.sbss       start:0x8049D8A8 end:0x8049D8AC
