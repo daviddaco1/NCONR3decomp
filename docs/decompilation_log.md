@@ -1260,6 +1260,23 @@ verificado en la sesión completa: **23**.
 - **Game Code Total:** **9 archivos, 1,180 / 1,180 funciones, 339,680 / 339,680 bytes (100.00% matched)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
 - **Progreso Global del Proyecto:** **10.39% fuzzy, 10.39% matched (1,229 / 11,293 funciones, 342,696 / 3,299,164 bytes)**. Superado el hito del 10% global del binario.
 
+## Fase 21 — Descompilación al 100.00% de `src/gl_model.cpp` (53 / 53 funciones, 15,512 / 15,512 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad responsable del gestor de modelos 3D y esqueletos de personajes/escenarios (jerarquías de huesos `hip`, `waist`, `breast`, `head`, `L_collar`, extremidades `harm`, `larm`, `hleg`, `lleg`, nodos de accesorios `buki`, y nodos de expresiones faciales), identificada por la aserción en `.rodata:0x8035e774` (`gl_model.c`) e inclusión de NW4R `g3d_resmat_ac.h` (`resMat.IsValid()`). Ubicada en `0x80182FE0`-`0x80186C78`. Precede al subsistema de secuencias y efectos (`0x80186C78`). Contiene 53 funciones, 8 etiquetas de datos globales y 4 variables en small data (`@sda21`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000C3F4` - `0x8000C52C` (39 entradas, 312 bytes)
+  - `extabindex`: `0x8001547C` - `0x80015650` (39 entradas, 468 bytes)
+  - `.text`: `0x80182FE0` - `0x80186C78` (53 funciones, 15,512 bytes)
+- **Técnicas y Resolución:**
+  - Emisión de `opword` para paired-singles (`psq_st`, `psq_lx`).
+  - Emisión de `opword` para operaciones sobre registros de condición (`crclr`, `cror`, `crset`).
+  - Emisión de `opword` para operaciones `subfic` con inmediatos negativos (`subfic r11, r11, -0x50/60/70`).
+  - Mapeo y tipado de variables en `@sda21` (`lbl_804A0FD8` de tipo `double`, `lbl_804A0FE0`, `lbl_804A1018`, `lbl_804A1020` de tipo `float`), emitiendo `la` para carga de dirección y `lfs`/`lfd` para lectura escalar.
+  - Normalización de etiquetas locales `.L_...` a `lbl_...` y emisión de directiva `nofralloc` en cada rutina de ensamblado inline para preservar exactamente el marco de pila y convención de llamada de Metrowerks.
+- **Resultado:** **53 / 53 funciones matcheadas al 100.00% exacto (15,512 / 15,512 bytes) en el primer intento**.
+- **Game Code Total:** **10 archivos, 1,233 / 1,233 funciones, 355,192 / 355,192 bytes (100.00% matched)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+- **Progreso Global del Proyecto:** **10.86% fuzzy, 10.86% matched (1,282 / 11,293 funciones, 358,208 / 3,299,164 bytes)**.
+
 
 
 

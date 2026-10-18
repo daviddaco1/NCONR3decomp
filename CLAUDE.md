@@ -92,7 +92,7 @@ igual que antes de migrar (53/124 al 100%, fuzzy global 24.96% antes de tocar na
 - SDK/Runtime: **49/49 funciones matcheadas 100% (3,016 / 3,016 bytes)** contra RNEPDA (`PPCArch.c` completo —24 funciones—,
   `OS/OSFPRInit.c`, `OS/OSPSInit.c`, `OS/OSCache.c`, `OS/OSReset.c`, `__start.c`, `__ppc_eabi_init.c`,
   `exit.c`, `__mem.c` incluido `__fill_mem` al 100%).
-- Game code: **9 archivos resueltos al 100.00% byte a byte (1,180 / 1,180 funciones, 339,680 / 339,680 bytes)**:
+- Game code: **10 archivos resueltos al 100.00% byte a byte (1,233 / 1,233 funciones, 355,192 / 355,192 bytes)**:
   1. `src/clinklist.cpp` (`0x80130100`-`0x80131324`): **30 / 30 funciones, 4,644 bytes (100.00%)**.
   2. `src/tcg_text.cpp` (`0x80131324`-`0x80136B14`): **124 / 124 funciones, 22,512 bytes (100.00%)**.
   3. `src/movie.cpp` (`0x80136B14`-`0x8013A288`): **87 / 87 funciones, 14,196 bytes (100.00%)**.
@@ -102,8 +102,9 @@ igual que antes de migrar (53/124 al 100%, fuzzy global 24.96% antes de tocar na
   7. `src/file_task.cpp` (`0x80167158`-`0x801785A4`): **513 / 513 funciones, 70,732 bytes (100.00%)**.
   8. `src/sys_task.cpp` (`0x801785A4`-`0x8017CF48`): **129 / 129 funciones, 18,852 bytes (100.00%)**.
   9. `src/homebutton.cpp` (`0x8017CF48`-`0x80182FE0`): **78 / 78 funciones, 24,728 bytes (100.00%)**.
+  10. `src/gl_model.cpp` (`0x80182FE0`-`0x80186C78`): **53 / 53 funciones, 15,512 bytes (100.00%)**.
   Todas las funciones coincidentes byte a byte contra `orig/RNEPDA/sys/main.dol`. `build.sha1` verificado y pasando limpio.
-  Progreso global: **10.39% fuzzy, 10.39% matched (1,229 / 11,293 funciones, 342,696 / 3,299,164 bytes)**. Hito del 10% global del binario superado.
+  Progreso global: **10.86% fuzzy, 10.86% matched (1,282 / 11,293 funciones, 358,208 / 3,299,164 bytes)**.
   `fn_80131428` (3796 bytes, parser principal de tags, 25.3%), `fn_801335F4` (3272 bytes, motor de
   layout/word-wrap, 19.9%), `fn_80132348` (2116 bytes, variante del parser sin tabla extendida,
   26.7%), `fn_80134664` (1900 bytes, tick de animación/reveal de texto, 42.1%). También resuelto
