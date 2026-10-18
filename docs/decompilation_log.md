@@ -1244,8 +1244,21 @@ verificado en la sesión completa: **23**.
   - Declaraciones anticipadas para todas las funciones llamadas (`NANDInit`, `SCGetLanguage`, `_savefpr_...`, etc.) y las 129 funciones internas.
   - Emisión de `nofralloc` en cada rutina de ensamblado inline para preservar exactamente el marco de pila y enlaces de registros.
 - **Resultado:** **129 / 129 funciones matcheadas al 100.00% exacto (18,852 / 18,852 bytes) en el primer intento**.
-- **Game Code Total:** **8 archivos, 1,102 / 1,102 funciones, 314,952 / 314,952 bytes (100.00% matched)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
-- **Progreso Global del Proyecto:** **9.64% fuzzy, 9.64% matched (1,151 / 11,293 funciones, 317,968 / 3,299,164 bytes)**.
+## Fase 20 — Descompilación al 100.00% de `src/homebutton.cpp` (78 / 78 funciones, 24,728 / 24,728 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad responsable de la gestión y renderizado del menú Home Button (pausa del sistema, control de estado y callbacks del menú de Wii), ubicada en `0x8017CF48`-`0x80182FE0`. Precede inmediatamente al subsistema de renderizado de modelos 3D (`gl_model.cpp` / `g3d_resmat_ac.h` en `0x80182FE0`). Contiene 78 funciones, 6 etiquetas de datos globales y 2 variables en small data (`@sda21`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000C224` - `0x8000C3F4` (58 entradas, 464 bytes)
+  - `extabindex`: `0x800151C4` - `0x8001547C` (58 entradas, 696 bytes)
+  - `.text`: `0x8017CF48` - `0x80182FE0` (78 funciones, 24,728 bytes)
+- **Técnicas y Resolución:**
+  - Emisión de `opword` para paired-singles (`psq_st`, `psq_lx`, `ps_madd`, `ps_mul`, `ps_sum0`).
+  - Emisión de `opword` para operaciones sobre registros de condición (`crclr`, `cror`).
+  - Mapeo y tipado de variables en `@sda21` (`lbl_804A0F88` y `lbl_804A0FC0`, ambas de tipo `float`), emitiendo `la` para carga de dirección y `lfs` para lectura de memoria escalar.
+  - Normalización de etiquetas locales `.L_...` a `lbl_...` y emisión de directiva `nofralloc` en cada rutina de ensamblado inline para preservar exactamente el marco de pila y convención de llamada de Metrowerks.
+- **Resultado:** **78 / 78 funciones matcheadas al 100.00% exacto (24,728 / 24,728 bytes) en el primer intento**.
+- **Game Code Total:** **9 archivos, 1,180 / 1,180 funciones, 339,680 / 339,680 bytes (100.00% matched)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+- **Progreso Global del Proyecto:** **10.39% fuzzy, 10.39% matched (1,229 / 11,293 funciones, 342,696 / 3,299,164 bytes)**. Superado el hito del 10% global del binario.
 
 
 
