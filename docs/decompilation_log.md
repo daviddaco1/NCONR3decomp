@@ -2293,3 +2293,14 @@ el 100% en asm para fijar splits y nombres, y después reescribir a C en una pas
   `build.sha1` OK. C real sigue siendo ~100 funciones.
 - Pendiente siguiente región: `0x801A8584`-... (TRK Revolution, NW4R `db`, NW4R `EF`; SS tiene
   NW4R como referencia de alineamiento).
+
+## Fase 95 — Métrica asm vs C separada (2026-10-19)
+
+- `configure.py`: helper `AsmObject(name)` (= `Object(NonMatching, name, progress_category="asm")`)
+  y categoría `asm`. 204 objetos reclasificados: todo archivo con header `// Translation unit:`
+  (generado por `asm_to_cpp.py`) más `clinklist.cpp` (28/30 funciones asm). Quedan como fuente
+  real: `tcg_text.cpp` (102/124 en C) y el SDK/Runtime previo (`PPCArch.c`, `__start.c`, `__mem.c`
+  usan asm también en el original), más `targsupp.s` (asm en el original).
+- `progress` imprime `C real (sin asm inline)` = matched total − matched `asm`: **0.77%
+  (25,560 / 3,299,164 bytes)**. Granularidad por objeto: las 22 funciones asm de `tcg_text.cpp`
+  se cuentan como C.

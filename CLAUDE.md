@@ -181,6 +181,11 @@ igual que antes de migrar (53/124 al 100%, fuzzy global 24.96% antes de tocar na
   Game code (`0x80016340`-`0x8019359C`) 100% splitteado (gap `0x80019E50`-`0x80050548` en
   39 TUs `glib_*`/`unk_*`); Runtime/MSL_C/TRK (`0x801935B8`-`0x801A8584`) en 80 TUs con nombres de
   `zeldaret/ss`. Plan: cubrir todo en asm (splits+nombres) y luego reescribir a C. Ver Fase 94.
+  **Métrica honesta (Fase 95):** objetos asm van con `AsmObject(...)` en `configure.py` (categoría
+  `asm`); `python configure.py progress` imprime al final `C real (sin asm inline)` — hoy **0.77%**
+  (25,560 bytes; incluye 22 funciones asm sueltas dentro de `tcg_text.cpp`). Los % de `game`/`sdk`
+  son sobre sus propios archivos, no sobre el binario. Splits nuevos de librerías: solo
+  `splits.txt` + `Object(NonMatching, ...)` sin fuente asm.
   `fn_80131428` (3796 bytes, parser principal de tags, 25.3%), `fn_801335F4` (3272 bytes, motor de
   layout/word-wrap, 19.9%), `fn_80132348` (2116 bytes, variante del parser sin tabla extendida,
   26.7%), `fn_80134664` (1900 bytes, tick de animación/reveal de texto, 42.1%). También resuelto
