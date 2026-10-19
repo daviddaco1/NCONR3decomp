@@ -1,0 +1,99 @@
+#ifndef DYNAMICLINK_H
+#define DYNAMICLINK_H
+
+#include "common.h"
+#include "m/m_dvd.h"
+#include "nw4r/db/db_mapFile.h"
+
+#include "rvl/OS.h" // IWYU pragma: export
+
+class DbMapFile {
+public:
+    DbMapFile() : mMapFileHandle(nullptr) {}
+    ~DbMapFile();
+
+    void RegisterOnDvd(const char *, const OSModuleInfo *);
+    void Unregister();
+
+private:
+    nw4r::db::MapFileHandle mMapFileHandle;
+    nw4r::db::MapFile mMapFile;
+};
+
+// https://github.com/zeldaret/tp/blob/main/include/DynamicLink.h
+
+struct DynamicModuleControlBase {
+    /* 0x00 */ u16 mLinkCount;
+    /* 0x02 */ u16 mDoLinkCount;
+    /* 0x04 */ DynamicModuleControlBase *mPrev;
+    /* 0x08 */ DynamicModuleControlBase *mNext;
+
+    /* 0x0C */ /*vtable*/
+    virtual ~DynamicModuleControlBase();
+    virtual const char *getModuleName() const;
+    virtual int getModuleSize() const;
+    virtual const char *getModuleTypeString() const;
+    virtual void dump();
+    virtual bool do_load();
+    virtual BOOL do_load_async();
+    virtual bool do_unload();
+    virtual BOOL do_link();
+    virtual bool do_unlink();
+    DynamicModuleControlBase();
+    BOOL link();
+    BOOL unlink();
+    BOOL load_async();
+
+    static inline DynamicModuleControlBase *getFirstClass() {
+        return mFirst;
+    }
+    inline DynamicModuleControlBase *getNextClass() {
+        return mNext;
+    }
+    bool isLinked() const {
+        return mLinkCount != 0;
+    }
+
+    static DynamicModuleControlBase *mFirst;
+    static DynamicModuleControlBase *mLast;
+};
+
+struct DynamicModuleControl : DynamicModuleControlBase {
+    virtual const char *getModuleName() const;
+    virtual ~DynamicModuleControl();
+    virtual int getModuleSize() const;
+    virtual const char *getModuleTypeString() const;
+    virtual void dump();
+    virtual bool do_load();
+    virtual BOOL do_load_async();
+    virtual bool do_unload();
+    virtual BOOL do_link();
+    virtual bool do_unlink();
+    DynamicModuleControl(char const *, EGG::ExpHeap *);
+    static void initialize(EGG::ExpHeap *heap);
+    static void *callback(void *);
+    void checkHeapStatus();
+
+    /* 0x10 */ UNKWORD unk_16;
+    /* 0x14 */ OSModuleHeader *mModule;
+    /* 0x18 */ void *mBss;
+    /* 0x1C */ UNKWORD unk_24;
+    /* 0x20 */ const char *mName;
+    /* 0x24 */ u8 mResourceType;
+    /* 0x25 */ u8 unk_33;
+    /* 0x28 */ UNKWORD unk_40;
+    /* 0x2C */ mDvd_callback_c *mDvdCallbackRequest;
+    /* 0x30 */ EGG::ExpHeap *mHeap;
+    /* 0x34 */ DbMapFile mpRelMapFile;
+
+    static u32 sAllocBytes;
+    static mDvd_toMainRam_base_c *sDvdFile;
+    static EGG::ExpHeap *sDylinkHeap;
+    static u32 sCurrentAllocatableSize;
+    static u32 sTotalFreeSize;
+    static EGG::Archive *sArchive;
+
+    static const char *sRelsDir;
+};
+
+#endif
