@@ -5,6 +5,11 @@ import re
 def convert_asm_to_cpp(asm_path, cpp_path, tu_name):
     with open(asm_path, 'r') as f:
         lines = f.readlines()
+    # Simbolos citados que mwcc no acepta ("@stringBase0_X") y palabras crudas (.4byte)
+    lines = [re.sub(r'"@(\w+)"', r'at_\1', l) for l in lines]
+    lines = [re.sub(r'\*/\t\.4byte ', '*/\topword ', l) for l in lines]
+    # mwcc ensambla HID2 como SPR 1011; en Gekko/Broadway HID2 es SPR 920
+    lines = [re.sub(r'\b(m[ft]spr\b.*)\bHID2\b', r'\g<1>920', l) for l in lines]
 
     funcs = []
     calls = set()

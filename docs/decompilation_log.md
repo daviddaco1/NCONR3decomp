@@ -2261,3 +2261,35 @@ verificado en la sesión completa: **23**.
 
 
 
+
+## Fase 94 — Cobertura asm completa de game code + Runtime/MSL/TRK (2026-10-19)
+
+**Aviso de método:** desde la Fase 30, casi todo el "matching" de game code es `asm` inline
+generado por `tools/asm_to_cpp.py` (3,615 de 3,717 funciones antes de esta fase), no C. El %
+de `configure.py progress` cuenta esas funciones como "matched". Decisión del usuario: cubrir
+el 100% en asm para fijar splits y nombres, y después reescribir a C en una pasada aparte.
+
+- **Gap `0x80019E50`-`0x80050548` (game code, ~223 KB)**: 39 TUs nuevas. Fronteras por bloques
+  de datos (cada TU tiene su rango propio y contiguo en `.sdata2`/`.data`/`.rodata`); nombres
+  reales donde hay string `__FILE__` (`glib_anim`, `glib_anim_access`, `glib_model`,
+  `glib_model_access`, `glib_rendertarget`, `glib_rendertarget_access`, `glib_resource_access`,
+  `glib_scene`, `glib_scene_access`, `glib_shadow`, `glib_shadow_access`, `glib_process`,
+  `glib_process_access`, `glib_physics`, `glib_physics_access`, `glib_reflection`); el resto
+  `unk_<addr>.cpp`. Patrón útil: las TUs tipo efecto empiezan con una función init que toca
+  `.sbss`+`.sdata2` y terminan con 4-5 inlines GX chicos (escrituras a `0xCC008000`).
+  Con esto todo `0x80016340`-`0x8019359C` (game code) queda splitteado.
+- **Validación gratis de fronteras**: dtk falla con `Conflicting splits within reversed extab
+  group` si una frontera parte una TU que comparte entradas de extab — así se detectó que
+  `0x80042CC0` no era TU propia (fusionada con `unk_800423DC`).
+- **Runtime/MSL_C/TRK (`0x801935B8`-`0x801A8584`)**: 80 TUs. Nombres y orden tomados de
+  `zeldaret/ss` alineando la secuencia de tamaños de función (262/304 emparejadas). Funciones
+  sin pareja se asignaron a la TU anterior (salvo cabecera de `NMWException.cp`); `abort_exit.c`
+  es nombre supuesto. `strlen` (`0x8019359C`) queda fuera: pertenece a `__mem.c`, cuyo `.c`
+  actual solo cubre `.init`.
+- **`tools/asm_to_cpp.py`**: soporta símbolos citados (`"@stringBase0_X"` → `at_stringBase0_X`),
+  `.4byte` (→ `opword`) y `HID2` (mwcc lo ensambla como SPR 1011; Gekko usa 920). Para `.c`
+  hay que quitar `extern "C"` tras generar.
+- Resultado: **50.01% matched (1,649,948 / 3,299,164 bytes, 5,289 / 11,293 funciones)**,
+  `build.sha1` OK. C real sigue siendo ~100 funciones.
+- Pendiente siguiente región: `0x801A8584`-... (TRK Revolution, NW4R `db`, NW4R `EF`; SS tiene
+  NW4R como referencia de alineamiento).

@@ -25,6 +25,202 @@ glib_draw.cpp:
 	.text       start:0x80018C4C end:0x80019E50
 	.sdata2     start:0x8049E640 end:0x8049E668
 
+unk_80019E50.cpp:
+	extab       start:0x80006790 end:0x800067C0
+	extabindex  start:0x8000D388 end:0x8000D3D0
+	.text       start:0x80019E50 end:0x8001A9B4
+
+unk_8001A9B4.cpp:
+	extab       start:0x800067C0 end:0x80006808
+	extabindex  start:0x8000D3D0 end:0x8000D43C
+	.text       start:0x8001A9B4 end:0x8001BA38
+
+unk_8001BA38.cpp:
+	extab       start:0x80006808 end:0x80006860
+	extabindex  start:0x8000D43C end:0x8000D4C0
+	.text       start:0x8001BA38 end:0x8001DB24
+
+unk_8001DB24.cpp:
+	extab       start:0x80006860 end:0x800068B8
+	extabindex  start:0x8000D4C0 end:0x8000D544
+	.text       start:0x8001DB24 end:0x8001FA80
+
+unk_8001FA80.cpp:
+	extab       start:0x800068B8 end:0x800068E0
+	extabindex  start:0x8000D544 end:0x8000D580
+	.text       start:0x8001FA80 end:0x80020D84
+
+unk_80020D84.cpp:
+	extab       start:0x800068E0 end:0x80006928
+	extabindex  start:0x8000D580 end:0x8000D5EC
+	.text       start:0x80020D84 end:0x80022180
+
+unk_80022180.cpp:
+	extab       start:0x80006928 end:0x80006978
+	extabindex  start:0x8000D5EC end:0x8000D664
+	.text       start:0x80022180 end:0x80023E54
+
+unk_80023E54.cpp:
+	extab       start:0x80006978 end:0x800069A8
+	extabindex  start:0x8000D664 end:0x8000D6AC
+	.text       start:0x80023E54 end:0x80024CF0
+
+glib_anim.cpp:
+	extab       start:0x800069A8 end:0x80006E88
+	extabindex  start:0x8000D6AC end:0x8000DB50
+	.text       start:0x80024CF0 end:0x80029934
+
+glib_anim_access.cpp:
+	extab       start:0x80006E88 end:0x80006F48
+	extabindex  start:0x8000DB50 end:0x8000DC70
+	.text       start:0x80029934 end:0x8002AF44
+	.ctors      start:0x803394C4 end:0x803394C8
+
+unk_8002AF44.cpp:
+	extab       start:0x80006F48 end:0x80006F98
+	extabindex  start:0x8000DC70 end:0x8000DCE8
+	.text       start:0x8002AF44 end:0x8002BA28
+
+unk_8002BA28.cpp:
+	extab       start:0x80006F98 end:0x80006FB0
+	extabindex  start:0x8000DCE8 end:0x8000DD0C
+	.text       start:0x8002BA28 end:0x8002D81C
+
+glib_model.cpp:
+	extab       start:0x80006FB0 end:0x800075FC
+	extabindex  start:0x8000DD0C end:0x8000E3D8
+	.text       start:0x8002D81C end:0x80033A0C
+
+glib_model_access.cpp:
+	extab       start:0x800075FC end:0x8000774C
+	extabindex  start:0x8000E3D8 end:0x8000E5D0
+	.text       start:0x80033A0C end:0x80034BD8
+
+glib_rendertarget.cpp:
+	extab       start:0x8000774C end:0x80007828
+	extabindex  start:0x8000E5D0 end:0x8000E654
+	.text       start:0x80034BD8 end:0x80035DD8
+
+glib_rendertarget_access.cpp:
+	extab       start:0x80007828 end:0x80007830
+	extabindex  start:0x8000E654 end:0x8000E660
+	.text       start:0x80035DD8 end:0x80035E80
+
+glib_resource_access.cpp:
+	extab       start:0x80007830 end:0x80007890
+	extabindex  start:0x8000E660 end:0x8000E6F0
+	.text       start:0x80035E80 end:0x8003625C
+
+glib_scene.cpp:
+	extab       start:0x80007890 end:0x80007A74
+	extabindex  start:0x8000E6F0 end:0x8000E918
+	.text       start:0x8003625C end:0x800389F8
+
+glib_scene_access.cpp:
+	extab       start:0x80007A74 end:0x80007B54
+	extabindex  start:0x8000E918 end:0x8000EA68
+	.text       start:0x800389F8 end:0x8003A194
+
+glib_shadow.cpp:
+	extab       start:0x80007B54 end:0x80007CF0
+	extabindex  start:0x8000EA68 end:0x8000EC60
+	.text       start:0x8003A194 end:0x8003D1B0
+
+glib_shadow_access.cpp:
+	extab       start:0x80007CF0 end:0x80007D68
+	extabindex  start:0x8000EC60 end:0x8000ED14
+	.text       start:0x8003D1B0 end:0x8003DB68
+
+unk_8003DB68.cpp:
+	extab       start:0x80007D68 end:0x80007DB0
+	extabindex  start:0x8000ED14 end:0x8000ED80
+	.text       start:0x8003DB68 end:0x8003F5C8
+
+unk_8003F5C8.cpp:
+	extab       start:0x80007DB0 end:0x80007E20
+	extabindex  start:0x8000ED80 end:0x8000EE28
+	.text       start:0x8003F5C8 end:0x8003FF00
+
+unk_8003FF00.cpp:
+	extab       start:0x80007E20 end:0x80007E68
+	extabindex  start:0x8000EE28 end:0x8000EE94
+	.text       start:0x8003FF00 end:0x800412E8
+
+unk_800412E8.cpp:
+	extab       start:0x80007E68 end:0x80007EB0
+	extabindex  start:0x8000EE94 end:0x8000EF00
+	.text       start:0x800412E8 end:0x800423DC
+
+unk_800423DC.cpp:
+	extab       start:0x80007EB0 end:0x80007EF8
+	extabindex  start:0x8000EF00 end:0x8000EF6C
+	.text       start:0x800423DC end:0x800430A4
+
+glib_process.cpp:
+	extab       start:0x80007EF8 end:0x80008090
+	extabindex  start:0x8000EF6C end:0x8000F0C8
+	.text       start:0x800430A4 end:0x800443B8
+
+glib_process_access.cpp:
+	extab       start:0x80008090 end:0x800080D0
+	extabindex  start:0x8000F0C8 end:0x8000F128
+	.text       start:0x800443B8 end:0x80044854
+
+unk_80044854.cpp:
+	extab       start:0x800080D0 end:0x80008120
+	extabindex  start:0x8000F128 end:0x8000F1A0
+	.text       start:0x80044854 end:0x80046108
+
+unk_80046108.cpp:
+	extab       start:0x80008120 end:0x80008140
+	extabindex  start:0x8000F1A0 end:0x8000F1D0
+	.text       start:0x80046108 end:0x80046BA0
+
+unk_80046BA0.cpp:
+	extab       start:0x80008140 end:0x80008170
+	extabindex  start:0x8000F1D0 end:0x8000F218
+	.text       start:0x80046BA0 end:0x80047C40
+
+glib_physics.cpp:
+	extab       start:0x80008170 end:0x800081F0
+	extabindex  start:0x8000F218 end:0x8000F2D8
+	.text       start:0x80047C40 end:0x80048540
+
+glib_physics_access.cpp:
+	extab       start:0x800081F0 end:0x80008220
+	extabindex  start:0x8000F2D8 end:0x8000F320
+	.text       start:0x80048540 end:0x8004875C
+
+glib_reflection.cpp:
+	extab       start:0x80008220 end:0x80008238
+	extabindex  start:0x8000F320 end:0x8000F344
+	.text       start:0x8004875C end:0x80048A8C
+
+unk_80048A8C.cpp:
+	extab       start:0x80008238 end:0x800082C4
+	extabindex  start:0x8000F344 end:0x8000F38C
+	.text       start:0x80048A8C end:0x80048F04
+
+unk_80048F04.cpp:
+	extab       start:0x800082C4 end:0x80008314
+	extabindex  start:0x8000F38C end:0x8000F404
+	.text       start:0x80048F04 end:0x8004ADC4
+
+unk_8004ADC4.cpp:
+	extab       start:0x80008314 end:0x8000834C
+	extabindex  start:0x8000F404 end:0x8000F458
+	.text       start:0x8004ADC4 end:0x8004C1CC
+
+unk_8004C1CC.cpp:
+	extab       start:0x8000834C end:0x8000837C
+	extabindex  start:0x8000F458 end:0x8000F4A0
+	.text       start:0x8004C1CC end:0x8004EB20
+
+unk_8004EB20.cpp:
+	extab       start:0x8000837C end:0x800083CC
+	extabindex  start:0x8000F4A0 end:0x8000F518
+	.text       start:0x8004EB20 end:0x80050548
+
 zko_eye.cpp:
 	extab       start:0x800083CC end:0x800083F4
 	extabindex  start:0x8000F518 end:0x8000F554
@@ -450,15 +646,274 @@ gauge.cpp:
 	extabindex  start:0x80016004 end:0x80016298
 	.text       start:0x80190454 end:0x8019359C
 
+Runtime.PPCEABI.H/__va_arg.c:
+	.text       start:0x801935B8 end:0x80193680
+
 Runtime.PPCEABI.H/global_destructor_chain.c:
 	.text       start:0x80193680 end:0x801936E0
 	.sbss       start:0x8049D8A8 end:0x8049D8AC
+
+Runtime.PPCEABI.H/NMWException.cp:
+	extab       start:0x8000D150 end:0x8000D190
+	extabindex  start:0x80016298 end:0x800162C8
+	.text       start:0x801936E0 end:0x80193C64
+
+Runtime.PPCEABI.H/ptmf.c:
+	.text       start:0x80193C64 end:0x80193C8C
+
+Runtime.PPCEABI.H/runtime.c:
+	.text       start:0x80193C8C end:0x8019431C
 
 Runtime.PPCEABI.H/__init_cpp_exceptions.cpp:
 	.text       start:0x8019431C end:0x8019438C
 	.ctors      start:0x803394C0 end:0x803394C4 rename:.ctors$10
 	.dtors      start:0x80339580 end:0x80339584 rename:.dtors$10
 	.dtors      start:0x80339584 end:0x80339588 rename:.dtors$15
+
+Runtime.PPCEABI.H/Gecko_ExceptionPPC.cp:
+	extab       start:0x8000D190 end:0x8000D204
+	extabindex  start:0x800162C8 end:0x8001631C
+	.text       start:0x8019438C end:0x80195AB0
+
+Runtime.PPCEABI.H/GCN_Mem_Alloc.c:
+	.text       start:0x80195AB0 end:0x80195B9C
+
+MSL_C.PPCEABI.bare.H/secure_error.c:
+	.text       start:0x80195B9C end:0x80195BB4
+
+MSL_C.PPCEABI.bare.H/abort_exit.c:
+	.text       start:0x80195BB4 end:0x80195CA8
+
+MSL_C.PPCEABI.bare.H/alloc.c:
+	.text       start:0x80195CA8 end:0x801961BC
+
+MSL_C.PPCEABI.bare.H/ansi_files.c:
+	.text       start:0x801961BC end:0x80196350
+
+MSL_C.PPCEABI.bare.H/ansi_fp.c:
+	.text       start:0x80196350 end:0x80197BC8
+
+MSL_C.PPCEABI.bare.H/arith.c:
+	.text       start:0x80197BC8 end:0x80197BD8
+
+MSL_C.PPCEABI.bare.H/buffer_io.c:
+	.text       start:0x80197BD8 end:0x80197DE8
+
+MSL_C.PPCEABI.bare.H/direct_io.c:
+	.text       start:0x80197DE8 end:0x80198434
+
+MSL_C.PPCEABI.bare.H/file_io.c:
+	.text       start:0x80198434 end:0x801986DC
+
+MSL_C.PPCEABI.bare.H/FILE_POS.c:
+	.text       start:0x801986DC end:0x80198998
+
+MSL_C.PPCEABI.bare.H/mbstring.c:
+	.text       start:0x80198998 end:0x80198AD0
+
+MSL_C.PPCEABI.bare.H/mem.c:
+	.text       start:0x80198AD0 end:0x80198C40
+
+MSL_C.PPCEABI.bare.H/mem_funcs.c:
+	.text       start:0x80198C40 end:0x80198F10
+
+MSL_C.PPCEABI.bare.H/misc_io.c:
+	.text       start:0x80198F10 end:0x80198F20
+
+MSL_C.PPCEABI.bare.H/printf.c:
+	.text       start:0x80198F20 end:0x8019B580
+
+MSL_C.PPCEABI.bare.H/scanf.c:
+	.text       start:0x8019B580 end:0x8019CB00
+
+MSL_C.PPCEABI.bare.H/string.c:
+	.text       start:0x8019CB00 end:0x8019D03C
+
+MSL_C.PPCEABI.bare.H/strtold.c:
+	.text       start:0x8019D03C end:0x8019E3B8
+
+MSL_C.PPCEABI.bare.H/strtoul.c:
+	.text       start:0x8019E3B8 end:0x8019EECC
+
+MSL_C.PPCEABI.bare.H/wstring.c:
+	.text       start:0x8019EECC end:0x8019EF60
+
+MSL_C.PPCEABI.bare.H/wchar_io.c:
+	.text       start:0x8019EF60 end:0x8019EFD8
+
+MSL_C.PPCEABI.bare.H/uart_console_io_gcn.c:
+	.text       start:0x8019EFD8 end:0x8019F0B0
+
+MSL_C.PPCEABI.bare.H/e_acos.c:
+	.text       start:0x8019F0B0 end:0x8019F37C
+
+MSL_C.PPCEABI.bare.H/e_asin.c:
+	.text       start:0x8019F37C end:0x8019F614
+
+MSL_C.PPCEABI.bare.H/e_atan2.c:
+	.text       start:0x8019F614 end:0x8019F86C
+
+MSL_C.PPCEABI.bare.H/e_fmod.c:
+	.text       start:0x8019F86C end:0x8019FBEC
+
+MSL_C.PPCEABI.bare.H/e_log.c:
+	.text       start:0x8019FBEC end:0x8019FEA0
+
+MSL_C.PPCEABI.bare.H/e_log10.c:
+	.text       start:0x8019FEA0 end:0x8019FFB4
+
+MSL_C.PPCEABI.bare.H/e_pow.c:
+	.text       start:0x8019FFB4 end:0x801A07C8
+
+MSL_C.PPCEABI.bare.H/e_rem_pio2.c:
+	.text       start:0x801A07C8 end:0x801A0B4C
+
+MSL_C.PPCEABI.bare.H/k_cos.c:
+	.text       start:0x801A0B4C end:0x801A0C5C
+
+MSL_C.PPCEABI.bare.H/k_rem_pio2.c:
+	.text       start:0x801A0C5C end:0x801A2314
+
+MSL_C.PPCEABI.bare.H/k_sin.c:
+	.text       start:0x801A2314 end:0x801A23D4
+
+MSL_C.PPCEABI.bare.H/k_tan.c:
+	.text       start:0x801A23D4 end:0x801A2624
+
+MSL_C.PPCEABI.bare.H/s_atan.c:
+	.text       start:0x801A2624 end:0x801A2854
+
+MSL_C.PPCEABI.bare.H/s_ceil.c:
+	.text       start:0x801A2854 end:0x801A29A0
+
+MSL_C.PPCEABI.bare.H/s_copysign.c:
+	.text       start:0x801A29A0 end:0x801A29CC
+
+MSL_C.PPCEABI.bare.H/s_cos.c:
+	.text       start:0x801A29CC end:0x801A2A94
+
+MSL_C.PPCEABI.bare.H/s_floor.c:
+	.text       start:0x801A2A94 end:0x801A2BE4
+
+MSL_C.PPCEABI.bare.H/s_frexp.c:
+	.text       start:0x801A2BE4 end:0x801A2C6C
+
+MSL_C.PPCEABI.bare.H/s_ldexp.c:
+	.text       start:0x801A2C6C end:0x801A2DD8
+
+MSL_C.PPCEABI.bare.H/s_modf.c:
+	.text       start:0x801A2DD8 end:0x801A2ED4
+
+MSL_C.PPCEABI.bare.H/s_sin.c:
+	.text       start:0x801A2ED4 end:0x801A2FA0
+
+MSL_C.PPCEABI.bare.H/s_tan.c:
+	.text       start:0x801A2FA0 end:0x801A3018
+
+MSL_C.PPCEABI.bare.H/w_acos.c:
+	.text       start:0x801A3018 end:0x801A301C
+
+MSL_C.PPCEABI.bare.H/w_asin.c:
+	.text       start:0x801A301C end:0x801A3020
+
+MSL_C.PPCEABI.bare.H/w_atan2.c:
+	.text       start:0x801A3020 end:0x801A3024
+
+MSL_C.PPCEABI.bare.H/w_fmod.c:
+	.text       start:0x801A3024 end:0x801A3028
+
+MSL_C.PPCEABI.bare.H/w_log10.c:
+	.text       start:0x801A3028 end:0x801A302C
+
+MSL_C.PPCEABI.bare.H/w_pow.c:
+	.text       start:0x801A302C end:0x801A3030
+
+MSL_C.PPCEABI.bare.H/e_sqrt.c:
+	.text       start:0x801A3030 end:0x801A3278
+
+MSL_C.PPCEABI.bare.H/math_ppc.c:
+	.text       start:0x801A3278 end:0x801A3374
+
+MSL_C.PPCEABI.bare.H/w_sqrt.c:
+	.text       start:0x801A3374 end:0x801A3378
+
+MSL_C.PPCEABI.bare.H/extras.c:
+	.text       start:0x801A3378 end:0x801A34BC
+
+TRK_MINNOW_DOLPHIN/targsupp.s:
+	.text       start:0x801A34BC end:0x801A34DC
+
+TRK_MINNOW_DOLPHIN/main.c:
+	.text       start:0x801A34DC end:0x801A3754
+
+TRK_MINNOW_DOLPHIN/MWCriticalSection_gc.c:
+	.text       start:0x801A3754 end:0x801A3790
+
+TRK_MINNOW_DOLPHIN/CircleBuffer.c:
+	.text       start:0x801A3790 end:0x801A39CC
+
+TRK_MINNOW_DOLPHIN/flush_cache.c:
+	.text       start:0x801A39CC end:0x801A3A04
+
+TRK_MINNOW_DOLPHIN/main_TRK.c:
+	.text       start:0x801A3A04 end:0x801A3A40
+
+TRK_MINNOW_DOLPHIN/mainloop.c:
+	.text       start:0x801A3A40 end:0x801A3B2C
+
+TRK_MINNOW_DOLPHIN/mem_TRK.c:
+	.text       start:0x801A3B2C end:0x801A3D90
+
+TRK_MINNOW_DOLPHIN/dispatch.c:
+	.text       start:0x801A3D90 end:0x801A3EB0
+
+TRK_MINNOW_DOLPHIN/dolphin_trk.c:
+	.text       start:0x801A3EB0 end:0x801A41D4
+
+TRK_MINNOW_DOLPHIN/dolphin_trk_glue.c:
+	.text       start:0x801A41D4 end:0x801A4570
+
+TRK_MINNOW_DOLPHIN/notify.c:
+	.text       start:0x801A4570 end:0x801A4600
+
+TRK_MINNOW_DOLPHIN/nubevent.c:
+	.text       start:0x801A4600 end:0x801A479C
+
+TRK_MINNOW_DOLPHIN/nubinit.c:
+	.text       start:0x801A479C end:0x801A48EC
+
+TRK_MINNOW_DOLPHIN/serpoll.c:
+	.text       start:0x801A48EC end:0x801A4A34
+
+TRK_MINNOW_DOLPHIN/string_TRK.c:
+	.text       start:0x801A4A34 end:0x801A4A50
+
+TRK_MINNOW_DOLPHIN/support.c:
+	.text       start:0x801A4A50 end:0x801A5074
+
+TRK_MINNOW_DOLPHIN/targcont.c:
+	.text       start:0x801A5074 end:0x801A50A8
+
+TRK_MINNOW_DOLPHIN/mpc_7xx_603e.c:
+	.text       start:0x801A50A8 end:0x801A53D0
+
+TRK_MINNOW_DOLPHIN/msg.c:
+	.text       start:0x801A53D0 end:0x801A5434
+
+TRK_MINNOW_DOLPHIN/msgbuf.c:
+	.text       start:0x801A5434 end:0x801A5C40
+
+TRK_MINNOW_DOLPHIN/msghndlr.c:
+	.text       start:0x801A5C40 end:0x801A6BC4
+
+TRK_MINNOW_DOLPHIN/mslsupp.c:
+	.text       start:0x801A6BC4 end:0x801A6D50
+
+TRK_MINNOW_DOLPHIN/targimpl.c:
+	.text       start:0x801A6D50 end:0x801A8574
+
+TRK_MINNOW_DOLPHIN/target_options.c:
+	.text       start:0x801A8574 end:0x801A8584
 
 PPCArch.c:
 	.text       start:0x802A21BC end:0x802A232C

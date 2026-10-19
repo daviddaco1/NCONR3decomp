@@ -176,7 +176,11 @@ igual que antes de migrar (53/124 al 100%, fuzzy global 24.96% antes de tocar na
   81. `src/glib_g3d.cpp` (`0x80016340`-`0x80018C4C`): **55 / 55 funciones, 10,508 bytes (100.00%)** — subsistema de inicialización y recursos gráficos NW4R G3D (textures, resfiles, rendering primitives).
   82. `src/glib_draw.cpp` (`0x80018C4C`-`0x80019E50`): **21 / 21 funciones, 4,612 bytes (100.00%)** — subsistema de dibujo, matrices y configuraciones gráficas del motor.
   Todas las funciones coincidentes byte a byte contra `orig/RNEPDA/sys/main.dol`. `build.sha1` verificado y pasando limpio.
-  Progreso global: **40.65% fuzzy, 40.65% matched (3,766 / 11,293 funciones, 1,341,228 / 3,299,164 bytes)**.
+  Progreso global: **50.01% matched (5,289 / 11,293 funciones, 1,649,948 / 3,299,164 bytes)** —
+  **ojo: casi todo es `asm` inline vía `tools/asm_to_cpp.py`, no C** (C real ~100 funciones).
+  Game code (`0x80016340`-`0x8019359C`) 100% splitteado (gap `0x80019E50`-`0x80050548` en
+  39 TUs `glib_*`/`unk_*`); Runtime/MSL_C/TRK (`0x801935B8`-`0x801A8584`) en 80 TUs con nombres de
+  `zeldaret/ss`. Plan: cubrir todo en asm (splits+nombres) y luego reescribir a C. Ver Fase 94.
   `fn_80131428` (3796 bytes, parser principal de tags, 25.3%), `fn_801335F4` (3272 bytes, motor de
   layout/word-wrap, 19.9%), `fn_80132348` (2116 bytes, variante del parser sin tabla extendida,
   26.7%), `fn_80134664` (1900 bytes, tick de animación/reveal de texto, 42.1%). También resuelto

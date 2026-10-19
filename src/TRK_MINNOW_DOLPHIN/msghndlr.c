@@ -1,0 +1,1211 @@
+#include "types.h"
+
+// Translation unit: src/TRK_MINNOW_DOLPHIN/msghndlr.cpp
+// Total functions: 13
+
+// Small Data symbols (@sda21)
+float lbl_8049D920;
+float lbl_8049D924;
+
+// Global data symbols (@ha/@l)
+u8 jumptable_80360330[];
+u8 jumptable_8036034C[];
+u8 lbl_80360368[];
+
+// Forward declarations
+void OSReport();
+void TRKTargetContinue();
+void TRKTargetStopped();
+void fn_801A3C68();
+void fn_801A4048();
+void fn_801A41C4();
+void fn_801A44A0();
+void fn_801A46B0();
+void fn_801A477C();
+void fn_801A53D0();
+void fn_801A553C();
+void fn_801A5564();
+void fn_801A5594();
+void fn_801A5638();
+void fn_801A588C();
+void fn_801A5C40();
+void fn_801A5C48();
+void fn_801A5CB8();
+void fn_801A5D40();
+void fn_801A5DAC();
+void fn_801A5E18();
+void fn_801A604C();
+void fn_801A625C();
+void fn_801A6458();
+void fn_801A66F8();
+void fn_801A67BC();
+void fn_801A6A40();
+void fn_801A6AF8();
+void fn_801A6F24();
+void fn_801A7074();
+void fn_801A716C();
+void fn_801A72A8();
+void fn_801A740C();
+void fn_801A7D98();
+void fn_801A7E20();
+void fn_801A7E94();
+void fn_801A80B8();
+void fn_801A8574();
+
+// ----------------------------------------------------------------------------
+// fn_801A5C40
+// ----------------------------------------------------------------------------
+asm void fn_801A5C40() {
+    nofralloc
+    lwz r3, lbl_8049D924
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_801A5C48
+// ----------------------------------------------------------------------------
+asm void fn_801A5C48() {
+    nofralloc
+    stwu r1, -0x50(r1)
+    mflr r0
+    li r4, 0x0
+    li r5, 0x40
+    stw r0, 0x54(r1)
+    li r0, 0x1
+    addi r3, r1, 0x8
+    stw r0, lbl_8049D924
+    bl fn_801A3C68
+    lwz r3, lbl_8049D920
+    li r0, 0x80
+    li r4, 0x40
+    li r5, 0x0
+    addi r6, r3, 0x1
+    stb r0, 0xc(r1)
+    addi r0, r6, 0x1
+    addi r3, r1, 0x8
+    stw r4, 0x8(r1)
+    li r4, 0x40
+    stb r5, 0x10(r1)
+    stw r6, 0x14(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A44A0
+    lwz r0, 0x54(r1)
+    li r3, 0x0
+    mtlr r0
+    addi r1, r1, 0x50
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_801A5CB8
+// ----------------------------------------------------------------------------
+asm void fn_801A5CB8() {
+    nofralloc
+    stwu r1, -0x60(r1)
+    mflr r0
+    li r4, 0x0
+    li r5, 0x40
+    stw r0, 0x64(r1)
+    addi r3, r1, 0x18
+    stw r31, 0x5c(r1)
+    li r31, 0x0
+    stw r31, lbl_8049D924
+    bl fn_801A3C68
+    lwz r4, lbl_8049D920
+    li r0, 0x80
+    li r3, 0x40
+    stw r3, 0x18(r1)
+    addi r5, r4, 0x1
+    li r4, 0x40
+    stb r0, 0x1c(r1)
+    addi r0, r5, 0x1
+    addi r3, r1, 0x18
+    stb r31, 0x20(r1)
+    stw r5, 0x24(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A44A0
+    addi r3, r1, 0x8
+    li r4, 0x1
+    bl fn_801A477C
+    addi r3, r1, 0x8
+    bl fn_801A46B0
+    lwz r31, 0x5c(r1)
+    li r3, 0x0
+    lwz r0, 0x64(r1)
+    mtlr r0
+    addi r1, r1, 0x60
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_801A5D40
+// ----------------------------------------------------------------------------
+asm void fn_801A5D40() {
+    nofralloc
+    stwu r1, -0x50(r1)
+    mflr r0
+    li r4, 0x0
+    li r5, 0x40
+    stw r0, 0x54(r1)
+    addi r3, r1, 0x8
+    bl fn_801A3C68
+    lwz r3, lbl_8049D920
+    li r0, 0x80
+    li r4, 0x40
+    li r5, 0x0
+    addi r6, r3, 0x1
+    stb r0, 0xc(r1)
+    addi r0, r6, 0x1
+    addi r3, r1, 0x8
+    stw r4, 0x8(r1)
+    li r4, 0x40
+    stb r5, 0x10(r1)
+    stw r6, 0x14(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A44A0
+    bl fn_801A41C4
+    lwz r0, 0x54(r1)
+    li r3, 0x0
+    mtlr r0
+    addi r1, r1, 0x50
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_801A5DAC
+// ----------------------------------------------------------------------------
+asm void fn_801A5DAC() {
+    nofralloc
+    stwu r1, -0x50(r1)
+    mflr r0
+    li r4, 0x0
+    li r5, 0x40
+    stw r0, 0x54(r1)
+    addi r3, r1, 0x8
+    bl fn_801A3C68
+    lwz r3, lbl_8049D920
+    li r0, 0x80
+    li r4, 0x40
+    li r5, 0x0
+    addi r6, r3, 0x1
+    stb r0, 0xc(r1)
+    addi r0, r6, 0x1
+    addi r3, r1, 0x8
+    stw r4, 0x8(r1)
+    li r4, 0x40
+    stb r5, 0x10(r1)
+    stw r6, 0x14(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A44A0
+    bl fn_801A4048
+    lwz r0, 0x54(r1)
+    li r3, 0x0
+    mtlr r0
+    addi r1, r1, 0x50
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_801A5E18
+// ----------------------------------------------------------------------------
+asm void fn_801A5E18() {
+    nofralloc
+    clrlwi r11, r1, 27
+    mr r12, r1
+    subfic r11, r11, -0x940
+    stwux r1, r1, r11
+    mflr r0
+    stw r0, 0x4(r12)
+    stw r31, -0x4(r12)
+    li r31, 0x0
+    stw r30, -0x8(r12)
+    stw r29, -0xc(r12)
+    stw r28, -0x10(r12)
+    mr r28, r3
+    lbz r30, 0x14(r3)
+    lwz r29, 0x1c(r3)
+    rlwinm. r0, r30, 0, 30, 30
+    lhz r3, 0x18(r3)
+    beq lbl_801A5EAC
+    addi r3, r1, 0x68
+    li r4, 0x0
+    li r5, 0x40
+    bl fn_801A3C68
+    lwz r3, lbl_8049D920
+    li r0, 0x80
+    li r4, 0x40
+    li r5, 0x12
+    addi r6, r3, 0x1
+    stb r0, 0x6c(r1)
+    addi r0, r6, 0x1
+    addi r3, r1, 0x68
+    stw r4, 0x68(r1)
+    li r4, 0x40
+    stb r5, 0x70(r1)
+    stw r6, 0x74(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A44A0
+    li r3, 0x0
+    b lbl_801A6028
+lbl_801A5EAC:
+    cmpwi r31, 0x0
+    bne lbl_801A5F7C
+    rlwinm. r0, r30, 0, 28, 28
+    stw r3, 0x20(r1)
+    beq lbl_801A5EC8
+    li r6, 0x0
+    b lbl_801A5ECC
+lbl_801A5EC8:
+    li r6, 0x1
+lbl_801A5ECC:
+    mr r4, r29
+    addi r3, r1, 0x100
+    addi r5, r1, 0x20
+    li r7, 0x1
+    bl fn_801A6F24
+    mr r31, r3
+    mr r3, r28
+    li r4, 0x0
+    bl fn_801A553C
+    cmpwi r31, 0x0
+    bne lbl_801A5F7C
+    addi r3, r1, 0xa8
+    li r4, 0x0
+    li r5, 0x40
+    bl fn_801A3C68
+    lwz r6, lbl_8049D920
+    li r7, 0x80
+    lwz r4, 0x20(r1)
+    mr r3, r28
+    addi r0, r6, 0x1
+    stb r31, 0xb0(r1)
+    addi r5, r4, 0x40
+    addi r4, r1, 0xa8
+    stw r5, 0xa8(r1)
+    li r5, 0x40
+    stb r7, 0xac(r1)
+    stw r6, 0xb4(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A5594
+    rlwinm. r0, r30, 0, 25, 25
+    beq lbl_801A5F68
+    clrlwi r0, r29, 27
+    addi r4, r1, 0x100
+    lwz r5, 0x20(r1)
+    mr r3, r28
+    add r4, r4, r0
+    bl fn_801A5594
+    mr r31, r3
+    b lbl_801A5F7C
+lbl_801A5F68:
+    lwz r5, 0x20(r1)
+    mr r3, r28
+    addi r4, r1, 0x100
+    bl fn_801A5594
+    mr r31, r3
+lbl_801A5F7C:
+    cmpwi r31, 0x0
+    beq lbl_801A6020
+    subi r0, r31, 0x700
+    cmplwi r0, 0x6
+    bgt lbl_801A5FD0
+    lis r3, jumptable_80360330@ha
+    slwi r0, r0, 2
+    addi r3, r3, jumptable_80360330@l
+    lwzx r3, r3, r0
+    mtctr r3
+    bctr
+    li r31, 0x15
+    b lbl_801A5FD4
+    li r31, 0x13
+    b lbl_801A5FD4
+    li r31, 0x21
+    b lbl_801A5FD4
+    li r31, 0x22
+    b lbl_801A5FD4
+    li r31, 0x20
+    b lbl_801A5FD4
+lbl_801A5FD0:
+    li r31, 0x3
+lbl_801A5FD4:
+    addi r3, r1, 0x28
+    li r4, 0x0
+    li r5, 0x40
+    bl fn_801A3C68
+    lwz r3, lbl_8049D920
+    li r0, 0x80
+    li r4, 0x40
+    stw r4, 0x28(r1)
+    addi r5, r3, 0x1
+    addi r3, r1, 0x28
+    stb r0, 0x2c(r1)
+    addi r0, r5, 0x1
+    li r4, 0x40
+    stb r31, 0x30(r1)
+    stw r5, 0x34(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A44A0
+    li r3, 0x0
+    b lbl_801A6028
+lbl_801A6020:
+    mr r3, r28
+    bl fn_801A53D0
+lbl_801A6028:
+    lwz r10, 0x0(r1)
+    lwz r0, 0x4(r10)
+    lwz r31, -0x4(r10)
+    lwz r30, -0x8(r10)
+    lwz r29, -0xc(r10)
+    lwz r28, -0x10(r10)
+    mtlr r0
+    mr r1, r10
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_801A604C
+// ----------------------------------------------------------------------------
+asm void fn_801A604C() {
+    nofralloc
+    clrlwi r11, r1, 27
+    mr r12, r1
+    subfic r11, r11, -0x940
+    stwux r1, r1, r11
+    mflr r0
+    stw r0, 0x4(r12)
+    stw r31, -0x4(r12)
+    li r31, 0x0
+    stw r30, -0x8(r12)
+    stw r29, -0xc(r12)
+    stw r28, -0x10(r12)
+    mr r28, r3
+    lbz r30, 0x14(r3)
+    lwz r29, 0x1c(r3)
+    rlwinm. r0, r30, 0, 30, 30
+    lhz r0, 0x18(r3)
+    beq lbl_801A60E0
+    addi r3, r1, 0x68
+    li r4, 0x0
+    li r5, 0x40
+    bl fn_801A3C68
+    lwz r3, lbl_8049D920
+    li r0, 0x80
+    li r4, 0x40
+    li r5, 0x12
+    addi r6, r3, 0x1
+    stb r0, 0x6c(r1)
+    addi r0, r6, 0x1
+    addi r3, r1, 0x68
+    stw r4, 0x68(r1)
+    li r4, 0x40
+    stb r5, 0x70(r1)
+    stw r6, 0x74(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A44A0
+    li r3, 0x0
+    b lbl_801A6238
+lbl_801A60E0:
+    cmpwi r31, 0x0
+    bne lbl_801A618C
+    stw r0, 0x20(r1)
+    li r4, 0x40
+    bl fn_801A5564
+    lwz r5, 0x20(r1)
+    mr r3, r28
+    addi r4, r1, 0x100
+    bl fn_801A5638
+    rlwinm. r0, r30, 0, 28, 28
+    beq lbl_801A6114
+    li r6, 0x0
+    b lbl_801A6118
+lbl_801A6114:
+    li r6, 0x1
+lbl_801A6118:
+    mr r4, r29
+    addi r3, r1, 0x100
+    addi r5, r1, 0x20
+    li r7, 0x0
+    bl fn_801A6F24
+    mr r31, r3
+    mr r3, r28
+    li r4, 0x0
+    bl fn_801A553C
+    cmpwi r31, 0x0
+    bne lbl_801A618C
+    addi r3, r1, 0xa8
+    li r4, 0x0
+    li r5, 0x40
+    bl fn_801A3C68
+    lwz r6, lbl_8049D920
+    li r0, 0x40
+    li r4, 0x80
+    stw r0, 0xa8(r1)
+    addi r0, r6, 0x1
+    mr r3, r28
+    stb r4, 0xac(r1)
+    addi r4, r1, 0xa8
+    li r5, 0x40
+    stb r31, 0xb0(r1)
+    stw r6, 0xb4(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A5594
+    mr r31, r3
+lbl_801A618C:
+    cmpwi r31, 0x0
+    beq lbl_801A6230
+    subi r0, r31, 0x700
+    cmplwi r0, 0x6
+    bgt lbl_801A61E0
+    lis r3, jumptable_8036034C@ha
+    slwi r0, r0, 2
+    addi r3, r3, jumptable_8036034C@l
+    lwzx r3, r3, r0
+    mtctr r3
+    bctr
+    li r31, 0x15
+    b lbl_801A61E4
+    li r31, 0x13
+    b lbl_801A61E4
+    li r31, 0x21
+    b lbl_801A61E4
+    li r31, 0x22
+    b lbl_801A61E4
+    li r31, 0x20
+    b lbl_801A61E4
+lbl_801A61E0:
+    li r31, 0x3
+lbl_801A61E4:
+    addi r3, r1, 0x28
+    li r4, 0x0
+    li r5, 0x40
+    bl fn_801A3C68
+    lwz r3, lbl_8049D920
+    li r0, 0x80
+    li r4, 0x40
+    stw r4, 0x28(r1)
+    addi r5, r3, 0x1
+    addi r3, r1, 0x28
+    stb r0, 0x2c(r1)
+    addi r0, r5, 0x1
+    li r4, 0x40
+    stb r31, 0x30(r1)
+    stw r5, 0x34(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A44A0
+    li r3, 0x0
+    b lbl_801A6238
+lbl_801A6230:
+    mr r3, r28
+    bl fn_801A53D0
+lbl_801A6238:
+    lwz r10, 0x0(r1)
+    lwz r0, 0x4(r10)
+    lwz r31, -0x4(r10)
+    lwz r30, -0x8(r10)
+    lwz r29, -0xc(r10)
+    lwz r28, -0x10(r10)
+    mtlr r0
+    mr r1, r10
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_801A625C
+// ----------------------------------------------------------------------------
+asm void fn_801A625C() {
+    nofralloc
+    stwu r1, -0xe0(r1)
+    mflr r0
+    stw r0, 0xe4(r1)
+    stw r31, 0xdc(r1)
+    mr r31, r3
+    lhz r4, 0x18(r3)
+    lhz r0, 0x1c(r3)
+    cmplw r4, r0
+    ble lbl_801A62D0
+    addi r3, r1, 0x50
+    li r4, 0x0
+    li r5, 0x40
+    bl fn_801A3C68
+    lwz r3, lbl_8049D920
+    li r0, 0x80
+    li r4, 0x40
+    li r5, 0x14
+    addi r6, r3, 0x1
+    stb r0, 0x54(r1)
+    addi r0, r6, 0x1
+    addi r3, r1, 0x50
+    stw r4, 0x50(r1)
+    li r4, 0x40
+    stb r5, 0x58(r1)
+    stw r6, 0x5c(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A44A0
+    li r3, 0x0
+    b lbl_801A6444
+lbl_801A62D0:
+    lwz r5, lbl_8049D920
+    li r0, 0x80
+    li r6, 0x468
+    stb r0, 0x94(r1)
+    addi r0, r5, 0x1
+    li r4, 0x0
+    stw r6, 0x90(r1)
+    stw r5, 0x9c(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A553C
+    mr r3, r31
+    addi r4, r1, 0x90
+    li r5, 0x40
+    bl fn_801A588C
+    mr r5, r31
+    addi r6, r1, 0x8
+    li r3, 0x0
+    li r4, 0x24
+    li r7, 0x1
+    bl fn_801A7074
+    cmpwi r3, 0x0
+    bne lbl_801A6340
+    mr r5, r31
+    addi r6, r1, 0x8
+    li r3, 0x0
+    li r4, 0x21
+    li r7, 0x1
+    bl fn_801A716C
+lbl_801A6340:
+    cmpwi r3, 0x0
+    bne lbl_801A6360
+    mr r5, r31
+    addi r6, r1, 0x8
+    li r3, 0x0
+    li r4, 0x60
+    li r7, 0x1
+    bl fn_801A72A8
+lbl_801A6360:
+    cmpwi r3, 0x0
+    bne lbl_801A6380
+    mr r5, r31
+    addi r6, r1, 0x8
+    li r3, 0x0
+    li r4, 0x1f
+    li r7, 0x1
+    bl fn_801A740C
+lbl_801A6380:
+    cmpwi r3, 0x0
+    beq lbl_801A643C
+    cmpwi r3, 0x703
+    beq lbl_801A63BC
+    cmpwi r3, 0x701
+    beq lbl_801A63C4
+    cmpwi r3, 0x702
+    beq lbl_801A63CC
+    cmpwi r3, 0x704
+    beq lbl_801A63D4
+    cmpwi r3, 0x705
+    beq lbl_801A63DC
+    cmpwi r3, 0x706
+    beq lbl_801A63E4
+    b lbl_801A63EC
+lbl_801A63BC:
+    li r31, 0x12
+    b lbl_801A63F0
+lbl_801A63C4:
+    li r31, 0x14
+    b lbl_801A63F0
+lbl_801A63CC:
+    li r31, 0x15
+    b lbl_801A63F0
+lbl_801A63D4:
+    li r31, 0x21
+    b lbl_801A63F0
+lbl_801A63DC:
+    li r31, 0x22
+    b lbl_801A63F0
+lbl_801A63E4:
+    li r31, 0x20
+    b lbl_801A63F0
+lbl_801A63EC:
+    li r31, 0x3
+lbl_801A63F0:
+    addi r3, r1, 0x10
+    li r4, 0x0
+    li r5, 0x40
+    bl fn_801A3C68
+    lwz r3, lbl_8049D920
+    li r0, 0x80
+    li r4, 0x40
+    stw r4, 0x10(r1)
+    addi r5, r3, 0x1
+    addi r3, r1, 0x10
+    stb r0, 0x14(r1)
+    addi r0, r5, 0x1
+    li r4, 0x40
+    stb r31, 0x18(r1)
+    stw r5, 0x1c(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A44A0
+    li r3, 0x0
+    b lbl_801A6444
+lbl_801A643C:
+    mr r3, r31
+    bl fn_801A53D0
+lbl_801A6444:
+    lwz r0, 0xe4(r1)
+    lwz r31, 0xdc(r1)
+    mtlr r0
+    addi r1, r1, 0xe0
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_801A6458
+// ----------------------------------------------------------------------------
+asm void fn_801A6458() {
+    nofralloc
+    stwu r1, -0xe0(r1)
+    mflr r0
+    li r4, 0x0
+    stw r0, 0xe4(r1)
+    stw r31, 0xdc(r1)
+    stw r30, 0xd8(r1)
+    stw r29, 0xd4(r1)
+    stw r28, 0xd0(r1)
+    mr r28, r3
+    lbz r31, 0x14(r3)
+    lhz r30, 0x18(r3)
+    lhz r29, 0x1c(r3)
+    bl fn_801A5564
+    cmplw r30, r29
+    ble lbl_801A64E4
+    addi r3, r1, 0x50
+    li r4, 0x0
+    li r5, 0x40
+    bl fn_801A3C68
+    lwz r3, lbl_8049D920
+    li r0, 0x80
+    li r4, 0x40
+    li r5, 0x14
+    addi r6, r3, 0x1
+    stb r0, 0x54(r1)
+    addi r0, r6, 0x1
+    addi r3, r1, 0x50
+    stw r4, 0x50(r1)
+    li r4, 0x40
+    stb r5, 0x58(r1)
+    stw r6, 0x5c(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A44A0
+    li r3, 0x0
+    b lbl_801A66D8
+lbl_801A64E4:
+    mr r3, r28
+    li r4, 0x40
+    bl fn_801A5564
+    cmpwi r31, 0x0
+    beq lbl_801A6514
+    cmpwi r31, 0x1
+    beq lbl_801A6534
+    cmpwi r31, 0x2
+    beq lbl_801A6554
+    cmpwi r31, 0x3
+    beq lbl_801A6574
+    b lbl_801A6594
+lbl_801A6514:
+    mr r3, r30
+    mr r4, r29
+    mr r5, r28
+    addi r6, r1, 0x8
+    li r7, 0x0
+    bl fn_801A7074
+    mr r31, r3
+    b lbl_801A6598
+lbl_801A6534:
+    mr r3, r30
+    mr r4, r29
+    mr r5, r28
+    addi r6, r1, 0x8
+    li r7, 0x0
+    bl fn_801A716C
+    mr r31, r3
+    b lbl_801A6598
+lbl_801A6554:
+    mr r3, r30
+    mr r4, r29
+    mr r5, r28
+    addi r6, r1, 0x8
+    li r7, 0x0
+    bl fn_801A72A8
+    mr r31, r3
+    b lbl_801A6598
+lbl_801A6574:
+    mr r3, r30
+    mr r4, r29
+    mr r5, r28
+    addi r6, r1, 0x8
+    li r7, 0x0
+    bl fn_801A740C
+    mr r31, r3
+    b lbl_801A6598
+lbl_801A6594:
+    li r31, 0x703
+lbl_801A6598:
+    mr r3, r28
+    li r4, 0x0
+    bl fn_801A553C
+    cmpwi r31, 0x0
+    bne lbl_801A65F4
+    addi r3, r1, 0x90
+    li r4, 0x0
+    li r5, 0x40
+    bl fn_801A3C68
+    lwz r6, lbl_8049D920
+    li r0, 0x40
+    li r4, 0x80
+    stw r0, 0x90(r1)
+    addi r0, r6, 0x1
+    mr r3, r28
+    stb r4, 0x94(r1)
+    addi r4, r1, 0x90
+    li r5, 0x40
+    stb r31, 0x98(r1)
+    stw r6, 0x9c(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A5594
+    mr r31, r3
+lbl_801A65F4:
+    cmpwi r31, 0x702
+    beq lbl_801A6660
+    bge lbl_801A6624
+    cmpwi r31, 0x302
+    beq lbl_801A6658
+    bge lbl_801A6618
+    cmpwi r31, 0x0
+    beq lbl_801A66D0
+    b lbl_801A6680
+lbl_801A6618:
+    cmpwi r31, 0x701
+    bge lbl_801A6650
+    b lbl_801A6680
+lbl_801A6624:
+    cmpwi r31, 0x705
+    beq lbl_801A6670
+    bge lbl_801A663C
+    cmpwi r31, 0x704
+    bge lbl_801A6668
+    b lbl_801A6648
+lbl_801A663C:
+    cmpwi r31, 0x707
+    bge lbl_801A6680
+    b lbl_801A6678
+lbl_801A6648:
+    li r31, 0x12
+    b lbl_801A6684
+lbl_801A6650:
+    li r31, 0x14
+    b lbl_801A6684
+lbl_801A6658:
+    li r31, 0x2
+    b lbl_801A6684
+lbl_801A6660:
+    li r31, 0x15
+    b lbl_801A6684
+lbl_801A6668:
+    li r31, 0x21
+    b lbl_801A6684
+lbl_801A6670:
+    li r31, 0x22
+    b lbl_801A6684
+lbl_801A6678:
+    li r31, 0x20
+    b lbl_801A6684
+lbl_801A6680:
+    li r31, 0x3
+lbl_801A6684:
+    addi r3, r1, 0x10
+    li r4, 0x0
+    li r5, 0x40
+    bl fn_801A3C68
+    lwz r3, lbl_8049D920
+    li r0, 0x80
+    li r4, 0x40
+    stw r4, 0x10(r1)
+    addi r5, r3, 0x1
+    addi r3, r1, 0x10
+    stb r0, 0x14(r1)
+    addi r0, r5, 0x1
+    li r4, 0x40
+    stb r31, 0x18(r1)
+    stw r5, 0x1c(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A44A0
+    li r3, 0x0
+    b lbl_801A66D8
+lbl_801A66D0:
+    mr r3, r28
+    bl fn_801A53D0
+lbl_801A66D8:
+    lwz r0, 0xe4(r1)
+    lwz r31, 0xdc(r1)
+    lwz r30, 0xd8(r1)
+    lwz r29, 0xd4(r1)
+    lwz r28, 0xd0(r1)
+    mtlr r0
+    addi r1, r1, 0xe0
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_801A66F8
+// ----------------------------------------------------------------------------
+asm void fn_801A66F8() {
+    nofralloc
+    stwu r1, -0x90(r1)
+    mflr r0
+    stw r0, 0x94(r1)
+    bl TRKTargetStopped
+    cmpwi r3, 0x0
+    bne lbl_801A6760
+    addi r3, r1, 0x48
+    li r4, 0x0
+    li r5, 0x40
+    bl fn_801A3C68
+    lwz r3, lbl_8049D920
+    li r0, 0x80
+    li r4, 0x40
+    li r5, 0x16
+    addi r6, r3, 0x1
+    stb r0, 0x4c(r1)
+    addi r0, r6, 0x1
+    addi r3, r1, 0x48
+    stw r4, 0x48(r1)
+    li r4, 0x40
+    stb r5, 0x50(r1)
+    stw r6, 0x54(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A44A0
+    li r3, 0x0
+    b lbl_801A67AC
+lbl_801A6760:
+    addi r3, r1, 0x8
+    li r4, 0x0
+    li r5, 0x40
+    bl fn_801A3C68
+    lwz r3, lbl_8049D920
+    li r0, 0x80
+    li r4, 0x40
+    li r5, 0x0
+    addi r6, r3, 0x1
+    stb r0, 0xc(r1)
+    addi r0, r6, 0x1
+    addi r3, r1, 0x8
+    stw r4, 0x8(r1)
+    li r4, 0x40
+    stb r5, 0x10(r1)
+    stw r6, 0x14(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A44A0
+    bl TRKTargetContinue
+lbl_801A67AC:
+    lwz r0, 0x94(r1)
+    mtlr r0
+    addi r1, r1, 0x90
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_801A67BC
+// ----------------------------------------------------------------------------
+asm void fn_801A67BC() {
+    nofralloc
+    stwu r1, -0x160(r1)
+    mflr r0
+    li r4, 0x0
+    stw r0, 0x164(r1)
+    stw r31, 0x15c(r1)
+    stw r30, 0x158(r1)
+    mr r30, r3
+    stw r29, 0x154(r1)
+    stw r28, 0x150(r1)
+    bl fn_801A5564
+    lbz r31, 0x14(r30)
+    lwz r29, 0x1c(r30)
+    cmpwi r31, 0x0
+    lwz r28, 0x20(r30)
+    beq lbl_801A6814
+    cmpwi r31, 0x10
+    beq lbl_801A6814
+    cmpwi r31, 0x1
+    beq lbl_801A6870
+    cmpwi r31, 0x11
+    beq lbl_801A6870
+    b lbl_801A68D4
+lbl_801A6814:
+    lbz r30, 0x18(r30)
+    cmplwi r30, 0x1
+    bge lbl_801A6924
+    addi r3, r1, 0x108
+    li r4, 0x0
+    li r5, 0x40
+    bl fn_801A3C68
+    lwz r3, lbl_8049D920
+    li r0, 0x80
+    li r4, 0x40
+    li r5, 0x11
+    addi r6, r3, 0x1
+    stb r0, 0x10c(r1)
+    addi r0, r6, 0x1
+    addi r3, r1, 0x108
+    stw r4, 0x108(r1)
+    li r4, 0x40
+    stb r5, 0x110(r1)
+    stw r6, 0x114(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A44A0
+    li r3, 0x0
+    b lbl_801A6A20
+lbl_801A6870:
+    bl fn_801A7E94
+    cmplw r3, r29
+    blt lbl_801A6884
+    cmplw r3, r28
+    ble lbl_801A6924
+lbl_801A6884:
+    addi r3, r1, 0xc8
+    li r4, 0x0
+    li r5, 0x40
+    bl fn_801A3C68
+    lwz r3, lbl_8049D920
+    li r0, 0x80
+    li r4, 0x40
+    li r5, 0x11
+    addi r6, r3, 0x1
+    stb r0, 0xcc(r1)
+    addi r0, r6, 0x1
+    addi r3, r1, 0xc8
+    stw r4, 0xc8(r1)
+    li r4, 0x40
+    stb r5, 0xd0(r1)
+    stw r6, 0xd4(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A44A0
+    li r3, 0x0
+    b lbl_801A6A20
+lbl_801A68D4:
+    addi r3, r1, 0x88
+    li r4, 0x0
+    li r5, 0x40
+    bl fn_801A3C68
+    lwz r3, lbl_8049D920
+    li r0, 0x80
+    li r4, 0x40
+    li r5, 0x12
+    addi r6, r3, 0x1
+    stb r0, 0x8c(r1)
+    addi r0, r6, 0x1
+    addi r3, r1, 0x88
+    stw r4, 0x88(r1)
+    li r4, 0x40
+    stb r5, 0x90(r1)
+    stw r6, 0x94(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A44A0
+    li r3, 0x0
+    b lbl_801A6A20
+lbl_801A6924:
+    bl TRKTargetStopped
+    cmpwi r3, 0x0
+    bne lbl_801A6980
+    addi r3, r1, 0x48
+    li r4, 0x0
+    li r5, 0x40
+    bl fn_801A3C68
+    lwz r3, lbl_8049D920
+    li r0, 0x80
+    li r4, 0x40
+    li r5, 0x16
+    addi r6, r3, 0x1
+    stb r0, 0x4c(r1)
+    addi r0, r6, 0x1
+    addi r3, r1, 0x48
+    stw r4, 0x48(r1)
+    li r4, 0x40
+    stb r5, 0x50(r1)
+    stw r6, 0x54(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A44A0
+    li r3, 0x0
+    b lbl_801A6A20
+lbl_801A6980:
+    addi r3, r1, 0x8
+    li r4, 0x0
+    li r5, 0x40
+    bl fn_801A3C68
+    lwz r3, lbl_8049D920
+    li r0, 0x80
+    li r4, 0x40
+    li r5, 0x0
+    addi r6, r3, 0x1
+    stb r0, 0xc(r1)
+    addi r0, r6, 0x1
+    addi r3, r1, 0x8
+    stw r4, 0x8(r1)
+    li r4, 0x40
+    stb r5, 0x10(r1)
+    stw r6, 0x14(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A44A0
+    cmpwi r31, 0x0
+    li r3, 0x0
+    beq lbl_801A69F0
+    cmpwi r31, 0x10
+    beq lbl_801A69F0
+    cmpwi r31, 0x1
+    beq lbl_801A6A08
+    cmpwi r31, 0x11
+    beq lbl_801A6A08
+    b lbl_801A6A20
+lbl_801A69F0:
+    subi r0, r31, 0x10
+    mr r3, r30
+    cntlzw r0, r0
+    srwi r4, r0, 5
+    bl fn_801A7D98
+    b lbl_801A6A20
+lbl_801A6A08:
+    subi r0, r31, 0x11
+    mr r3, r29
+    cntlzw r0, r0
+    mr r4, r28
+    srwi r5, r0, 5
+    bl fn_801A7E20
+lbl_801A6A20:
+    lwz r0, 0x164(r1)
+    lwz r31, 0x15c(r1)
+    lwz r30, 0x158(r1)
+    lwz r29, 0x154(r1)
+    lwz r28, 0x150(r1)
+    mtlr r0
+    addi r1, r1, 0x160
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_801A6A40
+// ----------------------------------------------------------------------------
+asm void fn_801A6A40() {
+    nofralloc
+    stwu r1, -0x50(r1)
+    mflr r0
+    stw r0, 0x54(r1)
+    stw r31, 0x4c(r1)
+    bl fn_801A80B8
+    cmpwi r3, 0x0
+    beq lbl_801A6A78
+    cmpwi r3, 0x704
+    beq lbl_801A6A80
+    cmpwi r3, 0x705
+    beq lbl_801A6A88
+    cmpwi r3, 0x706
+    beq lbl_801A6A90
+    b lbl_801A6A98
+lbl_801A6A78:
+    li r31, 0x0
+    b lbl_801A6A9C
+lbl_801A6A80:
+    li r31, 0x21
+    b lbl_801A6A9C
+lbl_801A6A88:
+    li r31, 0x22
+    b lbl_801A6A9C
+lbl_801A6A90:
+    li r31, 0x20
+    b lbl_801A6A9C
+lbl_801A6A98:
+    li r31, 0x1
+lbl_801A6A9C:
+    addi r3, r1, 0x8
+    li r4, 0x0
+    li r5, 0x40
+    bl fn_801A3C68
+    lwz r3, lbl_8049D920
+    li r0, 0x80
+    li r4, 0x40
+    stw r4, 0x8(r1)
+    addi r5, r3, 0x1
+    addi r3, r1, 0x8
+    stb r0, 0xc(r1)
+    addi r0, r5, 0x1
+    li r4, 0x40
+    stb r31, 0x10(r1)
+    stw r5, 0x14(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A44A0
+    lwz r31, 0x4c(r1)
+    li r3, 0x0
+    lwz r0, 0x54(r1)
+    mtlr r0
+    addi r1, r1, 0x50
+    blr
+}
+
+// ----------------------------------------------------------------------------
+// fn_801A6AF8
+// ----------------------------------------------------------------------------
+asm void fn_801A6AF8() {
+    nofralloc
+    stwu r1, -0x50(r1)
+    mflr r0
+    stw r0, 0x54(r1)
+    stw r31, 0x4c(r1)
+    stw r30, 0x48(r1)
+    lbz r0, 0x14(r3)
+    lbz r30, 0x18(r3)
+    cmplwi r0, 0x1
+    bne lbl_801A6B60
+    lis r31, lbl_80360368@ha
+    addi r3, r31, lbl_80360368@l
+    opword 0x4CC63182
+    bl OSReport
+    cmpwi r30, 0x0
+    beq lbl_801A6B48
+    addi r3, r31, lbl_80360368@l
+    addi r3, r3, 0x1f
+    opword 0x4CC63182
+    bl OSReport
+    b lbl_801A6B58
+lbl_801A6B48:
+    addi r3, r31, lbl_80360368@l
+    addi r3, r3, 0x27
+    opword 0x4CC63182
+    bl OSReport
+lbl_801A6B58:
+    mr r3, r30
+    bl fn_801A8574
+lbl_801A6B60:
+    addi r3, r1, 0x8
+    li r4, 0x0
+    li r5, 0x40
+    bl fn_801A3C68
+    lwz r3, lbl_8049D920
+    li r0, 0x80
+    li r4, 0x40
+    li r5, 0x0
+    addi r6, r3, 0x1
+    stb r0, 0xc(r1)
+    addi r0, r6, 0x1
+    addi r3, r1, 0x8
+    stw r4, 0x8(r1)
+    li r4, 0x40
+    stb r5, 0x10(r1)
+    stw r6, 0x14(r1)
+    stw r0, lbl_8049D920
+    bl fn_801A44A0
+    lwz r31, 0x4c(r1)
+    li r3, 0x0
+    lwz r30, 0x48(r1)
+    lwz r0, 0x54(r1)
+    mtlr r0
+    addi r1, r1, 0x50
+    blr
+}
+
