@@ -329,10 +329,10 @@ extern "C" void fn_8018E470();
 extern "C" void fn_8018E734();
 extern "C" void fn_8018F600();
 extern "C" void fn_8018F7B8();
-extern "C" void fn_80193934();
-extern "C" void fn_80195934();
+extern "C" void __construct_new_array();
+extern "C" void __throw();
 extern "C" void fn_80197DB4();
-extern "C" void fn_8019CC7C();
+extern "C" void strcmp();
 extern "C" void fn_801A3344();
 extern "C" void fn_801A9384();
 extern "C" void fn_801A9BA4();
@@ -1023,7 +1023,7 @@ extern "C" asm void fn_80187334() {
 lbl_80187368:
     mr r3, r30
     mr r4, r31
-    bl fn_8019CC7C
+    bl strcmp
     lwz r31, 0xc(r1)
     lwz r30, 0x8(r1)
     lwz r0, 0x14(r1)
@@ -1471,7 +1471,7 @@ lbl_80187964:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_801879C4:
     stw r23, lbl_8049D83C
     bl fn_801AA55C
@@ -2017,7 +2017,7 @@ lbl_801880AC:
     mr r3, r30
     bl fn_8018B6A4
     mr r4, r28
-    bl fn_8019CC7C
+    bl strcmp
     cmpwi r3, 0x0
     bne lbl_801880C8
     addi r29, r29, 0x1
@@ -2057,7 +2057,7 @@ lbl_80188130:
     mr r3, r30
     bl fn_8018B6AC
     mr r4, r28
-    bl fn_8019CC7C
+    bl strcmp
     cmpwi r3, 0x0
     bne lbl_8018814C
     addi r29, r29, 0x1
@@ -4336,7 +4336,7 @@ lbl_80189F40:
     addi r5, r5, fn_801A9780@l
     li r6, 0xa0
     mr r7, r28
-    bl fn_80193934
+    bl __construct_new_array
     mr r27, r3
     b lbl_8018A024
     mr r3, r27
@@ -4345,7 +4345,7 @@ lbl_80189F40:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_8018A024:
     mr r3, r29
     li r4, 0x24
@@ -4371,7 +4371,7 @@ lbl_8018A024:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_8018A088:
     stw r30, 0x8(r29)
     li r27, 0x0
@@ -4400,7 +4400,7 @@ lbl_8018A088:
     addi r5, r5, fn_801AAE0C@l
     li r6, 0x154
     mr r7, r30
-    bl fn_80193934
+    bl __construct_new_array
     mr r27, r3
     b lbl_8018A11C
     mr r3, r27
@@ -4409,7 +4409,7 @@ lbl_8018A088:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_8018A11C:
     mr r3, r29
     li r4, 0x24
@@ -4435,7 +4435,7 @@ lbl_8018A11C:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_8018A180:
     stw r30, 0x10(r29)
     li r27, 0x0
@@ -4464,7 +4464,7 @@ lbl_8018A180:
     addi r5, r5, fn_801B6628@l
     li r6, 0xbc
     mr r7, r30
-    bl fn_80193934
+    bl __construct_new_array
     mr r27, r3
     b lbl_8018A214
     mr r3, r27
@@ -4473,7 +4473,7 @@ lbl_8018A180:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_8018A214:
     mr r3, r29
     li r4, 0x24
@@ -4499,7 +4499,7 @@ lbl_8018A214:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_8018A278:
     stw r30, 0x18(r29)
     li r27, 0x0
@@ -4528,7 +4528,7 @@ lbl_8018A278:
     addi r5, r5, fn_801B5514@l
     li r6, 0xe4
     mr r7, r30
-    bl fn_80193934
+    bl __construct_new_array
     mr r27, r3
     b lbl_8018A30C
     mr r3, r27
@@ -4537,7 +4537,7 @@ lbl_8018A278:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_8018A30C:
     mr r3, r29
     li r4, 0x24
@@ -4563,7 +4563,7 @@ lbl_8018A30C:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_8018A370:
     stw r30, 0x20(r29)
     mr r3, r29

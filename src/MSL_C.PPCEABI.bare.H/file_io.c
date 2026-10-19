@@ -8,17 +8,17 @@ u8 lbl_8035FBD8[];
 
 // Forward declarations
 void __flush_buffer();
-void fn_8019608C();
-void fn_801962E4();
-void fn_80198434();
-void fn_801984F0();
+void free();
+void __flush_all();
+void fclose();
+void fflush();
 void fn_80198624();
-void fn_80198784();
+void ftell();
 
 // ----------------------------------------------------------------------------
-// fn_80198434
+// fclose
 // ----------------------------------------------------------------------------
-asm void fn_80198434() {
+asm void fclose() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -38,7 +38,7 @@ lbl_80198460:
     li r3, 0x0
     b lbl_801984D4
 lbl_80198474:
-    bl fn_801984F0
+    bl fflush
     lwz r12, 0x44(r29)
     mr r30, r3
     lwz r3, 0x0(r29)
@@ -54,7 +54,7 @@ lbl_80198474:
     stw r4, 0x4(r29)
     beq lbl_801984B8
     lwz r3, 0x1c(r29)
-    bl fn_8019608C
+    bl free
 lbl_801984B8:
     cmpwi r30, 0x0
     li r0, 0x0
@@ -76,9 +76,9 @@ lbl_801984D4:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801984F0
+// fflush
 // ----------------------------------------------------------------------------
-asm void fn_801984F0() {
+asm void fflush() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -88,7 +88,7 @@ asm void fn_801984F0() {
     mr r31, r3
     stw r30, 0x8(r1)
     bne lbl_80198518
-    bl fn_801962E4
+    bl __flush_all
     b lbl_8019860C
 lbl_80198518:
     lbz r0, 0xa(r3)
@@ -139,7 +139,7 @@ lbl_801985A0:
     b lbl_801985C4
 lbl_801985B8:
     mr r3, r31
-    bl fn_80198784
+    bl ftell
     mr r30, r3
 lbl_801985C4:
     mr r3, r31

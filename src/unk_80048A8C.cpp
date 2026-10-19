@@ -30,7 +30,7 @@ extern "C" void fn_80048EF0();
 extern "C" void fn_80170E84();
 extern "C" void fn_80186808();
 extern "C" void fn_80186C78();
-extern "C" void fn_80195934();
+extern "C" void __throw();
 extern "C" void fn_801F6D00();
 extern "C" void fn_802005A0();
 extern "C" void fn_80200804();
@@ -99,7 +99,7 @@ lbl_80048AEC:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_80048B5C:
     stw r30, 0x8(r28)
     mr r3, r30
@@ -301,7 +301,7 @@ extern "C" asm void fn_80048D44() {
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_80048DF4:
     stw r30, 0x8(r28)
     lis r3, lbl_803C22B0@ha

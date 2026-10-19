@@ -70,7 +70,7 @@ extern "C" void fn_80096310();
 extern "C" void fn_80096328();
 extern "C" void fn_8018DC20();
 extern "C" void fn_8018DCA4();
-extern "C" void fn_80193AF4();
+extern "C" void __construct_array();
 extern "C" void fn_801A9384();
 extern "C" void fn_801D7B54();
 extern "C" void memset();
@@ -407,7 +407,7 @@ extern "C" asm void fn_80091028() {
     li r5, 0x0
     li r6, 0x8
     li r7, 0x80
-    b fn_80193AF4
+    b __construct_array
 }
 
 // ----------------------------------------------------------------------------

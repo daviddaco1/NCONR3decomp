@@ -449,8 +449,8 @@ extern "C" void fn_8018622C();
 extern "C" void fn_801862FC();
 extern "C" void fn_80186374();
 extern "C" void fn_801863E0();
-extern "C" void fn_80195934();
-extern "C" void fn_8019CC7C();
+extern "C" void __throw();
+extern "C" void strcmp();
 extern "C" void fn_801A9384();
 extern "C" void fn_801CEC54();
 extern "C" void fn_801D0D24();
@@ -858,7 +858,7 @@ lbl_8002DC94:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_8002DD00:
     mr r3, r25
 lbl_8002DD04:
@@ -2258,7 +2258,7 @@ lbl_8002EF74:
     bl fn_80032118
     mr r4, r3
     mr r3, r29
-    bl fn_8019CC7C
+    bl strcmp
     cmpwi r3, 0x0
     bne lbl_8002EFB4
     mr r3, r30
@@ -2319,7 +2319,7 @@ lbl_8002F02C:
     b lbl_8002F07C
 lbl_8002F05C:
     mr r3, r28
-    bl fn_8019CC7C
+    bl strcmp
     cmpwi r3, 0x0
     bne lbl_8002F078
     add r3, r26, r31
@@ -3692,7 +3692,7 @@ lbl_80030294:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_8003033C:
     stw r24, 0x18(r23)
     mr r3, r24
@@ -3758,7 +3758,7 @@ lbl_800303EC:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_8003043C:
     stw r24, 0x1c(r23)
     mr r3, r24
@@ -3993,7 +3993,7 @@ lbl_80030714:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_80030764:
     mr r3, r29
 lbl_80030768:

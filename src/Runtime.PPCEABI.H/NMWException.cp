@@ -9,21 +9,21 @@ extern "C" float lbl_8049C3EC;
 
 // Forward declarations
 extern "C" void dtor_80136CFC();
-extern "C" void dtor_80193A38();
-extern "C" void fn_801936E0();
+extern "C" void __dt__26__partial_array_destructorFv();
+extern "C" void dthandler__3stdFv();
 extern "C" void fn_801936E4();
 extern "C" void fn_801936E8();
-extern "C" void fn_801936F4();
-extern "C" void fn_80193700();
-extern "C" void fn_80193934();
-extern "C" void fn_80193AF4();
-extern "C" void fn_80193BEC();
+extern "C" void terminate__3stdFv();
+extern "C" void __throw_catch_compare();
+extern "C" void __construct_new_array();
+extern "C" void __construct_array();
+extern "C" void __destroy_arr();
 extern "C" void fn_80195B68();
 
 // ----------------------------------------------------------------------------
-// fn_801936E0
+// dthandler__3stdFv
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_801936E0() {
+extern "C" asm void dthandler__3stdFv() {
     nofralloc
     b fn_80195B68
 }
@@ -47,9 +47,9 @@ extern "C" asm void fn_801936E8() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_801936F4
+// terminate__3stdFv
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_801936F4() {
+extern "C" asm void terminate__3stdFv() {
     nofralloc
     lwz r12, lbl_8049C3EC
     mtctr r12
@@ -57,9 +57,9 @@ extern "C" asm void fn_801936F4() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_80193700
+// __throw_catch_compare
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_80193700() {
+extern "C" asm void __throw_catch_compare() {
     nofralloc
     cmpwi r4, 0x0
     li r0, 0x0
@@ -229,9 +229,9 @@ lbl_80193914:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80193934
+// __construct_new_array
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_80193934() {
+extern "C" asm void __construct_new_array() {
     nofralloc
     stwu r1, -0x40(r1)
     mflr r0
@@ -306,9 +306,9 @@ lbl_80193A20:
 }
 
 // ----------------------------------------------------------------------------
-// dtor_80193A38
+// __dt__26__partial_array_destructorFv
 // ----------------------------------------------------------------------------
-extern "C" asm void dtor_80193A38() {
+extern "C" asm void __dt__26__partial_array_destructorFv() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -364,9 +364,9 @@ lbl_80193AD4:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80193AF4
+// __construct_array
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_80193AF4() {
+extern "C" asm void __construct_array() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -438,9 +438,9 @@ lbl_80193BCC:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80193BEC
+// __destroy_arr
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_80193BEC() {
+extern "C" asm void __destroy_arr() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0

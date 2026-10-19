@@ -16,18 +16,18 @@ void OSGetArenaLo();
 void OSReport();
 void OSSetArenaLo();
 void exit();
-void fn_80195AB0();
+void __sys_free();
 void fn_80195B68();
-void fn_8019CA58();
+void raise();
 void fn_803149A8();
 void fn_80314A20();
 void fn_80314A30();
 void fn_80314AA0();
 
 // ----------------------------------------------------------------------------
-// fn_80195AB0
+// __sys_free
 // ----------------------------------------------------------------------------
-asm void fn_80195AB0() {
+asm void __sys_free() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -87,7 +87,7 @@ asm void fn_80195B68() {
     mflr r0
     li r3, 0x1
     stw r0, 0x14(r1)
-    bl fn_8019CA58
+    bl raise
     li r0, 0x1
     stw r0, lbl_8049D8B0
     li r3, 0x1

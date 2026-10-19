@@ -68,7 +68,7 @@ extern "C" void fn_8017B004();
 extern "C" void fn_8017B144();
 extern "C" void fn_8017C2CC();
 extern "C" void fn_8018CB4C();
-extern "C" void fn_80193C8C();
+extern "C" void __cvt_fp2unsigned();
 extern "C" void fn_801E2B68();
 extern "C" void fn_801E92F8();
 extern "C" void fn_802016E8();
@@ -743,7 +743,7 @@ extern "C" asm void fn_80040740() {
     lfs f1, 0x24(r25)
     lfs f0, 0x34(r26)
     fmuls f1, f1, f0
-    bl fn_80193C8C
+    bl __cvt_fp2unsigned
     mr r31, r3
     addi r3, r1, 0xb0
     mr r4, r23

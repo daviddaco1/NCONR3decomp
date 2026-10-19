@@ -2343,3 +2343,31 @@ el 100% en asm para fijar splits y nombres, y después reescribir a C en una pas
   el `dwc/` de MKW es otra versión y no pasa el filtro), HBM (`~0x802E657C`), NCD
   (`~0x8032B024`, `ncdsystem.c`), WPAD (`~0x802864A0`), y bloques sin strings en
   `0x801A971C`-`0x801CEAA8` (probablemente NW4R `ef`/`g3d` de otra versión).
+
+## Fase 98 — C importado para MSL_C/Runtime/TRK (2026-10-19)
+
+- Fuente: `xbret/xenoblade` (CC0) — `libs/PowerPC_EABI_Support/{src,include}`, headers de
+  `RVL_SDK`/`NdevExi2A` y su `include/types.h` (en `libs/include/`). Atribución en
+  `libs/README.md` + `libs/LICENSE.xenoblade`.
+- `configure.py`: `lib_cflags()` antepone los includes de `libs/` (nuestro `include/types.h`
+  tapaba el suyo: `BOOL`/`NULL`/`wchar_t` indefinidos); `cflags_mw_runtime(_eh)`, `cflags_mslc`,
+  `cflags_trk` = flags de Xenoblade. Los objetos importados apuntan a `libs/` con
+  `Object(..., src_dir="libs", source=...)` sin renombrar el split.
+- **Clave: renombrar símbolos antes de comparar.** objdiff empareja funciones por nombre; con
+  `fn_XXXX` todo daba 0% aunque el código fuera idéntico. `tools/rename_symbols.py` aplicó 199
+  nombres de Xenoblade (alineación global por tamaños en `0x8019359C`-`0x801A8584`) a
+  `symbols.txt` y a todas las referencias en `src/`. Los `TRKxxx` que había adivinado dtk pasan a
+  `TRK_xxx` (nombre real en Xenoblade y SS).
+- `tools/try_import.py`: arnés que prueba un mapa split→fuente con una versión de compilador
+  (dos pasadas: los que no compilan vuelven a asm para que `report.json` se regenere). `Wii/1.0`
+  ≥ `Wii/1.1` en MSL/Runtime; `Wii/1.0a` deja `targimpl.c` al 100% en TRK.
+- **57 TUs adoptadas** (todas sus funciones al 100%), asm borrado. Corregidos además los splits de
+  matemática (`w_log.c`, `w_log10.c`, `e_sqrt.c` al 100%; 6 funciones sin equivalente en
+  `unk_801A3278.c`; `w_pow.c`/`math_ppc.c` quedan asm, 40% con el C de Xenoblade).
+- **C real: 0.77% → 1.77%** (58,480 bytes). Total sin cambios (50.01%). `build.sha1` OK.
+- `Matching` (enlazar nuestros `.o`) **no** funciona todavía: los splits solo cubren `.text`, y
+  los datos de cada TU siguen en objetos `auto_*` (símbolos duplicados/sin resolver al enlazar).
+  Requiere splittear `.data`/`.rodata`/`.bss`/`.sdata2` por TU.
+- Pendientes casi al 100% (versión distinta, corregir a mano): `targimpl`/`support`/`msghndlr`/
+  `dolphin_trk` (≥99.5%), `NMWException` 98.9%, `runtime` 97.9%, `dolphin_trk_glue` 97.5%,
+  `wstring` 96.6%, `strtoul` 91.7%, `FILE_POS` 89%, `Gecko_ExceptionPPC` 87.7%.

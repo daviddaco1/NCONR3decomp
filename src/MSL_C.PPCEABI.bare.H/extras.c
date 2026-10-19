@@ -8,14 +8,14 @@ u8 lbl_8035FBD8[];
 
 // Forward declarations
 void fn_80198624();
-void fn_801A3378();
+void stricmp();
 void fn_801A3418();
 void fn_801A341C();
 
 // ----------------------------------------------------------------------------
-// fn_801A3378
+// stricmp
 // ----------------------------------------------------------------------------
-asm void fn_801A3378() {
+asm void stricmp() {
     nofralloc
     lis r5, lbl_8035FBD8@ha
     addi r5, r5, lbl_8035FBD8@l

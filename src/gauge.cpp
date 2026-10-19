@@ -162,7 +162,7 @@ extern "C" void fn_801934F0();
 extern "C" void fn_8019353C();
 extern "C" void fn_8019356C();
 extern "C" void fn_8019358C();
-extern "C" void fn_8019CC7C();
+extern "C" void strcmp();
 extern "C" void fn_801A9384();
 extern "C" void fn_801F58C4();
 extern "C" void fn_801F7684();
@@ -2920,7 +2920,7 @@ lbl_8019274C:
     lis r4, lbl_8035F624@ha
     addi r4, r4, lbl_8035F624@l
     addi r4, r4, 0x9b
-    bl fn_8019CC7C
+    bl strcmp
     cmpwi r3, 0x0
     bne lbl_8019278C
     lwz r3, 0x8(r30)
@@ -2983,7 +2983,7 @@ lbl_80192824:
     lis r4, lbl_8035F624@ha
     addi r4, r4, lbl_8035F624@l
     addi r4, r4, 0x9b
-    bl fn_8019CC7C
+    bl strcmp
     cmpwi r3, 0x0
     bne lbl_80192880
     lwz r3, 0x8(r31)
@@ -3054,7 +3054,7 @@ extern "C" asm void fn_801928FC() {
     lis r4, lbl_8035F624@ha
     addi r4, r4, lbl_8035F624@l
     addi r4, r4, 0x9b
-    bl fn_8019CC7C
+    bl strcmp
     cmpwi r3, 0x0
     bne lbl_80192948
     lwz r3, 0x8(r30)
@@ -3099,7 +3099,7 @@ extern "C" asm void fn_80192990() {
     lis r4, lbl_8035F624@ha
     addi r4, r4, lbl_8035F624@l
     addi r4, r4, 0x9b
-    bl fn_8019CC7C
+    bl strcmp
     cmpwi r3, 0x0
     bne lbl_801929D4
     lwz r3, 0x8(r31)

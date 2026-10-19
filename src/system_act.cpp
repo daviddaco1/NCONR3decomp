@@ -126,7 +126,7 @@ extern "C" void fn_80173E7C();
 extern "C" void fn_8017B144();
 extern "C" void fn_8017B2A8();
 extern "C" void fn_80181568();
-extern "C" void fn_80197BC8();
+extern "C" void labs();
 extern "C" void memcpy();
 extern "C" void memset();
 
@@ -715,7 +715,7 @@ lbl_8007FA10:
 lbl_8007FA20:
     mr r31, r28
     mr r3, r27
-    bl fn_80197BC8
+    bl labs
     cmpwi r3, 0x1555
     bge lbl_8007FA3C
     ori r31, r28, 0x1

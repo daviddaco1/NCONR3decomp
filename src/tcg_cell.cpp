@@ -309,7 +309,7 @@ extern "C" void fn_8017B074();
 extern "C" void fn_80182080();
 extern "C" void fn_8018CFCC();
 extern "C" void fn_8018D00C();
-extern "C" void fn_80193C8C();
+extern "C" void __cvt_fp2unsigned();
 extern "C" void fn_801A9384();
 extern "C" void fn_8030D448();
 extern "C" void memcpy();
@@ -8964,26 +8964,26 @@ extern "C" asm void fn_8012DF90() {
     lwz r5, 0x18(r25)
     bl fn_80127210
     lfs f1, 0xc(r1)
-    bl fn_80193C8C
+    bl __cvt_fp2unsigned
     mr r27, r3
     lfs f1, 0x8(r1)
-    bl fn_80193C8C
+    bl __cvt_fp2unsigned
     mr r28, r3
     lfs f1, 0x14(r1)
-    bl fn_80193C8C
+    bl __cvt_fp2unsigned
     mr r29, r3
     lfs f1, 0x10(r1)
-    bl fn_80193C8C
+    bl __cvt_fp2unsigned
     mr r30, r3
     lfs f1, 0x1c(r1)
     lfs f0, 0x2fc(r25)
     fadds f1, f1, f0
-    bl fn_80193C8C
+    bl __cvt_fp2unsigned
     mr r31, r3
     lfs f1, 0x18(r1)
     lfs f0, 0x2f8(r25)
     fadds f1, f1, f0
-    bl fn_80193C8C
+    bl __cvt_fp2unsigned
     mr r4, r3
     mr r3, r26
     mr r5, r31

@@ -4,14 +4,13 @@
 // Total functions: 1
 
 // Forward declarations
-void fn_8019FFB4();
-void fn_801A302C();
+void pow();
 
 // ----------------------------------------------------------------------------
-// fn_801A302C
+// pow
 // ----------------------------------------------------------------------------
-asm void fn_801A302C() {
+asm void pow() {
     nofralloc
-    b fn_8019FFB4
+    blr
 }
 

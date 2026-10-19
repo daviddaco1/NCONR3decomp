@@ -18,15 +18,15 @@ void __va_arg();
 void _restgpr_15();
 void _savegpr_15();
 void exit();
-void fn_80198998();
+void mbtowc();
 void fn_8019B580();
-void fn_8019BC08();
-void fn_8019C8A0();
-void fn_8019C928();
-void fn_8019CA58();
+void __sformatter();
+void __StringRead();
+void sscanf();
+void raise();
 void fn_8019D03C();
-void fn_8019E3B8();
-void fn_8019E7CC();
+void __strtoul();
+void __strtoull();
 
 // ----------------------------------------------------------------------------
 // fn_8019B580
@@ -494,9 +494,9 @@ lbl_8019BBF8:
 }
 
 // ----------------------------------------------------------------------------
-// fn_8019BC08
+// __sformatter
 // ----------------------------------------------------------------------------
-asm void fn_8019BC08() {
+asm void __sformatter() {
     nofralloc
     stwu r1, -0xb0(r1)
     mflr r0
@@ -704,7 +704,7 @@ lbl_8019BED0:
     addi r7, r1, 0x18
     addi r8, r1, 0x14
     addi r9, r1, 0x10
-    bl fn_8019E7CC
+    bl __strtoull
     stw r4, 0x54(r1)
     stw r3, 0x50(r1)
     b lbl_8019BF18
@@ -715,7 +715,7 @@ lbl_8019BEF8:
     addi r7, r1, 0x18
     addi r8, r1, 0x14
     addi r9, r1, 0x10
-    bl fn_8019E3B8
+    bl __strtoul
     mr r15, r3
 lbl_8019BF18:
     lwz r3, 0x18(r1)
@@ -827,7 +827,7 @@ lbl_8019C08C:
     addi r7, r1, 0x18
     addi r8, r1, 0x14
     addi r9, r1, 0x10
-    bl fn_8019E7CC
+    bl __strtoull
     stw r4, 0x54(r1)
     stw r3, 0x50(r1)
     b lbl_8019C0D4
@@ -838,7 +838,7 @@ lbl_8019C0B4:
     addi r7, r1, 0x18
     addi r8, r1, 0x14
     addi r9, r1, 0x10
-    bl fn_8019E3B8
+    bl __strtoul
     mr r15, r3
 lbl_8019C0D4:
     lwz r3, 0x18(r1)
@@ -997,7 +997,7 @@ lbl_8019C2E4:
     mr r3, r22
     addi r4, r1, 0xc
     li r5, 0x1
-    bl fn_80198998
+    bl mbtowc
     addi r22, r22, 0x2
     b lbl_8019C314
 lbl_8019C30C:
@@ -1219,7 +1219,7 @@ lbl_8019C5D0:
     mr r3, r22
     addi r4, r1, 0xc
     li r5, 0x1
-    bl fn_80198998
+    bl mbtowc
     addi r22, r22, 0x2
     b lbl_8019C620
 lbl_8019C618:
@@ -1412,9 +1412,9 @@ lbl_8019C888:
 }
 
 // ----------------------------------------------------------------------------
-// fn_8019C8A0
+// __StringRead
 // ----------------------------------------------------------------------------
-asm void fn_8019C8A0() {
+asm void __StringRead() {
     nofralloc
     cmpwi r5, 0x0
     beq lbl_8019C8BC
@@ -1460,9 +1460,9 @@ lbl_8019C920:
 }
 
 // ----------------------------------------------------------------------------
-// fn_8019C928
+// sscanf
 // ----------------------------------------------------------------------------
-asm void fn_8019C928() {
+asm void sscanf() {
     nofralloc
     stwu r1, -0x80(r1)
     mflr r0
@@ -1537,14 +1537,14 @@ lbl_8019CA1C:
     b lbl_8019CA48
 lbl_8019CA24:
     li r0, 0x0
-    lis r3, fn_8019C8A0@ha
+    lis r3, __StringRead@ha
     mr r5, r4
     stw r0, 0x6c(r1)
-    addi r3, r3, fn_8019C8A0@l
+    addi r3, r3, __StringRead@l
     addi r4, r1, 0x68
     addi r6, r1, 0x70
     li r7, 0x0
-    bl fn_8019BC08
+    bl __sformatter
 lbl_8019CA48:
     lwz r0, 0x84(r1)
     mtlr r0
@@ -1553,9 +1553,9 @@ lbl_8019CA48:
 }
 
 // ----------------------------------------------------------------------------
-// fn_8019CA58
+// raise
 // ----------------------------------------------------------------------------
-asm void fn_8019CA58() {
+asm void raise() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0

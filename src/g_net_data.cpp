@@ -237,8 +237,8 @@ extern "C" void fn_801728DC();
 extern "C" void fn_801773E0();
 extern "C" void fn_80179FF8();
 extern "C" void fn_8017A008();
-extern "C" void fn_80193F04();
-extern "C" void fn_8019CC7C();
+extern "C" void __div2i();
+extern "C" void strcmp();
 extern "C" void fn_80324614();
 extern "C" void memcpy();
 extern "C" void memset();
@@ -4985,7 +4985,7 @@ lbl_800A9188:
     lis r4, lbl_8034D4D0@ha
     addi r4, r4, lbl_8034D4D0@l
     addi r4, r4, 0xd
-    bl fn_8019CC7C
+    bl strcmp
     cmpwi r3, 0x0
     bne lbl_800A92A8
     lwz r3, 0xc(r29)
@@ -5008,7 +5008,7 @@ lbl_800A91DC:
     lis r4, lbl_8034D4D0@ha
     addi r4, r4, lbl_8034D4D0@l
     addi r4, r4, 0x12
-    bl fn_8019CC7C
+    bl strcmp
     cmpwi r3, 0x0
     bne lbl_800A9238
     lwz r0, 0x0(r30)
@@ -5033,7 +5033,7 @@ lbl_800A9238:
     lis r4, lbl_8034D4D0@ha
     addi r4, r4, lbl_8034D4D0@l
     addi r4, r4, 0x15
-    bl fn_8019CC7C
+    bl strcmp
     cmpwi r3, 0x0
     bne lbl_800A92A8
     lwz r0, 0x0(r30)
@@ -5399,7 +5399,7 @@ lbl_800A9700:
     subfe r3, r0, r3
     li r5, 0x0
     mr r6, r21
-    bl fn_80193F04
+    bl __div2i
     mr r22, r4
     lwz r5, 0x28(r28)
     lwz r4, 0x2c(r28)
@@ -5409,7 +5409,7 @@ lbl_800A9700:
     subfe r3, r0, r5
     li r5, 0x0
     mr r6, r21
-    bl fn_80193F04
+    bl __div2i
     subf r3, r4, r22
     cmpwi r3, 0x0
     ble lbl_800A97C4

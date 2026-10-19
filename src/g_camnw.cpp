@@ -491,7 +491,7 @@ extern "C" void fn_8017D14C();
 extern "C" void fn_80181504();
 extern "C" void fn_80181568();
 extern "C" void fn_80186C78();
-extern "C" void fn_80197BC8();
+extern "C" void labs();
 extern "C" void fn_801A3278();
 extern "C" void fn_801A32A0();
 extern "C" void fn_801A3344();
@@ -7326,7 +7326,7 @@ extern "C" asm void fn_800888B8() {
     ori r31, r29, 0x4
 lbl_8008897C:
     mr r29, r31
-    bl fn_80197BC8
+    bl labs
     cmpwi r3, 0x1555
     bge lbl_80088994
     ori r29, r31, 0x1

@@ -109,7 +109,7 @@ extern "C" void fn_801728FC();
 extern "C" void fn_801729B4();
 extern "C" void fn_80175E48();
 extern "C" void fn_8017BF58();
-extern "C" void fn_80197BC8();
+extern "C" void labs();
 extern "C" void memset();
 
 // ----------------------------------------------------------------------------
@@ -2109,7 +2109,7 @@ extern "C" asm void fn_8006B0B8() {
     mr r31, r3
     mr r28, r4
     lwz r3, 0x9b8(r4)
-    bl fn_80197BC8
+    bl labs
     clrlwi r0, r3, 16
     mulli r0, r0, 0x6
     srawi r0, r0, 3
@@ -2187,7 +2187,7 @@ extern "C" asm void fn_8006B1D0() {
     bl _savegpr_29
     mr r29, r3
     lwz r3, 0x9b8(r3)
-    bl fn_80197BC8
+    bl labs
     clrlwi r0, r3, 16
     mulli r0, r0, 0x6
     srawi r0, r0, 3
@@ -2265,7 +2265,7 @@ extern "C" asm void fn_8006B2E4() {
     stw r30, 0x8(r1)
     mr r30, r3
     lwz r3, 0x9b8(r3)
-    bl fn_80197BC8
+    bl labs
     clrlwi r0, r3, 16
     srawi r0, r0, 1
     addze r3, r0
@@ -2311,7 +2311,7 @@ extern "C" asm void fn_8006B380() {
     bl _savegpr_29
     mr r29, r3
     lwz r3, 0x9b8(r3)
-    bl fn_80197BC8
+    bl labs
     clrlwi r30, r3, 16
     stw r30, 0x9b8(r29)
     lfs f0, lbl_8049EF18
@@ -2353,7 +2353,7 @@ extern "C" asm void fn_8006B40C() {
     bl _savegpr_29
     mr r29, r3
     lwz r3, 0x9b8(r3)
-    bl fn_80197BC8
+    bl labs
     clrlwi r30, r3, 16
     stw r30, 0x9b8(r29)
     lfs f0, lbl_8049EF18
@@ -2395,7 +2395,7 @@ extern "C" asm void fn_8006B498() {
     bl _savegpr_29
     mr r29, r3
     lwz r3, 0x9b8(r3)
-    bl fn_80197BC8
+    bl labs
     clrlwi r0, r3, 16
     mulli r0, r0, 0x6
     srawi r0, r0, 3
@@ -2521,7 +2521,7 @@ lbl_8006B638:
     fctiwz f0, f0
     stfd f0, 0x10(r1)
     lwz r3, 0x14(r1)
-    bl fn_80197BC8
+    bl labs
     cmpwi r3, 0x4000
     ble lbl_8006B68C
     oris r28, r28, 0x40
@@ -2533,11 +2533,11 @@ lbl_8006B68C:
     addi r0, r3, -0x8000
     slwi r0, r0, 16
     srawi r3, r0, 16
-    bl fn_80197BC8
+    bl labs
     cmpwi r3, 0x4000
     bge lbl_8006B738
     mr r3, r30
-    bl fn_80197BC8
+    bl labs
     cmpwi r3, 0x4000
     ble lbl_8006B738
     la r3, lbl_8049EF18
@@ -2555,11 +2555,11 @@ lbl_8006B6EC:
     addi r0, r3, -0x8000
     slwi r0, r0, 16
     srawi r3, r0, 16
-    bl fn_80197BC8
+    bl labs
     cmpwi r3, 0x4000
     ble lbl_8006B738
     mr r3, r30
-    bl fn_80197BC8
+    bl labs
     cmpwi r3, 0x4000
     ble lbl_8006B738
     la r3, lbl_8049EF18
@@ -2581,7 +2581,7 @@ lbl_8006B738:
     ori r25, r29, 0x4
 lbl_8006B758:
     mr r29, r25
-    bl fn_80197BC8
+    bl labs
     cmpwi r3, 0x1555
     bge lbl_8006B770
     ori r29, r25, 0x1

@@ -5644,7 +5644,7 @@ lbl_801345F0:
 // `lbl_804A0288`) -- se escribe como cast normal `(f32)` confiando en que
 // mwcc lo compila igual (Gekko no tiene fcfid en hardware). Best-effort,
 // mucha aritmetica de punto flotante transcrita casi 1:1 del disasm.
-extern "C" s32 fn_80197BC8(s32 v);
+extern "C" s32 labs(s32 v);
 
 extern "C" asm s32 fn_80134EA0(void* hVoid, void* posAVoid, void* posBVoid, void* extentAVoid, void* extentBVoid, f32 scaleA, f32 scaleB)
 {
@@ -5717,7 +5717,7 @@ lbl_80134F48:
 	stfd f0, 32(r1)
 	lwz r0, 36(r1)
 	subf r3, r3, r0
-	bl fn_80197BC8
+	bl labs
 	lfd f1, lbl_804A0AA0
 	xoris r0, r3, 0x8000
 	stw r0, 44(r1)
@@ -5749,7 +5749,7 @@ lbl_80134FE8:
 	stfd f0, 32(r1)
 	lwz r0, 36(r1)
 	subf r3, r3, r0
-	bl fn_80197BC8
+	bl labs
 	lfd f1, lbl_804A0AA0
 	xoris r0, r3, 0x8000
 	stw r0, 28(r1)

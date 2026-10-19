@@ -221,10 +221,10 @@ extern "C" void fn_8018CB4C();
 extern "C" void fn_8018CB84();
 extern "C" void fn_8018E018();
 extern "C" void fn_8018E08C();
-extern "C" void fn_80193AF4();
-extern "C" void fn_80193C8C();
-extern "C" void fn_80198BF4();
-extern "C" void fn_8019CC04();
+extern "C" void __construct_array();
+extern "C" void __cvt_fp2unsigned();
+extern "C" void memcmp();
+extern "C" void strcat();
 extern "C" void fn_801A3278();
 extern "C" void fn_801A32A0();
 extern "C" void fn_801A3344();
@@ -1843,7 +1843,7 @@ lbl_80179770:
     slwi r0, r30, 3
     add r5, r5, r0
     lwz r5, 0x4(r5)
-    bl fn_80198BF4
+    bl memcmp
     cmpwi r3, 0x0
     beq lbl_80179810
     li r3, 0x0
@@ -2585,56 +2585,56 @@ lbl_8017A17C:
     addi r3, r1, 0x30
     lis r4, lbl_8035E168@ha
     addi r4, r4, lbl_8035E168@l
-    bl fn_8019CC04
+    bl strcat
     b lbl_8017A234
 lbl_8017A190:
     addi r3, r1, 0x30
     lis r4, lbl_8035E168@ha
     addi r4, r4, lbl_8035E168@l
     addi r4, r4, 0xd
-    bl fn_8019CC04
+    bl strcat
     b lbl_8017A234
 lbl_8017A1A8:
     addi r3, r1, 0x30
     lis r4, lbl_8035E168@ha
     addi r4, r4, lbl_8035E168@l
     addi r4, r4, 0x1e
-    bl fn_8019CC04
+    bl strcat
     b lbl_8017A234
 lbl_8017A1C0:
     addi r3, r1, 0x30
     lis r4, lbl_8035E168@ha
     addi r4, r4, lbl_8035E168@l
     addi r4, r4, 0x2f
-    bl fn_8019CC04
+    bl strcat
     b lbl_8017A234
 lbl_8017A1D8:
     addi r3, r1, 0x30
     lis r4, lbl_8035E168@ha
     addi r4, r4, lbl_8035E168@l
     addi r4, r4, 0x40
-    bl fn_8019CC04
+    bl strcat
     b lbl_8017A234
 lbl_8017A1F0:
     addi r3, r1, 0x30
     lis r4, lbl_8035E168@ha
     addi r4, r4, lbl_8035E168@l
     addi r4, r4, 0x51
-    bl fn_8019CC04
+    bl strcat
     b lbl_8017A234
 lbl_8017A208:
     addi r3, r1, 0x30
     lis r4, lbl_8035E168@ha
     addi r4, r4, lbl_8035E168@l
     addi r4, r4, 0x62
-    bl fn_8019CC04
+    bl strcat
     b lbl_8017A234
 lbl_8017A220:
     stw r27, 0x1c(r31)
     addi r3, r1, 0x30
     lis r4, lbl_8035E168@ha
     addi r4, r4, lbl_8035E168@l
-    bl fn_8019CC04
+    bl strcat
 lbl_8017A234:
     addi r3, r1, 0x30
     lis r27, 0x2000
@@ -2654,7 +2654,7 @@ lbl_8017A234:
     lis r4, lbl_8035E168@ha
     addi r30, r4, lbl_8035E168@l
     addi r4, r30, 0x73
-    bl fn_8019CC04
+    bl strcat
     addi r3, r1, 0x30
     addi r4, r27, 0x1
     lwz r5, 0x810(r28)
@@ -2667,7 +2667,7 @@ lbl_8017A234:
     bl strcpy
     addi r3, r1, 0x30
     addi r4, r30, 0x82
-    bl fn_8019CC04
+    bl strcat
     addi r3, r1, 0x30
     addi r4, r27, 0x1
     lwz r5, 0x810(r28)
@@ -2680,7 +2680,7 @@ lbl_8017A234:
     bl strcpy
     addi r3, r1, 0x30
     addi r4, r30, 0x8c
-    bl fn_8019CC04
+    bl strcat
     addi r3, r1, 0x30
     addi r4, r27, 0x1
     lwz r5, 0x810(r28)
@@ -2696,7 +2696,7 @@ lbl_8017A234:
     bl strcpy
     addi r3, r1, 0x30
     addi r4, r30, 0x98
-    bl fn_8019CC04
+    bl strcat
     addi r3, r1, 0x30
     addi r4, r27, 0x1
     lwz r5, 0x810(r28)
@@ -2710,7 +2710,7 @@ lbl_8017A234:
     bl strcpy
     addi r3, r1, 0x30
     addi r4, r30, 0xa9
-    bl fn_8019CC04
+    bl strcat
     addi r3, r1, 0x30
     li r4, 0x5
     lwz r5, 0x810(r28)
@@ -2784,7 +2784,7 @@ extern "C" asm void fn_8017A444() {
     lis r4, lbl_8035E168@ha
     addi r4, r4, lbl_8035E168@l
     addi r4, r4, 0xba
-    bl fn_8019CC04
+    bl strcat
     addi r3, r1, 0x8
     lis r4, 0x2000
     addi r4, r4, 0x1
@@ -4028,7 +4028,7 @@ lbl_8017B448:
     lfs f6, 0x8(r30)
     bl fn_8002AFF0
     fmr f1, f31
-    bl fn_80193C8C
+    bl __cvt_fp2unsigned
     mr r7, r3
     addi r3, r1, 0xc
     li r4, 0x0
@@ -5085,16 +5085,16 @@ lbl_8017C434:
     addi r4, r1, 0x8
     bl fn_8002AFB4
     fmr f1, f29
-    bl fn_80193C8C
+    bl __cvt_fp2unsigned
     mr r29, r3
     fmr f1, f28
-    bl fn_80193C8C
+    bl __cvt_fp2unsigned
     mr r30, r3
     fmr f1, f27
-    bl fn_80193C8C
+    bl __cvt_fp2unsigned
     mr r31, r3
     fmr f1, f26
-    bl fn_80193C8C
+    bl __cvt_fp2unsigned
     mr r4, r3
     addi r3, r1, 0xc
     mr r5, r31
@@ -5839,7 +5839,7 @@ extern "C" asm void fn_8017CEF4() {
     li r5, 0x0
     li r6, 0x160
     li r7, 0x6
-    b fn_80193AF4
+    b __construct_array
 }
 
 extern "C" asm void fn_8017CF14() {

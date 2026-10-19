@@ -11,17 +11,17 @@ u8 lbl_8035FBD8[];
 
 // Forward declarations
 void __div2u();
-void fn_8019C8A0();
-void fn_8019E3B8();
-void fn_8019E7CC();
-void fn_8019EC74();
+void __StringRead();
+void __strtoul();
+void __strtoull();
+void strtoul();
 void fn_8019ED1C();
-void fn_8019EE08();
+void atoi();
 
 // ----------------------------------------------------------------------------
-// fn_8019E3B8
+// __strtoul
 // ----------------------------------------------------------------------------
-asm void fn_8019E3B8() {
+asm void __strtoul() {
     nofralloc
     stwu r1, -0x50(r1)
     mflr r0
@@ -333,9 +333,9 @@ lbl_8019E7A0:
 }
 
 // ----------------------------------------------------------------------------
-// fn_8019E7CC
+// __strtoull
 // ----------------------------------------------------------------------------
-asm void fn_8019E7CC() {
+asm void __strtoull() {
     nofralloc
     stwu r1, -0x60(r1)
     mflr r0
@@ -684,14 +684,14 @@ lbl_8019EC40:
 }
 
 // ----------------------------------------------------------------------------
-// fn_8019EC74
+// strtoul
 // ----------------------------------------------------------------------------
-asm void fn_8019EC74() {
+asm void strtoul() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
     lis r7, 0x8000
-    lis r6, fn_8019C8A0@ha
+    lis r6, __StringRead@ha
     stw r0, 0x34(r1)
     li r0, 0x0
     addi r8, r1, 0xc
@@ -703,11 +703,11 @@ asm void fn_8019EC74() {
     stw r30, 0x28(r1)
     mr r30, r3
     mr r3, r5
-    addi r5, r6, fn_8019C8A0@l
+    addi r5, r6, __StringRead@l
     stw r30, 0x18(r1)
     addi r6, r1, 0x18
     stw r0, 0x1c(r1)
-    bl fn_8019E3B8
+    bl __strtoul
     cmpwi r31, 0x0
     beq lbl_8019ECD8
     lwz r0, 0x10(r1)
@@ -743,7 +743,7 @@ asm void fn_8019ED1C() {
     stwu r1, -0x30(r1)
     mflr r0
     lis r7, 0x8000
-    lis r6, fn_8019C8A0@ha
+    lis r6, __StringRead@ha
     stw r0, 0x34(r1)
     li r0, 0x0
     addi r8, r1, 0xc
@@ -755,11 +755,11 @@ asm void fn_8019ED1C() {
     stw r30, 0x28(r1)
     mr r30, r3
     mr r3, r5
-    addi r5, r6, fn_8019C8A0@l
+    addi r5, r6, __StringRead@l
     stw r30, 0x18(r1)
     addi r6, r1, 0x18
     stw r0, 0x1c(r1)
-    bl fn_8019E3B8
+    bl __strtoul
     cmpwi r31, 0x0
     beq lbl_8019ED80
     lwz r0, 0x10(r1)
@@ -807,16 +807,16 @@ lbl_8019EDF0:
 }
 
 // ----------------------------------------------------------------------------
-// fn_8019EE08
+// atoi
 // ----------------------------------------------------------------------------
-asm void fn_8019EE08() {
+asm void atoi() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
-    lis r5, fn_8019C8A0@ha
+    lis r5, __StringRead@ha
     stw r0, 0x34(r1)
     li r0, 0x0
-    addi r5, r5, fn_8019C8A0@l
+    addi r5, r5, __StringRead@l
     addi r6, r1, 0x18
     stw r31, 0x2c(r1)
     lis r31, 0x8000
@@ -827,7 +827,7 @@ asm void fn_8019EE08() {
     addi r9, r1, 0x10
     li r3, 0xa
     stw r0, 0x1c(r1)
-    bl fn_8019E3B8
+    bl __strtoul
     lwz r0, 0x10(r1)
     cmpwi r0, 0x0
     bne lbl_8019EE84

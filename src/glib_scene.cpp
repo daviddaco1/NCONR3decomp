@@ -152,7 +152,7 @@ extern "C" void fn_80042B3C();
 extern "C" void fn_80042BF0();
 extern "C" void fn_8004875C();
 extern "C" void fn_80048908();
-extern "C" void fn_80195934();
+extern "C" void __throw();
 extern "C" void fn_801A331C();
 extern "C" void fn_801A3344();
 extern "C" void fn_801A9384();
@@ -366,7 +366,7 @@ lbl_80036424:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_800364A4:
     mr r3, r28
 lbl_800364A8:

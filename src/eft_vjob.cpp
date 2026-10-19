@@ -51,7 +51,7 @@ extern "C" void fn_801739BC();
 extern "C" void fn_80173ED4();
 extern "C" void fn_80182BA0();
 extern "C" void fn_8018EF24();
-extern "C" void fn_80193C8C();
+extern "C" void __cvt_fp2unsigned();
 extern "C" void fn_801A9384();
 extern "C" void fn_802016BC();
 
@@ -511,7 +511,7 @@ lbl_8011F9B8:
     stw r0, 0x4c(r23)
 lbl_8011FA38:
     lfs f1, 0x50(r23)
-    bl fn_80193C8C
+    bl __cvt_fp2unsigned
     mr r4, r3
     lwz r0, 0x4c(r23)
     xoris r0, r0, 0x8000

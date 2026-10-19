@@ -822,17 +822,23 @@ MSL_C.PPCEABI.bare.H/w_atan2.c:
 MSL_C.PPCEABI.bare.H/w_fmod.c:
 	.text       start:0x801A3024 end:0x801A3028
 
-MSL_C.PPCEABI.bare.H/w_log10.c:
+MSL_C.PPCEABI.bare.H/w_log.c:
 	.text       start:0x801A3028 end:0x801A302C
 
-MSL_C.PPCEABI.bare.H/w_pow.c:
+MSL_C.PPCEABI.bare.H/w_log10.c:
 	.text       start:0x801A302C end:0x801A3030
 
 MSL_C.PPCEABI.bare.H/e_sqrt.c:
 	.text       start:0x801A3030 end:0x801A3278
 
+MSL_C.PPCEABI.bare.H/unk_801A3278.c:
+	.text       start:0x801A3278 end:0x801A336C
+
+MSL_C.PPCEABI.bare.H/w_pow.c:
+	.text       start:0x801A336C end:0x801A3370
+
 MSL_C.PPCEABI.bare.H/math_ppc.c:
-	.text       start:0x801A3278 end:0x801A3374
+	.text       start:0x801A3370 end:0x801A3374
 
 MSL_C.PPCEABI.bare.H/w_sqrt.c:
 	.text       start:0x801A3374 end:0x801A3378

@@ -16,55 +16,55 @@ u8 lbl_80360368[];
 void OSReport();
 void TRKTargetContinue();
 void TRKTargetStopped();
-void fn_801A3C68();
-void fn_801A4048();
-void fn_801A41C4();
-void fn_801A44A0();
-void fn_801A46B0();
-void fn_801A477C();
-void fn_801A53D0();
-void fn_801A553C();
-void fn_801A5564();
-void fn_801A5594();
-void fn_801A5638();
-void fn_801A588C();
-void fn_801A5C40();
-void fn_801A5C48();
-void fn_801A5CB8();
-void fn_801A5D40();
-void fn_801A5DAC();
-void fn_801A5E18();
-void fn_801A604C();
-void fn_801A625C();
-void fn_801A6458();
-void fn_801A66F8();
-void fn_801A67BC();
-void fn_801A6A40();
-void fn_801A6AF8();
-void fn_801A6F24();
-void fn_801A7074();
-void fn_801A716C();
-void fn_801A72A8();
-void fn_801A740C();
-void fn_801A7D98();
-void fn_801A7E20();
-void fn_801A7E94();
-void fn_801A80B8();
-void fn_801A8574();
+void TRK_memset();
+void __TRK_copy_vectors();
+void __TRKreset();
+void TRK_WriteUARTN();
+void TRKPostEvent();
+void TRKConstructEvent();
+void TRK_MessageSend();
+void TRKResetBuffer();
+void TRK_SetBufferPosition();
+void TRK_AppendBuffer();
+void TRK_ReadBuffer();
+void TRKAppendBuffer_ui8();
+void GetTRKConnected();
+void TRK_DoConnect();
+void TRKDoDisconnect();
+void TRKDoReset();
+void TRKDoOverride();
+void TRKDoReadMemory();
+void TRKDoWriteMemory();
+void TRKDoReadRegisters();
+void TRKDoWriteRegisters();
+void TRKDoContinue();
+void TRKDoStep();
+void TRKDoStop();
+void TRKDoSetOption();
+void TRKTargetAccessMemory();
+void TRKTargetAccessDefault();
+void TRKTargetAccessFP();
+void TRKTargetAccessExtended1();
+void TRKTargetAccessExtended2();
+void TRKTargetSingleStep();
+void TRKTargetStepOutOfRange();
+void TRKTargetGetPC();
+void TRKTargetStop();
+void SetUseSerialIO();
 
 // ----------------------------------------------------------------------------
-// fn_801A5C40
+// GetTRKConnected
 // ----------------------------------------------------------------------------
-asm void fn_801A5C40() {
+asm void GetTRKConnected() {
     nofralloc
     lwz r3, lbl_8049D924
     blr
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A5C48
+// TRK_DoConnect
 // ----------------------------------------------------------------------------
-asm void fn_801A5C48() {
+asm void TRK_DoConnect() {
     nofralloc
     stwu r1, -0x50(r1)
     mflr r0
@@ -74,7 +74,7 @@ asm void fn_801A5C48() {
     li r0, 0x1
     addi r3, r1, 0x8
     stw r0, lbl_8049D924
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r3, lbl_8049D920
     li r0, 0x80
     li r4, 0x40
@@ -88,7 +88,7 @@ asm void fn_801A5C48() {
     stb r5, 0x10(r1)
     stw r6, 0x14(r1)
     stw r0, lbl_8049D920
-    bl fn_801A44A0
+    bl TRK_WriteUARTN
     lwz r0, 0x54(r1)
     li r3, 0x0
     mtlr r0
@@ -97,9 +97,9 @@ asm void fn_801A5C48() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A5CB8
+// TRKDoDisconnect
 // ----------------------------------------------------------------------------
-asm void fn_801A5CB8() {
+asm void TRKDoDisconnect() {
     nofralloc
     stwu r1, -0x60(r1)
     mflr r0
@@ -110,7 +110,7 @@ asm void fn_801A5CB8() {
     stw r31, 0x5c(r1)
     li r31, 0x0
     stw r31, lbl_8049D924
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r4, lbl_8049D920
     li r0, 0x80
     li r3, 0x40
@@ -123,12 +123,12 @@ asm void fn_801A5CB8() {
     stb r31, 0x20(r1)
     stw r5, 0x24(r1)
     stw r0, lbl_8049D920
-    bl fn_801A44A0
+    bl TRK_WriteUARTN
     addi r3, r1, 0x8
     li r4, 0x1
-    bl fn_801A477C
+    bl TRKConstructEvent
     addi r3, r1, 0x8
-    bl fn_801A46B0
+    bl TRKPostEvent
     lwz r31, 0x5c(r1)
     li r3, 0x0
     lwz r0, 0x64(r1)
@@ -138,9 +138,9 @@ asm void fn_801A5CB8() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A5D40
+// TRKDoReset
 // ----------------------------------------------------------------------------
-asm void fn_801A5D40() {
+asm void TRKDoReset() {
     nofralloc
     stwu r1, -0x50(r1)
     mflr r0
@@ -148,7 +148,7 @@ asm void fn_801A5D40() {
     li r5, 0x40
     stw r0, 0x54(r1)
     addi r3, r1, 0x8
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r3, lbl_8049D920
     li r0, 0x80
     li r4, 0x40
@@ -162,8 +162,8 @@ asm void fn_801A5D40() {
     stb r5, 0x10(r1)
     stw r6, 0x14(r1)
     stw r0, lbl_8049D920
-    bl fn_801A44A0
-    bl fn_801A41C4
+    bl TRK_WriteUARTN
+    bl __TRKreset
     lwz r0, 0x54(r1)
     li r3, 0x0
     mtlr r0
@@ -172,9 +172,9 @@ asm void fn_801A5D40() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A5DAC
+// TRKDoOverride
 // ----------------------------------------------------------------------------
-asm void fn_801A5DAC() {
+asm void TRKDoOverride() {
     nofralloc
     stwu r1, -0x50(r1)
     mflr r0
@@ -182,7 +182,7 @@ asm void fn_801A5DAC() {
     li r5, 0x40
     stw r0, 0x54(r1)
     addi r3, r1, 0x8
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r3, lbl_8049D920
     li r0, 0x80
     li r4, 0x40
@@ -196,8 +196,8 @@ asm void fn_801A5DAC() {
     stb r5, 0x10(r1)
     stw r6, 0x14(r1)
     stw r0, lbl_8049D920
-    bl fn_801A44A0
-    bl fn_801A4048
+    bl TRK_WriteUARTN
+    bl __TRK_copy_vectors
     lwz r0, 0x54(r1)
     li r3, 0x0
     mtlr r0
@@ -206,9 +206,9 @@ asm void fn_801A5DAC() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A5E18
+// TRKDoReadMemory
 // ----------------------------------------------------------------------------
-asm void fn_801A5E18() {
+asm void TRKDoReadMemory() {
     nofralloc
     clrlwi r11, r1, 27
     mr r12, r1
@@ -230,7 +230,7 @@ asm void fn_801A5E18() {
     addi r3, r1, 0x68
     li r4, 0x0
     li r5, 0x40
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r3, lbl_8049D920
     li r0, 0x80
     li r4, 0x40
@@ -244,7 +244,7 @@ asm void fn_801A5E18() {
     stb r5, 0x70(r1)
     stw r6, 0x74(r1)
     stw r0, lbl_8049D920
-    bl fn_801A44A0
+    bl TRK_WriteUARTN
     li r3, 0x0
     b lbl_801A6028
 lbl_801A5EAC:
@@ -262,17 +262,17 @@ lbl_801A5ECC:
     addi r3, r1, 0x100
     addi r5, r1, 0x20
     li r7, 0x1
-    bl fn_801A6F24
+    bl TRKTargetAccessMemory
     mr r31, r3
     mr r3, r28
     li r4, 0x0
-    bl fn_801A553C
+    bl TRKResetBuffer
     cmpwi r31, 0x0
     bne lbl_801A5F7C
     addi r3, r1, 0xa8
     li r4, 0x0
     li r5, 0x40
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r6, lbl_8049D920
     li r7, 0x80
     lwz r4, 0x20(r1)
@@ -286,7 +286,7 @@ lbl_801A5ECC:
     stb r7, 0xac(r1)
     stw r6, 0xb4(r1)
     stw r0, lbl_8049D920
-    bl fn_801A5594
+    bl TRK_AppendBuffer
     rlwinm. r0, r30, 0, 25, 25
     beq lbl_801A5F68
     clrlwi r0, r29, 27
@@ -294,14 +294,14 @@ lbl_801A5ECC:
     lwz r5, 0x20(r1)
     mr r3, r28
     add r4, r4, r0
-    bl fn_801A5594
+    bl TRK_AppendBuffer
     mr r31, r3
     b lbl_801A5F7C
 lbl_801A5F68:
     lwz r5, 0x20(r1)
     mr r3, r28
     addi r4, r1, 0x100
-    bl fn_801A5594
+    bl TRK_AppendBuffer
     mr r31, r3
 lbl_801A5F7C:
     cmpwi r31, 0x0
@@ -331,7 +331,7 @@ lbl_801A5FD4:
     addi r3, r1, 0x28
     li r4, 0x0
     li r5, 0x40
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r3, lbl_8049D920
     li r0, 0x80
     li r4, 0x40
@@ -344,12 +344,12 @@ lbl_801A5FD4:
     stb r31, 0x30(r1)
     stw r5, 0x34(r1)
     stw r0, lbl_8049D920
-    bl fn_801A44A0
+    bl TRK_WriteUARTN
     li r3, 0x0
     b lbl_801A6028
 lbl_801A6020:
     mr r3, r28
-    bl fn_801A53D0
+    bl TRK_MessageSend
 lbl_801A6028:
     lwz r10, 0x0(r1)
     lwz r0, 0x4(r10)
@@ -363,9 +363,9 @@ lbl_801A6028:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A604C
+// TRKDoWriteMemory
 // ----------------------------------------------------------------------------
-asm void fn_801A604C() {
+asm void TRKDoWriteMemory() {
     nofralloc
     clrlwi r11, r1, 27
     mr r12, r1
@@ -387,7 +387,7 @@ asm void fn_801A604C() {
     addi r3, r1, 0x68
     li r4, 0x0
     li r5, 0x40
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r3, lbl_8049D920
     li r0, 0x80
     li r4, 0x40
@@ -401,7 +401,7 @@ asm void fn_801A604C() {
     stb r5, 0x70(r1)
     stw r6, 0x74(r1)
     stw r0, lbl_8049D920
-    bl fn_801A44A0
+    bl TRK_WriteUARTN
     li r3, 0x0
     b lbl_801A6238
 lbl_801A60E0:
@@ -409,11 +409,11 @@ lbl_801A60E0:
     bne lbl_801A618C
     stw r0, 0x20(r1)
     li r4, 0x40
-    bl fn_801A5564
+    bl TRK_SetBufferPosition
     lwz r5, 0x20(r1)
     mr r3, r28
     addi r4, r1, 0x100
-    bl fn_801A5638
+    bl TRK_ReadBuffer
     rlwinm. r0, r30, 0, 28, 28
     beq lbl_801A6114
     li r6, 0x0
@@ -425,17 +425,17 @@ lbl_801A6118:
     addi r3, r1, 0x100
     addi r5, r1, 0x20
     li r7, 0x0
-    bl fn_801A6F24
+    bl TRKTargetAccessMemory
     mr r31, r3
     mr r3, r28
     li r4, 0x0
-    bl fn_801A553C
+    bl TRKResetBuffer
     cmpwi r31, 0x0
     bne lbl_801A618C
     addi r3, r1, 0xa8
     li r4, 0x0
     li r5, 0x40
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r6, lbl_8049D920
     li r0, 0x40
     li r4, 0x80
@@ -448,7 +448,7 @@ lbl_801A6118:
     stb r31, 0xb0(r1)
     stw r6, 0xb4(r1)
     stw r0, lbl_8049D920
-    bl fn_801A5594
+    bl TRK_AppendBuffer
     mr r31, r3
 lbl_801A618C:
     cmpwi r31, 0x0
@@ -478,7 +478,7 @@ lbl_801A61E4:
     addi r3, r1, 0x28
     li r4, 0x0
     li r5, 0x40
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r3, lbl_8049D920
     li r0, 0x80
     li r4, 0x40
@@ -491,12 +491,12 @@ lbl_801A61E4:
     stb r31, 0x30(r1)
     stw r5, 0x34(r1)
     stw r0, lbl_8049D920
-    bl fn_801A44A0
+    bl TRK_WriteUARTN
     li r3, 0x0
     b lbl_801A6238
 lbl_801A6230:
     mr r3, r28
-    bl fn_801A53D0
+    bl TRK_MessageSend
 lbl_801A6238:
     lwz r10, 0x0(r1)
     lwz r0, 0x4(r10)
@@ -510,9 +510,9 @@ lbl_801A6238:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A625C
+// TRKDoReadRegisters
 // ----------------------------------------------------------------------------
-asm void fn_801A625C() {
+asm void TRKDoReadRegisters() {
     nofralloc
     stwu r1, -0xe0(r1)
     mflr r0
@@ -526,7 +526,7 @@ asm void fn_801A625C() {
     addi r3, r1, 0x50
     li r4, 0x0
     li r5, 0x40
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r3, lbl_8049D920
     li r0, 0x80
     li r4, 0x40
@@ -540,7 +540,7 @@ asm void fn_801A625C() {
     stb r5, 0x58(r1)
     stw r6, 0x5c(r1)
     stw r0, lbl_8049D920
-    bl fn_801A44A0
+    bl TRK_WriteUARTN
     li r3, 0x0
     b lbl_801A6444
 lbl_801A62D0:
@@ -553,17 +553,17 @@ lbl_801A62D0:
     stw r6, 0x90(r1)
     stw r5, 0x9c(r1)
     stw r0, lbl_8049D920
-    bl fn_801A553C
+    bl TRKResetBuffer
     mr r3, r31
     addi r4, r1, 0x90
     li r5, 0x40
-    bl fn_801A588C
+    bl TRKAppendBuffer_ui8
     mr r5, r31
     addi r6, r1, 0x8
     li r3, 0x0
     li r4, 0x24
     li r7, 0x1
-    bl fn_801A7074
+    bl TRKTargetAccessDefault
     cmpwi r3, 0x0
     bne lbl_801A6340
     mr r5, r31
@@ -571,7 +571,7 @@ lbl_801A62D0:
     li r3, 0x0
     li r4, 0x21
     li r7, 0x1
-    bl fn_801A716C
+    bl TRKTargetAccessFP
 lbl_801A6340:
     cmpwi r3, 0x0
     bne lbl_801A6360
@@ -580,7 +580,7 @@ lbl_801A6340:
     li r3, 0x0
     li r4, 0x60
     li r7, 0x1
-    bl fn_801A72A8
+    bl TRKTargetAccessExtended1
 lbl_801A6360:
     cmpwi r3, 0x0
     bne lbl_801A6380
@@ -589,7 +589,7 @@ lbl_801A6360:
     li r3, 0x0
     li r4, 0x1f
     li r7, 0x1
-    bl fn_801A740C
+    bl TRKTargetAccessExtended2
 lbl_801A6380:
     cmpwi r3, 0x0
     beq lbl_801A643C
@@ -630,7 +630,7 @@ lbl_801A63F0:
     addi r3, r1, 0x10
     li r4, 0x0
     li r5, 0x40
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r3, lbl_8049D920
     li r0, 0x80
     li r4, 0x40
@@ -643,12 +643,12 @@ lbl_801A63F0:
     stb r31, 0x18(r1)
     stw r5, 0x1c(r1)
     stw r0, lbl_8049D920
-    bl fn_801A44A0
+    bl TRK_WriteUARTN
     li r3, 0x0
     b lbl_801A6444
 lbl_801A643C:
     mr r3, r31
-    bl fn_801A53D0
+    bl TRK_MessageSend
 lbl_801A6444:
     lwz r0, 0xe4(r1)
     lwz r31, 0xdc(r1)
@@ -658,9 +658,9 @@ lbl_801A6444:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A6458
+// TRKDoWriteRegisters
 // ----------------------------------------------------------------------------
-asm void fn_801A6458() {
+asm void TRKDoWriteRegisters() {
     nofralloc
     stwu r1, -0xe0(r1)
     mflr r0
@@ -674,13 +674,13 @@ asm void fn_801A6458() {
     lbz r31, 0x14(r3)
     lhz r30, 0x18(r3)
     lhz r29, 0x1c(r3)
-    bl fn_801A5564
+    bl TRK_SetBufferPosition
     cmplw r30, r29
     ble lbl_801A64E4
     addi r3, r1, 0x50
     li r4, 0x0
     li r5, 0x40
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r3, lbl_8049D920
     li r0, 0x80
     li r4, 0x40
@@ -694,13 +694,13 @@ asm void fn_801A6458() {
     stb r5, 0x58(r1)
     stw r6, 0x5c(r1)
     stw r0, lbl_8049D920
-    bl fn_801A44A0
+    bl TRK_WriteUARTN
     li r3, 0x0
     b lbl_801A66D8
 lbl_801A64E4:
     mr r3, r28
     li r4, 0x40
-    bl fn_801A5564
+    bl TRK_SetBufferPosition
     cmpwi r31, 0x0
     beq lbl_801A6514
     cmpwi r31, 0x1
@@ -716,7 +716,7 @@ lbl_801A6514:
     mr r5, r28
     addi r6, r1, 0x8
     li r7, 0x0
-    bl fn_801A7074
+    bl TRKTargetAccessDefault
     mr r31, r3
     b lbl_801A6598
 lbl_801A6534:
@@ -725,7 +725,7 @@ lbl_801A6534:
     mr r5, r28
     addi r6, r1, 0x8
     li r7, 0x0
-    bl fn_801A716C
+    bl TRKTargetAccessFP
     mr r31, r3
     b lbl_801A6598
 lbl_801A6554:
@@ -734,7 +734,7 @@ lbl_801A6554:
     mr r5, r28
     addi r6, r1, 0x8
     li r7, 0x0
-    bl fn_801A72A8
+    bl TRKTargetAccessExtended1
     mr r31, r3
     b lbl_801A6598
 lbl_801A6574:
@@ -743,7 +743,7 @@ lbl_801A6574:
     mr r5, r28
     addi r6, r1, 0x8
     li r7, 0x0
-    bl fn_801A740C
+    bl TRKTargetAccessExtended2
     mr r31, r3
     b lbl_801A6598
 lbl_801A6594:
@@ -751,13 +751,13 @@ lbl_801A6594:
 lbl_801A6598:
     mr r3, r28
     li r4, 0x0
-    bl fn_801A553C
+    bl TRKResetBuffer
     cmpwi r31, 0x0
     bne lbl_801A65F4
     addi r3, r1, 0x90
     li r4, 0x0
     li r5, 0x40
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r6, lbl_8049D920
     li r0, 0x40
     li r4, 0x80
@@ -770,7 +770,7 @@ lbl_801A6598:
     stb r31, 0x98(r1)
     stw r6, 0x9c(r1)
     stw r0, lbl_8049D920
-    bl fn_801A5594
+    bl TRK_AppendBuffer
     mr r31, r3
 lbl_801A65F4:
     cmpwi r31, 0x702
@@ -824,7 +824,7 @@ lbl_801A6684:
     addi r3, r1, 0x10
     li r4, 0x0
     li r5, 0x40
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r3, lbl_8049D920
     li r0, 0x80
     li r4, 0x40
@@ -837,12 +837,12 @@ lbl_801A6684:
     stb r31, 0x18(r1)
     stw r5, 0x1c(r1)
     stw r0, lbl_8049D920
-    bl fn_801A44A0
+    bl TRK_WriteUARTN
     li r3, 0x0
     b lbl_801A66D8
 lbl_801A66D0:
     mr r3, r28
-    bl fn_801A53D0
+    bl TRK_MessageSend
 lbl_801A66D8:
     lwz r0, 0xe4(r1)
     lwz r31, 0xdc(r1)
@@ -855,9 +855,9 @@ lbl_801A66D8:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A66F8
+// TRKDoContinue
 // ----------------------------------------------------------------------------
-asm void fn_801A66F8() {
+asm void TRKDoContinue() {
     nofralloc
     stwu r1, -0x90(r1)
     mflr r0
@@ -868,7 +868,7 @@ asm void fn_801A66F8() {
     addi r3, r1, 0x48
     li r4, 0x0
     li r5, 0x40
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r3, lbl_8049D920
     li r0, 0x80
     li r4, 0x40
@@ -882,14 +882,14 @@ asm void fn_801A66F8() {
     stb r5, 0x50(r1)
     stw r6, 0x54(r1)
     stw r0, lbl_8049D920
-    bl fn_801A44A0
+    bl TRK_WriteUARTN
     li r3, 0x0
     b lbl_801A67AC
 lbl_801A6760:
     addi r3, r1, 0x8
     li r4, 0x0
     li r5, 0x40
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r3, lbl_8049D920
     li r0, 0x80
     li r4, 0x40
@@ -903,7 +903,7 @@ lbl_801A6760:
     stb r5, 0x10(r1)
     stw r6, 0x14(r1)
     stw r0, lbl_8049D920
-    bl fn_801A44A0
+    bl TRK_WriteUARTN
     bl TRKTargetContinue
 lbl_801A67AC:
     lwz r0, 0x94(r1)
@@ -913,9 +913,9 @@ lbl_801A67AC:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A67BC
+// TRKDoStep
 // ----------------------------------------------------------------------------
-asm void fn_801A67BC() {
+asm void TRKDoStep() {
     nofralloc
     stwu r1, -0x160(r1)
     mflr r0
@@ -926,7 +926,7 @@ asm void fn_801A67BC() {
     mr r30, r3
     stw r29, 0x154(r1)
     stw r28, 0x150(r1)
-    bl fn_801A5564
+    bl TRK_SetBufferPosition
     lbz r31, 0x14(r30)
     lwz r29, 0x1c(r30)
     cmpwi r31, 0x0
@@ -946,7 +946,7 @@ lbl_801A6814:
     addi r3, r1, 0x108
     li r4, 0x0
     li r5, 0x40
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r3, lbl_8049D920
     li r0, 0x80
     li r4, 0x40
@@ -960,11 +960,11 @@ lbl_801A6814:
     stb r5, 0x110(r1)
     stw r6, 0x114(r1)
     stw r0, lbl_8049D920
-    bl fn_801A44A0
+    bl TRK_WriteUARTN
     li r3, 0x0
     b lbl_801A6A20
 lbl_801A6870:
-    bl fn_801A7E94
+    bl TRKTargetGetPC
     cmplw r3, r29
     blt lbl_801A6884
     cmplw r3, r28
@@ -973,7 +973,7 @@ lbl_801A6884:
     addi r3, r1, 0xc8
     li r4, 0x0
     li r5, 0x40
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r3, lbl_8049D920
     li r0, 0x80
     li r4, 0x40
@@ -987,14 +987,14 @@ lbl_801A6884:
     stb r5, 0xd0(r1)
     stw r6, 0xd4(r1)
     stw r0, lbl_8049D920
-    bl fn_801A44A0
+    bl TRK_WriteUARTN
     li r3, 0x0
     b lbl_801A6A20
 lbl_801A68D4:
     addi r3, r1, 0x88
     li r4, 0x0
     li r5, 0x40
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r3, lbl_8049D920
     li r0, 0x80
     li r4, 0x40
@@ -1008,7 +1008,7 @@ lbl_801A68D4:
     stb r5, 0x90(r1)
     stw r6, 0x94(r1)
     stw r0, lbl_8049D920
-    bl fn_801A44A0
+    bl TRK_WriteUARTN
     li r3, 0x0
     b lbl_801A6A20
 lbl_801A6924:
@@ -1018,7 +1018,7 @@ lbl_801A6924:
     addi r3, r1, 0x48
     li r4, 0x0
     li r5, 0x40
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r3, lbl_8049D920
     li r0, 0x80
     li r4, 0x40
@@ -1032,14 +1032,14 @@ lbl_801A6924:
     stb r5, 0x50(r1)
     stw r6, 0x54(r1)
     stw r0, lbl_8049D920
-    bl fn_801A44A0
+    bl TRK_WriteUARTN
     li r3, 0x0
     b lbl_801A6A20
 lbl_801A6980:
     addi r3, r1, 0x8
     li r4, 0x0
     li r5, 0x40
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r3, lbl_8049D920
     li r0, 0x80
     li r4, 0x40
@@ -1053,7 +1053,7 @@ lbl_801A6980:
     stb r5, 0x10(r1)
     stw r6, 0x14(r1)
     stw r0, lbl_8049D920
-    bl fn_801A44A0
+    bl TRK_WriteUARTN
     cmpwi r31, 0x0
     li r3, 0x0
     beq lbl_801A69F0
@@ -1069,7 +1069,7 @@ lbl_801A69F0:
     mr r3, r30
     cntlzw r0, r0
     srwi r4, r0, 5
-    bl fn_801A7D98
+    bl TRKTargetSingleStep
     b lbl_801A6A20
 lbl_801A6A08:
     subi r0, r31, 0x11
@@ -1077,7 +1077,7 @@ lbl_801A6A08:
     cntlzw r0, r0
     mr r4, r28
     srwi r5, r0, 5
-    bl fn_801A7E20
+    bl TRKTargetStepOutOfRange
 lbl_801A6A20:
     lwz r0, 0x164(r1)
     lwz r31, 0x15c(r1)
@@ -1090,15 +1090,15 @@ lbl_801A6A20:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A6A40
+// TRKDoStop
 // ----------------------------------------------------------------------------
-asm void fn_801A6A40() {
+asm void TRKDoStop() {
     nofralloc
     stwu r1, -0x50(r1)
     mflr r0
     stw r0, 0x54(r1)
     stw r31, 0x4c(r1)
-    bl fn_801A80B8
+    bl TRKTargetStop
     cmpwi r3, 0x0
     beq lbl_801A6A78
     cmpwi r3, 0x704
@@ -1126,7 +1126,7 @@ lbl_801A6A9C:
     addi r3, r1, 0x8
     li r4, 0x0
     li r5, 0x40
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r3, lbl_8049D920
     li r0, 0x80
     li r4, 0x40
@@ -1139,7 +1139,7 @@ lbl_801A6A9C:
     stb r31, 0x10(r1)
     stw r5, 0x14(r1)
     stw r0, lbl_8049D920
-    bl fn_801A44A0
+    bl TRK_WriteUARTN
     lwz r31, 0x4c(r1)
     li r3, 0x0
     lwz r0, 0x54(r1)
@@ -1149,9 +1149,9 @@ lbl_801A6A9C:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A6AF8
+// TRKDoSetOption
 // ----------------------------------------------------------------------------
-asm void fn_801A6AF8() {
+asm void TRKDoSetOption() {
     nofralloc
     stwu r1, -0x50(r1)
     mflr r0
@@ -1180,12 +1180,12 @@ lbl_801A6B48:
     bl OSReport
 lbl_801A6B58:
     mr r3, r30
-    bl fn_801A8574
+    bl SetUseSerialIO
 lbl_801A6B60:
     addi r3, r1, 0x8
     li r4, 0x0
     li r5, 0x40
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r3, lbl_8049D920
     li r0, 0x80
     li r4, 0x40
@@ -1199,7 +1199,7 @@ lbl_801A6B60:
     stb r5, 0x10(r1)
     stw r6, 0x14(r1)
     stw r0, lbl_8049D920
-    bl fn_801A44A0
+    bl TRK_WriteUARTN
     lwz r31, 0x4c(r1)
     li r3, 0x0
     lwz r30, 0x48(r1)

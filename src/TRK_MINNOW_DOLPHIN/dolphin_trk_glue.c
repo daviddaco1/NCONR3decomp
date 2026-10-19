@@ -31,17 +31,17 @@ void OSEnableScheduler();
 void OSReport();
 void ReserveEXI2Port();
 void TRKEXICallBack();
-void TRKInitializeIntDrivenUART();
-void TRKInterruptHandler();
+void TRK_InitializeIntDrivenUART();
+void TRK_InterruptHandler();
 void TRKLoadContext();
 void TRKUARTInterruptHandler();
 void TRK_board_display();
 void UnreserveEXI2Port();
-void fn_801A3B2C();
-void fn_801A4424();
-void fn_801A4450();
-void fn_801A4464();
-void fn_801A44A0();
+void TRK_memcpy();
+void EnableEXI2Interrupts();
+void TRKPollUART();
+void TRKReadUARTN();
+void TRK_WriteUARTN();
 
 // ----------------------------------------------------------------------------
 // TRKLoadContext
@@ -83,7 +83,7 @@ lbl_801A4200:
     lwz r2, 0x198(r31)
     lwz r4, 0x19c(r31)
     lwz r31, 0x7c(r31)
-    b TRKInterruptHandler
+    b TRK_InterruptHandler
 }
 
 // ----------------------------------------------------------------------------
@@ -204,9 +204,9 @@ asm void TRKUARTInterruptHandler() {
 }
 
 // ----------------------------------------------------------------------------
-// TRKInitializeIntDrivenUART
+// TRK_InitializeIntDrivenUART
 // ----------------------------------------------------------------------------
-asm void TRKInitializeIntDrivenUART() {
+asm void TRK_InitializeIntDrivenUART() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -232,9 +232,9 @@ asm void TRKInitializeIntDrivenUART() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A4424
+// EnableEXI2Interrupts
 // ----------------------------------------------------------------------------
-asm void fn_801A4424() {
+asm void EnableEXI2Interrupts() {
     nofralloc
     lbz r0, TRK_Use_BBA
     cmpwi r0, 0x0
@@ -250,9 +250,9 @@ asm void fn_801A4424() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A4450
+// TRKPollUART
 // ----------------------------------------------------------------------------
-asm void fn_801A4450() {
+asm void TRKPollUART() {
     nofralloc
     lis r3, gDBCommTable@ha
     addi r3, r3, gDBCommTable@l
@@ -262,9 +262,9 @@ asm void fn_801A4450() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A4464
+// TRKReadUARTN
 // ----------------------------------------------------------------------------
-asm void fn_801A4464() {
+asm void TRKReadUARTN() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -284,9 +284,9 @@ asm void fn_801A4464() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A44A0
+// TRK_WriteUARTN
 // ----------------------------------------------------------------------------
-asm void fn_801A44A0() {
+asm void TRK_WriteUARTN() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -356,7 +356,7 @@ asm void InitializeProgramEndTrap() {
     lis r31, PPCHalt@ha
     addi r31, r31, PPCHalt@l
     addi r3, r31, 0x4
-    bl fn_801A3B2C
+    bl TRK_memcpy
     addi r3, r31, 0x4
     li r4, 0x4
     bl ICInvalidateRange

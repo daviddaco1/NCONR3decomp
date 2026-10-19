@@ -623,12 +623,12 @@ extern "C" void fn_8018C9DC();
 extern "C" void fn_8018D364();
 extern "C" void fn_8018E114();
 extern "C" void fn_8018EBEC();
-extern "C" void fn_80193F04();
-extern "C" void fn_80197BC8();
-extern "C" void fn_80198BF4();
+extern "C" void __div2i();
+extern "C" void labs();
+extern "C" void memcmp();
 extern "C" void fn_8019B578();
-extern "C" void fn_8019CC04();
-extern "C" void fn_8019CC7C();
+extern "C" void strcat();
+extern "C" void strcmp();
 extern "C" void fn_801A32A0();
 extern "C" void fn_801A32CC();
 extern "C" void fn_801A32F4();
@@ -1189,7 +1189,7 @@ extern "C" asm void fn_801674CC() {
 lbl_80167500:
     mr r3, r30
     mr r4, r31
-    bl fn_8019CC7C
+    bl strcmp
     lwz r31, 0xc(r1)
     lwz r30, 0x8(r1)
     lwz r0, 0x14(r1)
@@ -2290,7 +2290,7 @@ extern "C" asm void fn_8016830C() {
 lbl_80168340:
     mr r3, r30
     mr r4, r31
-    bl fn_8019CC7C
+    bl strcmp
     lwz r31, 0xc(r1)
     lwz r30, 0x8(r1)
     lwz r0, 0x14(r1)
@@ -3359,13 +3359,13 @@ lbl_801690A0:
     bge lbl_801690F4
     mr r3, r26
     mr r4, r27
-    bl fn_8019CC04
+    bl strcat
     lwz r0, lbl_8049C38C
     cmplw r29, r0
     beq lbl_801690F4
     mr r3, r26
     mr r4, r29
-    bl fn_8019CC04
+    bl strcat
 lbl_801690F4:
     addi r11, r1, 0x20
     bl _restgpr_26
@@ -5314,7 +5314,7 @@ lbl_8016AAA0:
     b lbl_8016AB28
 lbl_8016AACC:
     addi r4, r27, 0x55
-    bl fn_8019CC7C
+    bl strcmp
     cmpwi r3, 0x0
     bne lbl_8016AAE4
     li r3, 0x0
@@ -8122,7 +8122,7 @@ extern "C" asm void fn_8016CE60() {
     mflr r0
     stw r0, 0x14(r1)
     li r5, 0x300
-    bl fn_80198BF4
+    bl memcmp
     cntlzw r0, r3
     srwi r3, r0, 5
     lwz r0, 0x14(r1)
@@ -9070,7 +9070,7 @@ lbl_8016DA48:
     lwz r0, 0xf8(r5)
     srwi r6, r0, 2
     li r5, 0x0
-    bl fn_80193F04
+    bl __div2i
     cmpwi r4, 0x168
     bge lbl_8016DB0C
     li r3, 0x1
@@ -9094,7 +9094,7 @@ lbl_8016DAA4:
     lwz r0, 0xf8(r5)
     srwi r6, r0, 2
     li r5, 0x0
-    bl fn_80193F04
+    bl __div2i
     cmpwi r4, 0x168
     bge lbl_8016DB0C
     cmpwi r31, 0x0
@@ -9189,7 +9189,7 @@ extern "C" asm void fn_8016DBD4() {
     li r0, 0x3e8
     divwu r6, r5, r0
     li r5, 0x0
-    bl fn_80193F04
+    bl __div2i
     mr r3, r4
     lwz r31, 0xc(r1)
     lwz r0, 0x14(r1)
@@ -9459,7 +9459,7 @@ lbl_8016DF6C:
     lwz r0, 0xf8(r30)
     srwi r6, r0, 2
     li r5, 0x0
-    bl fn_80193F04
+    bl __div2i
     cmpwi r4, 0x12c
     blt lbl_8016DFA8
     mr r23, r24
@@ -9608,7 +9608,7 @@ lbl_8016E140:
     lwz r0, 0xf8(r5)
     srwi r6, r0, 2
     li r5, 0x0
-    bl fn_80193F04
+    bl __div2i
     li r0, 0x12c
     subfc r31, r4, r0
 lbl_8016E194:
@@ -10883,7 +10883,7 @@ extern "C" asm void fn_8016F1DC() {
 lbl_8016F204:
     add r3, r29, r31
     mr r4, r28
-    bl fn_8019CC7C
+    bl strcmp
     cmpwi r3, 0x0
     bne lbl_8016F240
     mr r3, r31
@@ -14959,7 +14959,7 @@ extern "C" asm void fn_80172688() {
     mullw r0, r0, r3
     subf r31, r0, r31
     mr r3, r31
-    bl fn_80197BC8
+    bl labs
     cmpwi r3, 0xb4
     ble lbl_8017270C
     li r3, 0xb4

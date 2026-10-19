@@ -28,12 +28,12 @@ void __va_arg();
 void double2hex();
 void float2str();
 void fn_801972E0();
-void fn_80199D9C();
+void round_decimal();
 void fn_8019AFCC();
-void fn_8019B19C();
-void fn_8019B220();
+void vsprintf();
+void snprintf();
 void fn_8019B3E8();
-void fn_8019B558();
+void rand();
 void fn_8019B578();
 void fwide();
 void long2str();
@@ -1131,9 +1131,9 @@ lbl_80199D74:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80199D9C
+// round_decimal
 // ----------------------------------------------------------------------------
-asm void fn_80199D9C() {
+asm void round_decimal() {
     nofralloc
     cmpwi r4, 0x0
     bge lbl_80199DC0
@@ -1469,7 +1469,7 @@ lbl_8019A1FC:
     cmpw r0, r4
     ble lbl_8019A214
     addi r3, r1, 0xc
-    bl fn_80199D9C
+    bl round_decimal
 lbl_8019A214:
     lha r4, 0xe(r1)
     cmpwi r4, -0x4
@@ -1524,7 +1524,7 @@ lbl_8019A2B4:
     cmpw r0, r4
     ble lbl_8019A2D0
     addi r3, r1, 0xc
-    bl fn_80199D9C
+    bl round_decimal
 lbl_8019A2D0:
     lha r6, 0xe(r1)
     li r8, 0x2b
@@ -1635,7 +1635,7 @@ lbl_8019A430:
     subf r0, r0, r8
     addi r3, r1, 0xc
     subf r4, r0, r4
-    bl fn_80199D9C
+    bl round_decimal
     lbz r4, 0x10(r1)
     lha r5, 0xe(r1)
     subf r3, r5, r4
@@ -2635,9 +2635,9 @@ lbl_8019B180:
 }
 
 // ----------------------------------------------------------------------------
-// fn_8019B19C
+// vsprintf
 // ----------------------------------------------------------------------------
-asm void fn_8019B19C() {
+asm void vsprintf() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -2677,9 +2677,9 @@ lbl_8019B204:
 }
 
 // ----------------------------------------------------------------------------
-// fn_8019B220
+// snprintf
 // ----------------------------------------------------------------------------
-asm void fn_8019B220() {
+asm void snprintf() {
     nofralloc
     stwu r1, -0x90(r1)
     mflr r0
@@ -2921,9 +2921,9 @@ lbl_8019B544:
 }
 
 // ----------------------------------------------------------------------------
-// fn_8019B558
+// rand
 // ----------------------------------------------------------------------------
-asm void fn_8019B558() {
+asm void rand() {
     nofralloc
     lis r3, 0x41c6
     lwz r4, lbl_8049C408

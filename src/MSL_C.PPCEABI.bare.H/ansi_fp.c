@@ -23,28 +23,28 @@ void __div2u();
 void __mod2u();
 void _restgpr_21();
 void _savegpr_21();
-void fn_80194274();
+void __cvt_dbl_ull();
 void fn_80195C14();
 void fn_80195C2C();
-void fn_80196350();
-void fn_8019642C();
-void fn_801966B4();
-void fn_801967A0();
-void fn_80196ABC();
-void fn_80196BA0();
-void fn_80196CA0();
-void fn_8019717C();
+void __ull2dec();
+void __timesdec();
+void __str2dec();
+void __two_exp();
+void __equals_dec();
+void __less_dec();
+void __minus_dec();
+void __num2dec_internal();
 void fn_801972E0();
 void fn_80197480();
-void fn_801A29A0();
-void fn_801A2BE4();
-void fn_801A2C6C();
-void fn_801A302C();
+void copysign();
+void frexp();
+void ldexp();
+void log10();
 
 // ----------------------------------------------------------------------------
-// fn_80196350
+// __ull2dec
 // ----------------------------------------------------------------------------
-asm void fn_80196350() {
+asm void __ull2dec() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -108,9 +108,9 @@ lbl_801963F8:
 }
 
 // ----------------------------------------------------------------------------
-// fn_8019642C
+// __timesdec
 // ----------------------------------------------------------------------------
-asm void fn_8019642C() {
+asm void __timesdec() {
     nofralloc
     stwu r1, -0x60(r1)
     lis r6, 0xcccd
@@ -296,9 +296,9 @@ lbl_801966A0:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801966B4
+// __str2dec
 // ----------------------------------------------------------------------------
-asm void fn_801966B4() {
+asm void __str2dec() {
     nofralloc
     li r0, 0x0
     sth r5, 0x2(r3)
@@ -371,9 +371,9 @@ lbl_80196790:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801967A0
+// __two_exp
 // ----------------------------------------------------------------------------
-asm void fn_801967A0() {
+asm void __two_exp() {
     nofralloc
     stwu r1, -0x70(r1)
     mflr r0
@@ -394,138 +394,138 @@ asm void fn_801967A0() {
     lis r4, lbl_8033B3B8@ha
     li r5, -0x14
     addi r4, r4, lbl_8033B3B8@l
-    bl fn_801966B4
+    bl __str2dec
     b lbl_80196AA4
     lis r4, lbl_8033B3B8@ha
     li r5, -0x10
     addi r4, r4, lbl_8033B3B8@l
     addi r4, r4, 0x2e
-    bl fn_801966B4
+    bl __str2dec
     b lbl_80196AA4
     lis r4, lbl_8033B3B8@ha
     li r5, -0xa
     addi r4, r4, lbl_8033B3B8@l
     addi r4, r4, 0x55
-    bl fn_801966B4
+    bl __str2dec
     b lbl_80196AA4
     lis r4, lbl_8033B3B8@ha
     li r5, -0x5
     addi r4, r4, lbl_8033B3B8@l
     addi r4, r4, 0x6d
-    bl fn_801966B4
+    bl __str2dec
     b lbl_80196AA4
     lis r4, lbl_8033B3B8@ha
     li r5, -0x3
     addi r4, r4, lbl_8033B3B8@l
     addi r4, r4, 0x7a
-    bl fn_801966B4
+    bl __str2dec
     b lbl_80196AA4
     lis r4, lbl_8033B3B8@ha
     li r5, -0x3
     addi r4, r4, lbl_8033B3B8@l
     addi r4, r4, 0x81
-    bl fn_801966B4
+    bl __str2dec
     b lbl_80196AA4
     lis r4, lbl_8033B3B8@ha
     li r5, -0x2
     addi r4, r4, lbl_8033B3B8@l
     addi r4, r4, 0x87
-    bl fn_801966B4
+    bl __str2dec
     b lbl_80196AA4
     lis r4, lbl_8033B3B8@ha
     li r5, -0x2
     addi r4, r4, lbl_8033B3B8@l
     addi r4, r4, 0x8d
-    bl fn_801966B4
+    bl __str2dec
     b lbl_80196AA4
     lis r4, lbl_8033B3B8@ha
     li r5, -0x2
     addi r4, r4, lbl_8033B3B8@l
     addi r4, r4, 0x92
-    bl fn_801966B4
+    bl __str2dec
     b lbl_80196AA4
     lis r4, lbl_8033B3B8@ha
     li r5, -0x1
     addi r4, r4, lbl_8033B3B8@l
     addi r4, r4, 0x96
-    bl fn_801966B4
+    bl __str2dec
     b lbl_80196AA4
     lis r4, lbl_8033B3B8@ha
     li r5, -0x1
     addi r4, r4, lbl_8033B3B8@l
     addi r4, r4, 0x9a
-    bl fn_801966B4
+    bl __str2dec
     b lbl_80196AA4
     lis r4, lbl_8033B3B8@ha
     li r5, -0x1
     addi r4, r4, lbl_8033B3B8@l
     addi r4, r4, 0x9d
-    bl fn_801966B4
+    bl __str2dec
     b lbl_80196AA4
     lis r4, lbl_8033B3B8@ha
     li r5, 0x0
     addi r4, r4, lbl_8033B3B8@l
     addi r4, r4, 0x9f
-    bl fn_801966B4
+    bl __str2dec
     b lbl_80196AA4
     lis r4, lbl_8033B3B8@ha
     li r5, 0x0
     addi r4, r4, lbl_8033B3B8@l
     addi r4, r4, 0xa1
-    bl fn_801966B4
+    bl __str2dec
     b lbl_80196AA4
     lis r4, lbl_8033B3B8@ha
     li r5, 0x0
     addi r4, r4, lbl_8033B3B8@l
     addi r4, r4, 0xa3
-    bl fn_801966B4
+    bl __str2dec
     b lbl_80196AA4
     lis r4, lbl_8033B3B8@ha
     li r5, 0x0
     addi r4, r4, lbl_8033B3B8@l
     addi r4, r4, 0xa5
-    bl fn_801966B4
+    bl __str2dec
     b lbl_80196AA4
     lis r4, lbl_8033B3B8@ha
     li r5, 0x1
     addi r4, r4, lbl_8033B3B8@l
     addi r4, r4, 0xa7
-    bl fn_801966B4
+    bl __str2dec
     b lbl_80196AA4
     lis r4, lbl_8033B3B8@ha
     li r5, 0x1
     addi r4, r4, lbl_8033B3B8@l
     addi r4, r4, 0xaa
-    bl fn_801966B4
+    bl __str2dec
     b lbl_80196AA4
     lis r4, lbl_8033B3B8@ha
     li r5, 0x1
     addi r4, r4, lbl_8033B3B8@l
     addi r4, r4, 0xad
-    bl fn_801966B4
+    bl __str2dec
     b lbl_80196AA4
     lis r4, lbl_8033B3B8@ha
     li r5, 0x2
     addi r4, r4, lbl_8033B3B8@l
     addi r4, r4, 0xb0
-    bl fn_801966B4
+    bl __str2dec
     b lbl_80196AA4
     lis r4, lbl_8033B3B8@ha
     li r5, 0x2
     addi r4, r4, lbl_8033B3B8@l
     addi r4, r4, 0xb4
-    bl fn_801966B4
+    bl __str2dec
     b lbl_80196AA4
 lbl_801969D4:
     srwi r0, r4, 31
     addi r3, r1, 0x34
     add r0, r0, r4
     srawi r4, r0, 1
-    bl fn_801967A0
+    bl __two_exp
     addi r4, r1, 0x34
     mr r3, r31
     mr r5, r4
-    bl fn_8019642C
+    bl __timesdec
     clrlwi. r0, r30, 31
     beq lbl_80196AA4
     lwz r3, 0x0(r31)
@@ -557,7 +557,7 @@ lbl_801969D4:
     addi r4, r4, lbl_8033B3B8@l
     li r5, 0x0
     addi r4, r4, 0xa1
-    bl fn_801966B4
+    bl __str2dec
     b lbl_80196A94
 lbl_80196A7C:
     lis r4, lbl_8033B3B8@ha
@@ -565,12 +565,12 @@ lbl_80196A7C:
     addi r4, r4, lbl_8033B3B8@l
     li r5, -0x1
     addi r4, r4, 0x9d
-    bl fn_801966B4
+    bl __str2dec
 lbl_80196A94:
     mr r3, r31
     addi r4, r1, 0x8
     addi r5, r1, 0x34
-    bl fn_8019642C
+    bl __timesdec
 lbl_80196AA4:
     lwz r0, 0x74(r1)
     lwz r31, 0x6c(r1)
@@ -581,9 +581,9 @@ lbl_80196AA4:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80196ABC
+// __equals_dec
 // ----------------------------------------------------------------------------
-asm void fn_80196ABC() {
+asm void __equals_dec() {
     nofralloc
     lbz r5, 0x5(r3)
     cmpwi r5, 0x0
@@ -656,9 +656,9 @@ lbl_80196B98:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80196BA0
+// __less_dec
 // ----------------------------------------------------------------------------
-asm void fn_80196BA0() {
+asm void __less_dec() {
     nofralloc
     lbz r0, 0x5(r3)
     cmpwi r0, 0x0
@@ -738,9 +738,9 @@ lbl_80196C88:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80196CA0
+// __minus_dec
 // ----------------------------------------------------------------------------
-asm void fn_80196CA0() {
+asm void __minus_dec() {
     nofralloc
     stwu r1, -0x20(r1)
     lwz r12, 0xc(r4)
@@ -1091,9 +1091,9 @@ lbl_80197168:
 }
 
 // ----------------------------------------------------------------------------
-// fn_8019717C
+// __num2dec_internal
 // ----------------------------------------------------------------------------
-asm void fn_8019717C() {
+asm void __num2dec_internal() {
     nofralloc
     stwu r1, -0x90(r1)
     mflr r0
@@ -1145,7 +1145,7 @@ lbl_80197220:
 lbl_8019722C:
     fmr f1, f31
     addi r3, r1, 0x8
-    bl fn_801A2BE4
+    bl frexp
     stfd f1, 0x10(r1)
     fmr f31, f1
     lwz r4, 0x14(r1)
@@ -1167,19 +1167,19 @@ lbl_80197278:
     subfic r29, r4, 0x35
     addi r3, r1, 0x18
     subf r4, r29, r0
-    bl fn_801967A0
+    bl __two_exp
     fmr f1, f31
     mr r3, r29
-    bl fn_801A2C6C
-    bl fn_80194274
+    bl ldexp
+    bl __cvt_dbl_ull
     mr r5, r3
     mr r6, r4
     addi r3, r1, 0x44
-    bl fn_80196350
+    bl __ull2dec
     mr r3, r30
     addi r4, r1, 0x44
     addi r5, r1, 0x18
-    bl fn_8019642C
+    bl __timesdec
     stb r31, 0x0(r30)
 lbl_801972C0:
     lwz r0, 0x94(r1)
@@ -1205,7 +1205,7 @@ asm void fn_801972E0() {
     stw r30, 0x8(r1)
     mr r30, r4
     mr r3, r30
-    bl fn_8019717C
+    bl __num2dec_internal
     lbz r0, 0x5(r30)
     cmplwi r0, 0x9
     bgt lbl_80197468
@@ -1347,7 +1347,7 @@ lbl_801974CC:
     lfd f2, lbl_804A1168
 lbl_801974D0:
     lfd f1, lbl_804A1158
-    bl fn_801A29A0
+    bl copysign
     b lbl_80197BA8
 lbl_801974DC:
     lbz r0, 0x5(r3)
@@ -1368,7 +1368,7 @@ lbl_80197510:
     lfd f2, lbl_804A1168
 lbl_80197514:
     lfd f1, lbl_804A1158
-    bl fn_801A29A0
+    bl copysign
     b lbl_80197BA8
 lbl_80197520:
     lbz r0, 0x0(r3)
@@ -1381,7 +1381,7 @@ lbl_80197534:
 lbl_80197538:
     lis r3, lbl_8049C41C@ha
     lfs f1, lbl_8049C41C@l(r3)
-    bl fn_801A29A0
+    bl copysign
     b lbl_80197BA8
 lbl_80197548:
     lbz r0, 0x0(r3)
@@ -1490,10 +1490,10 @@ lbl_801976AC:
     subi r0, r6, 0x1
     sth r0, 0xfe(r1)
     extsh r29, r0
-    bl fn_801966B4
+    bl __str2dec
     addi r3, r1, 0xd0
     addi r4, r1, 0xfc
-    bl fn_80196BA0
+    bl __less_dec
     cmpwi r3, 0x0
     beq lbl_80197718
     lbz r0, 0x0(r27)
@@ -1506,7 +1506,7 @@ lbl_80197704:
 lbl_80197708:
     lis r3, lbl_8049C41C@ha
     lfs f1, lbl_8049C41C@l(r3)
-    bl fn_801A29A0
+    bl copysign
     b lbl_80197BA8
 lbl_80197718:
     lbz r0, 0x101(r1)
@@ -1619,7 +1619,7 @@ lbl_80197884:
     lfd f1, lbl_804A1170
     lfd f0, 0x128(r1)
     fsub f2, f0, f2
-    bl fn_801A302C
+    bl log10
     fdiv f31, f31, f1
     b lbl_801978D4
 lbl_801978B4:
@@ -1629,12 +1629,12 @@ lbl_801978B4:
     lfd f0, 0x130(r1)
     lfd f1, lbl_804A1170
     fsub f2, f0, f2
-    bl fn_801A302C
+    bl log10
     fmul f31, f31, f1
 lbl_801978D4:
     fmr f1, f31
     mr r3, r29
-    bl fn_801A2C6C
+    bl ldexp
     fmr f31, f1
     stfd f1, 0x10(r1)
     bl fn_80195C2C
@@ -1646,15 +1646,15 @@ lbl_801978FC:
     fmr f1, f31
     addi r3, r1, 0xa4
     li r27, 0x0
-    bl fn_8019717C
+    bl __num2dec_internal
     addi r3, r1, 0xa4
     addi r4, r1, 0xfc
-    bl fn_80196ABC
+    bl __equals_dec
     cmpwi r3, 0x0
     bne lbl_80197B94
     addi r3, r1, 0xa4
     addi r4, r1, 0xfc
-    bl fn_80196BA0
+    bl __less_dec
     cmpwi r3, 0x0
     beq lbl_80197938
     li r27, 0x1
@@ -1689,12 +1689,12 @@ lbl_80197984:
 lbl_8019799C:
     lfd f1, 0x8(r1)
     addi r3, r1, 0x78
-    bl fn_8019717C
+    bl __num2dec_internal
     cmpwi r27, 0x0
     beq lbl_801979C4
     addi r3, r1, 0x78
     addi r4, r1, 0xfc
-    bl fn_80196BA0
+    bl __less_dec
     cmpwi r3, 0x0
     beq lbl_80197B34
 lbl_801979C4:
@@ -1702,7 +1702,7 @@ lbl_801979C4:
     bne lbl_80197AD0
     addi r3, r1, 0xfc
     addi r4, r1, 0x78
-    bl fn_80196BA0
+    bl __less_dec
     cmpwi r3, 0x0
     bne lbl_80197AD0
     fmr f0, f31
@@ -1795,14 +1795,14 @@ lbl_80197B34:
     addi r3, r1, 0x4c
     addi r4, r1, 0xfc
     addi r5, r1, 0xa4
-    bl fn_80196CA0
+    bl __minus_dec
     addi r3, r1, 0x20
     addi r4, r1, 0x78
     addi r5, r1, 0xfc
-    bl fn_80196CA0
+    bl __minus_dec
     addi r3, r1, 0x4c
     addi r4, r1, 0x20
-    bl fn_80196ABC
+    bl __equals_dec
     cmpwi r3, 0x0
     beq lbl_80197B7C
     lwz r0, 0x14(r1)
@@ -1813,7 +1813,7 @@ lbl_80197B34:
 lbl_80197B7C:
     addi r3, r1, 0x4c
     addi r4, r1, 0x20
-    bl fn_80196BA0
+    bl __less_dec
     cmpwi r3, 0x0
     bne lbl_80197B94
     lfd f31, 0x8(r1)

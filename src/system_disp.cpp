@@ -153,7 +153,7 @@ extern "C" void fn_8017375C();
 extern "C" void fn_801739BC();
 extern "C" void fn_8017CF8C();
 extern "C" void fn_8017D0DC();
-extern "C" void fn_8019CC7C();
+extern "C" void strcmp();
 extern "C" void memcpy();
 extern "C" void memset();
 
@@ -1489,7 +1489,7 @@ lbl_8007AD40:
     beq lbl_8007AD80
     addi r3, r3, 0x30
     mr r4, r25
-    bl fn_8019CC7C
+    bl strcmp
     cmpwi r3, 0x0
     bne lbl_8007AD80
     mr r3, r30

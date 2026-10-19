@@ -155,8 +155,8 @@ extern "C" void fn_801903A8();
 extern "C" void fn_801903F8();
 extern "C" void fn_80190420();
 extern "C" void fn_8019044C();
-extern "C" void fn_80193AF4();
-extern "C" void fn_80193BEC();
+extern "C" void __construct_array();
+extern "C" void __destroy_arr();
 extern "C" void fn_801A9384();
 extern "C" void fn_802030C8();
 extern "C" void fn_802037CC();
@@ -2412,7 +2412,7 @@ extern "C" asm void fn_8018F0A4() {
     addi r5, r5, fn_8018F118@l
     li r6, 0x58
     li r7, 0x18
-    bl fn_80193AF4
+    bl __construct_array
     li r3, 0x0
     lis r4, fn_8018F0FC@ha
     addi r4, r4, fn_8018F0FC@l
@@ -2433,7 +2433,7 @@ extern "C" asm void fn_8018F0FC() {
     addi r4, r4, fn_8018F118@l
     li r5, 0x58
     li r6, 0x18
-    b fn_80193BEC
+    b __destroy_arr
 }
 
 extern "C" asm void fn_8018F118() {
@@ -3680,7 +3680,7 @@ extern "C" asm void fn_80190118() {
     addi r5, r5, fn_8019018C@l
     li r6, 0x41c
     li r7, 0x3
-    bl fn_80193AF4
+    bl __construct_array
     li r3, 0x0
     lis r4, fn_80190170@ha
     addi r4, r4, fn_80190170@l
@@ -3701,7 +3701,7 @@ extern "C" asm void fn_80190170() {
     addi r4, r4, fn_8019018C@l
     li r5, 0x41c
     li r6, 0x3
-    b fn_80193BEC
+    b __destroy_arr
 }
 
 extern "C" asm void fn_8019018C() {

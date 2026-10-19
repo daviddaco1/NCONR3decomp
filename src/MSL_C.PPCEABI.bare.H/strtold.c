@@ -22,10 +22,10 @@ u8 lbl_8049C420[];
 void _restgpr_14();
 void _savegpr_14();
 void fn_80197480();
-void fn_8019C8A0();
+void __StringRead();
 void fn_8019D03C();
-void fn_8019E35C();
-void fn_801A336C();
+void strtod();
+void pow();
 void memset();
 
 // ----------------------------------------------------------------------------
@@ -427,11 +427,11 @@ lbl_8019D58C:
     li r0, 0x0
     stbx r0, r3, r20
     beq lbl_8019D5AC
-    bl fn_801A336C
+    bl pow
     fneg f1, f1
     b lbl_8019D5B0
 lbl_8019D5AC:
-    bl fn_801A336C
+    bl pow
 lbl_8019D5B0:
     lwz r0, 0x98(r1)
     add r3, r0, r21
@@ -1451,16 +1451,16 @@ lbl_8019E344:
 }
 
 // ----------------------------------------------------------------------------
-// fn_8019E35C
+// strtod
 // ----------------------------------------------------------------------------
-asm void fn_8019E35C() {
+asm void strtod() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
-    lis r4, fn_8019C8A0@ha
+    lis r4, __StringRead@ha
     stw r0, 0x24(r1)
     li r0, 0x0
-    addi r4, r4, fn_8019C8A0@l
+    addi r4, r4, __StringRead@l
     addi r5, r1, 0x10
     stw r3, 0x10(r1)
     lis r3, 0x8000

@@ -111,7 +111,7 @@ extern "C" void fn_80186BA0();
 extern "C" void fn_80186C44();
 extern "C" void fn_80190804();
 extern "C" void fn_801912E4();
-extern "C" void fn_8019CC04();
+extern "C" void strcat();
 extern "C" void fn_801D3AA8();
 extern "C" void fn_801D3AE0();
 extern "C" void fn_8030CC40();
@@ -3370,7 +3370,7 @@ lbl_80185C9C:
     bl sprintf
     addi r3, r1, 0x108
     addi r4, r1, 0x8
-    bl fn_8019CC04
+    bl strcat
     divw r0, r27, r30
     mullw r0, r0, r30
     subf r0, r0, r27
@@ -3434,7 +3434,7 @@ lbl_80185D74:
     bl sprintf
     addi r3, r1, 0x108
     addi r4, r1, 0x8
-    bl fn_8019CC04
+    bl strcat
 lbl_80185DA0:
     addi r27, r27, 0x1
     addi r31, r31, 0x4

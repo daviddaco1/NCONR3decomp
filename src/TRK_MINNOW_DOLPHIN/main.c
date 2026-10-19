@@ -11,10 +11,10 @@ u8 lbl_803D7868[];
 u8 lbl_803D7D68[];
 
 // Forward declarations
-void fn_801A3790();
-void fn_801A3798();
-void fn_801A37BC();
-void fn_801A38C4();
+void CBGetBytesAvailableForRead();
+void CircleBufferInitialize();
+void CircleBufferWriteBytes();
+void CircleBufferReadBytes();
 void fn_801A85CC();
 void fn_801A8628();
 void fn_801A867C();
@@ -47,7 +47,7 @@ asm void gdev_cc_initialize() {
     addi r3, r3, lbl_803D7D68@l
     li r5, 0x500
     addi r4, r4, lbl_803D7868@l
-    bl fn_801A3798
+    bl CircleBufferInitialize
     lwz r0, 0x14(r1)
     li r3, 0x0
     mtlr r0
@@ -125,10 +125,10 @@ lbl_801A3584:
     mr r5, r29
     addi r3, r31, lbl_803D7D68@l
     addi r4, r1, 0x8
-    bl fn_801A37BC
+    bl CircleBufferWriteBytes
 lbl_801A35C0:
     addi r3, r31, lbl_803D7D68@l
-    bl fn_801A3790
+    bl CBGetBytesAvailableForRead
     cmplw r3, r28
     blt lbl_801A3584
     cmpwi r30, 0x0
@@ -136,7 +136,7 @@ lbl_801A35C0:
     mr r4, r27
     mr r5, r28
     addi r3, r31, lbl_803D7D68@l
-    bl fn_801A38C4
+    bl CircleBufferReadBytes
 lbl_801A35E8:
     mr r3, r30
 lbl_801A35EC:
@@ -244,7 +244,7 @@ lbl_801A36E4:
     mr r5, r31
     addi r3, r3, lbl_803D7D68@l
     addi r4, r1, 0x8
-    bl fn_801A37BC
+    bl CircleBufferWriteBytes
     b lbl_801A3718
 lbl_801A3710:
     li r3, -0x2719

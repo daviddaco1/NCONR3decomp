@@ -8,11 +8,11 @@ u8 __files[];
 
 // Forward declarations
 void __close_all();
-void fn_8019608C();
+void free();
 void fn_80196260();
-void fn_801962E4();
-void fn_80198434();
-void fn_801984F0();
+void __flush_all();
+void fclose();
+void fflush();
 
 // ----------------------------------------------------------------------------
 // __close_all
@@ -35,14 +35,14 @@ lbl_801961E8:
     extrwi. r0, r0, 3, 7
     beq lbl_801961FC
     mr r3, r29
-    bl fn_80198434
+    bl fclose
 lbl_801961FC:
     mr r3, r29
     lwz r29, 0x4c(r29)
     lbz r0, 0xc(r3)
     cmpwi r0, 0x0
     beq lbl_80196218
-    bl fn_8019608C
+    bl free
     b lbl_8019623C
 lbl_80196218:
     lwz r0, 0x4(r3)
@@ -91,7 +91,7 @@ lbl_80196284:
     cmplwi r0, 0x1
     bne lbl_801962BC
     mr r3, r30
-    bl fn_801984F0
+    bl fflush
     cmpwi r3, 0x0
     beq lbl_801962BC
     li r31, -0x1
@@ -110,9 +110,9 @@ lbl_801962C0:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801962E4
+// __flush_all
 // ----------------------------------------------------------------------------
-asm void fn_801962E4() {
+asm void __flush_all() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -128,7 +128,7 @@ lbl_80196308:
     extrwi. r0, r0, 3, 7
     beq lbl_80196328
     mr r3, r30
-    bl fn_801984F0
+    bl fflush
     cmpwi r3, 0x0
     beq lbl_80196328
     li r31, -0x1

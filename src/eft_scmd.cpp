@@ -229,7 +229,7 @@ extern "C" void fn_8018C434();
 extern "C" void fn_8018ECA0();
 extern "C" void fn_8018ED80();
 extern "C" void fn_8018EEC0();
-extern "C" void fn_80193C8C();
+extern "C" void __cvt_fp2unsigned();
 extern "C" void fn_801A3278();
 extern "C" void fn_801A9384();
 extern "C" void fn_802016BC();
@@ -8078,7 +8078,7 @@ lbl_80119FF0:
     stw r25, 0x48(r31)
     stfs f31, 0x50(r31)
     fmr f1, f31
-    bl fn_80193C8C
+    bl __cvt_fp2unsigned
     mr r4, r3
     mr r3, r25
     bl fn_802016BC

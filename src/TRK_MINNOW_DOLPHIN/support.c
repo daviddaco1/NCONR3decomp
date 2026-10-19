@@ -9,26 +9,26 @@ u8 lbl_80360298[];
 // Forward declarations
 void OSReport();
 void TRKGetBuffer();
-void fn_801A3C68();
-void fn_801A48EC();
-void fn_801A49E4();
-void fn_801A4A34();
-void fn_801A4A50();
-void fn_801A4C44();
-void fn_801A4D6C();
-void fn_801A4E84();
-void fn_801A4F68();
-void fn_801A53D0();
-void fn_801A5454();
-void fn_801A5514();
-void fn_801A5564();
-void fn_801A588C();
-void fn_801A5AC0();
+void TRK_memset();
+void TRKTestForPacket();
+void TRKProcessInput();
+void TRK_strlen();
+void TRK_SuppAccessFile();
+void TRK_RequestSend();
+void HandleOpenFileSupportRequest();
+void HandleCloseFileSupportRequest();
+void HandlePositionFileSupportRequest();
+void TRK_MessageSend();
+void TRK_GetFreeBuffer();
+void TRK_ReleaseBuffer();
+void TRK_SetBufferPosition();
+void TRKAppendBuffer_ui8();
+void TRKReadBuffer_ui8();
 
 // ----------------------------------------------------------------------------
-// fn_801A4A50
+// TRK_SuppAccessFile
 // ----------------------------------------------------------------------------
-asm void fn_801A4A50() {
+asm void TRK_SuppAccessFile() {
     nofralloc
     stwu r1, -0x90(r1)
     mflr r0
@@ -58,7 +58,7 @@ lbl_801A4AA8:
     addi r3, r1, 0x18
     li r4, 0x0
     li r5, 0x40
-    bl fn_801A3C68
+    bl TRK_memset
     lwz r0, 0x0(r26)
     li r21, 0x800
     subf r0, r31, r0
@@ -82,11 +82,11 @@ lbl_801A4AF4:
     addi r4, r1, 0x8
     stw r24, 0x20(r1)
     sth r21, 0x24(r1)
-    bl fn_801A5454
+    bl TRK_GetFreeBuffer
     lwz r3, 0x8(r1)
     addi r4, r1, 0x18
     li r5, 0x40
-    bl fn_801A588C
+    bl TRKAppendBuffer_ui8
     cmpwi r29, 0x0
     mr r23, r3
     bne lbl_801A4B44
@@ -95,7 +95,7 @@ lbl_801A4AF4:
     lwz r3, 0x8(r1)
     mr r5, r21
     add r4, r25, r31
-    bl fn_801A588C
+    bl TRKAppendBuffer_ui8
     mr r23, r3
 lbl_801A4B44:
     cmpwi r23, 0x0
@@ -104,7 +104,7 @@ lbl_801A4B44:
     beq lbl_801A4BE8
     lwz r3, 0x8(r1)
     addi r4, r1, 0x10
-    bl fn_801A4C44
+    bl TRK_RequestSend
     cmpwi r3, 0x0
     mr r23, r3
     bne lbl_801A4B78
@@ -123,11 +123,11 @@ lbl_801A4B78:
     bgt lbl_801A4BC8
     mr r3, r22
     li r4, 0x40
-    bl fn_801A5564
+    bl TRK_SetBufferPosition
     mr r3, r22
     mr r5, r19
     add r4, r25, r31
-    bl fn_801A5AC0
+    bl TRKReadBuffer_ui8
     cmpwi r3, 0x302
     mr r23, r3
     bne lbl_801A4BC8
@@ -140,15 +140,15 @@ lbl_801A4BC8:
 lbl_801A4BD8:
     stw r20, 0x0(r27)
     lwz r3, 0x10(r1)
-    bl fn_801A5514
+    bl TRK_ReleaseBuffer
     b lbl_801A4BF4
 lbl_801A4BE8:
     lwz r3, 0x8(r1)
-    bl fn_801A53D0
+    bl TRK_MessageSend
     mr r23, r3
 lbl_801A4BF4:
     lwz r3, 0xc(r1)
-    bl fn_801A5514
+    bl TRK_ReleaseBuffer
     add r31, r31, r21
 lbl_801A4C00:
     cmpwi r30, 0x0
@@ -173,35 +173,35 @@ lbl_801A4C30:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A4C44
+// TRK_RequestSend
 // ----------------------------------------------------------------------------
-asm void fn_801A4C44() {
+asm void TRK_RequestSend() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
     stw r0, 0x24(r1)
     stmw r26, 0x8(r1)
     mr r26, r4
-    bl fn_801A53D0
+    bl TRK_MessageSend
     cmpwi r3, 0x0
     mr r30, r3
     bne lbl_801A4D30
     li r27, 0x0
     li r31, -0x1
 lbl_801A4C70:
-    bl fn_801A48EC
+    bl TRKTestForPacket
     cmpwi r3, -0x1
     stw r3, 0x0(r26)
     beq lbl_801A4C70
     bl TRKGetBuffer
     mr r29, r3
     li r4, 0x0
-    bl fn_801A5564
+    bl TRK_SetBufferPosition
     lbz r28, 0x10(r29)
     cmplwi r28, 0x80
     bge lbl_801A4CAC
     lwz r3, 0x0(r26)
-    bl fn_801A49E4
+    bl TRKProcessInput
     stw r31, 0x0(r26)
     b lbl_801A4C70
 lbl_801A4CAC:
@@ -240,7 +240,7 @@ lbl_801A4D10:
     beq lbl_801A4D30
 lbl_801A4D20:
     lwz r3, 0x0(r26)
-    bl fn_801A5514
+    bl TRK_ReleaseBuffer
     li r0, -0x1
     stw r0, 0x0(r26)
 lbl_801A4D30:
@@ -263,9 +263,9 @@ lbl_801A4D54:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A4D6C
+// HandleOpenFileSupportRequest
 // ----------------------------------------------------------------------------
-asm void fn_801A4D6C() {
+asm void HandleOpenFileSupportRequest() {
     nofralloc
     stwu r1, -0x70(r1)
     mflr r0
@@ -278,37 +278,37 @@ asm void fn_801A4D6C() {
     addi r3, r1, 0x18
     li r4, 0x0
     li r5, 0x40
-    bl fn_801A3C68
+    bl TRK_memset
     li r0, 0x0
     stw r0, 0x0(r28)
     li r0, 0xd2
     mr r3, r27
     stb r0, 0x1c(r1)
-    bl fn_801A4A34
+    bl TRK_strlen
     addi r0, r3, 0x41
     stw r0, 0x18(r1)
     mr r3, r27
     stb r30, 0x20(r1)
-    bl fn_801A4A34
+    bl TRK_strlen
     addi r0, r3, 0x1
     sth r0, 0x24(r1)
     addi r3, r1, 0xc
     addi r4, r1, 0x8
-    bl fn_801A5454
+    bl TRK_GetFreeBuffer
     lwz r3, 0x8(r1)
     addi r4, r1, 0x18
     li r5, 0x40
-    bl fn_801A588C
+    bl TRKAppendBuffer_ui8
     cmpwi r3, 0x0
     mr r31, r3
     bne lbl_801A4E18
     mr r3, r27
-    bl fn_801A4A34
+    bl TRK_strlen
     mr r5, r3
     lwz r3, 0x8(r1)
     mr r4, r27
     addi r5, r5, 0x1
-    bl fn_801A588C
+    bl TRKAppendBuffer_ui8
     mr r31, r3
 lbl_801A4E18:
     cmpwi r31, 0x0
@@ -317,7 +317,7 @@ lbl_801A4E18:
     stw r0, 0x0(r29)
     addi r4, r1, 0x10
     lwz r3, 0x8(r1)
-    bl fn_801A4C44
+    bl TRK_RequestSend
     cmpwi r3, 0x0
     mr r31, r3
     bne lbl_801A4E4C
@@ -330,10 +330,10 @@ lbl_801A4E4C:
     lwz r0, 0x14(r30)
     stw r0, 0x0(r28)
     lwz r3, 0x10(r1)
-    bl fn_801A5514
+    bl TRK_ReleaseBuffer
 lbl_801A4E64:
     lwz r3, 0xc(r1)
-    bl fn_801A5514
+    bl TRK_ReleaseBuffer
     mr r3, r31
     lmw r27, 0x5c(r1)
     lwz r0, 0x74(r1)
@@ -343,9 +343,9 @@ lbl_801A4E64:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A4E84
+// HandleCloseFileSupportRequest
 // ----------------------------------------------------------------------------
-asm void fn_801A4E84() {
+asm void HandleCloseFileSupportRequest() {
     nofralloc
     stwu r1, -0x70(r1)
     mflr r0
@@ -358,7 +358,7 @@ asm void fn_801A4E84() {
     stw r29, 0x64(r1)
     mr r29, r4
     li r4, 0x0
-    bl fn_801A3C68
+    bl TRK_memset
     li r3, 0xd3
     li r0, 0x40
     stb r3, 0x1c(r1)
@@ -366,14 +366,14 @@ asm void fn_801A4E84() {
     addi r4, r1, 0x8
     stw r0, 0x18(r1)
     stw r30, 0x20(r1)
-    bl fn_801A5454
+    bl TRK_GetFreeBuffer
     cmpwi r3, 0x0
     mr r31, r3
     bne lbl_801A4EF4
     lwz r3, 0x8(r1)
     addi r4, r1, 0x18
     li r5, 0x40
-    bl fn_801A588C
+    bl TRKAppendBuffer_ui8
     mr r31, r3
 lbl_801A4EF4:
     cmpwi r31, 0x0
@@ -382,7 +382,7 @@ lbl_801A4EF4:
     stw r0, 0x0(r29)
     addi r4, r1, 0x10
     lwz r3, 0x8(r1)
-    bl fn_801A4C44
+    bl TRK_RequestSend
     cmpwi r3, 0x0
     mr r31, r3
     bne lbl_801A4F28
@@ -396,10 +396,10 @@ lbl_801A4F28:
     stw r0, 0x0(r29)
 lbl_801A4F38:
     lwz r3, 0x10(r1)
-    bl fn_801A5514
+    bl TRK_ReleaseBuffer
 lbl_801A4F40:
     lwz r3, 0xc(r1)
-    bl fn_801A5514
+    bl TRK_ReleaseBuffer
     mr r3, r31
     lwz r31, 0x6c(r1)
     lwz r30, 0x68(r1)
@@ -411,9 +411,9 @@ lbl_801A4F40:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A4F68
+// HandlePositionFileSupportRequest
 // ----------------------------------------------------------------------------
-asm void fn_801A4F68() {
+asm void HandlePositionFileSupportRequest() {
     nofralloc
     stwu r1, -0x70(r1)
     mflr r0
@@ -429,7 +429,7 @@ asm void fn_801A4F68() {
     stw r28, 0x60(r1)
     mr r28, r3
     addi r3, r1, 0x18
-    bl fn_801A3C68
+    bl TRK_memset
     li r3, 0xd4
     li r0, 0x40
     stb r3, 0x1c(r1)
@@ -440,14 +440,14 @@ asm void fn_801A4F68() {
     lwz r0, 0x0(r29)
     stw r0, 0x24(r1)
     stb r31, 0x28(r1)
-    bl fn_801A5454
+    bl TRK_GetFreeBuffer
     cmpwi r3, 0x0
     mr r31, r3
     bne lbl_801A4FF0
     lwz r3, 0x8(r1)
     addi r4, r1, 0x18
     li r5, 0x40
-    bl fn_801A588C
+    bl TRKAppendBuffer_ui8
     mr r31, r3
 lbl_801A4FF0:
     cmpwi r31, 0x0
@@ -458,7 +458,7 @@ lbl_801A4FF0:
     addi r4, r1, 0x10
     stw r0, 0x0(r29)
     lwz r3, 0x8(r1)
-    bl fn_801A4C44
+    bl TRK_RequestSend
     cmpwi r3, 0x0
     mr r31, r3
     bne lbl_801A5040
@@ -472,10 +472,10 @@ lbl_801A4FF0:
     stw r0, 0x0(r29)
 lbl_801A5040:
     lwz r3, 0x10(r1)
-    bl fn_801A5514
+    bl TRK_ReleaseBuffer
 lbl_801A5048:
     lwz r3, 0xc(r1)
-    bl fn_801A5514
+    bl TRK_ReleaseBuffer
     mr r3, r31
     lwz r31, 0x6c(r1)
     lwz r30, 0x68(r1)

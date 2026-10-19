@@ -73,7 +73,7 @@ extern "C" void fn_8017B004();
 extern "C" void fn_8017B074();
 extern "C" void fn_8017B144();
 extern "C" void fn_80181568();
-extern "C" void fn_80193C8C();
+extern "C" void __cvt_fp2unsigned();
 extern "C" void fn_802DFDF8();
 extern "C" void fn_802E0688();
 extern "C" void fn_802E06BC();
@@ -406,7 +406,7 @@ lbl_8001906C:
     addi r0, r3, 0x1
     slwi r0, r0, 2
     lfsx f1, r4, r0
-    bl fn_80193C8C
+    bl __cvt_fp2unsigned
     lwz r0, 0x0(r31)
     or r0, r0, r3
     stw r0, 0x0(r31)
@@ -416,7 +416,7 @@ lbl_8001906C:
     addi r0, r3, 0x2
     slwi r0, r0, 2
     lfsx f1, r4, r0
-    bl fn_80193C8C
+    bl __cvt_fp2unsigned
     lwz r0, 0x0(r31)
     andc r0, r0, r3
     stw r0, 0x0(r31)

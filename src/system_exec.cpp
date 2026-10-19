@@ -224,7 +224,7 @@ extern "C" void fn_8018331C();
 extern "C" void fn_80186C78();
 extern "C" void fn_801872F0();
 extern "C" void fn_8018F058();
-extern "C" void fn_8019CC7C();
+extern "C" void strcmp();
 extern "C" void memcpy();
 extern "C" void memset();
 extern "C" void sprintf();
@@ -3576,12 +3576,12 @@ lbl_8007596C:
     lis r4, lbl_8034B1A8@ha
     addi r27, r4, lbl_8034B1A8@l
     addi r4, r27, 0x23
-    bl fn_8019CC7C
+    bl strcmp
     cmpwi r3, 0x0
     beq lbl_80075A14
     mr r3, r30
     addi r4, r27, 0x2b
-    bl fn_8019CC7C
+    bl strcmp
     cmpwi r3, 0x0
     beq lbl_80075A14
     li r26, 0x0
@@ -3607,7 +3607,7 @@ lbl_800759D8:
 lbl_800759EC:
     mr r3, r30
     addi r4, r1, 0x8
-    bl fn_8019CC7C
+    bl strcmp
     cmpwi r3, 0x0
     bne lbl_80075A04
     stw r26, 0x37a0(r29)

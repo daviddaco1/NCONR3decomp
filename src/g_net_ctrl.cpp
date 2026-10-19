@@ -140,8 +140,8 @@ extern "C" void fn_801725B0();
 extern "C" void fn_801728DC();
 extern "C" void fn_8017291C();
 extern "C" void fn_8017982C();
-extern "C" void fn_8019B558();
-extern "C" void fn_8019CC7C();
+extern "C" void rand();
+extern "C" void strcmp();
 extern "C" void fn_8032C41C();
 extern "C" void fn_8032C8F0();
 extern "C" void fn_8032CB2C();
@@ -2070,9 +2070,9 @@ lbl_800ACB6C:
     bl fn_8016D2BC
     cmpwi r3, 0x0
     bgt lbl_800ACB94
-    bl fn_8019B558
+    bl rand
     mr r29, r3
-    bl fn_8019B558
+    bl rand
     slwi r0, r3, 16
     or r0, r0, r29
     oris r3, r0, 0x8000
@@ -3330,7 +3330,7 @@ lbl_800ADBF0:
     bl fn_8016F948
     addi r3, r1, 0x98
     addi r4, r1, 0x10
-    bl fn_8019CC7C
+    bl strcmp
     cmpwi r3, 0x0
     beq lbl_800ADC20
     li r26, 0x1

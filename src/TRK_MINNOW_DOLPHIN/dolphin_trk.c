@@ -22,13 +22,13 @@ void OSResetSystem();
 void TRKInitializeTarget();
 void TRKSaveExtended1Block();
 void TRK_main();
-void fn_801A39CC();
-void fn_801A3B2C();
-void fn_801A3FE0();
-void fn_801A4048();
-void fn_801A41C4();
-void fn_801A4424();
-void fn_801A6D50();
+void TRK_flush_cache();
+void TRK_memcpy();
+void TRKTargetTranslate();
+void __TRK_copy_vectors();
+void __TRKreset();
+void EnableEXI2Interrupts();
+void __TRK_get_MSR();
 void gap_03_801A3F44_text();
 
 // ----------------------------------------------------------------------------
@@ -134,13 +134,13 @@ lbl_801A3FD4:
 // ----------------------------------------------------------------------------
 asm void EnableMetroTRKInterrupts() {
     nofralloc
-    b fn_801A4424
+    b EnableEXI2Interrupts
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A3FE0
+// TRKTargetTranslate
 // ----------------------------------------------------------------------------
-asm void fn_801A3FE0() {
+asm void TRKTargetTranslate() {
     nofralloc
     lwz r4, lbl_8049D8F8
     cmplw r3, r4
@@ -173,9 +173,9 @@ lbl_801A4024:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A4048
+// __TRK_copy_vectors
 // ----------------------------------------------------------------------------
-asm void fn_801A4048() {
+asm void __TRK_copy_vectors() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -248,10 +248,10 @@ lbl_801A413C:
     mr r3, r22
     add r4, r28, r4
     li r5, 0x100
-    bl fn_801A3B2C
+    bl TRK_memcpy
     mr r3, r22
     li r4, 0x100
-    bl fn_801A39CC
+    bl TRK_flush_cache
 lbl_801A4158:
     addi r30, r30, 0x1
     addi r31, r31, 0x4
@@ -277,7 +277,7 @@ asm void TRKInitializeTarget() {
     lis r31, gTRKState@ha
     addi r31, r31, gTRKState@l
     stw r0, 0x98(r31)
-    bl fn_801A6D50
+    bl __TRK_get_MSR
     stw r3, 0x8c(r31)
     lis r0, 0xe000
     li r3, 0x0
@@ -290,9 +290,9 @@ asm void TRKInitializeTarget() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_801A41C4
+// __TRKreset
 // ----------------------------------------------------------------------------
-asm void fn_801A41C4() {
+asm void __TRKreset() {
     nofralloc
     li r3, 0x0
     li r4, 0x0

@@ -18,18 +18,18 @@ extern "C" void _restgpr_27();
 extern "C" void _savegpr_27();
 extern "C" void dtor_80136CFC();
 extern "C" void fn_801936E8();
-extern "C" void fn_801936F4();
-extern "C" void fn_80193700();
+extern "C" void terminate__3stdFv();
+extern "C" void __throw_catch_compare();
 extern "C" void fn_801943E8();
-extern "C" void fn_80194470();
-extern "C" void fn_80194620();
-extern "C" void fn_801947D0();
-extern "C" void fn_80194D24();
+extern "C" void ExPPC_FindExceptionRecord__FPcP15MWExceptionInfo();
+extern "C" void ExPPC_NextAction__FP14ActionIterator();
+extern "C" void ExPPC_PopStackFrame__FP12ThrowContextP15MWExceptionInfo();
+extern "C" void ExPPC_UnwindStack__FP12ThrowContextP15MWExceptionInfoPv();
 extern "C" void fn_80195230();
 extern "C" void fn_801953E8();
-extern "C" void fn_80195428();
-extern "C" void fn_8019552C();
-extern "C" void fn_80195934();
+extern "C" void ExPPC_LongJump__FP12ThrowContextPvPv();
+extern "C" void ExPPC_ThrowHandler__FP12ThrowContext();
+extern "C" void __throw();
 extern "C" void fn_80195A78();
 extern "C" void fn_80195AA4();
 
@@ -116,9 +116,9 @@ lbl_80194468:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80194470
+// ExPPC_FindExceptionRecord__FPcP15MWExceptionInfo
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_80194470() {
+extern "C" asm void ExPPC_FindExceptionRecord__FPcP15MWExceptionInfo() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -244,9 +244,9 @@ lbl_80194608:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80194620
+// ExPPC_NextAction__FP14ActionIterator
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_80194620() {
+extern "C" asm void ExPPC_NextAction__FP14ActionIterator() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -275,7 +275,7 @@ lbl_80194650:
 lbl_80194678:
     lwz r3, 0x4(r30)
     mr r4, r31
-    bl fn_80194470
+    bl ExPPC_FindExceptionRecord__FPcP15MWExceptionInfo
     lwz r0, 0x0(r31)
     cmpwi r0, 0x0
     bne lbl_80194694
@@ -368,9 +368,9 @@ lbl_801947B8:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801947D0
+// ExPPC_PopStackFrame__FP12ThrowContextP15MWExceptionInfo
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_801947D0() {
+extern "C" asm void ExPPC_PopStackFrame__FP12ThrowContextP15MWExceptionInfo() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -742,9 +742,9 @@ lbl_80194D04:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80194D24
+// ExPPC_UnwindStack__FP12ThrowContextP15MWExceptionInfoPv
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_80194D24() {
+extern "C" asm void ExPPC_UnwindStack__FP12ThrowContextP15MWExceptionInfoPv() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -761,9 +761,9 @@ lbl_80194D48:
     bne lbl_80194D9C
     mr r3, r26
     mr r4, r27
-    bl fn_801947D0
+    bl ExPPC_PopStackFrame__FP12ThrowContextP15MWExceptionInfo
     mr r4, r27
-    bl fn_80194470
+    bl ExPPC_FindExceptionRecord__FPcP15MWExceptionInfo
     lwz r0, 0x0(r27)
     cmpwi r0, 0x0
     bne lbl_80194D78
@@ -1120,7 +1120,7 @@ extern "C" asm void fn_80195230() {
     mr r31, r1
     lwz r30, 0x14(r3)
     stw r1, 0x34(r1)
-    bl fn_801936F4
+    bl terminate__3stdFv
     b lbl_801953C8
     lwz r29, 0x24(r31)
     mr r27, r30
@@ -1130,7 +1130,7 @@ lbl_80195264:
     lwz r4, 0xc(r27)
     mr r3, r29
     addi r5, r31, 0x10
-    bl fn_80193700
+    bl __throw_catch_compare
     extsb. r0, r3
     beq lbl_80195284
     li r0, 0x1
@@ -1149,7 +1149,7 @@ lbl_8019529C:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_801952B4:
     lis r28, lbl_8033B2DC@ha
     mr r27, r30
@@ -1160,7 +1160,7 @@ lbl_801952C8:
     lwz r4, 0xc(r27)
     mr r3, r28
     addi r5, r31, 0xc
-    bl fn_80193700
+    bl __throw_catch_compare
     extsb. r0, r3
     beq lbl_801952E8
     li r0, 0x1
@@ -1185,7 +1185,7 @@ lbl_80195300:
     addi r3, r3, 0x11
     addi r4, r31, 0x18
     addi r5, r5, fn_801953E8@l
-    bl fn_80195934
+    bl __throw
 lbl_80195330:
     lis r3, lbl_8033B2DC@ha
     mr r27, r30
@@ -1197,7 +1197,7 @@ lbl_80195348:
     lwz r4, 0xc(r27)
     mr r3, r28
     addi r5, r31, 0x8
-    bl fn_80193700
+    bl __throw_catch_compare
     extsb. r0, r3
     beq lbl_80195368
     li r0, 0x1
@@ -1222,7 +1222,7 @@ lbl_80195380:
     addi r3, r3, 0x11
     addi r4, r31, 0x14
     addi r5, r5, fn_801953E8@l
-    bl fn_80195934
+    bl __throw
 lbl_801953B0:
     addi r3, r31, 0x20
     bl fn_80195A78
@@ -1266,9 +1266,9 @@ lbl_80195410:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80195428
+// ExPPC_LongJump__FP12ThrowContextPvPv
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_80195428() {
+extern "C" asm void ExPPC_LongJump__FP12ThrowContextPvPv() {
     nofralloc
     mr r8, r5
     mr r2, r4
@@ -1338,9 +1338,9 @@ extern "C" asm void fn_80195428() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_8019552C
+// ExPPC_ThrowHandler__FP12ThrowContext
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_8019552C() {
+extern "C" asm void ExPPC_ThrowHandler__FP12ThrowContext() {
     nofralloc
     stwu r1, -0x70(r1)
     mflr r0
@@ -1349,7 +1349,7 @@ extern "C" asm void fn_8019552C() {
     stmw r27, 0x5c(r1)
     mr r30, r3
     lwz r3, 0x290(r3)
-    bl fn_80194470
+    bl ExPPC_FindExceptionRecord__FPcP15MWExceptionInfo
     lwz r0, 0x10(r1)
     cmpwi r0, 0x0
     bne lbl_8019555C
@@ -1408,7 +1408,7 @@ lbl_801955E4:
     b lbl_80195624
 lbl_80195618:
     addi r3, r1, 0x28
-    bl fn_80194620
+    bl ExPPC_NextAction__FP14ActionIterator
     b lbl_801955E4
 lbl_80195624:
     lwz r3, 0x30(r1)
@@ -1473,7 +1473,7 @@ lbl_801956F8:
     addi r5, r1, 0xc
     lwz r3, 0x294(r30)
     lwz r4, 0x4(r4)
-    bl fn_80193700
+    bl __throw_catch_compare
     extsb. r0, r3
     bne lbl_801957F8
     b lbl_801957E8
@@ -1482,7 +1482,7 @@ lbl_80195718:
     addi r5, r1, 0xc
     lwz r3, 0x294(r30)
     lwz r4, 0x4(r4)
-    bl fn_80193700
+    bl __throw_catch_compare
     extsb. r0, r3
     bne lbl_801957F8
     b lbl_801957E8
@@ -1496,7 +1496,7 @@ lbl_8019574C:
     lwz r4, 0xc(r27)
     mr r3, r31
     addi r5, r1, 0x8
-    bl fn_80193700
+    bl __throw_catch_compare
     extsb. r0, r3
     beq lbl_8019576C
     li r0, 0x1
@@ -1516,7 +1516,7 @@ lbl_80195784:
     mr r3, r30
     addi r4, r1, 0x10
     mr r5, r28
-    bl fn_80194D24
+    bl ExPPC_UnwindStack__FP12ThrowContextP15MWExceptionInfoPv
     lwz r5, 0x288(r30)
     mr r3, r30
     lwz r4, 0x8(r28)
@@ -1531,14 +1531,14 @@ lbl_80195784:
     lwz r0, 0x4(r28)
     lwz r4, 0x24(r1)
     add r5, r5, r0
-    bl fn_80195428
+    bl ExPPC_LongJump__FP12ThrowContextPvPv
     b lbl_801957E8
 lbl_801957E0:
     bl fn_801936E8
     b lbl_801957F8
 lbl_801957E8:
     addi r3, r1, 0x28
-    bl fn_80194620
+    bl ExPPC_NextAction__FP14ActionIterator
     mr r27, r3
     b lbl_801956BC
 lbl_801957F8:
@@ -1549,7 +1549,7 @@ lbl_801957F8:
     mr r3, r30
     addi r4, r1, 0x10
     mr r5, r31
-    bl fn_80194D24
+    bl ExPPC_UnwindStack__FP12ThrowContextP15MWExceptionInfoPv
     lwz r4, 0x288(r30)
     lwz r3, 0xc(r31)
     lwz r0, 0x298(r30)
@@ -1581,14 +1581,14 @@ lbl_80195878:
     lwz r0, 0x8(r31)
     lwz r4, 0x24(r1)
     add r5, r5, r0
-    bl fn_80195428
+    bl ExPPC_LongJump__FP12ThrowContextPvPv
     b lbl_80195920
 lbl_80195894:
     lwz r31, 0x30(r1)
     mr r3, r30
     addi r4, r1, 0x10
     mr r5, r31
-    bl fn_80194D24
+    bl ExPPC_UnwindStack__FP12ThrowContextP15MWExceptionInfoPv
     lwz r4, 0x288(r30)
     lha r3, 0xa(r31)
     lwz r0, 0x298(r30)
@@ -1620,7 +1620,7 @@ lbl_80195908:
     lhz r0, 0x8(r31)
     lwz r4, 0x24(r1)
     add r5, r5, r0
-    bl fn_80195428
+    bl ExPPC_LongJump__FP12ThrowContextPvPv
 lbl_80195920:
     lmw r27, 0x5c(r1)
     lwz r0, 0x74(r1)
@@ -1630,9 +1630,9 @@ lbl_80195920:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80195934
+// __throw
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_80195934() {
+extern "C" asm void __throw() {
     nofralloc
     stwu r1, -0x2c0(r1)
     mflr r0
@@ -1709,7 +1709,7 @@ extern "C" asm void fn_80195934() {
     lwz r3, 0x10(r1)
     stw r3, 0x2b4(r1)
     addi r3, r1, 0x18
-    bl fn_8019552C
+    bl ExPPC_ThrowHandler__FP12ThrowContext
     nop
     lwz r0, 0x2c4(r1)
     mtlr r0

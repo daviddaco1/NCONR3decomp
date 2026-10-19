@@ -235,8 +235,8 @@ extern "C" void fn_80186808();
 extern "C" void fn_80186C78();
 extern "C" void fn_8018C9DC();
 extern "C" void fn_80191F04();
-extern "C" void fn_80197BC8();
-extern "C" void fn_8019CC7C();
+extern "C" void labs();
+extern "C" void strcmp();
 extern "C" void fn_801A9384();
 extern "C" void fn_801CEEAC();
 extern "C" void fn_801CEF8C();
@@ -1285,7 +1285,7 @@ lbl_80123078:
     lwz r0, 0x8(r30)
     add r4, r0, r31
     addi r4, r4, 0x4d
-    bl fn_8019CC7C
+    bl strcmp
     cmpwi r3, 0x0
     bne lbl_8012309C
     mr r3, r28
@@ -2653,7 +2653,7 @@ lbl_801241D8:
     bl fn_80124148
     b lbl_8012424C
 lbl_801241F8:
-    bl fn_80197BC8
+    bl labs
     mr r30, r3
     lis r4, lbl_803A3428@ha
     addi r4, r4, lbl_803A3428@l
@@ -2695,7 +2695,7 @@ extern "C" asm void fn_80124264() {
     stw r31, 0xc(r1)
     stw r30, 0x8(r1)
     mr r31, r4
-    bl fn_80197BC8
+    bl labs
     mr r30, r3
     lis r4, lbl_803A3428@ha
     addi r4, r4, lbl_803A3428@l

@@ -251,8 +251,8 @@ extern "C" void fn_80029764();
 extern "C" void fn_80029930();
 extern "C" void fn_80029934();
 extern "C" void fn_800299F4();
-extern "C" void fn_80195934();
-extern "C" void fn_8019EE08();
+extern "C" void __throw();
+extern "C" void atoi();
 extern "C" void fn_801A9384();
 extern "C" void fn_801D8B78();
 extern "C" void fn_801D9268();
@@ -504,7 +504,7 @@ lbl_80024FEC:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_8002503C:
     mr r3, r30
 lbl_80025040:
@@ -749,7 +749,7 @@ lbl_80025354:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_800253A4:
     mr r3, r30
 lbl_800253A8:
@@ -996,7 +996,7 @@ lbl_800256C4:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_80025714:
     mr r3, r30
 lbl_80025718:
@@ -1243,7 +1243,7 @@ lbl_80025A34:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_80025A84:
     mr r3, r30
 lbl_80025A88:
@@ -1490,7 +1490,7 @@ lbl_80025DA4:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_80025DF4:
     mr r3, r30
 lbl_80025DF8:
@@ -1737,7 +1737,7 @@ lbl_80026114:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_80026164:
     mr r3, r30
 lbl_80026168:
@@ -1975,7 +1975,7 @@ lbl_8002645C:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_800264AC:
     mr r3, r30
 lbl_800264B0:
@@ -2226,7 +2226,7 @@ lbl_800267C0:
     bl fn_80028C48
     cmpwi r3, 0x0
     beq lbl_80026A24
-    bl fn_8019EE08
+    bl atoi
     stw r3, 0x14(r31)
     b lbl_80026A24
 lbl_80026818:
@@ -2249,7 +2249,7 @@ lbl_80026818:
     bl fn_80028B04
     cmpwi r3, 0x0
     beq lbl_80026A24
-    bl fn_8019EE08
+    bl atoi
     stw r3, 0x14(r31)
     b lbl_80026A24
 lbl_80026870:
@@ -2272,7 +2272,7 @@ lbl_80026870:
     bl fn_800289C0
     cmpwi r3, 0x0
     beq lbl_80026A24
-    bl fn_8019EE08
+    bl atoi
     stw r3, 0x14(r31)
     b lbl_80026A24
 lbl_800268C8:
@@ -2295,7 +2295,7 @@ lbl_800268C8:
     bl fn_8002887C
     cmpwi r3, 0x0
     beq lbl_80026A24
-    bl fn_8019EE08
+    bl atoi
     stw r3, 0x14(r31)
     b lbl_80026A24
 lbl_80026920:
@@ -2318,7 +2318,7 @@ lbl_80026920:
     bl fn_80028738
     cmpwi r3, 0x0
     beq lbl_80026A24
-    bl fn_8019EE08
+    bl atoi
     stw r3, 0x14(r31)
     b lbl_80026A24
 lbl_80026978:
@@ -2341,7 +2341,7 @@ lbl_80026978:
     bl fn_800285F4
     cmpwi r3, 0x0
     beq lbl_80026A24
-    bl fn_8019EE08
+    bl atoi
     stw r3, 0x14(r31)
     b lbl_80026A24
 lbl_800269D0:
@@ -2364,7 +2364,7 @@ lbl_800269D0:
     bl fn_80027F34
     cmpwi r3, 0x0
     beq lbl_80026A24
-    bl fn_8019EE08
+    bl atoi
     stw r3, 0x14(r31)
 lbl_80026A24:
     mr r3, r27
@@ -2590,7 +2590,7 @@ lbl_80026CC8:
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_80195934
+    bl __throw
 lbl_80026D18:
     mr r3, r29
 lbl_80026D1C:

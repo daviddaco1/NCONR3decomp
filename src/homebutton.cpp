@@ -168,8 +168,8 @@ extern "C" void fn_80182FE0();
 extern "C" void fn_80186AAC();
 extern "C" void fn_80186C78();
 extern "C" void fn_8019103C();
-extern "C" void fn_8019C928();
-extern "C" void fn_8019CC7C();
+extern "C" void sscanf();
+extern "C" void strcmp();
 extern "C" void fn_801A9384();
 extern "C" void fn_801D0CD0();
 extern "C" void fn_801D0D78();
@@ -5270,7 +5270,7 @@ lbl_801816A0:
     addi r3, r1, 0x24
     bl fn_80032118
     lwz r4, 0x0(r23)
-    bl fn_8019CC7C
+    bl strcmp
     cmpwi r3, 0x0
     bne lbl_801816D0
     lwz r0, 0x4(r23)
@@ -5375,7 +5375,7 @@ lbl_80181814:
     addi r4, r24, 0x4e9
     addi r5, r1, 0x20
     opword 0x4CC63182
-    bl fn_8019C928
+    bl sscanf
     lwz r0, 0x20(r1)
     cmpwi r0, 0x0
     blt lbl_80181840
@@ -5436,7 +5436,7 @@ lbl_801818EC:
     addi r3, r1, 0x1c
     bl fn_80032118
     lwz r4, 0x0(r23)
-    bl fn_8019CC7C
+    bl strcmp
     cmpwi r3, 0x0
     bne lbl_80181920
     lwz r3, 0x38(r26)
@@ -5526,7 +5526,7 @@ lbl_80181A2C:
     addi r4, r24, 0x4e9
     addi r5, r1, 0x18
     opword 0x4CC63182
-    bl fn_8019C928
+    bl sscanf
     lwz r0, 0x18(r1)
     cmpwi r0, 0x0
     blt lbl_80181A68
@@ -7006,7 +7006,7 @@ lbl_80182DFC:
     addi r3, r1, 0x1c
     bl fn_8003CD74
     mr r4, r22
-    bl fn_8019CC7C
+    bl strcmp
     cmpwi r3, 0x0
     bne lbl_80182E58
     addi r3, r1, 0x20

@@ -126,9 +126,9 @@ extern "C" void fn_8018C6D0();
 extern "C" void fn_8018DC6C();
 extern "C" void fn_8018DD14();
 extern "C" void fn_8018DE10();
-extern "C" void fn_80193F04();
+extern "C" void __div2i();
 extern "C" void fn_80195230();
-extern "C" void fn_8019CC7C();
+extern "C" void strcmp();
 extern "C" void fn_801E2B5C();
 extern "C" void fn_80282898();
 extern "C" void fn_80284304();
@@ -1978,7 +1978,7 @@ lbl_8013821C:
 	addi r3, r29, 0x3c
 	lis r4, lbl_8035A5A8@ha
 	addi r4, r4, lbl_8035A5A8@l
-	bl fn_8019CC7C
+	bl strcmp
 	cmpwi r3, 0x0
 	beq lbl_80138254
 	mr r3, r29
@@ -2924,7 +2924,7 @@ lbl_80138EA8:
 	add r3, r3, r0
 	li r5, 0x0
 	li r6, 0x1388
-	bl fn_80193F04
+	bl __div2i
 	stw r4, 0xd4(r31)
 	b lbl_80138F3C
 lbl_80138F08:
@@ -2939,7 +2939,7 @@ lbl_80138F08:
 	add r3, r3, r0
 	li r5, 0x0
 	li r6, 0x176a
-	bl fn_80193F04
+	bl __div2i
 	stw r4, 0xd4(r31)
 lbl_80138F3C:
 	lis r3, lbl_803A7980@ha
