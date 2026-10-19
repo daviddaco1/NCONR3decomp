@@ -2461,3 +2461,16 @@ el 100% en asm para fijar splits y nombres, y después reescribir a C en una pas
   `build.sha1` OK. Data sigue en 0% (sin splits de datos).
 - Pendiente de nombres: TUs `unk_*` (165; fronteras internas de huecos grandes sin refinar) y
   funciones del juego (`fn_*`, sin fuente de nombres).
+
+## Fase 104 — Inicio de la reescritura a C del game code (2026-10-19)
+
+- **Hallazgo de flags:** `ten_eye.cpp` solo llega al 100% con `-O4,s -schedule off`
+  (`-func_align 4` para el layout). Con `-O4,p` queda en 63%; con `-O4,s` (scheduler activo) en
+  94.5% por puro orden de instrucciones. Es decir, los "quirks de scheduler no accionables" del
+  gotcha 6 pueden ser simplemente **`-schedule off`**. Ojo: `tcg_text.cpp` matchea con `-O4,p`,
+  así que los flags varían por TU — probar ambos por archivo.
+- `ten_eye.cpp`, `kir_eye.cpp`, `kbt_eye.cpp`, `gai_eye.cpp` (misma plantilla, distinto ID y
+  tamaño) reescritos a C al 100%. `tools/gen_eye_stub.py` genera la plantilla desde el asm.
+- Detalles útiles para leer asm de mwcc: `beq A; b B` tras comparar un parámetro = ternario
+  `x = x ? x : f()`; un `mr r5, r3` "muerto" tras una llamada = el resultado se pasa como 3er
+  argumento en otra rama.
