@@ -31,4 +31,5 @@ def block(name, s, e):
 if __name__ == '__main__':
     rows = [l.split() for l in open(sys.argv[1]) if l.strip()]
     for (a, n), (b, _) in zip(rows, rows[1:]):
-        print(block(n, int(a, 16), int(b, 16)))
+        if n not in ('END', '_gap'):  # _gap: rango sin TU asignada
+            print(block(n, int(a, 16), int(b, 16)))

@@ -915,8 +915,379 @@ TRK_MINNOW_DOLPHIN/targimpl.c:
 TRK_MINNOW_DOLPHIN/target_options.c:
 	.text       start:0x801A8574 end:0x801A8584
 
+nw4r/g3d/res/g3d_resdict.cpp:
+	.text       start:0x801CEAA8 end:0x801CEDA8
+
+nw4r/g3d/res/g3d_resshp.cpp:
+	.text       start:0x801D1C54 end:0x801D286C
+
+nw4r/g3d/res/g3d_resvtx.cpp:
+	.text       start:0x801D41F4 end:0x801D45B4
+
+nw4r/g3d/g3d_transform.cpp:
+	.text       start:0x801D87AC end:0x801D8A9C
+
+nw4r/g3d/g3d_anmvis.cpp:
+	.text       start:0x801D8AD8 end:0x801D91BC
+
+nw4r/g3d/g3d_anmshp.cpp:
+	.text       start:0x801DD2E0 end:0x801DDC3C
+
+nw4r/g3d/g3d_obj.cpp:
+	.text       start:0x801DF168 end:0x801DF268
+
+nw4r/g3d/g3d_anmobj.cpp:
+	.text       start:0x801DF268 end:0x801DF320
+
+nw4r/g3d/g3d_workmem.cpp:
+	.text       start:0x801E631C end:0x801E635C
+
+nw4r/g3d/g3d_draw.cpp:
+	.text       start:0x801E6E94 end:0x801E8CF0
+
+nw4r/g3d/dcc/g3d_maya.cpp:
+	.text       start:0x801E9E98 end:0x801EAB58
+
+nw4r/g3d/dcc/g3d_xsi.cpp:
+	.text       start:0x801EAB58 end:0x801EB718
+
+nw4r/g3d/dcc/g3d_3dsmax.cpp:
+	.text       start:0x801EB718 end:0x801EC1C8
+
+nw4r/g3d/g3d_scnroot.cpp:
+	.text       start:0x801EDA7C end:0x801EF438
+
+nw4r/g3d/g3d_scnmdlsmpl.cpp:
+	.text       start:0x801EF694 end:0x801F1334
+
+nw4r/g3d/g3d_fog.cpp:
+	.text       start:0x801F42F8 end:0x801F446C
+
+nw4r/lyt/lyt_picture.cpp:
+	.text       start:0x801F7A78 end:0x801F7FD8
+	.ctors      start:0x80339508 end:0x8033950C
+
+nw4r/lyt/lyt_bounding.cpp:
+	.text       start:0x801FBE48 end:0x801FBEF4
+	.ctors      start:0x80339514 end:0x80339518
+
+nw4r/lyt/lyt_resourceAccessor.cpp:
+	.text       start:0x802005A0 end:0x802005F8
+
+nw4r/lyt/lyt_common.cpp:
+	.text       start:0x8020096C end:0x80201418
+
+nw4r/snd/snd_Bank.cpp:
+	.text       start:0x80207B88 end:0x80207DF8
+
+nw4r/snd/snd_BiquadFilterPreset.cpp:
+	.text       start:0x8020A044 end:0x8020A310
+
+nw4r/snd/snd_DvdSoundArchive.cpp:
+	.text       start:0x8020B778 end:0x8020BD8C
+
+nw4r/snd/snd_FrameHeap.cpp:
+	.text       start:0x8020C574 end:0x8020CCD0
+
+nw4r/snd/snd_InstancePool.cpp:
+	.text       start:0x8020DF40 end:0x8020E1F8
+
+nw4r/snd/snd_MidiSeqPlayer.cpp:
+	.text       start:0x8020E3E8 end:0x8020E43C
+
+nw4r/snd/snd_MmlSeqTrack.cpp:
+	.text       start:0x8020F5E0 end:0x8020F688
+
+nw4r/snd/snd_MmlSeqTrackAllocator.cpp:
+	.text       start:0x8020F688 end:0x8020F7B4
+
+nw4r/snd/snd_PlayerHeap.cpp:
+	.text       start:0x8020F7B4 end:0x8020F9B4
+
+nw4r/snd/snd_RemoteSpeakerManager.cpp:
+	.text       start:0x8021032C end:0x80210568
+
+nw4r/snd/snd_SeqFile.cpp:
+	.text       start:0x80210568 end:0x8021069C
+
+nw4r/snd/snd_SoundArchive.cpp:
+	.text       start:0x80213710 end:0x80213D04
+
+nw4r/snd/snd_SoundHeap.cpp:
+	.text       start:0x80217D24 end:0x80217FF0
+
+nw4r/snd/snd_TaskManager.cpp:
+	.text       start:0x8021D17C end:0x8021D804
+
+nw4r/snd/snd_WsdFile.cpp:
+	.text       start:0x8022170C end:0x80221AC8
+
+nw4r/ut/ut_list.cpp:
+	.text       start:0x80222BAC end:0x80222DFC
+
+nw4r/ut/ut_LinkList.cpp:
+	.text       start:0x80222DFC end:0x80222F68
+
+nw4r/ut/ut_DvdFileStream.cpp:
+	.text       start:0x802238E0 end:0x80223EB8
+	.ctors      start:0x80339538 end:0x8033953C
+
+nw4r/ut/ut_DvdLockedFileStream.cpp:
+	.text       start:0x80223EB8 end:0x80224258
+	.ctors      start:0x8033953C end:0x80339540
+
+nw4r/ut/ut_LockedCache.cpp:
+	.text       start:0x80224258 end:0x80224404
+	.ctors      start:0x80339540 end:0x80339544
+
+nw4r/snd/snd_SoundStartable.cpp:
+	.text       start:0x80253934 end:0x80253BA0
+
+revolution/vi/vi.c:
+	.text       start:0x80281C68 end:0x80284904
+
+revolution/vi/vi3in1.c:
+	.text       start:0x802852BC end:0x802864A0
+
+revolution/ax/AXAux.c:
+	.text       start:0x8029C12C end:0x8029C958
+
+revolution/ax/AXOut.c:
+	.text       start:0x8029D3F8 end:0x8029DC58
+
+revolution/ax/AXSPB.c:
+	.text       start:0x8029DC58 end:0x8029DF0C
+
+revolution/ax/AXVPB.c:
+	.text       start:0x8029E07C end:0x8029EE28
+
+revolution/axfx/AXFXReverbHi.c:
+	.text       start:0x8029EE68 end:0x8029EEF4
+
+revolution/axfx/AXFXReverbStdExp.c:
+	.text       start:0x802A0964 end:0x802A1664
+
 PPCArch.c:
 	.text       start:0x802A21BC end:0x802A232C
+
+revolution/bte/gki_buffer.c:
+	.text       start:0x802A232C end:0x802A3610
+
+revolution/bte/gki_ppc.c:
+	.text       start:0x802A3CC8 end:0x802A3F58
+
+revolution/bte/hcisu_h2.c:
+	.text       start:0x802A3F7C end:0x802A45F4
+
+revolution/bte/bte_hcisu.c:
+	.text       start:0x802A51F8 end:0x802A52B0
+
+revolution/bte/bte_main.c:
+	.text       start:0x802A5440 end:0x802A5598
+
+revolution/bte/bta_sys_conn.c:
+	.text       start:0x802A5ABC end:0x802A5D10
+
+revolution/bte/bta_sys_main.c:
+	.text       start:0x802A5D10 end:0x802A5F54
+
+revolution/bte/ptim.c:
+	.text       start:0x802A5F54 end:0x802A6134
+
+revolution/bte/bta_dm_act.c:
+	.text       start:0x802A6178 end:0x802A84B4
+
+revolution/bte/bta_dm_api.c:
+	.text       start:0x802A84B4 end:0x802A8920
+
+revolution/bte/bta_dm_pm.c:
+	.text       start:0x802A8A80 end:0x802A949C
+
+revolution/bte/bta_hh_act.c:
+	.text       start:0x802A949C end:0x802AABE4
+
+revolution/bte/bta_hh_api.c:
+	.text       start:0x802AABE4 end:0x802AAFB4
+
+revolution/bte/bta_hh_main.c:
+	.text       start:0x802AAFB4 end:0x802AB508
+
+revolution/bte/bta_hh_utils.c:
+	.text       start:0x802AB508 end:0x802AB8B4
+
+revolution/bte/btm_acl.c:
+	.text       start:0x802AB8B4 end:0x802AD5F8
+
+revolution/bte/btm_dev.c:
+	.text       start:0x802AD5F8 end:0x802ADCC4
+
+revolution/bte/btm_devctl.c:
+	.text       start:0x802ADCC4 end:0x802AF64C
+
+revolution/bte/btm_discovery.c:
+	.text       start:0x802AF64C end:0x802AF780
+
+revolution/bte/btm_inq.c:
+	.text       start:0x802AF780 end:0x802B1218
+
+revolution/bte/btm_pm.c:
+	.text       start:0x802B1274 end:0x802B1F08
+
+revolution/bte/btm_sco.c:
+	.text       start:0x802B1F08 end:0x802B2D40
+
+revolution/bte/btm_sec.c:
+	.text       start:0x802B2D40 end:0x802B5D04
+
+revolution/bte/btu_hcif.c:
+	.text       start:0x802B5D04 end:0x802B6F60
+
+revolution/bte/gap_conn.c:
+	.text       start:0x802B7118 end:0x802B7C54
+
+revolution/bte/gap_utils.c:
+	.text       start:0x802B7C54 end:0x802B8270
+
+revolution/bte/hcicmds.c:
+	.text       start:0x802B8270 end:0x802BA98C
+
+revolution/bte/hidd_pm.c:
+	.text       start:0x802BAB7C end:0x802BAEF8
+
+revolution/bte/hidh_api.c:
+	.text       start:0x802BAEF8 end:0x802BBC78
+
+revolution/bte/hidh_conn.c:
+	.text       start:0x802BBC78 end:0x802BDCB8
+
+revolution/bte/l2c_api.c:
+	.text       start:0x802BDCB8 end:0x802BE884
+
+revolution/bte/l2c_csm.c:
+	.text       start:0x802BE884 end:0x802BFD60
+
+revolution/bte/l2c_link.c:
+	.text       start:0x802BFD60 end:0x802C0EEC
+
+revolution/bte/l2c_main.c:
+	.text       start:0x802C0EEC end:0x802C1F1C
+
+revolution/bte/l2c_utils.c:
+	.text       start:0x802C1F1C end:0x802C3DE0
+
+revolution/bte/port_rfc.c:
+	.text       start:0x802C3E30 end:0x802C522C
+
+revolution/bte/port_utils.c:
+	.text       start:0x802C522C end:0x802C5804
+
+revolution/bte/rfc_l2cap_if.c:
+	.text       start:0x802C5804 end:0x802C6138
+
+revolution/bte/rfc_mx_fsm.c:
+	.text       start:0x802C6138 end:0x802C6D7C
+
+revolution/bte/rfc_port_fsm.c:
+	.text       start:0x802C6D7C end:0x802C7F1C
+
+revolution/bte/rfc_port_if.c:
+	.text       start:0x802C7F1C end:0x802C8448
+
+revolution/bte/rfc_ts_frames.c:
+	.text       start:0x802C8448 end:0x802C9A90
+
+revolution/bte/rfc_utils.c:
+	.text       start:0x802C9A90 end:0x802CA270
+
+revolution/bte/sdp_api.c:
+	.text       start:0x802CA270 end:0x802CB0D8
+
+revolution/bte/sdp_db.c:
+	.text       start:0x802CB0D8 end:0x802CBDA4
+
+revolution/bte/sdp_discovery.c:
+	.text       start:0x802CBDA4 end:0x802CD01C
+
+revolution/bte/sdp_main.c:
+	.text       start:0x802CD01C end:0x802CDB88
+
+revolution/bte/sdp_server.c:
+	.text       start:0x802CDB88 end:0x802CE898
+
+revolution/bte/sdp_utils.c:
+	.text       start:0x802CE898 end:0x802CF8D8
+
+revolution/dsp/dsp.c:
+	.text       start:0x802CF9C0 end:0x802CFC3C
+
+revolution/dvd/dvdfs.c:
+	.text       start:0x802D0520 end:0x802D0F68
+
+revolution/dvd/dvd.c:
+	.text       start:0x802D0F68 end:0x802D5A3C
+
+revolution/dvd/dvdqueue.c:
+	.text       start:0x802D5A3C end:0x802D5C34
+
+revolution/dvd/dvderror.c:
+	.text       start:0x802D5C94 end:0x802D6678
+
+revolution/dvd/dvd_broadway.c:
+	.text       start:0x802D6B7C end:0x802D913C
+
+revolution/esp/esp.c:
+	.text       start:0x802D913C end:0x802D975C
+
+revolution/exi/EXIBios.c:
+	.text       start:0x802D9C90 end:0x802DB088
+
+revolution/exi/EXIUart.c:
+	.text       start:0x802DB434 end:0x802DB768
+
+revolution/fs/fs.c:
+	.text       start:0x802DB8F4 end:0x802DD0D0
+
+revolution/gx/GXFifo.c:
+	.text       start:0x802DF29C end:0x802DFDF8
+
+revolution/dvd/dvdFatal.c:
+	.text       start:0x802E1450 end:0x802E15EC
+
+revolution/gx/GXFrameBuf.c:
+	.text       start:0x802E1E44 end:0x802E2884
+
+revolution/gx/GXTexture.c:
+	.text       start:0x802E2FA0 end:0x802E4808
+
+revolution/gx/GXPixel.c:
+	.text       start:0x802E4A4C end:0x802E51B0
+
+revolution/gx/GXDisplayList.c:
+	.text       start:0x802E51B0 end:0x802E5388
+
+revolution/gx/GXTransform.c:
+	.text       start:0x802E5388 end:0x802E5A8C
+
+revolution/ipc/ipcMain.c:
+	.text       start:0x803057C8 end:0x80305894
+
+revolution/ipc/ipcclt.c:
+	.text       start:0x80305894 end:0x80306F08
+
+revolution/mem/mem_heapCommon.c:
+	.text       start:0x8030BA24 end:0x8030BE90
+
+revolution/mem/mem_expHeap.c:
+	.text       start:0x8030BE90 end:0x8030CAF0
+
+revolution/mtx/mtx44.c:
+	.text       start:0x8030D834 end:0x8030DA54
+
+revolution/nand/NANDOpenClose.c:
+	.text       start:0x8030F9E8 end:0x80310C2C
+
+revolution/nand/NANDCore.c:
+	.text       start:0x80310C88 end:0x80311F28
 
 OS/OSFPRInit.c:
 	.text       start:0x80312A54 end:0x80312B7C
@@ -924,14 +1295,65 @@ OS/OSFPRInit.c:
 OS/OSPSInit.c:
 	.text       start:0x80313E58 end:0x80313EAC
 
+revolution/os/OSAlarm.c:
+	.text       start:0x80313F70 end:0x80314804
+
+revolution/os/OSAlloc.c:
+	.text       start:0x803148B0 end:0x80314AA0
+
+revolution/os/OSArena.c:
+	.text       start:0x80314B0C end:0x80314BA0
+
 OS/OSCache.c:
 	.text       start:0x8031514C end:0x803151D0
+
+revolution/os/OSExec.c:
+	.text       start:0x80316640 end:0x80317CBC
+
+revolution/os/OSInterrupt.c:
+	.text       start:0x80319BE4 end:0x8031A368
+
+revolution/os/OSMessage.c:
+	.text       start:0x8031A380 end:0x8031A584
+
+revolution/os/OSMemory.c:
+	.text       start:0x8031A584 end:0x8031ACBC
+
+revolution/os/OSMutex.c:
+	.text       start:0x8031ACBC end:0x8031AFC0
 
 OS/OSReset.c:
 	.text       start:0x8031BA5C end:0x8031BA78
 
+revolution/os/OSRtc.c:
+	.text       start:0x8031BA78 end:0x8031C504
+
+revolution/os/OSSync.c:
+	.text       start:0x8031C504 end:0x8031C584
+
+revolution/os/OSStateTM.c:
+	.text       start:0x8031E4A8 end:0x8031EB9C
+
+revolution/os/OSStateFlags.c:
+	.text       start:0x8031F294 end:0x8031F4A0
+
+revolution/os/OSPlayTime.c:
+	.text       start:0x8031F75C end:0x8031FF08
+
 Runtime.PPCEABI.H/exit.c:
 	.text       start:0x80320CC8 end:0x80320D7C
+
+revolution/sc/scsystem.c:
+	.text       start:0x80322880 end:0x803241E4
+
+revolution/sc/scapi.c:
+	.text       start:0x803241E4 end:0x80324614
+
+revolution/si/SIBios.c:
+	.text       start:0x80324AC0 end:0x80325A78
+
+revolution/usb/usb.c:
+	.text       start:0x80329B30 end:0x8032B024
 
 Runtime.PPCEABI.H/__mem.c:
 	.init       start:0x80004000 end:0x80004380

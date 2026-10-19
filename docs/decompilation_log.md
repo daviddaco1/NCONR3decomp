@@ -2304,3 +2304,25 @@ el 100% en asm para fijar splits y nombres, y después reescribir a C en una pas
 - `progress` imprime `C real (sin asm inline)` = matched total − matched `asm`: **0.77%
   (25,560 / 3,299,164 bytes)**. Granularidad por objeto: las 22 funciones asm de `tcg_text.cpp`
   se cuentan como C.
+
+## Fase 96 — Splits NW4R + RVL SDK heredados de zeldaret/ss, primera pasada (2026-10-19)
+
+- `tools/align_ref.py` (reescrito): mapeo **local por TU**. Cada TU de referencia busca su mejor
+  ventana en nuestro binario (anclas: nombres que dtk ya reconoció o el tamaño de su función más
+  grande), alinea tamaños con difflib y puntúa por bytes emparejados; veto si empareja un nombre
+  real nuestro con otro nombre (0 conflictos tras el veto). Una alineación global falla porque el
+  orden de librerías y las versiones difieren (NW4R va antes que el SDK acá; el SDK está
+  intercalado — `vi.c` en `0x80281C68`, anclado por `VIGetTvFormat`).
+- Filtro: ≥3 funciones y ≥60% de bytes emparejados, o anclada por nombre. Se descartan TUs sin
+  ancla fuera de su zona esperada y las que pisan splits existentes.
+- **139 TUs nuevas** (`nw4r/*`, `revolution/*`, rango = primera..última función emparejada,
+  huecos quedan como `auto_*`), libs `NW4R` y `RVL_SDK` en `configure.py`, **sin fuente** (dtk
+  enlaza el `.o` original). Splits cubren 62.0% de `.text`; zona de librerías 0x5FBAC de 0x190F3C.
+- `tools/insert_splits.py` inserta bloques por orden de dirección; `tools/mk_splits.py` acepta
+  `_gap`.
+- **Sospechas a revisar** (TUs de SS que pisan splits existentes): `revolution/os/OS.c` solapa
+  `OS/OSFPRInit.c`/`OS/OSPSInit.c` (probablemente son partes de `OS.c`); `revolution/os/
+  __ppc_eabi_init.c` solapa `Runtime.PPCEABI.H/exit.c`; también `PPCArch.c`, `OSCache.c`,
+  `OSReset.c` (los nuestros cubren solo parte de la TU real).
+- Pendiente: ~1.2 MB de librerías sin mapear (NW4R EF no está en SS; versiones distintas de
+  NW4R/SDK; TRK Revolution en `0x801A8584`-`0x801A913C`).
