@@ -2392,3 +2392,21 @@ el 100% en asm para fijar splits y nombres, y después reescribir a C en una pas
   `strrchr`/`strtok`-like en `string.c`, `__fread` en `direct_io.c`, partes de
   `Gecko_ExceptionPPC.cp`, `printf.c`, `scanf.c`, `strtold.c`...). Esas requieren descompilar a
   mano (o otra referencia con esas funciones).
+
+## Fase 100 — C importado para RVL SDK y NW4R (2026-10-19)
+
+- Fuentes de `xbret/xenoblade` (CC0): `libs/RVL_SDK/src`, `libs/nw4r/{src,include}`.
+  `cflags_sdk`/`cflags_nw4r` = flags de Xenoblade vía `lib_cflags()`.
+- 3,475 símbolos de NW4R/RVL SDK/GameSpy renombrados con las alineaciones de Fase 96-97
+  (Xenoblade > Wii Sports > SS > TP > MKW). Sin cambios de match en el asm del juego.
+- Versión: strings `<< RVL_SDK - X release build: ... >>` del DOL dan SDK de jul-2008 a
+  feb-2009 compilado con `0x4199_60831` (Wii/1.0); Xenoblade es del 27-feb-2009 con
+  `0x4302_145`. NW4R (nov-2008) también `0x4199_60831`, **pero** `GC/3.0a5.2` matchea mucho mejor
+  (98 KB vs 38 KB) — igual que en Xenoblade.
+- 150 TUs con fuente en Xenoblade (60 SDK + 90 NW4R); **134 adoptadas** (las 16 con 0 bytes
+  emparejados quedan sin fuente). Antes no tenían fuente (0%), así que adoptar C parcial solo
+  suma. Muchas quedan parciales por diferencias reales de versión (p. ej. `quat.c`: tamaños
+  distintos) — punto de partida para corregir a mano.
+- **C real: 2.84% → 6.97%** (229,956 bytes). Total: 50.01% → 54.14%. `build.sha1` OK.
+- Sin fuente en Xenoblade: 115 TUs (BTE completo, partes de g3d/snd/lyt, `ef`, HBM) — candidatas:
+  SS/Wii Sports/TP/MKW (headers distintos, requiere armar otro árbol de includes).
