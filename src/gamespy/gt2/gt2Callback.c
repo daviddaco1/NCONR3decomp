@@ -355,10 +355,10 @@ GT2Bool gti2UnrecognizedMessageCallback(GT2Socket socket, unsigned int ip,
 }
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-extern void __OSCheckMutex();
+extern void fn_80267074();
 
-// asm_to_cpp: __OSCheckMutex
-asm void __OSCheckMutex() {
+// asm_to_cpp: fn_80267074
+asm void fn_80267074() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0

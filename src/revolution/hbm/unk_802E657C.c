@@ -89,7 +89,7 @@ extern void GXSetTexCoordScaleManually();
 extern void GXSetVtxAttrFmt();
 extern void GXSetVtxDesc();
 extern void GXSetZMode();
-extern void GetFont__Q34nw4r3lyt7TextBoxCFv();
+extern void fn_8029AD3C();
 extern void GetLayoutRect__Q36nw4hbm3lyt6LayoutCFv();
 extern void HBMSYNInit();
 extern void HBMSYNRunAudioFrame();
@@ -117,7 +117,7 @@ extern void PSMTXIdentity();
 extern void PSMTXInverse();
 extern void PSMTXTrans();
 extern void SCGetSoundMode();
-extern void SIRefreshSamplingRate();
+extern void fn_802E7BB0();
 extern void VIFlush();
 extern void VISetBlack();
 extern void __ct__Q210homebutton18GroupAnmControllerFv();
@@ -2250,9 +2250,9 @@ asm void fn_802E7BAC() {
 }
 
 // ----------------------------------------------------------------------------
-// SIRefreshSamplingRate
+// fn_802E7BB0
 // ----------------------------------------------------------------------------
-asm void SIRefreshSamplingRate() {
+asm void fn_802E7BB0() {
     nofralloc
     li r3, 0x0
     blr
@@ -4412,7 +4412,7 @@ asm void fn_802E95A4() {
     stw r29, 0x24(r1)
     mr r29, r3
     blt lbl_802E977C
-    bl GetFont__Q34nw4r3lyt7TextBoxCFv
+    bl fn_8029AD3C
     cmpwi r3, 0x0
     bne lbl_802E95F0
     li r3, 0x0

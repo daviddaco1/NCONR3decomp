@@ -119,7 +119,7 @@ extern "C" u8 lbl_8049C440[];
 extern "C" u8 lbl_804A1880[];
 
 // Forward declarations
-extern "C" void AXFXReverbHiSettings();
+extern "C" void fn_801B920C();
 extern "C" void CosFIdx__Q24nw4r4mathFf();
 extern "C" void FrSqrt__Q24nw4r4mathFf();
 extern "C" void List_Append__Q24nw4r2utFPQ34nw4r2ut4ListPv();
@@ -18529,9 +18529,9 @@ lbl_801B91F4:
 }
 
 // ----------------------------------------------------------------------------
-// AXFXReverbHiSettings
+// fn_801B920C
 // ----------------------------------------------------------------------------
-extern "C" asm void AXFXReverbHiSettings() {
+extern "C" asm void fn_801B920C() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0

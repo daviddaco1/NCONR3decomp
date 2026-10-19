@@ -49,7 +49,7 @@ extern u8 lbl_80368B94[];
 extern u8 lbl_80368BA8[];
 
 // Forward declarations
-extern void SetProjectionMtxDirectly__Q34nw4r3g3d6CameraFPCQ34nw4r4math5MTX44();
+extern void fn_8025B7B8();
 extern void TableFree();
 extern void _restgpr_20();
 extern void _restgpr_23();
@@ -64,7 +64,7 @@ extern void _savegpr_25();
 extern void _savegpr_26();
 extern void _savegpr_27();
 extern void atoi();
-extern void detail_RemovePriorityList__Q34nw4r3snd11SoundPlayerFPQ44nw4r3snd6detail10BasicSound();
+extern void fn_802592B4();
 extern void fn_8019B578();
 extern void fn_80253528();
 extern void fn_802535C4();
@@ -275,9 +275,9 @@ lbl_8025929C:
 }
 
 // ----------------------------------------------------------------------------
-// detail_RemovePriorityList__Q34nw4r3snd11SoundPlayerFPQ44nw4r3snd6detail10BasicSound
+// fn_802592B4
 // ----------------------------------------------------------------------------
-asm void detail_RemovePriorityList__Q34nw4r3snd11SoundPlayerFPQ44nw4r3snd6detail10BasicSound() {
+asm void fn_802592B4() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -2905,9 +2905,9 @@ lbl_8025B7A0:
 }
 
 // ----------------------------------------------------------------------------
-// SetProjectionMtxDirectly__Q34nw4r3g3d6CameraFPCQ34nw4r4math5MTX44
+// fn_8025B7B8
 // ----------------------------------------------------------------------------
-asm void SetProjectionMtxDirectly__Q34nw4r3g3d6CameraFPCQ34nw4r4math5MTX44() {
+asm void fn_8025B7B8() {
     nofralloc
     lwz r6, 0x8(r4)
     cmpwi r6, 0x0
@@ -3019,11 +3019,11 @@ lbl_8025B8C4:
     bl gpiRemoveProfile
 lbl_8025B93C:
     lwz r6, 0x5d0(r29)
-    lis r4, SetProjectionMtxDirectly__Q34nw4r3g3d6CameraFPCQ34nw4r4math5MTX44@ha
+    lis r4, fn_8025B7B8@ha
     mr r3, r28
     mr r5, r31
     subi r0, r6, 0x1
-    addi r4, r4, SetProjectionMtxDirectly__Q34nw4r3g3d6CameraFPCQ34nw4r4math5MTX44@l
+    addi r4, r4, fn_8025B7B8@l
     stw r0, 0x5d0(r29)
     bl gpiProfileMap
 lbl_8025B95C:
@@ -3083,11 +3083,11 @@ lbl_8025BA14:
     bl gpiRemoveProfile
 lbl_8025BA30:
     lwz r6, 0x5d0(r29)
-    lis r4, SetProjectionMtxDirectly__Q34nw4r3g3d6CameraFPCQ34nw4r4math5MTX44@ha
+    lis r4, fn_8025B7B8@ha
     mr r3, r28
     mr r5, r30
     subi r0, r6, 0x1
-    addi r4, r4, SetProjectionMtxDirectly__Q34nw4r3g3d6CameraFPCQ34nw4r4math5MTX44@l
+    addi r4, r4, fn_8025B7B8@l
     stw r0, 0x5d0(r29)
     bl gpiProfileMap
 lbl_8025BA50:

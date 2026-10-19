@@ -217,7 +217,7 @@ extern float lbl_8049DE70;
 extern float lbl_8049DE74;
 extern float lbl_8049DE78;
 extern float lbl_8049DE7C;
-extern void GetFont__Q34nw4r3lyt7TextBoxCFv();
+extern void fn_8029AD3C();
 extern void _restgpr_27();
 extern void _savegpr_27();
 extern void fn_8029AD14();
@@ -243,8 +243,8 @@ asm void fn_8029AD2C() {
     blr
 }
 
-// asm_to_cpp: GetFont__Q34nw4r3lyt7TextBoxCFv
-asm void GetFont__Q34nw4r3lyt7TextBoxCFv() {
+// asm_to_cpp: fn_8029AD3C
+asm void fn_8029AD3C() {
     nofralloc
     lwz r3, lbl_8049DE50
     blr

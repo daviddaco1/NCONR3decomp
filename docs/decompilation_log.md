@@ -2433,3 +2433,31 @@ el 100% en asm para fijar splits y nombres, y después reescribir a C en una pas
   funciones **sin pareja** (59 KB siguen como `fn_`). Las parciales grandes difieren sobre todo
   en offsets dentro del bloque de strings agrupados y en símbolos de datos (`jumptable_X` vs
   `@NNN`, `lbl_X` vs nombre real): requieren **splits de datos por TU**, no tocar el C.
+
+## Fase 103 — Todo el código matcheado, todo `.text` splitteado (2026-10-19)
+
+- **126 huecos de `.text`** → una TU por hueco (`<lib>/unk_<addr>`). Sin conflictos de extab.
+  Las 108 TUs splitteadas sin fuente → asm generado. `.init`: `TRK_MINNOW_DOLPHIN/__exception.s`
+  (`0x80004380`-`0x800062B4`); lo único sin split en `.init` son tablas del linker
+  (`_rom_copy_info`/`_bss_init_info`, `0x800065EC`-`0x80006690`), no código.
+- `tools/asm_to_cpp.py`: `$` en nombres de estáticos, `sym+off@sda21` (mwcc acepta `sym+4`),
+  `addic`/`addic.` con `@l` y saltos a etiquetas de otra función como `opword` (mwcc no los
+  ensambla con relocation), símbolos sda21 que también se usan con `@ha` sin doble declaración,
+  salida C con `extern` correcto.
+- TUs con `addic.@l` o saltos entre funciones (que pierden la relocation como `opword`) usan el
+  `.s` de dtk como fuente (`AsmObject(name, source="x.s")`, ensamblado por GNU as), con las
+  funciones `local` pasadas a `global` (si no, as resuelve el salto sin relocation).
+- C importado parcial → mixtos (`tools/mix_asm.py` ahora ubica métodos C++ por nombre mangled
+  CW: `Metodo__Q34nw4r3g3d6ScnMdlF...` → `ScnMdl::Metodo(`; sobrecargas/inlines de header no).
+  Mixtos compilan con `extra_cflags=["-i <dir original>"]` por los includes relativos. Los que no
+  compilan, cuelgan a mwcc (`ghttpPost.c`, `gstats.c`) o fallan por inlines de header → asm.
+  **Gotcha:** un `.o` viejo puede hacer pasar por buena una compilación que falla — borrar el
+  `.o` antes de verificar.
+- Auditoría de nombres heredados por alineación de tamaños: 19 falsos positivos (función lejos
+  de su TU de origen ya splitteado, nombre no conocido por dtk) revertidos a `fn_<addr>` con
+  `tools/rename_symbols.py --asm-only` (no toca C). `tools/rename_tu.py` reubica TUs `unk_` por
+  librería según strings: DWC (178 KB), NHTTP/NCD, KPAD, TPL, WUD, SSL, NATNEG.
+- **Code: 100.00% (3,299,164 / 3,299,164 bytes, 11,293 funciones). C real 8.41%.**
+  `build.sha1` OK. Data sigue en 0% (sin splits de datos).
+- Pendiente de nombres: TUs `unk_*` (165; fronteras internas de huecos grandes sin refinar) y
+  funciones del juego (`fn_*`, sin fuente de nombres).

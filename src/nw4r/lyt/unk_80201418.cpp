@@ -5,7 +5,7 @@
 
 // Forward declarations
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5Color();
-extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc();
+extern "C" void fn_80201418();
 extern "C" void MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc();
 extern "C" void _restgpr_23();
 extern "C" void _restgpr_27();
@@ -14,9 +14,9 @@ extern "C" void _savegpr_27();
 extern "C" void fn_80201510();
 
 // ----------------------------------------------------------------------------
-// DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc
+// fn_80201418
 // ----------------------------------------------------------------------------
-extern "C" asm void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc() {
+extern "C" asm void fn_80201418() {
     nofralloc
     stwu r1, -0x50(r1)
     mflr r0

@@ -12,7 +12,7 @@ extern u8 lbl_8040A280[];
 
 // Forward declarations
 extern void GOAGetLastError();
-extern void __OSCheckMutex();
+extern void fn_80267074();
 extern void _restgpr_24();
 extern void _restgpr_25();
 extern void _restgpr_26();
@@ -78,7 +78,7 @@ extern void gti2UnrecognizedMessageCallback();
 extern void memcmp();
 extern void memcpy();
 extern void memset();
-extern void nandCheckPathName();
+extern void fn_80267E4C();
 extern void recvfrom();
 
 // ----------------------------------------------------------------------------
@@ -175,9 +175,9 @@ lbl_80267E2C:
 }
 
 // ----------------------------------------------------------------------------
-// nandCheckPathName
+// fn_80267E4C
 // ----------------------------------------------------------------------------
-asm void nandCheckPathName() {
+asm void fn_80267E4C() {
     nofralloc
     stwu r1, -0x40(r1)
     mflr r0
@@ -917,7 +917,7 @@ lbl_80268844:
     bne lbl_80268868
     mr r4, r31
     mr r5, r25
-    bl nandCheckPathName
+    bl fn_80267E4C
     cmpwi r3, 0x0
     bne lbl_80268C28
     li r3, 0x0
@@ -2042,7 +2042,7 @@ asm void fn_80269704() {
     mr r9, r28
     li r7, 0x0
     li r10, 0x0
-    bl __OSCheckMutex
+    bl fn_80267074
     cmpwi r3, 0x0
     bne lbl_80269788
     li r3, 0x0
@@ -2362,7 +2362,7 @@ asm void fn_80269B90() {
     li r8, 0x0
     li r9, 0x0
     li r10, 0x0
-    bl __OSCheckMutex
+    bl fn_80267074
     cmpwi r3, 0x0
     bne lbl_80269C00
     li r3, 0x0
@@ -2519,7 +2519,7 @@ asm void fn_80269DA8() {
     li r7, 0x1
     li r8, 0x0
     li r9, 0x0
-    bl __OSCheckMutex
+    bl fn_80267074
     cmpwi r3, 0x0
     bne lbl_80269E14
     li r3, 0x0
@@ -2648,7 +2648,7 @@ lbl_80269F68:
     li r8, 0x0
     li r9, 0x0
     li r10, 0x0
-    bl __OSCheckMutex
+    bl fn_80267074
     cmpwi r3, 0x0
     bne lbl_80269FD4
     li r0, 0x0

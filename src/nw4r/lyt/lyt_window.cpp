@@ -647,7 +647,7 @@ extern "C" float lbl_804A1EF0;
 extern "C" float lbl_804A1EF8;
 extern "C" u8 lbl_80361750[];
 extern "C" void DrawFrame__Q34nw4r3lyt6WindowFRCQ34nw4r4math4VEC2RCQ44nw4r3lyt6Window5FrameRCQ34nw4r3lyt15WindowFrameSizeUc();
-extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc();
+extern "C" void fn_80201418();
 extern "C" void GetTextureSize__Q34nw4r3lyt6detailFPQ34nw4r3lyt8MaterialUc();
 extern "C" void IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc();
 extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc();
@@ -783,7 +783,7 @@ extern "C" asm void DrawFrame__Q34nw4r3lyt6WindowFRCQ34nw4r4math4VEC2RCQ44nw4r3l
     stfsx f1, r25, r10
     stfsx f0, r22, r20
     stfsx f0, r25, r20
-    bl DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc
+    bl fn_80201418
     lbz r6, 0x13(r21)
     addi r8, r21, 0xa
     lbz r7, 0x12(r21)
@@ -864,7 +864,7 @@ extern "C" asm void DrawFrame__Q34nw4r3lyt6WindowFRCQ34nw4r4math4VEC2RCQ44nw4r3l
     stfsx f2, r22, r10
     stfsx f0, r25, r11
     stfsx f0, r22, r11
-    bl DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc
+    bl fn_80201418
     lbz r6, 0x31(r21)
     addi r4, r21, 0x28
     lfs f1, 0x4(r28)
@@ -946,7 +946,7 @@ extern "C" asm void DrawFrame__Q34nw4r3lyt6WindowFRCQ34nw4r4math4VEC2RCQ44nw4r3l
     stfsx f2, r23, r10
     stfsx f0, r24, r11
     stfsx f0, r23, r11
-    bl DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc
+    bl fn_80201418
     lbz r6, 0x1d(r21)
     addi r7, r21, 0x14
     lfs f9, 0x0(r28)
@@ -1025,7 +1025,7 @@ extern "C" asm void DrawFrame__Q34nw4r3lyt6WindowFRCQ34nw4r4math4VEC2RCQ44nw4r3l
     stfsx f2, r24, r0
     stfsx f0, r23, r9
     stfsx f0, r24, r9
-    bl DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc
+    bl fn_80201418
 lbl_801FA714:
     opword 0xE3E100D8
     addi r11, r1, 0xd0

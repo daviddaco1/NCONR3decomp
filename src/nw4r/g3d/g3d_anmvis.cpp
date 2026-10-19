@@ -429,7 +429,7 @@ extern "C" float lbl_804A1CA0;
 extern "C" u8 lbl_80360D00[];
 extern "C" u8 lbl_80360D44[];
 extern "C" void Bind__Q34nw4r3g3d12AnmObjVisResFQ34nw4r3g3d6ResMdl();
-extern "C" void ConfigMEM_ES1_0();
+extern "C" void fn_801D8AE8();
 extern "C" void SetAnmFlag__Q34nw4r3g3d6AnmObjFQ44nw4r3g3d6AnmObj7AnmFlagb();
 extern "C" void UpdateFrame__Q34nw4r3g3d12AnmObjVisResFv();
 extern "C" void _restgpr_27();
@@ -439,8 +439,8 @@ extern "C" void fn_801D0D78();
 extern "C" void fn_801D8B78();
 extern "C" void fn_8030CAF0();
 
-// asm_to_cpp: ConfigMEM_ES1_0
-extern "C" asm void ConfigMEM_ES1_0() {
+// asm_to_cpp: fn_801D8AE8
+extern "C" asm void fn_801D8AE8() {
     nofralloc
     lis r5, 0x1
     addi r0, r5, 0x2

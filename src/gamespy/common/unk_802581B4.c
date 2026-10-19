@@ -4,22 +4,22 @@
 // Total functions: 2
 
 // Forward declarations
-extern void detail_GetOutputLine__Q34nw4r3snd11SoundPlayerCFv();
-extern void detail_IsEnabledOutputLine__Q34nw4r3snd11SoundPlayerCFv();
+extern void fn_802581B4();
+extern void fn_802581BC();
 
 // ----------------------------------------------------------------------------
-// detail_GetOutputLine__Q34nw4r3snd11SoundPlayerCFv
+// fn_802581B4
 // ----------------------------------------------------------------------------
-asm void detail_GetOutputLine__Q34nw4r3snd11SoundPlayerCFv() {
+asm void fn_802581B4() {
     nofralloc
     lwz r3, 0x0(r3)
     blr
 }
 
 // ----------------------------------------------------------------------------
-// detail_IsEnabledOutputLine__Q34nw4r3snd11SoundPlayerCFv
+// fn_802581BC
 // ----------------------------------------------------------------------------
-asm void detail_IsEnabledOutputLine__Q34nw4r3snd11SoundPlayerCFv() {
+asm void fn_802581BC() {
     nofralloc
     lwz r3, 0x4(r3)
     blr

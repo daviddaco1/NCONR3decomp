@@ -22,7 +22,7 @@ extern "C" u8 lbl_80360CC0[];
 extern "C" u8 lbl_80360CE0[];
 
 // Forward declarations
-extern "C" void ConfigMEM1_48MB();
+extern "C" void fn_801D8270();
 extern "C" void FrSqrt__Q24nw4r4mathFf();
 extern "C" void MTX34Scale__Q24nw4r4mathFPQ34nw4r4math5MTX34PCQ34nw4r4math5MTX34PCQ34nw4r4math4VEC3();
 extern "C" void PSMTXCopy();
@@ -1273,9 +1273,9 @@ lbl_801D8260:
 }
 
 // ----------------------------------------------------------------------------
-// ConfigMEM1_48MB
+// fn_801D8270
 // ----------------------------------------------------------------------------
-extern "C" asm void ConfigMEM1_48MB() {
+extern "C" asm void fn_801D8270() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0

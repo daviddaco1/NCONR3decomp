@@ -36,7 +36,7 @@ extern void SetAnimationEnable__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform
 extern void SetResource__Q34nw4r2ut7ResFontFPv();
 extern void SetVertexFormat__Q36nw4hbm3lyt6detailFbUc();
 extern void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform();
-extern void __DSPHandler();
+extern void fn_802FA270();
 extern void __construct_array();
 extern void __ct__Q34nw4r2ut7ResFontFv();
 extern void __ct__Q46nw4hbm3lyt6detail11TexCoordAryFv();
@@ -948,7 +948,7 @@ lbl_802F9F90:
     addi r3, r1, 0x48
     addi r4, r1, 0x68
     addi r7, r1, 0x8
-    bl __DSPHandler
+    bl fn_802FA270
     lfs f1, 0x50(r1)
     mr r14, r3
     lfs f0, 0x48(r1)
@@ -1002,9 +1002,9 @@ lbl_802FA238:
 }
 
 // ----------------------------------------------------------------------------
-// __DSPHandler
+// fn_802FA270
 // ----------------------------------------------------------------------------
-asm void __DSPHandler() {
+asm void fn_802FA270() {
     nofralloc
     stwu r1, -0xd0(r1)
     mflr r0
@@ -1772,7 +1772,7 @@ lbl_802FACA8:
     addi r3, r1, 0x10
     addi r7, r1, 0x8
     stfs f31, 0x1c(r1)
-    bl __DSPHandler
+    bl fn_802FA270
     lbz r0, 0x8(r1)
     mr r30, r3
     cmpwi r0, 0x0
@@ -1783,7 +1783,7 @@ lbl_802FACA8:
     addi r5, r31, lbl_8037CA40@l
     addi r7, r1, 0x8
     li r6, 0x1
-    bl __DSPHandler
+    bl fn_802FA270
 lbl_802FAD00:
     lfs f1, 0x10(r1)
     slwi r0, r30, 1

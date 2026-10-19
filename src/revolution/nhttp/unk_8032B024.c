@@ -76,7 +76,7 @@ extern u8 lbl_8046F3C0[];
 extern u8 lbl_8046F400[];
 
 // Forward declarations
-extern void GetPaneRect__Q34nw4r3lyt4PaneCFv();
+extern void fn_803337D4();
 extern void IOS_Close();
 extern void IOS_Ioctlv();
 extern void IOS_Open();
@@ -97,7 +97,7 @@ extern void OSReport();
 extern void OSRestoreInterrupts();
 extern void OSSendMessage();
 extern void OSUnlockMutex();
-extern void SetPlayerPriority__Q44nw4r3snd6detail9WaveSoundFi();
+extern void fn_80333A74();
 extern void _restgpr_16();
 extern void _restgpr_19();
 extern void _restgpr_21();
@@ -6598,7 +6598,7 @@ lbl_8032FF5C:
     mr r4, r29
     mr r5, r26
     mr r6, r30
-    bl SetPlayerPriority__Q44nw4r3snd6detail9WaveSoundFi
+    bl fn_80333A74
     cmpwi r3, 0x0
     bge lbl_8032FF84
     li r3, 0x0
@@ -6681,7 +6681,7 @@ lbl_80330068:
     mr r4, r26
     mr r5, r22
     mr r6, r29
-    bl SetPlayerPriority__Q44nw4r3snd6detail9WaveSoundFi
+    bl fn_80333A74
     cmpwi r3, 0x0
     bge lbl_80330090
     li r3, 0x3
@@ -10880,9 +10880,9 @@ lbl_8033379C:
 }
 
 // ----------------------------------------------------------------------------
-// GetPaneRect__Q34nw4r3lyt4PaneCFv
+// fn_803337D4
 // ----------------------------------------------------------------------------
-asm void GetPaneRect__Q34nw4r3lyt4PaneCFv() {
+asm void fn_803337D4() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -10973,7 +10973,7 @@ asm void fn_803338E4() {
     mflr r0
     li r5, 0x3
     stw r0, 0x14(r1)
-    bl GetPaneRect__Q34nw4r3lyt4PaneCFv
+    bl fn_803337D4
     neg r0, r3
     nor r0, r3, r0
     srawi r3, r0, 31
@@ -10992,7 +10992,7 @@ asm void fn_80333914() {
     mflr r0
     li r5, 0x4
     stw r0, 0x14(r1)
-    bl GetPaneRect__Q34nw4r3lyt4PaneCFv
+    bl fn_803337D4
     neg r0, r3
     nor r0, r3, r0
     srawi r3, r0, 31
@@ -11011,7 +11011,7 @@ asm void fn_80333944() {
     mflr r0
     li r5, 0x0
     stw r0, 0x14(r1)
-    bl GetPaneRect__Q34nw4r3lyt4PaneCFv
+    bl fn_803337D4
     cmpwi r3, 0x0
     beq lbl_80333968
     lwz r3, 0x10(r3)
@@ -11034,7 +11034,7 @@ asm void fn_8033397C() {
     mflr r0
     li r5, 0x0
     stw r0, 0x14(r1)
-    bl GetPaneRect__Q34nw4r3lyt4PaneCFv
+    bl fn_803337D4
     cmpwi r3, 0x0
     beq lbl_803339A0
     lwz r3, 0x14(r3)
@@ -11054,7 +11054,7 @@ lbl_803339A4:
 asm void fn_803339B4() {
     nofralloc
     li r5, 0x1
-    b GetPaneRect__Q34nw4r3lyt4PaneCFv
+    b fn_803337D4
 }
 
 // ----------------------------------------------------------------------------
@@ -11063,7 +11063,7 @@ asm void fn_803339B4() {
 asm void fn_803339BC() {
     nofralloc
     li r5, 0x2
-    b GetPaneRect__Q34nw4r3lyt4PaneCFv
+    b fn_803337D4
 }
 
 // ----------------------------------------------------------------------------
@@ -11072,7 +11072,7 @@ asm void fn_803339BC() {
 asm void fn_803339C4() {
     nofralloc
     li r5, 0x0
-    b GetPaneRect__Q34nw4r3lyt4PaneCFv
+    b fn_803337D4
 }
 
 // ----------------------------------------------------------------------------
@@ -11086,7 +11086,7 @@ asm void fn_803339CC() {
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
     mr r31, r4
-    bl GetPaneRect__Q34nw4r3lyt4PaneCFv
+    bl fn_803337D4
     cmpwi r3, 0x0
     beq lbl_803339F8
     lwz r3, 0x10(r3)
@@ -11112,7 +11112,7 @@ asm void fn_80333A10() {
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
     mr r31, r4
-    bl GetPaneRect__Q34nw4r3lyt4PaneCFv
+    bl fn_803337D4
     cmpwi r3, 0x0
     beq lbl_80333A3C
     lwz r3, 0x14(r3)
@@ -11145,9 +11145,9 @@ lbl_80333A68:
 }
 
 // ----------------------------------------------------------------------------
-// SetPlayerPriority__Q44nw4r3snd6detail9WaveSoundFi
+// fn_80333A74
 // ----------------------------------------------------------------------------
-asm void SetPlayerPriority__Q44nw4r3snd6detail9WaveSoundFi() {
+asm void fn_80333A74() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -11160,13 +11160,13 @@ asm void SetPlayerPriority__Q44nw4r3snd6detail9WaveSoundFi() {
     mr r30, r6
     li r29, -0x1
     li r5, 0x0
-    bl GetPaneRect__Q34nw4r3lyt4PaneCFv
+    bl fn_803337D4
     cmpwi r3, 0x0
     beq lbl_80333B40
     mr r3, r27
     mr r4, r28
     li r5, 0x0
-    bl GetPaneRect__Q34nw4r3lyt4PaneCFv
+    bl fn_803337D4
     cmpwi r3, 0x0
     beq lbl_80333ACC
     lwz r0, 0x14(r3)
@@ -11197,7 +11197,7 @@ lbl_80333AD0:
     mr r3, r27
     mr r4, r28
     li r5, 0x0
-    bl GetPaneRect__Q34nw4r3lyt4PaneCFv
+    bl fn_803337D4
     cmpwi r3, 0x0
     beq lbl_80333B40
     stw r31, 0x24(r3)
@@ -11227,13 +11227,13 @@ asm void fn_80333B5C() {
     stw r29, 0x24(r1)
     stw r28, 0x20(r1)
     mr r28, r3
-    bl GetPaneRect__Q34nw4r3lyt4PaneCFv
+    bl fn_803337D4
     cmpwi r3, 0x0
     beq lbl_80333C54
     mr r3, r28
     mr r4, r31
     li r5, 0x0
-    bl GetPaneRect__Q34nw4r3lyt4PaneCFv
+    bl fn_803337D4
     cmpwi r3, 0x0
     beq lbl_80333BB0
     lwz r6, 0x14(r3)
@@ -11264,13 +11264,13 @@ lbl_80333BB4:
     mr r3, r28
     lwz r31, 0x8(r1)
     li r5, 0x0
-    bl GetPaneRect__Q34nw4r3lyt4PaneCFv
+    bl fn_803337D4
     cmpwi r3, 0x0
     mr r4, r3
     beq lbl_80333C54
     mr r3, r28
     li r5, 0x0
-    bl GetPaneRect__Q34nw4r3lyt4PaneCFv
+    bl fn_803337D4
     cmpwi r3, 0x0
     beq lbl_80333C3C
     lwz r3, 0x14(r3)
@@ -11309,13 +11309,13 @@ asm void fn_80333C74() {
     stw r29, 0x24(r1)
     stw r28, 0x20(r1)
     mr r28, r3
-    bl GetPaneRect__Q34nw4r3lyt4PaneCFv
+    bl fn_803337D4
     cmpwi r3, 0x0
     beq lbl_80333D6C
     mr r3, r28
     mr r4, r31
     li r5, 0x0
-    bl GetPaneRect__Q34nw4r3lyt4PaneCFv
+    bl fn_803337D4
     cmpwi r3, 0x0
     beq lbl_80333CC8
     lwz r6, 0x14(r3)
@@ -11346,13 +11346,13 @@ lbl_80333CCC:
     mr r3, r28
     lwz r31, 0x8(r1)
     li r5, 0x0
-    bl GetPaneRect__Q34nw4r3lyt4PaneCFv
+    bl fn_803337D4
     cmpwi r3, 0x0
     mr r4, r3
     beq lbl_80333D6C
     mr r3, r28
     li r5, 0x0
-    bl GetPaneRect__Q34nw4r3lyt4PaneCFv
+    bl fn_803337D4
     cmpwi r3, 0x0
     beq lbl_80333D54
     lwz r3, 0x14(r3)
@@ -11387,7 +11387,7 @@ asm void fn_80333D8C() {
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
     mr r31, r4
-    bl GetPaneRect__Q34nw4r3lyt4PaneCFv
+    bl fn_803337D4
     cmpwi r3, 0x0
     beq lbl_80333DD0
     lwz r12, 0x1c(r31)

@@ -37,8 +37,8 @@ extern void _restgpr_27();
 extern void _savegpr_21();
 extern void _savegpr_26();
 extern void _savegpr_27();
-extern void detail_GetOutputLine__Q34nw4r3snd11SoundPlayerCFv();
-extern void detail_IsEnabledOutputLine__Q34nw4r3snd11SoundPlayerCFv();
+extern void fn_802581B4();
+extern void fn_802581BC();
 extern void fclose();
 extern void fn_80197DE4();
 extern void fn_8019894C();
@@ -733,7 +733,7 @@ lbl_8027083C:
     cmpwi r0, 0x3
     bne lbl_80270850
     lwz r3, 0x8(r3)
-    bl detail_IsEnabledOutputLine__Q34nw4r3snd11SoundPlayerCFv
+    bl fn_802581BC
     add r27, r27, r3
 lbl_80270850:
     addi r28, r28, 0x1
@@ -937,10 +937,10 @@ lbl_80270B0C:
     lwz r0, lbl_8049DC00
     lwz r3, 0x8(r3)
     add r26, r26, r0
-    bl detail_IsEnabledOutputLine__Q34nw4r3snd11SoundPlayerCFv
+    bl fn_802581BC
     add r26, r26, r3
     lwz r3, 0x8(r31)
-    bl detail_IsEnabledOutputLine__Q34nw4r3snd11SoundPlayerCFv
+    bl fn_802581BC
     slwi r0, r3, 30
     srwi r3, r3, 31
     subf r0, r3, r0
@@ -1417,7 +1417,7 @@ asm void ghiPostXmlStateDoPosting() {
     cmpwi r0, 0x0
     beq lbl_80271180
     mr r3, r29
-    bl detail_IsEnabledOutputLine__Q34nw4r3snd11SoundPlayerCFv
+    bl fn_802581BC
     slwi r0, r3, 30
     srwi r3, r3, 31
     subf r0, r3, r0
@@ -1435,10 +1435,10 @@ lbl_80271180:
     cmpwi r0, 0x1
     bne lbl_8027123C
     mr r3, r29
-    bl detail_IsEnabledOutputLine__Q34nw4r3snd11SoundPlayerCFv
+    bl fn_802581BC
     mr r30, r3
     mr r3, r29
-    bl detail_GetOutputLine__Q34nw4r3snd11SoundPlayerCFv
+    bl fn_802581B4
     mr r4, r3
     mr r5, r30
     addi r3, r31, 0x78
@@ -1481,10 +1481,10 @@ lbl_80271234:
     b lbl_8027128C
 lbl_8027123C:
     mr r3, r29
-    bl detail_IsEnabledOutputLine__Q34nw4r3snd11SoundPlayerCFv
+    bl fn_802581BC
     mr r30, r3
     mr r3, r29
-    bl detail_GetOutputLine__Q34nw4r3snd11SoundPlayerCFv
+    bl fn_802581B4
     mr r4, r3
     mr r3, r31
     mr r5, r30
@@ -1856,7 +1856,7 @@ lbl_80271718:
     sth r3, 0x1a(r1)
     lwz r3, 0x0(r27)
     lwz r3, 0x8(r3)
-    bl detail_IsEnabledOutputLine__Q34nw4r3snd11SoundPlayerCFv
+    bl fn_802581BC
     bl fn_80336B28
     stw r3, 0x1c(r1)
     addi r3, r1, 0x20

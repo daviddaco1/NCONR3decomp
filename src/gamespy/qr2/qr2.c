@@ -1635,12 +1635,12 @@ static void send_heartbeat(qr2_t qrec, int statechanged) {
 // ---- Funciones aun sin C que matchee (asm generado) ----
 extern float lbl_8049CC48;
 extern u8 lbl_80369AF8[];
-extern void ExecCommand__Q34nw4r3snd13RemoteSpeakerFQ44nw4r3snd13RemoteSpeaker14SpeakerCommand();
+extern void fn_8026C29C();
 extern void fn_802565EC();
 extern void fn_80256C70();
 
-// asm_to_cpp: ExecCommand__Q34nw4r3snd13RemoteSpeakerFQ44nw4r3snd13RemoteSpeaker14SpeakerCommand
-asm void ExecCommand__Q34nw4r3snd13RemoteSpeakerFQ44nw4r3snd13RemoteSpeaker14SpeakerCommand() {
+// asm_to_cpp: fn_8026C29C
+asm void fn_8026C29C() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0

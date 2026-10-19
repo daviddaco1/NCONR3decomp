@@ -1385,7 +1385,7 @@ nw4r/ut/ut_TextWriterBase.cpp:
 	.text       start:0x80226594 end:0x8022813C
 	.ctors      start:0x80339544 end:0x80339548
 
-nw4r/ut/unk_8022813C.cpp:
+dwc/unk_8022813C.c:
 	.text       start:0x8022813C end:0x80253934
 
 nw4r/snd/snd_SoundStartable.cpp:
@@ -1514,7 +1514,7 @@ gamespy/gstats/unk_80274A58.c:
 gamespy/gstats/gstats.c:
 	.text       start:0x802775F4 end:0x80279FD0
 
-gamespy/gstats/unk_80279FD0.c:
+gamespy/natneg/unk_80279FD0.c:
 	.text       start:0x80279FD0 end:0x8027C088
 
 gamespy/serverbrowsing/sb_crypt.c:
@@ -1547,7 +1547,7 @@ revolution/vi/unk_80285218.c:
 revolution/vi/vi3in1.c:
 	.text       start:0x802852BC end:0x802864A0
 
-revolution/vi/unk_802864A0.c:
+revolution/kpad/unk_802864A0.c:
 	.text       start:0x802864A0 end:0x8028EE60
 
 revolution/wpad/WPADHIDParser.c:
@@ -1562,7 +1562,7 @@ revolution/wpad/unk_8029419C.c:
 revolution/bte/gki/gki_time.c:
 	.text       start:0x80297A90 end:0x80297DF4
 
-revolution/bte/gki/unk_80297DF4.c:
+revolution/wud/unk_80297DF4.c:
 	.text       start:0x80297DF4 end:0x8029AC60
 
 revolution/ai/ai.c:
@@ -2206,13 +2206,13 @@ revolution/si/unk_80325A78.c:
 revolution/si/SISamplingRate.c:
 	.text       start:0x80325FEC end:0x803260CC
 
-revolution/si/unk_803260CC.c:
+revolution/tpl/unk_803260CC.c:
 	.text       start:0x803260CC end:0x80329B30
 
 revolution/usb/usb.c:
 	.text       start:0x80329B30 end:0x8032B024
 
-revolution/usb/unk_8032B024.c:
+revolution/nhttp/unk_8032B024.c:
 	.text       start:0x8032B024 end:0x80334174
 
 revolution/nwc24/NWC24Schedule.c:
@@ -2230,7 +2230,7 @@ revolution/nwc24/unk_80334EBC.c:
 revolution/so/soCommon.c:
 	.text       start:0x80335218 end:0x803360B0
 
-revolution/so/unk_803360B0.c:
+revolution/ssl/unk_803360B0.c:
 	.text       start:0x803360B0 end:0x8033891C
 
 revolution/vf/pf_cp932.c:

@@ -139,7 +139,7 @@ extern "C" void PSMTXIdentity();
 extern "C" void PSMTXInverse();
 extern "C" void SinCosFIdx__Q24nw4r4mathFPfPff();
 extern "C" void VEC3TransformNormal__Q24nw4r4mathFPQ34nw4r4math4VEC3PCQ34nw4r4math5MTX34PCQ34nw4r4math4VEC3();
-extern "C" void __a1_32_data_type();
+extern "C" void fn_801C81C8();
 extern "C" void _restgpr_14();
 extern "C" void _restgpr_15();
 extern "C" void _restgpr_16();
@@ -10801,9 +10801,9 @@ lbl_801C8188:
 }
 
 // ----------------------------------------------------------------------------
-// __a1_32_data_type
+// fn_801C81C8
 // ----------------------------------------------------------------------------
-extern "C" asm void __a1_32_data_type() {
+extern "C" asm void fn_801C81C8() {
     nofralloc
     stwu r1, -0x70(r1)
     mflr r0
@@ -11917,7 +11917,7 @@ lbl_801C91DC:
     mr r3, r26
     mr r5, r29
     addi r4, r1, 0x1a0
-    bl __a1_32_data_type
+    bl fn_801C81C8
 lbl_801C91EC:
     opword 0xE3E102A8
     addi r11, r1, 0x2a0

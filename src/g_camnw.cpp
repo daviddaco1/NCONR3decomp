@@ -104,7 +104,7 @@ extern "C" u8 lbl_803C22B0[];
 // Forward declarations
 extern "C" void C_MTXLookAt();
 extern "C" void CheckRevision__Q34nw4r3g3d7ResFileCFv();
-extern "C" void ConfigMEM1_48MB();
+extern "C" void fn_801D8270();
 extern "C" void GetResAnmTexPat__Q34nw4r3g3d7ResFileCFi();
 extern "C" void GetResAnmVis__Q34nw4r3g3d7ResFileCFPCc();
 extern "C" void Init__Q34nw4r3g3d7ResFileFv();
@@ -17160,7 +17160,7 @@ lbl_80090BB0:
     beq lbl_80090BD8
     addi r3, r24, 0x24
     mr r4, r28
-    bl ConfigMEM1_48MB
+    bl fn_801D8270
     stw r3, 0xc(r1)
     addi r3, r24, 0x28
     addi r4, r1, 0xc

@@ -1131,7 +1131,7 @@
 .endfn fn_80228F84
 
 # .text:0xE78 | 0x80228FB4 | size: 0x280
-.fn __GXSetDirtyState, global
+.fn fn_80228FB4, global
 /* 80228FB4 00215414  94 21 FF C0 */	stwu r1, -0x40(r1)
 /* 80228FB8 00215418  7C 08 02 A6 */	mflr r0
 /* 80228FBC 0021541C  90 01 00 44 */	stw r0, 0x44(r1)
@@ -1304,7 +1304,7 @@
 /* 80229228 00215688  7C 08 03 A6 */	mtlr r0
 /* 8022922C 0021568C  38 21 00 40 */	addi r1, r1, 0x40
 /* 80229230 00215690  4E 80 00 20 */	blr
-.endfn __GXSetDirtyState
+.endfn fn_80228FB4
 
 # .text:0x10F8 | 0x80229234 | size: 0x7C
 .fn fn_80229234, global
@@ -1963,7 +1963,7 @@
 .endfn fn_80229AC8
 
 # .text:0x19BC | 0x80229AF8 | size: 0xD8
-.fn __GXSendFlushPrim, global
+.fn fn_80229AF8, global
 /* 80229AF8 00215F58  94 21 FF F0 */	stwu r1, -0x10(r1)
 /* 80229AFC 00215F5C  7C 08 02 A6 */	mflr r0
 /* 80229B00 00215F60  90 01 00 14 */	stw r0, 0x14(r1)
@@ -2020,7 +2020,7 @@
 /* 80229BC4 00216024  7C 08 03 A6 */	mtlr r0
 /* 80229BC8 00216028  38 21 00 10 */	addi r1, r1, 0x10
 /* 80229BCC 0021602C  4E 80 00 20 */	blr
-.endfn __GXSendFlushPrim
+.endfn fn_80229AF8
 
 # .text:0x1A94 | 0x80229BD0 | size: 0x1A4
 .fn fn_80229BD0, global
@@ -6864,7 +6864,7 @@
 /* 8022DEEC 0021A34C  80 63 03 70 */	lwz r3, 0x370(r3)
 /* 8022DEF0 0021A350  2C 03 00 00 */	cmpwi r3, 0x0
 /* 8022DEF4 0021A354  41 82 00 14 */	beq .L_8022DF08
-/* 8022DEF8 0021A358  48 03 E3 A5 */	bl ExecCommand__Q34nw4r3snd13RemoteSpeakerFQ44nw4r3snd13RemoteSpeaker14SpeakerCommand
+/* 8022DEF8 0021A358  48 03 E3 A5 */	bl fn_8026C29C
 /* 8022DEFC 0021A35C  80 6D 99 90 */	lwz r3, lbl_8049DB30@sda21(r0)
 /* 8022DF00 0021A360  38 00 00 00 */	li r0, 0x0
 /* 8022DF04 0021A364  90 03 03 70 */	stw r0, 0x370(r3)
@@ -7142,7 +7142,7 @@
 /* 8022E2E8 0021A748  80 63 03 70 */	lwz r3, 0x370(r3)
 /* 8022E2EC 0021A74C  2C 03 00 00 */	cmpwi r3, 0x0
 /* 8022E2F0 0021A750  41 82 00 14 */	beq .L_8022E304
-/* 8022E2F4 0021A754  48 03 DF A9 */	bl ExecCommand__Q34nw4r3snd13RemoteSpeakerFQ44nw4r3snd13RemoteSpeaker14SpeakerCommand
+/* 8022E2F4 0021A754  48 03 DF A9 */	bl fn_8026C29C
 /* 8022E2F8 0021A758  80 6D 99 90 */	lwz r3, lbl_8049DB30@sda21(r0)
 /* 8022E2FC 0021A75C  38 00 00 00 */	li r0, 0x0
 /* 8022E300 0021A760  90 03 03 70 */	stw r0, 0x370(r3)
@@ -11618,7 +11618,7 @@
 /* 80231FE4 0021E444  41 82 00 38 */	beq .L_8023201C
 /* 80231FE8 0021E448  80 6D 99 AC */	lwz r3, lbl_8049DB4C@sda21(r0)
 /* 80231FEC 0021E44C  80 63 00 10 */	lwz r3, 0x10(r3)
-/* 80231FF0 0021E450  48 03 A2 AD */	bl ExecCommand__Q34nw4r3snd13RemoteSpeakerFQ44nw4r3snd13RemoteSpeaker14SpeakerCommand
+/* 80231FF0 0021E450  48 03 A2 AD */	bl fn_8026C29C
 /* 80231FF4 0021E454  80 6D 99 AC */	lwz r3, lbl_8049DB4C@sda21(r0)
 /* 80231FF8 0021E458  2C 16 00 03 */	cmpwi r22, 0x3
 /* 80231FFC 0021E45C  93 A3 00 10 */	stw r29, 0x10(r3)
@@ -47516,7 +47516,7 @@
 /* 802522A4 0023E704  38 E7 16 84 */	addi r7, r7, fn_80251684@l
 /* 802522A8 0023E708  38 A0 00 00 */	li r5, 0x0
 /* 802522AC 0023E70C  39 00 00 00 */	li r8, 0x0
-/* 802522B0 0023E710  4B FD 6D 05 */	bl __GXSetDirtyState
+/* 802522B0 0023E710  4B FD 6D 05 */	bl fn_80228FB4
 /* 802522B4 0023E714  2C 03 00 00 */	cmpwi r3, 0x0
 /* 802522B8 0023E718  90 7F 00 08 */	stw r3, 0x8(r31)
 /* 802522BC 0023E71C  41 80 00 10 */	blt .L_802522CC
@@ -47560,7 +47560,7 @@
 /* 80252348 0023E7A8  38 E7 16 84 */	addi r7, r7, fn_80251684@l
 /* 8025234C 0023E7AC  38 A0 00 00 */	li r5, 0x0
 /* 80252350 0023E7B0  39 00 00 00 */	li r8, 0x0
-/* 80252354 0023E7B4  4B FD 6C 61 */	bl __GXSetDirtyState
+/* 80252354 0023E7B4  4B FD 6C 61 */	bl fn_80228FB4
 /* 80252358 0023E7B8  2C 03 00 00 */	cmpwi r3, 0x0
 /* 8025235C 0023E7BC  90 7F 00 08 */	stw r3, 0x8(r31)
 /* 80252360 0023E7C0  41 80 00 10 */	blt .L_80252370
