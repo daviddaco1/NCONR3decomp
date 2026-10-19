@@ -12,6 +12,20 @@ extern "C" u8 lbl_80347E0C[];
 extern "C" u8 lbl_80347E38[];
 
 // Forward declarations
+extern "C" void GXCopyTex();
+extern "C" void GXGetTexBufferSize();
+extern "C" void GXGetTexObjData();
+extern "C" void GXGetTexObjFmt();
+extern "C" void GXGetTexObjHeight();
+extern "C" void GXGetTexObjWidth();
+extern "C" void GXInitTexObj();
+extern "C" void GXInitTexObjLOD();
+extern "C" void GXInvalidateTexAll();
+extern "C" void GXSetCopyFilter();
+extern "C" void GXSetTexCopyDst();
+extern "C" void GXSetTexCopySrc();
+extern "C" void GetRenderModeObj__Q34nw4r3g3d8G3DStateFv();
+extern "C" void __throw();
 extern "C" void _restgpr_14();
 extern "C" void _restgpr_19();
 extern "C" void _restgpr_20();
@@ -53,22 +67,8 @@ extern "C" void fn_80035B44();
 extern "C" void fn_80035CA0();
 extern "C" void fn_80035D9C();
 extern "C" void fn_80035DAC();
-extern "C" void __throw();
 extern "C" void fn_801A9384();
-extern "C" void GetRenderModeObj__Q34nw4r3g3d8G3DStateFv();
 extern "C" void fn_802E151C();
-extern "C" void GXSetTexCopySrc();
-extern "C" void GXSetTexCopyDst();
-extern "C" void GXSetCopyFilter();
-extern "C" void GXCopyTex();
-extern "C" void GXGetTexBufferSize();
-extern "C" void GXInitTexObj();
-extern "C" void GXInitTexObjLOD();
-extern "C" void GXGetTexObjData();
-extern "C" void GXGetTexObjWidth();
-extern "C" void GXGetTexObjHeight();
-extern "C" void GXGetTexObjFmt();
-extern "C" void GXInvalidateTexAll();
 
 // ----------------------------------------------------------------------------
 // fn_80034BD8

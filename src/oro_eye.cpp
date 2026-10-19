@@ -7,8 +7,6 @@
 extern "C" float lbl_804A0520;
 extern "C" float lbl_804A05E0;
 
-// Global data symbols (@ha/@l)
-
 // Forward declarations
 extern "C" void _restgpr_24();
 extern "C" void _restgpr_25();

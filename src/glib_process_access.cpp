@@ -15,6 +15,8 @@ extern "C" u8 lbl_80349228[];
 extern "C" u8 lbl_803C22B0[];
 
 // Forward declarations
+extern "C" void SetPriorityDrawOpa__Q34nw4r3g3d6ScnObjFi();
+extern "C" void SetPriorityDrawXlu__Q34nw4r3g3d6ScnObjFi();
 extern "C" void _restgpr_28();
 extern "C" void _savegpr_28();
 extern "C" void fn_800379D4();
@@ -31,8 +33,6 @@ extern "C" void fn_80044620();
 extern "C" void fn_80044680();
 extern "C" void fn_800447CC();
 extern "C" void fn_801A9384();
-extern "C" void SetPriorityDrawOpa__Q34nw4r3g3d6ScnObjFi();
-extern "C" void SetPriorityDrawXlu__Q34nw4r3g3d6ScnObjFi();
 
 // ----------------------------------------------------------------------------
 // fn_800443B8

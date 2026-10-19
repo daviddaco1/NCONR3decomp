@@ -4,10 +4,8 @@
 // Total functions: 6
 
 // Small Data symbols (@sda21)
-extern "C" double lbl_804A07E0;
+extern "C" float lbl_804A07E0;
 extern "C" float lbl_804A07E8;
-
-// Global data symbols (@ha/@l)
 
 // Forward declarations
 extern "C" void _restgpr_24();

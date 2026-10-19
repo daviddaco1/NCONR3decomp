@@ -224,10 +224,10 @@ extern "C" void fn_8018331C();
 extern "C" void fn_80186C78();
 extern "C" void fn_801872F0();
 extern "C" void fn_8018F058();
-extern "C" void strcmp();
 extern "C" void memcpy();
 extern "C" void memset();
 extern "C" void sprintf();
+extern "C" void strcmp();
 extern "C" void strlen();
 
 // ----------------------------------------------------------------------------

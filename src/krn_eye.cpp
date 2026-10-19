@@ -6,8 +6,6 @@
 // Small Data symbols (@sda21)
 extern "C" float lbl_804A02A8;
 
-// Global data symbols (@ha/@l)
-
 // Forward declarations
 extern "C" void _restgpr_24();
 extern "C" void _restgpr_25();

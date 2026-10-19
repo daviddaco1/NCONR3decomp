@@ -3,8 +3,6 @@
 // Translation unit: src/kir_eye.cpp
 // Total functions: 3
 
-// Global data symbols (@ha/@l)
-
 // Forward declarations
 extern "C" void _restgpr_29();
 extern "C" void _savegpr_29();

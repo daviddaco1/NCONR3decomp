@@ -10,8 +10,6 @@ extern "C" float lbl_8049D4D8;
 extern "C" float lbl_8049D4DC;
 
 // Global data symbols (@ha/@l)
-extern "C" u8 fn_801722B8[];
-extern "C" u8 fn_801722D0[];
 extern "C" u8 jumptable_803498D8[];
 extern "C" u8 jumptable_80349954[];
 extern "C" u8 lbl_803497E0[];
@@ -23,7 +21,11 @@ extern "C" u8 lbl_803C1A40[];
 extern "C" u8 lbl_803C22B0[];
 
 // Forward declarations
+extern "C" void DVDGetDriveStatus();
+extern "C" void GXSetCopyClear();
 extern "C" void OSGetTick();
+extern "C" void OSSetPowerCallback();
+extern "C" void OSSetResetCallback();
 extern "C" void SCGetLanguage();
 extern "C" void _restgpr_14();
 extern "C" void _savegpr_14();
@@ -106,6 +108,8 @@ extern "C" void fn_80171EBC();
 extern "C" void fn_80171EF8();
 extern "C" void fn_80171F84();
 extern "C" void fn_801722B4();
+extern "C" void fn_801722B8();
+extern "C" void fn_801722D0();
 extern "C" void fn_801722E8();
 extern "C" void fn_8017252C();
 extern "C" void fn_8017403C();
@@ -149,10 +153,6 @@ extern "C" void fn_8018CC1C();
 extern "C" void fn_8018D180();
 extern "C" void fn_8018D9B8();
 extern "C" void fn_801910F8();
-extern "C" void DVDGetDriveStatus();
-extern "C" void GXSetCopyClear();
-extern "C" void OSSetResetCallback();
-extern "C" void OSSetPowerCallback();
 extern "C" void fn_80321B4C();
 extern "C" void main();
 extern "C" void memset();

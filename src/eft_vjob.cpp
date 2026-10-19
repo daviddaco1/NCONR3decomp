@@ -4,7 +4,7 @@
 // Total functions: 5
 
 // Small Data symbols (@sda21)
-extern "C" u32 lbl_8049D6BC;
+extern "C" float lbl_8049D6BC;
 extern "C" float lbl_804A08C8;
 extern "C" float lbl_804A08D0;
 extern "C" float lbl_804A08E8;
@@ -17,6 +17,7 @@ extern "C" u8 lbl_8034E928[];
 extern "C" u8 lbl_803C1A40[];
 
 // Forward declarations
+extern "C" void __cvt_fp2unsigned();
 extern "C" void _restgpr_19();
 extern "C" void _restgpr_22();
 extern "C" void _savegpr_19();
@@ -51,7 +52,6 @@ extern "C" void fn_801739BC();
 extern "C" void fn_80173ED4();
 extern "C" void fn_80182BA0();
 extern "C" void fn_8018EF24();
-extern "C" void __cvt_fp2unsigned();
 extern "C" void fn_801A9384();
 extern "C" void fn_802016BC();
 

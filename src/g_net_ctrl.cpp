@@ -140,15 +140,15 @@ extern "C" void fn_801725B0();
 extern "C" void fn_801728DC();
 extern "C" void fn_8017291C();
 extern "C" void fn_8017982C();
-extern "C" void rand();
-extern "C" void strcmp();
 extern "C" void fn_8032C41C();
 extern "C" void fn_8032C8F0();
 extern "C" void fn_8032CB2C();
 extern "C" void fn_8032CB3C();
 extern "C" void memcpy();
 extern "C" void memset();
+extern "C" void rand();
 extern "C" void sprintf();
+extern "C" void strcmp();
 extern "C" void strlen();
 
 // ----------------------------------------------------------------------------

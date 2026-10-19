@@ -15,6 +15,8 @@ extern "C" u8 lbl_80395728[];
 extern "C" u8 lbl_803C1A40[];
 
 // Forward declarations
+extern "C" void CosFIdx__Q24nw4r4mathFf();
+extern "C" void SinFIdx__Q24nw4r4mathFf();
 extern "C" void _restgpr_28();
 extern "C" void _restgpr_29();
 extern "C" void _savegpr_28();
@@ -65,8 +67,6 @@ extern "C" void fn_80182518();
 extern "C" void fn_80182600();
 extern "C" void fn_801826B8();
 extern "C" void fn_80182744();
-extern "C" void SinFIdx__Q24nw4r4mathFf();
-extern "C" void CosFIdx__Q24nw4r4mathFf();
 
 // ----------------------------------------------------------------------------
 // fn_80067B60

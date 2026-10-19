@@ -26,6 +26,15 @@ extern "C" u8 lbl_8034878C[];
 extern "C" u8 lbl_803C22B0[];
 
 // Forward declarations
+extern "C" void GetCamera__Q34nw4r3g3d7ScnRootFi();
+extern "C" void GetCurrentCamera__Q34nw4r3g3d7ScnRootFv();
+extern "C" void GetFog__Q34nw4r3g3d7ScnRootFi();
+extern "C" void GetLightSet__Q34nw4r3g3d7ScnRootFi();
+extern "C" void GetRenderModeObj__Q34nw4r3g3d8G3DStateFv();
+extern "C" void Init__Q34nw4r3g3d3FogFv();
+extern "C" void Init__Q34nw4r3g3d6CameraFv();
+extern "C" void SelectLightObj__Q34nw4r3g3d8LightSetFUli();
+extern "C" void SetCurrentCamera__Q34nw4r3g3d7ScnRootFi();
 extern "C" void _restgpr_25();
 extern "C" void _restgpr_28();
 extern "C" void _restgpr_29();
@@ -138,15 +147,6 @@ extern "C" void fn_800443B4();
 extern "C" void fn_801714F0();
 extern "C" void fn_801719B8();
 extern "C" void fn_801A9384();
-extern "C" void GetRenderModeObj__Q34nw4r3g3d8G3DStateFv();
-extern "C" void Init__Q34nw4r3g3d6CameraFv();
-extern "C" void GetCamera__Q34nw4r3g3d7ScnRootFi();
-extern "C" void GetCurrentCamera__Q34nw4r3g3d7ScnRootFv();
-extern "C" void SetCurrentCamera__Q34nw4r3g3d7ScnRootFi();
-extern "C" void GetFog__Q34nw4r3g3d7ScnRootFi();
-extern "C" void GetLightSet__Q34nw4r3g3d7ScnRootFi();
-extern "C" void Init__Q34nw4r3g3d3FogFv();
-extern "C" void SelectLightObj__Q34nw4r3g3d8LightSetFUli();
 
 // ----------------------------------------------------------------------------
 // fn_800389F8

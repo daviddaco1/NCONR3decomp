@@ -63,6 +63,7 @@ extern "C" u8 lbl_803BE030[];
 
 // Forward declarations
 extern "C" void OSGetTime();
+extern "C" void __div2i();
 extern "C" void _restgpr_21();
 extern "C" void _restgpr_23();
 extern "C" void _restgpr_26();
@@ -237,12 +238,11 @@ extern "C" void fn_801728DC();
 extern "C" void fn_801773E0();
 extern "C" void fn_80179FF8();
 extern "C" void fn_8017A008();
-extern "C" void __div2i();
-extern "C" void strcmp();
 extern "C" void fn_80324614();
 extern "C" void memcpy();
 extern "C" void memset();
 extern "C" void sprintf();
+extern "C" void strcmp();
 extern "C" void strcpy();
 
 // ----------------------------------------------------------------------------

@@ -13,6 +13,11 @@ extern "C" float lbl_8049E690;
 extern "C" u8 lbl_803C1A40[];
 
 // Forward declarations
+extern "C" void GXBegin();
+extern "C" void GXClearVtxDesc();
+extern "C" void GXLoadTexObj();
+extern "C" void GXSetVtxAttrFmt();
+extern "C" void GXSetVtxDesc();
 extern "C" void _restgpr_22();
 extern "C" void _restgpr_26();
 extern "C" void _restgpr_29();
@@ -65,11 +70,6 @@ extern "C" void fn_80173580();
 extern "C" void fn_80177280();
 extern "C" void fn_8017742C();
 extern "C" void fn_8017776C();
-extern "C" void GXSetVtxDesc();
-extern "C" void GXClearVtxDesc();
-extern "C" void GXSetVtxAttrFmt();
-extern "C" void GXBegin();
-extern "C" void GXLoadTexObj();
 extern "C" void fn_8030DE44();
 extern "C" void fn_8030DE88();
 extern "C" void memset();

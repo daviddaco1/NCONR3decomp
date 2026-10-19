@@ -21,6 +21,9 @@ extern "C" u8 lbl_80349450[];
 extern "C" u8 lbl_80349468[];
 
 // Forward declarations
+extern "C" void C_QUATMtx();
+extern "C" void Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode();
+extern "C" void PSMTXQuat();
 extern "C" void _restgpr_29();
 extern "C" void _savegpr_29();
 extern "C" void fn_80018B90();
@@ -52,9 +55,6 @@ extern "C" void fn_8004846C();
 extern "C" void fn_800484BC();
 extern "C" void fn_800484FC();
 extern "C" void fn_801A9384();
-extern "C" void Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode();
-extern "C" void PSMTXQuat();
-extern "C" void C_QUATMtx();
 
 // ----------------------------------------------------------------------------
 // fn_80047C40

@@ -153,9 +153,9 @@ extern "C" void fn_8017375C();
 extern "C" void fn_801739BC();
 extern "C" void fn_8017CF8C();
 extern "C" void fn_8017D0DC();
-extern "C" void strcmp();
 extern "C" void memcpy();
 extern "C" void memset();
+extern "C" void strcmp();
 
 // ----------------------------------------------------------------------------
 // fn_80079BB0

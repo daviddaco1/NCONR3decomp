@@ -4,7 +4,7 @@
 // Total functions: 1
 
 // Forward declarations
-void pow();
+extern void pow();
 
 // ----------------------------------------------------------------------------
 // pow

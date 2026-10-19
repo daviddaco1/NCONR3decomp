@@ -24,6 +24,8 @@ extern "C" u8 lbl_803C1A40[];
 extern "C" u8 lbl_803C22B0[];
 
 // Forward declarations
+extern "C" void C_QUATMtx();
+extern "C" void PSMTXQuat();
 extern "C" void _restfpr_28();
 extern "C" void _restgpr_22();
 extern "C" void _restgpr_23();
@@ -150,8 +152,6 @@ extern "C" void fn_80182220();
 extern "C" void fn_80182518();
 extern "C" void fn_801831EC();
 extern "C" void fn_801A32A0();
-extern "C" void PSMTXQuat();
-extern "C" void C_QUATMtx();
 extern "C" void memcpy();
 extern "C" void memset();
 extern "C" void sprintf();

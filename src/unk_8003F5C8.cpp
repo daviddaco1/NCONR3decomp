@@ -7,6 +7,17 @@
 extern "C" float lbl_8049E978;
 
 // Forward declarations
+extern "C" void GetAmbLightObj__Q34nw4r3g3d8LightSetFv();
+extern "C" void GetLightObj__Q34nw4r3g3d8LightSetFUl();
+extern "C" void GetLightSet__Q34nw4r3g3d7ScnRootFi();
+extern "C" void InitLightColor__Q34nw4r3g3d8LightObjF8_GXColor();
+extern "C" void InitLightDir__Q34nw4r3g3d8LightObjFfff();
+extern "C" void InitLightDistAttn__Q34nw4r3g3d8LightObjFff13_GXDistAttnFn();
+extern "C" void InitLightPos__Q34nw4r3g3d8LightObjFfff();
+extern "C" void InitLightShininess__Q34nw4r3g3d8LightObjFf();
+extern "C" void InitLightSpot__Q34nw4r3g3d8LightObjFf9_GXSpotFn();
+extern "C" void InitSpecularDir__Q34nw4r3g3d8LightObjFfff();
+extern "C" void SelectAmbLightObj__Q34nw4r3g3d8LightSetFi();
 extern "C" void _restfpr_29();
 extern "C" void _restgpr_27();
 extern "C" void _restgpr_29();
@@ -46,20 +57,9 @@ extern "C" void fn_8003FE6C();
 extern "C" void fn_8003FE80();
 extern "C" void fn_8003FE94();
 extern "C" void fn_8003FEEC();
-extern "C" void GetLightSet__Q34nw4r3g3d7ScnRootFi();
-extern "C" void InitLightColor__Q34nw4r3g3d8LightObjF8_GXColor();
-extern "C" void InitLightPos__Q34nw4r3g3d8LightObjFfff();
-extern "C" void InitLightDir__Q34nw4r3g3d8LightObjFfff();
-extern "C" void InitLightSpot__Q34nw4r3g3d8LightObjFf9_GXSpotFn();
-extern "C" void InitLightDistAttn__Q34nw4r3g3d8LightObjFff13_GXDistAttnFn();
-extern "C" void InitSpecularDir__Q34nw4r3g3d8LightObjFfff();
-extern "C" void InitLightShininess__Q34nw4r3g3d8LightObjFf();
 extern "C" void fn_801F476C();
 extern "C" void fn_801F47DC();
 extern "C" void fn_801F484C();
-extern "C" void GetLightObj__Q34nw4r3g3d8LightSetFUl();
-extern "C" void GetAmbLightObj__Q34nw4r3g3d8LightSetFv();
-extern "C" void SelectAmbLightObj__Q34nw4r3g3d8LightSetFi();
 
 // ----------------------------------------------------------------------------
 // fn_8003F5C8

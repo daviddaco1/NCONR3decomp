@@ -27,6 +27,14 @@ extern "C" u8 lbl_80361330[];
 extern "C" u8 lbl_80361508[];
 
 // Forward declarations
+extern "C" void Clear__Q44nw4r2ut6detail12LinkListImplFv();
+extern "C" void Destroy__Q34nw4r3g3d6G3dObjFv();
+extern "C" void Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode();
+extern "C" void Insert__Q44nw4r2ut6detail12LinkListImplFQ54nw4r2ut6detail12LinkListImpl8IteratorPQ34nw4r2ut12LinkListNode();
+extern "C" void __ct__Q34nw4r3g3d6ScnObjFP12MEMAllocator();
+extern "C" void __dt__Q34nw4r3g3d6ScnObjFv();
+extern "C" void __dt__Q44nw4r2ut6detail12LinkListImplFv();
+extern "C" void __throw();
 extern "C" void _restgpr_21();
 extern "C" void _restgpr_25();
 extern "C" void _restgpr_27();
@@ -93,15 +101,7 @@ extern "C" void fn_80044064();
 extern "C" void fn_800441E8();
 extern "C" void fn_800443B4();
 extern "C" void fn_800443B8();
-extern "C" void __throw();
 extern "C" void fn_801A9384();
-extern "C" void Destroy__Q34nw4r3g3d6G3dObjFv();
-extern "C" void __ct__Q34nw4r3g3d6ScnObjFP12MEMAllocator();
-extern "C" void __dt__Q34nw4r3g3d6ScnObjFv();
-extern "C" void __dt__Q44nw4r2ut6detail12LinkListImplFv();
-extern "C" void Clear__Q44nw4r2ut6detail12LinkListImplFv();
-extern "C" void Insert__Q44nw4r2ut6detail12LinkListImplFQ54nw4r2ut6detail12LinkListImpl8IteratorPQ34nw4r2ut12LinkListNode();
-extern "C" void Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode();
 
 // ----------------------------------------------------------------------------
 // fn_800430A4

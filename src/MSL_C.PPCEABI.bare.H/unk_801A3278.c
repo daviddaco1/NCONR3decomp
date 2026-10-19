@@ -4,18 +4,18 @@
 // Total functions: 6
 
 // Forward declarations
-void acos();
-void atan2();
-void cos();
-void fn_801A3278();
-void fn_801A32A0();
-void fn_801A32CC();
-void fn_801A32F4();
-void fn_801A331C();
-void fn_801A3344();
-void sin();
-void sqrt();
-void tan();
+extern void acos();
+extern void atan2();
+extern void cos();
+extern void fn_801A3278();
+extern void fn_801A32A0();
+extern void fn_801A32CC();
+extern void fn_801A32F4();
+extern void fn_801A331C();
+extern void fn_801A3344();
+extern void sin();
+extern void sqrt();
+extern void tan();
 
 // ----------------------------------------------------------------------------
 // fn_801A3278

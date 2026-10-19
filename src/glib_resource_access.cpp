@@ -14,6 +14,21 @@ extern "C" u8 lbl_803480D0[];
 extern "C" u8 lbl_803480E0[];
 
 // Forward declarations
+extern "C" void Bind__Q34nw4r3g3d7ResFileFQ34nw4r3g3d7ResFile();
+extern "C" void CheckRevision__Q34nw4r3g3d7ResFileCFv();
+extern "C" void GXInitTexObj();
+extern "C" void GXInitTexObjCI();
+extern "C" void GXInitTexObjLOD();
+extern "C" void GetResAnmChrNumEntries__Q34nw4r3g3d7ResFileCFv();
+extern "C" void GetResAnmShp__Q34nw4r3g3d7ResFileCFPCc();
+extern "C" void GetResAnmTexPat__Q34nw4r3g3d7ResFileCFPCc();
+extern "C" void GetResAnmTexSrt__Q34nw4r3g3d7ResFileCFPCc();
+extern "C" void GetResTex__Q34nw4r3g3d7ResFileCFPCc();
+extern "C" void GetTexObjCIParam__Q34nw4r3g3d6ResTexCFPPvPUsPUsP11_GXCITexFmtPfPfPUc();
+extern "C" void GetTexObjParam__Q34nw4r3g3d6ResTexCFPPvPUsPUsP9_GXTexFmtPfPfPUc();
+extern "C" void Init__Q34nw4r3g3d7ResFileFv();
+extern "C" void Release__Q34nw4r3g3d7ResFileFv();
+extern "C" void Terminate__Q34nw4r3g3d7ResFileFv();
 extern "C" void _restgpr_29();
 extern "C" void _savegpr_29();
 extern "C" void fn_80016D48();
@@ -34,21 +49,6 @@ extern "C" void fn_800361C0();
 extern "C" void fn_800361F0();
 extern "C" void fn_80036254();
 extern "C" void fn_801A9384();
-extern "C" void GetResTex__Q34nw4r3g3d7ResFileCFPCc();
-extern "C" void GetResAnmChrNumEntries__Q34nw4r3g3d7ResFileCFv();
-extern "C" void GetResAnmTexPat__Q34nw4r3g3d7ResFileCFPCc();
-extern "C" void GetResAnmTexSrt__Q34nw4r3g3d7ResFileCFPCc();
-extern "C" void GetResAnmShp__Q34nw4r3g3d7ResFileCFPCc();
-extern "C" void Bind__Q34nw4r3g3d7ResFileFQ34nw4r3g3d7ResFile();
-extern "C" void Release__Q34nw4r3g3d7ResFileFv();
-extern "C" void Init__Q34nw4r3g3d7ResFileFv();
-extern "C" void Terminate__Q34nw4r3g3d7ResFileFv();
-extern "C" void CheckRevision__Q34nw4r3g3d7ResFileCFv();
-extern "C" void GetTexObjParam__Q34nw4r3g3d6ResTexCFPPvPUsPUsP9_GXTexFmtPfPfPUc();
-extern "C" void GetTexObjCIParam__Q34nw4r3g3d6ResTexCFPPvPUsPUsP11_GXCITexFmtPfPfPUc();
-extern "C" void GXInitTexObj();
-extern "C" void GXInitTexObjCI();
-extern "C" void GXInitTexObjLOD();
 
 // ----------------------------------------------------------------------------
 // fn_80035E80

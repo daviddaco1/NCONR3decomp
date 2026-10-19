@@ -4,12 +4,12 @@
 // Total functions: 75
 
 // Small Data symbols (@sda21)
-extern "C" u32 lbl_8049D6E0;
-extern "C" u32 lbl_8049D6E4;
-extern "C" u32 lbl_8049D6E8;
-extern "C" u32 lbl_8049D9D0;
-extern "C" u32 lbl_8049D9E0;
-extern "C" double lbl_804A0A48;
+extern "C" float lbl_8049D6E0;
+extern "C" float lbl_8049D6E4;
+extern "C" float lbl_8049D6E8;
+extern "C" float lbl_8049D9D0;
+extern "C" float lbl_8049D9E0;
+extern "C" float lbl_804A0A48;
 extern "C" float lbl_804A0A50;
 extern "C" float lbl_804A0A80;
 extern "C" float lbl_804A0A88;
@@ -660,7 +660,7 @@ extern "C" asm void fn_8012E79C() {
     li r4, 0x193
     lis r5, lbl_8034FACC@ha
     addi r5, r5, lbl_8034FACC@l
-    /* crclr cr1eq */ opword 0x4CC63182
+    opword 0x4CC63182
     bl fn_801A9384
 lbl_8012E7D8:
     mr r3, r31
@@ -704,7 +704,7 @@ extern "C" asm void fn_8012E814() {
     li r4, 0x23d
     lis r5, lbl_8034FA9C@ha
     addi r5, r5, lbl_8034FA9C@l
-    /* crclr cr1eq */ opword 0x4CC63182
+    opword 0x4CC63182
     bl fn_801A9384
 lbl_8012E84C:
     subi r3, r31, 0x4
@@ -807,11 +807,11 @@ extern "C" asm void fn_8012E91C() {
     mflr r0
     stw r0, 0x44(r1)
     stfd f31, 0x30(r1)
-    /* psq_st f31, 0x38(r1), 0, qr0 */ opword 0xF3E10038
+    opword 0xF3E10038
     stfd f30, 0x20(r1)
-    /* psq_st f30, 0x28(r1), 0, qr0 */ opword 0xF3C10028
+    opword 0xF3C10028
     stfd f29, 0x10(r1)
-    /* psq_st f29, 0x18(r1), 0, qr0 */ opword 0xF3A10018
+    opword 0xF3A10018
     stw r31, 0xc(r1)
     stw r30, 0x8(r1)
     mr r30, r3
@@ -847,13 +847,13 @@ lbl_8012E9A0:
 lbl_8012E9AC:
     fmr f1, f29
     li r0, 0x38
-    /* psq_lx f31, r1, r0, 0, qr0 */ opword 0x13E1000C
+    opword 0x13E1000C
     lfd f31, 0x30(r1)
     li r0, 0x28
-    /* psq_lx f30, r1, r0, 0, qr0 */ opword 0x13C1000C
+    opword 0x13C1000C
     lfd f30, 0x20(r1)
     li r0, 0x18
-    /* psq_lx f29, r1, r0, 0, qr0 */ opword 0x13A1000C
+    opword 0x13A1000C
     lfd f29, 0x10(r1)
     lwz r31, 0xc(r1)
     lwz r30, 0x8(r1)
@@ -2813,3 +2813,4 @@ lbl_801300E8:
     addi r1, r1, 0x50
     blr
 }
+

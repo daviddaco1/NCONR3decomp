@@ -3,10 +3,10 @@
 // Translation unit: src/gauge.cpp
 // Total functions: 87
 
-// Small Data 2 symbols (@sda21)
-extern "C" double lbl_804A10E8;
-extern "C" u32 lbl_804A10F0;
-extern "C" double lbl_804A1108;
+// Small Data symbols (@sda21)
+extern "C" float lbl_804A10E8;
+extern "C" float lbl_804A10F0;
+extern "C" float lbl_804A1108;
 extern "C" float lbl_804A1110;
 
 // Global data symbols (@ha/@l)
@@ -32,6 +32,21 @@ extern "C" u8 lbl_803D5EA0[];
 extern "C" u8 lbl_803D74A0[];
 
 // Forward declarations
+extern "C" void C_MTXOrtho();
+extern "C" void C_MTXPerspective();
+extern "C" void GXSetClipMode();
+extern "C" void GXSetCullMode();
+extern "C" void GXSetFog();
+extern "C" void GXSetProjection();
+extern "C" void GXSetZCompLoc();
+extern "C" void GXSetZMode();
+extern "C" void GetFrameSize__Q34nw4r3lyt13AnimTransformCFv();
+extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv();
+extern "C" void GetTexMapAry__Q34nw4r3lyt8MaterialCFv();
+extern "C" void GetTexMapAry__Q34nw4r3lyt8MaterialFv();
+extern "C" void SetTexCoord__Q34nw4r3lyt7PictureFUlPCQ34nw4r4math4VEC2();
+extern "C" void Set__Q34nw4r3lyt6TexMapFP10TPLPaletteUl();
+extern "C" void __ct__Q34nw4r3snd10FxReverbHiFv();
 extern "C" void _restgpr_26();
 extern "C" void _restgpr_27();
 extern "C" void _restgpr_28();
@@ -162,32 +177,17 @@ extern "C" void fn_801934F0();
 extern "C" void fn_8019353C();
 extern "C" void fn_8019356C();
 extern "C" void fn_8019358C();
-extern "C" void strcmp();
 extern "C" void fn_801A9384();
 extern "C" void fn_801F58C4();
-extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv();
 extern "C" void fn_801F7E50();
-extern "C" void SetTexCoord__Q34nw4r3lyt7PictureFUlPCQ34nw4r4math4VEC2();
-extern "C" void GetTexMapAry__Q34nw4r3lyt8MaterialCFv();
-extern "C" void GetTexMapAry__Q34nw4r3lyt8MaterialFv();
-extern "C" void Set__Q34nw4r3lyt6TexMapFP10TPLPaletteUl();
 extern "C" void fn_801FEFD8();
-extern "C" void GetFrameSize__Q34nw4r3lyt13AnimTransformCFv();
 extern "C" void fn_8020CCD4();
-extern "C" void __ct__Q34nw4r3snd10FxReverbHiFv();
 extern "C" void fn_8020D4E8();
 extern "C" void fn_8020DA30();
-extern "C" void GXSetCullMode();
 extern "C" void fn_802E4840();
-extern "C" void GXSetFog();
-extern "C" void GXSetZMode();
-extern "C" void GXSetZCompLoc();
-extern "C" void GXSetProjection();
-extern "C" void GXSetClipMode();
-extern "C" void C_MTXPerspective();
-extern "C" void C_MTXOrtho();
 extern "C" void fn_803299FC();
 extern "C" void memset();
+extern "C" void strcmp();
 
 // ----------------------------------------------------------------------------
 // dtor_80190454
@@ -733,9 +733,9 @@ extern "C" asm void fn_80190B10() {
     mflr r0
     stw r0, 0x84(r1)
     stfd f31, 0x70(r1)
-    opword 0xF3E10078 /* psq_st f31, 0x78(r1), 0, qr0 */
+    opword 0xF3E10078
     stfd f30, 0x60(r1)
-    opword 0xF3C10068 /* psq_st f30, 0x68(r1), 0, qr0 */
+    opword 0xF3C10068
     addi r11, r1, 0x60
     bl _savegpr_27
     mr r27, r3
@@ -887,10 +887,10 @@ lbl_80190D60:
     lfs f0, 0x8(r30)
     stfs f0, 0x2c(r27)
     li r0, 0x78
-    opword 0x13E1000C /* psq_lx f31, r1, r0, 0, qr0 */
+    opword 0x13E1000C
     lfd f31, 0x70(r1)
     li r0, 0x68
-    opword 0x13C1000C /* psq_lx f30, r1, r0, 0, qr0 */
+    opword 0x13C1000C
     lfd f30, 0x60(r1)
     addi r11, r1, 0x60
     bl _restgpr_27
@@ -2007,7 +2007,7 @@ extern "C" asm void fn_80191AF8() {
     mflr r0
     stw r0, 0x34(r1)
     stfd f31, 0x20(r1)
-    opword 0xF3E10028 /* psq_st f31, 0x28(r1), 0, qr0 */
+    opword 0xF3E10028
     addi r11, r1, 0x20
     bl _savegpr_29
     mr r29, r3
@@ -2042,7 +2042,7 @@ lbl_80191B34:
     la r3, lbl_804A1110
     lfs f0, 0x8(r3)
     fcmpo cr0, f1, f0
-    opword 0x4C411382 /* cror eq, gt, eq */
+    opword 0x4C411382
     beq lbl_80191BA4
     lfs f0, lbl_804A1110
     fcmpo cr0, f1, f0
@@ -2064,7 +2064,7 @@ lbl_80191BC0:
     la r3, lbl_804A1110
     lfs f0, 0x10(r3)
     fcmpo cr0, f1, f0
-    opword 0x4C411382 /* cror eq, gt, eq */
+    opword 0x4C411382
     beq lbl_80191BF4
     lfs f0, lbl_804A1110
     fcmpo cr0, f1, f0
@@ -2081,7 +2081,7 @@ lbl_80191C0C:
     bl fn_8015E6CC
     lfs f2, 0xc(r29)
     fcmpo cr0, f2, f1
-    opword 0x4C411382 /* cror eq, gt, eq */
+    opword 0x4C411382
     beq lbl_80191C30
     lfs f0, lbl_804A1110
     fcmpo cr0, f2, f0
@@ -2099,7 +2099,7 @@ lbl_80191C44:
     bl fn_80193180
 lbl_80191C54:
     li r0, 0x28
-    opword 0x13E1000C /* psq_lx f31, r1, r0, 0, qr0 */
+    opword 0x13E1000C
     lfd f31, 0x20(r1)
     addi r11, r1, 0x20
     bl _restgpr_29
@@ -2197,7 +2197,7 @@ lbl_80191DA4:
 lbl_80191DA8:
     lfs f1, 0xc(r30)
     fcmpo cr0, f1, f0
-    opword 0x4C411382 /* cror eq, gt, eq */
+    opword 0x4C411382
     beq lbl_80191DA4
     b lbl_80191EEC
 lbl_80191DBC:
@@ -2208,7 +2208,7 @@ lbl_80191DBC:
     la r3, lbl_804A1110
     lfs f0, 0x10(r3)
     fcmpo cr0, f1, f0
-    opword 0x4C411382 /* cror eq, gt, eq */
+    opword 0x4C411382
     bne lbl_80191EEC
     mr r3, r31
     lfs f1, lbl_804A1110
@@ -2228,7 +2228,7 @@ lbl_80191E10:
     bl fn_8015E6CC
     lfs f0, 0xc(r30)
     fcmpo cr0, f0, f1
-    opword 0x4C411382 /* cror eq, gt, eq */
+    opword 0x4C411382
     beq lbl_80191DFC
     b lbl_80191EEC
 lbl_80191E2C:
@@ -2236,7 +2236,7 @@ lbl_80191E2C:
     bl fn_8015E6CC
     lfs f2, 0xc(r30)
     fcmpo cr0, f2, f1
-    opword 0x4C411382 /* cror eq, gt, eq */
+    opword 0x4C411382
     beq lbl_80191E50
     lfs f0, lbl_804A1110
     fcmpo cr0, f2, f0
@@ -2249,7 +2249,7 @@ lbl_80191E50:
     stfs f0, 0xc(r30)
     b lbl_80191EEC
 lbl_80191E68:
-    opword 0x4C401382 /* cror eq, lt, eq */
+    opword 0x4C401382
     bne lbl_80191EEC
     mr r3, r31
     bl fn_8015E6CC
@@ -2275,7 +2275,7 @@ lbl_80191EBC:
     lfs f0, 0xc(r30)
     lfs f1, lbl_804A1110
     fcmpo cr0, f0, f1
-    opword 0x4C401382 /* cror eq, lt, eq */
+    opword 0x4C401382
     bne lbl_80191EEC
     mr r3, r31
     bl fn_80193180
@@ -2302,7 +2302,7 @@ extern "C" asm void fn_80191F04() {
     mflr r0
     stw r0, 0x134(r1)
     stfd f31, 0x120(r1)
-    opword 0xF3E10128 /* psq_st f31, 0x128(r1), 0, qr0 */
+    opword 0xF3E10128
     addi r11, r1, 0x120
     bl _savegpr_29
     mr r31, r3
@@ -2455,7 +2455,7 @@ lbl_801920E0:
     bl dtor_801FF04C
 lbl_80192158:
     li r0, 0x128
-    opword 0x13E1000C /* psq_lx f31, r1, r0, 0, qr0 */
+    opword 0x13E1000C
     lfd f31, 0x120(r1)
     addi r11, r1, 0x120
     bl _restgpr_29
@@ -2844,7 +2844,7 @@ extern "C" asm void fn_80192648() {
     mflr r0
     stw r0, 0x34(r1)
     stfd f31, 0x20(r1)
-    opword 0xF3E10028 /* psq_st f31, 0x28(r1), 0, qr0 */
+    opword 0xF3E10028
     stw r31, 0x1c(r1)
     stw r30, 0x18(r1)
     mr r30, r3
@@ -2883,7 +2883,7 @@ lbl_801926D0:
     bl fn_80193198
 lbl_801926E4:
     li r0, 0x28
-    opword 0x13E1000C /* psq_lx f31, r1, r0, 0, qr0 */
+    opword 0x13E1000C
     lfd f31, 0x20(r1)
     lwz r31, 0x1c(r1)
     lwz r30, 0x18(r1)
@@ -3269,13 +3269,13 @@ extern "C" asm void fn_80192BA8() {
     mflr r0
     stw r0, 0x94(r1)
     stfd f31, 0x80(r1)
-    opword 0xF3E10088 /* psq_st f31, 0x88(r1), 0, qr0 */
+    opword 0xF3E10088
     stfd f30, 0x70(r1)
-    opword 0xF3C10078 /* psq_st f30, 0x78(r1), 0, qr0 */
+    opword 0xF3C10078
     stfd f29, 0x60(r1)
-    opword 0xF3A10068 /* psq_st f29, 0x68(r1), 0, qr0 */
+    opword 0xF3A10068
     stfd f28, 0x50(r1)
-    opword 0xF3810058 /* psq_st f28, 0x58(r1), 0, qr0 */
+    opword 0xF3810058
     addi r11, r1, 0x50
     bl _savegpr_28
     mr r31, r3
@@ -3447,7 +3447,7 @@ lbl_80192E14:
     fadds f1, f0, f28
     lfs f0, lbl_804A1110
     fcmpo cr0, f1, f0
-    opword 0x4C401382 /* cror eq, lt, eq */
+    opword 0x4C401382
     bne lbl_80192E74
     stfs f0, 0x8(r1)
     mr r3, r31
@@ -3473,7 +3473,7 @@ lbl_80192E74:
 lbl_80192EB0:
     lfs f0, lbl_804A1110
     fcmpo cr0, f28, f0
-    opword 0x4C401382 /* cror eq, lt, eq */
+    opword 0x4C401382
     bne lbl_80192ED0
     stfs f0, 0x8(r1)
     mr r3, r31
@@ -3595,12 +3595,12 @@ lbl_80193064:
     la r3, lbl_804A1110
     lfs f2, 0x14(r3)
     fcmpo cr0, f3, f2
-    opword 0x4C411382 /* cror eq, gt, eq */
+    opword 0x4C411382
     beq lbl_80193094
     lfs f0, 0x30(r1)
     fadds f1, f0, f4
     fcmpo cr0, f1, f2
-    opword 0x4C411382 /* cror eq, gt, eq */
+    opword 0x4C411382
     bne lbl_801930A8
 lbl_80193094:
     la r3, lbl_804A1110
@@ -3632,7 +3632,7 @@ lbl_801930E8:
     la r3, lbl_804A1110
     lfs f0, 0x14(r3)
     fcmpo cr0, f4, f0
-    opword 0x4C411382 /* cror eq, gt, eq */
+    opword 0x4C411382
     bne lbl_80193108
     stfs f0, 0x28(r1)
     stfs f0, 0x38(r1)
@@ -3654,16 +3654,16 @@ lbl_80193128:
     bl SetTexCoord__Q34nw4r3lyt7PictureFUlPCQ34nw4r4math4VEC2
 lbl_80193138:
     li r0, 0x88
-    opword 0x13E1000C /* psq_lx f31, r1, r0, 0, qr0 */
+    opword 0x13E1000C
     lfd f31, 0x80(r1)
     li r0, 0x78
-    opword 0x13C1000C /* psq_lx f30, r1, r0, 0, qr0 */
+    opword 0x13C1000C
     lfd f30, 0x70(r1)
     li r0, 0x68
-    opword 0x13A1000C /* psq_lx f29, r1, r0, 0, qr0 */
+    opword 0x13A1000C
     lfd f29, 0x60(r1)
     li r0, 0x58
-    opword 0x1381000C /* psq_lx f28, r1, r0, 0, qr0 */
+    opword 0x1381000C
     lfd f28, 0x50(r1)
     addi r11, r1, 0x50
     bl _restgpr_28
@@ -3930,7 +3930,7 @@ extern "C" asm void fn_80193310() {
     li r4, 0x88
     lis r5, lbl_8035F5B0@ha
     addi r5, r5, lbl_8035F5B0@l
-    opword 0x4CC63182 /* crclr cr1eq */
+    opword 0x4CC63182
     bl fn_801A9384
 lbl_80193360:
     mr r3, r29
@@ -3970,7 +3970,7 @@ extern "C" asm void fn_80193394() {
     li r4, 0x79
     lis r5, lbl_8035F570@ha
     addi r5, r5, lbl_8035F570@l
-    opword 0x4CC63182 /* crclr cr1eq */
+    opword 0x4CC63182
     bl fn_801A9384
 lbl_801933E0:
     mr r3, r30
@@ -4006,7 +4006,7 @@ extern "C" asm void fn_8019340C() {
     li r4, 0x8f
     lis r5, lbl_8035F5F0@ha
     addi r5, r5, lbl_8035F5F0@l
-    opword 0x4CC63182 /* crclr cr1eq */
+    opword 0x4CC63182
     bl fn_801A9384
 lbl_80193450:
     slwi r0, r30, 3

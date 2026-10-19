@@ -12,6 +12,17 @@ extern "C" u8 lbl_803495C0[];
 
 // Forward declarations
 extern "C" void DCInvalidateRange();
+extern "C" void GXGetTexObjData();
+extern "C" void GXGetTexObjFmt();
+extern "C" void GXGetTexObjHeight();
+extern "C" void GXGetTexObjWidth();
+extern "C" void LogMsg();
+extern "C" void SetPerspective__Q34nw4r3g3d6CameraFffff();
+extern "C" void SetPosition__Q34nw4r3g3d6CameraFRCQ34nw4r4math4VEC3();
+extern "C" void SetPosture__Q34nw4r3g3d6CameraFRCQ44nw4r3g3d6Camera11PostureInfo();
+extern "C" void SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl();
+extern "C" void SetViewport__Q34nw4r3g3d6CameraFffff();
+extern "C" void __ct__Q34nw4r3g3d6CameraFPQ34nw4r3g3d10CameraData();
 extern "C" void _restgpr_28();
 extern "C" void _restgpr_29();
 extern "C" void _savegpr_28();
@@ -26,17 +37,6 @@ extern "C" void fn_80048908();
 extern "C" void fn_80048A64();
 extern "C" void fn_80048A88();
 extern "C" void fn_801A9384();
-extern "C" void __ct__Q34nw4r3g3d6CameraFPQ34nw4r3g3d10CameraData();
-extern "C" void SetPosition__Q34nw4r3g3d6CameraFRCQ34nw4r4math4VEC3();
-extern "C" void SetPosture__Q34nw4r3g3d6CameraFRCQ44nw4r3g3d6Camera11PostureInfo();
-extern "C" void LogMsg();
-extern "C" void SetPerspective__Q34nw4r3g3d6CameraFffff();
-extern "C" void SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl();
-extern "C" void SetViewport__Q34nw4r3g3d6CameraFffff();
-extern "C" void GXGetTexObjData();
-extern "C" void GXGetTexObjWidth();
-extern "C" void GXGetTexObjHeight();
-extern "C" void GXGetTexObjFmt();
 
 // ----------------------------------------------------------------------------
 // fn_8004875C

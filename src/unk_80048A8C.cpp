@@ -12,6 +12,12 @@ extern "C" u8 lbl_80349718[];
 extern "C" u8 lbl_803C22B0[];
 
 // Forward declarations
+extern "C" void Attach__Q34nw4r3lyt19ArcResourceAccessorFPvPCc();
+extern "C" void __ct__Q34nw4r3lyt19ArcResourceAccessorFv();
+extern "C" void __ct__Q34nw4r3lyt6LayoutFv();
+extern "C" void __dt__Q34nw4r3lyt16ResourceAccessorFv();
+extern "C" void __dt__Q44nw4r2ut6detail12LinkListImplFv();
+extern "C" void __throw();
 extern "C" void _restgpr_28();
 extern "C" void _restgpr_29();
 extern "C" void _savegpr_28();
@@ -30,12 +36,6 @@ extern "C" void fn_80048EF0();
 extern "C" void fn_80170E84();
 extern "C" void fn_80186808();
 extern "C" void fn_80186C78();
-extern "C" void __throw();
-extern "C" void __ct__Q34nw4r3lyt6LayoutFv();
-extern "C" void __dt__Q34nw4r3lyt16ResourceAccessorFv();
-extern "C" void __ct__Q34nw4r3lyt19ArcResourceAccessorFv();
-extern "C" void Attach__Q34nw4r3lyt19ArcResourceAccessorFPvPCc();
-extern "C" void __dt__Q44nw4r2ut6detail12LinkListImplFv();
 extern "C" void fn_8030C61C();
 extern "C" void fn_8030CAF0();
 extern "C" void fn_8030CB00();

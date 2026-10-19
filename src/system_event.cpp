@@ -24,6 +24,7 @@ extern "C" u8 lbl_803907A8[];
 extern "C" u8 lbl_80395728[];
 
 // Forward declarations
+extern "C" void Atan2FIdx__Q24nw4r4mathFff();
 extern "C" void _restgpr_23();
 extern "C" void _restgpr_25();
 extern "C" void _restgpr_26();
@@ -117,7 +118,6 @@ extern "C" void fn_80182744();
 extern "C" void fn_8018D080();
 extern "C" void fn_8018D0D0();
 extern "C" void fn_8018D0EC();
-extern "C" void Atan2FIdx__Q24nw4r4mathFff();
 
 // ----------------------------------------------------------------------------
 // fn_800632E0

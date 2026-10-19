@@ -18,6 +18,7 @@ extern "C" u8 lbl_8039A0D0[];
 extern "C" u8 lbl_803C1A40[];
 
 // Forward declarations
+extern "C" void __construct_array();
 extern "C" void _restgpr_25();
 extern "C" void _restgpr_28();
 extern "C" void _restgpr_29();
@@ -70,7 +71,6 @@ extern "C" void fn_80096310();
 extern "C" void fn_80096328();
 extern "C" void fn_8018DC20();
 extern "C" void fn_8018DCA4();
-extern "C" void __construct_array();
 extern "C" void fn_801A9384();
 extern "C" void fn_801D7B54();
 extern "C" void memset();

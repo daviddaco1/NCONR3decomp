@@ -17,6 +17,20 @@ extern "C" u8 lbl_8035EB18[];
 extern "C" u8 lbl_803C22B0[];
 
 // Forward declarations
+extern "C" void GXGetVtxAttrFmtv();
+extern "C" void GXGetVtxDescv();
+extern "C" void GXSetLineWidth();
+extern "C" void GXSetVtxAttrFmtv();
+extern "C" void GXSetVtxDescv();
+extern "C" void GetCameraMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX34();
+extern "C" void GetCurrentCamera__Q34nw4r3g3d7ScnRootFv();
+extern "C" void GetResMdlNumEntries__Q34nw4r3g3d7ResFileCFv();
+extern "C" void GetResMdl__Q34nw4r3g3d7ResFileCFi();
+extern "C" void GetResNode__Q34nw4r3g3d6ResMdlCFi();
+extern "C" void PSMTXInverse();
+extern "C" void SetCurrentCamera__Q34nw4r3g3d7ScnRootFi();
+extern "C" void SetPriorityDrawOpa__Q34nw4r3g3d6ScnObjFi();
+extern "C" void SetPriorityDrawXlu__Q34nw4r3g3d6ScnObjFi();
 extern "C" void _restgpr_22();
 extern "C" void _restgpr_28();
 extern "C" void _restgpr_29();
@@ -112,21 +126,7 @@ extern "C" void fn_80186078();
 extern "C" void fn_80186638();
 extern "C" void fn_80190874();
 extern "C" void fn_801A9384();
-extern "C" void GetResMdl__Q34nw4r3g3d7ResFileCFi();
-extern "C" void GetResMdlNumEntries__Q34nw4r3g3d7ResFileCFv();
-extern "C" void GetResNode__Q34nw4r3g3d6ResMdlCFi();
-extern "C" void GetCameraMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX34();
-extern "C" void SetPriorityDrawOpa__Q34nw4r3g3d6ScnObjFi();
-extern "C" void SetPriorityDrawXlu__Q34nw4r3g3d6ScnObjFi();
-extern "C" void GetCurrentCamera__Q34nw4r3g3d7ScnRootFv();
-extern "C" void SetCurrentCamera__Q34nw4r3g3d7ScnRootFi();
-extern "C" void GXSetVtxDescv();
-extern "C" void GXGetVtxDescv();
-extern "C" void GXSetVtxAttrFmtv();
-extern "C" void GXGetVtxAttrFmtv();
-extern "C" void GXSetLineWidth();
 extern "C" void fn_802E1D14();
-extern "C" void PSMTXInverse();
 
 // ----------------------------------------------------------------------------
 // fn_80033A0C

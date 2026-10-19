@@ -4,12 +4,12 @@
 // Total functions: 47
 
 // Small Data symbols (@sda21)
-extern "C" u32 lbl_8049D6B0;
-extern "C" u32 lbl_8049D6B8;
-extern "C" u32 lbl_8049D6BC;
+extern "C" float lbl_8049D6B0;
+extern "C" float lbl_8049D6B8;
+extern "C" float lbl_8049D6BC;
 extern "C" float lbl_804A0868;
-extern "C" double lbl_804A0870;
-extern "C" double lbl_804A0878;
+extern "C" float lbl_804A0870;
+extern "C" float lbl_804A0878;
 extern "C" float lbl_804A0880;
 
 // Global data symbols (@ha/@l)
@@ -48,6 +48,7 @@ extern "C" u8 lbl_803BE030[];
 extern "C" u8 lbl_803C1A40[];
 
 // Forward declarations
+extern "C" void __cvt_fp2unsigned();
 extern "C" void _restgpr_16();
 extern "C" void _restgpr_23();
 extern "C" void _restgpr_24();
@@ -169,17 +170,53 @@ extern "C" void fn_80112274();
 extern "C" void fn_801122EC();
 extern "C" void fn_801125F4();
 extern "C" void fn_80112864();
+extern "C" void fn_801131D8();
+extern "C" void fn_80113228();
+extern "C" void fn_80113270();
+extern "C" void fn_801132CC();
+extern "C" void fn_80113348();
+extern "C" void fn_80113384();
+extern "C" void fn_801133A4();
+extern "C" void fn_801133B0();
+extern "C" void fn_801133BC();
+extern "C" void fn_801133CC();
+extern "C" void fn_801133E4();
+extern "C" void fn_80113608();
 extern "C" void fn_8011371C();
 extern "C" void fn_8011385C();
 extern "C" void fn_80113A68();
 extern "C" void fn_80113D58();
 extern "C" void fn_80113DE0();
 extern "C" void fn_8011406C();
+extern "C" void fn_80114598();
 extern "C" void fn_80114A3C();
+extern "C" void fn_80114A64();
+extern "C" void fn_80114CE8();
+extern "C" void fn_80114CF0();
+extern "C" void fn_80114FE0();
+extern "C" void fn_80115250();
+extern "C" void fn_801156B8();
+extern "C" void fn_80115B94();
+extern "C" void fn_80115E18();
+extern "C" void fn_801163D0();
+extern "C" void fn_801164AC();
+extern "C" void fn_80116804();
+extern "C" void fn_80116BA0();
+extern "C" void fn_80116E94();
+extern "C" void fn_80117584();
+extern "C" void fn_80117D20();
+extern "C" void fn_8011865C();
+extern "C" void fn_801190E8();
 extern "C" void fn_80119EF4();
+extern "C" void fn_8011A060();
+extern "C" void fn_8011D9E4();
+extern "C" void fn_8011E738();
+extern "C" void fn_8011F188();
 extern "C" void fn_8011F190();
 extern "C" void fn_8011F1C4();
 extern "C" void fn_8011F208();
+extern "C" void fn_8011F278();
+extern "C" void fn_8011F2E4();
 extern "C" void fn_8011FD98();
 extern "C" void fn_8011FDDC();
 extern "C" void fn_80122E1C();
@@ -229,7 +266,6 @@ extern "C" void fn_8018C434();
 extern "C" void fn_8018ECA0();
 extern "C" void fn_8018ED80();
 extern "C" void fn_8018EEC0();
-extern "C" void __cvt_fp2unsigned();
 extern "C" void fn_801A3278();
 extern "C" void fn_801A9384();
 extern "C" void fn_802016BC();

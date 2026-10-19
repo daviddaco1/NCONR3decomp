@@ -4,11 +4,11 @@
 // Total functions: 24
 
 // Small Data symbols (@sda21)
-extern "C" u32 lbl_8049D6C0;
-extern "C" u32 lbl_8049D6C4;
-extern "C" u32 lbl_8049D6C8;
-extern "C" u32 lbl_8049D6CC;
-extern "C" u32 lbl_8049E180;
+extern "C" float lbl_8049D6C0;
+extern "C" float lbl_8049D6C4;
+extern "C" float lbl_8049D6C8;
+extern "C" float lbl_8049D6CC;
+extern "C" float lbl_8049E180;
 extern "C" float lbl_804A08E8;
 
 // Global data symbols (@ha/@l)
@@ -23,6 +23,11 @@ extern "C" u8 lbl_803C1A40[];
 // Forward declarations
 extern "C" void DCFlushRange();
 extern "C" void DCInvalidateRange();
+extern "C" void GDFlushCurrToMem();
+extern "C" void GDInitGDLObj();
+extern "C" void GDOverflowed();
+extern "C" void GDPadCurr32();
+extern "C" void GXCallDisplayList();
 extern "C" void _restgpr_24();
 extern "C" void _restgpr_25();
 extern "C" void _savegpr_24();
@@ -57,15 +62,10 @@ extern "C" void fn_801222CC();
 extern "C" void fn_80122330();
 extern "C" void fn_80170DFC();
 extern "C" void fn_801A9384();
-extern "C" void GDInitGDLObj();
-extern "C" void GDFlushCurrToMem();
-extern "C" void GDPadCurr32();
-extern "C" void GDOverflowed();
 extern "C" void fn_802DD228();
 extern "C" void fn_802DD804();
 extern "C" void fn_802DDE28();
 extern "C" void fn_802DE02C();
-extern "C" void GXCallDisplayList();
 extern "C" void fn_803150C4();
 
 // ----------------------------------------------------------------------------

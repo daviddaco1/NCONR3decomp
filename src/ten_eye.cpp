@@ -4,16 +4,15 @@
 // Total functions: 3
 
 // Forward declarations
-extern "C" void _savegpr_29();
 extern "C" void _restgpr_29();
-extern "C" void memset(void*, int, size_t);
+extern "C" void _savegpr_29();
 extern "C" void fn_800F5B14();
 extern "C" void fn_800F5B78();
-extern "C" void fn_80170E2C();
-
 extern "C" void fn_80106514();
 extern "C" void fn_8010651C();
 extern "C" void fn_801065C4();
+extern "C" void fn_80170E2C();
+extern "C" void memset();
 
 // ----------------------------------------------------------------------------
 // fn_80106514
@@ -85,3 +84,4 @@ extern "C" asm void fn_801065C4() {
     li r3, 0x1
     blr
 }
+

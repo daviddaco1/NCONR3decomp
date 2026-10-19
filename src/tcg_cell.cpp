@@ -4,13 +4,13 @@
 // Total functions: 183
 
 // Small Data symbols (@sda21)
-extern "C" u32 lbl_8049D6D8;
-extern "C" u32 lbl_8049D758;
-extern "C" double lbl_804A0960;
-extern "C" double lbl_804A0968;
+extern "C" float lbl_8049D6D8;
+extern "C" float lbl_8049D758;
+extern "C" float lbl_804A0960;
+extern "C" float lbl_804A0968;
 extern "C" float lbl_804A0970;
-extern "C" double lbl_804A09C0;
-extern "C" double lbl_804A09C8;
+extern "C" float lbl_804A09C0;
+extern "C" float lbl_804A09C8;
 extern "C" float lbl_804A09D0;
 
 // Global data symbols (@ha/@l)
@@ -26,6 +26,8 @@ extern "C" u8 lbl_803C1A40[];
 extern "C" u8 lbl_803C22B0[];
 
 // Forward declarations
+extern "C" void C_MTXLookAt();
+extern "C" void __cvt_fp2unsigned();
 extern "C" void _restgpr_22();
 extern "C" void _restgpr_24();
 extern "C" void _restgpr_25();
@@ -309,9 +311,7 @@ extern "C" void fn_8017B074();
 extern "C" void fn_80182080();
 extern "C" void fn_8018CFCC();
 extern "C" void fn_8018D00C();
-extern "C" void __cvt_fp2unsigned();
 extern "C" void fn_801A9384();
-extern "C" void C_MTXLookAt();
 extern "C" void memcpy();
 extern "C" void memset();
 
@@ -456,7 +456,7 @@ extern "C" asm void fn_80127470() {
     addi r3, r3, lbl_8034F9A0@l
     li r4, 0x10d
     addi r5, r3, 0xb
-    /* crclr cr1eq */ opword 0x4CC63182
+    opword 0x4CC63182
     bl fn_801A9384
 lbl_801274CC:
     mr r3, r30
@@ -502,7 +502,7 @@ extern "C" asm void fn_8012750C() {
     addi r3, r3, lbl_8034F9A0@l
     li r4, 0x12d
     addi r5, r3, 0x2c
-    /* crclr cr1eq */ opword 0x4CC63182
+    opword 0x4CC63182
     bl fn_801A9384
 lbl_80127564:
     stw r31, 0xc(r30)
@@ -1224,7 +1224,7 @@ extern "C" asm void fn_80127E7C() {
     stfs f2, 0x18(r4)
     lfs f1, 0x10(r4)
     fcmpo cr0, f2, f1
-    /* cror eq, lt, eq */ opword 0x4C401382
+    opword 0x4C401382
     bne lbl_80127ED8
     lfs f0, 0x14(r4)
     fsubs f0, f0, f1
@@ -1426,9 +1426,9 @@ extern "C" asm void fn_8012813C() {
     mflr r0
     stw r0, 0x44(r1)
     stfd f31, 0x30(r1)
-    /* psq_st f31, 0x38(r1), 0, qr0 */ opword 0xF3E10038
+    opword 0xF3E10038
     stfd f30, 0x20(r1)
-    /* psq_st f30, 0x28(r1), 0, qr0 */ opword 0xF3C10028
+    opword 0xF3C10028
     stw r31, 0x1c(r1)
     mr r31, r4
     lwz r3, 0x8(r4)
@@ -1504,10 +1504,10 @@ lbl_80128240:
     stfs f0, 0x18(r31)
 lbl_80128268:
     li r0, 0x38
-    /* psq_lx f31, r1, r0, 0, qr0 */ opword 0x13E1000C
+    opword 0x13E1000C
     lfd f31, 0x30(r1)
     li r0, 0x28
-    /* psq_lx f30, r1, r0, 0, qr0 */ opword 0x13C1000C
+    opword 0x13C1000C
     lfd f30, 0x20(r1)
     lwz r31, 0x1c(r1)
     lwz r0, 0x44(r1)
@@ -1525,9 +1525,9 @@ extern "C" asm void fn_80128294() {
     mflr r0
     stw r0, 0x44(r1)
     stfd f31, 0x30(r1)
-    /* psq_st f31, 0x38(r1), 0, qr0 */ opword 0xF3E10038
+    opword 0xF3E10038
     stfd f30, 0x20(r1)
-    /* psq_st f30, 0x28(r1), 0, qr0 */ opword 0xF3C10028
+    opword 0xF3C10028
     stw r31, 0x1c(r1)
     mr r31, r4
     lwz r3, 0x8(r4)
@@ -1574,10 +1574,10 @@ lbl_80128348:
     stw r0, 0x0(r4)
 lbl_80128354:
     li r0, 0x38
-    /* psq_lx f31, r1, r0, 0, qr0 */ opword 0x13E1000C
+    opword 0x13E1000C
     lfd f31, 0x30(r1)
     li r0, 0x28
-    /* psq_lx f30, r1, r0, 0, qr0 */ opword 0x13C1000C
+    opword 0x13C1000C
     lfd f30, 0x20(r1)
     lwz r31, 0x1c(r1)
     lwz r0, 0x44(r1)
@@ -4527,13 +4527,13 @@ extern "C" asm void fn_8012A9A4() {
     mflr r0
     stw r0, 0x64(r1)
     stfd f31, 0x50(r1)
-    /* psq_st f31, 0x58(r1), 0, qr0 */ opword 0xF3E10058
+    opword 0xF3E10058
     stfd f30, 0x40(r1)
-    /* psq_st f30, 0x48(r1), 0, qr0 */ opword 0xF3C10048
+    opword 0xF3C10048
     stfd f29, 0x30(r1)
-    /* psq_st f29, 0x38(r1), 0, qr0 */ opword 0xF3A10038
+    opword 0xF3A10038
     stfd f28, 0x20(r1)
-    /* psq_st f28, 0x28(r1), 0, qr0 */ opword 0xF3810028
+    opword 0xF3810028
     stw r31, 0x1c(r1)
     mr r31, r3
     fmr f28, f1
@@ -4575,16 +4575,16 @@ extern "C" asm void fn_8012A9A4() {
     bl fn_8012A974
 lbl_8012AA6C:
     li r0, 0x58
-    /* psq_lx f31, r1, r0, 0, qr0 */ opword 0x13E1000C
+    opword 0x13E1000C
     lfd f31, 0x50(r1)
     li r0, 0x48
-    /* psq_lx f30, r1, r0, 0, qr0 */ opword 0x13C1000C
+    opword 0x13C1000C
     lfd f30, 0x40(r1)
     li r0, 0x38
-    /* psq_lx f29, r1, r0, 0, qr0 */ opword 0x13A1000C
+    opword 0x13A1000C
     lfd f29, 0x30(r1)
     li r0, 0x28
-    /* psq_lx f28, r1, r0, 0, qr0 */ opword 0x1381000C
+    opword 0x1381000C
     lfd f28, 0x20(r1)
     lwz r31, 0x1c(r1)
     lwz r0, 0x64(r1)
@@ -6615,9 +6615,9 @@ extern "C" asm void fn_8012BF7C() {
     mflr r0
     stw r0, 0x144(r1)
     stfd f31, 0x130(r1)
-    /* psq_st f31, 0x138(r1), 0, qr0 */ opword 0xF3E10138
+    opword 0xF3E10138
     stfd f30, 0x120(r1)
-    /* psq_st f30, 0x128(r1), 0, qr0 */ opword 0xF3C10128
+    opword 0xF3C10128
     addi r11, r1, 0x120
     bl _savegpr_24
     mr r31, r3
@@ -6784,10 +6784,10 @@ lbl_8012C208:
     bne lbl_8012C034
 lbl_8012C218:
     li r0, 0x138
-    /* psq_lx f31, r1, r0, 0, qr0 */ opword 0x13E1000C
+    opword 0x13E1000C
     lfd f31, 0x130(r1)
     li r0, 0x128
-    /* psq_lx f30, r1, r0, 0, qr0 */ opword 0x13C1000C
+    opword 0x13C1000C
     lfd f30, 0x120(r1)
     addi r11, r1, 0x120
     bl _restgpr_24
@@ -6855,7 +6855,7 @@ lbl_8012C290:
     bge lbl_8012C35C
     lfs f0, 0x8(r31)
     fcmpo cr0, f1, f0
-    /* cror eq, lt, eq */ opword 0x4C401382
+    opword 0x4C401382
     bne lbl_8012C328
     li r29, -0x100
     b lbl_8012C360
@@ -6921,9 +6921,9 @@ extern "C" asm void fn_8012C3C0() {
     mflr r0
     stw r0, 0x544(r1)
     stfd f31, 0x530(r1)
-    /* psq_st f31, 0x538(r1), 0, qr0 */ opword 0xF3E10538
+    opword 0xF3E10538
     stfd f30, 0x520(r1)
-    /* psq_st f30, 0x528(r1), 0, qr0 */ opword 0xF3C10528
+    opword 0xF3C10528
     addi r11, r1, 0x520
     bl _savegpr_22
     mr r31, r3
@@ -7252,10 +7252,10 @@ lbl_8012C890:
     bne lbl_8012C6BC
 lbl_8012C8A0:
     li r0, 0x538
-    /* psq_lx f31, r1, r0, 0, qr0 */ opword 0x13E1000C
+    opword 0x13E1000C
     lfd f31, 0x530(r1)
     li r0, 0x528
-    /* psq_lx f30, r1, r0, 0, qr0 */ opword 0x13C1000C
+    opword 0x13C1000C
     lfd f30, 0x520(r1)
     addi r11, r1, 0x520
     bl _restgpr_22
@@ -7282,21 +7282,21 @@ extern "C" asm void fn_8012C8D4() {
     mflr r0
     stw r0, 0x1b4(r1)
     stfd f31, 0x1a0(r1)
-    /* psq_st f31, 0x1a8(r1), 0, qr0 */ opword 0xF3E101A8
+    opword 0xF3E101A8
     stfd f30, 0x190(r1)
-    /* psq_st f30, 0x198(r1), 0, qr0 */ opword 0xF3C10198
+    opword 0xF3C10198
     stfd f29, 0x180(r1)
-    /* psq_st f29, 0x188(r1), 0, qr0 */ opword 0xF3A10188
+    opword 0xF3A10188
     stfd f28, 0x170(r1)
-    /* psq_st f28, 0x178(r1), 0, qr0 */ opword 0xF3810178
+    opword 0xF3810178
     stfd f27, 0x160(r1)
-    /* psq_st f27, 0x168(r1), 0, qr0 */ opword 0xF3610168
+    opword 0xF3610168
     stfd f26, 0x150(r1)
-    /* psq_st f26, 0x158(r1), 0, qr0 */ opword 0xF3410158
+    opword 0xF3410158
     stfd f25, 0x140(r1)
-    /* psq_st f25, 0x148(r1), 0, qr0 */ opword 0xF3210148
+    opword 0xF3210148
     stfd f24, 0x130(r1)
-    /* psq_st f24, 0x138(r1), 0, qr0 */ opword 0xF3010138
+    opword 0xF3010138
     addi r11, r1, 0x130
     bl _savegpr_25
     mr r29, r3
@@ -7527,28 +7527,28 @@ lbl_8012CC64:
     cmpwi r30, 0x0
     bge lbl_8012CA74
     li r0, 0x1a8
-    /* psq_lx f31, r1, r0, 0, qr0 */ opword 0x13E1000C
+    opword 0x13E1000C
     lfd f31, 0x1a0(r1)
     li r0, 0x198
-    /* psq_lx f30, r1, r0, 0, qr0 */ opword 0x13C1000C
+    opword 0x13C1000C
     lfd f30, 0x190(r1)
     li r0, 0x188
-    /* psq_lx f29, r1, r0, 0, qr0 */ opword 0x13A1000C
+    opword 0x13A1000C
     lfd f29, 0x180(r1)
     li r0, 0x178
-    /* psq_lx f28, r1, r0, 0, qr0 */ opword 0x1381000C
+    opword 0x1381000C
     lfd f28, 0x170(r1)
     li r0, 0x168
-    /* psq_lx f27, r1, r0, 0, qr0 */ opword 0x1361000C
+    opword 0x1361000C
     lfd f27, 0x160(r1)
     li r0, 0x158
-    /* psq_lx f26, r1, r0, 0, qr0 */ opword 0x1341000C
+    opword 0x1341000C
     lfd f26, 0x150(r1)
     li r0, 0x148
-    /* psq_lx f25, r1, r0, 0, qr0 */ opword 0x1321000C
+    opword 0x1321000C
     lfd f25, 0x140(r1)
     li r0, 0x138
-    /* psq_lx f24, r1, r0, 0, qr0 */ opword 0x1301000C
+    opword 0x1301000C
     lfd f24, 0x130(r1)
     addi r11, r1, 0x130
     bl _restgpr_25
@@ -9115,3 +9115,4 @@ lbl_8012E250:
     addi r1, r1, 0x30
     blr
 }
+

@@ -20,10 +20,14 @@ def obj_path(split):
 def patched(t0, rows, mw):
     t = t0
     for split, src, cflags in rows:
-        a = f'AsmObject("{split}")'
-        assert t.count(a) == 1, a
-        t = t.replace(a, f'Object(NonMatching, "{split}", src_dir="libs", source="{src}", '
-                         f'cflags={cflags}, mw_version="{mw}")')
+        new = (f'Object(NonMatching, "{split}", src_dir="libs", source="{src}", '
+               f'cflags={cflags}, mw_version="{mw}")')
+        for a in (f'AsmObject("{split}")', f'Object(NonMatching, "{split}")'):
+            if t.count(a) == 1:
+                t = t.replace(a, new)
+                break
+        else:
+            raise SystemExit(f'no encuentro el objeto {split} en configure.py')
     return t
 
 

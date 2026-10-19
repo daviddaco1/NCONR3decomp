@@ -19,6 +19,7 @@ extern "C" u8 lbl_80395728[];
 extern "C" u8 lbl_803C1A40[];
 
 // Forward declarations
+extern "C" void PSQUATScale();
 extern "C" void _restgpr_25();
 extern "C" void _restgpr_27();
 extern "C" void _restgpr_28();
@@ -107,7 +108,6 @@ extern "C" void fn_80182518();
 extern "C" void fn_80182744();
 extern "C" void fn_80183D68();
 extern "C" void fn_8018EEC0();
-extern "C" void PSQUATScale();
 extern "C" void fn_8030DE44();
 
 // ----------------------------------------------------------------------------

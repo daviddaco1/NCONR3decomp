@@ -3,8 +3,6 @@
 // Translation unit: src/kbt_eye.cpp
 // Total functions: 3
 
-// Global data symbols (@ha/@l)
-
 // Forward declarations
 extern "C" void _restgpr_29();
 extern "C" void _savegpr_29();
@@ -86,3 +84,4 @@ extern "C" asm void fn_800DF930() {
     li r3, 0x1
     blr
 }
+

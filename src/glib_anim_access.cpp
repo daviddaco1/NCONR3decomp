@@ -24,6 +24,19 @@ extern "C" u8 lbl_80346D78[];
 extern "C" u8 lbl_803C22B0[];
 
 // Forward declarations
+extern "C" void GetResAnmChrNumEntries__Q34nw4r3g3d7ResFileCFv();
+extern "C" void GetResAnmChr__Q34nw4r3g3d7ResFileCFi();
+extern "C" void GetResAnmClr__Q34nw4r3g3d7ResFileCFPCc();
+extern "C" void GetResAnmClr__Q34nw4r3g3d7ResFileCFi();
+extern "C" void GetResAnmScn__Q34nw4r3g3d7ResFileCFPCc();
+extern "C" void GetResAnmShp__Q34nw4r3g3d7ResFileCFPCc();
+extern "C" void GetResAnmShp__Q34nw4r3g3d7ResFileCFi();
+extern "C" void GetResAnmTexPat__Q34nw4r3g3d7ResFileCFPCc();
+extern "C" void GetResAnmTexSrt__Q34nw4r3g3d7ResFileCFPCc();
+extern "C" void GetResAnmTexSrt__Q34nw4r3g3d7ResFileCFi();
+extern "C" void GetResMdlNumEntries__Q34nw4r3g3d7ResFileCFv();
+extern "C" void GetResMdl__Q34nw4r3g3d7ResFileCFi();
+extern "C" void PSMTXIdentity();
 extern "C" void _restgpr_26();
 extern "C" void _restgpr_27();
 extern "C" void _restgpr_29();
@@ -127,23 +140,10 @@ extern "C" void fn_8002EB6C();
 extern "C" void fn_8002EC5C();
 extern "C" void fn_80033A08();
 extern "C" void fn_801A9384();
-extern "C" void GetResMdl__Q34nw4r3g3d7ResFileCFi();
-extern "C" void GetResMdlNumEntries__Q34nw4r3g3d7ResFileCFv();
-extern "C" void GetResAnmChr__Q34nw4r3g3d7ResFileCFi();
-extern "C" void GetResAnmChrNumEntries__Q34nw4r3g3d7ResFileCFv();
-extern "C" void GetResAnmClr__Q34nw4r3g3d7ResFileCFi();
-extern "C" void GetResAnmClr__Q34nw4r3g3d7ResFileCFPCc();
 extern "C" void fn_801CF410();
-extern "C" void GetResAnmTexPat__Q34nw4r3g3d7ResFileCFPCc();
 extern "C" void fn_801CF514();
-extern "C" void GetResAnmTexSrt__Q34nw4r3g3d7ResFileCFPCc();
 extern "C" void fn_801CF618();
-extern "C" void GetResAnmShp__Q34nw4r3g3d7ResFileCFPCc();
-extern "C" void GetResAnmShp__Q34nw4r3g3d7ResFileCFi();
-extern "C" void GetResAnmScn__Q34nw4r3g3d7ResFileCFPCc();
-extern "C" void GetResAnmTexSrt__Q34nw4r3g3d7ResFileCFi();
 extern "C" void fn_801CF9BC();
-extern "C" void PSMTXIdentity();
 
 // ----------------------------------------------------------------------------
 // fn_80029934

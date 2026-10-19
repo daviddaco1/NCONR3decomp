@@ -4,8 +4,8 @@
 // Total functions: 1
 
 // Forward declarations
-void ldexp();
-void nan();
+extern void ldexp();
+extern void nan();
 
 // ----------------------------------------------------------------------------
 // nan

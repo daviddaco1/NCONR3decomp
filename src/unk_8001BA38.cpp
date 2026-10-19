@@ -18,6 +18,14 @@ extern "C" u8 lbl_803C1A40[];
 extern "C" u8 lbl_803C22B0[];
 
 // Forward declarations
+extern "C" void FrSqrt__Q24nw4r4mathFf();
+extern "C" void GXBegin();
+extern "C" void GXClearVtxDesc();
+extern "C" void GXGetProjectionv();
+extern "C" void GXGetViewportv();
+extern "C" void GXLoadTexObj();
+extern "C" void GXSetVtxAttrFmt();
+extern "C" void GXSetVtxDesc();
 extern "C" void _restgpr_16();
 extern "C" void _restgpr_18();
 extern "C" void _restgpr_26();
@@ -75,14 +83,6 @@ extern "C" void fn_8017776C();
 extern "C" void fn_8017B004();
 extern "C" void fn_8017B144();
 extern "C" void fn_801A9418();
-extern "C" void FrSqrt__Q24nw4r4mathFf();
-extern "C" void GXSetVtxDesc();
-extern "C" void GXClearVtxDesc();
-extern "C" void GXSetVtxAttrFmt();
-extern "C" void GXBegin();
-extern "C" void GXLoadTexObj();
-extern "C" void GXGetProjectionv();
-extern "C" void GXGetViewportv();
 extern "C" void fn_8030E000();
 extern "C" void memset();
 
