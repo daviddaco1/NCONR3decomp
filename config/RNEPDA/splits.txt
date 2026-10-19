@@ -13,6 +13,349 @@ Sections:
 	.sdata2     type:rodata align:4
 	.sbss2      type:bss align:32
 
+glib_g3d.cpp:
+	extab       start:0x800066A0 end:0x80006748
+	extabindex  start:0x8000D220 end:0x8000D31C
+	.text       start:0x80016340 end:0x80018C4C
+	.sdata2     start:0x8049E600 end:0x8049E640
+
+glib_draw.cpp:
+	extab       start:0x80006748 end:0x80006790
+	extabindex  start:0x8000D31C end:0x8000D388
+	.text       start:0x80018C4C end:0x80019E50
+	.sdata2     start:0x8049E640 end:0x8049E668
+
+zko_eye.cpp:
+	extab       start:0x800083CC end:0x800083F4
+	extabindex  start:0x8000F518 end:0x8000F554
+	.text       start:0x80050548 end:0x800515E0
+
+sin_eye.cpp:
+	extab       start:0x800083F4 end:0x8000842C
+	extabindex  start:0x8000F554 end:0x8000F5A8
+	.text       start:0x800515E0 end:0x800543C4
+
+fth_eye.cpp:
+	extab       start:0x8000842C end:0x8000844C
+	extabindex  start:0x8000F5A8 end:0x8000F5D8
+	.text       start:0x800543C4 end:0x80054EF0
+
+kkz_eye.cpp:
+	extab       start:0x8000844C end:0x80008464
+	extabindex  start:0x8000F5D8 end:0x8000F5FC
+	.text       start:0x80054EF0 end:0x800554A4
+
+main.cpp:
+	extab       start:0x80008464 end:0x80008474
+	extabindex  start:0x8000F5FC end:0x8000F614
+	.text       start:0x800554A4 end:0x800576D0
+
+main_sub.cpp:
+	extab       start:0x80008474 end:0x80008554
+	extabindex  start:0x8000F614 end:0x8000F764
+	.text       start:0x800576D0 end:0x8005AD48
+	.sdata2     start:0x8049ED48 end:0x8049ED98
+
+system.cpp:
+	extab       start:0x80008554 end:0x800085F4
+	extabindex  start:0x8000F764 end:0x8000F854
+	.text       start:0x8005AD48 end:0x8005D830
+	.ctors      start:0x803394C8 end:0x803394CC
+
+system_sub.cpp:
+	extab       start:0x800085F4 end:0x8000868C
+	extabindex  start:0x8000F854 end:0x8000F938
+	.text       start:0x8005D830 end:0x80060320
+	.sdata2     start:0x8049ED98 end:0x8049EDA0
+
+system_task.cpp:
+	extab       start:0x8000868C end:0x80008734
+	extabindex  start:0x8000F938 end:0x8000FA34
+	.text       start:0x80060320 end:0x800632E0
+	.sdata2     start:0x8049EDA0 end:0x8049EE40
+
+system_event.cpp:
+	extab       start:0x80008734 end:0x800087E4
+	extabindex  start:0x8000FA34 end:0x8000FB3C
+	.text       start:0x800632E0 end:0x80067B60
+	.sdata2     start:0x8049EE40 end:0x8049EED0
+
+system_render.cpp:
+	extab       start:0x800087E4 end:0x8000887C
+	extabindex  start:0x8000FB3C end:0x8000FC20
+	.text       start:0x80067B60 end:0x80069590
+
+system_proc.cpp:
+	extab       start:0x8000887C end:0x80008954
+	extabindex  start:0x8000FC20 end:0x8000FD64
+	.text       start:0x80069590 end:0x8006EEA8
+	.sdata2     start:0x8049EED0 end:0x8049F010
+
+system_ctrl.cpp:
+	extab       start:0x80008954 end:0x80008A44
+	extabindex  start:0x8000FD64 end:0x8000FECC
+	.text       start:0x8006EEA8 end:0x80072AC8
+	.sdata2     start:0x8049F010 end:0x8049F0B0
+
+system_exec.cpp:
+	extab       start:0x80008A44 end:0x80008BE4
+	extabindex  start:0x8000FECC end:0x8001013C
+	.text       start:0x80072AC8 end:0x80079BB0
+	.sdata2     start:0x8049F0B0 end:0x8049F198
+
+system_disp.cpp:
+	extab       start:0x80008BE4 end:0x80008D54
+	extabindex  start:0x8001013C end:0x80010364
+	.text       start:0x80079BB0 end:0x8007F250
+	.sdata2     start:0x8049F198 end:0x8049F1D0
+
+system_act.cpp:
+	extab       start:0x80008D54 end:0x80008DF4
+	extabindex  start:0x80010364 end:0x80010454
+	.text       start:0x8007F250 end:0x80082E3C
+	.sdata2     start:0x8049F1D0 end:0x8049F228
+
+g_camnw.cpp:
+	extab       start:0x80008DF4 end:0x8000914C
+	extabindex  start:0x80010454 end:0x80010958
+	.text       start:0x80082E3C end:0x80090C24
+	.sdata2     start:0x8049F228 end:0x8049F4B0
+
+g_cam_anm.cpp:
+	extab       start:0x8000914C end:0x800091AC
+	extabindex  start:0x80010958 end:0x800109E8
+	.text       start:0x80090C24 end:0x8009161C
+	.ctors      start:0x803394CC end:0x803394D0
+	.sdata2     start:0x8049F4B0 end:0x8049F4C8
+
+g_cam_ctrl.cpp:
+	extab       start:0x800091AC end:0x80009294
+	extabindex  start:0x800109E8 end:0x80010B44
+	.text       start:0x8009161C end:0x80094734
+	.sdata2     start:0x8049F4C8 end:0x8049F4F0
+
+g_cam_sub.cpp:
+	extab       start:0x80009294 end:0x800092C4
+	extabindex  start:0x80010B44 end:0x80010B8C
+	.text       start:0x80094734 end:0x80094AB4
+	.sdata2     start:0x8049F4F0 end:0x8049F508
+
+g_cam_act.cpp:
+	extab       start:0x800092C4 end:0x80009404
+	extabindex  start:0x80010B8C end:0x80010D6C
+	.text       start:0x80094AB4 end:0x80099CF8
+	.sdata2     start:0x8049F508 end:0x8049F548
+
+g_cam_fra.cpp:
+	extab       start:0x80009404 end:0x80009694
+	extabindex  start:0x80010D6C end:0x80011144
+	.text       start:0x80099CF8 end:0x800A14C8
+	.sdata2     start:0x8049F548 end:0x8049F580
+
+c_eye_ctrl.cpp:
+	extab       start:0x80009694 end:0x800097B4
+	extabindex  start:0x80011144 end:0x800112F4
+	.text       start:0x800A14C8 end:0x800A50A4
+	.sdata2     start:0x8049F580 end:0x8049F620
+
+g_net_data.cpp:
+	extab       start:0x800097B4 end:0x800099B4
+	extabindex  start:0x800112F4 end:0x800115F4
+	.text       start:0x800A50A4 end:0x800AB20C
+	.sdata2     start:0x8049F620 end:0x8049F640
+
+g_net_ctrl.cpp:
+	extab       start:0x800099B4 end:0x80009B5C
+	extabindex  start:0x800115F4 end:0x80011870
+	.text       start:0x800AB20C end:0x800AE5B0
+	.ctors      start:0x803394D0 end:0x803394D4
+	.sdata2     start:0x8049F640 end:0x8049F658
+
+chj_eye.cpp:
+	extab       start:0x80009B5C end:0x80009B7C
+	extabindex  start:0x80011870 end:0x800118A0
+	.text       start:0x800AE5B0 end:0x800AF334
+
+ank_face.cpp:
+	extab       start:0x80009B7C end:0x80009BC4
+	extabindex  start:0x800118A0 end:0x8001190C
+	.text       start:0x800AF334 end:0x800B5A0C
+
+kib_eye.cpp:
+	extab       start:0x80009BC4 end:0x80009BD4
+	extabindex  start:0x8001190C end:0x80011924
+	.text       start:0x800B5A0C end:0x800B5FF0
+
+asm_eye.cpp:
+	extab       start:0x80009BD4 end:0x80009BFC
+	extabindex  start:0x80011924 end:0x80011960
+	.text       start:0x800B5FF0 end:0x800B75F8
+
+bki_eye.cpp:
+	extab       start:0x80009BFC end:0x80009C14
+	extabindex  start:0x80011960 end:0x80011984
+	.text       start:0x800B75F8 end:0x800B7FA4
+
+ino_eye.cpp:
+	extab       start:0x80009C14 end:0x80009C64
+	extabindex  start:0x80011984 end:0x800119FC
+	.text       start:0x800B7FA4 end:0x800BCC98
+
+sai_eye.cpp:
+	extab       start:0x80009C64 end:0x80009CBC
+	extabindex  start:0x800119FC end:0x80011A80
+	.text       start:0x800BCC98 end:0x800C17B0
+
+c_eye_tbl.cpp:
+	extab       start:0x80009CBC end:0x80009DDC
+	extabindex  start:0x80011A80 end:0x80011C30
+	.text       start:0x800C17B0 end:0x800CA050
+
+c_eye_sub.cpp:
+	extab       start:0x80009DDC end:0x80009E0C
+	extabindex  start:0x80011C30 end:0x80011C78
+	.text       start:0x800CA050 end:0x800CA5B4
+
+gai_eye.cpp:
+	extab       start:0x80009E0C end:0x80009E14
+	extabindex  start:0x80011C78 end:0x80011C84
+	.text       start:0x800CA5B4 end:0x800CA66C
+
+dei_eye.cpp:
+	extab       start:0x80009E14 end:0x80009E5C
+	extabindex  start:0x80011C84 end:0x80011CF0
+	.text       start:0x800CA66C end:0x800CE610
+
+hdn_eye.cpp:
+	extab       start:0x80009E5C end:0x80009E9C
+	extabindex  start:0x80011CF0 end:0x80011D50
+	.text       start:0x800CE610 end:0x800D2184
+
+ssro_sub_eye.cpp:
+	extab       start:0x80009E9C end:0x80009EB4
+	extabindex  start:0x80011D50 end:0x80011D74
+	.text       start:0x800D2184 end:0x800D2B98
+
+hnt_eye.cpp:
+	extab       start:0x80009EB4 end:0x80009EEC
+	extabindex  start:0x80011D74 end:0x80011DC8
+	.text       start:0x800D2B98 end:0x800D5598
+
+ssr_eye.cpp:
+	extab       start:0x80009EEC end:0x80009F2C
+	extabindex  start:0x80011DC8 end:0x80011E28
+	.text       start:0x800D5598 end:0x800D84E0
+
+ita_eye.cpp:
+	extab       start:0x80009F2C end:0x80009F74
+	extabindex  start:0x80011E28 end:0x80011E94
+	.text       start:0x800D84E0 end:0x800DCDD4
+
+jry_eye.cpp:
+	extab       start:0x80009F74 end:0x80009F9C
+	extabindex  start:0x80011E94 end:0x80011ED0
+	.text       start:0x800DCDD4 end:0x800DF880
+
+kbt_eye.cpp:
+	extab       start:0x80009F9C end:0x80009FA4
+	extabindex  start:0x80011ED0 end:0x80011EDC
+	.text       start:0x800DF880 end:0x800DF938
+
+kgr_eye.cpp:
+	extab       start:0x80009FA4 end:0x80009FFC
+	extabindex  start:0x80011EDC end:0x80011F60
+	.text       start:0x800DF938 end:0x800E222C
+
+kir_eye.cpp:
+	extab       start:0x80009FFC end:0x8000A004
+	extabindex  start:0x80011F60 end:0x80011F6C
+	.text       start:0x800E222C end:0x800E22E4
+
+kks_eye.cpp:
+	extab       start:0x8000A004 end:0x8000A05C
+	extabindex  start:0x80011F6C end:0x80011FF0
+	.text       start:0x800E22E4 end:0x800E7180
+
+knk_eye.cpp:
+	extab       start:0x8000A05C end:0x8000A084
+	extabindex  start:0x80011FF0 end:0x8001202C
+	.text       start:0x800E7180 end:0x800E8D4C
+
+krn_eye.cpp:
+	extab       start:0x8000A084 end:0x8000A0AC
+	extabindex  start:0x8001202C end:0x80012068
+	.text       start:0x800E8D4C end:0x800EA154
+
+krs_eye.cpp:
+	extab       start:0x8000A0AC end:0x8000A13C
+	extabindex  start:0x80012068 end:0x80012140
+	.text       start:0x800EA154 end:0x800EEFD8
+
+ksm_eye.cpp:
+	extab       start:0x8000A13C end:0x8000A194
+	extabindex  start:0x80012140 end:0x800121C4
+	.text       start:0x800EEFD8 end:0x800F37F8
+
+ldy_eye.cpp:
+	extab       start:0x8000A194 end:0x8000A1C4
+	extabindex  start:0x800121C4 end:0x8001220C
+	.text       start:0x800F37F8 end:0x800F52B4
+
+c_eye.cpp:
+	extab       start:0x8000A1C4 end:0x8000A1EC
+	extabindex  start:0x8001220C end:0x80012248
+	.text       start:0x800F52B4 end:0x800F5DA4
+
+nej_eye.cpp:
+	extab       start:0x8000A1EC end:0x8000A244
+	extabindex  start:0x80012248 end:0x800122CC
+	.text       start:0x800F5DA4 end:0x800FAA78
+
+oro_eye.cpp:
+	extab       start:0x8000A244 end:0x8000A2BC
+	extabindex  start:0x800122CC end:0x80012380
+	.text       start:0x800FAA78 end:0x801011BC
+
+skr_eye.cpp:
+	extab       start:0x8000A2BC end:0x8000A2F4
+	extabindex  start:0x80012380 end:0x800123D4
+	.text       start:0x801011BC end:0x801035D4
+
+ssro_eye.cpp:
+	extab       start:0x8000A2F4 end:0x8000A31C
+	extabindex  start:0x800123D4 end:0x80012410
+	.text       start:0x801035D4 end:0x80106514
+
+ten_eye.cpp:
+	extab       start:0x8000A31C end:0x8000A324
+	extabindex  start:0x80012410 end:0x8001241C
+	.text       start:0x80106514 end:0x801065CC
+
+tmr_eye.cpp:
+	extab       start:0x8000A324 end:0x8000A36C
+	extabindex  start:0x8001241C end:0x80012488
+	.text       start:0x801065CC end:0x8010A3BC
+
+tnd_eye.cpp:
+	extab       start:0x8000A36C end:0x8000A394
+	extabindex  start:0x80012488 end:0x800124C4
+	.text       start:0x8010A3BC end:0x8010C34C
+
+band_eye.cpp:
+	extab       start:0x8000A394 end:0x8000A3BC
+	extabindex  start:0x800124C4 end:0x80012500
+	.text       start:0x8010C34C end:0x8010D378
+
+eft_main.cpp:
+	extab       start:0x8000A3BC end:0x8000A644
+	extabindex  start:0x80012500 end:0x800128CC
+	.text       start:0x8010D378 end:0x801131D8
+
+eft_scmd.cpp:
+	extab       start:0x8000A644 end:0x8000A73C
+	extabindex  start:0x800128CC end:0x80012A40
+	.text       start:0x801131D8 end:0x8011F350
+
 eft_vjob.cpp:
 	extab       start:0x8000A73C end:0x8000A764
 	extabindex  start:0x80012A40 end:0x80012A7C
