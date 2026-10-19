@@ -1,0 +1,797 @@
+#include <nw4r/g3d.h>
+#include <nw4r/math.h>
+
+#include <algorithm>
+#include <cstddef>
+
+namespace nw4r {
+namespace g3d {
+
+NW4R_G3D_RTTI_DEF(ScnObj);
+NW4R_G3D_RTTI_DEF(ScnLeaf);
+NW4R_G3D_RTTI_DEF(ScnGroup);
+
+const math::FRUSTUM* gpCullingFrustum = NULL;
+
+/******************************************************************************
+ *
+ * ScnObj
+ *
+ ******************************************************************************/
+void ScnObj::CalcWorldMtx(const math::MTX34* pParent, u32* pParam) {
+    if (pParam != NULL && (*pParam & SCNOBJFLAG_DISABLE_CALC_WORLD)) {
+        *pParam &= ~SCNOBJFLAG_DISABLE_CALC_WORLD;
+        return;
+    }
+
+    if (pParent != NULL) {
+        if (TestScnObjFlag(SCNOBJFLAG_MTX_LOCAL_IDENTITY)) {
+            math::MTX34Copy(&mMtxArray[MTX_WORLD], pParent);
+        } else {
+            math::MTX34Mult(&mMtxArray[MTX_WORLD], pParent,
+                            &mMtxArray[MTX_LOCAL]);
+        }
+    } else {
+        math::MTX34Copy(&mMtxArray[MTX_WORLD], &mMtxArray[MTX_LOCAL]);
+    }
+
+    if (TestScnObjFlag(SCNOBJFLAG_ENABLE_CULLING)) {
+        mAABB[BOUNDINGVOLUME_AABB_WORLD].Set(&mAABB[BOUNDINGVOLUME_AABB_LOCAL],
+                                             &mMtxArray[MTX_WORLD]);
+    }
+}
+
+void ScnObj::CalcViewMtx(const math::MTX34* pCamera) {
+    math::MTX34Mult(&mMtxArray[MTX_VIEW], pCamera, &mMtxArray[MTX_WORLD]);
+}
+
+ScnObj::ScnObj(MEMAllocator* pAllocator)
+    : G3dObj(pAllocator, NULL),
+      mScnObjFlags(0),
+      mPriorityDrawOpa(128),
+      mPriorityDrawXlu(128),
+      PADDING_0xD2(0),
+      PADDING_0xD3(0),
+      mpFuncObjExec(NULL),
+      mCallbackTiming(0),
+      mCallbackDeleteOption(FALSE),
+      mCallbackExecOpMask(0) {
+
+    SetScnObjFlag(SCNOBJFLAG_MTX_LOCAL_IDENTITY, TRUE);
+
+    math::MTX34Identity(&mMtxArray[MTX_LOCAL]);
+    math::MTX34Identity(&mMtxArray[MTX_WORLD]);
+    math::MTX34Identity(&mMtxArray[MTX_VIEW]);
+
+    mAABB[BOUNDINGVOLUME_AABB_LOCAL].min = math::VEC3(0.0f, 0.0f, 0.0f);
+    mAABB[BOUNDINGVOLUME_AABB_LOCAL].max = math::VEC3(0.0f, 0.0f, 0.0f);
+    mAABB[BOUNDINGVOLUME_AABB_WORLD].min = math::VEC3(0.0f, 0.0f, 0.0f);
+    mAABB[BOUNDINGVOLUME_AABB_WORLD].max = math::VEC3(0.0f, 0.0f, 0.0f);
+}
+
+ScnObj::~ScnObj() {
+    if (mpFuncObjExec == NULL) {
+        return;
+    }
+
+    switch (mCallbackDeleteOption) {
+    case TRUE: {
+        delete mpFuncObjExec;
+        break;
+    }
+    }
+}
+
+bool ScnObj::SetScnObjOption(u32 option, u32 value) {
+    switch (option) {
+    case OPTID_DISABLE_GATHER_SCNOBJ: {
+        SetScnObjFlag(SCNOBJFLAG_DISABLE_GATHER_SCNOBJ, value);
+        break;
+    }
+
+    case OPTID_DISABLE_CALC_WORLD: {
+        SetScnObjFlag(SCNOBJFLAG_DISABLE_CALC_WORLD, value);
+        break;
+    }
+
+    case OPTID_DISABLE_CALC_MAT: {
+        SetScnObjFlag(SCNOBJFLAG_DISABLE_CALC_MAT, value);
+        break;
+    }
+
+    case OPTID_DISABLE_CALC_VTX: {
+        SetScnObjFlag(SCNOBJFLAG_DISABLE_CALC_VTX, value);
+        break;
+    }
+
+    case OPTID_DISABLE_CALC_VIEW: {
+        SetScnObjFlag(SCNOBJFLAG_DISABLE_CALC_VIEW, value);
+        break;
+    }
+
+    case OPTID_DISABLE_DRAW_OPA: {
+        SetScnObjFlag(SCNOBJFLAG_DISABLE_DRAW_OPA, value);
+        break;
+    }
+
+    case OPTID_DISABLE_DRAW_XLU: {
+        SetScnObjFlag(SCNOBJFLAG_DISABLE_DRAW_XLU, value);
+        break;
+    }
+
+    case OPTID_DISABLE_UPDATEFRAME: {
+        SetScnObjFlag(SCNOBJFLAG_DISABLE_UPDATEFRAME, value);
+        break;
+    }
+
+    case OPTID_ENABLE_CULLING: {
+        SetScnObjFlag(SCNOBJFLAG_ENABLE_CULLING, value);
+        break;
+    }
+
+    default: {
+        return false;
+    }
+    }
+
+    return true;
+}
+
+bool ScnObj::GetScnObjOption(u32 option, u32* pValue) const {
+    if (pValue == NULL) {
+        return false;
+    }
+
+    switch (option) {
+    case OPTID_DISABLE_GATHER_SCNOBJ: {
+        *pValue = TestScnObjFlag(SCNOBJFLAG_DISABLE_GATHER_SCNOBJ);
+        break;
+    }
+
+    case OPTID_DISABLE_CALC_WORLD: {
+        *pValue = TestScnObjFlag(SCNOBJFLAG_DISABLE_CALC_WORLD);
+        break;
+    }
+
+    case OPTID_DISABLE_CALC_MAT: {
+        *pValue = TestScnObjFlag(SCNOBJFLAG_DISABLE_CALC_MAT);
+        break;
+    }
+
+    case OPTID_DISABLE_CALC_VTX: {
+        *pValue = TestScnObjFlag(SCNOBJFLAG_DISABLE_CALC_VTX);
+        break;
+    }
+
+    case OPTID_DISABLE_CALC_VIEW: {
+        *pValue = TestScnObjFlag(SCNOBJFLAG_DISABLE_CALC_VIEW);
+        break;
+    }
+
+    case OPTID_DISABLE_DRAW_OPA: {
+        *pValue = TestScnObjFlag(SCNOBJFLAG_DISABLE_DRAW_OPA);
+        break;
+    }
+
+    case OPTID_DISABLE_DRAW_XLU: {
+        *pValue = TestScnObjFlag(SCNOBJFLAG_DISABLE_DRAW_XLU);
+        break;
+    }
+
+    case OPTID_DISABLE_UPDATEFRAME: {
+        *pValue = TestScnObjFlag(SCNOBJFLAG_DISABLE_UPDATEFRAME);
+        break;
+    }
+
+    case OPTID_ENABLE_CULLING: {
+        *pValue = TestScnObjFlag(SCNOBJFLAG_ENABLE_CULLING);
+        break;
+    }
+
+    default: {
+        return false;
+    }
+    }
+
+    return true;
+}
+
+//unused
+bool ScnObj::SetMtx(ScnObjMtxType type, const math::MTX34* pMtx) {
+    if (static_cast<u32>(type) < MTX_TYPE_MAX) {
+        if (pMtx != NULL) {
+            if (type == MTX_LOCAL) {
+                SetScnObjFlag(SCNOBJFLAG_MTX_LOCAL_IDENTITY, FALSE);
+            }
+
+            math::MTX34Copy(&mMtxArray[type], pMtx);
+        } else {
+            if (type == MTX_LOCAL) {
+                SetScnObjFlag(SCNOBJFLAG_MTX_LOCAL_IDENTITY, TRUE);
+            }
+
+            math::MTX34Identity(&mMtxArray[type]);
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+bool ScnObj::SetMtx(ScnObjMtxType type, const math::MTX34& pMtx) {
+    if (static_cast<u32>(type) < MTX_TYPE_MAX) {
+        if (type == MTX_LOCAL) {
+            SetScnObjFlag(SCNOBJFLAG_MTX_LOCAL_IDENTITY, FALSE);
+        }
+
+        math::MTX34Copy(&mMtxArray[type], &pMtx);
+
+        return true;
+    }
+
+    return false;
+}
+
+bool ScnObj::GetMtx(ScnObjMtxType type, math::MTX34* pMtx) const {
+    if (pMtx != NULL && static_cast<u32>(type) < MTX_TYPE_MAX) {
+        math::MTX34Copy(pMtx, &mMtxArray[type]);
+        return true;
+    }
+
+    return false;
+}
+
+f32 ScnObj::GetValueForSortOpa() const {
+    return -mMtxArray[MTX_VIEW]._23;
+}
+
+f32 ScnObj::GetValueForSortXlu() const {
+    return mMtxArray[MTX_VIEW]._23;
+}
+
+void ScnObj::SetPriorityDrawOpa(int prio) {
+    if (prio < 0) {
+        prio = 0;
+    } else if (prio > 255) {
+        prio = 255;
+    }
+
+    mPriorityDrawOpa = prio;
+}
+
+void ScnObj::SetPriorityDrawXlu(int prio) {
+    if (prio < 0) {
+        prio = 0;
+    } else if (prio > 255) {
+        prio = 255;
+    }
+
+    mPriorityDrawXlu = prio;
+}
+
+// EnableScnObjCallbackTiming__Q34nw4r3g3d6ScnObjFQ44nw4r3g3d6ScnObj6Timing: definicion C reemplazada por asm (ver abajo)
+
+
+void ScnObj::EnableScnObjCallbackExecOp(ExecOp op) {
+    mCallbackExecOpMask |= static_cast<u16>(op);
+}
+
+bool ScnObj::SetBoundingVolume(ScnObjBoundingVolumeType type,
+                               const math::AABB* pAABB) {
+    if (pAABB != NULL) {
+        if (type < BOUNDINGVOLUME_MAX) {
+            mAABB[type] = *pAABB;
+            return SetScnObjOption(OPTID_ENABLE_CULLING, TRUE);
+        }
+
+        return false;
+    }
+
+    return SetScnObjOption(OPTID_ENABLE_CULLING, FALSE);
+}
+
+bool ScnObj::GetBoundingVolume(ScnObjBoundingVolumeType type,
+                               math::AABB* pAABB) const {
+    if (pAABB != NULL) {
+        if (type < BOUNDINGVOLUME_MAX) {
+            *pAABB = mAABB[type];
+            return true;
+        }
+
+        return false;
+    }
+
+    return false;
+}
+
+/******************************************************************************
+ *
+ * ScnLeaf
+ *
+ ******************************************************************************/
+ScnObj::ForEachResult ScnLeaf::ForEach(ForEachFunc pFunc, void* pInfo,
+                                       bool postOrder) {
+#pragma unused(postOrder)
+
+    return pFunc(this, pInfo) != FOREACHRESULT_CONTINUE
+               ? FOREACHRESULT_OK
+               : FOREACHRESULT_CONTINUE;
+}
+
+bool ScnLeaf::SetScnObjOption(u32 option, u32 value) {
+    switch (option) {
+    case OPTID_DISABLE_DRAW_ALL: {
+        SetScnObjFlag(SCNOBJFLAG_DISABLE_DRAW, value);
+        break;
+    }
+
+    default: {
+        return ScnObj::SetScnObjOption(option, value);
+    }
+    }
+
+    return true;
+}
+
+bool ScnLeaf::GetScnObjOption(u32 option, u32* pValue) const {
+    if (pValue == NULL) {
+        return false;
+    }
+
+    switch (option) {
+    case OPTID_DISABLE_DRAW_ALL: {
+        *pValue = TestScnObjFlag(SCNOBJFLAG_DISABLE_DRAW);
+        break;
+    }
+
+    default: {
+        return ScnObj::GetScnObjOption(option, pValue);
+    }
+    }
+
+    return true;
+}
+
+void ScnLeaf::CalcWorldMtx(const math::MTX34* pParent, u32* pParam) {
+    if (pParam != NULL && (*pParam & SCNOBJFLAG_DISABLE_CALC_WORLD)) {
+        *pParam &= ~SCNOBJFLAG_DISABLE_CALC_WORLD;
+        return;
+    }
+
+    ScnObj::CalcWorldMtx(pParent, pParam);
+    math::MTX34Scale(&mMtxArray[MTX_WORLD], &mMtxArray[MTX_WORLD], &mScale);
+
+    if (TestScnObjFlag(SCNOBJFLAG_ENABLE_CULLING)) {
+        mAABB[BOUNDINGVOLUME_AABB_WORLD].Set(&mAABB[BOUNDINGVOLUME_AABB_LOCAL],
+                                             &mMtxArray[MTX_WORLD]);
+    }
+}
+
+ScnLeaf::ScaleProperty ScnLeaf::GetScaleProperty() const {
+    if (mScale.x == mScale.y) {
+        if (mScale.y == mScale.z) {
+            if (mScale.x == 1.0f) {
+                return NOT_SCALED;
+            }
+
+            return UNIFORM_SCALED;
+        }
+    }
+
+    return NONUNIFORM_SCALED;
+}
+
+void ScnLeaf::DefG3dProcScnLeaf(u32 task, u32 param, void* pInfo) {
+    switch (task) {
+    case G3DPROC_CALC_WORLD: {
+        CheckCallback_CALC_WORLD(CALLBACK_TIMING_A, param, pInfo);
+        CalcWorldMtx(static_cast<math::MTX34*>(pInfo), &param);
+        CheckCallback_CALC_WORLD(CALLBACK_TIMING_B, param, pInfo);
+        CheckCallback_CALC_WORLD(CALLBACK_TIMING_C, param, pInfo);
+        break;
+    }
+
+    case G3DPROC_CALC_MAT: {
+        CheckCallback_CALC_MAT(CALLBACK_TIMING_A, param, pInfo);
+        CheckCallback_CALC_MAT(CALLBACK_TIMING_C, param, pInfo);
+        break;
+    }
+
+    case G3DPROC_CALC_VIEW: {
+        CheckCallback_CALC_VIEW(CALLBACK_TIMING_A, param, pInfo);
+        CalcViewMtx(static_cast<math::MTX34*>(pInfo));
+        CheckCallback_CALC_VIEW(CALLBACK_TIMING_B, param, pInfo);
+        CheckCallback_CALC_VIEW(CALLBACK_TIMING_C, param, pInfo);
+        break;
+    }
+
+    case G3DPROC_DETACH_PARENT: {
+        SetParent(NULL);
+        break;
+    }
+
+    case G3DPROC_ATTACH_PARENT: {
+        SetParent(static_cast<G3dObj*>(pInfo));
+        break;
+    }
+
+    case G3DPROC_GATHER_SCNOBJ:
+    case G3DPROC_DRAW_OPA:
+    case G3DPROC_DRAW_XLU:
+    case G3DPROC_UPDATEFRAME:
+    case G3DPROC_CHILD_DETACHED:
+    case G3DPROC_ZSORT: {
+        break;
+    }
+    }
+}
+
+/******************************************************************************
+ *
+ * ScnGroup
+ *
+ ******************************************************************************/
+
+ScnGroup* ScnGroup::Construct(MEMAllocator* pHeap, u32* pSize, u32 maxNumChildren) {
+    ScnGroup* pObj = NULL;
+    u32 sizeScnGroup = sizeof(ScnGroup);
+    u32 sizeCldArray = maxNumChildren * sizeof(ScnObj*);
+    u32 ofsCldArray = align4(sizeScnGroup + sizeCldArray);
+    u32 size = ROUND_DOWN(ofsCldArray, 4); //TODO(amber) is this really round down?
+
+    if(pSize != NULL){
+        *pSize = size;
+    }
+
+    if(pHeap != NULL){
+        u8* buf = reinterpret_cast<u8*>(Alloc(pHeap, size));
+        
+        if(buf == NULL){
+            return NULL;
+        }
+        
+        pObj = new (buf) ScnGroup(pHeap, (ScnObj**)(buf + sizeScnGroup), maxNumChildren);
+    }
+
+    return pObj;
+}
+
+ ScnObj::ForEachResult ScnGroup::ForEach(ForEachFunc pFunc, void* pInfo,
+                                        bool postOrder) {
+    ForEachResult result;
+
+    if (postOrder) {
+        for (u32 i = 0; i < Size(); i++) {
+            result = mpScnObjArray[i]->ForEach(pFunc, pInfo, false);
+
+            if (result == FOREACHRESULT_CONTINUE) {
+                return FOREACHRESULT_CONTINUE;
+            }
+        }
+
+        result = pFunc(this, pInfo);
+        return result == FOREACHRESULT_CONTINUE ? FOREACHRESULT_CONTINUE
+                                                : FOREACHRESULT_OK;
+    } else {
+        result = pFunc(this, pInfo);
+
+        if (result == FOREACHRESULT_OK) {
+            for (u32 i = 0; i < Size(); i++) {
+                result = mpScnObjArray[i]->ForEach(pFunc, pInfo, false);
+
+                if (result == FOREACHRESULT_CONTINUE) {
+                    return FOREACHRESULT_CONTINUE;
+                }
+            }
+
+            return FOREACHRESULT_OK;
+        }
+
+        return result == FOREACHRESULT_CONTINUE ? FOREACHRESULT_CONTINUE
+                                                : FOREACHRESULT_OK;
+    }
+}
+
+void ScnGroup::ScnGroup_G3DPROC_GATHER_SCNOBJ(u32 param,
+                                              IScnObjGather* pCollection) {
+    IScnObjGather::CullingStatus status =
+        pCollection->Add(this, !TestScnObjFlag(SCNOBJFLAG_NOT_GATHER_DRAW_OPA),
+                         !TestScnObjFlag(SCNOBJFLAG_NOT_GATHER_DRAW_XLU));
+
+    if (status == IScnObjGather::CULLINGSTATUS_INTERSECT) {
+        for (u32 i = 0; i < mNumScnObj; i++) {
+            mpScnObjArray[i]->G3dProc(G3DPROC_GATHER_SCNOBJ, param,
+                                      pCollection);
+        }
+    } else if (status == IScnObjGather::CULLINGSTATUS_INSIDE) {
+        const math::FRUSTUM* pTemp = gpCullingFrustum;
+        gpCullingFrustum = NULL;
+        {
+            for (u32 i = 0; i < mNumScnObj; i++) {
+                mpScnObjArray[i]->G3dProc(G3DPROC_GATHER_SCNOBJ, param,
+                                          pCollection);
+            }
+        }
+        gpCullingFrustum = pTemp;
+    }
+}
+
+void ScnGroup::ScnGroup_G3DPROC_CALC_WORLD(u32 param,
+                                           const math::MTX34* pParent) {
+    CheckCallback_CALC_WORLD(CALLBACK_TIMING_A, param,
+                             const_cast<math::MTX34*>(pParent));
+
+    CalcWorldMtx(pParent, &param);
+
+    CheckCallback_CALC_WORLD(CALLBACK_TIMING_B, param,
+                             const_cast<math::MTX34*>(pParent));
+
+    math::MTX34* pWorldMtx = const_cast<math::MTX34*>(GetMtxPtr(MTX_WORLD));
+
+    for (u32 i = 0; i < mNumScnObj; i++) {
+        mpScnObjArray[i]->G3dProc(G3DPROC_CALC_WORLD, param, pWorldMtx);
+    }
+
+    CheckCallback_CALC_WORLD(CALLBACK_TIMING_C, param,
+                             const_cast<math::MTX34*>(pParent));
+}
+
+void ScnGroup::ScnGroup_G3DPROC_CALC_MAT(u32 param, void* pInfo) {
+    CheckCallback_CALC_MAT(CALLBACK_TIMING_A, param, pInfo);
+
+    for (u32 i = 0; i < mNumScnObj; i++) {
+        mpScnObjArray[i]->G3dProc(G3DPROC_CALC_MAT, param, pInfo);
+    }
+
+    CheckCallback_CALC_MAT(CALLBACK_TIMING_C, param, pInfo);
+}
+
+void ScnGroup::ScnGroup_G3DPROC_CALC_VIEW(u32 param,
+                                          const math::MTX34* pCamera) {
+    CheckCallback_CALC_VIEW(CALLBACK_TIMING_A, param,
+                            const_cast<math::MTX34*>(pCamera));
+
+    CalcViewMtx(pCamera);
+
+    CheckCallback_CALC_VIEW(CALLBACK_TIMING_B, param,
+                            const_cast<math::MTX34*>(pCamera));
+
+    for (u32 i = 0; i < mNumScnObj; i++) {
+        mpScnObjArray[i]->G3dProc(G3DPROC_CALC_VIEW, param,
+                                  const_cast<math::MTX34*>(pCamera));
+    }
+
+    CheckCallback_CALC_VIEW(CALLBACK_TIMING_C, param,
+                            const_cast<math::MTX34*>(pCamera));
+}
+
+void ScnGroup::G3dProc(u32 task, u32 param, void* pInfo) {
+    if (IsG3dProcDisabled(task)) {
+        return;
+    }
+
+    DefG3dProcScnGroup(task, param, pInfo);
+}
+
+void ScnGroup::DefG3dProcScnGroup(u32 task, u32 param, void* pInfo) {
+    switch (task) {
+    case G3DPROC_GATHER_SCNOBJ: {
+        ScnGroup_G3DPROC_GATHER_SCNOBJ(param,
+                                       static_cast<IScnObjGather*>(pInfo));
+        break;
+    }
+
+    case G3DPROC_CALC_WORLD: {
+        ScnGroup_G3DPROC_CALC_WORLD(param, static_cast<math::MTX34*>(pInfo));
+        break;
+    }
+
+    case G3DPROC_CALC_MAT: {
+        ScnGroup_G3DPROC_CALC_MAT(param, pInfo);
+        break;
+    }
+
+    case G3DPROC_CALC_VIEW: {
+        ScnGroup_G3DPROC_CALC_VIEW(param, static_cast<math::MTX34*>(pInfo));
+        break;
+    }
+
+    case G3DPROC_DRAW_OPA:
+    case G3DPROC_DRAW_XLU: {
+        return;
+    }
+
+    case G3DPROC_CHILD_DETACHED: {
+        Remove(static_cast<ScnObj*>(pInfo));
+        break;
+    }
+
+    case G3DPROC_DETACH_PARENT: {
+        SetParent(NULL);
+        break;
+    }
+
+    case G3DPROC_ATTACH_PARENT: {
+        SetParent(static_cast<ScnObj*>(pInfo));
+        break;
+    }
+
+    case G3DPROC_UPDATEFRAME:
+    case G3DPROC_ZSORT:
+    default: {
+        for (u32 i = 0; i < mNumScnObj; i++) {
+            mpScnObjArray[i]->G3dProc(task, param, pInfo);
+        }
+        break;
+    }
+    }
+}
+
+bool ScnGroup::Insert(u32 idx, ScnObj* pObj) {
+    if (idx <= mNumScnObj && mNumScnObj < mSizeScnObj && pObj != NULL &&
+        pObj->GetParent() == NULL) {
+            for (u32 i = mNumScnObj; i > idx; i--) {
+                mpScnObjArray[i] = mpScnObjArray[i - 1];
+            }
+
+            mpScnObjArray[idx] = pObj;
+            pObj->G3dProc(G3DPROC_ATTACH_PARENT, 0, this);
+
+            mNumScnObj++;
+            return true;
+    }
+
+    return false;
+}
+
+ScnObj* ScnGroup::Remove(u32 idx) {
+    if (idx < mNumScnObj) {
+        ScnObj* pObj = mpScnObjArray[idx];
+        pObj->G3dProc(G3DPROC_DETACH_PARENT, 0, this);
+
+        for (u32 i = idx; i < mNumScnObj - 1; i++) {
+            mpScnObjArray[i] = mpScnObjArray[i + 1];
+        }
+
+        mNumScnObj--;
+        return pObj;
+    }
+
+    return NULL;
+}
+
+bool ScnGroup::Remove(ScnObj* pObj) {
+    ScnObj** ppObj = std::find(mpScnObjArray, mpScnObjArray + mNumScnObj, pObj);
+
+    if (ppObj != mpScnObjArray + mNumScnObj) {
+        return Remove(std::distance(mpScnObjArray, ppObj)) != NULL;
+    }
+
+    return false;
+}
+
+ScnGroup::ScnGroup(MEMAllocator* pAllocator, ScnObj** ppObj, u32 capacity)
+    : ScnObj(pAllocator),
+      mpScnObjArray(ppObj),
+      mSizeScnObj(capacity),
+      mNumScnObj(0) {
+
+    SetScnObjFlag(SCNOBJFLAG_NOT_GATHER_DRAW_OPA, TRUE);
+    SetScnObjFlag(SCNOBJFLAG_NOT_GATHER_DRAW_XLU, TRUE);
+}
+
+ScnGroup::~ScnGroup() {
+    Clear();
+}
+
+} // namespace g3d
+} // namespace nw4r
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+extern "C" void EnableScnObjCallbackTiming__Q34nw4r3g3d6ScnObjFQ44nw4r3g3d6ScnObj6Timing();
+extern "C" void fn_801EC790();
+extern "C" void fn_801EC824();
+extern "C" void fn_801EC838();
+extern "C" void fn_801EC8B8();
+
+// asm_to_cpp: fn_801EC790
+extern "C" asm void fn_801EC790() {
+    nofralloc
+    clrlwi. r0, r4, 31
+    beq lbl_801EC7A4
+    lbz r0, 0xd8(r3)
+    ori r0, r0, 0x1
+    stb r0, 0xd8(r3)
+lbl_801EC7A4:
+    rlwinm. r0, r4, 0, 30, 30
+    beq lbl_801EC7B8
+    lbz r0, 0xd8(r3)
+    ori r0, r0, 0x2
+    stb r0, 0xd8(r3)
+lbl_801EC7B8:
+    rlwinm. r0, r4, 0, 29, 29
+    beqlr
+    lbz r0, 0xd8(r3)
+    ori r0, r0, 0x4
+    stb r0, 0xd8(r3)
+    blr
+}
+
+// asm_to_cpp: EnableScnObjCallbackTiming__Q34nw4r3g3d6ScnObjFQ44nw4r3g3d6ScnObj6Timing
+extern "C" asm void EnableScnObjCallbackTiming__Q34nw4r3g3d6ScnObjFQ44nw4r3g3d6ScnObj6Timing() {
+    nofralloc
+    clrlwi. r0, r4, 31
+    beq lbl_801EC7E4
+    lbz r0, 0xd8(r3)
+    rlwinm r0, r0, 0, 24, 30
+    stb r0, 0xd8(r3)
+lbl_801EC7E4:
+    rlwinm. r0, r4, 0, 30, 30
+    beq lbl_801EC7F8
+    lbz r0, 0xd8(r3)
+    rlwinm r0, r0, 0, 31, 29
+    stb r0, 0xd8(r3)
+lbl_801EC7F8:
+    rlwinm. r0, r4, 0, 29, 29
+    beqlr
+    lbz r0, 0xd8(r3)
+    rlwinm r0, r0, 0, 30, 28
+    stb r0, 0xd8(r3)
+    blr
+}
+
+// asm_to_cpp: fn_801EC824
+extern "C" asm void fn_801EC824() {
+    nofralloc
+    lhz r5, 0xda(r3)
+    clrlwi r0, r4, 16
+    andc r0, r5, r0
+    sth r0, 0xda(r3)
+    blr
+}
+
+// asm_to_cpp: fn_801EC838
+extern "C" asm void fn_801EC838() {
+    nofralloc
+    cmpwi r5, 0x0
+    beq lbl_801EC8A0
+    cmpwi r4, 0x2
+    bge lbl_801EC898
+    mulli r7, r4, 0x18
+    lwz r6, 0x0(r5)
+    lwz r0, 0x4(r5)
+    li r4, 0x9
+    add r7, r3, r7
+    stw r6, 0x9c(r7)
+    stw r0, 0xa0(r7)
+    lwz r0, 0x8(r5)
+    stw r0, 0xa4(r7)
+    lwz r6, 0xc(r5)
+    lwz r0, 0x10(r5)
+    stw r6, 0xa8(r7)
+    stw r0, 0xac(r7)
+    lwz r0, 0x14(r5)
+    li r5, 0x1
+    stw r0, 0xb0(r7)
+    lwz r12, 0x0(r3)
+    lwz r12, 0x20(r12)
+    mtctr r12
+    bctr
+lbl_801EC898:
+    li r3, 0x0
+    blr
+lbl_801EC8A0:
+    lwz r12, 0x0(r3)
+    li r4, 0x9
+    li r5, 0x0
+    lwz r12, 0x20(r12)
+    mtctr r12
+    bctr
+}
+
+// asm_to_cpp: fn_801EC8B8
+extern "C" asm void fn_801EC8B8() {
+    nofralloc
+    blr
+}

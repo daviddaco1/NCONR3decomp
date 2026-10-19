@@ -2242,6 +2242,9 @@ revolution/vf/unk_80338DF8.c:
 Runtime.PPCEABI.H/__mem.c:
 	.init       start:0x80004000 end:0x80004380
 
+TRK_MINNOW_DOLPHIN/__exception.s:
+	.init       start:0x80004380 end:0x800062B4
+
 Runtime.PPCEABI.H/__start.c:
 	.init       start:0x800062B4 end:0x80006594
 

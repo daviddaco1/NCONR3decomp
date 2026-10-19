@@ -12,13 +12,45 @@ Escribe src/<split>. Las funciones asm van marcadas con "// asm_to_cpp:" para qu
 import os, re, subprocess, sys, tempfile
 
 
-def strip_def(text, name):
-    """Quita la definicion C de `name` (firma + cuerpo entre llaves balanceadas).
-    Devuelve (texto, firma); firma None si no habia definicion."""
-    m = re.search(r'^[^\n;#]*\b' + re.escape(name) + r'\s*\([^;{]*\)\s*\{', text, re.M)
+def cw_qualified(mangled):
+    """'Calc__Q34nw4r3g3d6ScnMdlFv' -> ('ScnMdl', 'Calc'); None si no es metodo mangled CW."""
+    m = re.match(r'^(\w+?)__(?:Q(\d)((?:\d+\w+?)+?)|(\d+)(\w+?))(?:C?F.*|$)', mangled)
     if not m:
+        return None
+    meth = m.group(1)
+    if m.group(2):  # Q<n><len><name>...
+        rest, parts = m.group(3), []
+        for _ in range(int(m.group(2))):
+            k = re.match(r'(\d+)', rest)
+            if not k:
+                return None
+            n = int(k.group(1))
+            parts.append(rest[len(k.group(1)):len(k.group(1)) + n])
+            rest = rest[len(k.group(1)) + n:]
+        cls = parts[-1]
+    else:
+        cls = m.group(5)[:int(m.group(4))]
+    meth = {'__ct': cls, '__dt': '~' + cls}.get(meth, meth)
+    return cls, meth
+
+
+def strip_def(text, name):
+    """Quita la definicion C/C++ de `name` (firma + cuerpo entre llaves balanceadas).
+    Devuelve (texto, firma); firma None si no habia definicion (o era ambigua)."""
+    q = cw_qualified(name)
+    # metodo calificado; si no aparece, funcion libre dentro de un namespace
+    pats = [re.escape(q[0]) + r'\s*::\s*' + re.escape(q[1]), r'(?<!::)\b' + re.escape(q[1])] if q \
+        else [re.escape(name)]
+    ms = []
+    for pat in pats:
+        ms = list(re.finditer(r'^[^\n;#]*' + pat + r'\s*\([^;{]*\)\s*(?:const\s*)?(?::[^{;]*)?\{',
+                              text, re.M))
+        if ms:
+            break
+    if len(ms) != 1:  # ninguna o sobrecargada: no se puede elegir por nombre
         return text, None
-    sig = text[m.start():m.end() - 1].strip()
+    m = ms[0]
+    sig = None if q else text[m.start():m.end() - 1].strip()
     depth = 0
     for j in range(m.end() - 1, len(text)):
         if text[j] == '{':
@@ -46,7 +78,7 @@ def header_sig(name):
 def asm_blocks(split):
     asm = f'build/RNEPDA/asm/{os.path.splitext(split)[0]}.s'
     with tempfile.TemporaryDirectory() as d:
-        out = os.path.join(d, 'x.c')
+        out = os.path.join(d, 'x.cpp')
         subprocess.run([sys.executable, 'tools/asm_to_cpp.py', asm, out, 'x'], check=True, capture_output=True)
         t = open(out).read()
     decls = re.findall(r'^extern "C" (?:float|u8|void) [^\n]*;$', t, re.M)
@@ -86,6 +118,7 @@ def compile_obj(split):
 def main():
     split, src, *names = sys.argv[1:]
     out = f'src/{split}'
+    os.makedirs(os.path.dirname(out), exist_ok=True)
     text = open(src, newline='').read().replace('\r\n', '\n')
     is_c = not split.endswith(('.cpp', '.cp'))
     sigs = {}
