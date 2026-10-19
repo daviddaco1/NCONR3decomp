@@ -2326,3 +2326,20 @@ el 100% en asm para fijar splits y nombres, y después reescribir a C en una pas
   `OSReset.c` (los nuestros cubren solo parte de la TU real).
 - Pendiente: ~1.2 MB de librerías sin mapear (NW4R EF no está en SS; versiones distintas de
   NW4R/SDK; TRK Revolution en `0x801A8584`-`0x801A913C`).
+
+## Fase 97 — Splits de librerías con más referencias (2026-10-19)
+
+- Referencias dtk descargadas (solo splits+symbols, en scratchpad, no en el repo): `xbret/
+  xenoblade` (us), `doldecomp/ogws` (RSPE01_01), `zeldaret/tp` (RZDE01_02), `doldecomp/mkw`
+  (RMCP01); `doldecomp/brawl` no trae splits útiles. Mejor ajuste de versión: **Xenoblade**
+  (3,077 funciones emparejadas vs 1,995 de SS).
+- `tools/select_tus.py`: filtro + selección multi-referencia por prioridad, normaliza rutas
+  (`RVL_SDK/src/revolution/OS/...` → `revolution/os/...`, `rvl/` → `revolution/`), no pisa
+  splits existentes ni repite nombres.
+- **+126 TUs** NW4R/RVL SDK (Xenoblade 86, Wii Sports 31 —incluye 3 de `nw4r/ef`—, TP 7, MKW 2)
+  y **+34 TUs GameSpy** (`gamespy/*`, de MKW; lib nueva `GameSpy`). `build.sha1` OK.
+- Cobertura de splits: **77.3% de `.text`**; zona de librerías 54.5%.
+- Huecos grandes restantes, identificados por strings: DWC (`0x8022813C`-`0x80253934`, 178 KB;
+  el `dwc/` de MKW es otra versión y no pasa el filtro), HBM (`~0x802E657C`), NCD
+  (`~0x8032B024`, `ncdsystem.c`), WPAD (`~0x802864A0`), y bloques sin strings en
+  `0x801A971C`-`0x801CEAA8` (probablemente NW4R `ef`/`g3d` de otra versión).
