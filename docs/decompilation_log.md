@@ -2420,3 +2420,16 @@ el 100% en asm para fijar splits y nombres, y después reescribir a C en una pas
   -lang=c99 -DREVOKART`...) con rutas en `libs/mkw`; compilador `GC/3.0a5.2` como en MKW.
 - 34/34 TUs GameSpy compilan; 89,452 / 111,632 bytes; 20 TUs al 100%. Adoptadas todas.
 - **C real: 6.97% → 9.68%** (319,408 bytes). Total 54.14% → 56.85%. `build.sha1` OK.
+
+## Fase 102 — NW4R desde SS, SDK suelto desde MKW; diagnóstico de parciales (2026-10-19)
+
+- `libs/ss/` (CC0, `libs/LICENSE.ss`): headers raíz + `include/{nw4r,rvl}` + headers MSL/MSL_C++
+  (los C++ no tienen extensión: `cstddef`, `climits`...) + 28 fuentes NW4R que Xenoblade no
+  tiene. `cflags_ss_nw4r` = su base + `-ipa file -fp_contract off`. Por TU se elige el mejor entre
+  `GC/3.0a5.2` (matchea mejor, compila 10/28) y `Wii/1.0` (compila 28/28). 22 adoptadas.
+- MKW: sus BTE son stubs (`UNKNOWN_FUNCTION`), no sirven. `so/soCommon.c` 100% con `GC/3.0a5.2`.
+- **C real: 9.68% → 10.37%** (342,052 bytes). Total 57.54%. `build.sha1` OK.
+- Diagnóstico de lo importado no matcheado: 222 KB en 690 funciones **parciales** + 100 KB en 533
+  funciones **sin pareja** (59 KB siguen como `fn_`). Las parciales grandes difieren sobre todo
+  en offsets dentro del bloque de strings agrupados y en símbolos de datos (`jumptable_X` vs
+  `@NNN`, `lbl_X` vs nombre real): requieren **splits de datos por TU**, no tocar el C.

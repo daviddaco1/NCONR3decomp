@@ -183,7 +183,7 @@ igual que antes de migrar (53/124 al 100%, fuzzy global 24.96% antes de tocar na
   `zeldaret/ss`. Plan: cubrir todo en asm (splits+nombres) y luego reescribir a C. Ver Fase 94.
   **Métrica honesta (Fase 95):** objetos asm van con `AsmObject(...)` en `configure.py` (categoría
   `asm`); `python configure.py progress` imprime al final `C real (sin asm inline)` — hoy **0.77%**
-  (25,560 bytes; incluye 22 funciones asm sueltas dentro de `tcg_text.cpp`) — **2.84% tras Fases 98-99** (MSL/Runtime/TRK importados de Xenoblade). Los % de `game`/`sdk`
+  (25,560 bytes; incluye 22 funciones asm sueltas dentro de `tcg_text.cpp`) — **10.37% tras Fases 98-102** (MSL/Runtime/TRK, RVL SDK, NW4R y GameSpy importados de Xenoblade/SS/MKW, todos CC0; ver `libs/README.md`). Total 57.54%. Los % de `game`/`sdk`
   son sobre sus propios archivos, no sobre el binario. Splits nuevos de librerías: solo
   `splits.txt` + `Object(NonMatching, ...)` sin fuente asm.
   `fn_80131428` (3796 bytes, parser principal de tags, 25.3%), `fn_801335F4` (3272 bytes, motor de

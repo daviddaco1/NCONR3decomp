@@ -801,7 +801,7 @@ config.libs = [
             Object(NonMatching, "revolution/si/SISamplingRate.c"),
             Object(NonMatching, "revolution/nwc24/NWC24Schedule.c"),
             Object(NonMatching, "revolution/nwc24/NWC24Ipc.c"),
-            Object(NonMatching, "revolution/so/soCommon.c"),
+            Object(NonMatching, "revolution/so/soCommon.c", src_dir="libs", source="mkw/lib/rvl/so/soCommon.c", cflags=cflags_mkw_spy, mw_version="GC/3.0a5.2"),
             Object(NonMatching, "revolution/vf/pf_cp932.c"),
         ],
     },
