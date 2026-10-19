@@ -165,27 +165,27 @@ extern "C" void fn_8019358C();
 extern "C" void strcmp();
 extern "C" void fn_801A9384();
 extern "C" void fn_801F58C4();
-extern "C" void fn_801F7684();
+extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv();
 extern "C" void fn_801F7E50();
-extern "C" void fn_801F7E58();
-extern "C" void fn_801FD428();
-extern "C" void fn_801FD430();
-extern "C" void fn_801FED74();
+extern "C" void SetTexCoord__Q34nw4r3lyt7PictureFUlPCQ34nw4r4math4VEC2();
+extern "C" void GetTexMapAry__Q34nw4r3lyt8MaterialCFv();
+extern "C" void GetTexMapAry__Q34nw4r3lyt8MaterialFv();
+extern "C" void Set__Q34nw4r3lyt6TexMapFP10TPLPaletteUl();
 extern "C" void fn_801FEFD8();
-extern "C" void fn_801FF330();
+extern "C" void GetFrameSize__Q34nw4r3lyt13AnimTransformCFv();
 extern "C" void fn_8020CCD4();
-extern "C" void fn_8020D0BC();
+extern "C" void __ct__Q34nw4r3snd10FxReverbHiFv();
 extern "C" void fn_8020D4E8();
 extern "C" void fn_8020DA30();
-extern "C" void fn_802E1DA0();
+extern "C" void GXSetCullMode();
 extern "C" void fn_802E4840();
-extern "C" void fn_802E4A4C();
-extern "C" void fn_802E4FA4();
-extern "C" void fn_802E4FD8();
-extern "C" void fn_802E5554();
-extern "C" void fn_802E59DC();
-extern "C" void fn_8030D8D0();
-extern "C" void fn_8030D9BC();
+extern "C" void GXSetFog();
+extern "C" void GXSetZMode();
+extern "C" void GXSetZCompLoc();
+extern "C" void GXSetProjection();
+extern "C" void GXSetClipMode();
+extern "C" void C_MTXPerspective();
+extern "C" void C_MTXOrtho();
 extern "C" void fn_803299FC();
 extern "C" void memset();
 
@@ -442,7 +442,7 @@ extern "C" asm void fn_80190744() {
     addi r3, r31, 0x2bc
     bl fn_8020CCD4
     addi r3, r31, 0x388
-    bl fn_8020D0BC
+    bl __ct__Q34nw4r3snd10FxReverbHiFv
     mr r3, r31
     lwz r31, 0xc(r1)
     lwz r0, 0x14(r1)
@@ -1837,7 +1837,7 @@ lbl_801918F0:
     cmpwi r4, 0x0
     beq lbl_80191920
     mr r3, r4
-    bl fn_801FF330
+    bl GetFrameSize__Q34nw4r3lyt13AnimTransformCFv
     clrlwi r0, r3, 16
     lfd f1, lbl_804A1108
     stw r0, 0xc(r1)
@@ -2381,7 +2381,7 @@ lbl_80191FF8:
 lbl_80192038:
     addi r3, r1, 0x18
     lwz r4, 0x8(r31)
-    bl fn_801F7684
+    bl GetLayoutRect__Q34nw4r3lyt6LayoutCFv
     addi r3, r1, 0x28
     addi r4, r1, 0x18
     bl fn_80193230
@@ -2406,10 +2406,10 @@ lbl_80192038:
     la r4, lbl_804A1110
     lfs f5, 0x2c(r4)
     lfs f6, 0x30(r4)
-    bl fn_8030D9BC
+    bl C_MTXOrtho
     addi r3, r1, 0x68
     li r4, 0x1
-    bl fn_802E5554
+    bl GXSetProjection
     b lbl_801920E0
 lbl_801920B8:
     addi r3, r1, 0x68
@@ -2418,10 +2418,10 @@ lbl_801920B8:
     la r4, lbl_804A1110
     lfs f3, 0x2c(r4)
     lfs f4, 0x30(r4)
-    bl fn_8030D8D0
+    bl C_MTXPerspective
     addi r3, r1, 0x68
     li r4, 0x0
-    bl fn_802E5554
+    bl GXSetProjection
 lbl_801920E0:
     addi r3, r1, 0x38
     bl fn_8002AE08
@@ -2474,9 +2474,9 @@ extern "C" asm void fn_8019217C() {
     mflr r0
     stw r0, 0x14(r1)
     li r3, 0x0
-    bl fn_802E59DC
+    bl GXSetClipMode
     li r3, 0x0
-    bl fn_802E1DA0
+    bl GXSetCullMode
     li r3, 0x0
     li r4, 0x11
     li r5, 0x0
@@ -2492,13 +2492,13 @@ extern "C" asm void fn_8019217C() {
     fmr f2, f1
     fmr f3, f1
     fmr f4, f1
-    bl fn_802E4A4C
+    bl GXSetFog
     li r3, 0x1
-    bl fn_802E4FD8
+    bl GXSetZCompLoc
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_802E4FA4
+    bl GXSetZMode
     lwz r0, 0x14(r1)
     mtlr r0
     addi r1, r1, 0x10
@@ -2595,7 +2595,7 @@ extern "C" asm void fn_80192294() {
     addi r3, r1, 0x8
     mr r4, r30
     li r5, 0x0
-    bl fn_801FED74
+    bl Set__Q34nw4r3lyt6TexMapFP10TPLPaletteUl
     mr r3, r31
     li r4, 0x0
     addi r5, r1, 0x8
@@ -3651,7 +3651,7 @@ lbl_80193128:
     mr r3, r28
     li r4, 0x0
     addi r5, r1, 0x20
-    bl fn_801F7E58
+    bl SetTexCoord__Q34nw4r3lyt7PictureFUlPCQ34nw4r4math4VEC2
 lbl_80193138:
     li r0, 0x88
     opword 0x13E1000C /* psq_lx f31, r1, r0, 0, qr0 */
@@ -3934,7 +3934,7 @@ extern "C" asm void fn_80193310() {
     bl fn_801A9384
 lbl_80193360:
     mr r3, r29
-    bl fn_801FD430
+    bl GetTexMapAry__Q34nw4r3lyt8MaterialFv
     clrlwi r0, r30, 24
     mulli r0, r0, 0x1c
     add r3, r3, r0
@@ -3974,7 +3974,7 @@ extern "C" asm void fn_80193394() {
     bl fn_801A9384
 lbl_801933E0:
     mr r3, r30
-    bl fn_801FD428
+    bl GetTexMapAry__Q34nw4r3lyt8MaterialCFv
     clrlwi r0, r31, 24
     mulli r0, r0, 0x1c
     add r3, r3, r0

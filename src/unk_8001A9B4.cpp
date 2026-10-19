@@ -65,11 +65,11 @@ extern "C" void fn_80173580();
 extern "C" void fn_80177280();
 extern "C" void fn_8017742C();
 extern "C" void fn_8017776C();
-extern "C" void fn_802DFDF8();
-extern "C" void fn_802E0688();
-extern "C" void fn_802E06BC();
-extern "C" void fn_802E1ABC();
-extern "C" void fn_802E37E0();
+extern "C" void GXSetVtxDesc();
+extern "C" void GXClearVtxDesc();
+extern "C" void GXSetVtxAttrFmt();
+extern "C" void GXBegin();
+extern "C" void GXLoadTexObj();
 extern "C" void fn_8030DE44();
 extern "C" void fn_8030DE88();
 extern "C" void memset();
@@ -840,34 +840,34 @@ extern "C" asm void fn_8001B408() {
     lwz r3, 0x0(r29)
     li r4, 0x3
     bl fn_800163E4
-    bl fn_802E0688
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xb
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xd
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0x0
     li r4, 0x9
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xb
     li r5, 0x1
     li r6, 0x5
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xd
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     lha r4, 0x3a(r29)
     lha r0, 0x54(r29)
     cmpw r0, r4
@@ -928,7 +928,7 @@ extern "C" asm void fn_8001B548() {
     stw r0, 0x10(r1)
     lwz r3, 0x20(r3)
     li r4, 0x0
-    bl fn_802E37E0
+    bl GXLoadTexObj
     li r29, 0x0
     li r28, 0x0
     lha r3, 0x54(r23)
@@ -937,7 +937,7 @@ extern "C" asm void fn_8001B548() {
     li r4, 0x0
     slwi r0, r26, 2
     clrlwi r5, r0, 16
-    bl fn_802E1ABC
+    bl GXBegin
     li r27, 0x0
     la r30, lbl_8049E690
     lfd f31, lbl_8049E688
@@ -1048,11 +1048,11 @@ lbl_8001B754:
     bl fn_8001B9E8
     lwz r3, 0x1c(r23)
     li r4, 0x0
-    bl fn_802E37E0
+    bl GXLoadTexObj
     li r3, 0x98
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     mulli r22, r25, 0xc
     lwz r3, 0x4c(r24)
     lfsx f1, r3, r22

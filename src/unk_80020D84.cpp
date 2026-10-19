@@ -71,11 +71,11 @@ extern "C" void fn_80173B20();
 extern "C" void fn_80177280();
 extern "C" void fn_8017742C();
 extern "C" void fn_8017776C();
-extern "C" void fn_802DFDF8();
-extern "C" void fn_802E0688();
-extern "C" void fn_802E06BC();
-extern "C" void fn_802E1ABC();
-extern "C" void fn_802E37E0();
+extern "C" void GXSetVtxDesc();
+extern "C" void GXClearVtxDesc();
+extern "C" void GXSetVtxAttrFmt();
+extern "C" void GXBegin();
+extern "C" void GXLoadTexObj();
 extern "C" void memset();
 
 // ----------------------------------------------------------------------------
@@ -966,35 +966,35 @@ lbl_80021968:
     bl fn_800163E4
     lwz r3, 0x50(r30)
     li r4, 0x0
-    bl fn_802E37E0
-    bl fn_802E0688
+    bl GXLoadTexObj
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xb
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xd
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0x0
     li r4, 0x9
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xb
     li r5, 0x1
     li r6, 0x5
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xd
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     lwz r0, 0x10(r30)
     rlwinm r0, r0, 0, 8, 8
     cmpwi r0, 0x0
@@ -1092,7 +1092,7 @@ extern "C" asm void fn_80021AA8() {
     slwi r5, r0, 1
     addi r0, r5, 0x2
     clrlwi r5, r0, 16
-    bl fn_802E1ABC
+    bl GXBegin
     li r25, 0x0
     lfs f29, 0x18(r30)
     lfs f30, 0x4(r30)
@@ -1311,7 +1311,7 @@ extern "C" asm void fn_80021DD0() {
     slwi r5, r0, 1
     addi r0, r5, 0x2
     clrlwi r5, r0, 16
-    bl fn_802E1ABC
+    bl GXBegin
     li r25, 0x0
     lfs f27, 0x18(r30)
     fneg f28, f26

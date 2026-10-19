@@ -51,25 +51,25 @@ extern "C" void fn_80036F88();
 extern "C" void fn_800389F4();
 extern "C" void fn_8003D62C();
 extern "C" void fn_8003D6F0();
-extern "C" void fn_801E2B5C();
-extern "C" void fn_801E2B68();
-extern "C" void fn_801E9244();
-extern "C" void fn_801E92E0();
-extern "C" void fn_80201C68();
-extern "C" void fn_80201CA0();
-extern "C" void fn_802DFDF8();
-extern "C" void fn_802E0688();
-extern "C" void fn_802E06BC();
-extern "C" void fn_802E0DD0();
-extern "C" void fn_802E0FF8();
+extern "C" void GetRenderModeObj__Q34nw4r3g3d8G3DStateFv();
+extern "C" void Invalidate__Q34nw4r3g3d8G3DStateFUl();
+extern "C" void SetViewport__Q34nw4r3g3d6CameraFffff();
+extern "C" void SetViewportZRange__Q34nw4r3g3d6CameraFff();
+extern "C" void MTX34RotAxisFIdx__Q24nw4r4mathFPQ34nw4r4math5MTX34PCQ34nw4r4math4VEC3f();
+extern "C" void MTX34RotXYZFIdx__Q24nw4r4mathFPQ34nw4r4math5MTX34fff();
+extern "C" void GXSetVtxDesc();
+extern "C" void GXClearVtxDesc();
+extern "C" void GXSetVtxAttrFmt();
+extern "C" void GXSetTexCoordGen2();
+extern "C" void GXSetNumTexGens();
 extern "C" void fn_802E151C();
-extern "C" void fn_802E1ABC();
-extern "C" void fn_802E2ED8();
-extern "C" void fn_802E353C();
-extern "C" void fn_802E3550();
-extern "C" void fn_802E3564();
-extern "C" void fn_802E37E0();
-extern "C" void fn_802E39C4();
+extern "C" void GXBegin();
+extern "C" void GXSetNumChans();
+extern "C" void GXGetTexObjWidth();
+extern "C" void GXGetTexObjHeight();
+extern "C" void GXGetTexObjFmt();
+extern "C" void GXLoadTexObj();
+extern "C" void GXInvalidateTexAll();
 extern "C" void fn_802E430C();
 extern "C" void fn_802E432C();
 extern "C" void fn_802E4460();
@@ -80,11 +80,11 @@ extern "C" void fn_802E4654();
 extern "C" void fn_802E46B0();
 extern "C" void fn_802E4700();
 extern "C" void fn_802E4750();
-extern "C" void fn_802E478C();
+extern "C" void GXSetTexCoordScaleManually();
 extern "C" void fn_802E48CC();
 extern "C" void fn_802E4A28();
-extern "C" void fn_802E4EFC();
-extern "C" void fn_802E4FA4();
+extern "C" void GXSetBlendMode();
+extern "C" void GXSetZMode();
 
 // ----------------------------------------------------------------------------
 // fn_8002AF44
@@ -96,7 +96,7 @@ extern "C" asm void fn_8002AF44() {
     fmuls f1, f0, f1
     fmuls f2, f0, f2
     fmuls f3, f0, f3
-    b fn_80201CA0
+    b MTX34RotXYZFIdx__Q24nw4r4mathFPQ34nw4r4math5MTX34fff
 }
 
 // ----------------------------------------------------------------------------
@@ -185,11 +185,11 @@ extern "C" asm void fn_8002AFF0() {
     mr r31, r3
     fmr f30, f5
     fmr f31, f6
-    bl fn_801E9244
+    bl SetViewport__Q34nw4r3g3d6CameraFffff
     mr r3, r31
     fmr f1, f30
     fmr f2, f31
-    bl fn_801E92E0
+    bl SetViewportZRange__Q34nw4r3g3d6CameraFff
     lfd f31, 0x18(r1)
     lfd f30, 0x10(r1)
     lwz r31, 0xc(r1)
@@ -300,7 +300,7 @@ extern "C" asm void fn_8002B12C() {
     la r5, lbl_8049E7F0
     lfs f0, 0x28(r5)
     fmuls f1, f0, f1
-    b fn_80201C68
+    b MTX34RotAxisFIdx__Q24nw4r4mathFPQ34nw4r4math5MTX34PCQ34nw4r4math4VEC3f
 }
 
 // ----------------------------------------------------------------------------
@@ -322,22 +322,22 @@ extern "C" asm void fn_8002B13C() {
     mr r29, r5
     mr r30, r6
     li r3, 0x7ff
-    bl fn_801E2B68
-    bl fn_801E2B5C
+    bl Invalidate__Q34nw4r3g3d8G3DStateFUl
+    bl GetRenderModeObj__Q34nw4r3g3d8G3DStateFv
     mr r31, r3
     li r3, 0x0
     bl fn_8003D62C
     mr r3, r28
     li r4, 0x0
-    bl fn_802E37E0
+    bl GXLoadTexObj
     mr r3, r29
     li r4, 0x1
-    bl fn_802E37E0
+    bl GXLoadTexObj
     mr r3, r30
     li r4, 0x2
-    bl fn_802E37E0
+    bl GXLoadTexObj
     li r3, 0x0
-    bl fn_802E2ED8
+    bl GXSetNumChans
     li r3, 0x0
     bl fn_802E430C
     li r3, 0x0
@@ -353,7 +353,7 @@ extern "C" asm void fn_8002B13C() {
     li r3, 0x5
     bl fn_802E432C
     li r3, 0x3
-    bl fn_802E0FF8
+    bl GXSetNumTexGens
     li r3, 0x0
     li r4, 0x1
     li r5, 0x4
@@ -397,13 +397,13 @@ extern "C" asm void fn_8002B13C() {
     li r5, 0x0
     li r6, 0x0
     li r7, 0x0
-    bl fn_802E478C
+    bl GXSetTexCoordScaleManually
     li r3, 0x2
     li r4, 0x3
     li r5, 0x3
     li r6, 0x3
     li r7, 0x3
-    bl fn_802E478C
+    bl GXSetTexCoordScaleManually
     li r3, 0x0
     li r4, 0x0
     li r5, 0x1
@@ -624,31 +624,31 @@ extern "C" asm void fn_8002B13C() {
     li r3, 0x0
     li r4, 0x3
     li r5, 0x0
-    bl fn_802E4FA4
+    bl GXSetZMode
     li r3, 0x1
     li r4, 0x4
     li r5, 0x5
     li r6, 0x0
-    bl fn_802E4EFC
-    bl fn_802E0688
+    bl GXSetBlendMode
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xd
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     lwz r3, 0x8(r27)
     li r4, 0x9
     li r5, 0x0
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     lwz r3, 0x8(r27)
     li r4, 0xd
     li r5, 0x1
     li r6, 0x0
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     lhz r0, 0xe(r31)
     lfd f1, lbl_8049E838
     stw r0, 0x1c(r1)
@@ -664,7 +664,7 @@ extern "C" asm void fn_8002B13C() {
     li r3, 0x80
     lwz r4, 0x8(r27)
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, lbl_8049E840
     fmr f2, f1
     bl fn_8002B98C
@@ -764,16 +764,16 @@ extern "C" asm void fn_8002B7E8() {
     bl fn_8002B9AC
     cmpwi r3, 0x0
     beq lbl_8002B93C
-    bl fn_801E2B5C
+    bl GetRenderModeObj__Q34nw4r3g3d8G3DStateFv
     mr r30, r3
     lwz r3, 0x8(r27)
     bl fn_8002B99C
     mr r31, r3
-    bl fn_802E353C
+    bl GXGetTexObjWidth
     clrlwi r0, r3, 16
     slwi r29, r0, 1
     mr r3, r31
-    bl fn_802E3550
+    bl GXGetTexObjHeight
     clrlwi r0, r3, 16
     mullw r29, r0, r29
     lwz r3, 0x8(r27)
@@ -789,11 +789,11 @@ extern "C" asm void fn_8002B7E8() {
     lwz r3, 0xc(r27)
     bl fn_8002B99C
     mr r31, r3
-    bl fn_802E353C
+    bl GXGetTexObjWidth
     clrlwi r0, r3, 16
     slwi r29, r0, 1
     mr r3, r31
-    bl fn_802E3550
+    bl GXGetTexObjHeight
     clrlwi r0, r3, 16
     mullw r29, r0, r29
     lwz r3, 0xc(r27)
@@ -801,7 +801,7 @@ extern "C" asm void fn_8002B7E8() {
     mr r4, r29
     bl DCInvalidateRange
     mr r3, r31
-    bl fn_802E3564
+    bl GXGetTexObjFmt
     mr r8, r3
     lwz r3, 0xc(r27)
     li r4, 0x0
@@ -812,16 +812,16 @@ extern "C" asm void fn_8002B7E8() {
     li r10, 0x1
     bl fn_80034F44
     bl fn_802E151C
-    bl fn_802E39C4
+    bl GXInvalidateTexAll
     mr r3, r27
     li r4, 0x2
     bl fn_8002B9AC
     mr r28, r3
     mr r3, r31
-    bl fn_802E3550
+    bl GXGetTexObjHeight
     clrlwi r29, r3, 16
     mr r3, r31
-    bl fn_802E353C
+    bl GXGetTexObjWidth
     clrlwi r30, r3, 16
     lwz r3, 0xc(r27)
     bl fn_8002B9A4
@@ -871,7 +871,7 @@ extern "C" asm void fn_8002B968() {
     nofralloc
     li r7, 0x0
     li r8, 0x7d
-    b fn_802E0DD0
+    b GXSetTexCoordGen2
 }
 
 // ----------------------------------------------------------------------------

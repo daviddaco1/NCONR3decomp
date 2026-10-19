@@ -95,13 +95,13 @@ extern "C" void fn_800443B4();
 extern "C" void fn_800443B8();
 extern "C" void __throw();
 extern "C" void fn_801A9384();
-extern "C" void fn_801DF1B4();
-extern "C" void fn_801EC284();
-extern "C" void fn_801EC370();
-extern "C" void fn_80222DFC();
-extern "C" void fn_80222EC8();
-extern "C" void fn_80222F0C();
-extern "C" void fn_80222F38();
+extern "C" void Destroy__Q34nw4r3g3d6G3dObjFv();
+extern "C" void __ct__Q34nw4r3g3d6ScnObjFP12MEMAllocator();
+extern "C" void __dt__Q34nw4r3g3d6ScnObjFv();
+extern "C" void __dt__Q44nw4r2ut6detail12LinkListImplFv();
+extern "C" void Clear__Q44nw4r2ut6detail12LinkListImplFv();
+extern "C" void Insert__Q44nw4r2ut6detail12LinkListImplFQ54nw4r2ut6detail12LinkListImpl8IteratorPQ34nw4r2ut12LinkListNode();
+extern "C" void Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode();
 
 // ----------------------------------------------------------------------------
 // fn_800430A4
@@ -787,7 +787,7 @@ extern "C" asm void fn_80043920() {
     cmpwi r3, 0x0
     beq lbl_80043960
     li r4, 0x0
-    bl fn_801EC370
+    bl __dt__Q34nw4r3g3d6ScnObjFv
     extsh r0, r31
     cmpwi r0, 0x0
     ble lbl_80043960
@@ -813,7 +813,7 @@ extern "C" asm void fn_8004397C() {
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
     mr r31, r3
-    bl fn_801EC284
+    bl __ct__Q34nw4r3g3d6ScnObjFP12MEMAllocator
     lis r3, lbl_80361330@ha
     addi r0, r3, lbl_80361330@l
     stw r0, 0x0(r31)
@@ -928,7 +928,7 @@ extern "C" asm void fn_80043AB4() {
     mr r5, r3
     mr r3, r31
     addi r4, r1, 0x8
-    bl fn_80222F0C
+    bl Insert__Q44nw4r2ut6detail12LinkListImplFQ54nw4r2ut6detail12LinkListImpl8IteratorPQ34nw4r2ut12LinkListNode
     stw r3, 0xc(r1)
     addi r3, r1, 0x10
     addi r4, r1, 0xc
@@ -1002,7 +1002,7 @@ extern "C" asm void fn_80043B90() {
     bl fn_80043B10
     mr r4, r3
     mr r3, r31
-    bl fn_80222F38
+    bl Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode
     stw r3, 0x8(r1)
     addi r3, r1, 0xc
     addi r4, r1, 0x8
@@ -1157,7 +1157,7 @@ extern "C" asm void dtor_80043D28() {
     cmpwi r3, 0x0
     beq lbl_80043D68
     li r4, 0x0
-    bl fn_80222DFC
+    bl __dt__Q44nw4r2ut6detail12LinkListImplFv
     extsh r0, r31
     cmpwi r0, 0x0
     ble lbl_80043D68
@@ -1359,7 +1359,7 @@ extern "C" asm void fn_80043F9C() {
     addi r0, r4, lbl_80348E48@l
     stw r0, 0x4(r3)
     addi r3, r3, 0x14
-    bl fn_80222EC8
+    bl Clear__Q44nw4r2ut6detail12LinkListImplFv
     li r29, 0x0
     li r31, 0x0
     mr r30, r31
@@ -1369,7 +1369,7 @@ lbl_80043FE4:
     lwzx r3, r3, r31
     cmpwi r3, 0x0
     beq lbl_80044000
-    bl fn_801DF1B4
+    bl Destroy__Q34nw4r3g3d6G3dObjFv
     lwz r3, 0xc(r27)
     stwx r30, r3, r31
 lbl_80044000:
@@ -1505,7 +1505,7 @@ lbl_800441B8:
     cmplw r6, r0
     blt lbl_800441A8
     addi r3, r31, 0x14
-    bl fn_80222EC8
+    bl Clear__Q44nw4r2ut6detail12LinkListImplFv
     mr r3, r31
     addi r11, r1, 0x20
     bl _restgpr_29
@@ -1616,7 +1616,7 @@ lbl_80044324:
     lhz r0, 0x0(r31)
     slwi r0, r0, 2
     lwzx r3, r3, r0
-    bl fn_801DF1B4
+    bl Destroy__Q34nw4r3g3d6G3dObjFv
     li r4, 0x0
     lwz r3, 0xc(r30)
     lhz r0, 0x0(r31)

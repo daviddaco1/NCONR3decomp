@@ -173,21 +173,21 @@ extern "C" void strcmp();
 extern "C" void fn_801A9384();
 extern "C" void fn_801D0CD0();
 extern "C" void fn_801D0D78();
-extern "C" void fn_801D1228();
-extern "C" void fn_801D12D0();
-extern "C" void fn_801D2A80();
+extern "C" void GetResNode__Q34nw4r3g3d6ResMdlCFi();
+extern "C" void GetResNodeNumEntries__Q34nw4r3g3d6ResMdlCFv();
+extern "C" void GetTexObj__Q34nw4r3g3d9ResTexObjF11_GXTexMapID();
 extern "C" void fn_801D2AF8();
 extern "C" void fn_801D2F10();
 extern "C" void fn_801D2F60();
-extern "C" void fn_801D311C();
-extern "C" void fn_801D31D8();
-extern "C" void fn_801D326C();
-extern "C" void fn_801D3324();
-extern "C" void fn_801F0D40();
-extern "C" void fn_801F1334();
+extern "C" void GXGetTevColor__Q34nw4r3g3d14ResMatTevColorCF11_GXTevRegIDP8_GXColor();
+extern "C" void GXSetTevColor__Q34nw4r3g3d14ResMatTevColorF11_GXTevRegID8_GXColor();
+extern "C" void GXGetTevKColor__Q34nw4r3g3d14ResMatTevColorCF14_GXTevKColorIDP8_GXColor();
+extern "C" void GXSetTevKColor__Q34nw4r3g3d14ResMatTevColorF14_GXTevKColorID8_GXColor();
+extern "C" void UpdateFrame__Q34nw4r3g3d12ScnMdlSimpleFv();
+extern "C" void GetResTexSrt__Q44nw4r3g3d6ScnMdl15CopiedMatAccessFb();
 extern "C" void fn_801F1454();
-extern "C" void fn_801F149C();
-extern "C" void fn_802E34F8();
+extern "C" void __ct__Q44nw4r3g3d6ScnMdl15CopiedMatAccessFPQ34nw4r3g3d6ScnMdlUl();
+extern "C" void GXInitTexObjFilter();
 extern "C" void* memcpy(void*, const void*, unsigned int);
 extern "C" void* memset(void*, int, unsigned int);
 extern "C" int sprintf(char*, const char*, ...);
@@ -6568,7 +6568,7 @@ extern "C" asm void fn_8018280C() {
     addi r3, r1, 0x8
     bl fn_8003452C
     mr r31, r3
-    bl fn_801F0D40
+    bl UpdateFrame__Q34nw4r3g3d12ScnMdlSimpleFv
     mr r3, r31
     li r4, 0x2
     li r5, 0x0
@@ -6602,7 +6602,7 @@ extern "C" asm void fn_80182868() {
     addi r4, r1, 0x10
     bl fn_8002E628
     addi r3, r1, 0x20
-    bl fn_801D12D0
+    bl GetResNodeNumEntries__Q34nw4r3g3d6ResMdlCFv
     mr r30, r3
     li r29, 0x0
     lis r3, lbl_8035E288@ha
@@ -6611,7 +6611,7 @@ extern "C" asm void fn_80182868() {
 lbl_801828C0:
     addi r3, r1, 0x20
     mr r4, r29
-    bl fn_801D1228
+    bl GetResNode__Q34nw4r3g3d6ResMdlCFi
     stw r3, 0xc(r1)
     addi r3, r1, 0x1c
     addi r4, r1, 0xc
@@ -6667,7 +6667,7 @@ extern "C" asm void fn_80182950() {
     addi r4, r1, 0x10
     bl fn_8002E628
     addi r3, r1, 0x20
-    bl fn_801D12D0
+    bl GetResNodeNumEntries__Q34nw4r3g3d6ResMdlCFv
     mr r30, r3
     li r29, 0x0
     lis r3, lbl_8035E288@ha
@@ -6676,7 +6676,7 @@ extern "C" asm void fn_80182950() {
 lbl_801829A8:
     addi r3, r1, 0x20
     mr r4, r29
-    bl fn_801D1228
+    bl GetResNode__Q34nw4r3g3d6ResMdlCFi
     stw r3, 0xc(r1)
     addi r3, r1, 0x1c
     addi r4, r1, 0xc
@@ -6737,7 +6737,7 @@ extern "C" asm void fn_80182A38() {
     addi r4, r1, 0x18
     bl fn_8002E628
     addi r3, r1, 0x28
-    bl fn_801D12D0
+    bl GetResNodeNumEntries__Q34nw4r3g3d6ResMdlCFv
     mr r29, r3
     cmpwi r31, 0x0
     blt lbl_80182AAC
@@ -6752,7 +6752,7 @@ lbl_80182AAC:
 lbl_80182AB8:
     addi r3, r1, 0x28
     mr r4, r30
-    bl fn_801D1228
+    bl GetResNode__Q34nw4r3g3d6ResMdlCFi
     stw r3, 0x14(r1)
     addi r3, r1, 0x24
     addi r4, r1, 0x14
@@ -6770,7 +6770,7 @@ lbl_80182AF8:
     addi r3, r1, 0x2c
     mr r4, r28
     mr r5, r30
-    bl fn_801F149C
+    bl __ct__Q44nw4r3g3d6ScnMdl15CopiedMatAccessFPQ34nw4r3g3d6ScnMdlUl
     addi r3, r1, 0x2c
     li r4, 0x0
     bl fn_801F1454
@@ -6790,7 +6790,7 @@ lbl_80182B38:
     addi r3, r1, 0x20
     mr r4, r26
     addi r5, r1, 0xc
-    bl fn_801D31D8
+    bl GXSetTevColor__Q34nw4r3g3d14ResMatTevColorF11_GXTevRegID8_GXColor
     b lbl_80182B74
 lbl_80182B58:
     mr r3, r27
@@ -6799,7 +6799,7 @@ lbl_80182B58:
     addi r3, r1, 0x20
     mr r4, r26
     addi r5, r1, 0x8
-    bl fn_801D3324
+    bl GXSetTevKColor__Q34nw4r3g3d14ResMatTevColorF14_GXTevKColorID8_GXColor
 lbl_80182B74:
     addi r3, r1, 0x20
     bl fn_80030E38
@@ -6855,7 +6855,7 @@ extern "C" asm void fn_80182BC8() {
     bl fn_8002E628
     addi r3, r1, 0x20
     mr r4, r30
-    bl fn_801D1228
+    bl GetResNode__Q34nw4r3g3d6ResMdlCFi
     stw r3, 0xc(r1)
     addi r3, r1, 0x1c
     addi r4, r1, 0xc
@@ -6875,7 +6875,7 @@ lbl_80182C58:
     addi r3, r1, 0x28
     mr r4, r31
     mr r5, r30
-    bl fn_801F149C
+    bl __ct__Q44nw4r3g3d6ScnMdl15CopiedMatAccessFPQ34nw4r3g3d6ScnMdlUl
     addi r3, r1, 0x28
     li r4, 0x0
     bl fn_801F1454
@@ -6892,19 +6892,19 @@ lbl_80182C98:
     addi r3, r1, 0x18
     mr r4, r29
     addi r5, r1, 0x24
-    bl fn_801D311C
+    bl GXGetTevColor__Q34nw4r3g3d14ResMatTevColorCF11_GXTevRegIDP8_GXColor
     b lbl_80182CD0
 lbl_80182CAC:
     addi r3, r1, 0x18
     mr r4, r29
     addi r5, r1, 0x24
-    bl fn_801D326C
+    bl GXGetTevKColor__Q34nw4r3g3d14ResMatTevColorCF14_GXTevKColorIDP8_GXColor
     b lbl_80182CD0
 lbl_80182CC0:
     addi r3, r1, 0x18
     mr r4, r29
     addi r5, r1, 0x24
-    bl fn_801D311C
+    bl GXGetTevColor__Q34nw4r3g3d14ResMatTevColorCF11_GXTevRegIDP8_GXColor
 lbl_80182CD0:
     lwz r3, 0x24(r1)
     addi r11, r1, 0x70
@@ -6955,7 +6955,7 @@ extern "C" asm void fn_80182D14() {
     addi r4, r1, 0x14
     bl fn_8002E628
     addi r3, r1, 0x28
-    bl fn_801D12D0
+    bl GetResNodeNumEntries__Q34nw4r3g3d6ResMdlCFv
     mr r29, r3
     li r28, 0x0
     lis r3, lbl_8035E288@ha
@@ -6964,7 +6964,7 @@ extern "C" asm void fn_80182D14() {
 lbl_80182D7C:
     addi r3, r1, 0x28
     mr r4, r28
-    bl fn_801D1228
+    bl GetResNode__Q34nw4r3g3d6ResMdlCFi
     stw r3, 0x10(r1)
     addi r3, r1, 0x24
     addi r4, r1, 0x10
@@ -6982,10 +6982,10 @@ lbl_80182DBC:
     addi r3, r1, 0x2c
     mr r4, r25
     mr r5, r28
-    bl fn_801F149C
+    bl __ct__Q44nw4r3g3d6ScnMdl15CopiedMatAccessFPQ34nw4r3g3d6ScnMdlUl
     addi r3, r1, 0x2c
     li r4, 0x0
-    bl fn_801F1334
+    bl GetResTexSrt__Q44nw4r3g3d6ScnMdl15CopiedMatAccessFb
     stw r3, 0xc(r1)
     addi r3, r1, 0x20
     addi r4, r1, 0xc
@@ -7011,7 +7011,7 @@ lbl_80182DFC:
     bne lbl_80182E58
     addi r3, r1, 0x20
     mr r4, r27
-    bl fn_801D2A80
+    bl GetTexObj__Q34nw4r3g3d9ResTexObjF11_GXTexMapID
     mr r4, r23
     bl fn_8003C0E8
     addi r3, r1, 0x20
@@ -7057,7 +7057,7 @@ lbl_80182EAC:
 
 extern "C" asm void fn_80182EC4() {
     nofralloc
-    b fn_802E34F8
+    b GXInitTexObjFilter
 }
 
 extern "C" asm void fn_80182EC8() {

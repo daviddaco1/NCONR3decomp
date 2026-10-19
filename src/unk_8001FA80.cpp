@@ -56,13 +56,13 @@ extern "C" void fn_8017B004();
 extern "C" void fn_8017B074();
 extern "C" void fn_8017B144();
 extern "C" void fn_80201A20();
-extern "C" void fn_802DFDF8();
-extern "C" void fn_802E0688();
-extern "C" void fn_802E06BC();
-extern "C" void fn_802E1ABC();
-extern "C" void fn_802E37E0();
-extern "C" void fn_802E5604();
-extern "C" void fn_802E5918();
+extern "C" void GXSetVtxDesc();
+extern "C" void GXClearVtxDesc();
+extern "C" void GXSetVtxAttrFmt();
+extern "C" void GXBegin();
+extern "C" void GXLoadTexObj();
+extern "C" void GXGetProjectionv();
+extern "C" void GXGetViewportv();
 extern "C" void memset();
 
 // ----------------------------------------------------------------------------
@@ -453,35 +453,35 @@ lbl_8001FF44:
     lwz r3, lbl_8049D6B0
     addi r3, r3, 0x4
     li r4, 0x0
-    bl fn_802E37E0
-    bl fn_802E0688
+    bl GXLoadTexObj
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xb
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xd
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0x0
     li r4, 0x9
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xb
     li r5, 0x1
     li r6, 0x5
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xd
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     mr r3, r31
     bl fn_80020024
 lbl_80020000:
@@ -540,9 +540,9 @@ extern "C" asm void fn_80020024() {
     mr r4, r26
     bl fn_8017B004
     addi r3, r1, 0xb8
-    bl fn_802E5604
+    bl GXGetProjectionv
     addi r3, r1, 0x78
-    bl fn_802E5918
+    bl GXGetViewportv
     addi r3, r1, 0xf8
     mr r4, r26
     bl fn_8017B074
@@ -571,7 +571,7 @@ extern "C" asm void fn_80020024() {
     li r4, 0x0
     addi r0, r5, 0x2
     clrlwi r5, r0, 16
-    bl fn_802E1ABC
+    bl GXBegin
     addi r3, r1, 0x50
     addi r4, r25, 0x2c
     bl fn_80019DAC
@@ -818,7 +818,7 @@ lbl_800204CC:
     slwi r0, r0, 1
     mullw r0, r6, r0
     clrlwi r5, r0, 16
-    bl fn_802E1ABC
+    bl GXBegin
     li r26, 0x1
     lfd f31, lbl_8049E700
     la r28, lbl_8049E708

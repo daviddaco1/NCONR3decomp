@@ -150,8 +150,8 @@ extern "C" void fn_80182220();
 extern "C" void fn_80182518();
 extern "C" void fn_801831EC();
 extern "C" void fn_801A32A0();
-extern "C" void fn_8030D3A4();
-extern "C" void fn_8030E028();
+extern "C" void PSMTXQuat();
+extern "C" void C_QUATMtx();
 extern "C" void memcpy();
 extern "C" void memset();
 extern "C" void sprintf();
@@ -2613,7 +2613,7 @@ lbl_800A3504:
     bl fn_801735E8
     addi r3, r31, 0x18
     addi r4, r1, 0x30
-    bl fn_8030E028
+    bl C_QUATMtx
     b lbl_800A35D8
 lbl_800A35B4:
     addi r3, r31, 0x18
@@ -3020,7 +3020,7 @@ lbl_800A3AB4:
     bl fn_801735E8
     addi r3, r29, 0x18
     addi r4, r1, 0x30
-    bl fn_8030E028
+    bl C_QUATMtx
     b lbl_800A3B84
 lbl_800A3B60:
     addi r3, r29, 0x18
@@ -3668,7 +3668,7 @@ lbl_800A43F4:
     bl fn_80173750
     addi r3, r1, 0x30
     addi r4, r31, 0x18
-    bl fn_8030D3A4
+    bl PSMTXQuat
     addi r3, r1, 0x30
     mr r4, r3
     addi r5, r31, 0x28
@@ -3987,7 +3987,7 @@ lbl_800A4858:
     bl fn_80173750
     addi r3, r1, 0x18
     addi r4, r30, 0x18
-    bl fn_8030D3A4
+    bl PSMTXQuat
     addi r3, r1, 0x18
     mr r4, r3
     addi r5, r30, 0x28
@@ -4096,7 +4096,7 @@ lbl_800A49D8:
     bl fn_80173750
     addi r3, r1, 0x18
     addi r4, r31, 0x18
-    bl fn_8030D3A4
+    bl PSMTXQuat
     addi r3, r1, 0x18
     mr r4, r3
     addi r5, r31, 0x28

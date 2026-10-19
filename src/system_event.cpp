@@ -117,7 +117,7 @@ extern "C" void fn_80182744();
 extern "C" void fn_8018D080();
 extern "C" void fn_8018D0D0();
 extern "C" void fn_8018D0EC();
-extern "C" void fn_80201814();
+extern "C" void Atan2FIdx__Q24nw4r4mathFff();
 
 // ----------------------------------------------------------------------------
 // fn_800632E0
@@ -4911,7 +4911,7 @@ extern "C" asm void fn_800674B8() {
     stwu r1, -0x10(r1)
     mflr r0
     stw r0, 0x14(r1)
-    bl fn_80201814
+    bl Atan2FIdx__Q24nw4r4mathFff
     la r3, lbl_8049EDE0
     lfs f0, 0x20(r3)
     fmuls f1, f0, f1

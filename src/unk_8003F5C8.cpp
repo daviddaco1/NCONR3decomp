@@ -46,20 +46,20 @@ extern "C" void fn_8003FE6C();
 extern "C" void fn_8003FE80();
 extern "C" void fn_8003FE94();
 extern "C" void fn_8003FEEC();
-extern "C" void fn_801EDD5C();
-extern "C" void fn_801F4508();
-extern "C" void fn_801F4550();
-extern "C" void fn_801F458C();
-extern "C" void fn_801F45CC();
-extern "C" void fn_801F464C();
-extern "C" void fn_801F46CC();
-extern "C" void fn_801F470C();
+extern "C" void GetLightSet__Q34nw4r3g3d7ScnRootFi();
+extern "C" void InitLightColor__Q34nw4r3g3d8LightObjF8_GXColor();
+extern "C" void InitLightPos__Q34nw4r3g3d8LightObjFfff();
+extern "C" void InitLightDir__Q34nw4r3g3d8LightObjFfff();
+extern "C" void InitLightSpot__Q34nw4r3g3d8LightObjFf9_GXSpotFn();
+extern "C" void InitLightDistAttn__Q34nw4r3g3d8LightObjFff13_GXDistAttnFn();
+extern "C" void InitSpecularDir__Q34nw4r3g3d8LightObjFfff();
+extern "C" void InitLightShininess__Q34nw4r3g3d8LightObjFf();
 extern "C" void fn_801F476C();
 extern "C" void fn_801F47DC();
 extern "C" void fn_801F484C();
-extern "C" void fn_801F4F4C();
-extern "C" void fn_801F4FA4();
-extern "C" void fn_801F5064();
+extern "C" void GetLightObj__Q34nw4r3g3d8LightSetFUl();
+extern "C" void GetAmbLightObj__Q34nw4r3g3d8LightSetFv();
+extern "C" void SelectAmbLightObj__Q34nw4r3g3d8LightSetFi();
 
 // ----------------------------------------------------------------------------
 // fn_8003F5C8
@@ -78,14 +78,14 @@ extern "C" asm void fn_8003F5C8() {
     mr r4, r3
     addi r3, r1, 0x8
     mr r5, r30
-    bl fn_801EDD5C
+    bl GetLightSet__Q34nw4r3g3d7ScnRootFi
     addi r3, r1, 0x8
     bl fn_80039EE8
     cmpwi r3, 0x0
     beq lbl_8003F61C
     addi r3, r1, 0x8
     mr r4, r31
-    bl fn_801F5064
+    bl SelectAmbLightObj__Q34nw4r3g3d8LightSetFi
     b lbl_8003F620
 lbl_8003F61C:
     li r3, 0x0
@@ -145,7 +145,7 @@ lbl_8003F6B8:
     stw r0, 0x8(r1)
     mr r3, r30
     addi r4, r1, 0x8
-    bl fn_801F4508
+    bl InitLightColor__Q34nw4r3g3d8LightObjF8_GXColor
     lwz r0, 0x0(r31)
     cmpwi r0, 0x0
     bne lbl_8003F6F0
@@ -153,7 +153,7 @@ lbl_8003F6B8:
     lfs f1, 0x10(r31)
     lfs f2, 0x14(r31)
     lfs f3, 0x18(r31)
-    bl fn_801F4550
+    bl InitLightPos__Q34nw4r3g3d8LightObjFfff
     b lbl_8003F770
 lbl_8003F6F0:
     cmplwi r0, 0x1
@@ -162,21 +162,21 @@ lbl_8003F6F0:
     lfs f1, 0x10(r31)
     lfs f2, 0x14(r31)
     lfs f3, 0x18(r31)
-    bl fn_801F4550
+    bl InitLightPos__Q34nw4r3g3d8LightObjFfff
     mr r3, r30
     lfs f1, 0x1c(r31)
     lfs f2, 0x20(r31)
     lfs f3, 0x24(r31)
-    bl fn_801F458C
+    bl InitLightDir__Q34nw4r3g3d8LightObjFfff
     mr r3, r30
     lfs f1, 0x30(r31)
     lwz r4, 0x2c(r31)
-    bl fn_801F45CC
+    bl InitLightSpot__Q34nw4r3g3d8LightObjFf9_GXSpotFn
     mr r3, r30
     lfs f1, 0x38(r31)
     lfs f2, 0x3c(r31)
     lwz r4, 0x34(r31)
-    bl fn_801F464C
+    bl InitLightDistAttn__Q34nw4r3g3d8LightObjFff13_GXDistAttnFn
     b lbl_8003F770
 lbl_8003F748:
     cmplwi r0, 0x2
@@ -185,10 +185,10 @@ lbl_8003F748:
     lfs f1, 0x1c(r31)
     lfs f2, 0x20(r31)
     lfs f3, 0x24(r31)
-    bl fn_801F46CC
+    bl InitSpecularDir__Q34nw4r3g3d8LightObjFfff
     mr r3, r30
     lfs f1, 0x40(r31)
-    bl fn_801F470C
+    bl InitLightShininess__Q34nw4r3g3d8LightObjFf
 lbl_8003F770:
     li r3, 0x1
     b lbl_8003F77C
@@ -268,10 +268,10 @@ extern "C" asm void fn_8003F82C() {
     mr r4, r3
     addi r3, r1, 0x8
     mr r5, r29
-    bl fn_801EDD5C
+    bl GetLightSet__Q34nw4r3g3d7ScnRootFi
     addi r3, r1, 0x8
     mr r4, r30
-    bl fn_801F4F4C
+    bl GetLightObj__Q34nw4r3g3d8LightSetFUl
     cmpwi r3, 0x0
     beq lbl_8003F884
     mr r4, r31
@@ -305,9 +305,9 @@ extern "C" asm void fn_8003F8A0() {
     mr r4, r3
     addi r3, r1, 0x8
     mr r5, r30
-    bl fn_801EDD5C
+    bl GetLightSet__Q34nw4r3g3d7ScnRootFi
     addi r3, r1, 0x8
-    bl fn_801F4FA4
+    bl GetAmbLightObj__Q34nw4r3g3d8LightSetFv
     cmpwi r3, 0x0
     beq lbl_8003F918
     lwz r0, 0x0(r31)
@@ -439,10 +439,10 @@ extern "C" asm void fn_8003FA5C() {
     mr r4, r3
     addi r3, r1, 0x8
     mr r5, r29
-    bl fn_801EDD5C
+    bl GetLightSet__Q34nw4r3g3d7ScnRootFi
     addi r3, r1, 0x8
     mr r4, r30
-    bl fn_801F4F4C
+    bl GetLightObj__Q34nw4r3g3d8LightSetFUl
     cmpwi r3, 0x0
     beq lbl_8003FAB4
     mr r4, r31
@@ -479,9 +479,9 @@ extern "C" asm void fn_8003FADC() {
     mr r4, r3
     addi r3, r1, 0x8
     mr r5, r30
-    bl fn_801EDD5C
+    bl GetLightSet__Q34nw4r3g3d7ScnRootFi
     addi r3, r1, 0x8
-    bl fn_801F4FA4
+    bl GetAmbLightObj__Q34nw4r3g3d8LightSetFv
     cmpwi r3, 0x0
     beq lbl_8003FB50
     li r0, 0x3

@@ -31,11 +31,11 @@ extern "C" void fn_80170E84();
 extern "C" void fn_80186808();
 extern "C" void fn_80186C78();
 extern "C" void __throw();
-extern "C" void fn_801F6D00();
-extern "C" void fn_802005A0();
-extern "C" void fn_80200804();
-extern "C" void fn_80200860();
-extern "C" void fn_80222DFC();
+extern "C" void __ct__Q34nw4r3lyt6LayoutFv();
+extern "C" void __dt__Q34nw4r3lyt16ResourceAccessorFv();
+extern "C" void __ct__Q34nw4r3lyt19ArcResourceAccessorFv();
+extern "C" void Attach__Q34nw4r3lyt19ArcResourceAccessorFPvPCc();
+extern "C" void __dt__Q44nw4r2ut6detail12LinkListImplFv();
 extern "C" void fn_8030C61C();
 extern "C" void fn_8030CAF0();
 extern "C" void fn_8030CB00();
@@ -91,7 +91,7 @@ lbl_80048AEC:
     cmpwi r30, 0x0
     beq lbl_80048B5C
     stw r1, 0x1c(r31)
-    bl fn_80200804
+    bl __ct__Q34nw4r3lyt19ArcResourceAccessorFv
     b lbl_80048B5C
     mr r3, r30
     mr r4, r29
@@ -107,7 +107,7 @@ lbl_80048B5C:
     lwz r4, 0x5c(r4)
     lis r5, lbl_80349718@ha
     addi r5, r5, lbl_80349718@l
-    bl fn_80200860
+    bl Attach__Q34nw4r3lyt19ArcResourceAccessorFPvPCc
     cmpwi r3, 0x0
     bne lbl_80048B88
     li r3, 0x0
@@ -206,7 +206,7 @@ extern "C" asm void fn_80048C7C() {
     bl dtor_80048CE8
     mr r3, r30
     li r4, 0x0
-    bl fn_802005A0
+    bl __dt__Q34nw4r3lyt16ResourceAccessorFv
     extsh r0, r31
     cmpwi r0, 0x0
     ble lbl_80048CCC
@@ -237,7 +237,7 @@ extern "C" asm void dtor_80048CE8() {
     cmpwi r3, 0x0
     beq lbl_80048D28
     li r4, 0x0
-    bl fn_80222DFC
+    bl __dt__Q44nw4r2ut6detail12LinkListImplFv
     extsh r0, r31
     cmpwi r0, 0x0
     ble lbl_80048D28
@@ -293,7 +293,7 @@ extern "C" asm void fn_80048D44() {
     cmpwi r30, 0x0
     beq lbl_80048DF4
     stw r1, 0x1c(r31)
-    bl fn_801F6D00
+    bl __ct__Q34nw4r3lyt6LayoutFv
     b lbl_80048DF4
     mr r3, r30
     mr r4, r29

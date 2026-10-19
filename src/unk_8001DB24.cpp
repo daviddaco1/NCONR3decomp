@@ -83,14 +83,14 @@ extern "C" void fn_8017776C();
 extern "C" void fn_8017B004();
 extern "C" void fn_8017B074();
 extern "C" void fn_8017B144();
-extern "C" void fn_802DFDF8();
-extern "C" void fn_802E0688();
-extern "C" void fn_802E06BC();
-extern "C" void fn_802E1ABC();
-extern "C" void fn_802E37E0();
-extern "C" void fn_802E5388();
-extern "C" void fn_802E5604();
-extern "C" void fn_802E5918();
+extern "C" void GXSetVtxDesc();
+extern "C" void GXClearVtxDesc();
+extern "C" void GXSetVtxAttrFmt();
+extern "C" void GXBegin();
+extern "C" void GXLoadTexObj();
+extern "C" void GXProject();
+extern "C" void GXGetProjectionv();
+extern "C" void GXGetViewportv();
 extern "C" void fn_8030DEEC();
 extern "C" void memset();
 
@@ -692,59 +692,59 @@ lbl_8001E310:
     lwz r3, lbl_8049D6B0
     addi r3, r3, 0x4
     li r4, 0x0
-    bl fn_802E37E0
-    bl fn_802E0688
+    bl GXLoadTexObj
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xb
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xd
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0x0
     li r4, 0x9
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xb
     li r5, 0x1
     li r6, 0x5
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xd
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     mr r3, r30
     addi r4, r1, 0x8
     bl fn_8001EA44
     b lbl_8001E438
 lbl_8001E3E0:
-    bl fn_802E0688
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xb
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0x0
     li r4, 0x9
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xb
     li r5, 0x1
     li r6, 0x5
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     mr r3, r30
     addi r4, r1, 0x8
     bl fn_8001E460
@@ -864,7 +864,7 @@ lbl_8001E5C0:
     li r3, 0x98
     li r4, 0x0
     clrlwi r5, r31, 16
-    bl fn_802E1ABC
+    bl GXBegin
     li r25, 0x0
     b lbl_8001E8B4
 lbl_8001E5D8:
@@ -1197,9 +1197,9 @@ extern "C" asm void fn_8001EA44() {
     addi r3, r1, 0xb0
     bl fn_8017B004
     addi r3, r1, 0x70
-    bl fn_802E5604
+    bl GXGetProjectionv
     addi r3, r1, 0x30
-    bl fn_802E5918
+    bl GXGetViewportv
     lha r4, 0x70(r21)
     lha r25, 0x72(r21)
     cmpw r25, r4
@@ -1298,7 +1298,7 @@ lbl_8001EC30:
     li r3, 0x98
     li r4, 0x0
     clrlwi r5, r30, 16
-    bl fn_802E1ABC
+    bl GXBegin
     li r24, 0x0
     b lbl_8001F000
 lbl_8001EC48:
@@ -1791,7 +1791,7 @@ lbl_8001F2E8:
     li r4, 0x0
     addi r0, r28, 0x2
     clrlwi r5, r0, 16
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, 0x20(r1)
     lfs f2, 0x24(r1)
     lfs f3, 0x28(r1)
@@ -1904,7 +1904,7 @@ extern "C" asm void fn_8001F49C() {
     li r4, 0x0
     addi r0, r29, 0x2
     clrlwi r5, r0, 16
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, 0x20(r1)
     lfs f2, 0x24(r1)
     lfs f3, 0x28(r1)
@@ -2005,9 +2005,9 @@ extern "C" asm void fn_8001F63C() {
     mr r4, r26
     bl fn_8017B004
     addi r3, r1, 0xa8
-    bl fn_802E5604
+    bl GXGetProjectionv
     addi r3, r1, 0x68
-    bl fn_802E5918
+    bl GXGetViewportv
     addi r3, r1, 0x38
     mr r4, r26
     bl fn_8017B074
@@ -2030,7 +2030,7 @@ extern "C" asm void fn_8001F63C() {
     addi r6, r1, 0x10
     addi r7, r1, 0xc
     addi r8, r1, 0x8
-    bl fn_802E5388
+    bl GXProject
     lis r3, lbl_803C22B0@ha
     addi r27, r3, lbl_803C22B0@l
     lwz r3, 0x54(r27)
@@ -2063,7 +2063,7 @@ extern "C" asm void fn_8001F63C() {
     li r4, 0x0
     addi r0, r26, 0x2
     clrlwi r5, r0, 16
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, 0x2c(r1)
     lfs f2, 0x30(r1)
     lfs f3, 0x34(r1)
@@ -2082,7 +2082,7 @@ extern "C" asm void fn_8001F63C() {
     addi r6, r1, 0x10
     addi r7, r1, 0xc
     addi r8, r1, 0x8
-    bl fn_802E5388
+    bl GXProject
     lwz r3, 0x54(r27)
     lhz r0, 0xe(r3)
     lfd f3, lbl_8049E6D0
@@ -2150,7 +2150,7 @@ lbl_8001F85C:
     addi r6, r1, 0x10
     addi r7, r1, 0xc
     addi r8, r1, 0x8
-    bl fn_802E5388
+    bl GXProject
     lwz r3, 0x54(r27)
     lhz r0, 0xe(r3)
     stw r0, 0x124(r1)

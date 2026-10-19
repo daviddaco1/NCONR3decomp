@@ -229,20 +229,20 @@ extern "C" void fn_80187C48();
 extern "C" void fn_80189024();
 extern "C" void fn_8018C9DC();
 extern "C" void fn_801A9384();
-extern "C" void fn_801CF104();
-extern "C" void fn_801CF19C();
-extern "C" void fn_801CFEC8();
-extern "C" void fn_801D02AC();
-extern "C" void fn_801D45F0();
-extern "C" void fn_801E2B68();
+extern "C" void GetResTex__Q34nw4r3g3d7ResFileCFi();
+extern "C" void GetResAnmChr__Q34nw4r3g3d7ResFileCFPCc();
+extern "C" void Init__Q34nw4r3g3d7ResFileFv();
+extern "C" void CheckRevision__Q34nw4r3g3d7ResFileCFv();
+extern "C" void GetTexObjParam__Q34nw4r3g3d6ResTexCFPPvPUsPUsP9_GXTexFmtPfPfPUc();
+extern "C" void Invalidate__Q34nw4r3g3d8G3DStateFUl();
 extern "C" void fn_802E151C();
-extern "C" void fn_802E1E84();
-extern "C" void fn_802E1EE8();
-extern "C" void fn_802E2004();
-extern "C" void fn_802E26F4();
-extern "C" void fn_802E2FA0();
-extern "C" void fn_802E3184();
-extern "C" void fn_802E39C4();
+extern "C" void GXSetTexCopySrc();
+extern "C" void GXSetTexCopyDst();
+extern "C" void GXSetDispCopyFrame2Field();
+extern "C" void GXCopyTex();
+extern "C" void GXGetTexBufferSize();
+extern "C" void GXInitTexObj();
+extern "C" void GXInvalidateTexAll();
 extern "C" void memcpy();
 extern "C" void memset();
 
@@ -395,7 +395,7 @@ lbl_8010D4F8:
     li r5, 0x4
     li r6, 0x0
     li r7, 0x0
-    bl fn_802E2FA0
+    bl GXGetTexBufferSize
     mr r4, r3
     lwz r3, 0x83c(r29)
     li r5, 0x0
@@ -418,7 +418,7 @@ lbl_8010D4F8:
     li r8, 0x0
     li r9, 0x0
     li r10, 0x0
-    bl fn_802E3184
+    bl GXInitTexObj
     b lbl_8010D5CC
 lbl_8010D5B0:
     cmpwi r5, 0x0
@@ -1322,7 +1322,7 @@ lbl_8010E1C8:
     addi r3, r1, 0xc
     bl fn_80016D94
     addi r3, r1, 0xc
-    bl fn_801D02AC
+    bl CheckRevision__Q34nw4r3g3d7ResFileCFv
     cmpwi r3, 0x0
     bne lbl_8010E208
     lis r3, lbl_8034DE00@ha
@@ -1333,9 +1333,9 @@ lbl_8010E1C8:
     bl fn_801A9384
 lbl_8010E208:
     addi r3, r1, 0xc
-    bl fn_801CFEC8
+    bl Init__Q34nw4r3g3d7ResFileFv
     addi r3, r1, 0xc
-    bl fn_801CF19C
+    bl GetResAnmChr__Q34nw4r3g3d7ResFileCFPCc
     slwi r4, r3, 6
     mr r3, r28
     addi r4, r4, 0x10
@@ -1350,7 +1350,7 @@ lbl_8010E240:
     stw r30, 0x0(r3)
     stw r28, 0x4(r3)
     addi r3, r1, 0xc
-    bl fn_801CF19C
+    bl GetResAnmChr__Q34nw4r3g3d7ResFileCFPCc
     stw r3, 0x8(r29)
     addi r0, r29, 0x10
     stw r0, 0xc(r29)
@@ -1408,7 +1408,7 @@ extern "C" asm void fn_8010E2D4() {
     mr r31, r4
     mr r3, r31
     lwz r4, 0x4(r4)
-    bl fn_801CF104
+    bl GetResTex__Q34nw4r3g3d7ResFileCFi
     stw r3, 0x8(r1)
     addi r3, r1, 0x8
     addi r4, r30, 0x20
@@ -1418,7 +1418,7 @@ extern "C" asm void fn_8010E2D4() {
     addi r8, r30, 0x34
     addi r9, r30, 0x38
     addi r10, r30, 0x3c
-    bl fn_801D45F0
+    bl GetTexObjParam__Q34nw4r3g3d6ResTexCFPPvPUsPUsP9_GXTexFmtPfPfPUc
     lhz r6, 0x26(r30)
     lhz r5, 0x24(r30)
     subi r0, r5, 0x1
@@ -1438,7 +1438,7 @@ extern "C" asm void fn_8010E2D4() {
     li r8, 0x1
     li r9, 0x1
     lbz r10, 0x3c(r30)
-    bl fn_802E3184
+    bl GXInitTexObj
     b lbl_8010E394
 lbl_8010E378:
     mr r3, r30
@@ -1447,7 +1447,7 @@ lbl_8010E378:
     li r8, 0x0
     li r9, 0x0
     lbz r10, 0x3c(r30)
-    bl fn_802E3184
+    bl GXInitTexObj
 lbl_8010E394:
     lhz r0, 0x24(r30)
     lfd f2, lbl_804A0828
@@ -2012,7 +2012,7 @@ extern "C" asm void fn_8010EA34() {
     cmpwi r3, 0x0
     beq lbl_8010EBAC
     li r3, 0x7ff
-    bl fn_801E2B68
+    bl Invalidate__Q34nw4r3g3d8G3DStateFUl
     bl fn_8018C9DC
     lwz r30, 0x8(r30)
     lis r31, jumptable_8034DEB0@ha
@@ -2370,7 +2370,7 @@ extern "C" asm void fn_8010EEB8() {
     li r4, 0x0
     lhz r5, 0xe(r6)
     lhz r6, 0x10(r6)
-    bl fn_802E1E84
+    bl GXSetTexCopySrc
     lwz r4, 0x54(r31)
     lhz r0, 0xe(r4)
     srwi r0, r0, 1
@@ -2380,15 +2380,15 @@ extern "C" asm void fn_8010EEB8() {
     clrlwi r4, r0, 16
     li r5, 0x4
     li r6, 0x1
-    bl fn_802E1EE8
+    bl GXSetTexCopyDst
     li r3, 0x0
-    bl fn_802E2004
+    bl GXSetDispCopyFrame2Field
     lwz r3, lbl_8049D6B0
     lwz r3, 0x0(r3)
     li r4, 0x0
-    bl fn_802E26F4
+    bl GXCopyTex
     bl fn_802E151C
-    bl fn_802E39C4
+    bl GXInvalidateTexAll
     lwz r31, 0xc(r1)
     lwz r0, 0x14(r1)
     mtlr r0

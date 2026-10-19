@@ -149,10 +149,10 @@ extern "C" void fn_8018CC1C();
 extern "C" void fn_8018D180();
 extern "C" void fn_8018D9B8();
 extern "C" void fn_801910F8();
-extern "C" void fn_802D5154();
-extern "C" void fn_802E2348();
-extern "C" void fn_8031E4A8();
-extern "C" void fn_8031E594();
+extern "C" void DVDGetDriveStatus();
+extern "C" void GXSetCopyClear();
+extern "C" void OSSetResetCallback();
+extern "C" void OSSetPowerCallback();
 extern "C" void fn_80321B4C();
 extern "C" void main();
 extern "C" void memset();
@@ -181,10 +181,10 @@ extern "C" asm void main() {
     bl OSGetTick
     lis r3, fn_801722B8@ha
     addi r3, r3, fn_801722B8@l
-    bl fn_8031E594
+    bl OSSetPowerCallback
     lis r3, fn_801722D0@ha
     addi r3, r3, fn_801722D0@l
-    bl fn_8031E4A8
+    bl OSSetResetCallback
     bl fn_80178248
     bl fn_80171EBC
     lis r3, 0x50
@@ -444,7 +444,7 @@ lbl_80055820:
     stw r0, 0xc(r1)
     addi r3, r1, 0xc
     subi r4, r31, 0x1
-    bl fn_802E2348
+    bl GXSetCopyClear
     bl fn_80057780
     bl fn_80179FD4
     bl fn_80092FFC
@@ -2155,7 +2155,7 @@ lbl_80057078:
     bl fn_801715A8
     bl fn_80123598
     bl fn_8017736C
-    bl fn_802D5154
+    bl DVDGetDriveStatus
     bl fn_80165D1C
     bl fn_80167820
     subi r0, r20, 0x3
@@ -2570,7 +2570,7 @@ lbl_80057668:
     addi r3, r1, 0x8
     lis r4, 0x100
     subi r4, r4, 0x1
-    bl fn_802E2348
+    bl GXSetCopyClear
     bl fn_8017736C
     addi r11, r1, 0x1e0
     bl _restgpr_14

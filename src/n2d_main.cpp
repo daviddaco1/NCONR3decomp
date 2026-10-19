@@ -57,15 +57,15 @@ extern "C" void fn_801222CC();
 extern "C" void fn_80122330();
 extern "C" void fn_80170DFC();
 extern "C" void fn_801A9384();
-extern "C" void fn_802DD0D0();
-extern "C" void fn_802DD0E8();
-extern "C" void fn_802DD0F8();
-extern "C" void fn_802DD210();
+extern "C" void GDInitGDLObj();
+extern "C" void GDFlushCurrToMem();
+extern "C" void GDPadCurr32();
+extern "C" void GDOverflowed();
 extern "C" void fn_802DD228();
 extern "C" void fn_802DD804();
 extern "C" void fn_802DDE28();
 extern "C" void fn_802DE02C();
-extern "C" void fn_802E5314();
+extern "C" void GXCallDisplayList();
 extern "C" void fn_803150C4();
 
 // ----------------------------------------------------------------------------
@@ -1651,7 +1651,7 @@ lbl_80121E68:
     add r4, r0, r27
     addi r3, r4, 0x74
     li r5, 0x60
-    bl fn_802DD0D0
+    bl GDInitGDLObj
     lwz r0, lbl_8049D6C0
     add r3, r0, r27
     addi r3, r3, 0x74
@@ -1718,8 +1718,8 @@ lbl_80121E68:
     li r3, 0x3
     bl fn_801222B4
     bl fn_80122274
-    bl fn_802DD0F8
-    bl fn_802DD0E8
+    bl GDPadCurr32
+    bl GDFlushCurrToMem
     li r3, 0x0
     bl fn_80122254
     lwz r0, lbl_8049D6C4
@@ -1822,7 +1822,7 @@ lbl_801220EC:
     addi r3, r30, 0x74
     bl fn_8012226C
     mr r4, r31
-    bl fn_802E5314
+    bl GXCallDisplayList
     lwz r31, 0xc(r1)
     lwz r30, 0x8(r1)
     lwz r0, 0x14(r1)
@@ -1928,7 +1928,7 @@ extern "C" asm void fn_801221D8() {
     lwz r0, 0xc(r4)
     cmplw r3, r0
     blelr
-    b fn_802DD210
+    b GDOverflowed
     blr
 }
 

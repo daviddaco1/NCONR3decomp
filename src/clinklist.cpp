@@ -74,9 +74,9 @@ extern "C" void fn_80136D48();
 extern "C" void fn_8017776C();
 extern "C" void fn_80181504();
 extern "C" void fn_801A9384();
-extern "C" void fn_801D0C3C();
-extern "C" void fn_801F032C();
-extern "C" void fn_80284760();
+extern "C" void GetResNode__Q34nw4r3g3d6ResMdlCFPCc();
+extern "C" void GetScnMtxPos__Q34nw4r3g3d12ScnMdlSimpleCFPQ34nw4r4math5MTX34Q44nw4r3g3d6ScnObj13ScnObjMtxTypeUl();
+extern "C" void VIGetDimmingCount();
 extern "C" void* memset(void* dst, int val, size_t n);
 
 extern "C" u8 lbl_80359980[];
@@ -623,7 +623,7 @@ lbl_801307A8:
 	bl fn_80029A90
 	addi r3,r1,36
 	lwz r4,4(r28)
-	bl fn_801D0C3C
+	bl GetResNode__Q34nw4r3g3d6ResMdlCFPCc
 	stw r3,24(r1)
 	addi r3,r1,24
 	bl fn_800320A4
@@ -631,7 +631,7 @@ lbl_801307A8:
 	mr r3,r24
 	addi r4,r1,40
 	li r5,2
-	bl fn_801F032C
+	bl GetScnMtxPos__Q34nw4r3g3d12ScnMdlSimpleCFPQ34nw4r4math5MTX34Q44nw4r3g3d6ScnObj13ScnObjMtxTypeUl
 	stwx r30,r27,r26
 	lfs f0,84(r1)
 	stfsx f0,r25,r26
@@ -1336,7 +1336,7 @@ lbl_80131104:
 	cmpwi r3,0
 	bne lbl_801311B4
 lbl_80131130:
-	bl fn_80284760
+	bl VIGetDimmingCount
 	cmpwi r3,0
 	beq lbl_801311B4
 	mr r3,r29

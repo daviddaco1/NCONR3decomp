@@ -156,39 +156,39 @@ extern "C" void __throw();
 extern "C" void fn_801A331C();
 extern "C" void fn_801A3344();
 extern "C" void fn_801A9384();
-extern "C" void fn_801DF1B4();
-extern "C" void fn_801E2B5C();
-extern "C" void fn_801E2B68();
-extern "C" void fn_801E93B8();
-extern "C" void fn_801ECE24();
-extern "C" void fn_801EDA7C();
-extern "C" void fn_801EDC60();
-extern "C" void fn_801EDCBC();
-extern "C" void fn_801EDCF8();
-extern "C" void fn_801EDD64();
-extern "C" void fn_801EE174();
-extern "C" void fn_801EE1C0();
-extern "C" void fn_801EE1DC();
-extern "C" void fn_801EE1F8();
-extern "C" void fn_801EE270();
-extern "C" void fn_801EE35C();
-extern "C" void fn_801EE3BC();
-extern "C" void fn_801EE430();
+extern "C" void Destroy__Q34nw4r3g3d6G3dObjFv();
+extern "C" void GetRenderModeObj__Q34nw4r3g3d8G3DStateFv();
+extern "C" void Invalidate__Q34nw4r3g3d8G3DStateFUl();
+extern "C" void GetCameraMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX34();
+extern "C" void Construct__Q34nw4r3g3d8ScnGroupFP12MEMAllocatorPUlUl();
+extern "C" void Construct__Q34nw4r3g3d7ScnRootFP12MEMAllocatorPUlUlUlUlUl();
+extern "C" void GetCamera__Q34nw4r3g3d7ScnRootFi();
+extern "C" void GetCurrentCamera__Q34nw4r3g3d7ScnRootFv();
+extern "C" void SetCurrentCamera__Q34nw4r3g3d7ScnRootFi();
+extern "C" void UpdateFrame__Q34nw4r3g3d7ScnRootFv();
+extern "C" void CalcWorld__Q34nw4r3g3d7ScnRootFv();
+extern "C" void CalcMaterial__Q34nw4r3g3d7ScnRootFv();
+extern "C" void CalcVtx__Q34nw4r3g3d7ScnRootFv();
+extern "C" void CalcView__Q34nw4r3g3d7ScnRootFv();
+extern "C" void GatherDrawScnObj__Q34nw4r3g3d7ScnRootFv();
+extern "C" void ZSort__Q34nw4r3g3d7ScnRootFv();
+extern "C" void DrawOpa__Q34nw4r3g3d7ScnRootFv();
+extern "C" void DrawXlu__Q34nw4r3g3d7ScnRootFv();
 extern "C" void fn_801EE4A4();
 extern "C" void fn_801F41E8();
-extern "C" void fn_802DFDF8();
-extern "C" void fn_802E0688();
-extern "C" void fn_802E06BC();
-extern "C" void fn_802E0DD0();
-extern "C" void fn_802E0FF8();
+extern "C" void GXSetVtxDesc();
+extern "C" void GXClearVtxDesc();
+extern "C" void GXSetVtxAttrFmt();
+extern "C" void GXSetTexCoordGen2();
+extern "C" void GXSetNumTexGens();
 extern "C" void fn_802E151C();
-extern "C" void fn_802E1ABC();
-extern "C" void fn_802E1DA0();
-extern "C" void fn_802E1DC8();
-extern "C" void fn_802E2ED8();
-extern "C" void fn_802E353C();
-extern "C" void fn_802E3550();
-extern "C" void fn_802E37E0();
+extern "C" void GXBegin();
+extern "C" void GXSetCullMode();
+extern "C" void GXGetCullMode();
+extern "C" void GXSetNumChans();
+extern "C" void GXGetTexObjWidth();
+extern "C" void GXGetTexObjHeight();
+extern "C" void GXLoadTexObj();
 extern "C" void fn_802E430C();
 extern "C" void fn_802E432C();
 extern "C" void fn_802E4460();
@@ -199,12 +199,12 @@ extern "C" void fn_802E4750();
 extern "C" void fn_802E4808();
 extern "C" void fn_802E48CC();
 extern "C" void fn_802E4A28();
-extern "C" void fn_802E4EFC();
-extern "C" void fn_802E4F4C();
-extern "C" void fn_802E4F78();
-extern "C" void fn_802E4FA4();
-extern "C" void fn_802E50B0();
-extern "C" void fn_802E50DC();
+extern "C" void GXSetBlendMode();
+extern "C" void GXSetColorUpdate();
+extern "C" void GXSetAlphaUpdate();
+extern "C" void GXSetZMode();
+extern "C" void GXSetDither();
+extern "C" void GXSetDstAlpha();
 
 // ----------------------------------------------------------------------------
 // fn_8003625C
@@ -231,7 +231,7 @@ extern "C" asm void fn_8003625C() {
     mr r6, r24
     mr r7, r25
     mr r8, r26
-    bl fn_801EDA7C
+    bl Construct__Q34nw4r3g3d7ScnRootFP12MEMAllocatorPUlUlUlUlUl
     li r3, 0x40
     bl fn_80027CCC
     mr r29, r3
@@ -341,7 +341,7 @@ lbl_80036424:
     mr r6, r24
     mr r7, r25
     mr r8, r26
-    bl fn_801EDA7C
+    bl Construct__Q34nw4r3g3d7ScnRootFP12MEMAllocatorPUlUlUlUlUl
     mr r24, r3
     add r25, r21, r29
     add r26, r21, r30
@@ -570,13 +570,13 @@ lbl_8003671C:
     cmplwi r3, 0x1
     beq lbl_80036760
     lwz r3, 0x18(r31)
-    bl fn_801EDD64
+    bl UpdateFrame__Q34nw4r3g3d7ScnRootFv
     lwz r3, 0x18(r31)
-    bl fn_801EE1DC
+    bl CalcVtx__Q34nw4r3g3d7ScnRootFv
     lwz r3, 0x18(r31)
-    bl fn_801EE174
+    bl CalcWorld__Q34nw4r3g3d7ScnRootFv
     lwz r3, 0x18(r31)
-    bl fn_801EE1C0
+    bl CalcMaterial__Q34nw4r3g3d7ScnRootFv
 lbl_80036760:
     lwz r31, 0xc(r1)
     lwz r0, 0x14(r1)
@@ -608,28 +608,28 @@ extern "C" asm void fn_80036774() {
     slwi r0, r0, 4
     add r4, r4, r0
     lwz r4, 0x4(r4)
-    bl fn_801EDCF8
+    bl SetCurrentCamera__Q34nw4r3g3d7ScnRootFi
     lwz r3, 0x18(r31)
-    bl fn_801EE1F8
+    bl CalcView__Q34nw4r3g3d7ScnRootFv
     lwz r3, 0x18(r31)
-    bl fn_801EE270
+    bl GatherDrawScnObj__Q34nw4r3g3d7ScnRootFv
     lwz r3, 0x18(r31)
-    bl fn_801EE35C
+    bl ZSort__Q34nw4r3g3d7ScnRootFv
     li r3, 0x1
-    bl fn_802E50B0
+    bl GXSetDither
     li r3, 0x1
-    bl fn_802E4F78
+    bl GXSetAlphaUpdate
     li r3, 0x1
     li r4, 0x0
-    bl fn_802E50DC
+    bl GXSetDstAlpha
     lwz r3, 0x18(r31)
-    bl fn_801EE3BC
+    bl DrawOpa__Q34nw4r3g3d7ScnRootFv
     mr r3, r31
     bl fn_80036828
     li r3, 0x0
-    bl fn_802E4F78
+    bl GXSetAlphaUpdate
     lwz r3, 0x18(r31)
-    bl fn_801EE430
+    bl DrawXlu__Q34nw4r3g3d7ScnRootFv
 lbl_80036814:
     lwz r31, 0xc(r1)
     lwz r0, 0x14(r1)
@@ -750,7 +750,7 @@ lbl_80036960:
     bl fn_80027B7C
     addi r4, r1, 0xc
     mr r5, r30
-    bl fn_801ECE24
+    bl Construct__Q34nw4r3g3d8ScnGroupFP12MEMAllocatorPUlUl
     mr r30, r3
     li r5, 0x1
     li r6, 0x1
@@ -996,7 +996,7 @@ extern "C" asm void fn_80036C7C() {
     beq lbl_80036E14
     lwz r3, 0x18(r30)
     mr r4, r27
-    bl fn_801EDC60
+    bl GetCamera__Q34nw4r3g3d7ScnRootFi
     stw r3, 0x14(r1)
     addi r3, r1, 0x1c
     addi r4, r1, 0x14
@@ -1269,21 +1269,21 @@ extern "C" asm void fn_80036FD8() {
     cmplwi r3, 0x1
     beq lbl_800370A8
     li r3, 0x1
-    bl fn_802E4F78
+    bl GXSetAlphaUpdate
     li r3, 0x0
     li r4, 0x0
-    bl fn_802E50DC
+    bl GXSetDstAlpha
     lwz r3, 0x24(r29)
     li r4, 0x0
     bl fn_80035AC0
     mr r30, r3
     bl fn_8002B99C
-    bl fn_802E353C
+    bl GXGetTexObjWidth
     clrlwi r0, r3, 16
     slwi r31, r0, 2
     mr r3, r30
     bl fn_8002B99C
-    bl fn_802E3550
+    bl GXGetTexObjHeight
     clrlwi r0, r3, 16
     mullw r31, r0, r31
     mr r3, r30
@@ -1340,7 +1340,7 @@ extern "C" asm void fn_800370C4() {
     cmpwi r3, 0x0
     beq lbl_8003735C
     li r3, 0x7ff
-    bl fn_801E2B68
+    bl Invalidate__Q34nw4r3g3d8G3DStateFUl
     li r3, 0x0
     bl fn_8003D62C
     lwz r3, 0x24(r31)
@@ -1348,15 +1348,15 @@ extern "C" asm void fn_800370C4() {
     bl fn_80035AC0
     bl fn_8002B99C
     li r4, 0x0
-    bl fn_802E37E0
+    bl GXLoadTexObj
     li r3, 0x0
-    bl fn_802E2ED8
+    bl GXSetNumChans
     li r3, 0x0
     bl fn_802E430C
     li r3, 0x0
     bl fn_802E432C
     li r3, 0x1
-    bl fn_802E0FF8
+    bl GXSetNumTexGens
     li r3, 0x0
     li r4, 0x1
     li r5, 0x4
@@ -1408,32 +1408,32 @@ extern "C" asm void fn_800370C4() {
     li r3, 0x0
     li r4, 0x3
     li r5, 0x0
-    bl fn_802E4FA4
+    bl GXSetZMode
     li r3, 0x0
     li r4, 0x1
     li r5, 0x0
     li r6, 0x3
-    bl fn_802E4EFC
-    bl fn_802E0688
+    bl GXSetBlendMode
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xd
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0x0
     li r4, 0x9
     li r5, 0x0
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xd
     li r5, 0x1
     li r6, 0x0
     li r7, 0x0
-    bl fn_802E06BC
-    bl fn_801E2B5C
+    bl GXSetVtxAttrFmt
+    bl GetRenderModeObj__Q34nw4r3g3d8G3DStateFv
     lhz r0, 0xe(r3)
     lfd f1, lbl_8049E8A0
     stw r0, 0xc(r1)
@@ -1449,7 +1449,7 @@ extern "C" asm void fn_800370C4() {
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, lbl_8049E8A8
     fmr f2, f1
     bl fn_800388DC
@@ -1581,32 +1581,32 @@ extern "C" asm void fn_80037400() {
     slwi r0, r0, 4
     add r4, r4, r0
     lwz r4, 0x4(r4)
-    bl fn_801EDCF8
+    bl SetCurrentCamera__Q34nw4r3g3d7ScnRootFi
     lwz r3, 0x18(r31)
-    bl fn_801EDCBC
+    bl GetCurrentCamera__Q34nw4r3g3d7ScnRootFv
     stw r3, 0xc(r1)
     lwz r3, 0x28(r31)
     addi r4, r1, 0xc
     bl fn_80042B3C
     lwz r3, 0x18(r31)
-    bl fn_801EE1F8
+    bl CalcView__Q34nw4r3g3d7ScnRootFv
     lwz r3, 0x18(r31)
-    bl fn_801EE270
+    bl GatherDrawScnObj__Q34nw4r3g3d7ScnRootFv
     lwz r3, 0x18(r31)
-    bl fn_801EE35C
+    bl ZSort__Q34nw4r3g3d7ScnRootFv
     li r3, 0x1
-    bl fn_802E4F78
+    bl GXSetAlphaUpdate
     li r3, 0x1
     li r4, 0x0
-    bl fn_802E50DC
+    bl GXSetDstAlpha
     lwz r3, 0x18(r31)
-    bl fn_801EE3BC
+    bl DrawOpa__Q34nw4r3g3d7ScnRootFv
     li r3, 0x0
-    bl fn_802E4F78
+    bl GXSetAlphaUpdate
     lwz r3, 0x18(r31)
-    bl fn_801EE430
+    bl DrawXlu__Q34nw4r3g3d7ScnRootFv
     lwz r3, 0x18(r31)
-    bl fn_801EDCBC
+    bl GetCurrentCamera__Q34nw4r3g3d7ScnRootFv
     stw r3, 0x8(r1)
     lwz r3, 0x28(r31)
     addi r4, r1, 0x8
@@ -1697,7 +1697,7 @@ extern "C" asm void fn_80037584() {
     bl fn_8003807C
     mr r4, r3
     lwz r3, 0x18(r29)
-    bl fn_801EDCF8
+    bl SetCurrentCamera__Q34nw4r3g3d7ScnRootFi
     lwz r3, 0x30(r29)
     mr r4, r30
     li r5, 0x4
@@ -1706,7 +1706,7 @@ extern "C" asm void fn_80037584() {
     cntlzw r0, r0
     srwi r0, r0, 5
     clrlwi r3, r0, 24
-    bl fn_802E4F4C
+    bl GXSetColorUpdate
     lwz r3, 0x18(r29)
     bl fn_80032A24
     lwz r0, 0x20(r29)
@@ -1718,29 +1718,29 @@ extern "C" asm void fn_80037584() {
     lwz r3, 0x18(r29)
     bl fn_80038228
     lwz r3, 0x18(r29)
-    bl fn_801EE1F8
+    bl CalcView__Q34nw4r3g3d7ScnRootFv
     lwz r3, 0x18(r29)
-    bl fn_801EE270
+    bl GatherDrawScnObj__Q34nw4r3g3d7ScnRootFv
     lwz r3, 0x18(r29)
-    bl fn_801EE35C
+    bl ZSort__Q34nw4r3g3d7ScnRootFv
     lwz r3, 0x18(r29)
     li r4, 0x1
     li r5, 0x4
     bl fn_801EE4A4
     addi r3, r1, 0x10
-    bl fn_802E1DC8
+    bl GXGetCullMode
     li r3, 0x1
-    bl fn_802E1DA0
+    bl GXSetCullMode
     li r3, 0x1
     li r4, 0x3
     li r5, 0x1
-    bl fn_802E4FA4
+    bl GXSetZMode
     li r3, 0x0
-    bl fn_802E50B0
+    bl GXSetDither
     lwz r3, 0x18(r29)
-    bl fn_801EE3BC
+    bl DrawOpa__Q34nw4r3g3d7ScnRootFv
     lwz r3, 0x18(r29)
-    bl fn_801EE430
+    bl DrawXlu__Q34nw4r3g3d7ScnRootFv
     lwz r3, 0x18(r29)
     li r4, 0x0
     li r5, 0x2
@@ -1760,20 +1760,20 @@ extern "C" asm void fn_80037584() {
     mr r4, r31
     bl fn_80038228
     lwz r3, 0x18(r29)
-    bl fn_801EE1F8
+    bl CalcView__Q34nw4r3g3d7ScnRootFv
     lwz r3, 0x18(r29)
-    bl fn_801EE270
+    bl GatherDrawScnObj__Q34nw4r3g3d7ScnRootFv
     lwz r3, 0x18(r29)
-    bl fn_801EE35C
+    bl ZSort__Q34nw4r3g3d7ScnRootFv
     li r3, 0x1
-    bl fn_802E4F78
+    bl GXSetAlphaUpdate
     li r3, 0x0
     li r4, 0x0
-    bl fn_802E50DC
+    bl GXSetDstAlpha
     lwz r3, 0x18(r29)
-    bl fn_801EE3BC
+    bl DrawOpa__Q34nw4r3g3d7ScnRootFv
     lwz r3, 0x18(r29)
-    bl fn_801EE430
+    bl DrawXlu__Q34nw4r3g3d7ScnRootFv
 lbl_8003773C:
     lwz r3, 0x30(r29)
     mr r4, r30
@@ -1791,10 +1791,10 @@ lbl_8003775C:
     cmplwi r3, 0x1
     beq lbl_8003777C
     li r3, 0x1
-    bl fn_802E4F4C
+    bl GXSetColorUpdate
 lbl_8003777C:
     lwz r3, 0x10(r1)
-    bl fn_802E1DA0
+    bl GXSetCullMode
     li r3, 0x1
     b lbl_80037790
 lbl_8003778C:
@@ -1848,7 +1848,7 @@ lbl_800377FC:
     bl fn_800388F4
     mr r4, r3
     lwz r3, 0x18(r30)
-    bl fn_801EDCF8
+    bl SetCurrentCamera__Q34nw4r3g3d7ScnRootFi
     lwz r3, 0x18(r30)
     bl fn_80032A24
     lwz r0, 0x20(r30)
@@ -1860,22 +1860,22 @@ lbl_800377FC:
     lwz r3, 0x18(r30)
     bl fn_80038228
     lwz r3, 0x18(r30)
-    bl fn_801EE1F8
+    bl CalcView__Q34nw4r3g3d7ScnRootFv
     lwz r3, 0x18(r30)
-    bl fn_801EE270
+    bl GatherDrawScnObj__Q34nw4r3g3d7ScnRootFv
     lwz r3, 0x18(r30)
-    bl fn_801EE35C
+    bl ZSort__Q34nw4r3g3d7ScnRootFv
     li r3, 0x1
-    bl fn_802E4F78
+    bl GXSetAlphaUpdate
     li r3, 0x1
     li r4, 0x0
-    bl fn_802E50DC
+    bl GXSetDstAlpha
     lwz r3, 0x18(r30)
-    bl fn_801EE3BC
+    bl DrawOpa__Q34nw4r3g3d7ScnRootFv
     li r3, 0x0
-    bl fn_802E4F78
+    bl GXSetAlphaUpdate
     lwz r3, 0x18(r30)
-    bl fn_801EE430
+    bl DrawXlu__Q34nw4r3g3d7ScnRootFv
     lwz r3, 0x38(r30)
     mr r4, r31
     bl fn_80048908
@@ -2436,7 +2436,7 @@ extern "C" asm void fn_80037F7C() {
     bl fn_8002AE40
     mr r3, r30
     mr r4, r29
-    bl fn_801E93B8
+    bl GetCameraMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX34
     mr r3, r30
     bl fn_800389EC
     mr r30, r3
@@ -3007,7 +3007,7 @@ lbl_80038630:
     lhz r0, 0x0(r31)
     slwi r0, r0, 2
     lwzx r3, r3, r0
-    bl fn_801DF1B4
+    bl Destroy__Q34nw4r3g3d6G3dObjFv
     li r4, 0x0
     lwz r3, 0xc(r30)
     lhz r0, 0x0(r31)
@@ -3056,7 +3056,7 @@ lbl_800386CC:
     lwzx r3, r3, r31
     cmpwi r3, 0x0
     beq lbl_800386E8
-    bl fn_801DF1B4
+    bl Destroy__Q34nw4r3g3d6G3dObjFv
     lwz r3, 0xc(r27)
     stwx r30, r3, r31
 lbl_800386E8:
@@ -3210,7 +3210,7 @@ extern "C" asm void fn_800388B8() {
     nofralloc
     li r7, 0x0
     li r8, 0x7d
-    b fn_802E0DD0
+    b GXSetTexCoordGen2
 }
 
 // ----------------------------------------------------------------------------

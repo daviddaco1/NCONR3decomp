@@ -112,9 +112,9 @@ extern "C" void fn_80186C44();
 extern "C" void fn_80190804();
 extern "C" void fn_801912E4();
 extern "C" void strcat();
-extern "C" void fn_801D3AA8();
-extern "C" void fn_801D3AE0();
-extern "C" void fn_8030CC40();
+extern "C" void GXGetChanMatColor__Q34nw4r3g3d10ResMatChanCF12_GXChannelIDP8_GXColor();
+extern "C" void GXGetChanAmbColor__Q34nw4r3g3d10ResMatChanCF12_GXChannelIDP8_GXColor();
+extern "C" void PSMTXIdentity();
 extern "C" void* memcpy(void*, const void*, unsigned int);
 extern "C" void* memset(void*, int, unsigned int);
 extern "C" int sprintf(char*, const char*, ...);
@@ -3666,7 +3666,7 @@ extern "C" asm void fn_80186078() {
     mr r3, r29
     li r4, 0x0
     addi r5, r1, 0x8
-    bl fn_801D3AA8
+    bl GXGetChanMatColor__Q34nw4r3g3d10ResMatChanCF12_GXChannelIDP8_GXColor
     lbz r0, 0x8(r1)
     stb r0, 0xc(r31)
     lbz r0, 0x9(r1)
@@ -3676,14 +3676,14 @@ extern "C" asm void fn_80186078() {
     mr r3, r29
     li r4, 0x2
     addi r5, r1, 0x8
-    bl fn_801D3AA8
+    bl GXGetChanMatColor__Q34nw4r3g3d10ResMatChanCF12_GXChannelIDP8_GXColor
     lbz r0, 0xb(r1)
     stb r0, 0xf(r31)
     stw r30, 0x10(r31)
     mr r3, r29
     li r4, 0x0
     addi r5, r1, 0x8
-    bl fn_801D3AE0
+    bl GXGetChanAmbColor__Q34nw4r3g3d10ResMatChanCF12_GXChannelIDP8_GXColor
     lbz r0, 0x8(r1)
     stb r0, 0x14(r31)
     lbz r0, 0x9(r1)
@@ -3794,11 +3794,11 @@ lbl_80186264:
     subi r0, r31, 0x1
     stw r0, 0x160(r30)
     addi r3, r30, 0x164
-    bl fn_8030CC40
+    bl PSMTXIdentity
     addi r3, r30, 0x194
-    bl fn_8030CC40
+    bl PSMTXIdentity
     addi r3, r30, 0x1c4
-    bl fn_8030CC40
+    bl PSMTXIdentity
     subi r0, r31, 0x1
     stw r0, 0x264(r30)
     li r5, 0x0

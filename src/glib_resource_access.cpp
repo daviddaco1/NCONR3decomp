@@ -34,21 +34,21 @@ extern "C" void fn_800361C0();
 extern "C" void fn_800361F0();
 extern "C" void fn_80036254();
 extern "C" void fn_801A9384();
-extern "C" void fn_801CF024();
-extern "C" void fn_801CF2A0();
-extern "C" void fn_801CF4A8();
-extern "C" void fn_801CF5AC();
-extern "C" void fn_801CF6B0();
-extern "C" void fn_801CFA94();
-extern "C" void fn_801CFCC8();
-extern "C" void fn_801CFEC8();
-extern "C" void fn_801D018C();
-extern "C" void fn_801D02AC();
-extern "C" void fn_801D45F0();
-extern "C" void fn_801D46AC();
-extern "C" void fn_802E3184();
-extern "C" void fn_802E3390();
-extern "C" void fn_802E33D8();
+extern "C" void GetResTex__Q34nw4r3g3d7ResFileCFPCc();
+extern "C" void GetResAnmChrNumEntries__Q34nw4r3g3d7ResFileCFv();
+extern "C" void GetResAnmTexPat__Q34nw4r3g3d7ResFileCFPCc();
+extern "C" void GetResAnmTexSrt__Q34nw4r3g3d7ResFileCFPCc();
+extern "C" void GetResAnmShp__Q34nw4r3g3d7ResFileCFPCc();
+extern "C" void Bind__Q34nw4r3g3d7ResFileFQ34nw4r3g3d7ResFile();
+extern "C" void Release__Q34nw4r3g3d7ResFileFv();
+extern "C" void Init__Q34nw4r3g3d7ResFileFv();
+extern "C" void Terminate__Q34nw4r3g3d7ResFileFv();
+extern "C" void CheckRevision__Q34nw4r3g3d7ResFileCFv();
+extern "C" void GetTexObjParam__Q34nw4r3g3d6ResTexCFPPvPUsPUsP9_GXTexFmtPfPfPUc();
+extern "C" void GetTexObjCIParam__Q34nw4r3g3d6ResTexCFPPvPUsPUsP11_GXCITexFmtPfPfPUc();
+extern "C" void GXInitTexObj();
+extern "C" void GXInitTexObjCI();
+extern "C" void GXInitTexObjLOD();
 
 // ----------------------------------------------------------------------------
 // fn_80035E80
@@ -62,7 +62,7 @@ extern "C" asm void fn_80035E80() {
     addi r3, r1, 0x8
     bl fn_80016E44
     addi r3, r1, 0x8
-    bl fn_801D02AC
+    bl CheckRevision__Q34nw4r3g3d7ResFileCFv
     cmpwi r3, 0x0
     bne lbl_80035EC0
     lis r3, lbl_803480E0@ha
@@ -73,7 +73,7 @@ extern "C" asm void fn_80035E80() {
     bl fn_801A9384
 lbl_80035EC0:
     addi r3, r1, 0x8
-    bl fn_801CFEC8
+    bl Init__Q34nw4r3g3d7ResFileFv
     addi r3, r1, 0x8
     bl fn_8003611C
     lwz r0, 0x14(r1)
@@ -113,7 +113,7 @@ extern "C" asm void fn_80035F10() {
     addi r3, r1, 0x8
     bl fn_80016E44
     addi r3, r1, 0x8
-    bl fn_801CF2A0
+    bl GetResAnmChrNumEntries__Q34nw4r3g3d7ResFileCFv
     lwz r0, 0x14(r1)
     mtlr r0
     addi r1, r1, 0x10
@@ -132,7 +132,7 @@ extern "C" asm void fn_80035F40() {
     addi r3, r1, 0x8
     bl fn_80016E44
     addi r3, r1, 0x8
-    bl fn_801CF4A8
+    bl GetResAnmTexPat__Q34nw4r3g3d7ResFileCFPCc
     lwz r0, 0x14(r1)
     mtlr r0
     addi r1, r1, 0x10
@@ -151,7 +151,7 @@ extern "C" asm void fn_80035F70() {
     addi r3, r1, 0x8
     bl fn_80016E44
     addi r3, r1, 0x8
-    bl fn_801CF5AC
+    bl GetResAnmTexSrt__Q34nw4r3g3d7ResFileCFPCc
     lwz r0, 0x14(r1)
     mtlr r0
     addi r1, r1, 0x10
@@ -170,7 +170,7 @@ extern "C" asm void fn_80035FA0() {
     addi r3, r1, 0x8
     bl fn_80016E44
     addi r3, r1, 0x8
-    bl fn_801CF6B0
+    bl GetResAnmShp__Q34nw4r3g3d7ResFileCFPCc
     lwz r0, 0x14(r1)
     mtlr r0
     addi r1, r1, 0x10
@@ -194,7 +194,7 @@ extern "C" asm void fn_80035FD0() {
     bl fn_80016E44
     addi r3, r1, 0x34
     mr r4, r30
-    bl fn_801CF024
+    bl GetResTex__Q34nw4r3g3d7ResFileCFPCc
     stw r3, 0x18(r1)
     addi r3, r1, 0x30
     addi r4, r1, 0x18
@@ -215,7 +215,7 @@ extern "C" asm void fn_80035FD0() {
     addi r8, r1, 0x28
     addi r9, r1, 0x24
     addi r10, r1, 0x10
-    bl fn_801D46AC
+    bl GetTexObjCIParam__Q34nw4r3g3d6ResTexCFPPvPUsPUsP11_GXCITexFmtPfPfPUc
     li r0, 0x0
     stw r0, 0x8(r1)
     mr r3, r29
@@ -226,7 +226,7 @@ extern "C" asm void fn_80035FD0() {
     mr r8, r31
     mr r9, r31
     lbz r10, 0x10(r1)
-    bl fn_802E3390
+    bl GXInitTexObjCI
     b lbl_800360D0
 lbl_80036088:
     addi r3, r1, 0x30
@@ -237,7 +237,7 @@ lbl_80036088:
     addi r8, r1, 0x28
     addi r9, r1, 0x24
     addi r10, r1, 0x10
-    bl fn_801D45F0
+    bl GetTexObjParam__Q34nw4r3g3d6ResTexCFPPvPUsPUsP9_GXTexFmtPfPfPUc
     mr r3, r29
     lwz r4, 0x2c(r1)
     lhz r5, 0x14(r1)
@@ -246,7 +246,7 @@ lbl_80036088:
     mr r8, r31
     mr r9, r31
     lbz r10, 0x10(r1)
-    bl fn_802E3184
+    bl GXInitTexObj
 lbl_800360D0:
     mr r3, r29
     li r4, 0x0
@@ -257,7 +257,7 @@ lbl_800360D0:
     li r6, 0x0
     li r7, 0x0
     li r8, 0x0
-    bl fn_802E33D8
+    bl GXInitTexObjLOD
     li r3, 0x1
     b lbl_80036104
 lbl_80036100:
@@ -282,7 +282,7 @@ extern "C" asm void fn_8003611C() {
     lwz r0, 0x0(r3)
     stw r0, 0x8(r1)
     addi r4, r1, 0x8
-    bl fn_801CFA94
+    bl Bind__Q34nw4r3g3d7ResFileFQ34nw4r3g3d7ResFile
     lwz r0, 0x14(r1)
     mtlr r0
     addi r1, r1, 0x10
@@ -299,9 +299,9 @@ extern "C" asm void fn_80036148() {
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
     mr r31, r3
-    bl fn_801CFCC8
+    bl Release__Q34nw4r3g3d7ResFileFv
     mr r3, r31
-    bl fn_801D018C
+    bl Terminate__Q34nw4r3g3d7ResFileFv
     lwz r31, 0xc(r1)
     lwz r0, 0x14(r1)
     mtlr r0

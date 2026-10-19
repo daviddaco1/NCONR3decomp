@@ -496,15 +496,15 @@ extern "C" void fn_801A3278();
 extern "C" void fn_801A32A0();
 extern "C" void fn_801A3344();
 extern "C" void fn_801A9384();
-extern "C" void fn_801CF820();
-extern "C" void fn_801CF88C();
-extern "C" void fn_801CFEC8();
-extern "C" void fn_801D02AC();
-extern "C" void fn_801D8270();
+extern "C" void GetResAnmVis__Q34nw4r3g3d7ResFileCFPCc();
+extern "C" void GetResAnmTexPat__Q34nw4r3g3d7ResFileCFi();
+extern "C" void Init__Q34nw4r3g3d7ResFileFv();
+extern "C" void CheckRevision__Q34nw4r3g3d7ResFileCFv();
+extern "C" void ConfigMEM1_48MB();
 extern "C" void fn_801D82F0();
 extern "C" void fn_80201A84();
 extern "C" void fn_80201AA8();
-extern "C" void fn_8030D448();
+extern "C" void C_MTXLookAt();
 extern "C" void memcpy();
 extern "C" void memset();
 extern "C" void sprintf();
@@ -9166,7 +9166,7 @@ lbl_8008A0F0:
     addi r4, r30, 0x4
     addi r5, r1, 0x10
     addi r6, r30, 0x1c
-    bl fn_8030D448
+    bl C_MTXLookAt
     addi r3, r1, 0x20
     addi r4, r1, 0x30
     mr r5, r29
@@ -16952,7 +16952,7 @@ extern "C" asm void fn_800908D4() {
     addi r3, r1, 0xc
     bl fn_80016D94
     addi r3, r1, 0xc
-    bl fn_801D02AC
+    bl CheckRevision__Q34nw4r3g3d7ResFileCFv
     cmpwi r3, 0x0
     bne lbl_80090954
     lis r3, lbl_8034BFF0@ha
@@ -16963,7 +16963,7 @@ extern "C" asm void fn_800908D4() {
     bl fn_801A9384
 lbl_80090954:
     addi r3, r1, 0xc
-    bl fn_801CFEC8
+    bl Init__Q34nw4r3g3d7ResFileFv
     mr r3, r31
     addi r11, r1, 0x20
     bl _restgpr_29
@@ -17133,7 +17133,7 @@ extern "C" asm void fn_80090AD0() {
     beq lbl_80090B78
     mr r3, r25
     mr r4, r26
-    bl fn_801CF820
+    bl GetResAnmVis__Q34nw4r3g3d7ResFileCFPCc
     stw r3, 0x14(r1)
     addi r3, r24, 0x24
     addi r4, r1, 0x14
@@ -17142,7 +17142,7 @@ extern "C" asm void fn_80090AD0() {
 lbl_80090B78:
     mr r3, r25
     mr r4, r27
-    bl fn_801CF88C
+    bl GetResAnmTexPat__Q34nw4r3g3d7ResFileCFi
     stw r3, 0x10(r1)
     addi r3, r24, 0x24
     addi r4, r1, 0x10
@@ -17160,7 +17160,7 @@ lbl_80090BB0:
     beq lbl_80090BD8
     addi r3, r24, 0x24
     mr r4, r28
-    bl fn_801D8270
+    bl ConfigMEM1_48MB
     stw r3, 0xc(r1)
     addi r3, r24, 0x28
     addi r4, r1, 0xc

@@ -55,20 +55,20 @@ extern "C" void fn_80035D9C();
 extern "C" void fn_80035DAC();
 extern "C" void __throw();
 extern "C" void fn_801A9384();
-extern "C" void fn_801E2B5C();
+extern "C" void GetRenderModeObj__Q34nw4r3g3d8G3DStateFv();
 extern "C" void fn_802E151C();
-extern "C" void fn_802E1E84();
-extern "C" void fn_802E1EE8();
-extern "C" void fn_802E23C0();
-extern "C" void fn_802E26F4();
-extern "C" void fn_802E2FA0();
-extern "C" void fn_802E3184();
-extern "C" void fn_802E33D8();
-extern "C" void fn_802E3530();
-extern "C" void fn_802E353C();
-extern "C" void fn_802E3550();
-extern "C" void fn_802E3564();
-extern "C" void fn_802E39C4();
+extern "C" void GXSetTexCopySrc();
+extern "C" void GXSetTexCopyDst();
+extern "C" void GXSetCopyFilter();
+extern "C" void GXCopyTex();
+extern "C" void GXGetTexBufferSize();
+extern "C" void GXInitTexObj();
+extern "C" void GXInitTexObjLOD();
+extern "C" void GXGetTexObjData();
+extern "C" void GXGetTexObjWidth();
+extern "C" void GXGetTexObjHeight();
+extern "C" void GXGetTexObjFmt();
+extern "C" void GXInvalidateTexAll();
 
 // ----------------------------------------------------------------------------
 // fn_80034BD8
@@ -100,7 +100,7 @@ extern "C" asm void fn_80034BD8() {
     li r0, 0x4
     and r7, r0, r7
     clrlwi r7, r7, 24
-    bl fn_802E2FA0
+    bl GXGetTexBufferSize
     mr r28, r3
     li r3, 0x2c
     bl fn_8002B958
@@ -254,16 +254,16 @@ extern "C" asm void fn_80034E28() {
     mr r23, r7
     mr r24, r8
     mr r25, r9
-    bl fn_802E353C
+    bl GXGetTexObjWidth
     mr r29, r3
     mr r3, r26
-    bl fn_802E3550
+    bl GXGetTexObjHeight
     mr r30, r3
     mr r3, r26
-    bl fn_802E3564
+    bl GXGetTexObjFmt
     mr r28, r3
     mr r3, r26
-    bl fn_802E3530
+    bl GXGetTexObjData
     addis r27, r3, 0x8000
     clrlwi r3, r29, 16
     clrlwi r0, r22, 16
@@ -279,7 +279,7 @@ lbl_80034EA4:
 lbl_80034EAC:
     li r26, 0x0
 lbl_80034EB0:
-    bl fn_801E2B5C
+    bl GetRenderModeObj__Q34nw4r3g3d8G3DStateFv
     mr r31, r3
     clrlwi r0, r25, 24
     cmplwi r0, 0x1
@@ -288,21 +288,21 @@ lbl_80034EB0:
     li r4, 0x0
     li r5, 0x0
     li r6, 0x0
-    bl fn_802E23C0
+    bl GXSetCopyFilter
 lbl_80034ED8:
     clrlwi r3, r20, 16
     clrlwi r4, r21, 16
     clrlwi r5, r22, 16
     clrlwi r6, r23, 16
-    bl fn_802E1E84
+    bl GXSetTexCopySrc
     clrlwi r3, r29, 16
     clrlwi r4, r30, 16
     mr r5, r28
     mr r6, r26
-    bl fn_802E1EE8
+    bl GXSetTexCopyDst
     mr r3, r27
     clrlwi r4, r24, 24
-    bl fn_802E26F4
+    bl GXCopyTex
     clrlwi r0, r25, 24
     cmplwi r0, 0x1
     beq lbl_80034F2C
@@ -310,7 +310,7 @@ lbl_80034ED8:
     addi r4, r31, 0x1a
     li r5, 0x1
     addi r6, r31, 0x32
-    bl fn_802E23C0
+    bl GXSetCopyFilter
 lbl_80034F2C:
     addi r11, r1, 0x40
     bl _restgpr_20
@@ -339,10 +339,10 @@ extern "C" asm void fn_80034F44() {
     mr r26, r9
     mr r27, r10
     addi r3, r3, 0x8
-    bl fn_802E353C
+    bl GXGetTexObjWidth
     mr r29, r3
     addi r3, r20, 0x8
-    bl fn_802E3550
+    bl GXGetTexObjHeight
     mr r30, r3
     clrlwi r4, r29, 16
     clrlwi r0, r23, 16
@@ -358,7 +358,7 @@ lbl_80034FB0:
 lbl_80034FB8:
     li r28, 0x0
 lbl_80034FBC:
-    bl fn_801E2B5C
+    bl GetRenderModeObj__Q34nw4r3g3d8G3DStateFv
     mr r31, r3
     clrlwi r0, r27, 24
     cmplwi r0, 0x1
@@ -367,21 +367,21 @@ lbl_80034FBC:
     li r4, 0x0
     li r5, 0x0
     li r6, 0x0
-    bl fn_802E23C0
+    bl GXSetCopyFilter
 lbl_80034FE4:
     clrlwi r3, r21, 16
     clrlwi r4, r22, 16
     clrlwi r5, r23, 16
     clrlwi r6, r24, 16
-    bl fn_802E1E84
+    bl GXSetTexCopySrc
     clrlwi r3, r29, 16
     clrlwi r4, r30, 16
     mr r5, r25
     mr r6, r28
-    bl fn_802E1EE8
+    bl GXSetTexCopyDst
     lwz r3, 0x28(r20)
     clrlwi r4, r26, 24
-    bl fn_802E26F4
+    bl GXCopyTex
     clrlwi r0, r27, 24
     cmplwi r0, 0x1
     beq lbl_80035038
@@ -389,7 +389,7 @@ lbl_80034FE4:
     addi r4, r31, 0x1a
     li r5, 0x1
     addi r6, r31, 0x32
-    bl fn_802E23C0
+    bl GXSetCopyFilter
 lbl_80035038:
     addi r11, r1, 0x40
     bl _restgpr_20
@@ -415,12 +415,12 @@ extern "C" asm void fn_80035050() {
     mr r27, r6
     mr r28, r7
     addi r3, r3, 0x8
-    bl fn_802E353C
+    bl GXGetTexObjWidth
     mr r29, r3
     addi r3, r24, 0x8
-    bl fn_802E3550
+    bl GXGetTexObjHeight
     mr r30, r3
-    bl fn_801E2B5C
+    bl GetRenderModeObj__Q34nw4r3g3d8G3DStateFv
     mr r31, r3
     clrlwi r0, r28, 24
     cmplwi r0, 0x1
@@ -429,21 +429,21 @@ extern "C" asm void fn_80035050() {
     li r4, 0x0
     li r5, 0x0
     li r6, 0x0
-    bl fn_802E23C0
+    bl GXSetCopyFilter
 lbl_800350B8:
     li r3, 0x0
     li r4, 0x0
     clrlwi r5, r29, 16
     clrlwi r6, r30, 16
-    bl fn_802E1E84
+    bl GXSetTexCopySrc
     clrlwi r3, r29, 16
     clrlwi r4, r30, 16
     mr r5, r25
     clrlwi r6, r26, 24
-    bl fn_802E1EE8
+    bl GXSetTexCopyDst
     lwz r3, 0x28(r24)
     clrlwi r4, r27, 24
-    bl fn_802E26F4
+    bl GXCopyTex
     clrlwi r0, r28, 24
     cmplwi r0, 0x1
     beq lbl_8003510C
@@ -451,7 +451,7 @@ lbl_800350B8:
     addi r4, r31, 0x1a
     li r5, 0x1
     addi r6, r31, 0x32
-    bl fn_802E23C0
+    bl GXSetCopyFilter
 lbl_8003510C:
     addi r11, r1, 0x30
     bl _restgpr_24
@@ -558,7 +558,7 @@ lbl_80035258:
     mr r8, r28
     mr r9, r29
     mr r10, r30
-    bl fn_802E3184
+    bl GXInitTexObj
     addi r3, r23, 0x8
     mr r4, r31
     mr r5, r31
@@ -568,7 +568,7 @@ lbl_80035258:
     li r6, 0x0
     li r7, 0x0
     li r8, 0x0
-    bl fn_802E33D8
+    bl GXInitTexObjLOD
     mr r3, r23
     addi r11, r1, 0x30
     bl _restgpr_23
@@ -649,7 +649,7 @@ extern "C" asm void fn_8003531C() {
     bl fn_8002B958
     mullw r0, r24, r3
     stw r0, 0x18(r31)
-    bl fn_801E2B5C
+    bl GetRenderModeObj__Q34nw4r3g3d8G3DStateFv
     mr r19, r3
     cmpwi r28, 0x0
     beq lbl_800353FC
@@ -1031,7 +1031,7 @@ extern "C" asm void fn_800358B8() {
     mr r30, r3
     cmpwi r3, 0x0
     beq lbl_80035A18
-    bl fn_801E2B5C
+    bl GetRenderModeObj__Q34nw4r3g3d8G3DStateFv
     mr r31, r3
     mr r3, r22
     mr r4, r23
@@ -1043,7 +1043,7 @@ extern "C" asm void fn_800358B8() {
     mr r3, r30
     bl fn_8002B99C
     mr r29, r3
-    bl fn_802E3564
+    bl GXGetTexObjFmt
     mr r28, r3
     cmpwi r3, 0x1
     bne lbl_80035938
@@ -1052,10 +1052,10 @@ lbl_80035938:
     cmplwi r25, 0x1
     beq lbl_80035980
     mr r3, r29
-    bl fn_802E3550
+    bl GXGetTexObjHeight
     mr r31, r3
     mr r3, r29
-    bl fn_802E353C
+    bl GXGetTexObjWidth
     mr r0, r3
     mr r3, r30
     li r4, 0x0
@@ -1087,7 +1087,7 @@ lbl_800359A4:
     cmpwi r3, 0x0
     beq lbl_80035A08
     bl fn_8002B99C
-    bl fn_802E3564
+    bl GXGetTexObjFmt
     cmpwi r3, 0x1
     beq lbl_800359E0
     cmpwi r3, 0x3
@@ -1111,7 +1111,7 @@ lbl_80035A08:
     cmpwi r27, 0x0
     beq lbl_80035A18
     bl fn_802E151C
-    bl fn_802E39C4
+    bl GXInvalidateTexAll
 lbl_80035A18:
     addi r11, r1, 0x30
     bl _restgpr_22

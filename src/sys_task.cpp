@@ -228,46 +228,46 @@ extern "C" void strcat();
 extern "C" void fn_801A3278();
 extern "C" void fn_801A32A0();
 extern "C" void fn_801A3344();
-extern "C" void fn_801CF024();
-extern "C" void fn_801CFEC8();
-extern "C" void fn_801D45F0();
-extern "C" void fn_801D478C();
-extern "C" void fn_801E8E64();
-extern "C" void fn_801E8EC0();
-extern "C" void fn_801E90E0();
-extern "C" void fn_801E9194();
-extern "C" void fn_801E920C();
-extern "C" void fn_801E922C();
-extern "C" void fn_801E9244();
-extern "C" void fn_801E92F8();
-extern "C" void fn_801E93B8();
-extern "C" void fn_801E9418();
-extern "C" void fn_801E9644();
-extern "C" void fn_801E96C8();
-extern "C" void fn_801E9790();
-extern "C" void fn_801E97B4();
+extern "C" void GetResTex__Q34nw4r3g3d7ResFileCFPCc();
+extern "C" void Init__Q34nw4r3g3d7ResFileFv();
+extern "C" void GetTexObjParam__Q34nw4r3g3d6ResTexCFPPvPUsPUsP9_GXTexFmtPfPfPUc();
+extern "C" void Init__Q34nw4r3g3d6ResTexFv();
+extern "C" void SetPosition__Q34nw4r3g3d6CameraFfff();
+extern "C" void SetPosture__Q34nw4r3g3d6CameraFRCQ44nw4r3g3d6Camera11PostureInfo();
+extern "C" void LogMsg();
+extern "C" void SetPerspective__Q34nw4r3g3d6CameraFffff();
+extern "C" void SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl();
+extern "C" void SetScissorBoxOffset__Q34nw4r3g3d6CameraFll();
+extern "C" void SetViewport__Q34nw4r3g3d6CameraFffff();
+extern "C" void GetViewport__Q34nw4r3g3d6CameraCFPfPfPfPfPfPf();
+extern "C" void GetCameraMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX34();
+extern "C" void GetProjectionMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX44();
+extern "C" void GXSetViewport__Q34nw4r3g3d6CameraCFv();
+extern "C" void GXSetProjection__Q34nw4r3g3d6CameraCFv();
+extern "C" void GXSetScissor__Q34nw4r3g3d6CameraCFv();
+extern "C" void GXSetScissorBoxOffset__Q34nw4r3g3d6CameraCFv();
 extern "C" void fn_8028A9B8();
-extern "C" void fn_802DFDF8();
-extern "C" void fn_802E0688();
-extern "C" void fn_802E06BC();
-extern "C" void fn_802E0DD0();
-extern "C" void fn_802E0FF8();
-extern "C" void fn_802E1ABC();
-extern "C" void fn_802E1DA0();
-extern "C" void fn_802E2ED8();
-extern "C" void fn_802E3184();
-extern "C" void fn_802E33D8();
-extern "C" void fn_802E37E0();
+extern "C" void GXSetVtxDesc();
+extern "C" void GXClearVtxDesc();
+extern "C" void GXSetVtxAttrFmt();
+extern "C" void GXSetTexCoordGen2();
+extern "C" void GXSetNumTexGens();
+extern "C" void GXBegin();
+extern "C" void GXSetCullMode();
+extern "C" void GXSetNumChans();
+extern "C" void GXInitTexObj();
+extern "C" void GXInitTexObjLOD();
+extern "C" void GXLoadTexObj();
 extern "C" void fn_802E43CC();
 extern "C" void fn_802E48CC();
 extern "C" void fn_802E4A28();
-extern "C" void fn_802E4EFC();
-extern "C" void fn_802E4FA4();
-extern "C" void fn_802E5388();
-extern "C" void fn_802E5554();
-extern "C" void fn_802E5644();
-extern "C" void fn_802E574C();
-extern "C" void fn_802E576C();
+extern "C" void GXSetBlendMode();
+extern "C" void GXSetZMode();
+extern "C" void GXProject();
+extern "C" void GXSetProjection();
+extern "C" void GXLoadPosMtxImm();
+extern "C" void GXSetCurrentMtx();
+extern "C" void GXLoadTexMtxImm();
 extern "C" void fn_802E9AC0();
 extern "C" void fn_802E9BE8();
 extern "C" void fn_802E9C18();
@@ -276,48 +276,48 @@ extern "C" void fn_802E9C78();
 extern "C" void fn_802E9C9C();
 extern "C" void fn_802E9CF4();
 extern "C" void fn_802E9D48();
-extern "C" void fn_8030CC40();
-extern "C" void fn_8030D324();
-extern "C" void fn_8030D9BC();
-extern "C" void fn_8030E4B8();
-extern "C" void fn_8030E5A0();
-extern "C" void fn_8030E690();
-extern "C" void fn_8030E7D8();
-extern "C" void fn_8030E970();
-extern "C" void fn_8030E9D8();
-extern "C" void fn_8030EA50();
-extern "C" void fn_8030EAB8();
-extern "C" void fn_8030EB30();
-extern "C" void fn_8030EBD0();
+extern "C" void PSMTXIdentity();
+extern "C" void PSMTXScale();
+extern "C" void C_MTXOrtho();
+extern "C" void NANDCreate();
+extern "C" void NANDPrivateCreateAsync();
+extern "C" void NANDDelete();
+extern "C" void NANDDeleteAsync();
+extern "C" void NANDRead();
+extern "C" void NANDReadAsync();
+extern "C" void NANDWrite();
+extern "C" void NANDWriteAsync();
+extern "C" void NANDSeek();
+extern "C" void NANDSeekAsync();
 extern "C" void fn_8030EC80();
-extern "C" void fn_8030ED50();
-extern "C" void fn_8030EF5C();
-extern "C" void fn_8030EFD0();
-extern "C" void fn_8030F268();
-extern "C" void fn_8030F2CC();
-extern "C" void fn_8030F34C();
+extern "C" void NANDReadDirAsync();
+extern "C" void NANDPrivateCreateDir();
+extern "C" void NANDPrivateCreateDirAsync();
+extern "C" void NANDMove();
+extern "C" void NANDMoveAsync();
+extern "C" void NANDTellAsync();
 extern "C" void fn_8030F3DC();
-extern "C" void fn_8030F8CC();
-extern "C" void fn_8030F9E8();
-extern "C" void fn_8030FB00();
-extern "C" void fn_8030FC68();
-extern "C" void fn_8030FCD4();
-extern "C" void fn_8030FD5C();
-extern "C" void fn_80310110();
+extern "C" void NANDGetUserData();
+extern "C" void NANDOpen();
+extern "C" void NANDOpenAsync();
+extern "C" void NANDClose();
+extern "C" void NANDCloseAsync();
+extern "C" void NANDSimpleSafeOpen();
+extern "C" void NANDPrivateSafeOpenAsync();
 extern "C" void fn_803102EC();
 extern "C" void fn_80310908();
-extern "C" void fn_8031180C();
-extern "C" void fn_80311850();
-extern "C" void fn_80311914();
-extern "C" void fn_80311990();
-extern "C" void fn_80311CF4();
+extern "C" void NANDChangeDir();
+extern "C" void NANDChangeDirAsync();
+extern "C" void nandChangeDirCallback();
+extern "C" void NANDGetHomeDir();
+extern "C" void NANDGetType();
 extern "C" void fn_80311D38();
-extern "C" void fn_80311E4C();
+extern "C" void NANDInitBanner();
 extern "C" void fn_8031209C();
 extern "C" void fn_803121A4();
-extern "C" void fn_80318BF4();
-extern "C" void fn_803198A4();
-extern "C" void fn_80319A94();
+extern "C" void OSGetFontEncode();
+extern "C" void OSInitFont();
+extern "C" void OSGetFontTexture();
 extern "C" void fn_803299FC();
 extern "C" void* memcpy(void*, const void*, unsigned int);
 extern "C" void* memset(void*, int, unsigned int);
@@ -776,7 +776,7 @@ extern "C" asm void fn_80178ACC() {
     stw r30, 0x8(r1)
     mr r30, r3
     mr r3, r4
-    bl fn_8030F8CC
+    bl NANDGetUserData
     mr r31, r3
     lwz r0, 0x0(r3)
     rlwinm r0, r0, 0, 29, 29
@@ -1384,7 +1384,7 @@ extern "C" asm void fn_801792F0() {
     addi r4, r3, lbl_803C2330@l
     addi r3, r4, 0x80
     addi r4, r4, 0x84
-    b fn_8030F34C
+    b NANDTellAsync
 }
 
 extern "C" asm void fn_80179304() {
@@ -1402,14 +1402,14 @@ extern "C" asm void fn_80179320() {
     nofralloc
     clrlwi r4, r4, 24
     clrlwi r5, r5, 24
-    b fn_8030E4B8
+    b NANDCreate
 }
 
 extern "C" asm void fn_8017932C() {
     nofralloc
     clrlwi r4, r4, 24
     clrlwi r5, r5, 24
-    b fn_8030E5A0
+    b NANDPrivateCreateAsync
 }
 
 extern "C" asm void fn_80179338() {
@@ -1418,7 +1418,7 @@ extern "C" asm void fn_80179338() {
     mr r3, r4
     mr r4, r0
     clrlwi r5, r5, 24
-    b fn_8030F9E8
+    b NANDOpen
 }
 
 extern "C" asm void fn_8017934C() {
@@ -1427,7 +1427,7 @@ extern "C" asm void fn_8017934C() {
     mr r3, r4
     mr r4, r0
     clrlwi r5, r5, 24
-    b fn_8030FB00
+    b NANDOpenAsync
 }
 
 extern "C" asm void fn_80179360() {
@@ -1444,7 +1444,7 @@ lbl_80179378:
     clrlwi r5, r5, 24
     addi r0, r7, 0x1f
     clrrwi r7, r0, 5
-    b fn_8030FD5C
+    b NANDSimpleSafeOpen
 }
 
 extern "C" asm void fn_80179390() {
@@ -1466,17 +1466,17 @@ lbl_801793A8:
 
 extern "C" asm void fn_801793C0() {
     nofralloc
-    b fn_8030FC68
+    b NANDClose
 }
 
 extern "C" asm void fn_801793C4() {
     nofralloc
-    b fn_8030FCD4
+    b NANDCloseAsync
 }
 
 extern "C" asm void fn_801793C8() {
     nofralloc
-    b fn_80310110
+    b NANDPrivateSafeOpenAsync
 }
 
 extern "C" asm void fn_801793CC() {
@@ -1494,7 +1494,7 @@ extern "C" asm void fn_801793D0() {
 lbl_801793E4:
     addi r0, r5, 0x1f
     clrrwi r5, r0, 5
-    b fn_8030E970
+    b NANDRead
 }
 
 extern "C" asm void fn_801793F0() {
@@ -1507,7 +1507,7 @@ extern "C" asm void fn_801793F0() {
 lbl_80179404:
     addi r0, r5, 0x1f
     clrrwi r5, r0, 5
-    b fn_8030E9D8
+    b NANDReadAsync
 }
 
 extern "C" asm void fn_80179410() {
@@ -1520,7 +1520,7 @@ extern "C" asm void fn_80179410() {
 lbl_80179424:
     addi r0, r5, 0x1f
     clrrwi r5, r0, 5
-    b fn_8030EA50
+    b NANDWrite
 }
 
 extern "C" asm void fn_80179430() {
@@ -1533,17 +1533,17 @@ extern "C" asm void fn_80179430() {
 lbl_80179444:
     addi r0, r5, 0x1f
     clrrwi r5, r0, 5
-    b fn_8030EAB8
+    b NANDWriteAsync
 }
 
 extern "C" asm void fn_80179450() {
     nofralloc
-    b fn_8030EB30
+    b NANDSeek
 }
 
 extern "C" asm void fn_80179454() {
     nofralloc
-    b fn_8030EBD0
+    b NANDSeekAsync
 }
 
 extern "C" asm void fn_80179458() {
@@ -1569,31 +1569,31 @@ extern "C" asm void fn_80179478() {
     li r0, 0x0
     stw r0, 0x1(r0)
 lbl_80179494:
-    b fn_8030ED50
+    b NANDReadDirAsync
 }
 
 extern "C" asm void fn_80179498() {
     nofralloc
     clrlwi r4, r4, 24
     clrlwi r5, r5, 24
-    b fn_8030EF5C
+    b NANDPrivateCreateDir
 }
 
 extern "C" asm void fn_801794A4() {
     nofralloc
     clrlwi r4, r4, 24
     clrlwi r5, r5, 24
-    b fn_8030EFD0
+    b NANDPrivateCreateDirAsync
 }
 
 extern "C" asm void fn_801794B0() {
     nofralloc
-    b fn_8031180C
+    b NANDChangeDir
 }
 
 extern "C" asm void fn_801794B4() {
     nofralloc
-    b fn_80311850
+    b NANDChangeDirAsync
 }
 
 extern "C" asm void fn_801794B8() {
@@ -1601,39 +1601,39 @@ extern "C" asm void fn_801794B8() {
     lis r3, lbl_803C2330@ha
     addi r3, r3, lbl_803C2330@l
     addi r3, r3, 0x40
-    b fn_80311914
+    b nandChangeDirCallback
 }
 
 extern "C" asm void fn_801794C8() {
     nofralloc
     lis r3, lbl_803C2330@ha
     addi r3, r3, lbl_803C2330@l
-    b fn_80311990
+    b NANDGetHomeDir
 }
 
 extern "C" asm void fn_801794D4() {
     nofralloc
-    b fn_8030E690
+    b NANDDelete
 }
 
 extern "C" asm void fn_801794D8() {
     nofralloc
-    b fn_8030E7D8
+    b NANDDeleteAsync
 }
 
 extern "C" asm void fn_801794DC() {
     nofralloc
-    b fn_8030F268
+    b NANDMove
 }
 
 extern "C" asm void fn_801794E0() {
     nofralloc
-    b fn_8030F2CC
+    b NANDMoveAsync
 }
 
 extern "C" asm void fn_801794E4() {
     nofralloc
-    b fn_80311CF4
+    b NANDGetType
 }
 
 extern "C" asm void fn_801794E8() {
@@ -1710,7 +1710,7 @@ extern "C" asm void fn_80179570() {
     lis r5, lbl_8035E0E0@ha
     addi r5, r5, lbl_8035E0E0@l
     addi r6, r5, 0x12
-    bl fn_80311E4C
+    bl NANDInitBanner
     addi r3, r31, 0xa0
     lis r4, lbl_803C23B8@ha
     addi r4, r4, lbl_803C23B8@l
@@ -2174,10 +2174,10 @@ extern "C" asm void fn_80179BC0() {
     cmplwi r0, 0x1
     beq lbl_80179DB0
     addi r3, r1, 0x8
-    bl fn_8030CC40
+    bl PSMTXIdentity
     addi r3, r1, 0x8
     li r4, 0x3
-    bl fn_802E5644
+    bl GXLoadPosMtxImm
     lbz r0, 0x21(r31)
     cmpwi r0, 0x0
     bne lbl_80179C84
@@ -2207,7 +2207,7 @@ extern "C" asm void fn_80179BC0() {
     fmuls f4, f0, f4
     lfs f5, 0x4(r4)
     lfs f6, 0x18(r4)
-    bl fn_8030D9BC
+    bl C_MTXOrtho
     b lbl_80179CF0
 lbl_80179C84:
     lwz r3, 0x54(r31)
@@ -2236,34 +2236,34 @@ lbl_80179C84:
     fmuls f4, f0, f4
     lfs f5, 0x4(r4)
     lfs f6, 0x18(r4)
-    bl fn_8030D9BC
+    bl C_MTXOrtho
 lbl_80179CF0:
     addi r3, r1, 0x38
     li r4, 0x1
-    bl fn_802E5554
-    bl fn_802E0688
+    bl GXSetProjection
+    bl GXClearVtxDesc
     li r3, 0x4
     li r4, 0x9
     li r5, 0x0
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x4
     li r4, 0xb
     li r5, 0x0
     li r6, 0x1
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xb
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0x1
-    bl fn_802E2ED8
+    bl GXSetNumChans
     li r3, 0x0
-    bl fn_802E0FF8
+    bl GXSetNumTexGens
     li r3, 0x1
     bl fn_802E4A28
     li r3, 0x0
@@ -2278,13 +2278,13 @@ lbl_80179CF0:
     li r4, 0x0
     li r5, 0x0
     li r6, 0x0
-    bl fn_802E4EFC
+    bl GXSetBlendMode
     li r3, 0x1
     li r4, 0x3
     li r5, 0x1
-    bl fn_802E4FA4
+    bl GXSetZMode
     li r3, 0x3
-    bl fn_802E574C
+    bl GXSetCurrentMtx
     bl fn_802E9C54
 lbl_80179DB0:
     lwz r31, 0x8c(r1)
@@ -2721,16 +2721,16 @@ lbl_8017A234:
     lwz r4, 0x5c(r4)
     bl fn_80016E44
     addi r3, r1, 0x18
-    bl fn_801CFEC8
+    bl Init__Q34nw4r3g3d7ResFileFv
     addi r3, r1, 0x18
     addi r4, r30, 0xaf
-    bl fn_801CF024
+    bl GetResTex__Q34nw4r3g3d7ResFileCFPCc
     stw r3, 0x10(r1)
     addi r3, r1, 0x14
     addi r4, r1, 0x10
     bl fn_80036184
     addi r3, r1, 0x14
-    bl fn_801D478C
+    bl Init__Q34nw4r3g3d6ResTexFv
     addi r3, r1, 0x14
     addi r4, r1, 0x28
     addi r5, r1, 0xc
@@ -2739,7 +2739,7 @@ lbl_8017A234:
     addi r8, r1, 0x20
     addi r9, r1, 0x1c
     addi r10, r1, 0x8
-    bl fn_801D45F0
+    bl GetTexObjParam__Q34nw4r3g3d6ResTexCFPPvPUsPUsP9_GXTexFmtPfPfPUc
     lis r3, lbl_803D1438@ha
     addi r31, r3, lbl_803D1438@l
     addi r3, r31, 0x4
@@ -2750,7 +2750,7 @@ lbl_8017A234:
     li r8, 0x0
     li r9, 0x0
     lbz r10, 0x8(r1)
-    bl fn_802E3184
+    bl GXInitTexObj
     addi r3, r31, 0x4
     li r4, 0x1
     li r5, 0x1
@@ -2761,7 +2761,7 @@ lbl_8017A234:
     li r6, 0x0
     li r7, 0x0
     li r8, 0x0
-    bl fn_802E33D8
+    bl GXInitTexObjLOD
     addi r11, r1, 0x90
     bl _restgpr_27
     lwz r0, 0x94(r1)
@@ -3073,8 +3073,8 @@ extern "C" asm void fn_8017A848() {
     li r3, 0x0
     b lbl_8017A92C
 lbl_8017A86C:
-    bl fn_80318BF4
-    bl fn_80318BF4
+    bl OSGetFontEncode
+    bl OSGetFontEncode
     clrlwi r0, r3, 16
     cmpwi r0, 0x0
     beq lbl_8017A89C
@@ -3121,7 +3121,7 @@ lbl_8017A8D4:
     li r3, 0x0
     b lbl_8017A92C
 lbl_8017A910:
-    bl fn_803198A4
+    bl OSInitFont
     cmpwi r3, 0x0
     bne lbl_8017A928
     bl fn_8017A940
@@ -3197,23 +3197,23 @@ lbl_8017A9D0:
     fsubs f4, f0, f4
     fmr f5, f1
     lfs f6, 0x8(r5)
-    bl fn_8030D9BC
+    bl C_MTXOrtho
     addi r3, r1, 0x48
     li r4, 0x1
-    bl fn_802E5554
+    bl GXSetProjection
     addi r3, r1, 0x18
-    bl fn_8030CC40
+    bl PSMTXIdentity
     addi r3, r1, 0x18
     li r4, 0x0
-    bl fn_802E5644
+    bl GXLoadPosMtxImm
     li r3, 0x0
-    bl fn_802E574C
+    bl GXSetCurrentMtx
     li r3, 0x1
     li r4, 0x7
     li r5, 0x1
-    bl fn_802E4FA4
+    bl GXSetZMode
     li r3, 0x0
-    bl fn_802E2ED8
+    bl GXSetNumChans
     li r3, 0x1
     bl fn_802E4A28
     bl fn_8018C9DC
@@ -3226,31 +3226,31 @@ lbl_8017A9D0:
     li r6, 0xff
     bl fn_802E48CC
     li r3, 0x0
-    bl fn_802E1DA0
+    bl GXSetCullMode
     li r3, 0x1
     li r4, 0x1
     li r5, 0x1
     li r6, 0x0
-    bl fn_802E4EFC
-    bl fn_802E0688
+    bl GXSetBlendMode
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xd
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0x0
     li r4, 0x9
     li r5, 0x1
     li r6, 0x3
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xd
     li r5, 0x1
     li r6, 0x3
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     b lbl_8017AB4C
 lbl_8017AAE8:
     extsb r0, r3
@@ -3268,7 +3268,7 @@ lbl_8017AB0C:
     addi r5, r1, 0x10
     addi r6, r1, 0xc
     addi r7, r1, 0x8
-    bl fn_80319A94
+    bl OSGetFontTexture
     mr r29, r3
     lwz r3, 0x14(r1)
     bl fn_8017AC64
@@ -3319,7 +3319,7 @@ extern "C" asm void fn_8017AB78() {
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     mr r3, r31
     mr r4, r29
     li r5, 0x0
@@ -3379,7 +3379,7 @@ lbl_8017AC8C:
     li r8, 0x0
     li r9, 0x0
     li r10, 0x0
-    bl fn_802E3184
+    bl GXInitTexObj
     addi r3, r1, 0x8
     li r4, 0x1
     li r5, 0x1
@@ -3389,10 +3389,10 @@ lbl_8017AC8C:
     li r6, 0x0
     li r7, 0x0
     li r8, 0x0
-    bl fn_802E33D8
+    bl GXInitTexObjLOD
     addi r3, r1, 0x8
     li r4, 0x0
-    bl fn_802E37E0
+    bl GXLoadTexObj
     lwz r6, lbl_8049D830
     addi r3, r1, 0x28
     la r5, lbl_804A0EF8
@@ -3411,13 +3411,13 @@ lbl_8017AC8C:
     lfd f0, 0x60(r1)
     fsubs f0, f0, f2
     fdivs f2, f3, f0
-    bl fn_8030D324
+    bl PSMTXScale
     addi r3, r1, 0x28
     li r4, 0x1e
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     li r3, 0x1
-    bl fn_802E0FF8
+    bl GXSetNumTexGens
     li r3, 0x0
     li r4, 0x1
     li r5, 0x4
@@ -3439,7 +3439,7 @@ extern "C" asm void fn_8017AD78() {
     nofralloc
     li r7, 0x0
     li r8, 0x7d
-    b fn_802E0DD0
+    b GXSetTexCoordGen2
 }
 
 extern "C" asm void fn_8017AD84() {
@@ -3657,7 +3657,7 @@ extern "C" asm void fn_8017B004() {
     bl fn_8002AE40
     addi r3, r1, 0xc
     addi r4, r1, 0x10
-    bl fn_801E93B8
+    bl GetCameraMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX34
     mr r3, r31
     addi r4, r1, 0x10
     bl fn_801734E4
@@ -3690,7 +3690,7 @@ extern "C" asm void fn_8017B074() {
     bl fn_8002AE40
     addi r3, r1, 0xc
     addi r4, r1, 0x10
-    bl fn_801E93B8
+    bl GetCameraMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX34
     addi r3, r1, 0x10
     mr r4, r3
     bl fn_80034AF0
@@ -3760,7 +3760,7 @@ extern "C" asm void fn_8017B144() {
     bl fn_80016D44
     addi r3, r1, 0xc
     addi r4, r1, 0x88
-    bl fn_801E93B8
+    bl GetCameraMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX34
     addi r3, r1, 0xc
     addi r4, r1, 0x10
     addi r5, r1, 0x14
@@ -3768,10 +3768,10 @@ extern "C" asm void fn_8017B144() {
     addi r7, r1, 0x1c
     addi r8, r1, 0x20
     addi r9, r1, 0x24
-    bl fn_801E92F8
+    bl GetViewport__Q34nw4r3g3d6CameraCFPfPfPfPfPfPf
     addi r3, r1, 0xc
     addi r4, r1, 0x48
-    bl fn_801E9418
+    bl GetProjectionMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX44
     addi r3, r1, 0xc
     bl fn_8003DB44
     cmpwi r3, 0x0
@@ -3818,7 +3818,7 @@ lbl_8017B268:
     mr r6, r30
     addi r7, r30, 0x4
     addi r8, r30, 0x8
-    bl fn_802E5388
+    bl GXProject
 lbl_8017B290:
     lwz r31, 0xbc(r1)
     lwz r30, 0xb8(r1)
@@ -3971,12 +3971,12 @@ lbl_8017B448:
     bl fn_8002AFB4
     addi r3, r1, 0xc
     addi r4, r1, 0x1c
-    bl fn_801E90E0
+    bl LogMsg
     li r31, 0x2
     stw r31, 0x1c(r1)
     addi r3, r1, 0xc
     addi r4, r1, 0x1c
-    bl fn_801E8EC0
+    bl SetPosture__Q34nw4r3g3d6CameraFRCQ44nw4r3g3d6Camera11PostureInfo
     addi r3, r28, 0x28
     la r30, lbl_804A0F18
     lfs f1, 0x4(r30)
@@ -4010,7 +4010,7 @@ lbl_8017B448:
     lfs f1, 0x4(r28)
     lfs f2, 0x8(r28)
     lfs f3, 0xc(r28)
-    bl fn_801E8E64
+    bl SetPosition__Q34nw4r3g3d6CameraFfff
     addi r3, r1, 0xc
     lfs f1, 0x4(r30)
     fmr f2, f1
@@ -4035,11 +4035,11 @@ lbl_8017B448:
     li r5, 0x0
     lwz r6, 0x54(r31)
     lhz r6, 0xe(r6)
-    bl fn_801E920C
+    bl SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl
     addi r3, r1, 0xc
     li r4, 0x0
     li r5, 0x0
-    bl fn_801E922C
+    bl SetScissorBoxOffset__Q34nw4r3g3d6CameraFll
     mr r3, r28
     li r0, 0x78
     opword 0x13E1000C
@@ -4077,12 +4077,12 @@ extern "C" asm void fn_8017B5E4() {
     bl fn_8002AFB4
     addi r3, r1, 0xc
     addi r4, r1, 0x1c
-    bl fn_801E90E0
+    bl LogMsg
     li r0, 0x0
     stw r0, 0x1c(r1)
     addi r3, r1, 0xc
     addi r4, r1, 0x1c
-    bl fn_801E8EC0
+    bl SetPosture__Q34nw4r3g3d6CameraFRCQ44nw4r3g3d6Camera11PostureInfo
     addi r3, r30, 0x28
     la r31, lbl_804A0F18
     lfs f1, 0x4(r31)
@@ -4278,10 +4278,10 @@ lbl_8017B8F4:
     lfs f1, 0x4(r27)
     lfs f2, 0x8(r27)
     lfs f3, 0xc(r27)
-    bl fn_801E8E64
+    bl SetPosition__Q34nw4r3g3d6CameraFfff
     addi r3, r1, 0xc
     addi r4, r1, 0x10
-    bl fn_801E90E0
+    bl LogMsg
     addi r3, r1, 0x20
     lfs f1, 0x1c(r27)
     lfs f2, 0x20(r27)
@@ -4291,7 +4291,7 @@ lbl_8017B8F4:
     stfs f0, 0x38(r1)
     addi r3, r1, 0xc
     addi r4, r1, 0x10
-    bl fn_801E8EC0
+    bl SetPosture__Q34nw4r3g3d6CameraFRCQ44nw4r3g3d6Camera11PostureInfo
     mr r3, r27
     bl fn_8017B9BC
     lbz r0, 0x21(r29)
@@ -4309,7 +4309,7 @@ lbl_8017B95C:
     lfs f2, 0x3c(r27)
     lfs f3, 0x40(r27)
     lfs f4, 0x44(r27)
-    bl fn_801E9194
+    bl SetPerspective__Q34nw4r3g3d6CameraFffff
 lbl_8017B97C:
     addi r31, r31, 0x1
     addi r30, r30, 0x160
@@ -4953,21 +4953,21 @@ extern "C" asm void fn_8017C22C() {
     bl fn_8002AE40
     addi r3, r1, 0xc
     addi r4, r1, 0x10
-    bl fn_801E93B8
+    bl GetCameraMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX34
     addi r3, r1, 0x10
     bl fn_8002AE3C
     li r4, 0x0
-    bl fn_802E5644
+    bl GXLoadPosMtxImm
     li r3, 0x0
-    bl fn_802E574C
+    bl GXSetCurrentMtx
     addi r3, r1, 0xc
-    bl fn_801E9644
+    bl GXSetViewport__Q34nw4r3g3d6CameraCFv
     addi r3, r1, 0xc
-    bl fn_801E9790
+    bl GXSetScissor__Q34nw4r3g3d6CameraCFv
     addi r3, r1, 0xc
-    bl fn_801E97B4
+    bl GXSetScissorBoxOffset__Q34nw4r3g3d6CameraCFv
     addi r3, r1, 0xc
-    bl fn_801E96C8
+    bl GXSetProjection__Q34nw4r3g3d6CameraCFv
 lbl_8017C2BC:
     lwz r0, 0x44(r1)
     mtlr r0
@@ -4989,21 +4989,21 @@ extern "C" asm void fn_8017C2CC() {
     bl fn_8002AE40
     addi r3, r1, 0xc
     addi r4, r1, 0x10
-    bl fn_801E93B8
+    bl GetCameraMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX34
     addi r3, r1, 0x10
     bl fn_8002AE3C
     li r4, 0x0
-    bl fn_802E5644
+    bl GXLoadPosMtxImm
     li r3, 0x0
-    bl fn_802E574C
+    bl GXSetCurrentMtx
     addi r3, r1, 0xc
-    bl fn_801E9644
+    bl GXSetViewport__Q34nw4r3g3d6CameraCFv
     addi r3, r1, 0xc
-    bl fn_801E9790
+    bl GXSetScissor__Q34nw4r3g3d6CameraCFv
     addi r3, r1, 0xc
-    bl fn_801E97B4
+    bl GXSetScissorBoxOffset__Q34nw4r3g3d6CameraCFv
     addi r3, r1, 0xc
-    bl fn_801E96C8
+    bl GXSetProjection__Q34nw4r3g3d6CameraCFv
     lwz r0, 0x44(r1)
     mtlr r0
     addi r1, r1, 0x40
@@ -5042,7 +5042,7 @@ lbl_8017C390:
     fmr f2, f29
     fmr f3, f30
     fmr f4, f31
-    bl fn_801E9244
+    bl SetViewport__Q34nw4r3g3d6CameraFffff
     li r3, 0x1
 lbl_8017C3C4:
     addi r11, r1, 0x40
@@ -5100,7 +5100,7 @@ lbl_8017C434:
     mr r5, r31
     mr r6, r30
     mr r7, r29
-    bl fn_801E920C
+    bl SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl
     addi r3, r1, 0xc
     fneg f0, f30
     fctiwz f0, f0
@@ -5110,9 +5110,9 @@ lbl_8017C434:
     fctiwz f0, f0
     stfd f0, 0x18(r1)
     lwz r5, 0x1c(r1)
-    bl fn_801E922C
+    bl SetScissorBoxOffset__Q34nw4r3g3d6CameraFll
     addi r3, r1, 0xc
-    bl fn_801E9790
+    bl GXSetScissor__Q34nw4r3g3d6CameraCFv
     li r3, 0x1
 lbl_8017C4C4:
     addi r11, r1, 0x60

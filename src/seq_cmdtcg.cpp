@@ -305,11 +305,11 @@ extern "C" void strstr();
 extern "C" void fn_80224BAC();
 extern "C" void fn_80224BE8();
 extern "C" void fn_8022F374();
-extern "C" void fn_802D0550();
-extern "C" void fn_802D0858();
-extern "C" void fn_802D08C0();
-extern "C" void fn_802D0B6C();
-extern "C" void fn_802D0E38();
+extern "C" void DVDConvertPathToEntrynum();
+extern "C" void DVDFastOpen();
+extern "C" void DVDOpen();
+extern "C" void DVDClose();
+extern "C" void DVDReadPrio();
 extern "C" void fn_80324704();
 extern "C" void* memcpy(void*, const void*, unsigned int);
 extern "C" void* memset(void*, int, unsigned int);
@@ -9343,7 +9343,7 @@ lbl_8016652C:
     bgt lbl_8016658C
     mr r3, r28
     addi r4, r1, 0x8
-    bl fn_802D08C0
+    bl DVDOpen
     lwz r3, 0x3c(r1)
     addi r0, r3, 0x1f
     clrrwi r31, r0, 5
@@ -9352,10 +9352,10 @@ lbl_8016652C:
     mr r5, r31
     li r6, 0x0
     li r7, 0x2
-    bl fn_802D0E38
+    bl DVDReadPrio
     mr r30, r3
     addi r3, r1, 0x8
-    bl fn_802D0B6C
+    bl DVDClose
     mr r3, r28
     mr r4, r29
     mr r5, r30
@@ -9445,14 +9445,14 @@ lbl_80166678:
     cmplwi r0, 0x1
     bgt lbl_801666D0
     mr r3, r31
-    bl fn_802D0550
+    bl DVDConvertPathToEntrynum
     cmpwi r3, 0x0
     bge lbl_8016669C
     li r3, 0x0
     b lbl_801666D4
 lbl_8016669C:
     addi r4, r1, 0x8
-    bl fn_802D0858
+    bl DVDFastOpen
     cmpwi r3, 0x0
     bne lbl_801666B4
     li r3, 0x0
@@ -9462,7 +9462,7 @@ lbl_801666B4:
     addi r0, r3, 0x1f
     clrrwi r31, r0, 5
     addi r3, r1, 0x8
-    bl fn_802D0B6C
+    bl DVDClose
     mr r3, r31
     b lbl_801666D4
 lbl_801666D0:

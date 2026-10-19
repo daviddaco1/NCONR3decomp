@@ -54,26 +54,26 @@ extern "C" void fn_80043080();
 extern "C" void fn_80043090();
 extern "C" void fn_80172608();
 extern "C" void fn_8017B074();
-extern "C" void fn_801E2B5C();
-extern "C" void fn_801E2B68();
-extern "C" void fn_801E920C();
-extern "C" void fn_801E9244();
-extern "C" void fn_801E92F8();
+extern "C" void GetRenderModeObj__Q34nw4r3g3d8G3DStateFv();
+extern "C" void Invalidate__Q34nw4r3g3d8G3DStateFUl();
+extern "C" void SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl();
+extern "C" void SetViewport__Q34nw4r3g3d6CameraFffff();
+extern "C" void GetViewport__Q34nw4r3g3d6CameraCFPfPfPfPfPfPf();
 extern "C" void fn_801E9368();
-extern "C" void fn_802DFDF8();
-extern "C" void fn_802E0688();
-extern "C" void fn_802E06BC();
-extern "C" void fn_802E0D80();
-extern "C" void fn_802E0DD0();
-extern "C" void fn_802E0FF8();
+extern "C" void GXSetVtxDesc();
+extern "C" void GXClearVtxDesc();
+extern "C" void GXSetVtxAttrFmt();
+extern "C" void GXSetArray();
+extern "C" void GXSetTexCoordGen2();
+extern "C" void GXSetNumTexGens();
 extern "C" void fn_802E1450();
-extern "C" void fn_802E1ABC();
-extern "C" void fn_802E2ED8();
-extern "C" void fn_802E353C();
-extern "C" void fn_802E3550();
-extern "C" void fn_802E3564();
-extern "C" void fn_802E37E0();
-extern "C" void fn_802E39C4();
+extern "C" void GXBegin();
+extern "C" void GXSetNumChans();
+extern "C" void GXGetTexObjWidth();
+extern "C" void GXGetTexObjHeight();
+extern "C" void GXGetTexObjFmt();
+extern "C" void GXLoadTexObj();
+extern "C" void GXInvalidateTexAll();
 extern "C" void fn_802E430C();
 extern "C" void fn_802E432C();
 extern "C" void fn_802E43CC();
@@ -84,17 +84,17 @@ extern "C" void fn_802E4538();
 extern "C" void fn_802E4654();
 extern "C" void fn_802E4700();
 extern "C" void fn_802E4750();
-extern "C" void fn_802E478C();
+extern "C" void GXSetTexCoordScaleManually();
 extern "C" void fn_802E4808();
 extern "C" void fn_802E4840();
 extern "C" void fn_802E48CC();
 extern "C" void fn_802E4A28();
-extern "C" void fn_802E4EFC();
-extern "C" void fn_802E4F78();
-extern "C" void fn_802E4FA4();
-extern "C" void fn_802E4FD8();
-extern "C" void fn_802E50B0();
-extern "C" void fn_802E50DC();
+extern "C" void GXSetBlendMode();
+extern "C" void GXSetAlphaUpdate();
+extern "C" void GXSetZMode();
+extern "C" void GXSetZCompLoc();
+extern "C" void GXSetDither();
+extern "C" void GXSetDstAlpha();
 
 // ----------------------------------------------------------------------------
 // fn_800423DC
@@ -111,14 +111,14 @@ extern "C" asm void fn_800423DC() {
     stw r31, 0x1c(r1)
     mr r31, r5
     li r3, 0x7ff
-    bl fn_801E2B68
+    bl Invalidate__Q34nw4r3g3d8G3DStateFUl
     li r3, 0x0
     bl fn_8003D62C
     mr r3, r31
     li r4, 0x0
-    bl fn_802E37E0
+    bl GXLoadTexObj
     li r3, 0x0
-    bl fn_802E2ED8
+    bl GXSetNumChans
     li r3, 0x0
     bl fn_802E430C
     li r3, 0x0
@@ -126,7 +126,7 @@ extern "C" asm void fn_800423DC() {
     li r3, 0x1
     bl fn_802E432C
     li r3, 0x1
-    bl fn_802E0FF8
+    bl GXSetNumTexGens
     li r3, 0x0
     li r4, 0x1
     li r5, 0x4
@@ -147,7 +147,7 @@ extern "C" asm void fn_800423DC() {
     li r4, 0x3
     bl fn_802E43CC
     li r3, 0x0
-    bl fn_802E4F78
+    bl GXSetAlphaUpdate
     li r3, 0x7
     li r4, 0x0
     li r5, 0x0
@@ -155,36 +155,36 @@ extern "C" asm void fn_800423DC() {
     li r7, 0x0
     bl fn_802E4808
     li r3, 0x0
-    bl fn_802E4FD8
+    bl GXSetZCompLoc
     li r3, 0x1
     li r4, 0x3
     li r5, 0x0
-    bl fn_802E4FA4
+    bl GXSetZMode
     li r3, 0x1
     li r4, 0x4
     li r5, 0x5
     li r6, 0x0
-    bl fn_802E4EFC
-    bl fn_802E0688
+    bl GXSetBlendMode
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xd
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0x0
     li r4, 0x9
     li r5, 0x0
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xd
     li r5, 0x1
     li r6, 0x0
     li r7, 0x0
-    bl fn_802E06BC
-    bl fn_801E2B5C
+    bl GXSetVtxAttrFmt
+    bl GetRenderModeObj__Q34nw4r3g3d8G3DStateFv
     lhz r0, 0xe(r3)
     lfd f1, lbl_8049EA00
     stw r0, 0xc(r1)
@@ -200,7 +200,7 @@ extern "C" asm void fn_800423DC() {
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, lbl_8049EA18
     fmr f2, f1
     bl fn_80042C7C
@@ -307,21 +307,21 @@ extern "C" asm void fn_8004267C() {
     cmplwi r3, 0x1
     beq lbl_800429E4
     li r3, 0x7ff
-    bl fn_801E2B68
+    bl Invalidate__Q34nw4r3g3d8G3DStateFUl
     li r3, 0x1
-    bl fn_802E50B0
+    bl GXSetDither
     li r3, 0x0
     bl fn_8003D62C
     lwz r3, 0xc(r31)
     bl fn_8002B99C
     li r4, 0x0
-    bl fn_802E37E0
+    bl GXLoadTexObj
     lwz r3, 0x8(r31)
     bl fn_8002B99C
     li r4, 0x1
-    bl fn_802E37E0
+    bl GXLoadTexObj
     li r3, 0x0
-    bl fn_802E2ED8
+    bl GXSetNumChans
     li r3, 0x0
     bl fn_802E430C
     li r3, 0x0
@@ -329,7 +329,7 @@ extern "C" asm void fn_8004267C() {
     li r3, 0x1
     bl fn_802E432C
     li r3, 0x1
-    bl fn_802E0FF8
+    bl GXSetNumTexGens
     li r3, 0x0
     li r4, 0x1
     li r5, 0x4
@@ -354,7 +354,7 @@ extern "C" asm void fn_8004267C() {
     li r5, 0x1
     li r6, 0x2
     li r7, 0x3
-    bl fn_802E478C
+    bl GXSetTexCoordScaleManually
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
@@ -410,10 +410,10 @@ extern "C" asm void fn_8004267C() {
     li r5, 0x0
     bl fn_802E4840
     li r3, 0x1
-    bl fn_802E4F78
+    bl GXSetAlphaUpdate
     li r3, 0x0
     li r4, 0x0
-    bl fn_802E50DC
+    bl GXSetDstAlpha
     li r3, 0x3
     li r4, 0xff
     li r5, 0x0
@@ -421,36 +421,36 @@ extern "C" asm void fn_8004267C() {
     mr r7, r31
     bl fn_802E4808
     li r3, 0x0
-    bl fn_802E4FD8
+    bl GXSetZCompLoc
     li r3, 0x0
     li r4, 0x3
     li r5, 0x0
-    bl fn_802E4FA4
+    bl GXSetZMode
     li r3, 0x1
     li r4, 0x1
     li r5, 0x0
     li r6, 0x0
-    bl fn_802E4EFC
-    bl fn_802E0688
+    bl GXSetBlendMode
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xd
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0x0
     li r4, 0x9
     li r5, 0x0
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xd
     li r5, 0x1
     li r6, 0x0
     li r7, 0x0
-    bl fn_802E06BC
-    bl fn_801E2B5C
+    bl GXSetVtxAttrFmt
+    bl GetRenderModeObj__Q34nw4r3g3d8G3DStateFv
     lhz r0, 0x4(r3)
     srwi r0, r0, 1
     lfd f1, lbl_8049EA10
@@ -470,7 +470,7 @@ extern "C" asm void fn_8004267C() {
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, lbl_8049EA18
     fmr f2, f1
     bl fn_80042C7C
@@ -538,17 +538,17 @@ extern "C" asm void fn_80042A14() {
     cmpwi r3, 0x0
     beq lbl_80042B20
     li r3, 0x1
-    bl fn_802E4F78
+    bl GXSetAlphaUpdate
     li r3, 0x0
     li r4, 0x0
-    bl fn_802E50DC
+    bl GXSetDstAlpha
     lwz r3, 0x8(r28)
     bl fn_8002B99C
     mr r29, r3
-    bl fn_802E353C
+    bl GXGetTexObjWidth
     mr r31, r3
     mr r3, r29
-    bl fn_802E3550
+    bl GXGetTexObjHeight
     mr r30, r3
     lwz r3, 0x8(r28)
     bl fn_8002B9A4
@@ -566,10 +566,10 @@ extern "C" asm void fn_80042A14() {
     lwz r3, 0xc(r28)
     bl fn_8002B99C
     mr r29, r3
-    bl fn_802E353C
+    bl GXGetTexObjWidth
     mr r30, r3
     mr r3, r29
-    bl fn_802E3550
+    bl GXGetTexObjHeight
     mr r31, r3
     lwz r3, 0xc(r28)
     bl fn_8002B9A4
@@ -579,7 +579,7 @@ extern "C" asm void fn_80042A14() {
     mullw r4, r4, r0
     bl DCInvalidateRange
     mr r3, r29
-    bl fn_802E3564
+    bl GXGetTexObjFmt
     mr r4, r3
     lwz r3, 0xc(r28)
     li r5, 0x0
@@ -587,7 +587,7 @@ extern "C" asm void fn_80042A14() {
     li r7, 0x0
     bl fn_80035050
     bl fn_802E1450
-    bl fn_802E39C4
+    bl GXInvalidateTexAll
     li r3, 0x1
     b lbl_80042B24
 lbl_80042B20:
@@ -620,7 +620,7 @@ extern "C" asm void fn_80042B3C() {
     addi r7, r30, 0x24
     addi r8, r30, 0x28
     addi r9, r30, 0x2c
-    bl fn_801E92F8
+    bl GetViewport__Q34nw4r3g3d6CameraCFPfPfPfPfPfPf
     mr r3, r31
     addi r4, r30, 0x30
     addi r5, r30, 0x34
@@ -636,7 +636,7 @@ extern "C" asm void fn_80042B3C() {
     fmuls f3, f0, f4
     lfs f0, 0x24(r30)
     fmuls f4, f0, f4
-    bl fn_801E9244
+    bl SetViewport__Q34nw4r3g3d6CameraFffff
     mr r3, r31
     lwz r4, 0x30(r30)
     lwz r5, 0x34(r30)
@@ -644,7 +644,7 @@ extern "C" asm void fn_80042B3C() {
     srwi r6, r0, 1
     lwz r0, 0x3c(r30)
     srwi r7, r0, 1
-    bl fn_801E920C
+    bl SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl
     lwz r31, 0xc(r1)
     lwz r30, 0x8(r1)
     lwz r0, 0x14(r1)
@@ -670,13 +670,13 @@ extern "C" asm void fn_80042BF0() {
     lfs f2, 0x1c(r30)
     lfs f3, 0x20(r30)
     lfs f4, 0x24(r30)
-    bl fn_801E9244
+    bl SetViewport__Q34nw4r3g3d6CameraFffff
     mr r3, r31
     lwz r4, 0x30(r30)
     lwz r5, 0x34(r30)
     lwz r6, 0x38(r30)
     lwz r7, 0x3c(r30)
-    bl fn_801E920C
+    bl SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl
     lwz r31, 0xc(r1)
     lwz r30, 0x8(r1)
     lwz r0, 0x14(r1)
@@ -700,7 +700,7 @@ extern "C" asm void fn_80042C58() {
     nofralloc
     li r7, 0x0
     li r8, 0x7d
-    b fn_802E0DD0
+    b GXSetTexCoordGen2
 }
 
 // ----------------------------------------------------------------------------
@@ -782,45 +782,45 @@ extern "C" asm void fn_80042CC0() {
     bl fn_800163E4
     lwz r3, 0x10(r31)
     li r4, 0x0
-    bl fn_802E37E0
+    bl GXLoadTexObj
     li r3, 0xb
     lis r4, lbl_80339600@ha
     addi r4, r4, lbl_80339600@l
     li r5, 0x4
-    bl fn_802E0D80
+    bl GXSetArray
     li r3, 0xd
     lis r4, lbl_803395E0@ha
     addi r4, r4, lbl_803395E0@l
     li r5, 0x8
-    bl fn_802E0D80
-    bl fn_802E0688
+    bl GXSetArray
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xb
     li r4, 0x2
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xd
     li r4, 0x2
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0x0
     li r4, 0x9
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xb
     li r5, 0x1
     li r6, 0x5
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xd
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     mr r3, r31
     bl fn_80042DC8
     li r3, 0x0
@@ -900,7 +900,7 @@ lbl_80042EA4:
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     addi r3, r1, 0x38
     addi r4, r1, 0x68
     lfs f1, 0x9c(r30)

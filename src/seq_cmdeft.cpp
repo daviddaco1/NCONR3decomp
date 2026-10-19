@@ -896,17 +896,17 @@ extern "C" void fn_801AA160();
 extern "C" void fn_801AA168();
 extern "C" void fn_801AA208();
 extern "C" void fn_801AA370();
-extern "C" void fn_801E92F8();
-extern "C" void fn_801E9418();
-extern "C" void fn_801FF330();
-extern "C" void fn_80284760();
-extern "C" void fn_802E2348();
-extern "C" void fn_802E5388();
-extern "C" void fn_802E5604();
-extern "C" void fn_802E5918();
-extern "C" void fn_8030CC6C();
-extern "C" void fn_8030CF54();
-extern "C" void fn_8030D04C();
+extern "C" void GetViewport__Q34nw4r3g3d6CameraCFPfPfPfPfPfPf();
+extern "C" void GetProjectionMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX44();
+extern "C" void GetFrameSize__Q34nw4r3lyt13AnimTransformCFv();
+extern "C" void VIGetDimmingCount();
+extern "C" void GXSetCopyClear();
+extern "C" void GXProject();
+extern "C" void GXGetProjectionv();
+extern "C" void GXGetViewportv();
+extern "C" void PSMTXCopy();
+extern "C" void PSMTXInverse();
+extern "C" void PSMTXRotRad();
 extern "C" void fn_8030D7E0();
 extern "C" void fn_8030DA88();
 extern "C" void fn_8030DACC();
@@ -12071,7 +12071,7 @@ lbl_80149198:
     la r5, lbl_804A0C20
     lfs f0, 0x1c(r5)
     fmuls f1, f0, f1
-    bl fn_8030D04C
+    bl PSMTXRotRad
     addi r3, r1, 0x14
     addi r4, r1, 0x20
     mr r5, r3
@@ -12317,7 +12317,7 @@ lbl_80149454:
     addi r3, r1, 0x8
     lis r4, 0x100
     subi r4, r4, 0x1
-    bl fn_802E2348
+    bl GXSetCopyClear
     b lbl_80149F7C
     bl fn_8009177C
     stw r3, 0x4c(r30)
@@ -24139,7 +24139,7 @@ extern "C" asm void fn_801543A4() {
     bl fn_80016D44
     addi r3, r1, 0xc
     addi r4, r1, 0x50
-    bl fn_801E9418
+    bl GetProjectionMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX44
     addi r3, r1, 0x100
     mr r4, r31
     bl fn_8017B004
@@ -24147,9 +24147,9 @@ extern "C" asm void fn_801543A4() {
     mr r4, r31
     bl fn_8017B074
     addi r3, r1, 0x90
-    bl fn_802E5604
+    bl GXGetProjectionv
     addi r3, r1, 0x38
-    bl fn_802E5918
+    bl GXGetViewportv
     addi r3, r1, 0x28
     mr r4, r30
     bl fn_80019DAC
@@ -24187,10 +24187,10 @@ extern "C" asm void fn_801543A4() {
     bl fn_8030DD8C
     addi r3, r1, 0x100
     addi r4, r1, 0x130
-    bl fn_8030CC6C
+    bl PSMTXCopy
     addi r3, r1, 0x130
     mr r4, r3
-    bl fn_8030CF54
+    bl PSMTXInverse
     addi r3, r1, 0x130
     addi r4, r1, 0x28
     mr r5, r4
@@ -24237,9 +24237,9 @@ extern "C" asm void fn_80154530() {
     mr r4, r31
     bl fn_8017B004
     addi r3, r1, 0x48
-    bl fn_802E5604
+    bl GXGetProjectionv
     addi r3, r1, 0x8
-    bl fn_802E5918
+    bl GXGetViewportv
     lfs f1, 0x0(r30)
     lfs f2, 0x4(r30)
     lfs f3, 0x8(r30)
@@ -24249,7 +24249,7 @@ extern "C" asm void fn_80154530() {
     mr r6, r29
     addi r7, r29, 0x4
     addi r8, r29, 0x8
-    bl fn_802E5388
+    bl GXProject
     addi r11, r1, 0xd0
     bl _restgpr_29
     lwz r0, 0xd4(r1)
@@ -24961,7 +24961,7 @@ lbl_80154CD0:
     addi r7, r1, 0x60
     li r8, 0x0
     li r9, 0x0
-    bl fn_801E92F8
+    bl GetViewport__Q34nw4r3g3d6CameraCFPfPfPfPfPfPf
     lfs f1, 0xc0(r1)
     lfs f0, 0x8(r21)
     fdivs f1, f1, f0
@@ -26097,7 +26097,7 @@ lbl_80156140:
     lwz r0, 0x4c(r24)
     stw r0, 0x54(r24)
     b lbl_8015618C
-    bl fn_80284760
+    bl VIGetDimmingCount
     stw r3, 0x4c(r24)
     stw r3, 0x54(r24)
     addi r25, r25, 0x4
@@ -35015,7 +35015,7 @@ extern "C" asm void fn_8015E6CC() {
     stwu r1, -0x10(r1)
     mflr r0
     stw r0, 0x14(r1)
-    bl fn_801FF330
+    bl GetFrameSize__Q34nw4r3lyt13AnimTransformCFv
     clrlwi r0, r3, 16
     lfd f1, lbl_804A0D10
     stw r0, 0xc(r1)

@@ -311,7 +311,7 @@ extern "C" void fn_8018CFCC();
 extern "C" void fn_8018D00C();
 extern "C" void __cvt_fp2unsigned();
 extern "C" void fn_801A9384();
-extern "C" void fn_8030D448();
+extern "C" void C_MTXLookAt();
 extern "C" void memcpy();
 extern "C" void memset();
 
@@ -6843,7 +6843,7 @@ lbl_8012C290:
     addi r4, r29, 0x4
     addi r5, r1, 0x10
     addi r6, r29, 0x1c
-    bl fn_8030D448
+    bl C_MTXLookAt
     addi r3, r1, 0x28
     addi r4, r1, 0x38
     mr r5, r3

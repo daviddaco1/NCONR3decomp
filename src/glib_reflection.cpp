@@ -26,17 +26,17 @@ extern "C" void fn_80048908();
 extern "C" void fn_80048A64();
 extern "C" void fn_80048A88();
 extern "C" void fn_801A9384();
-extern "C" void fn_801E8CF0();
-extern "C" void fn_801E8E8C();
-extern "C" void fn_801E8EC0();
-extern "C" void fn_801E90E0();
-extern "C" void fn_801E9194();
-extern "C" void fn_801E920C();
-extern "C" void fn_801E9244();
-extern "C" void fn_802E3530();
-extern "C" void fn_802E353C();
-extern "C" void fn_802E3550();
-extern "C" void fn_802E3564();
+extern "C" void __ct__Q34nw4r3g3d6CameraFPQ34nw4r3g3d10CameraData();
+extern "C" void SetPosition__Q34nw4r3g3d6CameraFRCQ34nw4r4math4VEC3();
+extern "C" void SetPosture__Q34nw4r3g3d6CameraFRCQ44nw4r3g3d6Camera11PostureInfo();
+extern "C" void LogMsg();
+extern "C" void SetPerspective__Q34nw4r3g3d6CameraFffff();
+extern "C" void SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl();
+extern "C" void SetViewport__Q34nw4r3g3d6CameraFffff();
+extern "C" void GXGetTexObjData();
+extern "C" void GXGetTexObjWidth();
+extern "C" void GXGetTexObjHeight();
+extern "C" void GXGetTexObjFmt();
 
 // ----------------------------------------------------------------------------
 // fn_8004875C
@@ -62,16 +62,16 @@ extern "C" asm void fn_8004875C() {
     beq lbl_800488D4
     addi r3, r1, 0x8
     lwz r4, 0x14(r5)
-    bl fn_801E8CF0
+    bl __ct__Q34nw4r3g3d6CameraFPQ34nw4r3g3d10CameraData
     addi r29, r30, 0x24
     addi r3, r1, 0x8
     mr r4, r29
-    bl fn_801E8E8C
+    bl SetPosition__Q34nw4r3g3d6CameraFRCQ34nw4r4math4VEC3
     addi r3, r1, 0xc
     bl fn_8002AF70
     addi r3, r1, 0x8
     addi r4, r1, 0xc
-    bl fn_801E90E0
+    bl LogMsg
     li r0, 0x0
     stw r0, 0xc(r1)
     lfs f0, 0x18(r29)
@@ -93,13 +93,13 @@ extern "C" asm void fn_8004875C() {
     stfs f0, 0x34(r1)
     addi r3, r1, 0x8
     addi r4, r1, 0xc
-    bl fn_801E8EC0
+    bl SetPosture__Q34nw4r3g3d6CameraFRCQ44nw4r3g3d6Camera11PostureInfo
     addi r31, r30, 0x4
     mr r3, r31
-    bl fn_802E353C
+    bl GXGetTexObjWidth
     mr r30, r3
     mr r3, r31
-    bl fn_802E3550
+    bl GXGetTexObjHeight
     mr r31, r3
     addi r3, r1, 0x8
     lfs f1, 0x24(r29)
@@ -115,7 +115,7 @@ extern "C" asm void fn_8004875C() {
     fdivs f2, f2, f0
     lfs f3, 0x28(r29)
     lfs f4, 0x2c(r29)
-    bl fn_801E9194
+    bl SetPerspective__Q34nw4r3g3d6CameraFffff
     addi r3, r1, 0x8
     lfs f1, lbl_8049EB00
     fmr f2, f1
@@ -128,13 +128,13 @@ extern "C" asm void fn_8004875C() {
     stw r0, 0x44(r1)
     lfd f0, 0x40(r1)
     fsubs f4, f0, f4
-    bl fn_801E9244
+    bl SetViewport__Q34nw4r3g3d6CameraFffff
     addi r3, r1, 0x8
     li r4, 0x0
     li r5, 0x0
     clrlwi r6, r30, 16
     clrlwi r7, r31, 16
-    bl fn_801E920C
+    bl SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl
     li r3, 0x1
     b lbl_800488F0
 lbl_800488D4:
@@ -180,16 +180,16 @@ extern "C" asm void fn_80048908() {
     mr r4, r28
     bl fn_80048A64
     mr r29, r3
-    bl fn_802E3530
+    bl GXGetTexObjData
     addis r28, r3, 0x8000
     mr r3, r29
-    bl fn_802E353C
+    bl GXGetTexObjWidth
     mr r30, r3
     mr r3, r29
-    bl fn_802E3550
+    bl GXGetTexObjHeight
     mr r31, r3
     mr r3, r29
-    bl fn_802E3564
+    bl GXGetTexObjFmt
     subi r0, r3, 0x3
     cmplwi r0, 0x2
     ble lbl_800489D4

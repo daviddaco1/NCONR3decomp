@@ -127,23 +127,23 @@ extern "C" void fn_8002EB6C();
 extern "C" void fn_8002EC5C();
 extern "C" void fn_80033A08();
 extern "C" void fn_801A9384();
-extern "C" void fn_801CEDA8();
-extern "C" void fn_801CEE40();
-extern "C" void fn_801CF208();
-extern "C" void fn_801CF2A0();
-extern "C" void fn_801CF30C();
-extern "C" void fn_801CF3A4();
+extern "C" void GetResMdl__Q34nw4r3g3d7ResFileCFi();
+extern "C" void GetResMdlNumEntries__Q34nw4r3g3d7ResFileCFv();
+extern "C" void GetResAnmChr__Q34nw4r3g3d7ResFileCFi();
+extern "C" void GetResAnmChrNumEntries__Q34nw4r3g3d7ResFileCFv();
+extern "C" void GetResAnmClr__Q34nw4r3g3d7ResFileCFi();
+extern "C" void GetResAnmClr__Q34nw4r3g3d7ResFileCFPCc();
 extern "C" void fn_801CF410();
-extern "C" void fn_801CF4A8();
+extern "C" void GetResAnmTexPat__Q34nw4r3g3d7ResFileCFPCc();
 extern "C" void fn_801CF514();
-extern "C" void fn_801CF5AC();
+extern "C" void GetResAnmTexSrt__Q34nw4r3g3d7ResFileCFPCc();
 extern "C" void fn_801CF618();
-extern "C" void fn_801CF6B0();
-extern "C" void fn_801CF71C();
-extern "C" void fn_801CF7B4();
-extern "C" void fn_801CF924();
+extern "C" void GetResAnmShp__Q34nw4r3g3d7ResFileCFPCc();
+extern "C" void GetResAnmShp__Q34nw4r3g3d7ResFileCFi();
+extern "C" void GetResAnmScn__Q34nw4r3g3d7ResFileCFPCc();
+extern "C" void GetResAnmTexSrt__Q34nw4r3g3d7ResFileCFi();
 extern "C" void fn_801CF9BC();
-extern "C" void fn_8030CC40();
+extern "C" void PSMTXIdentity();
 
 // ----------------------------------------------------------------------------
 // fn_80029934
@@ -236,12 +236,12 @@ extern "C" asm void fn_80029A20() {
     mr r4, r0
     bl fn_80016E44
     addi r3, r1, 0xc
-    bl fn_801CEE40
+    bl GetResMdlNumEntries__Q34nw4r3g3d7ResFileCFv
     cmplw r31, r3
     bge lbl_80029A78
     addi r3, r1, 0xc
     mr r4, r31
-    bl fn_801CEDA8
+    bl GetResMdl__Q34nw4r3g3d7ResFileCFi
     stw r3, 0x8(r1)
     la r3, lbl_8049D4AC
     addi r4, r1, 0x8
@@ -339,7 +339,7 @@ lbl_80029B64:
 lbl_80029B74:
     addi r3, r1, 0x90
     mr r4, r27
-    bl fn_801CF208
+    bl GetResAnmChr__Q34nw4r3g3d7ResFileCFi
     stw r3, 0x70(r1)
     addi r3, r1, 0x8c
     addi r4, r1, 0x70
@@ -373,7 +373,7 @@ lbl_80029BE4:
     addi r29, r29, 0x4
 lbl_80029BF8:
     addi r3, r1, 0x90
-    bl fn_801CF2A0
+    bl GetResAnmChrNumEntries__Q34nw4r3g3d7ResFileCFv
     cmplw r27, r3
     blt lbl_80029B74
     b lbl_8002A0C0
@@ -396,7 +396,7 @@ lbl_80029C34:
 lbl_80029C44:
     addi r3, r1, 0x90
     mr r4, r27
-    bl fn_801CF30C
+    bl GetResAnmClr__Q34nw4r3g3d7ResFileCFi
     stw r3, 0x60(r1)
     addi r3, r1, 0x88
     addi r4, r1, 0x60
@@ -429,7 +429,7 @@ lbl_80029CB0:
     addi r29, r29, 0x4
 lbl_80029CC4:
     addi r3, r1, 0x90
-    bl fn_801CF3A4
+    bl GetResAnmClr__Q34nw4r3g3d7ResFileCFPCc
     cmplw r27, r3
     blt lbl_80029C44
     b lbl_8002A0C0
@@ -486,7 +486,7 @@ lbl_80029D80:
     addi r29, r29, 0x4
 lbl_80029D94:
     addi r3, r1, 0x90
-    bl fn_801CF5AC
+    bl GetResAnmTexSrt__Q34nw4r3g3d7ResFileCFPCc
     cmplw r27, r3
     blt lbl_80029D10
     b lbl_8002A0C0
@@ -543,7 +543,7 @@ lbl_80029E50:
     addi r29, r29, 0x4
 lbl_80029E64:
     addi r3, r1, 0x90
-    bl fn_801CF6B0
+    bl GetResAnmShp__Q34nw4r3g3d7ResFileCFPCc
     cmplw r27, r3
     blt lbl_80029DE0
     b lbl_8002A0C0
@@ -600,7 +600,7 @@ lbl_80029F20:
     addi r29, r29, 0x4
 lbl_80029F34:
     addi r3, r1, 0x90
-    bl fn_801CF4A8
+    bl GetResAnmTexPat__Q34nw4r3g3d7ResFileCFPCc
     cmplw r27, r3
     blt lbl_80029EB0
     b lbl_8002A0C0
@@ -623,7 +623,7 @@ lbl_80029F70:
 lbl_80029F80:
     addi r3, r1, 0x90
     mr r4, r27
-    bl fn_801CF71C
+    bl GetResAnmShp__Q34nw4r3g3d7ResFileCFi
     stw r3, 0x20(r1)
     addi r3, r1, 0x78
     addi r4, r1, 0x20
@@ -657,7 +657,7 @@ lbl_80029FF0:
     addi r29, r29, 0x4
 lbl_8002A004:
     addi r3, r1, 0x90
-    bl fn_801CF7B4
+    bl GetResAnmScn__Q34nw4r3g3d7ResFileCFPCc
     cmplw r27, r3
     blt lbl_80029F80
     b lbl_8002A0C0
@@ -669,7 +669,7 @@ lbl_8002A018:
 lbl_8002A028:
     addi r3, r1, 0x90
     mr r4, r27
-    bl fn_801CF924
+    bl GetResAnmTexSrt__Q34nw4r3g3d7ResFileCFi
     stw r3, 0x10(r1)
     addi r3, r1, 0x74
     addi r4, r1, 0x10
@@ -1976,7 +1976,7 @@ extern "C" asm void fn_8002AE08() {
     stw r31, 0xc(r1)
     mr r31, r3
     bl fn_8002AE3C
-    bl fn_8030CC40
+    bl PSMTXIdentity
     mr r3, r31
     lwz r31, 0xc(r1)
     lwz r0, 0x14(r1)

@@ -112,21 +112,21 @@ extern "C" void fn_80186078();
 extern "C" void fn_80186638();
 extern "C" void fn_80190874();
 extern "C" void fn_801A9384();
-extern "C" void fn_801CEDA8();
-extern "C" void fn_801CEE40();
-extern "C" void fn_801D1228();
-extern "C" void fn_801E93B8();
-extern "C" void fn_801EC748();
-extern "C" void fn_801EC76C();
-extern "C" void fn_801EDCBC();
-extern "C" void fn_801EDCF8();
-extern "C" void fn_802E005C();
-extern "C" void fn_802E05F8();
-extern "C" void fn_802E085C();
-extern "C" void fn_802E0D0C();
-extern "C" void fn_802E1CE0();
+extern "C" void GetResMdl__Q34nw4r3g3d7ResFileCFi();
+extern "C" void GetResMdlNumEntries__Q34nw4r3g3d7ResFileCFv();
+extern "C" void GetResNode__Q34nw4r3g3d6ResMdlCFi();
+extern "C" void GetCameraMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX34();
+extern "C" void SetPriorityDrawOpa__Q34nw4r3g3d6ScnObjFi();
+extern "C" void SetPriorityDrawXlu__Q34nw4r3g3d6ScnObjFi();
+extern "C" void GetCurrentCamera__Q34nw4r3g3d7ScnRootFv();
+extern "C" void SetCurrentCamera__Q34nw4r3g3d7ScnRootFi();
+extern "C" void GXSetVtxDescv();
+extern "C" void GXGetVtxDescv();
+extern "C" void GXSetVtxAttrFmtv();
+extern "C" void GXGetVtxAttrFmtv();
+extern "C" void GXSetLineWidth();
 extern "C" void fn_802E1D14();
-extern "C" void fn_8030CF54();
+extern "C" void PSMTXInverse();
 
 // ----------------------------------------------------------------------------
 // fn_80033A0C
@@ -279,12 +279,12 @@ extern "C" asm void fn_80033BB4() {
     mr r4, r22
     bl fn_80016E44
     addi r3, r1, 0x28
-    bl fn_801CEE40
+    bl GetResMdlNumEntries__Q34nw4r3g3d7ResFileCFv
     cmplw r23, r3
     bge lbl_80033CC8
     addi r3, r1, 0x28
     mr r4, r23
-    bl fn_801CEDA8
+    bl GetResMdl__Q34nw4r3g3d7ResFileCFi
     stw r3, 0x20(r1)
     addi r3, r1, 0x24
     addi r4, r1, 0x20
@@ -380,9 +380,9 @@ extern "C" asm void fn_80033D2C() {
     bl fn_8002ADF8
     mr r31, r3
     mr r4, r29
-    bl fn_801EDCF8
+    bl SetCurrentCamera__Q34nw4r3g3d7ScnRootFi
     mr r3, r31
-    bl fn_801EDCBC
+    bl GetCurrentCamera__Q34nw4r3g3d7ScnRootFv
     stw r3, 0x10(r1)
     addi r3, r1, 0x14
     addi r4, r1, 0x10
@@ -397,7 +397,7 @@ extern "C" asm void fn_80033D2C() {
     bl fn_8002AE40
     addi r3, r1, 0x14
     addi r4, r1, 0x18
-    bl fn_801E93B8
+    bl GetCameraMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX34
     lwz r0, 0x0(r28)
     stw r0, 0x8(r1)
     bl fn_80033A0C
@@ -431,9 +431,9 @@ extern "C" asm void fn_80033DE4() {
     bl fn_8002ADF8
     mr r31, r3
     mr r4, r30
-    bl fn_801EDCF8
+    bl SetCurrentCamera__Q34nw4r3g3d7ScnRootFi
     mr r3, r31
-    bl fn_801EDCBC
+    bl GetCurrentCamera__Q34nw4r3g3d7ScnRootFv
     stw r3, 0xc(r1)
     addi r3, r1, 0x10
     addi r4, r1, 0xc
@@ -731,10 +731,10 @@ extern "C" asm void fn_80034178() {
     bl fn_8002AD70
     mr r31, r3
     mr r4, r30
-    bl fn_801EC748
+    bl SetPriorityDrawOpa__Q34nw4r3g3d6ScnObjFi
     mr r3, r31
     mr r4, r30
-    bl fn_801EC76C
+    bl SetPriorityDrawXlu__Q34nw4r3g3d6ScnObjFi
     lwz r31, 0x1c(r1)
     lwz r30, 0x18(r1)
     lwz r0, 0x24(r1)
@@ -1081,7 +1081,7 @@ extern "C" asm void fn_8003456C() {
 lbl_800345D4:
     addi r3, r1, 0x20
     mr r4, r29
-    bl fn_801D1228
+    bl GetResNode__Q34nw4r3g3d6ResMdlCFi
     stw r3, 0x8(r1)
     addi r3, r1, 0x8
     bl fn_80030FB0
@@ -1565,7 +1565,7 @@ extern "C" asm void fn_80034AF0() {
     mr r3, r30
     bl fn_80018B90
     mr r4, r31
-    bl fn_8030CF54
+    bl PSMTXInverse
     lwz r31, 0xc(r1)
     lwz r30, 0x8(r1)
     lwz r0, 0x14(r1)
@@ -1586,10 +1586,10 @@ extern "C" asm void fn_80034B38() {
     stw r30, 0x8(r1)
     mr r30, r3
     mr r31, r4
-    bl fn_802E05F8
+    bl GXGetVtxDescv
     mr r3, r31
     addi r4, r30, 0xd8
-    bl fn_802E0D0C
+    bl GXGetVtxAttrFmtv
     addi r3, r30, 0x288
     addi r4, r30, 0x28c
     bl fn_802E1D14
@@ -1613,13 +1613,13 @@ extern "C" asm void fn_80034B88() {
     stw r30, 0x8(r1)
     mr r30, r3
     mr r31, r4
-    bl fn_802E005C
+    bl GXSetVtxDescv
     mr r3, r31
     addi r4, r30, 0xd8
-    bl fn_802E085C
+    bl GXSetVtxAttrFmtv
     lbz r3, 0x288(r30)
     lwz r4, 0x28c(r30)
-    bl fn_802E1CE0
+    bl GXSetLineWidth
     lwz r31, 0xc(r1)
     lwz r30, 0x8(r1)
     lwz r0, 0x14(r1)

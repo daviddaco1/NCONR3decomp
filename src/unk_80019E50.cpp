@@ -44,11 +44,11 @@ extern "C" void fn_80177280();
 extern "C" void fn_8017742C();
 extern "C" void fn_8017776C();
 extern "C" void fn_8017C2CC();
-extern "C" void fn_802DFDF8();
-extern "C" void fn_802E0688();
-extern "C" void fn_802E06BC();
-extern "C" void fn_802E1ABC();
-extern "C" void fn_802E37E0();
+extern "C" void GXSetVtxDesc();
+extern "C" void GXClearVtxDesc();
+extern "C" void GXSetVtxAttrFmt();
+extern "C" void GXBegin();
+extern "C" void GXLoadTexObj();
 extern "C" void memset();
 
 // ----------------------------------------------------------------------------
@@ -338,35 +338,35 @@ lbl_8001A1E0:
     lwz r3, lbl_8049D6B0
     addi r3, r3, 0x4
     li r4, 0x0
-    bl fn_802E37E0
-    bl fn_802E0688
+    bl GXLoadTexObj
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xb
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xd
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0x0
     li r4, 0x9
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xb
     li r5, 0x1
     li r6, 0x5
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xd
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     lwz r0, 0x0(r31)
     rlwinm r0, r0, 0, 14, 14
     cmpwi r0, 0x0
@@ -379,25 +379,25 @@ lbl_8001A2C0:
     bl fn_8001A548
     b lbl_8001A320
 lbl_8001A2CC:
-    bl fn_802E0688
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xb
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0x0
     li r4, 0x9
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xb
     li r5, 0x1
     li r6, 0x5
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     mr r3, r31
     bl fn_8001A7CC
 lbl_8001A320:
@@ -440,7 +440,7 @@ extern "C" asm void fn_8001A348() {
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, lbl_8049E678
     lfs f0, 0x24(r29)
     fsubs f2, f1, f0
@@ -575,7 +575,7 @@ extern "C" asm void fn_8001A548() {
     li r3, 0xa0
     li r4, 0x0
     li r5, 0x6
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, lbl_8049E678
     lfs f0, 0x24(r28)
     fsubs f3, f1, f0
@@ -739,7 +739,7 @@ extern "C" asm void fn_8001A7CC() {
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     lis r3, lbl_803C22B0@ha
     addi r3, r3, lbl_803C22B0@l
     lwz r3, 0x54(r3)

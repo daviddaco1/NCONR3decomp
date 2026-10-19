@@ -59,17 +59,17 @@ extern "C" void fn_80177280();
 extern "C" void fn_8017742C();
 extern "C" void fn_8017776C();
 extern "C" void fn_8017C22C();
-extern "C" void fn_801E2B68();
-extern "C" void fn_802DFDF8();
-extern "C" void fn_802E0688();
-extern "C" void fn_802E06BC();
-extern "C" void fn_802E0DD0();
-extern "C" void fn_802E0FF8();
-extern "C" void fn_802E1ABC();
-extern "C" void fn_802E1DA0();
-extern "C" void fn_802E2ED8();
-extern "C" void fn_802E2EFC();
-extern "C" void fn_802E37E0();
+extern "C" void Invalidate__Q34nw4r3g3d8G3DStateFUl();
+extern "C" void GXSetVtxDesc();
+extern "C" void GXClearVtxDesc();
+extern "C" void GXSetVtxAttrFmt();
+extern "C" void GXSetTexCoordGen2();
+extern "C" void GXSetNumTexGens();
+extern "C" void GXBegin();
+extern "C" void GXSetCullMode();
+extern "C" void GXSetNumChans();
+extern "C" void GXSetChanCtrl();
+extern "C" void GXLoadTexObj();
 extern "C" void fn_802E432C();
 extern "C" void fn_802E4460();
 extern "C" void fn_802E44A0();
@@ -78,16 +78,16 @@ extern "C" void fn_802E4538();
 extern "C" void fn_802E4654();
 extern "C" void fn_802E46B0();
 extern "C" void fn_802E4750();
-extern "C" void fn_802E478C();
+extern "C" void GXSetTexCoordScaleManually();
 extern "C" void fn_802E4808();
 extern "C" void fn_802E48CC();
 extern "C" void fn_802E4A28();
-extern "C" void fn_802E4EFC();
-extern "C" void fn_802E4F4C();
-extern "C" void fn_802E4F78();
-extern "C" void fn_802E4FA4();
-extern "C" void fn_802E4FD8();
-extern "C" void fn_802E576C();
+extern "C" void GXSetBlendMode();
+extern "C" void GXSetColorUpdate();
+extern "C" void GXSetAlphaUpdate();
+extern "C" void GXSetZMode();
+extern "C" void GXSetZCompLoc();
+extern "C" void GXLoadTexMtxImm();
 extern "C" void memset();
 
 // ----------------------------------------------------------------------------
@@ -605,9 +605,9 @@ lbl_80047244:
     li r3, 0x0
     bl fn_800169F4
     li r3, 0x7ff
-    bl fn_801E2B68
+    bl Invalidate__Q34nw4r3g3d8G3DStateFUl
     li r3, 0x1
-    bl fn_802E2ED8
+    bl GXSetNumChans
     li r3, 0x4
     li r4, 0x0
     li r5, 0x0
@@ -615,7 +615,7 @@ lbl_80047244:
     li r7, 0x0
     li r8, 0x2
     li r9, 0x2
-    bl fn_802E2EFC
+    bl GXSetChanCtrl
     lwz r3, 0x0(r31)
     clrlwi r4, r3, 31
     cmpwi r4, 0x0
@@ -626,7 +626,7 @@ lbl_80047244:
     li r3, 0x1
     li r4, 0x1
     li r5, 0x1
-    bl fn_802E4FA4
+    bl GXSetZMode
     b lbl_80047314
 lbl_800472C8:
     cmpwi r4, 0x0
@@ -634,7 +634,7 @@ lbl_800472C8:
     li r3, 0x1
     li r4, 0x1
     li r5, 0x0
-    bl fn_802E4FA4
+    bl GXSetZMode
     b lbl_80047314
 lbl_800472E4:
     rlwinm r0, r3, 0, 30, 30
@@ -643,13 +643,13 @@ lbl_800472E4:
     li r3, 0x0
     li r4, 0x7
     li r5, 0x1
-    bl fn_802E4FA4
+    bl GXSetZMode
     b lbl_80047314
 lbl_80047304:
     li r3, 0x0
     li r4, 0x7
     li r5, 0x0
-    bl fn_802E4FA4
+    bl GXSetZMode
 lbl_80047314:
     lwz r3, 0x0(r31)
     rlwinm r0, r3, 0, 28, 28
@@ -659,7 +659,7 @@ lbl_80047314:
     li r4, 0x4
     li r5, 0x1
     li r6, 0x0
-    bl fn_802E4EFC
+    bl GXSetBlendMode
     b lbl_80047398
 lbl_8004733C:
     rlwinm r0, r3, 0, 27, 27
@@ -669,7 +669,7 @@ lbl_8004733C:
     li r4, 0x0
     li r5, 0x0
     li r6, 0x0
-    bl fn_802E4EFC
+    bl GXSetBlendMode
     b lbl_80047398
 lbl_80047360:
     rlwinm r0, r3, 0, 26, 26
@@ -679,25 +679,25 @@ lbl_80047360:
     li r4, 0x1
     li r5, 0x1
     li r6, 0x6
-    bl fn_802E4EFC
+    bl GXSetBlendMode
     b lbl_80047398
 lbl_80047384:
     li r3, 0x1
     li r4, 0x4
     li r5, 0x5
     li r6, 0x0
-    bl fn_802E4EFC
+    bl GXSetBlendMode
 lbl_80047398:
     lwz r0, 0x0(r31)
     rlwinm r0, r0, 0, 29, 29
     cmpwi r0, 0x0
     beq lbl_800473B4
     li r3, 0x0
-    bl fn_802E4FD8
+    bl GXSetZCompLoc
     b lbl_800473BC
 lbl_800473B4:
     li r3, 0x1
-    bl fn_802E4FD8
+    bl GXSetZCompLoc
 lbl_800473BC:
     li r3, 0x7
     li r4, 0x0
@@ -706,44 +706,44 @@ lbl_800473BC:
     li r7, 0x0
     bl fn_802E4808
     li r3, 0x1
-    bl fn_802E4F4C
+    bl GXSetColorUpdate
     li r3, 0x0
-    bl fn_802E4F78
+    bl GXSetAlphaUpdate
     li r3, 0x0
     bl fn_8017C22C
     li r3, 0x0
-    bl fn_802E1DA0
+    bl GXSetCullMode
     lwz r3, 0x1c(r31)
     li r4, 0x0
-    bl fn_802E37E0
-    bl fn_802E0688
+    bl GXLoadTexObj
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xb
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xd
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0x0
     li r4, 0x9
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xb
     li r5, 0x1
     li r6, 0x5
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xd
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     mr r3, r31
     bl fn_8004749C
     li r3, 0x0
@@ -902,9 +902,9 @@ lbl_80047588:
     addi r3, r1, 0x68
     li r4, 0x1e
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     li r3, 0x1
-    bl fn_802E0FF8
+    bl GXSetNumTexGens
     li r3, 0x1
     bl fn_802E4A28
     li r3, 0x0
@@ -912,7 +912,7 @@ lbl_80047588:
     li r5, 0x1
     li r6, 0x2
     li r7, 0x3
-    bl fn_802E478C
+    bl GXSetTexCoordScaleManually
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
@@ -968,7 +968,7 @@ lbl_80047588:
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, 0x98(r1)
     lfs f2, 0x9c(r1)
     lfs f3, 0xa0(r1)
@@ -1093,9 +1093,9 @@ lbl_80047588:
     addi r3, r1, 0x68
     li r4, 0x1e
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     li r3, 0x1
-    bl fn_802E0FF8
+    bl GXSetNumTexGens
     li r3, 0x1
     bl fn_802E4A28
     li r3, 0x0
@@ -1103,7 +1103,7 @@ lbl_80047588:
     li r5, 0x1
     li r6, 0x2
     li r7, 0x3
-    bl fn_802E478C
+    bl GXSetTexCoordScaleManually
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
@@ -1156,7 +1156,7 @@ lbl_80047588:
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, 0x98(r1)
     lfs f2, 0x9c(r1)
     lfs f3, 0xa0(r1)
@@ -1250,7 +1250,7 @@ extern "C" asm void fn_80047BE8() {
     nofralloc
     li r7, 0x0
     li r8, 0x7d
-    b fn_802E0DD0
+    b GXSetTexCoordGen2
 }
 
 // ----------------------------------------------------------------------------

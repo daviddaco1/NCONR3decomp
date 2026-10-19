@@ -62,13 +62,13 @@ extern "C" void fn_8017776C();
 extern "C" void fn_8017B004();
 extern "C" void fn_8017B074();
 extern "C" void fn_8017B144();
-extern "C" void fn_802DFDF8();
-extern "C" void fn_802E0688();
-extern "C" void fn_802E06BC();
-extern "C" void fn_802E1ABC();
-extern "C" void fn_802E37E0();
-extern "C" void fn_802E5604();
-extern "C" void fn_802E5918();
+extern "C" void GXSetVtxDesc();
+extern "C" void GXClearVtxDesc();
+extern "C" void GXSetVtxAttrFmt();
+extern "C" void GXBegin();
+extern "C" void GXLoadTexObj();
+extern "C" void GXGetProjectionv();
+extern "C" void GXGetViewportv();
 extern "C" void memset();
 
 // ----------------------------------------------------------------------------
@@ -499,7 +499,7 @@ lbl_8004C718:
     lwz r3, lbl_8049D6B0
     addi r3, r3, 0x4
     li r4, 0x0
-    bl fn_802E37E0
+    bl GXLoadTexObj
     b lbl_8004C784
 lbl_8004C76C:
     lis r3, 0x80
@@ -507,36 +507,36 @@ lbl_8004C76C:
     bl fn_80122E1C
     addi r3, r3, 0x4
     li r4, 0x0
-    bl fn_802E37E0
+    bl GXLoadTexObj
 lbl_8004C784:
-    bl fn_802E0688
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xb
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xd
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0x0
     li r4, 0x9
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xb
     li r5, 0x1
     li r6, 0x5
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xd
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     lwz r0, 0x4(r31)
     rlwinm r0, r0, 0, 11, 11
     cmpwi r0, 0x0
@@ -621,9 +621,9 @@ extern "C" asm void fn_8004C83C() {
     mr r4, r26
     bl fn_8017B004
     addi r3, r1, 0xc0
-    bl fn_802E5604
+    bl GXGetProjectionv
     addi r3, r1, 0x80
-    bl fn_802E5918
+    bl GXGetViewportv
     addi r3, r1, 0x100
     mr r4, r26
     bl fn_8017B074
@@ -682,7 +682,7 @@ extern "C" asm void fn_8004C83C() {
     lwz r5, 0x14(r27)
     addi r0, r5, 0x2
     clrlwi r5, r0, 16
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f20, 0x10(r31)
     fmr f1, f20
     bl fn_80018C3C
@@ -999,7 +999,7 @@ lbl_8004CEB0:
     slwi r0, r0, 1
     mullw r0, r6, r0
     clrlwi r5, r0, 16
-    bl fn_802E1ABC
+    bl GXBegin
     li r28, 0x1
     lfd f19, lbl_8049EB98
     la r30, lbl_8049EBA0
@@ -1677,9 +1677,9 @@ extern "C" asm void fn_8004D850() {
     mr r4, r23
     bl fn_8017B004
     addi r3, r1, 0xd0
-    bl fn_802E5604
+    bl GXGetProjectionv
     addi r3, r1, 0x90
-    bl fn_802E5918
+    bl GXGetViewportv
     addi r3, r1, 0x110
     mr r4, r23
     bl fn_8017B074
@@ -1767,7 +1767,7 @@ lbl_8004DA74:
     lwz r5, 0x14(r24)
     addi r0, r5, 0x2
     clrlwi r5, r0, 16
-    bl fn_802E1ABC
+    bl GXBegin
     la r31, lbl_8049EBA0
     lfs f19, 0x10(r31)
     fmr f1, f19
@@ -2135,7 +2135,7 @@ lbl_8004DFE8:
     slwi r0, r0, 1
     mullw r0, r6, r0
     clrlwi r5, r0, 16
-    bl fn_802E1ABC
+    bl GXBegin
     li r27, 0x1
     lfd f18, lbl_8049EB98
     la r29, lbl_8049EBA0

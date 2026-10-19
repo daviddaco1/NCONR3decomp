@@ -632,14 +632,14 @@ extern "C" void strcmp();
 extern "C" void fn_801A32A0();
 extern "C" void fn_801A32CC();
 extern "C" void fn_801A32F4();
-extern "C" void fn_801E295C();
+extern "C" void SetRenderModeObj__Q34nw4r3g3d8G3DStateFRC16_GXRenderModeObj();
 extern "C" void fn_801F40F4();
 extern "C" void fn_801F41E8();
 extern "C" void fn_8020FA34();
 extern "C" void fn_8020FAF4();
 extern "C" void fn_8020FBA0();
-extern "C" void fn_8021032C();
-extern "C" void fn_802103C4();
+extern "C" void GetInstance__Q44nw4r3snd6detail20RemoteSpeakerManagerFv();
+extern "C" void GetRemoteSpeaker__Q44nw4r3snd6detail20RemoteSpeakerManagerFi();
 extern "C" void fn_8022849C();
 extern "C" void fn_802284B4();
 extern "C" void fn_80228560();
@@ -649,7 +649,7 @@ extern "C" void fn_802289A8();
 extern "C" void fn_80229974();
 extern "C" void fn_80229A30();
 extern "C" void fn_80229AC8();
-extern "C" void fn_80229AF8();
+extern "C" void __GXSendFlushPrim();
 extern "C" void fn_80229BD0();
 extern "C" void fn_80229D74();
 extern "C" void fn_80229DE0();
@@ -700,43 +700,43 @@ extern "C" void fn_80252CE8();
 extern "C" void fn_80252CF0();
 extern "C" void fn_80252ED4();
 extern "C" void fn_80252FB0();
-extern "C" void fn_80282C04();
-extern "C" void fn_8028314C();
+extern "C" void VIInit();
+extern "C" void VIWaitForRetrace();
 extern "C" void fn_802836CC();
-extern "C" void fn_80284104();
-extern "C" void fn_80284218();
-extern "C" void fn_80284284();
-extern "C" void fn_802842FC();
-extern "C" void fn_80284304();
-extern "C" void fn_80284490();
-extern "C" void fn_802844F0();
-extern "C" void fn_80284788();
+extern "C" void VIFlush();
+extern "C" void VISetNextFrameBuffer();
+extern "C" void VISetBlack();
+extern "C" void VIGetRetraceCount();
+extern "C" void VIGetNextField();
+extern "C" void VIGetScanMode();
+extern "C" void VIGetDTVStatus();
+extern "C" void VIEnableDimming();
 extern "C" void fn_802896AC();
 extern "C" void fn_802896B0();
 extern "C" void fn_8028AF20();
-extern "C" void fn_802D0550();
-extern "C" void fn_802D0858();
-extern "C" void fn_802D08C0();
-extern "C" void fn_802D0B6C();
-extern "C" void fn_802D0D50();
-extern "C" void fn_802D508C();
-extern "C" void fn_802D5154();
-extern "C" void fn_802E0DC0();
+extern "C" void DVDConvertPathToEntrynum();
+extern "C" void DVDFastOpen();
+extern "C" void DVDOpen();
+extern "C" void DVDClose();
+extern "C" void DVDReadAsyncPrio();
+extern "C" void DVDGetCommandBlockStatus();
+extern "C" void DVDGetDriveStatus();
+extern "C" void GXInvalidateVtxCache();
 extern "C" void fn_802E1450();
-extern "C" void fn_802E1E44();
-extern "C" void fn_802E1EC4();
-extern "C" void fn_802E204C();
-extern "C" void fn_802E227C();
-extern "C" void fn_802E23C0();
-extern "C" void fn_802E25A4();
-extern "C" void fn_802E25B8();
-extern "C" void fn_802E39C4();
-extern "C" void fn_802E4F4C();
-extern "C" void fn_802E4FA4();
-extern "C" void fn_802E5008();
-extern "C" void fn_802E58B0();
-extern "C" void fn_802E58EC();
-extern "C" void fn_802E5938();
+extern "C" void GXSetDispCopySrc();
+extern "C" void GXSetDispCopyDst();
+extern "C" void GXGetYScaleFactor();
+extern "C" void GXSetDispCopyYScale();
+extern "C" void GXSetCopyFilter();
+extern "C" void GXSetDispCopyGamma();
+extern "C" void GXCopyDisp();
+extern "C" void GXInvalidateTexAll();
+extern "C" void GXSetColorUpdate();
+extern "C" void GXSetZMode();
+extern "C" void GXSetPixelFmt();
+extern "C" void GXSetViewportJitter();
+extern "C" void GXSetViewport();
+extern "C" void GXSetScissor();
 extern "C" void fn_802E9CD0();
 extern "C" void fn_803078EC();
 extern "C" void fn_8030797C();
@@ -749,18 +749,18 @@ extern "C" void fn_8030B0B4();
 extern "C" void fn_8030B2BC();
 extern "C" void fn_8030B344();
 extern "C" void fn_8030B360();
-extern "C" void fn_8030C3C8();
+extern "C" void MEMCreateExpHeapEx();
 extern "C" void fn_8030CAF0();
 extern "C" void fn_8030CB00();
 extern "C" void fn_8030CB10();
-extern "C" void fn_8030CF04();
-extern "C" void fn_8030E1F4();
-extern "C" void fn_8030F8C4();
+extern "C" void PSMTXTranspose();
+extern "C" void C_QUATSlerp();
+extern "C" void NANDSetUserData();
 extern "C" void fn_803150C4();
-extern "C" void fn_8031ACBC();
-extern "C" void fn_8031ACF4();
-extern "C" void fn_8031ADD0();
-extern "C" void fn_8031AF04();
+extern "C" void OSInitMutex();
+extern "C" void OSLockMutex();
+extern "C" void OSUnlockMutex();
+extern "C" void OSTryLockMutex();
 extern "C" void fn_8031B37C();
 extern "C" void fn_8031B498();
 extern "C" void fn_8031B834();
@@ -769,22 +769,22 @@ extern "C" void fn_8031D460();
 extern "C" void fn_8031DAEC();
 extern "C" void fn_8031DDE0();
 extern "C" void fn_80320E98();
-extern "C" void fn_803217DC();
-extern "C" void fn_803218E4();
-extern "C" void fn_803219F0();
+extern "C" void PADReset();
+extern "C" void PADRecalibrate();
+extern "C" void PADInit();
 extern "C" void fn_80321B4C();
-extern "C" void fn_80322008();
-extern "C" void fn_803241E4();
-extern "C" void fn_80324324();
+extern "C" void PADControlMotor();
+extern "C" void SCGetAspectRatio();
+extern "C" void SCGetProgressiveMode();
 extern "C" void fn_8032BB18();
 extern "C" void fn_8032C41C();
 extern "C" void fn_8032C8F0();
 extern "C" void fn_8032CB2C();
 extern "C" void fn_8032CB3C();
 extern "C" void fn_8033504C();
-extern "C" void fn_80335218();
-extern "C" void fn_80335314();
-extern "C" void fn_80335748();
+extern "C" void SOFinish();
+extern "C" void SOStartup();
+extern "C" void SOCleanup();
 extern "C" void* memcpy(void*, const void*, unsigned int);
 extern "C" void* memset(void*, int, unsigned int);
 extern "C" int sprintf(char*, const char*, ...);
@@ -1586,7 +1586,7 @@ lbl_801679F0:
     lwz r31, 0x10(r3)
     cmpwi r31, 0x0
     bne lbl_80167A08
-    bl fn_802D5154
+    bl DVDGetDriveStatus
     bl fn_80165D1C
     b lbl_80167D64
 lbl_80167A08:
@@ -1617,7 +1617,7 @@ lbl_80167A54:
     lwz r0, 0x0(r31)
     rlwinm r0, r0, 0, 22, 20
     stw r0, 0x0(r31)
-    bl fn_802D5154
+    bl DVDGetDriveStatus
     lwz r0, 0x24(r31)
     cmpwi r0, 0x0
     beq lbl_80167A94
@@ -1647,7 +1647,7 @@ lbl_80167AC0:
     cmpwi r0, 0x0
     beq lbl_80167B14
     addi r3, r31, 0x80
-    bl fn_802D0550
+    bl DVDConvertPathToEntrynum
     stw r3, 0x30(r31)
     lwz r0, 0x30(r31)
     cmpwi r0, 0x0
@@ -1678,7 +1678,7 @@ lbl_80167B14:
 lbl_80167B38:
     addi r3, r31, 0x80
     addi r4, r31, 0x34
-    bl fn_802D08C0
+    bl DVDOpen
     cmpwi r3, 0x1
     bne lbl_80167D64
     lwz r3, 0x68(r31)
@@ -1691,7 +1691,7 @@ lbl_80167B38:
     b lbl_80167D64
 lbl_80167B6C:
     addi r3, r31, 0x34
-    bl fn_802D0B6C
+    bl DVDClose
     cmpwi r3, 0x1
     bne lbl_80167D64
     lwz r0, 0x0(r31)
@@ -1721,7 +1721,7 @@ lbl_80167BD0:
     cmpwi r3, 0x0
     bge lbl_80167C14
     addi r3, r31, 0x80
-    bl fn_802D0550
+    bl DVDConvertPathToEntrynum
     stw r3, 0x30(r31)
     lwz r3, 0x30(r31)
     cmpwi r3, 0x0
@@ -1736,7 +1736,7 @@ lbl_80167BD0:
     b lbl_80167D64
 lbl_80167C14:
     addi r4, r31, 0x34
-    bl fn_802D0858
+    bl DVDFastOpen
     cmpwi r3, 0x1
     bne lbl_80167D64
     lwz r0, 0x1c(r31)
@@ -1790,7 +1790,7 @@ lbl_80167CC0:
     lwz r6, 0x18(r31)
     li r7, 0x0
     li r8, 0x2
-    bl fn_802D0D50
+    bl DVDReadAsyncPrio
     cmpwi r3, 0x0
     beq lbl_80167D64
     lwz r3, 0x24(r31)
@@ -1799,7 +1799,7 @@ lbl_80167CC0:
     b lbl_80167D64
 lbl_80167CF0:
     addi r3, r31, 0x34
-    bl fn_802D508C
+    bl DVDGetCommandBlockStatus
     cmpwi r3, 0x0
     bne lbl_80167D64
     lwz r3, 0x24(r31)
@@ -1808,7 +1808,7 @@ lbl_80167CF0:
     b lbl_80167D64
 lbl_80167D10:
     addi r3, r31, 0x34
-    bl fn_802D0B6C
+    bl DVDClose
     cmpwi r3, 0x1
     bne lbl_80167D2C
     lwz r3, 0x24(r31)
@@ -2685,13 +2685,13 @@ extern "C" asm void fn_80168818() {
     bl fn_8016C534
     lwz r3, lbl_8049D788
     addi r3, r3, 0x4328
-    bl fn_8031ACBC
+    bl OSInitMutex
     lwz r3, lbl_8049D788
     addi r3, r3, 0x4340
-    bl fn_8031ACBC
+    bl OSInitMutex
     lwz r3, lbl_8049D788
     addi r3, r3, 0x4358
-    bl fn_8031ACBC
+    bl OSInitMutex
     li r31, -0x1
     lwz r3, lbl_8049D788
     addis r3, r3, 0x3
@@ -3238,12 +3238,12 @@ extern "C" asm void fn_80168F5C() {
     beq lbl_80168F80
     lwz r3, lbl_8049D788
     addi r3, r3, 0x4358
-    bl fn_8031ACF4
+    bl OSLockMutex
     b lbl_80168F8C
 lbl_80168F80:
     lwz r3, lbl_8049D788
     addi r3, r3, 0x4358
-    bl fn_8031ADD0
+    bl OSUnlockMutex
 lbl_80168F8C:
     li r3, 0x1
     lwz r0, 0x14(r1)
@@ -3749,7 +3749,7 @@ extern "C" asm void fn_801695A8() {
     stw r0, 0x14(r1)
     lwz r3, lbl_8049D788
     addi r3, r3, 0x4328
-    bl fn_8031ACF4
+    bl OSLockMutex
     lwz r3, lbl_8049D788
     lwz r0, 0x49e8(r3)
     cmpwi r0, 0x1
@@ -3809,7 +3809,7 @@ lbl_80169680:
     bl fn_8016C8A8
     lwz r3, lbl_8049D788
     addi r3, r3, 0x4328
-    bl fn_8031ADD0
+    bl OSUnlockMutex
     lwz r0, 0x14(r1)
     mtlr r0
     addi r1, r1, 0x10
@@ -3986,7 +3986,7 @@ extern "C" asm void fn_801698E0() {
     stw r31, 0xc(r1)
     lwz r3, lbl_8049D788
     addi r3, r3, 0x4328
-    bl fn_8031ACF4
+    bl OSLockMutex
     lwz r4, lbl_8049D790
     lis r3, 0x9
     addi r0, r3, 0x10a3
@@ -4028,7 +4028,7 @@ lbl_80169974:
     mr r31, r3
     lwz r3, lbl_8049D788
     addi r3, r3, 0x4328
-    bl fn_8031ADD0
+    bl OSUnlockMutex
     lwz r0, lbl_8049D78C
     rlwinm r0, r0, 0, 27, 27
     cmpwi r0, 0x0
@@ -4040,7 +4040,7 @@ lbl_80169974:
     beq lbl_80169A1C
     lwz r3, lbl_8049D788
     addi r3, r3, 0x4358
-    bl fn_8031AF04
+    bl OSTryLockMutex
     cmpwi r3, 0x0
     beq lbl_80169A1C
     lwz r3, lbl_8049D788
@@ -4060,7 +4060,7 @@ lbl_80169974:
     stw r0, 0x0(r3)
     lwz r3, lbl_8049D788
     addi r3, r3, 0x4358
-    bl fn_8031ADD0
+    bl OSUnlockMutex
 lbl_80169A1C:
     cmpwi r31, 0x0
     beq lbl_80169A28
@@ -8414,7 +8414,7 @@ lbl_8016D22C:
     mulli r0, r30, 0xc
     add r3, r3, r0
     addi r3, r3, 0x8
-    bl fn_80229AF8
+    bl __GXSendFlushPrim
     li r0, 0x0
     stw r0, 0x308(r31)
     li r3, 0x4
@@ -11633,7 +11633,7 @@ extern "C" asm void fn_8016FB7C() {
     mr r31, r4
     lwz r3, lbl_8049D788
     addi r3, r3, 0x4340
-    bl fn_8031ACF4
+    bl OSLockMutex
     lwz r3, lbl_8049D780
     mr r4, r31
     li r5, 0x0
@@ -11641,7 +11641,7 @@ extern "C" asm void fn_8016FB7C() {
     mr r31, r3
     lwz r3, lbl_8049D788
     addi r3, r3, 0x4340
-    bl fn_8031ADD0
+    bl OSUnlockMutex
     mr r3, r31
     lwz r31, 0xc(r1)
     lwz r0, 0x14(r1)
@@ -11659,13 +11659,13 @@ extern "C" asm void fn_8016FBD4() {
     mr r31, r4
     lwz r3, lbl_8049D788
     addi r3, r3, 0x4340
-    bl fn_8031ACF4
+    bl OSLockMutex
     lwz r3, lbl_8049D780
     mr r4, r31
     bl fn_80170E84
     lwz r3, lbl_8049D788
     addi r3, r3, 0x4340
-    bl fn_8031ADD0
+    bl OSUnlockMutex
     lwz r31, 0xc(r1)
     lwz r0, 0x14(r1)
     mtlr r0
@@ -11687,7 +11687,7 @@ extern "C" asm void fn_8016FC20() {
     addi r31, r3, 0x4370
     li r30, 0x0
     addi r3, r3, 0x4328
-    bl fn_8031ACF4
+    bl OSLockMutex
     li r3, 0x0
     li r0, 0x10
     mtctr r0
@@ -11709,7 +11709,7 @@ lbl_8016FC8C:
 lbl_8016FC94:
     lwz r3, lbl_8049D788
     addi r3, r3, 0x4328
-    bl fn_8031ADD0
+    bl OSUnlockMutex
     mr r3, r30
     addi r11, r1, 0x20
     bl _restgpr_27
@@ -11733,7 +11733,7 @@ extern "C" asm void fn_8016FCBC() {
     addi r31, r3, 0x4370
     li r30, 0x0
     addi r3, r3, 0x4328
-    bl fn_8031ACF4
+    bl OSLockMutex
     lwz r0, 0x0(r31)
     cmpwi r0, 0x1
     bne lbl_8016FD48
@@ -11761,7 +11761,7 @@ lbl_8016FD44:
 lbl_8016FD48:
     lwz r3, lbl_8049D788
     addi r3, r3, 0x4328
-    bl fn_8031ADD0
+    bl OSUnlockMutex
     mr r3, r30
     addi r11, r1, 0x20
     bl _restgpr_27
@@ -11844,7 +11844,7 @@ lbl_8016FE68:
     blt lbl_8016FEC0
     lwz r3, lbl_8049D788
     addi r3, r3, 0x4340
-    bl fn_8031ACF4
+    bl OSLockMutex
     lwz r3, lbl_8049D7C0
     mr r4, r31
     bl fn_8016FF90
@@ -11856,13 +11856,13 @@ lbl_8016FE68:
     mr r31, r3
     lwz r3, lbl_8049D788
     addi r3, r3, 0x4340
-    bl fn_8031ADD0
+    bl OSUnlockMutex
     mr r3, r31
     b lbl_8016FED0
 lbl_8016FEB4:
     lwz r3, lbl_8049D788
     addi r3, r3, 0x4340
-    bl fn_8031ADD0
+    bl OSUnlockMutex
 lbl_8016FEC0:
     mr r3, r29
     mr r4, r30
@@ -11962,13 +11962,13 @@ extern "C" asm void fn_8016FFAC() {
     blt lbl_80170008
     lwz r3, lbl_8049D788
     addi r3, r3, 0x4340
-    bl fn_8031ACF4
+    bl OSLockMutex
     lwz r3, lbl_8049D7C0
     mr r4, r31
     bl fn_80170030
     lwz r3, lbl_8049D788
     addi r3, r3, 0x4340
-    bl fn_8031ADD0
+    bl OSUnlockMutex
     b lbl_80170018
 lbl_80170008:
     mr r3, r28
@@ -12075,7 +12075,7 @@ lbl_801700FC:
     mr r3, r31
     b lbl_801701A4
 lbl_80170150:
-    bl fn_80335314
+    bl SOStartup
     mr r31, r3
     cmpwi r3, -0x7
     beq lbl_801701A0
@@ -12111,7 +12111,7 @@ extern "C" asm void fn_801701B8() {
     stwu r1, -0x10(r1)
     mflr r0
     stw r0, 0x14(r1)
-    bl fn_80335748
+    bl SOCleanup
     cmpwi r3, 0x0
     beq lbl_801701E4
     cmpwi r3, -0x7
@@ -12120,7 +12120,7 @@ extern "C" asm void fn_801701B8() {
     beq lbl_801701E4
     b lbl_80170220
 lbl_801701E4:
-    bl fn_80335218
+    bl SOFinish
     cmpwi r3, 0x0
     beq lbl_801701FC
     cmpwi r3, -0x7
@@ -13519,7 +13519,7 @@ extern "C" asm void fn_80171428() {
     stw r0, 0x14(r1)
     lis r4, lbl_803BCFB0@ha
     stw r3, lbl_803BCFB0@l(r4)
-    bl fn_802842FC
+    bl VIGetRetraceCount
     stw r3, lbl_8049D7C8
     lwz r0, 0x14(r1)
     mtlr r0
@@ -14098,7 +14098,7 @@ extern "C" asm void fn_80171B8C() {
     lbz r0, 0x18(r31)
     cmpwi r0, 0x0
     beq lbl_80171C14
-    bl fn_80284304
+    bl VIGetNextField
     lfs f1, lbl_804A0DB0
     fmr f2, f1
     lhz r0, 0x4(r31)
@@ -14113,7 +14113,7 @@ extern "C" asm void fn_80171B8C() {
     fmr f5, f1
     la r4, lbl_804A0DB0
     lfs f6, 0x1c(r4)
-    bl fn_802E58B0
+    bl GXSetViewportJitter
     b lbl_80171C50
 lbl_80171C14:
     lfs f1, lbl_804A0DB0
@@ -14130,10 +14130,10 @@ lbl_80171C14:
     fmr f5, f1
     la r3, lbl_804A0DB0
     lfs f6, 0x1c(r3)
-    bl fn_802E58EC
+    bl GXSetViewport
 lbl_80171C50:
-    bl fn_802E0DC0
-    bl fn_802E39C4
+    bl GXInvalidateVtxCache
+    bl GXInvalidateTexAll
 lbl_80171C58:
     lwz r31, 0x1c(r1)
     lwz r0, 0x24(r1)
@@ -14163,15 +14163,15 @@ lbl_80171C9C:
     li r3, 0x1
     li r4, 0x3
     li r5, 0x1
-    bl fn_802E4FA4
+    bl GXSetZMode
     li r3, 0x1
-    bl fn_802E4F4C
+    bl GXSetColorUpdate
     lwz r0, 0x34(r31)
     slwi r0, r0, 2
     add r3, r31, r0
     lwz r3, 0x2c(r3)
     li r4, 0x1
-    bl fn_802E25B8
+    bl GXCopyDisp
     bl fn_802E1450
     bl fn_8012212C
 lbl_80171CE0:
@@ -14200,10 +14200,10 @@ lbl_80171D1C:
     bl fn_80171518
     bl fn_80171788
 lbl_80171D2C:
-    bl fn_8028314C
+    bl VIWaitForRetrace
     addi r30, r30, 0x1
 lbl_80171D34:
-    bl fn_802842FC
+    bl VIGetRetraceCount
     cmplw r3, r29
     blt lbl_80171D1C
     mr r3, r31
@@ -14240,12 +14240,12 @@ lbl_80171DA4:
     slwi r0, r0, 2
     add r3, r31, r0
     lwz r3, 0x2c(r3)
-    bl fn_80284218
+    bl VISetNextFrameBuffer
     lbz r0, 0x20(r31)
     cmplwi r0, 0x1
     bne lbl_80171DD4
     li r3, 0x0
-    bl fn_80284284
+    bl VISetBlack
     li r0, 0x0
     stb r0, 0x20(r31)
 lbl_80171DD4:
@@ -14254,15 +14254,15 @@ lbl_80171DD4:
     bl fn_80171CF4
     cmpwi r3, 0x0
     beq lbl_80171DF0
-    bl fn_80284104
+    bl VIFlush
     b lbl_80171DFC
 lbl_80171DF0:
-    bl fn_80284104
+    bl VIFlush
     bl fn_80171518
     bl fn_80171788
 lbl_80171DFC:
-    bl fn_8028314C
-    bl fn_802842FC
+    bl VIWaitForRetrace
+    bl VIGetRetraceCount
     stw r3, lbl_8049D7C8
     lis r3, lbl_803C22B0@ha
     addi r3, r3, lbl_803C22B0@l
@@ -14288,18 +14288,18 @@ lbl_80171E4C:
     slwi r0, r0, 2
     add r3, r31, r0
     lwz r3, 0x2c(r3)
-    bl fn_80284218
+    bl VISetNextFrameBuffer
     lbz r0, 0x20(r31)
     cmplwi r0, 0x1
     bne lbl_80171E7C
     li r3, 0x0
-    bl fn_80284284
+    bl VISetBlack
     li r0, 0x0
     stb r0, 0x20(r31)
 lbl_80171E7C:
-    bl fn_80284104
-    bl fn_8028314C
-    bl fn_802842FC
+    bl VIFlush
+    bl VIWaitForRetrace
+    bl VIGetRetraceCount
     stw r3, lbl_8049D7C8
     lis r3, lbl_803C22B0@ha
     addi r3, r3, lbl_803C22B0@l
@@ -14324,9 +14324,9 @@ extern "C" asm void fn_80171EBC() {
     stw r0, 0x14(r1)
     bl SCInit
     bl DVDInit
-    bl fn_80282C04
+    bl VIInit
     li r3, 0x1
-    bl fn_80284788
+    bl VIEnableDimming
     bl fn_80171F50
     bl fn_80171F14
     bl fn_80171F08
@@ -14414,7 +14414,7 @@ extern "C" asm void fn_80171F84() {
     lis r4, 0x8
     bl GXInit
     stw r3, 0x50(r30)
-    bl fn_803241E4
+    bl SCGetAspectRatio
     clrlwi r0, r3, 24
     cmplwi r0, 0x1
     bne lbl_80171FE0
@@ -14429,7 +14429,7 @@ lbl_80171FE8:
     lis r3, lbl_803C22B0@ha
     addi r30, r3, lbl_803C22B0@l
     stw r0, 0x54(r30)
-    bl fn_80284490
+    bl VIGetScanMode
     bl VIGetTvFormat
     bl fn_801724D0
     li r4, 0x1
@@ -14449,10 +14449,10 @@ lbl_80171FE8:
     bl fn_801724FC
     b lbl_80172058
 lbl_80172048:
-    bl fn_802844F0
+    bl VIGetDTVStatus
     cmpwi r3, 0x0
     beq lbl_80172058
-    bl fn_80324324
+    bl SCGetProgressiveMode
 lbl_80172058:
     li r5, 0x0
     lis r3, lbl_803C22B0@ha
@@ -14499,55 +14499,55 @@ lbl_80172098:
     fmr f5, f1
     la r3, lbl_804A0DD8
     lfs f6, 0x4(r3)
-    bl fn_802E58EC
+    bl GXSetViewport
     lwz r6, 0x54(r31)
     li r3, 0x0
     li r4, 0x0
     lhz r5, 0x4(r6)
     lhz r6, 0x6(r6)
-    bl fn_802E5938
+    bl GXSetScissor
     lwz r4, 0x54(r31)
     lhz r3, 0x6(r4)
     lhz r4, 0x8(r4)
-    bl fn_802E204C
-    bl fn_802E227C
+    bl GXGetYScaleFactor
+    bl GXSetDispCopyYScale
     mr r30, r3
     lwz r6, 0x54(r31)
     li r3, 0x0
     li r4, 0x0
     lhz r5, 0x4(r6)
     lhz r6, 0x6(r6)
-    bl fn_802E1E44
+    bl GXSetDispCopySrc
     lwz r3, 0x54(r31)
     lhz r3, 0x4(r3)
     clrlwi r4, r30, 16
-    bl fn_802E1EC4
+    bl GXSetDispCopyDst
     lwz r6, 0x54(r31)
     lbz r3, 0x19(r6)
     addi r4, r6, 0x1a
     lbz r5, 0x78(r31)
     addi r6, r6, 0x32
-    bl fn_802E23C0
+    bl GXSetCopyFilter
     lwz r6, 0x54(r31)
     lbz r3, 0x19(r6)
     addi r4, r6, 0x1a
     li r5, 0x1
     addi r6, r6, 0x32
-    bl fn_802E23C0
+    bl GXSetCopyFilter
     li r3, 0x0
-    bl fn_802E25A4
+    bl GXSetDispCopyGamma
     lwz r3, 0x54(r31)
     lbz r0, 0x19(r3)
     cmpwi r0, 0x0
     beq lbl_801721B8
     li r3, 0x2
     li r4, 0x0
-    bl fn_802E5008
+    bl GXSetPixelFmt
     b lbl_801721C4
 lbl_801721B8:
     li r3, 0x0
     li r4, 0x0
-    bl fn_802E5008
+    bl GXSetPixelFmt
 lbl_801721C4:
     lis r3, lbl_803C22B0@ha
     addi r30, r3, lbl_803C22B0@l
@@ -14567,20 +14567,20 @@ lbl_801721C4:
     bl fn_80170DFC
     stw r3, 0x30(r30)
     li r4, 0x1
-    bl fn_802E25B8
+    bl GXCopyDisp
     li r3, 0x2000
     bl fn_80170DFC
     stw r3, 0x74(r30)
-    bl fn_8028314C
+    bl VIWaitForRetrace
     lwz r3, 0x54(r30)
     bl fn_802836CC
     lwz r3, 0x2c(r30)
-    bl fn_80284218
+    bl VISetNextFrameBuffer
     li r0, 0x1
     stw r0, 0x34(r30)
-    bl fn_80284104
-    bl fn_8028314C
-    bl fn_8028314C
+    bl VIFlush
+    bl VIWaitForRetrace
+    bl VIWaitForRetrace
     li r3, 0x0
     lis r31, 0xcc
     addi r4, r31, 0x40
@@ -14602,7 +14602,7 @@ lbl_801721C4:
     li r5, 0x20
     bl fn_8030CB10
     lwz r3, 0x54(r30)
-    bl fn_801E295C
+    bl SetRenderModeObj__Q34nw4r3g3d8G3DStateFRC16_GXRenderModeObj
     lwz r31, 0x1c(r1)
     lwz r30, 0x18(r1)
     lwz r0, 0x24(r1)
@@ -14656,18 +14656,18 @@ extern "C" asm void fn_801722E8() {
     bl fn_802E9CD0
 lbl_80172328:
     li r3, 0x1
-    bl fn_80284284
-    bl fn_80284104
+    bl VISetBlack
+    bl VIFlush
     bl fn_80138A58
     bl fn_801383D8
     bl fn_80138118
     bl fn_8018EBEC
     bl fn_8018E114
-    bl fn_8028314C
+    bl VIWaitForRetrace
     bl fn_8018E114
-    bl fn_8028314C
+    bl VIWaitForRetrace
 lbl_80172354:
-    bl fn_802D5154
+    bl DVDGetDriveStatus
     cmpwi r3, 0x1
     beq lbl_80172354
     bl fn_8018D364
@@ -14740,15 +14740,15 @@ extern "C" asm void fn_801723F4() {
 lbl_80172448:
     bl fn_801743AC
     li r3, 0x1
-    bl fn_80284284
-    bl fn_80284104
-    bl fn_8028314C
-    bl fn_80284104
-    bl fn_8028314C
-    bl fn_80284104
-    bl fn_8028314C
-    bl fn_80284104
-    bl fn_8028314C
+    bl VISetBlack
+    bl VIFlush
+    bl VIWaitForRetrace
+    bl VIFlush
+    bl VIWaitForRetrace
+    bl VIFlush
+    bl VIWaitForRetrace
+    bl VIFlush
+    bl VIWaitForRetrace
     cmpwi r31, 0x0
     beq lbl_80172498
     cmpwi r31, 0x1
@@ -14816,7 +14816,7 @@ extern "C" asm void fn_80172510() {
 extern "C" asm void fn_80172524() {
     nofralloc
     li r5, 0x0
-    b fn_8030C3C8
+    b MEMCreateExpHeapEx
 }
 
 extern "C" asm void fn_8017252C() {
@@ -16799,7 +16799,7 @@ extern "C" asm void fn_80173FB0() {
     mr r3, r30
     bl fn_80018B90
     mr r4, r31
-    bl fn_8030CF04
+    bl PSMTXTranspose
     mr r3, r29
     addi r11, r1, 0x20
     bl _restgpr_29
@@ -16819,7 +16819,7 @@ extern "C" asm void fn_80174000() {
     mr r3, r4
     mr r4, r5
     mr r5, r31
-    bl fn_8030E1F4
+    bl C_QUATSlerp
     mr r3, r31
     lwz r31, 0xc(r1)
     lwz r0, 0x14(r1)
@@ -16899,9 +16899,9 @@ extern "C" asm void fn_80174108() {
 lbl_80174130:
     li r3, 0x5
     bl SISetSamplingRate
-    bl fn_803219F0
+    bl PADInit
     lis r3, 0xf000
-    bl fn_803217DC
+    bl PADReset
     li r27, 0x0
     li r30, 0x0
     lis r3, lbl_803BE4B0@ha
@@ -17087,7 +17087,7 @@ extern "C" asm void fn_801743AC() {
     li r4, 0x0
     bl fn_8028AF20
     lis r3, 0xf000
-    bl fn_803218E4
+    bl PADRecalibrate
 lbl_80174408:
     lwz r0, 0x14(r1)
     mtlr r0
@@ -17367,7 +17367,7 @@ lbl_801747F0:
     lwz r3, 0x8(r1)
     cmpwi r3, 0x0
     beq lbl_80174810
-    bl fn_803217DC
+    bl PADReset
 lbl_80174810:
     li r22, 0x0
     li r16, 0x0
@@ -17440,7 +17440,7 @@ lbl_801748CC:
     beq lbl_801749AC
     mr r3, r22
     li r4, 0x0
-    bl fn_80322008
+    bl PADControlMotor
     mr r3, r22
     li r4, 0x0
     bl fn_8028AF20
@@ -18893,7 +18893,7 @@ extern "C" asm void fn_80175D24() {
     beq lbl_80175DC4
     mr r3, r31
     li r4, 0x1
-    bl fn_80322008
+    bl PADControlMotor
     b lbl_80175DC4
 lbl_80175DB8:
     mr r3, r31
@@ -18916,7 +18916,7 @@ lbl_80175DC4:
     bne lbl_80175E18
     mr r3, r31
     lwz r4, 0x80(r30)
-    bl fn_80322008
+    bl PADControlMotor
     mr r3, r31
     li r4, 0x0
     bl fn_8028AF20
@@ -18924,7 +18924,7 @@ lbl_80175DC4:
 lbl_80175E18:
     mr r3, r31
     li r4, 0x0
-    bl fn_80322008
+    bl PADControlMotor
     mr r3, r31
     lwz r4, 0x80(r30)
     bl fn_8028AF20
@@ -18983,7 +18983,7 @@ lbl_80175ECC:
     bne lbl_80175EF8
     mr r3, r28
     li r4, 0x0
-    bl fn_80322008
+    bl PADControlMotor
     b lbl_80175F04
 lbl_80175EF8:
     mr r3, r28
@@ -20299,7 +20299,7 @@ lbl_80176F70:
 extern "C" asm void fn_80176F84() {
     nofralloc
     li r5, 0x0
-    b fn_8030C3C8
+    b MEMCreateExpHeapEx
 }
 
 extern "C" asm void fn_80176F8C() {
@@ -20309,9 +20309,9 @@ extern "C" asm void fn_80176F8C() {
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
     mr r31, r3
-    bl fn_8021032C
+    bl GetInstance__Q44nw4r3snd6detail20RemoteSpeakerManagerFv
     mr r4, r31
-    bl fn_802103C4
+    bl GetRemoteSpeaker__Q44nw4r3snd6detail20RemoteSpeakerManagerFi
     lwz r31, 0xc(r1)
     lwz r0, 0x14(r1)
     mtlr r0
@@ -21113,7 +21113,7 @@ extern "C" asm void fn_801778E4() {
     mr r30, r3
     mr r31, r4
     addi r3, r4, 0x80
-    bl fn_802D0550
+    bl DVDConvertPathToEntrynum
     cmpwi r3, 0x0
     bge lbl_8017791C
     li r0, 0x0
@@ -21155,7 +21155,7 @@ extern "C" asm void fn_80177954() {
 lbl_80177988:
     addi r3, r4, 0x80
     addi r4, r4, 0x34
-    bl fn_802D08C0
+    bl DVDOpen
     cmpwi r3, 0x1
     bne lbl_801779E0
     lwz r3, 0x68(r31)
@@ -21168,7 +21168,7 @@ lbl_80177988:
     b lbl_801779E0
 lbl_801779BC:
     addi r3, r4, 0x34
-    bl fn_802D0B6C
+    bl DVDClose
     cmpwi r3, 0x1
     bne lbl_801779E0
     lwz r0, 0x0(r31)
@@ -21205,7 +21205,7 @@ extern "C" asm void fn_801779FC() {
     mtctr r3
     bctr
     addi r3, r4, 0x80
-    bl fn_802D0550
+    bl DVDConvertPathToEntrynum
     cmpwi r3, 0x0
     bge lbl_80177A60
     mr r3, r31
@@ -21219,7 +21219,7 @@ lbl_80177A60:
     stw r0, 0x24(r31)
     addi r3, r31, 0x80
     addi r4, r31, 0x34
-    bl fn_802D08C0
+    bl DVDOpen
     cmpwi r3, 0x1
     bne lbl_80177C9C
     lwz r0, 0x20(r31)
@@ -21275,14 +21275,14 @@ lbl_80177B28:
     lwz r5, 0x1c(r31)
     li r7, 0x0
     li r8, 0x2
-    bl fn_802D0D50
+    bl DVDReadAsyncPrio
     cmpwi r3, 0x0
     beq lbl_80177C9C
     lwz r3, 0x24(r31)
     addi r0, r3, 0x1
     stw r0, 0x24(r31)
     addi r3, r31, 0x34
-    bl fn_802D508C
+    bl DVDGetCommandBlockStatus
     cmpwi r3, 0x0
     bne lbl_80177C9C
     lwz r3, 0x18(r31)
@@ -21320,7 +21320,7 @@ lbl_80177BD0:
     stw r0, 0x24(r31)
     b lbl_80177C9C
     addi r3, r4, 0x34
-    bl fn_802D0B6C
+    bl DVDClose
     cmpwi r3, 0x1
     bne lbl_80177C9C
     lwz r0, 0x0(r31)
@@ -21343,7 +21343,7 @@ lbl_80177BD0:
     stw r0, 0x24(r31)
     b lbl_80177C9C
     addi r3, r4, 0x34
-    bl fn_802D508C
+    bl DVDGetCommandBlockStatus
     cmpwi r3, 0x0
     bne lbl_80177C9C
     lwz r0, 0x0(r31)
@@ -21351,7 +21351,7 @@ lbl_80177BD0:
     cmpwi r0, 0x0
     beq lbl_80177C8C
     addi r3, r31, 0x34
-    bl fn_802D0B6C
+    bl DVDClose
     cmpwi r3, 0x1
     bne lbl_80177C9C
     lwz r0, 0x0(r31)
@@ -21709,7 +21709,7 @@ extern "C" asm void fn_801780F8() {
     stw r0, 0x24(r1)
     addi r11, r1, 0x20
     bl _savegpr_29
-    bl fn_802D5154
+    bl DVDGetDriveStatus
     lis r4, lbl_803C1950@ha
     addi r4, r4, lbl_803C1950@l
     stw r3, 0x4(r4)
@@ -21769,7 +21769,7 @@ lbl_801781BC:
     bl OSPanic
     b lbl_8017820C
 lbl_801781EC:
-    bl fn_802D5154
+    bl DVDGetDriveStatus
     bl fn_80165D1C
     bl fn_80171B8C
     stw r30, 0xc(r31)
@@ -21999,7 +21999,7 @@ extern "C" asm void fn_80178490() {
     stw r0, 0x1d4(r31)
     addi r3, r31, 0x110
     mr r4, r31
-    bl fn_8030F8C4
+    bl NANDSetUserData
     mr r3, r31
     bl fn_80178C54
     lwz r31, 0xc(r1)

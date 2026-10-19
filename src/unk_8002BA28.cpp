@@ -26,21 +26,21 @@ extern "C" void fn_8002D7FC();
 extern "C" void fn_8002D80C();
 extern "C" void fn_80034F44();
 extern "C" void fn_8003D62C();
-extern "C" void fn_801E2B5C();
-extern "C" void fn_801E2B68();
-extern "C" void fn_802DFDF8();
-extern "C" void fn_802E0688();
-extern "C" void fn_802E06BC();
-extern "C" void fn_802E0DD0();
-extern "C" void fn_802E0FF8();
+extern "C" void GetRenderModeObj__Q34nw4r3g3d8G3DStateFv();
+extern "C" void Invalidate__Q34nw4r3g3d8G3DStateFUl();
+extern "C" void GXSetVtxDesc();
+extern "C" void GXClearVtxDesc();
+extern "C" void GXSetVtxAttrFmt();
+extern "C" void GXSetTexCoordGen2();
+extern "C" void GXSetNumTexGens();
 extern "C" void fn_802E151C();
-extern "C" void fn_802E1ABC();
-extern "C" void fn_802E2ED8();
-extern "C" void fn_802E353C();
-extern "C" void fn_802E3550();
-extern "C" void fn_802E3564();
-extern "C" void fn_802E37E0();
-extern "C" void fn_802E39C4();
+extern "C" void GXBegin();
+extern "C" void GXSetNumChans();
+extern "C" void GXGetTexObjWidth();
+extern "C" void GXGetTexObjHeight();
+extern "C" void GXGetTexObjFmt();
+extern "C" void GXLoadTexObj();
+extern "C" void GXInvalidateTexAll();
 extern "C" void fn_802E430C();
 extern "C" void fn_802E432C();
 extern "C" void fn_802E4460();
@@ -54,11 +54,11 @@ extern "C" void fn_802E4750();
 extern "C" void fn_802E4808();
 extern "C" void fn_802E48CC();
 extern "C" void fn_802E4A28();
-extern "C" void fn_802E4EFC();
-extern "C" void fn_802E4F78();
-extern "C" void fn_802E4FA4();
-extern "C" void fn_802E50B0();
-extern "C" void fn_802E576C();
+extern "C" void GXSetBlendMode();
+extern "C" void GXSetAlphaUpdate();
+extern "C" void GXSetZMode();
+extern "C" void GXSetDither();
+extern "C" void GXLoadTexMtxImm();
 
 // ----------------------------------------------------------------------------
 // fn_8002BA28
@@ -77,20 +77,20 @@ extern "C" asm void fn_8002BA28() {
     mr r30, r3
     mr r31, r4
     li r3, 0x7ff
-    bl fn_801E2B68
+    bl Invalidate__Q34nw4r3g3d8G3DStateFUl
     li r3, 0x0
     bl fn_8003D62C
     mr r3, r31
     li r4, 0x0
-    bl fn_802E37E0
+    bl GXLoadTexObj
     li r3, 0x0
-    bl fn_802E2ED8
+    bl GXSetNumChans
     li r3, 0x0
     bl fn_802E430C
     li r3, 0x0
     bl fn_802E432C
     li r3, 0x1
-    bl fn_802E0FF8
+    bl GXSetNumTexGens
     li r3, 0x0
     li r4, 0x1
     li r5, 0x4
@@ -153,7 +153,7 @@ lbl_8002BAD0:
     li r3, 0x0
     li r4, 0x3
     li r5, 0x0
-    bl fn_802E4FA4
+    bl GXSetZMode
     li r3, 0x1
     lwz r0, 0x0(r30)
     rlwinm r0, r0, 0, 28, 28
@@ -164,27 +164,27 @@ lbl_8002BAD0:
 lbl_8002BBA0:
     li r5, 0x1
     li r6, 0x0
-    bl fn_802E4EFC
-    bl fn_802E0688
+    bl GXSetBlendMode
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xd
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0x0
     li r4, 0x9
     li r5, 0x0
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xd
     li r5, 0x1
     li r6, 0x0
     li r7, 0x0
-    bl fn_802E06BC
-    bl fn_801E2B5C
+    bl GXSetVtxAttrFmt
+    bl GetRenderModeObj__Q34nw4r3g3d8G3DStateFv
     lhz r0, 0xe(r3)
     lfd f1, lbl_8049E848
     stw r0, 0xc(r1)
@@ -200,7 +200,7 @@ lbl_8002BBA0:
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, lbl_8049E858
     fmr f2, f1
     bl fn_8002D7D8
@@ -305,16 +305,16 @@ extern "C" asm void fn_8002BD2C() {
     beq lbl_8002D74C
     addi r29, r27, 0xc
     li r3, 0x7ff
-    bl fn_801E2B68
+    bl Invalidate__Q34nw4r3g3d8G3DStateFUl
     li r3, 0x1
-    bl fn_802E50B0
+    bl GXSetDither
     li r3, 0x0
     bl fn_8003D62C
     mr r3, r23
     li r4, 0x0
-    bl fn_802E37E0
+    bl GXLoadTexObj
     li r3, 0x0
-    bl fn_802E2ED8
+    bl GXSetNumChans
     li r3, 0x0
     bl fn_802E430C
     li r3, 0x0
@@ -334,7 +334,7 @@ extern "C" asm void fn_8002BD2C() {
     li r3, 0x7
     bl fn_802E432C
     li r3, 0x1
-    bl fn_802E0FF8
+    bl GXSetNumTexGens
     li r3, 0x0
     li r4, 0x1
     li r5, 0x4
@@ -772,7 +772,7 @@ lbl_8002C304:
     bl fn_802E4538
 lbl_8002C4DC:
     li r3, 0x1
-    bl fn_802E4F78
+    bl GXSetAlphaUpdate
     li r3, 0x7
     li r4, 0x0
     li r5, 0x0
@@ -782,32 +782,32 @@ lbl_8002C4DC:
     li r3, 0x0
     li r4, 0x3
     li r5, 0x0
-    bl fn_802E4FA4
+    bl GXSetZMode
     li r3, 0x0
     li r4, 0x1
     li r5, 0x0
     li r6, 0x3
-    bl fn_802E4EFC
-    bl fn_802E0688
+    bl GXSetBlendMode
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xd
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0x0
     li r4, 0x9
     li r5, 0x0
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xd
     li r5, 0x1
     li r6, 0x0
     li r7, 0x0
-    bl fn_802E06BC
-    bl fn_801E2B5C
+    bl GXSetVtxAttrFmt
+    bl GetRenderModeObj__Q34nw4r3g3d8G3DStateFv
     lhz r0, 0xe(r3)
     srwi r0, r0, 3
     lfd f1, lbl_8049E850
@@ -827,7 +827,7 @@ lbl_8002C4DC:
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, lbl_8049E858
     fmr f2, f1
     bl fn_8002D7D8
@@ -856,13 +856,13 @@ lbl_8002C4DC:
     lwz r3, 0x8(r27)
     bl fn_8002B99C
     mr r24, r3
-    bl fn_802E353C
+    bl GXGetTexObjWidth
     mr r30, r3
     mr r3, r24
-    bl fn_802E3550
+    bl GXGetTexObjHeight
     mr r31, r3
     mr r3, r24
-    bl fn_802E3564
+    bl GXGetTexObjFmt
     mr r28, r3
     lwz r3, 0x8(r27)
     bl fn_8002B9A4
@@ -881,10 +881,10 @@ lbl_8002C4DC:
     li r10, 0x1
     bl fn_80034F44
     bl fn_802E151C
-    bl fn_802E39C4
+    bl GXInvalidateTexAll
     mr r3, r24
     li r4, 0x0
-    bl fn_802E37E0
+    bl GXLoadTexObj
     lfs f0, lbl_8049E858
     stfs f0, 0x40(r1)
     stfs f0, 0x38(r1)
@@ -898,7 +898,7 @@ lbl_8002C4DC:
     cmplwi r0, 0x1
     beq lbl_8002D214
     li r3, 0x7
-    bl fn_802E0FF8
+    bl GXSetNumTexGens
     li r3, 0x0
     li r4, 0x1
     li r5, 0x4
@@ -1244,13 +1244,13 @@ lbl_8002C4DC:
     addi r3, r1, 0x28
     li r4, 0x1e
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fdivs f0, f30, f28
     stfs f0, 0x34(r1)
     addi r3, r1, 0x28
     li r4, 0x21
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fmr f0, f30
     fadds f30, f30, f0
     fneg f0, f30
@@ -1259,13 +1259,13 @@ lbl_8002C4DC:
     addi r3, r1, 0x28
     li r4, 0x24
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fdivs f0, f30, f28
     stfs f0, 0x34(r1)
     addi r3, r1, 0x28
     li r4, 0x27
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     lfs f0, 0x4(r24)
     fadds f30, f30, f0
     fneg f0, f30
@@ -1274,17 +1274,17 @@ lbl_8002C4DC:
     addi r3, r1, 0x28
     li r4, 0x2a
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fdivs f0, f30, f28
     stfs f0, 0x34(r1)
     addi r3, r1, 0x28
     li r4, 0x2d
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, lbl_8049E858
     fmr f2, f1
     bl fn_8002D7D8
@@ -1320,7 +1320,7 @@ lbl_8002C4DC:
     li r10, 0x1
     bl fn_80034F44
     bl fn_802E151C
-    bl fn_802E39C4
+    bl GXInvalidateTexAll
     lbz r0, 0x10(r29)
     stb r0, 0x24(r1)
     lbz r0, 0x11(r29)
@@ -1343,13 +1343,13 @@ lbl_8002C4DC:
     addi r3, r1, 0x28
     li r4, 0x1e
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fdivs f0, f29, f27
     stfs f0, 0x44(r1)
     addi r3, r1, 0x28
     li r4, 0x21
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fmr f0, f29
     fadds f29, f29, f0
     fneg f0, f29
@@ -1358,13 +1358,13 @@ lbl_8002C4DC:
     addi r3, r1, 0x28
     li r4, 0x24
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fdivs f0, f29, f27
     stfs f0, 0x44(r1)
     addi r3, r1, 0x28
     li r4, 0x27
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     lfs f0, 0x4(r24)
     fadds f29, f29, f0
     fneg f0, f29
@@ -1373,17 +1373,17 @@ lbl_8002C4DC:
     addi r3, r1, 0x28
     li r4, 0x2a
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fdivs f0, f29, f27
     stfs f0, 0x44(r1)
     addi r3, r1, 0x28
     li r4, 0x2d
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, lbl_8049E858
     fmr f2, f1
     bl fn_8002D7D8
@@ -1419,7 +1419,7 @@ lbl_8002C4DC:
     li r10, 0x1
     bl fn_80034F44
     bl fn_802E151C
-    bl fn_802E39C4
+    bl GXInvalidateTexAll
     lwz r0, 0x8(r29)
     cmplwi r0, 0x3
     li r24, 0x3
@@ -1456,13 +1456,13 @@ lbl_8002CF34:
     addi r3, r1, 0x28
     li r4, 0x1e
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fdivs f0, f29, f28
     stfs f0, 0x34(r1)
     addi r3, r1, 0x28
     li r4, 0x21
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fadds f29, f29, f31
     fneg f0, f29
     fdivs f0, f0, f28
@@ -1470,13 +1470,13 @@ lbl_8002CF34:
     addi r3, r1, 0x28
     li r4, 0x24
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fdivs f0, f29, f28
     stfs f0, 0x34(r1)
     addi r3, r1, 0x28
     li r4, 0x27
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fadds f29, f29, f31
     fneg f0, f29
     fdivs f0, f0, f28
@@ -1484,17 +1484,17 @@ lbl_8002CF34:
     addi r3, r1, 0x28
     li r4, 0x2a
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fdivs f0, f29, f28
     stfs f0, 0x34(r1)
     addi r3, r1, 0x28
     li r4, 0x2d
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, lbl_8049E858
     fmr f2, f1
     bl fn_8002D7D8
@@ -1530,7 +1530,7 @@ lbl_8002CF34:
     li r10, 0x1
     bl fn_80034F44
     bl fn_802E151C
-    bl fn_802E39C4
+    bl GXInvalidateTexAll
     stfs f30, 0x34(r1)
     fneg f0, f26
     fdivs f0, f0, f27
@@ -1538,13 +1538,13 @@ lbl_8002CF34:
     addi r3, r1, 0x28
     li r4, 0x1e
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fdivs f0, f26, f27
     stfs f0, 0x44(r1)
     addi r3, r1, 0x28
     li r4, 0x21
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fadds f29, f26, f31
     fneg f0, f29
     fdivs f0, f0, f27
@@ -1552,13 +1552,13 @@ lbl_8002CF34:
     addi r3, r1, 0x28
     li r4, 0x24
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fdivs f0, f29, f27
     stfs f0, 0x44(r1)
     addi r3, r1, 0x28
     li r4, 0x27
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fadds f29, f29, f31
     fneg f0, f29
     fdivs f0, f0, f27
@@ -1566,17 +1566,17 @@ lbl_8002CF34:
     addi r3, r1, 0x28
     li r4, 0x2a
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fdivs f0, f29, f27
     stfs f0, 0x44(r1)
     addi r3, r1, 0x28
     li r4, 0x2d
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, lbl_8049E858
     fmr f2, f1
     bl fn_8002D7D8
@@ -1612,7 +1612,7 @@ lbl_8002CF34:
     li r10, 0x1
     bl fn_80034F44
     bl fn_802E151C
-    bl fn_802E39C4
+    bl GXInvalidateTexAll
     addi r23, r23, 0x1
     addi r26, r26, 0x3
     fadds f29, f29, f31
@@ -1622,7 +1622,7 @@ lbl_8002D208:
     b lbl_8002D744
 lbl_8002D214:
     li r3, 0x5
-    bl fn_802E0FF8
+    bl GXSetNumTexGens
     li r3, 0x0
     li r4, 0x1
     li r5, 0x4
@@ -1891,30 +1891,30 @@ lbl_8002D608:
     addi r3, r1, 0x28
     li r4, 0x1e
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fdivs f0, f30, f28
     stfs f0, 0x34(r1)
     addi r3, r1, 0x28
     li r4, 0x21
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fdivs f0, f30, f27
     stfs f0, 0x44(r1)
     addi r3, r1, 0x28
     li r4, 0x24
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fneg f0, f30
     fdivs f0, f0, f28
     stfs f0, 0x34(r1)
     addi r3, r1, 0x28
     li r4, 0x27
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, lbl_8049E858
     fmr f2, f1
     bl fn_8002D7D8
@@ -1950,7 +1950,7 @@ lbl_8002D608:
     li r10, 0x1
     bl fn_80034F44
     bl fn_802E151C
-    bl fn_802E39C4
+    bl GXInvalidateTexAll
     addi r23, r23, 0x1
     fadds f30, f30, f29
 lbl_8002D738:
@@ -2004,7 +2004,7 @@ extern "C" asm void fn_8002D7B4() {
     nofralloc
     li r7, 0x0
     li r8, 0x7d
-    b fn_802E0DD0
+    b GXSetTexCoordGen2
 }
 
 // ----------------------------------------------------------------------------

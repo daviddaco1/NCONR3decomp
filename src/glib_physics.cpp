@@ -52,9 +52,9 @@ extern "C" void fn_8004846C();
 extern "C" void fn_800484BC();
 extern "C" void fn_800484FC();
 extern "C" void fn_801A9384();
-extern "C" void fn_80222F38();
-extern "C" void fn_8030D3A4();
-extern "C" void fn_8030E028();
+extern "C" void Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode();
+extern "C" void PSMTXQuat();
+extern "C" void C_QUATMtx();
 
 // ----------------------------------------------------------------------------
 // fn_80047C40
@@ -663,7 +663,7 @@ extern "C" asm void fn_8004839C() {
     bl fn_8004841C
     mr r4, r3
     mr r3, r31
-    bl fn_80222F38
+    bl Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode
     stw r3, 0x8(r1)
     addi r3, r1, 0xc
     addi r4, r1, 0x8
@@ -737,7 +737,7 @@ extern "C" asm void fn_8004846C() {
     bl fn_80047CBC
     mr r4, r3
     mr r3, r31
-    bl fn_80222F38
+    bl Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode
     stw r3, 0x8(r1)
     addi r3, r1, 0xc
     addi r4, r1, 0x8
@@ -764,7 +764,7 @@ extern "C" asm void fn_800484BC() {
     bl fn_80018B90
     mr r4, r3
     mr r3, r31
-    bl fn_8030E028
+    bl C_QUATMtx
     mr r3, r31
     lwz r31, 0xc(r1)
     lwz r0, 0x14(r1)
@@ -787,7 +787,7 @@ extern "C" asm void fn_800484FC() {
     mr r31, r4
     bl fn_8002AE3C
     mr r4, r31
-    bl fn_8030D3A4
+    bl PSMTXQuat
     mr r3, r30
     lwz r31, 0xc(r1)
     lwz r30, 0x8(r1)

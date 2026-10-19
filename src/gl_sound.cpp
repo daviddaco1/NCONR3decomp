@@ -158,61 +158,61 @@ extern "C" void fn_8019044C();
 extern "C" void __construct_array();
 extern "C" void __destroy_arr();
 extern "C" void fn_801A9384();
-extern "C" void fn_802030C8();
-extern "C" void fn_802037CC();
-extern "C" void fn_802038D4();
-extern "C" void fn_802038DC();
-extern "C" void fn_80203B14();
-extern "C" void fn_80203D18();
-extern "C" void fn_80208AF0();
-extern "C" void fn_80208CD8();
+extern "C" void GetInstance__Q44nw4r3snd6detail9AxManagerFv();
+extern "C" void SetOutputMode__Q44nw4r3snd6detail9AxManagerFQ34nw4r3snd10OutputMode();
+extern "C" void GetOutputMode__Q44nw4r3snd6detail9AxManagerFv();
+extern "C" void SetMasterVolume__Q44nw4r3snd6detail9AxManagerFfi();
+extern "C" void AppendEffect__Q44nw4r3snd6detail9AxManagerFQ34nw4r3snd6AuxBusPQ34nw4r3snd6FxBase();
+extern "C" void ClearEffect__Q44nw4r3snd6detail9AxManagerFQ34nw4r3snd6AuxBusi();
+extern "C" void Stop__Q44nw4r3snd6detail10BasicSoundFi();
+extern "C" void Pause__Q44nw4r3snd6detail10BasicSoundFbi();
 extern "C" void fn_80208F3C();
 extern "C" void fn_80209040();
-extern "C" void fn_80209D0C();
-extern "C" void fn_80209DB0();
+extern "C" void SetVolume__Q44nw4r3snd6detail10BasicSoundFfi();
+extern "C" void SetPan__Q44nw4r3snd6detail10BasicSoundFf();
 extern "C" void fn_80209DB8();
 extern "C" void fn_80209DC0();
 extern "C" void fn_80209DC8();
-extern "C" void fn_8020B778();
-extern "C" void fn_8020B850();
-extern "C" void fn_8020BB50();
-extern "C" void fn_8020BBD8();
-extern "C" void fn_8020CCC4();
+extern "C" void __ct__Q34nw4r3snd15DvdSoundArchiveFv();
+extern "C" void Open__Q34nw4r3snd15DvdSoundArchiveFPCc();
+extern "C" void LoadHeader__Q34nw4r3snd15DvdSoundArchiveFPvUl();
+extern "C" void LoadLabelStringData__Q34nw4r3snd15DvdSoundArchiveFPvUl();
+extern "C" void GetCurrentLevel__Q44nw4r3snd6detail9FrameHeapCFv();
 extern "C" void fn_8020CD64();
 extern "C" void fn_8020CEB8();
 extern "C" void fn_8020D05C();
-extern "C" void fn_8020D148();
-extern "C" void fn_8020D29C();
+extern "C" void GetRequiredMemSize__Q34nw4r3snd10FxReverbHiFv();
+extern "C" void SetParam__Q34nw4r3snd10FxReverbHiFRCQ44nw4r3snd10FxReverbHi13ReverbHiParam();
 extern "C" void fn_8020D488();
 extern "C" void fn_8020D5B8();
 extern "C" void fn_8020D70C();
 extern "C" void fn_8020DAF4();
 extern "C" void fn_8020DC48();
 extern "C" void fn_8020DEE0();
-extern "C" void fn_80213774();
-extern "C" void fn_802137C8();
-extern "C" void fn_802137D0();
-extern "C" void fn_8021530C();
+extern "C" void IsAvailable__Q34nw4r3snd12SoundArchiveCFv();
+extern "C" void GetSoundUserParam__Q34nw4r3snd12SoundArchiveCFUl();
+extern "C" void GetSoundType__Q34nw4r3snd12SoundArchiveCFUl();
+extern "C" void __ct__Q34nw4r3snd18SoundArchivePlayerFv();
 extern "C" void fn_802156E4();
-extern "C" void fn_80215700();
-extern "C" void fn_80215934();
+extern "C" void Setup__Q34nw4r3snd18SoundArchivePlayerFPCQ34nw4r3snd12SoundArchivePvUlPvUl();
+extern "C" void GetRequiredMemSize__Q34nw4r3snd18SoundArchivePlayerFPCQ34nw4r3snd12SoundArchive();
 extern "C" void fn_80215A80();
-extern "C" void fn_80215FF4();
-extern "C" void fn_802163B0();
+extern "C" void Update__Q34nw4r3snd18SoundArchivePlayerFv();
+extern "C" void GetSoundPlayer__Q34nw4r3snd18SoundArchivePlayerFUl();
 extern "C" void fn_8021779C();
 extern "C" void fn_80217CD4();
-extern "C" void fn_80217D24();
-extern "C" void fn_80217DDC();
-extern "C" void fn_80217EC0();
-extern "C" void fn_80217F14();
+extern "C" void __ct__Q34nw4r3snd9SoundHeapFv();
+extern "C" void Create__Q34nw4r3snd9SoundHeapFPvUl();
+extern "C" void SaveState__Q34nw4r3snd9SoundHeapFv();
+extern "C" void LoadState__Q34nw4r3snd9SoundHeapFi();
 extern "C" void fn_8021825C();
 extern "C" void fn_80218AB4();
 extern "C" void fn_8021D104();
-extern "C" void fn_8029AD3C();
-extern "C" void fn_8030C3C8();
-extern "C" void fn_8030C4A8();
-extern "C" void fn_8031ACF4();
-extern "C" void fn_8031ADD0();
+extern "C" void GetFont__Q34nw4r3lyt7TextBoxCFv();
+extern "C" void MEMCreateExpHeapEx();
+extern "C" void MEMAllocFromExpHeapEx();
+extern "C" void OSLockMutex();
+extern "C" void OSUnlockMutex();
 extern "C" void fn_8031C828();
 extern "C" void fn_8031CDF0();
 extern "C" void fn_8031D460();
@@ -224,9 +224,9 @@ extern "C" char* strcpy(char*, const char*);
 extern "C" unsigned int strlen(const char*);
 
 extern "C" u8 fn_80190744[];
-extern "C" u8 fn_8020B7C4[];
-extern "C" u8 fn_8021562C[];
-extern "C" u8 fn_80217D6C[];
+extern "C" u8 __dt__Q34nw4r3snd15DvdSoundArchiveFv[];
+extern "C" u8 __dt__Q34nw4r3snd18SoundArchivePlayerFv[];
+extern "C" u8 __dt__Q34nw4r3snd9SoundHeapFv[];
 extern "C" u8 lbl_8035F3E8[];
 extern "C" u8 lbl_8035F4E0[];
 extern "C" u8 lbl_8035F518[];
@@ -270,7 +270,7 @@ extern "C" asm void fn_8018D5A8() {
     addi r11, r1, 0x120
     bl _savegpr_29
     mr r29, r3
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     bne lbl_8018D5D4
     li r3, 0x0
@@ -279,7 +279,7 @@ lbl_8018D5D4:
     lis r3, lbl_803D1FBC@ha
     addi r3, r3, lbl_803D1FBC@l
     mr r4, r29
-    bl fn_8020B850
+    bl Open__Q34nw4r3snd15DvdSoundArchiveFPCc
     cmpwi r3, 0x0
     bne lbl_8018D61C
     addi r3, r1, 0x8
@@ -317,7 +317,7 @@ lbl_8018D61C:
     stw r3, lbl_8049D894
     addi r3, r30, lbl_803D1FBC@l
     mr r5, r29
-    bl fn_8020BB50
+    bl LoadHeader__Q34nw4r3snd15DvdSoundArchiveFPvUl
     addi r3, r30, lbl_803D1FBC@l
     bl fn_8018E4D8
     mr r29, r3
@@ -329,7 +329,7 @@ lbl_8018D61C:
     stw r3, lbl_8049D89C
     addi r3, r30, lbl_803D1FBC@l
     mr r5, r29
-    bl fn_8020BBD8
+    bl LoadLabelStringData__Q34nw4r3snd15DvdSoundArchiveFPvUl
     li r3, 0x0
 lbl_8018D6AC:
     addi r11, r1, 0x120
@@ -348,7 +348,7 @@ extern "C" asm void fn_8018D6C4() {
     addi r11, r1, 0x20
     bl _savegpr_27
     mr r29, r3
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018D88C
     lwz r3, lbl_8049D888
@@ -414,7 +414,7 @@ lbl_8018D7BC:
     addi r3, r29, lbl_803D2154@l
     lis r30, lbl_803D1FBC@ha
     addi r4, r30, lbl_803D1FBC@l
-    bl fn_80215934
+    bl GetRequiredMemSize__Q34nw4r3snd18SoundArchivePlayerFPCQ34nw4r3snd12SoundArchive
     mr r27, r3
     addi r3, r29, lbl_803D2154@l
     addi r4, r30, lbl_803D1FBC@l
@@ -430,23 +430,23 @@ lbl_8018D7BC:
     lwz r3, lbl_8049D890
     addis r4, r31, 0x1
     li r5, 0x20
-    bl fn_8030C4A8
+    bl MEMAllocFromExpHeapEx
     mr r7, r3
     addi r3, r29, lbl_803D2154@l
     addi r4, r30, lbl_803D1FBC@l
     lwz r5, lbl_8049D898
     mr r6, r27
     addis r8, r31, 0x1
-    bl fn_80215700
+    bl Setup__Q34nw4r3snd18SoundArchivePlayerFPCQ34nw4r3snd12SoundArchivePvUlPvUl
     lwz r3, lbl_8049D890
     lis r4, 0x38
     li r5, 0x20
-    bl fn_8030C4A8
+    bl MEMAllocFromExpHeapEx
     mr r4, r3
     lis r31, lbl_803D224C@ha
     addi r3, r31, lbl_803D224C@l
     lis r5, 0x38
-    bl fn_80217DDC
+    bl Create__Q34nw4r3snd9SoundHeapFPvUl
     addi r3, r31, lbl_803D224C@l
     bl fn_8018E470
     cmpwi r3, 0x0
@@ -475,7 +475,7 @@ extern "C" asm void fn_8018D8A4() {
     addi r11, r1, 0x20
     bl _savegpr_28
     mr r28, r3
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018D944
     lis r3, lbl_803D2154@ha
@@ -526,7 +526,7 @@ extern "C" asm void fn_8018D95C() {
     mflr r0
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     bne lbl_8018D980
     li r3, -0x1
@@ -538,7 +538,7 @@ lbl_8018D980:
     cmpwi r3, 0x0
     beq lbl_8018D9A0
     addi r3, r31, lbl_803D224C@l
-    bl fn_80217EC0
+    bl SaveState__Q34nw4r3snd9SoundHeapFv
     b lbl_8018D9A4
 lbl_8018D9A0:
     li r3, -0x1
@@ -558,7 +558,7 @@ extern "C" asm void fn_8018D9B8() {
     stw r31, 0xc(r1)
     stw r30, 0x8(r1)
     mr r30, r3
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018D9FC
     lis r31, lbl_803D224C@ha
@@ -568,7 +568,7 @@ extern "C" asm void fn_8018D9B8() {
     beq lbl_8018D9FC
     addi r3, r31, lbl_803D224C@l
     mr r4, r30
-    bl fn_80217F14
+    bl LoadState__Q34nw4r3snd9SoundHeapFi
 lbl_8018D9FC:
     lwz r31, 0xc(r1)
     lwz r30, 0x8(r1)
@@ -584,7 +584,7 @@ extern "C" asm void fn_8018DA14() {
     mflr r0
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     bne lbl_8018DA38
     li r3, -0x1
@@ -616,7 +616,7 @@ extern "C" asm void fn_8018DA70() {
     addi r11, r1, 0x30
     bl _savegpr_25
     mr r30, r3
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     bne lbl_8018DA9C
     li r3, 0x0
@@ -682,7 +682,7 @@ extern "C" asm void fn_8018DB5C() {
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
     mr r31, r3
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     bne lbl_8018DB84
     li r3, 0x0
@@ -747,7 +747,7 @@ extern "C" asm void fn_8018DC20() {
     stw r31, 0x14(r1)
     fmr f31, f1
     mr r31, r3
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018DC54
     fmr f1, f31
@@ -767,7 +767,7 @@ extern "C" asm void fn_8018DC6C() {
     stwu r1, -0x10(r1)
     mflr r0
     stw r0, 0x14(r1)
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018DC8C
     bl fn_8018E3F4
@@ -792,7 +792,7 @@ extern "C" asm void fn_8018DCA4() {
     stw r30, 0x10(r1)
     mr r30, r3
     fmr f31, f1
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018DCF8
     lis r31, lbl_803D2154@ha
@@ -823,7 +823,7 @@ extern "C" asm void fn_8018DD14() {
     stw r31, 0xc(r1)
     stw r30, 0x8(r1)
     mr r30, r3
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     bne lbl_8018DD44
     la r3, lbl_804A10A0
@@ -859,7 +859,7 @@ extern "C" asm void fn_8018DD8C() {
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
     mr r31, r3
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018DDFC
     cmpwi r31, 0x0
@@ -899,7 +899,7 @@ extern "C" asm void fn_8018DE10() {
     stwu r1, -0x10(r1)
     mflr r0
     stw r0, 0x14(r1)
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     bne lbl_8018DE30
     li r3, 0x0
@@ -941,7 +941,7 @@ extern "C" asm void fn_8018DE8C() {
     stwu r1, -0x10(r1)
     mflr r0
     stw r0, 0x14(r1)
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     bne lbl_8018DEAC
     li r3, 0x0
@@ -975,7 +975,7 @@ extern "C" asm void fn_8018DEE4() {
     mr r30, r3
     lis r31, lbl_803D1FBC@ha
     addi r3, r31, lbl_803D1FBC@l
-    bl fn_80213774
+    bl IsAvailable__Q34nw4r3snd12SoundArchiveCFv
     cmpwi r3, 0x0
     bne lbl_8018DF18
     li r3, 0x0
@@ -983,7 +983,7 @@ extern "C" asm void fn_8018DEE4() {
 lbl_8018DF18:
     addi r3, r31, lbl_803D1FBC@l
     mr r4, r30
-    bl fn_802137C8
+    bl GetSoundUserParam__Q34nw4r3snd12SoundArchiveCFUl
     cmpwi r3, 0x0
     beq lbl_8018DF48
     cmpwi r3, 0x1
@@ -1027,7 +1027,7 @@ extern "C" asm void fn_8018DF84() {
     mr r30, r4
     lis r31, lbl_803D1FBC@ha
     addi r3, r31, lbl_803D1FBC@l
-    bl fn_80213774
+    bl IsAvailable__Q34nw4r3snd12SoundArchiveCFv
     cmpwi r3, 0x0
     bne lbl_8018DFBC
     li r3, 0x0
@@ -1036,7 +1036,7 @@ lbl_8018DFBC:
     addi r3, r31, lbl_803D1FBC@l
     mr r4, r30
     addi r5, r1, 0x8
-    bl fn_802137D0
+    bl GetSoundType__Q34nw4r3snd12SoundArchiveCFUl
     cmpwi r3, 0x0
     beq lbl_8018DFFC
     lwz r0, 0x8(r1)
@@ -1150,7 +1150,7 @@ extern "C" asm void fn_8018E114() {
     stw r0, 0x24(r1)
     addi r11, r1, 0x20
     bl _savegpr_27
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018E2E4
     lwz r0, lbl_8049D8A4
@@ -1271,7 +1271,7 @@ lbl_8018E2C8:
     bl fn_8019009C
     lis r3, lbl_803D2154@ha
     addi r3, r3, lbl_803D2154@l
-    bl fn_80215FF4
+    bl Update__Q34nw4r3snd18SoundArchivePlayerFv
 lbl_8018E2E4:
     addi r11, r1, 0x20
     bl _restgpr_27
@@ -1294,28 +1294,28 @@ extern "C" asm void fn_8018E300() {
     stw r31, 0xc(r1)
     lis r31, lbl_803D1FBC@ha
     addi r3, r31, lbl_803D1FBC@l
-    bl fn_8020B778
+    bl __ct__Q34nw4r3snd15DvdSoundArchiveFv
     addi r3, r31, lbl_803D1FBC@l
-    lis r4, fn_8020B7C4@ha
-    addi r4, r4, fn_8020B7C4@l
+    lis r4, __dt__Q34nw4r3snd15DvdSoundArchiveFv@ha
+    addi r4, r4, __dt__Q34nw4r3snd15DvdSoundArchiveFv@l
     lis r5, lbl_803D1FB0@ha
     addi r5, r5, lbl_803D1FB0@l
     bl __register_global_object
     lis r31, lbl_803D2154@ha
     addi r3, r31, lbl_803D2154@l
-    bl fn_8021530C
+    bl __ct__Q34nw4r3snd18SoundArchivePlayerFv
     addi r3, r31, lbl_803D2154@l
-    lis r4, fn_8021562C@ha
-    addi r4, r4, fn_8021562C@l
+    lis r4, __dt__Q34nw4r3snd18SoundArchivePlayerFv@ha
+    addi r4, r4, __dt__Q34nw4r3snd18SoundArchivePlayerFv@l
     lis r5, lbl_803D2148@ha
     addi r5, r5, lbl_803D2148@l
     bl __register_global_object
     lis r31, lbl_803D224C@ha
     addi r3, r31, lbl_803D224C@l
-    bl fn_80217D24
+    bl __ct__Q34nw4r3snd9SoundHeapFv
     addi r3, r31, lbl_803D224C@l
-    lis r4, fn_80217D6C@ha
-    addi r4, r4, fn_80217D6C@l
+    lis r4, __dt__Q34nw4r3snd9SoundHeapFv@ha
+    addi r4, r4, __dt__Q34nw4r3snd9SoundHeapFv@l
     lis r5, lbl_803D2240@ha
     addi r5, r5, lbl_803D2240@l
     bl __register_global_object
@@ -1347,10 +1347,10 @@ extern "C" asm void fn_8018E3B0() {
     stw r31, 0x14(r1)
     fmr f31, f1
     mr r31, r3
-    bl fn_802030C8
+    bl GetInstance__Q44nw4r3snd6detail9AxManagerFv
     fmr f1, f31
     mr r4, r31
-    bl fn_802038DC
+    bl SetMasterVolume__Q44nw4r3snd6detail9AxManagerFfi
     lfd f31, 0x18(r1)
     lwz r31, 0x14(r1)
     lwz r0, 0x24(r1)
@@ -1364,7 +1364,7 @@ extern "C" asm void fn_8018E3F4() {
     stwu r1, -0x10(r1)
     mflr r0
     stw r0, 0x14(r1)
-    bl fn_802030C8
+    bl GetInstance__Q44nw4r3snd6detail9AxManagerFv
     bl fn_8018E608
     lwz r0, 0x14(r1)
     mtlr r0
@@ -1379,9 +1379,9 @@ extern "C" asm void fn_8018E418() {
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
     mr r31, r3
-    bl fn_802030C8
+    bl GetInstance__Q44nw4r3snd6detail9AxManagerFv
     mr r4, r31
-    bl fn_802037CC
+    bl SetOutputMode__Q44nw4r3snd6detail9AxManagerFQ34nw4r3snd10OutputMode
     lwz r31, 0xc(r1)
     lwz r0, 0x14(r1)
     mtlr r0
@@ -1394,8 +1394,8 @@ extern "C" asm void fn_8018E44C() {
     stwu r1, -0x10(r1)
     mflr r0
     stw r0, 0x14(r1)
-    bl fn_802030C8
-    bl fn_802038D4
+    bl GetInstance__Q44nw4r3snd6detail9AxManagerFv
+    bl GetOutputMode__Q44nw4r3snd6detail9AxManagerFv
     lwz r0, 0x14(r1)
     mtlr r0
     addi r1, r1, 0x10
@@ -1419,7 +1419,7 @@ extern "C" asm void fn_8018E478() {
     addi r4, r31, 0x4
     bl fn_8018E56C
     addi r3, r31, 0x1c
-    bl fn_8020CCC4
+    bl GetCurrentLevel__Q44nw4r3snd6detail9FrameHeapCFv
     mr r31, r3
     addi r3, r1, 0x8
     li r4, -0x1
@@ -1467,7 +1467,7 @@ extern "C" asm void fn_8018E4F0() {
 extern "C" asm void fn_8018E4F8() {
     nofralloc
     li r5, 0x0
-    b fn_8030C3C8
+    b MEMCreateExpHeapEx
 }
 
 extern "C" asm void dtor_8018E500() {
@@ -1503,7 +1503,7 @@ lbl_8018E54C:
 
 extern "C" asm void fn_8018E568() {
     nofralloc
-    b fn_8031ADD0
+    b OSUnlockMutex
 }
 
 extern "C" asm void fn_8018E56C() {
@@ -1530,7 +1530,7 @@ extern "C" asm void fn_8018E56C() {
 
 extern "C" asm void fn_8018E5B4() {
     nofralloc
-    b fn_8031ACF4
+    b OSLockMutex
 }
 
 extern "C" asm void dtor_8018E5B8() {
@@ -1567,7 +1567,7 @@ extern "C" asm void fn_8018E600() {
 
 extern "C" asm void fn_8018E604() {
     nofralloc
-    b fn_802163B0
+    b GetSoundPlayer__Q34nw4r3snd18SoundArchivePlayerFUl
 }
 
 extern "C" asm void fn_8018E608() {
@@ -1693,7 +1693,7 @@ extern "C" asm void fn_8018E758() {
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
     mr r31, r3
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     bne lbl_8018E780
     li r3, 0x0
@@ -1730,7 +1730,7 @@ extern "C" asm void fn_8018E7C4() {
     bl _savegpr_28
     mr r28, r3
     li r30, 0x0
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     bne lbl_8018E7F4
     li r3, 0x0
@@ -1780,7 +1780,7 @@ extern "C" asm void fn_8018E864() {
     stw r30, 0x8(r1)
     mr r30, r3
     mr r31, r4
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     bne lbl_8018E894
     li r3, 0x0
@@ -1844,7 +1844,7 @@ extern "C" asm void fn_8018E940() {
     stw r30, 0x8(r1)
     mr r31, r3
     mr r30, r4
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     bne lbl_8018E970
     li r3, 0x0
@@ -1880,7 +1880,7 @@ extern "C" asm void fn_8018E9AC() {
     mr r28, r4
     mr r29, r5
     mr r30, r6
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     bne lbl_8018E9E4
     li r3, 0x0
@@ -1922,7 +1922,7 @@ extern "C" asm void fn_8018EA44() {
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
     mr r31, r3
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018EA9C
     cmpwi r31, 0x0
@@ -1956,7 +1956,7 @@ extern "C" asm void fn_8018EAB0() {
     stw r30, 0x8(r1)
     mr r30, r3
     mr r31, r4
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018EB08
     cmpwi r30, 0x0
@@ -1990,7 +1990,7 @@ extern "C" asm void fn_8018EB20() {
     mr r29, r3
     mr r30, r4
     mr r31, r5
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018EB6C
     cmpwi r29, 0x0
@@ -2019,7 +2019,7 @@ extern "C" asm void fn_8018EB84() {
     stw r30, 0x8(r1)
     mr r30, r3
     mr r31, r4
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018EBD4
     cmpwi r30, 0x0
@@ -2047,7 +2047,7 @@ extern "C" asm void fn_8018EBEC() {
     mflr r0
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018EC24
     li r31, 0x0
@@ -2075,7 +2075,7 @@ extern "C" asm void fn_8018EC38() {
     stw r30, 0x8(r1)
     mr r30, r3
     mr r31, r4
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018EC88
     cmpwi r30, 0x0
@@ -2108,7 +2108,7 @@ extern "C" asm void fn_8018ECA0() {
     mr r30, r3
     fmr f31, f1
     mr r31, r4
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018ECFC
     cmpwi r30, 0x0
@@ -2141,7 +2141,7 @@ extern "C" asm void fn_8018ED18() {
     stw r31, 0x14(r1)
     mr r31, r3
     fmr f31, f1
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018ED68
     cmpwi r31, 0x0
@@ -2173,7 +2173,7 @@ extern "C" asm void fn_8018ED80() {
     mr r29, r3
     mr r30, r4
     mr r31, r5
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018EEA8
     cmpwi r29, 0x0
@@ -2258,7 +2258,7 @@ extern "C" asm void fn_8018EEC0() {
     stw r31, 0x14(r1)
     mr r31, r3
     fmr f31, f1
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018EF0C
     cmpwi r31, 0x0
@@ -2290,7 +2290,7 @@ extern "C" asm void fn_8018EF24() {
     mr r30, r3
     mr r31, r4
     fmr f31, f1
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018EF88
     cmpwi r30, 0x0
@@ -2325,7 +2325,7 @@ extern "C" asm void fn_8018EFA4() {
     stw r30, 0x8(r1)
     mr r30, r3
     mr r31, r4
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018F040
     cmpwi r30, 0x0
@@ -2509,7 +2509,7 @@ extern "C" asm void fn_8018F1DC() {
     beq lbl_8018F210
     lwz r3, 0x0(r30)
     mr r4, r31
-    bl fn_80208AF0
+    bl Stop__Q44nw4r3snd6detail10BasicSoundFi
 lbl_8018F210:
     lwz r31, 0xc(r1)
     lwz r30, 0x8(r1)
@@ -2559,7 +2559,7 @@ extern "C" asm void fn_8018F274() {
     lwz r3, 0x0(r29)
     mr r4, r30
     mr r5, r31
-    bl fn_80208CD8
+    bl Pause__Q44nw4r3snd6detail10BasicSoundFbi
 lbl_8018F2B0:
     addi r11, r1, 0x20
     bl _restgpr_29
@@ -2586,7 +2586,7 @@ extern "C" asm void fn_8018F2C8() {
     lwz r3, 0x0(r30)
     fmr f1, f31
     mr r4, r31
-    bl fn_80209D0C
+    bl SetVolume__Q44nw4r3snd6detail10BasicSoundFfi
 lbl_8018F308:
     lfd f31, 0x18(r1)
     lwz r31, 0x14(r1)
@@ -2635,7 +2635,7 @@ extern "C" asm void fn_8018F370() {
     beq lbl_8018F3A4
     lwz r3, 0x0(r31)
     fmr f1, f31
-    bl fn_80209DB0
+    bl SetPan__Q44nw4r3snd6detail10BasicSoundFf
 lbl_8018F3A4:
     lfd f31, 0x18(r1)
     lwz r31, 0x14(r1)
@@ -3178,9 +3178,9 @@ lbl_8018FA88:
     bl memcpy
     addi r3, r31, 0x388
     addi r4, r1, 0x8
-    bl fn_8020D29C
+    bl SetParam__Q34nw4r3snd10FxReverbHiFRCQ44nw4r3snd10FxReverbHi13ReverbHiParam
     addi r3, r31, 0x388
-    bl fn_8020D148
+    bl GetRequiredMemSize__Q34nw4r3snd10FxReverbHiFv
     mr r30, r3
     bl fn_8018DE8C
     mr r4, r30
@@ -3749,7 +3749,7 @@ extern "C" asm void fn_80190210() {
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
     mr r31, r3
-    bl fn_802030C8
+    bl GetInstance__Q44nw4r3snd6detail9AxManagerFv
     mr r4, r31
     bl fn_801902CC
     lwz r31, 0xc(r1)
@@ -3768,10 +3768,10 @@ extern "C" asm void fn_80190244() {
     stw r30, 0x8(r1)
     mr r30, r3
     mr r31, r4
-    bl fn_802030C8
+    bl GetInstance__Q44nw4r3snd6detail9AxManagerFv
     mr r4, r30
     mr r5, r31
-    bl fn_80203D18
+    bl ClearEffect__Q44nw4r3snd6detail9AxManagerFQ34nw4r3snd6AuxBusi
     lwz r31, 0xc(r1)
     lwz r30, 0x8(r1)
     lwz r0, 0x14(r1)
@@ -3789,10 +3789,10 @@ extern "C" asm void fn_80190288() {
     stw r30, 0x8(r1)
     mr r30, r3
     mr r31, r4
-    bl fn_802030C8
+    bl GetInstance__Q44nw4r3snd6detail9AxManagerFv
     mr r4, r30
     mr r5, r31
-    bl fn_80203B14
+    bl AppendEffect__Q44nw4r3snd6detail9AxManagerFQ34nw4r3snd6AuxBusPQ34nw4r3snd6FxBase
     lwz r31, 0xc(r1)
     lwz r30, 0x8(r1)
     lwz r0, 0x14(r1)

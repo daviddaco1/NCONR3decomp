@@ -63,26 +63,26 @@ extern "C" void fn_8003D9FC();
 extern "C" void fn_8003DAF0();
 extern "C" void fn_8003DB44();
 extern "C" void fn_801A9384();
-extern "C" void fn_801E2B5C();
-extern "C" void fn_801E93B8();
-extern "C" void fn_801E9644();
-extern "C" void fn_801E96C8();
-extern "C" void fn_801E9790();
-extern "C" void fn_801E97B4();
-extern "C" void fn_802E0FF8();
-extern "C" void fn_802E2D28();
-extern "C" void fn_802E2E00();
-extern "C" void fn_802E2ED8();
-extern "C" void fn_802E2EFC();
+extern "C" void GetRenderModeObj__Q34nw4r3g3d8G3DStateFv();
+extern "C" void GetCameraMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX34();
+extern "C" void GXSetViewport__Q34nw4r3g3d6CameraCFv();
+extern "C" void GXSetProjection__Q34nw4r3g3d6CameraCFv();
+extern "C" void GXSetScissor__Q34nw4r3g3d6CameraCFv();
+extern "C" void GXSetScissorBoxOffset__Q34nw4r3g3d6CameraCFv();
+extern "C" void GXSetNumTexGens();
+extern "C" void GXSetChanAmbColor();
+extern "C" void GXSetChanMatColor();
+extern "C" void GXSetNumChans();
+extern "C" void GXSetChanCtrl();
 extern "C" void fn_802E430C();
 extern "C" void fn_802E43CC();
 extern "C" void fn_802E48CC();
 extern "C" void fn_802E4A28();
-extern "C" void fn_802E4EFC();
-extern "C" void fn_802E4FA4();
-extern "C" void fn_802E5554();
-extern "C" void fn_802E5644();
-extern "C" void fn_802E574C();
+extern "C" void GXSetBlendMode();
+extern "C" void GXSetZMode();
+extern "C" void GXSetProjection();
+extern "C" void GXLoadPosMtxImm();
+extern "C" void GXSetCurrentMtx();
 extern "C" void fn_8030CA68();
 extern "C" void fn_803150C4();
 
@@ -480,26 +480,26 @@ extern "C" asm void fn_8003D5A4() {
     mr r29, r3
     mr r30, r4
     mr r31, r5
-    bl fn_801E9644
+    bl GXSetViewport__Q34nw4r3g3d6CameraCFv
     mr r3, r29
-    bl fn_801E96C8
+    bl GXSetProjection__Q34nw4r3g3d6CameraCFv
     mr r3, r29
-    bl fn_801E9790
+    bl GXSetScissor__Q34nw4r3g3d6CameraCFv
     mr r3, r29
-    bl fn_801E97B4
+    bl GXSetScissorBoxOffset__Q34nw4r3g3d6CameraCFv
     cmpwi r30, 0x0
     beq lbl_8003D614
     addi r3, r1, 0x8
     bl fn_8002AE40
     mr r3, r29
     addi r4, r1, 0x8
-    bl fn_801E93B8
+    bl GetCameraMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX34
     addi r3, r1, 0x8
     bl fn_8002AE3C
     mr r4, r31
-    bl fn_802E5644
+    bl GXLoadPosMtxImm
     mr r3, r31
-    bl fn_802E574C
+    bl GXSetCurrentMtx
 lbl_8003D614:
     addi r11, r1, 0x50
     bl _restgpr_29
@@ -520,7 +520,7 @@ extern "C" asm void fn_8003D62C() {
     stw r31, 0x8c(r1)
     stw r30, 0x88(r1)
     mr r30, r3
-    bl fn_801E2B5C
+    bl GetRenderModeObj__Q34nw4r3g3d8G3DStateFv
     mr r31, r3
     addi r3, r1, 0x38
     bl fn_80016D44
@@ -546,7 +546,7 @@ extern "C" asm void fn_8003D62C() {
     addi r3, r1, 0x38
     bl fn_80016D40
     li r4, 0x1
-    bl fn_802E5554
+    bl GXSetProjection
     addi r3, r1, 0x8
     bl fn_8002AE40
     addi r3, r1, 0x8
@@ -554,9 +554,9 @@ extern "C" asm void fn_8003D62C() {
     addi r3, r1, 0x8
     bl fn_8002AE3C
     mr r4, r30
-    bl fn_802E5644
+    bl GXLoadPosMtxImm
     mr r3, r30
-    bl fn_802E574C
+    bl GXSetCurrentMtx
     lwz r31, 0x8c(r1)
     lwz r30, 0x88(r1)
     lwz r0, 0x94(r1)
@@ -796,9 +796,9 @@ extern "C" asm void fn_8003D9FC() {
     stw r31, 0x1c(r1)
     mr r31, r3
     li r3, 0x0
-    bl fn_802E0FF8
+    bl GXSetNumTexGens
     li r3, 0x1
-    bl fn_802E2ED8
+    bl GXSetNumChans
     li r3, 0x1
     bl fn_802E4A28
     li r3, 0x0
@@ -810,7 +810,7 @@ extern "C" asm void fn_8003D9FC() {
     li r7, 0x0
     li r8, 0x0
     li r9, 0x2
-    bl fn_802E2EFC
+    bl GXSetChanCtrl
     li r3, 0x5
     li r4, 0x0
     li r5, 0x0
@@ -818,17 +818,17 @@ extern "C" asm void fn_8003D9FC() {
     li r7, 0x0
     li r8, 0x0
     li r9, 0x2
-    bl fn_802E2EFC
+    bl GXSetChanCtrl
     addi r4, r1, 0xc
     lwz r0, 0x0(r31)
     stw r0, 0xc(r1)
     li r3, 0x4
-    bl fn_802E2D28
+    bl GXSetChanAmbColor
     addi r4, r1, 0x8
     lwz r0, 0x0(r31)
     stw r0, 0x8(r1)
     li r3, 0x4
-    bl fn_802E2E00
+    bl GXSetChanMatColor
     li r3, 0x0
     li r4, 0xff
     li r5, 0xff
@@ -840,12 +840,12 @@ extern "C" asm void fn_8003D9FC() {
     li r3, 0x1
     li r4, 0x3
     li r5, 0x1
-    bl fn_802E4FA4
+    bl GXSetZMode
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
     li r6, 0x3
-    bl fn_802E4EFC
+    bl GXSetBlendMode
     lwz r31, 0x1c(r1)
     lwz r0, 0x24(r1)
     mtlr r0

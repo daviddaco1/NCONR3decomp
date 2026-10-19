@@ -77,14 +77,14 @@ extern "C" void fn_8017B074();
 extern "C" void fn_80181568();
 extern "C" void fn_801815D0();
 extern "C" void fn_80201F08();
-extern "C" void fn_802DFDF8();
-extern "C" void fn_802E0688();
-extern "C" void fn_802E06BC();
-extern "C" void fn_802E1ABC();
-extern "C" void fn_802E37E0();
-extern "C" void fn_802E5388();
-extern "C" void fn_802E5604();
-extern "C" void fn_802E5918();
+extern "C" void GXSetVtxDesc();
+extern "C" void GXClearVtxDesc();
+extern "C" void GXSetVtxAttrFmt();
+extern "C" void GXBegin();
+extern "C" void GXLoadTexObj();
+extern "C" void GXProject();
+extern "C" void GXGetProjectionv();
+extern "C" void GXGetViewportv();
 extern "C" void memset();
 
 // ----------------------------------------------------------------------------
@@ -771,35 +771,35 @@ lbl_8004F454:
     lwz r3, lbl_8049D6B0
     addi r3, r3, 0x4
     li r4, 0x0
-    bl fn_802E37E0
-    bl fn_802E0688
+    bl GXLoadTexObj
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xb
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xd
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0x0
     li r4, 0x9
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xb
     li r5, 0x1
     li r6, 0x5
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xd
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     mr r3, r31
     bl fn_8004F610
     b lbl_8004F5EC
@@ -809,58 +809,58 @@ lbl_8004F504:
     beq lbl_8004F598
     lwz r3, 0x10(r31)
     li r4, 0x0
-    bl fn_802E37E0
-    bl fn_802E0688
+    bl GXLoadTexObj
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xb
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xd
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0x0
     li r4, 0x9
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xb
     li r5, 0x1
     li r6, 0x5
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xd
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     mr r3, r31
     bl fn_8004F9CC
     b lbl_8004F5EC
 lbl_8004F598:
-    bl fn_802E0688
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xb
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0x0
     li r4, 0x9
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xb
     li r5, 0x1
     li r6, 0x5
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     mr r3, r31
     bl fn_8004FDE8
 lbl_8004F5EC:
@@ -907,9 +907,9 @@ extern "C" asm void fn_8004F610() {
     mr r4, r28
     bl fn_8017B004
     addi r3, r1, 0xb8
-    bl fn_802E5604
+    bl GXGetProjectionv
     addi r3, r1, 0x78
-    bl fn_802E5918
+    bl GXGetViewportv
     addi r3, r1, 0x128
     mr r4, r28
     bl fn_8017B074
@@ -924,7 +924,7 @@ extern "C" asm void fn_8004F610() {
     li r3, 0x98
     li r4, 0x0
     li r5, 0x3e
-    bl fn_802E1ABC
+    bl GXBegin
     li r31, 0x0
     li r29, 0x0
     lfd f29, lbl_8049EBC0
@@ -1027,7 +1027,7 @@ lbl_8004F72C:
     addi r6, r1, 0x18
     addi r7, r1, 0x14
     addi r8, r1, 0x10
-    bl fn_802E5388
+    bl GXProject
     lwz r3, 0x54(r28)
     lhz r0, 0xe(r3)
     stw r0, 0x164(r1)
@@ -1083,7 +1083,7 @@ lbl_8004F72C:
     addi r6, r1, 0x18
     addi r7, r1, 0x14
     addi r8, r1, 0x10
-    bl fn_802E5388
+    bl GXProject
     lwz r3, 0x54(r28)
     lhz r0, 0xe(r3)
     stw r0, 0x164(r1)
@@ -1170,7 +1170,7 @@ extern "C" asm void fn_8004F9CC() {
     li r3, 0x98
     li r4, 0x0
     li r5, 0x3e
-    bl fn_802E1ABC
+    bl GXBegin
     li r29, 0x0
     li r26, 0x0
     lfd f30, lbl_8049EBC0
@@ -1442,7 +1442,7 @@ extern "C" asm void fn_8004FDE8() {
     li r3, 0x98
     li r4, 0x0
     li r5, 0x3e
-    bl fn_802E1ABC
+    bl GXBegin
     li r31, 0x0
     li r29, 0x0
     lfd f30, lbl_8049EBC0

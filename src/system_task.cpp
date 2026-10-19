@@ -107,7 +107,7 @@ extern "C" void fn_80182518();
 extern "C" void fn_80182744();
 extern "C" void fn_80183D68();
 extern "C" void fn_8018EEC0();
-extern "C" void fn_8030DE28();
+extern "C" void PSQUATScale();
 extern "C" void fn_8030DE44();
 
 // ----------------------------------------------------------------------------
@@ -1877,7 +1877,7 @@ extern "C" asm void fn_800619B0() {
     addi r3, r1, 0x8
     mr r4, r3
     lfs f1, 0x28(r30)
-    bl fn_8030DE28
+    bl PSQUATScale
     lfs f1, 0x8(r1)
     lfs f0, 0x14(r1)
     fadds f0, f1, f0

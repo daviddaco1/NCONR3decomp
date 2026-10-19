@@ -31,8 +31,8 @@ extern "C" void fn_80044620();
 extern "C" void fn_80044680();
 extern "C" void fn_800447CC();
 extern "C" void fn_801A9384();
-extern "C" void fn_801EC748();
-extern "C" void fn_801EC76C();
+extern "C" void SetPriorityDrawOpa__Q34nw4r3g3d6ScnObjFi();
+extern "C" void SetPriorityDrawXlu__Q34nw4r3g3d6ScnObjFi();
 
 // ----------------------------------------------------------------------------
 // fn_800443B8
@@ -246,10 +246,10 @@ extern "C" asm void fn_80044620() {
     bl fn_800447CC
     mr r31, r3
     mr r4, r30
-    bl fn_801EC748
+    bl SetPriorityDrawOpa__Q34nw4r3g3d6ScnObjFi
     mr r3, r31
     mr r4, r30
-    bl fn_801EC76C
+    bl SetPriorityDrawXlu__Q34nw4r3g3d6ScnObjFi
     lwz r31, 0x1c(r1)
     lwz r30, 0x18(r1)
     lwz r0, 0x24(r1)

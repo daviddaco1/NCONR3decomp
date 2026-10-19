@@ -138,15 +138,15 @@ extern "C" void fn_800443B4();
 extern "C" void fn_801714F0();
 extern "C" void fn_801719B8();
 extern "C" void fn_801A9384();
-extern "C" void fn_801E2B5C();
-extern "C" void fn_801E8CF8();
-extern "C" void fn_801EDC60();
-extern "C" void fn_801EDCBC();
-extern "C" void fn_801EDCF8();
-extern "C" void fn_801EDD00();
-extern "C" void fn_801EDD5C();
-extern "C" void fn_801F4300();
-extern "C" void fn_801F4FF4();
+extern "C" void GetRenderModeObj__Q34nw4r3g3d8G3DStateFv();
+extern "C" void Init__Q34nw4r3g3d6CameraFv();
+extern "C" void GetCamera__Q34nw4r3g3d7ScnRootFi();
+extern "C" void GetCurrentCamera__Q34nw4r3g3d7ScnRootFv();
+extern "C" void SetCurrentCamera__Q34nw4r3g3d7ScnRootFi();
+extern "C" void GetFog__Q34nw4r3g3d7ScnRootFi();
+extern "C" void GetLightSet__Q34nw4r3g3d7ScnRootFi();
+extern "C" void Init__Q34nw4r3g3d3FogFv();
+extern "C" void SelectLightObj__Q34nw4r3g3d8LightSetFUli();
 
 // ----------------------------------------------------------------------------
 // fn_800389F8
@@ -509,7 +509,7 @@ extern "C" asm void fn_80038EB4() {
     mr r3, r30
     bl fn_8002ADF8
     mr r4, r31
-    bl fn_801EDC60
+    bl GetCamera__Q34nw4r3g3d7ScnRootFi
     stw r3, 0x50(r1)
     addi r3, r1, 0x78
     addi r4, r1, 0x50
@@ -914,7 +914,7 @@ extern "C" asm void fn_8003946C() {
     mr r4, r3
     addi r3, r1, 0x8
     mr r5, r29
-    bl fn_801EDD5C
+    bl GetLightSet__Q34nw4r3g3d7ScnRootFi
     addi r3, r1, 0x8
     bl fn_80039EE8
     cmpwi r3, 0x0
@@ -922,7 +922,7 @@ extern "C" asm void fn_8003946C() {
     addi r3, r1, 0x8
     mr r4, r30
     mr r5, r31
-    bl fn_801F4FF4
+    bl SelectLightObj__Q34nw4r3g3d8LightSetFUli
     b lbl_800394CC
 lbl_800394C8:
     li r3, 0x0
@@ -955,13 +955,13 @@ extern "C" asm void fn_800394E4() {
     bl fn_800389F8
     bl fn_8002ADF8
     mr r4, r29
-    bl fn_801EDD00
+    bl GetFog__Q34nw4r3g3d7ScnRootFi
     stw r3, 0xc(r1)
     addi r3, r1, 0x10
     addi r4, r1, 0xc
     bl fn_8003A130
     addi r3, r1, 0x10
-    bl fn_801F4300
+    bl Init__Q34nw4r3g3d3FogFv
     addi r3, r1, 0x10
     mr r4, r30
     bl fn_8003A0B8
@@ -1082,16 +1082,16 @@ lbl_800396D4:
     bl fn_8002ADF8
     mr r31, r3
     li r4, 0x0
-    bl fn_801EDCF8
+    bl SetCurrentCamera__Q34nw4r3g3d7ScnRootFi
     mr r3, r31
-    bl fn_801EDCBC
+    bl GetCurrentCamera__Q34nw4r3g3d7ScnRootFv
     stw r3, 0x8(r1)
     addi r3, r1, 0xc
     addi r4, r1, 0x8
     bl fn_8002AFB4
     addi r3, r1, 0xc
-    bl fn_801E8CF8
-    bl fn_801E2B5C
+    bl Init__Q34nw4r3g3d6CameraFv
+    bl GetRenderModeObj__Q34nw4r3g3d8G3DStateFv
     mr r6, r3
     li r3, 0x8
     li r4, 0x1

@@ -149,46 +149,46 @@ extern "C" void __throw();
 extern "C" void strcmp();
 extern "C" void fn_801A9384();
 extern "C" void fn_801CEA04();
-extern "C" void fn_801D127C();
-extern "C" void fn_801D12D0();
-extern "C" void fn_801D2A80();
+extern "C" void GetResNode__Q34nw4r3g3d6ResMdlCFUl();
+extern "C" void GetResNodeNumEntries__Q34nw4r3g3d6ResMdlCFv();
+extern "C" void GetTexObj__Q34nw4r3g3d9ResTexObjF11_GXTexMapID();
 extern "C" void fn_801D2AF8();
-extern "C" void fn_801D2DBC();
-extern "C" void fn_801D2E38();
-extern "C" void fn_801D3A00();
-extern "C" void fn_801D3AA8();
-extern "C" void fn_801E258C();
-extern "C" void fn_801E28C4();
+extern "C" void SetEffectMtx__Q34nw4r3g3d9ResTexSrtFUlPCQ34nw4r4math5MTX34();
+extern "C" void SetMapMode__Q34nw4r3g3d9ResTexSrtFUlUlii();
+extern "C" void GXSetChanMatColor__Q34nw4r3g3d10ResMatChanF12_GXChannelID8_GXColor();
+extern "C" void GXGetChanMatColor__Q34nw4r3g3d10ResMatChanCF12_GXChannelIDP8_GXColor();
+extern "C" void SetScnDependentTexMtxFunc__Q34nw4r3g3d8G3DStateFUlPFPQ34nw4r4math5MTX34ScSc_vQ44nw4r3g3d8G3DState26ScnDependentTexMtxFuncType();
+extern "C" void GetInvCameraMtxPtr__Q34nw4r3g3d8G3DStateFv();
 extern "C" void fn_801E292C();
-extern "C" void fn_801E2B68();
-extern "C" void fn_801E8CF0();
-extern "C" void fn_801E8E8C();
-extern "C" void fn_801E8EC0();
-extern "C" void fn_801E90E0();
-extern "C" void fn_801E9194();
-extern "C" void fn_801E91CC();
-extern "C" void fn_801E920C();
-extern "C" void fn_801E9244();
-extern "C" void fn_801F13C4();
-extern "C" void fn_801F149C();
-extern "C" void fn_80201B88();
-extern "C" void fn_802DFDF8();
-extern "C" void fn_802E0688();
-extern "C" void fn_802E06BC();
-extern "C" void fn_802E0DD0();
-extern "C" void fn_802E0FF8();
+extern "C" void Invalidate__Q34nw4r3g3d8G3DStateFUl();
+extern "C" void __ct__Q34nw4r3g3d6CameraFPQ34nw4r3g3d10CameraData();
+extern "C" void SetPosition__Q34nw4r3g3d6CameraFRCQ34nw4r4math4VEC3();
+extern "C" void SetPosture__Q34nw4r3g3d6CameraFRCQ44nw4r3g3d6Camera11PostureInfo();
+extern "C" void LogMsg();
+extern "C" void SetPerspective__Q34nw4r3g3d6CameraFffff();
+extern "C" void SetOrtho__Q34nw4r3g3d6CameraFffffff();
+extern "C" void SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl();
+extern "C" void SetViewport__Q34nw4r3g3d6CameraFffff();
+extern "C" void GetResGenMode__Q44nw4r3g3d6ScnMdl15CopiedMatAccessFb();
+extern "C" void __ct__Q44nw4r3g3d6ScnMdl15CopiedMatAccessFPQ34nw4r3g3d6ScnMdlUl();
+extern "C" void MTX34Zero__Q24nw4r4mathFPQ34nw4r4math5MTX34();
+extern "C" void GXSetVtxDesc();
+extern "C" void GXClearVtxDesc();
+extern "C" void GXSetVtxAttrFmt();
+extern "C" void GXSetTexCoordGen2();
+extern "C" void GXSetNumTexGens();
 extern "C" void fn_802E1450();
 extern "C" void fn_802E151C();
-extern "C" void fn_802E1ABC();
-extern "C" void fn_802E1DA0();
-extern "C" void fn_802E2348();
-extern "C" void fn_802E2ED8();
-extern "C" void fn_802E3184();
-extern "C" void fn_802E353C();
-extern "C" void fn_802E3550();
-extern "C" void fn_802E3564();
-extern "C" void fn_802E37E0();
-extern "C" void fn_802E39C4();
+extern "C" void GXBegin();
+extern "C" void GXSetCullMode();
+extern "C" void GXSetCopyClear();
+extern "C" void GXSetNumChans();
+extern "C" void GXInitTexObj();
+extern "C" void GXGetTexObjWidth();
+extern "C" void GXGetTexObjHeight();
+extern "C" void GXGetTexObjFmt();
+extern "C" void GXLoadTexObj();
+extern "C" void GXInvalidateTexAll();
 extern "C" void fn_802E430C();
 extern "C" void fn_802E432C();
 extern "C" void fn_802E4460();
@@ -201,14 +201,14 @@ extern "C" void fn_802E4750();
 extern "C" void fn_802E4808();
 extern "C" void fn_802E48CC();
 extern "C" void fn_802E4A28();
-extern "C" void fn_802E4EFC();
-extern "C" void fn_802E4F4C();
-extern "C" void fn_802E4F78();
-extern "C" void fn_802E4FA4();
-extern "C" void fn_802E50B0();
-extern "C" void fn_802E50DC();
-extern "C" void fn_802E576C();
-extern "C" void fn_8030CCA0();
+extern "C" void GXSetBlendMode();
+extern "C" void GXSetColorUpdate();
+extern "C" void GXSetAlphaUpdate();
+extern "C" void GXSetZMode();
+extern "C" void GXSetDither();
+extern "C" void GXSetDstAlpha();
+extern "C" void GXLoadTexMtxImm();
+extern "C" void PSMTXConcat();
 
 // ----------------------------------------------------------------------------
 // fn_8003A194
@@ -731,7 +731,7 @@ lbl_8003A888:
     bl fn_801A9384
 lbl_8003A8AC:
     mr r3, r31
-    bl fn_802E353C
+    bl GXGetTexObjWidth
     clrlwi r0, r3, 16
     cmplwi r0, 0x100
     beq lbl_8003A8E0
@@ -995,7 +995,7 @@ lbl_8003ABF4:
     clrlwi r0, r31, 24
     cmplwi r0, 0x1f
     bgt lbl_8003AC2C
-    bl fn_801E28C4
+    bl GetInvCameraMtxPtr__Q34nw4r3g3d8G3DStateFv
     mr r29, r3
     extsb r3, r31
     bl fn_801E292C
@@ -1035,7 +1035,7 @@ extern "C" asm void fn_8003AC4C() {
     addi r4, r1, 0x10
     bl fn_8002E628
     addi r3, r1, 0x1c
-    bl fn_801D12D0
+    bl GetResNodeNumEntries__Q34nw4r3g3d6ResMdlCFv
     mr r28, r3
     li r26, 0x0
     clrlwi r0, r27, 16
@@ -1049,7 +1049,7 @@ lbl_8003ACAC:
     addi r3, r1, 0x20
     mr r4, r24
     mr r5, r26
-    bl fn_801F149C
+    bl __ct__Q44nw4r3g3d6ScnMdl15CopiedMatAccessFPQ34nw4r3g3d6ScnMdlUl
     addi r3, r1, 0x20
     bl fn_8003CFD4
     cmpwi r3, 0x0
@@ -1062,7 +1062,7 @@ lbl_8003ACAC:
 lbl_8003ACE0:
     addi r3, r1, 0x20
     li r4, 0x0
-    bl fn_801F13C4
+    bl GetResGenMode__Q44nw4r3g3d6ScnMdl15CopiedMatAccessFb
     stw r3, 0xc(r1)
     addi r3, r1, 0x18
     addi r4, r1, 0xc
@@ -1070,7 +1070,7 @@ lbl_8003ACE0:
     addi r3, r1, 0x18
     li r4, 0x0
     addi r5, r1, 0x14
-    bl fn_801D3AA8
+    bl GXGetChanMatColor__Q34nw4r3g3d10ResMatChanCF12_GXChannelIDP8_GXColor
     stb r27, 0x15(r1)
     cmpwi r25, 0x0
     beq lbl_8003AD20
@@ -1084,7 +1084,7 @@ lbl_8003AD24:
     addi r3, r1, 0x18
     li r4, 0x0
     addi r5, r1, 0x8
-    bl fn_801D3A00
+    bl GXSetChanMatColor__Q34nw4r3g3d10ResMatChanF12_GXChannelID8_GXColor
     addi r3, r1, 0x18
     bl fn_80030E40
     addi r26, r26, 0x1
@@ -1141,7 +1141,7 @@ lbl_8003ADEC:
     lfs f31, 0x10(r31)
 lbl_8003ADF0:
     mr r3, r30
-    bl fn_80201B88
+    bl MTX34Zero__Q24nw4r4mathFPQ34nw4r4math5MTX34
     lwz r3, 0xa0(r29)
     lwz r0, 0xa8(r3)
     cmpwi r0, 0x0
@@ -1220,16 +1220,16 @@ extern "C" asm void fn_8003AEBC() {
     beq lbl_8003B078
     addi r3, r1, 0x8
     lwz r4, 0xa0(r5)
-    bl fn_801E8CF0
+    bl __ct__Q34nw4r3g3d6CameraFPQ34nw4r3g3d10CameraData
     addi r29, r28, 0x10
     addi r3, r1, 0x8
     mr r4, r29
-    bl fn_801E8E8C
+    bl SetPosition__Q34nw4r3g3d6CameraFRCQ34nw4r4math4VEC3
     addi r3, r1, 0xc
     bl fn_8002AF70
     addi r3, r1, 0x8
     addi r4, r1, 0xc
-    bl fn_801E90E0
+    bl LogMsg
     li r0, 0x0
     stw r0, 0xc(r1)
     lfs f0, 0x18(r29)
@@ -1252,14 +1252,14 @@ extern "C" asm void fn_8003AEBC() {
     stfs f0, 0x34(r1)
     addi r3, r1, 0x8
     addi r4, r1, 0xc
-    bl fn_801E8EC0
+    bl SetPosture__Q34nw4r3g3d6CameraFRCQ44nw4r3g3d6Camera11PostureInfo
     lwz r3, 0x4(r28)
     bl fn_8002B99C
     mr r31, r3
-    bl fn_802E353C
+    bl GXGetTexObjWidth
     mr r30, r3
     mr r3, r31
-    bl fn_802E3550
+    bl GXGetTexObjHeight
     mr r31, r3
     lwz r0, 0x0(r28)
     rlwinm r0, r0, 0, 30, 30
@@ -1279,7 +1279,7 @@ extern "C" asm void fn_8003AEBC() {
     fdivs f2, f2, f0
     lfs f3, 0x28(r29)
     lfs f4, 0x2c(r29)
-    bl fn_801E9194
+    bl SetPerspective__Q34nw4r3g3d6CameraFffff
     b lbl_8003B018
 lbl_8003AFF8:
     addi r3, r1, 0x8
@@ -1289,7 +1289,7 @@ lbl_8003AFF8:
     fneg f3, f4
     lfs f5, 0x28(r29)
     lfs f6, 0x2c(r29)
-    bl fn_801E91CC
+    bl SetOrtho__Q34nw4r3g3d6CameraFffffff
 lbl_8003B018:
     addi r3, r1, 0x8
     la r4, lbl_8049E8E4
@@ -1304,7 +1304,7 @@ lbl_8003B018:
     stw r0, 0x44(r1)
     lfd f0, 0x40(r1)
     fsubs f4, f0, f4
-    bl fn_801E9244
+    bl SetViewport__Q34nw4r3g3d6CameraFffff
     addi r3, r1, 0x8
     li r4, 0x2
     li r5, 0x2
@@ -1312,7 +1312,7 @@ lbl_8003B018:
     subi r6, r6, 0x4
     clrlwi r7, r31, 16
     subi r7, r7, 0x4
-    bl fn_801E920C
+    bl SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl
     li r3, 0x1
     b lbl_8003B094
 lbl_8003B078:
@@ -1366,18 +1366,18 @@ lbl_8003B0FC:
     cmpwi r27, 0x0
     beq lbl_8003B21C
     li r3, 0x1
-    bl fn_802E4F78
+    bl GXSetAlphaUpdate
     li r3, 0x0
     li r4, 0x0
-    bl fn_802E50DC
+    bl GXSetDstAlpha
     mr r3, r27
     bl fn_8002B99C
     mr r25, r3
-    bl fn_802E353C
+    bl GXGetTexObjWidth
     clrlwi r0, r3, 16
     slwi r26, r0, 2
     mr r3, r25
-    bl fn_802E3550
+    bl GXGetTexObjHeight
     clrlwi r0, r3, 16
     mullw r26, r0, r26
     mr r3, r27
@@ -1385,7 +1385,7 @@ lbl_8003B0FC:
     mr r4, r26
     bl DCInvalidateRange
     mr r3, r25
-    bl fn_802E3564
+    bl GXGetTexObjFmt
     mr r4, r3
     mr r3, r27
     li r5, 0x0
@@ -1407,10 +1407,10 @@ lbl_8003B0FC:
     mr r3, r25
     bl fn_8002B99C
     mr r27, r3
-    bl fn_802E353C
+    bl GXGetTexObjWidth
     mr r26, r3
     mr r3, r27
-    bl fn_802E3550
+    bl GXGetTexObjHeight
     mr r27, r3
     mr r3, r25
     bl fn_8002B9A4
@@ -1441,11 +1441,11 @@ lbl_8003B21C:
     mr r3, r26
     bl fn_8002B99C
     mr r25, r3
-    bl fn_802E353C
+    bl GXGetTexObjWidth
     clrlwi r0, r3, 16
     mullw r28, r30, r0
     mr r3, r25
-    bl fn_802E3550
+    bl GXGetTexObjHeight
     clrlwi r0, r3, 16
     mullw r28, r0, r28
     mr r3, r26
@@ -1460,7 +1460,7 @@ lbl_8003B21C:
     bl fn_80035050
     bl fn_802E151C
     bl fn_802E1450
-    bl fn_802E39C4
+    bl GXInvalidateTexAll
     li r3, 0x1
     b lbl_8003B29C
 lbl_8003B298:
@@ -1515,15 +1515,15 @@ extern "C" asm void fn_8003B2B4() {
     cmpwi r28, 0x0
     beq lbl_8003BCBC
     li r3, 0x7ff
-    bl fn_801E2B68
+    bl Invalidate__Q34nw4r3g3d8G3DStateFUl
     li r3, 0x1
-    bl fn_802E50B0
+    bl GXSetDither
     li r3, 0x0
-    bl fn_802E4F4C
+    bl GXSetColorUpdate
     li r3, 0x0
     bl fn_8003D62C
     li r3, 0x0
-    bl fn_802E2ED8
+    bl GXSetNumChans
     li r3, 0x0
     bl fn_802E430C
     li r3, 0x0
@@ -1539,9 +1539,9 @@ extern "C" asm void fn_8003B2B4() {
     mr r3, r28
     bl fn_8002B99C
     li r4, 0x0
-    bl fn_802E37E0
+    bl GXLoadTexObj
     li r3, 0x5
-    bl fn_802E0FF8
+    bl GXSetNumTexGens
     li r3, 0x0
     li r4, 0x1
     li r5, 0x4
@@ -1772,7 +1772,7 @@ extern "C" asm void fn_8003B2B4() {
     li r8, 0x0
     bl fn_802E4538
     li r3, 0x1
-    bl fn_802E4F78
+    bl GXSetAlphaUpdate
     li r3, 0x7
     li r4, 0x0
     li r5, 0x0
@@ -1781,44 +1781,44 @@ extern "C" asm void fn_8003B2B4() {
     bl fn_802E4808
     li r3, 0x0
     li r4, 0x0
-    bl fn_802E50DC
+    bl GXSetDstAlpha
     li r3, 0x2
-    bl fn_802E1DA0
+    bl GXSetCullMode
     li r3, 0x0
     li r4, 0x3
     li r5, 0x0
-    bl fn_802E4FA4
+    bl GXSetZMode
     li r3, 0x0
     li r4, 0x1
     li r5, 0x0
     li r6, 0x3
-    bl fn_802E4EFC
-    bl fn_802E0688
+    bl GXSetBlendMode
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xd
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0x0
     li r4, 0x9
     li r5, 0x0
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xd
     li r5, 0x1
     li r6, 0x0
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     mr r3, r28
     bl fn_8002B99C
     mr r30, r3
-    bl fn_802E353C
+    bl GXGetTexObjWidth
     mr r29, r3
     mr r3, r30
-    bl fn_802E3550
+    bl GXGetTexObjHeight
     mr r30, r3
     mr r3, r28
     bl fn_8002B9A4
@@ -1855,13 +1855,13 @@ extern "C" asm void fn_8003B2B4() {
     addi r3, r1, 0x10
     li r4, 0x1e
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fdivs f0, f29, f31
     stfs f0, 0x1c(r1)
     addi r3, r1, 0x10
     li r4, 0x21
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     lfs f0, 0x8(r30)
     fadds f29, f29, f0
     fneg f0, f29
@@ -1870,17 +1870,17 @@ extern "C" asm void fn_8003B2B4() {
     addi r3, r1, 0x10
     li r4, 0x24
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fdivs f0, f29, f31
     stfs f0, 0x1c(r1)
     addi r3, r1, 0x10
     li r4, 0x27
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, 0x4(r30)
     fmr f2, f1
     bl fn_8003D194
@@ -1921,13 +1921,13 @@ extern "C" asm void fn_8003B2B4() {
     addi r3, r1, 0x10
     li r4, 0x1e
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fdivs f0, f29, f30
     stfs f0, 0x2c(r1)
     addi r3, r1, 0x10
     li r4, 0x21
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     lfs f0, 0x8(r30)
     fadds f29, f29, f0
     fneg f0, f29
@@ -1936,17 +1936,17 @@ extern "C" asm void fn_8003B2B4() {
     addi r3, r1, 0x10
     li r4, 0x24
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     fdivs f0, f29, f30
     stfs f0, 0x2c(r1)
     addi r3, r1, 0x10
     li r4, 0x27
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, 0x4(r30)
     fmr f2, f1
     bl fn_8003D194
@@ -1979,11 +1979,11 @@ extern "C" asm void fn_8003B2B4() {
     li r7, 0x0
     bl fn_80035050
     bl fn_802E151C
-    bl fn_802E39C4
+    bl GXInvalidateTexAll
     li r3, 0x0
-    bl fn_802E50B0
+    bl GXSetDither
     li r3, 0x1
-    bl fn_802E0FF8
+    bl GXSetNumTexGens
     li r3, 0x0
     li r4, 0x1
     li r5, 0x4
@@ -2028,7 +2028,7 @@ extern "C" asm void fn_8003B2B4() {
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, 0x4(r30)
     fmr f2, f1
     bl fn_8003D194
@@ -2055,17 +2055,17 @@ extern "C" asm void fn_8003B2B4() {
     bl fn_8003D17C
     bl fn_8003D16C
     li r3, 0x1
-    bl fn_802E4F4C
+    bl GXSetColorUpdate
     li r3, 0x0
-    bl fn_802E4F78
+    bl GXSetAlphaUpdate
     mr r3, r31
     bl fn_8002B99C
     li r4, 0x0
-    bl fn_802E37E0
+    bl GXLoadTexObj
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, 0x4(r30)
     fmr f2, f1
     bl fn_8003D194
@@ -2094,11 +2094,11 @@ extern "C" asm void fn_8003B2B4() {
     mr r3, r31
     bl fn_8002B99C
     mr r29, r3
-    bl fn_802E353C
+    bl GXGetTexObjWidth
     clrlwi r0, r3, 16
     slwi r30, r0, 2
     mr r3, r29
-    bl fn_802E3550
+    bl GXGetTexObjHeight
     clrlwi r0, r3, 16
     mullw r30, r0, r30
     mr r3, r31
@@ -2106,7 +2106,7 @@ extern "C" asm void fn_8003B2B4() {
     mr r4, r30
     bl DCInvalidateRange
     mr r3, r29
-    bl fn_802E3564
+    bl GXGetTexObjFmt
     mr r4, r3
     mr r3, r31
     li r5, 0x0
@@ -2114,11 +2114,11 @@ extern "C" asm void fn_8003B2B4() {
     li r7, 0x0
     bl fn_80035050
     bl fn_802E151C
-    bl fn_802E39C4
+    bl GXInvalidateTexAll
     li r3, 0x4
-    bl fn_801E2B68
+    bl Invalidate__Q34nw4r3g3d8G3DStateFUl
     li r3, 0x1
-    bl fn_802E50B0
+    bl GXSetDither
     li r3, 0x1
     b lbl_8003BCC0
 lbl_8003BCBC:
@@ -2267,13 +2267,13 @@ lbl_8003BE9C:
     addi r3, r1, 0x14
     mr r4, r31
     mr r5, r30
-    bl fn_801D2DBC
+    bl SetEffectMtx__Q34nw4r3g3d9ResTexSrtFUlPCQ34nw4r4math5MTX34
     addi r3, r1, 0x14
     mr r4, r31
     li r5, 0x20
     li r6, 0x1
     li r7, -0x1
-    bl fn_801D2E38
+    bl SetMapMode__Q34nw4r3g3d9ResTexSrtFUlUlii
     addi r3, r1, 0x14
     bl fn_80030E30
 lbl_8003BECC:
@@ -2422,7 +2422,7 @@ lbl_8003C0AC:
 lbl_8003C0B0:
     mr r3, r29
     mr r4, r30
-    bl fn_801D2A80
+    bl GetTexObj__Q34nw4r3g3d9ResTexObjF11_GXTexMapID
     mr r4, r31
     bl fn_8003C0E8
     mr r3, r29
@@ -2493,14 +2493,14 @@ lbl_8003C174:
     addi r4, r1, 0xc
     bl fn_8002E628
     addi r3, r1, 0x10
-    bl fn_801D12D0
+    bl GetResNodeNumEntries__Q34nw4r3g3d6ResMdlCFv
     mr r27, r3
     li r26, 0x0
     b lbl_8003C220
 lbl_8003C1A0:
     addi r3, r1, 0x10
     mr r4, r26
-    bl fn_801D127C
+    bl GetResNode__Q34nw4r3g3d6ResMdlCFUl
     stw r3, 0x8(r1)
     mr r3, r24
     bl fn_8003D040
@@ -2577,14 +2577,14 @@ extern "C" asm void fn_8003C244() {
     addi r4, r1, 0x14
     bl fn_8002E628
     addi r3, r1, 0x1c
-    bl fn_801D12D0
+    bl GetResNodeNumEntries__Q34nw4r3g3d6ResMdlCFv
     mr r31, r3
     li r25, 0x0
     b lbl_8003C32C
 lbl_8003C2CC:
     addi r3, r1, 0x1c
     mr r4, r25
-    bl fn_801D127C
+    bl GetResNode__Q34nw4r3g3d6ResMdlCFUl
     stw r3, 0x10(r1)
     addi r3, r1, 0x18
     addi r4, r1, 0x10
@@ -2636,7 +2636,7 @@ extern "C" asm void fn_8003C34C() {
     addi r3, r1, 0x8
     lis r4, 0x100
     subi r4, r4, 0x1
-    bl fn_802E2348
+    bl GXSetCopyClear
 lbl_8003C384:
     lwz r0, 0x14(r1)
     mtlr r0
@@ -2662,7 +2662,7 @@ extern "C" asm void fn_8003C394() {
     addi r3, r1, 0x8
     lis r4, 0x100
     subi r4, r4, 0x1
-    bl fn_802E2348
+    bl GXSetCopyClear
 lbl_8003C3CC:
     lwz r0, 0x14(r1)
     mtlr r0
@@ -3117,7 +3117,7 @@ lbl_8003C9D8:
     lis r4, fn_8003AAF0@ha
     addi r4, r4, fn_8003AAF0@l
     li r5, 0x2
-    bl fn_801E258C
+    bl SetScnDependentTexMtxFunc__Q34nw4r3g3d8G3DStateFUlPFPQ34nw4r4math5MTX34ScSc_vQ44nw4r3g3d8G3DState26ScnDependentTexMtxFuncType
     addi r3, r23, 0x24
     addi r4, r23, 0x60
     li r5, 0x4
@@ -3126,7 +3126,7 @@ lbl_8003C9D8:
     li r8, 0x0
     li r9, 0x0
     li r10, 0x0
-    bl fn_802E3184
+    bl GXInitTexObj
     mr r3, r23
     addi r11, r1, 0x30
     bl _restgpr_23
@@ -3697,7 +3697,7 @@ extern "C" asm void fn_8003CF70() {
     bl fn_80018B90
     mr r4, r31
     mr r5, r30
-    bl fn_8030CCA0
+    bl PSMTXConcat
     mr r3, r28
     addi r11, r1, 0x20
     bl _restgpr_28
@@ -3728,7 +3728,7 @@ extern "C" asm void fn_8003CFE4() {
     stw r0, 0x14(r1)
     lwz r3, 0x8(r3)
     bl fn_8002B99C
-    bl fn_802E3564
+    bl GXGetTexObjFmt
     subi r3, r3, 0x1
     subic r0, r3, 0x1
     subfe r3, r0, r3
@@ -3887,7 +3887,7 @@ extern "C" asm void fn_8003D170() {
     nofralloc
     li r7, 0x0
     li r8, 0x7d
-    b fn_802E0DD0
+    b GXSetTexCoordGen2
 }
 
 // ----------------------------------------------------------------------------

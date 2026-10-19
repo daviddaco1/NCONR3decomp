@@ -269,6 +269,8 @@ cflags_mslc = lib_cflags(
     "-ipa file", "-func_align 4",
 )
 cflags_trk = lib_cflags("-use_lmw_stmw on", "-inline on", "-func_align 4", "-str reuse,pool")
+cflags_sdk = lib_cflags("-lang=c", "-inline auto", "-ipa file", "-fp_contract off", "-func_align 16")
+cflags_nw4r = lib_cflags("-i libs/nw4r/include", "-inline auto", "-ipa file", "-fp_contract off", "-func_align 4")
 
 # REL flags
 cflags_rel = [

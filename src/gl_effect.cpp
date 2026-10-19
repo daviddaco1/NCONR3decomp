@@ -357,59 +357,59 @@ extern "C" void fn_801B8E24();
 extern "C" void fn_801B9068();
 extern "C" void fn_801B9108();
 extern "C" void fn_801B916C();
-extern "C" void fn_801B920C();
-extern "C" void fn_801BA190();
-extern "C" void fn_801BA1A0();
-extern "C" void fn_801BA1B4();
-extern "C" void fn_801BA1DC();
-extern "C" void fn_801BA208();
+extern "C" void AXFXReverbHiSettings();
+extern "C" void __ct__Q34nw4r2ef10HandleBaseFv();
+extern "C" void __as__Q34nw4r2ef10HandleBaseFRCQ34nw4r2ef10HandleBase();
+extern "C" void __as__Q34nw4r2ef10HandleBaseFPQ34nw4r2ef12LinkedObject();
+extern "C" void IsValid__Q34nw4r2ef10HandleBaseCFv();
+extern "C" void GetPtr__Q34nw4r2ef10HandleBaseCFv();
 extern "C" void fn_801CE9C4();
 extern "C" void fn_801CE9D4();
 extern "C" void fn_801CE9EC();
 extern "C" void fn_801CE9F8();
-extern "C" void fn_801CFA28();
-extern "C" void fn_801E2B68();
-extern "C" void fn_801E93B8();
-extern "C" void fn_801EDC60();
-extern "C" void fn_801EDCBC();
-extern "C" void fn_801EDD00();
-extern "C" void fn_801F43C4();
+extern "C" void GetResAnmScnNumEntries__Q34nw4r3g3d7ResFileCFv();
+extern "C" void Invalidate__Q34nw4r3g3d8G3DStateFUl();
+extern "C" void GetCameraMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX34();
+extern "C" void GetCamera__Q34nw4r3g3d7ScnRootFi();
+extern "C" void GetCurrentCamera__Q34nw4r3g3d7ScnRootFv();
+extern "C" void GetFog__Q34nw4r3g3d7ScnRootFi();
+extern "C" void GetFog__Q34nw4r3g3d3FogFP10_GXFogTypePfPfPfPfP8_GXColor();
 extern "C" void fn_80201A84();
 extern "C" void fn_80201AA8();
-extern "C" void fn_8020B99C();
-extern "C" void fn_80213774();
+extern "C" void Close__Q34nw4r3snd15DvdSoundArchiveFv();
+extern "C" void IsAvailable__Q34nw4r3snd12SoundArchiveCFv();
 extern "C" void fn_802156E4();
-extern "C" void fn_80215804();
-extern "C" void fn_80217DE4();
-extern "C" void fn_80217E5C();
+extern "C" void Shutdown__Q34nw4r3snd18SoundArchivePlayerFv();
+extern "C" void Destroy__Q34nw4r3snd9SoundHeapFv();
+extern "C" void Clear__Q34nw4r3snd9SoundHeapFv();
 extern "C" void fn_80218B14();
 extern "C" void fn_80218B94();
-extern "C" void fn_80222BAC();
-extern "C" void fn_80222BC4();
-extern "C" void fn_80222D54();
-extern "C" void fn_80222DC0();
-extern "C" void fn_80222DE0();
-extern "C" void fn_8029AC1C();
-extern "C" void fn_8029AD3C();
-extern "C" void fn_8029AD58();
-extern "C" void fn_8029BB20();
-extern "C" void fn_8029BB74();
-extern "C" void fn_802DFDF8();
-extern "C" void fn_802E0688();
-extern "C" void fn_802E06BC();
-extern "C" void fn_802E0DC0();
-extern "C" void fn_802E0DD0();
-extern "C" void fn_802E0FF8();
-extern "C" void fn_802E1ABC();
-extern "C" void fn_802E1CE0();
-extern "C" void fn_802E1D30();
-extern "C" void fn_802E1D64();
-extern "C" void fn_802E1DA0();
+extern "C" void List_Init__Q24nw4r2utFPQ34nw4r2ut4ListUs();
+extern "C" void List_Append__Q24nw4r2utFPQ34nw4r2ut4ListPv();
+extern "C" void List_Remove__Q24nw4r2utFPQ34nw4r2ut4ListPv();
+extern "C" void List_GetNext__Q24nw4r2utFPCQ34nw4r2ut4ListPCv();
+extern "C" void List_GetPrev__Q24nw4r2utFPCQ34nw4r2ut4ListPCv();
+extern "C" void AIRegisterDMACallback();
+extern "C" void GetFont__Q34nw4r3lyt7TextBoxCFv();
+extern "C" void AIInit();
+extern "C" void AXInit();
+extern "C" void AXQuit();
+extern "C" void GXSetVtxDesc();
+extern "C" void GXClearVtxDesc();
+extern "C" void GXSetVtxAttrFmt();
+extern "C" void GXInvalidateVtxCache();
+extern "C" void GXSetTexCoordGen2();
+extern "C" void GXSetNumTexGens();
+extern "C" void GXBegin();
+extern "C" void GXSetLineWidth();
+extern "C" void GXSetPointSize();
+extern "C" void GXEnableTexOffsets();
+extern "C" void GXSetCullMode();
 extern "C" void fn_802E1DE4();
-extern "C" void fn_802E2ED8();
-extern "C" void fn_802E2EFC();
-extern "C" void fn_802E37E0();
-extern "C" void fn_802E39C4();
+extern "C" void GXSetNumChans();
+extern "C" void GXSetChanCtrl();
+extern "C" void GXLoadTexObj();
+extern "C" void GXInvalidateTexAll();
 extern "C" void fn_802E430C();
 extern "C" void fn_802E432C();
 extern "C" void fn_802E43CC();
@@ -418,28 +418,28 @@ extern "C" void fn_802E44A0();
 extern "C" void fn_802E44E0();
 extern "C" void fn_802E4538();
 extern "C" void fn_802E4750();
-extern "C" void fn_802E478C();
+extern "C" void GXSetTexCoordScaleManually();
 extern "C" void fn_802E4808();
 extern "C" void fn_802E4840();
 extern "C" void fn_802E48CC();
 extern "C" void fn_802E4A28();
-extern "C" void fn_802E4A4C();
-extern "C" void fn_802E4DD8();
-extern "C" void fn_802E4EFC();
-extern "C" void fn_802E4F4C();
-extern "C" void fn_802E4F78();
-extern "C" void fn_802E4FA4();
-extern "C" void fn_802E4FD8();
-extern "C" void fn_802E50DC();
+extern "C" void GXSetFog();
+extern "C" void GXSetFogRangeAdj();
+extern "C" void GXSetBlendMode();
+extern "C" void GXSetColorUpdate();
+extern "C" void GXSetAlphaUpdate();
+extern "C" void GXSetZMode();
+extern "C" void GXSetZCompLoc();
+extern "C" void GXSetDstAlpha();
 extern "C" void fn_802E51B0();
-extern "C" void fn_802E5264();
-extern "C" void fn_802E5314();
-extern "C" void fn_802E5554();
-extern "C" void fn_802E574C();
-extern "C" void fn_802E576C();
-extern "C" void fn_802E59DC();
-extern "C" void fn_8030C478();
-extern "C" void fn_8030D448();
+extern "C" void GXBeginDisplayList();
+extern "C" void GXCallDisplayList();
+extern "C" void GXSetProjection();
+extern "C" void GXSetCurrentMtx();
+extern "C" void GXLoadTexMtxImm();
+extern "C" void GXSetClipMode();
+extern "C" void MEMDestroyExpHeap();
+extern "C" void C_MTXLookAt();
 extern "C" void fn_8030DA54();
 extern "C" void fn_8031C828();
 extern "C" void fn_8031CDF0();
@@ -997,7 +997,7 @@ extern "C" asm void fn_801872F0() {
     bl fn_80016E44
     addi r3, r1, 0x8
     mr r4, r31
-    bl fn_801CFA28
+    bl GetResAnmScnNumEntries__Q34nw4r3g3d7ResFileCFv
     lwz r31, 0x1c(r1)
     lwz r0, 0x24(r1)
     mtlr r0
@@ -1769,7 +1769,7 @@ extern "C" asm void fn_80187D60() {
     mr r31, r3
     bl fn_801B9108
     mr r3, r31
-    bl fn_801B920C
+    bl AXFXReverbHiSettings
 lbl_80187D90:
     lwz r31, 0xc(r1)
     lwz r0, 0x14(r1)
@@ -1811,8 +1811,8 @@ extern "C" asm void fn_80187DA4() {
     bl fn_801B8B8C
     mr r3, r31
     bl fn_801B8E24
-    bl fn_802E0DC0
-    bl fn_802E39C4
+    bl GXInvalidateVtxCache
+    bl GXInvalidateTexAll
 lbl_80187E28:
     addi r11, r1, 0x20
     bl _restgpr_29
@@ -1943,8 +1943,8 @@ extern "C" asm void fn_80187FB8() {
     bl fn_801B866C
     bl fn_801B8E24
     mr r31, r3
-    bl fn_802E0DC0
-    bl fn_802E39C4
+    bl GXInvalidateVtxCache
+    bl GXInvalidateTexAll
     mr r3, r31
     lwz r31, 0xc(r1)
     lwz r0, 0x14(r1)
@@ -2024,7 +2024,7 @@ lbl_801880AC:
 lbl_801880C8:
     mr r3, r31
     mr r4, r30
-    bl fn_80222DE0
+    bl List_GetPrev__Q24nw4r2utFPCQ34nw4r2ut4ListPCv
     mr r30, r3
 lbl_801880D8:
     cmpwi r30, 0x0
@@ -2064,7 +2064,7 @@ lbl_80188130:
 lbl_8018814C:
     mr r3, r31
     mr r4, r30
-    bl fn_80222DE0
+    bl List_GetPrev__Q24nw4r2utFPCQ34nw4r2ut4ListPCv
     mr r30, r3
 lbl_8018815C:
     cmpwi r30, 0x0
@@ -2550,11 +2550,11 @@ extern "C" asm void fn_80188780() {
     mtctr r12
     bctrl
     li r3, 0x0
-    bl fn_802E59DC
+    bl GXSetClipMode
     li r3, 0x1
     li r4, 0x3
     li r5, 0x1
-    bl fn_802E4FA4
+    bl GXSetZMode
 lbl_801887E0:
     lwz r31, 0xac(r1)
     lwz r0, 0xb4(r1)
@@ -2583,12 +2583,12 @@ extern "C" asm void fn_801887F4() {
     bl fn_8002AFB4
     addi r3, r1, 0xc
     addi r4, r1, 0x10
-    bl fn_801E93B8
+    bl GetCameraMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX34
     mr r3, r30
     addi r4, r1, 0x10
     bl fn_8018B780
     li r3, 0x7ff
-    bl fn_801E2B68
+    bl Invalidate__Q34nw4r3g3d8G3DStateFUl
     bl fn_8018C980
     bl fn_8018C9DC
     lwz r31, 0x4c(r1)
@@ -3172,11 +3172,11 @@ lbl_80189064:
     mr r5, r31
     bl fn_801890A4
     li r3, 0x0
-    bl fn_802E59DC
+    bl GXSetClipMode
     li r3, 0x1
     li r4, 0x3
     li r5, 0x1
-    bl fn_802E4FA4
+    bl GXSetZMode
 lbl_8018908C:
     addi r11, r1, 0x20
     bl _restgpr_29
@@ -3811,7 +3811,7 @@ lbl_80189890:
     stfs f0, 0x34(r30)
     mr r3, r31
     mr r4, r30
-    bl fn_80222DC0
+    bl List_GetNext__Q24nw4r2utFPCQ34nw4r2ut4ListPCv
     mr r30, r3
 lbl_801898F8:
     cmpwi r30, 0x0
@@ -3863,7 +3863,7 @@ lbl_80189950:
     stfs f0, 0x34(r30)
     mr r3, r31
     mr r4, r30
-    bl fn_80222DC0
+    bl List_GetNext__Q24nw4r2utFPCQ34nw4r2ut4ListPCv
     mr r30, r3
 lbl_801899B0:
     cmpwi r30, 0x0
@@ -3980,7 +3980,7 @@ lbl_80189A28:
     addi r4, r30, 0x4
     addi r5, r1, 0x10
     addi r6, r30, 0x1c
-    bl fn_8030D448
+    bl C_MTXLookAt
     addi r3, r1, 0x20
     addi r4, r1, 0x30
     mr r5, r29
@@ -4107,7 +4107,7 @@ extern "C" asm void fn_80189D00() {
     cmpwi r3, 0x0
     beq lbl_80189D48
     addi r3, r3, 0x10
-    bl fn_801BA1DC
+    bl IsValid__Q34nw4r2ef10HandleBaseCFv
     cmpwi r3, 0x0
     beq lbl_80189D48
     addi r3, r31, 0x10
@@ -4592,10 +4592,10 @@ extern "C" asm void fn_8018A398() {
     stw r0, 0x20(r3)
     addi r3, r3, 0x4
     li r4, 0x0
-    bl fn_80222BAC
+    bl List_Init__Q24nw4r2utFPQ34nw4r2ut4ListUs
     addi r3, r27, 0x10
     li r4, 0x0
-    bl fn_80222BAC
+    bl List_Init__Q24nw4r2utFPQ34nw4r2ut4ListUs
     li r0, 0xe4
     stw r0, 0x1c(r27)
     stw r29, 0x0(r27)
@@ -4606,7 +4606,7 @@ lbl_8018A3F4:
     add r4, r29, r31
     stw r30, 0x8(r4)
     addi r3, r27, 0x4
-    bl fn_80222BC4
+    bl List_Append__Q24nw4r2utFPQ34nw4r2ut4ListPv
     addi r30, r30, 0x1
     addi r31, r31, 0xe4
 lbl_8018A40C:
@@ -4636,10 +4636,10 @@ extern "C" asm void fn_8018A430() {
     stw r0, 0x20(r3)
     addi r3, r3, 0x4
     li r4, 0x0
-    bl fn_80222BAC
+    bl List_Init__Q24nw4r2utFPQ34nw4r2ut4ListUs
     addi r3, r27, 0x10
     li r4, 0x0
-    bl fn_80222BAC
+    bl List_Init__Q24nw4r2utFPQ34nw4r2ut4ListUs
     li r0, 0xbc
     stw r0, 0x1c(r27)
     stw r29, 0x0(r27)
@@ -4650,7 +4650,7 @@ lbl_8018A48C:
     add r4, r29, r31
     stw r30, 0x8(r4)
     addi r3, r27, 0x4
-    bl fn_80222BC4
+    bl List_Append__Q24nw4r2utFPQ34nw4r2ut4ListPv
     addi r30, r30, 0x1
     addi r31, r31, 0xbc
 lbl_8018A4A4:
@@ -4680,10 +4680,10 @@ extern "C" asm void fn_8018A4C8() {
     stw r0, 0x20(r3)
     addi r3, r3, 0x4
     li r4, 0x0
-    bl fn_80222BAC
+    bl List_Init__Q24nw4r2utFPQ34nw4r2ut4ListUs
     addi r3, r27, 0x10
     li r4, 0x0
-    bl fn_80222BAC
+    bl List_Init__Q24nw4r2utFPQ34nw4r2ut4ListUs
     li r0, 0x154
     stw r0, 0x1c(r27)
     stw r29, 0x0(r27)
@@ -4694,7 +4694,7 @@ lbl_8018A524:
     add r4, r29, r31
     stw r30, 0x8(r4)
     addi r3, r27, 0x4
-    bl fn_80222BC4
+    bl List_Append__Q24nw4r2utFPQ34nw4r2ut4ListPv
     addi r30, r30, 0x1
     addi r31, r31, 0x154
 lbl_8018A53C:
@@ -4724,10 +4724,10 @@ extern "C" asm void fn_8018A560() {
     stw r0, 0x20(r3)
     addi r3, r3, 0x4
     li r4, 0x0
-    bl fn_80222BAC
+    bl List_Init__Q24nw4r2utFPQ34nw4r2ut4ListUs
     addi r3, r27, 0x10
     li r4, 0x0
-    bl fn_80222BAC
+    bl List_Init__Q24nw4r2utFPQ34nw4r2ut4ListUs
     li r0, 0xa0
     stw r0, 0x1c(r27)
     stw r29, 0x0(r27)
@@ -4738,7 +4738,7 @@ lbl_8018A5BC:
     add r4, r29, r31
     stw r30, 0x8(r4)
     addi r3, r27, 0x4
-    bl fn_80222BC4
+    bl List_Append__Q24nw4r2utFPQ34nw4r2ut4ListPv
     addi r30, r30, 0x1
     addi r31, r31, 0xa0
 lbl_8018A5D4:
@@ -5012,7 +5012,7 @@ lbl_8018A93C:
     lwz r3, 0x18(r22)
     addi r3, r3, 0x10
     mr r4, r26
-    bl fn_80222DC0
+    bl List_GetNext__Q24nw4r2utFPCQ34nw4r2ut4ListPCv
     mr r25, r3
     lwz r24, 0x44(r26)
     b lbl_8018AA0C
@@ -5060,11 +5060,11 @@ lbl_8018A9DC:
     lwz r3, 0x20(r22)
     addi r3, r3, 0x10
     mr r4, r24
-    bl fn_80222D54
+    bl List_Remove__Q24nw4r2utFPQ34nw4r2ut4ListPv
     lwz r3, 0x20(r22)
     addi r3, r3, 0x4
     mr r4, r24
-    bl fn_80222BC4
+    bl List_Append__Q24nw4r2utFPQ34nw4r2ut4ListPv
     mr r24, r23
 lbl_8018AA0C:
     cmpwi r24, 0x0
@@ -5111,7 +5111,7 @@ extern "C" asm void fn_8018AA68() {
     beq lbl_8018AB1C
     addi r3, r29, 0x10
     mr r4, r31
-    bl fn_80222DC0
+    bl List_GetNext__Q24nw4r2utFPCQ34nw4r2ut4ListPCv
     mr r30, r3
     b lbl_8018AB14
 lbl_8018AAA8:
@@ -5133,15 +5133,15 @@ lbl_8018AAA8:
     bl fn_8018B948
     addi r3, r29, 0x10
     mr r4, r31
-    bl fn_80222D54
+    bl List_Remove__Q24nw4r2utFPQ34nw4r2ut4ListPv
     addi r3, r29, 0x4
     mr r4, r31
-    bl fn_80222BC4
+    bl List_Append__Q24nw4r2utFPQ34nw4r2ut4ListPv
 lbl_8018AB00:
     mr r31, r30
     addi r3, r29, 0x10
     mr r4, r30
-    bl fn_80222DC0
+    bl List_GetNext__Q24nw4r2utFPCQ34nw4r2ut4ListPCv
     mr r30, r3
 lbl_8018AB14:
     cmpwi r31, 0x0
@@ -5170,7 +5170,7 @@ extern "C" asm void fn_8018AB34() {
     beq lbl_8018ABD8
     addi r3, r29, 0x10
     mr r4, r31
-    bl fn_80222DC0
+    bl List_GetNext__Q24nw4r2utFPCQ34nw4r2ut4ListPCv
     mr r30, r3
     b lbl_8018ABD0
 lbl_8018AB74:
@@ -5188,15 +5188,15 @@ lbl_8018AB74:
     bl fn_8018B948
     addi r3, r29, 0x10
     mr r4, r31
-    bl fn_80222D54
+    bl List_Remove__Q24nw4r2utFPQ34nw4r2ut4ListPv
     addi r3, r29, 0x4
     mr r4, r31
-    bl fn_80222BC4
+    bl List_Append__Q24nw4r2utFPQ34nw4r2ut4ListPv
 lbl_8018ABBC:
     mr r31, r30
     addi r3, r29, 0x10
     mr r4, r30
-    bl fn_80222DC0
+    bl List_GetNext__Q24nw4r2utFPCQ34nw4r2ut4ListPCv
     mr r30, r3
 lbl_8018ABD0:
     cmpwi r31, 0x0
@@ -5225,7 +5225,7 @@ extern "C" asm void fn_8018ABF0() {
     beq lbl_8018AC94
     addi r3, r29, 0x10
     mr r4, r31
-    bl fn_80222DC0
+    bl List_GetNext__Q24nw4r2utFPCQ34nw4r2ut4ListPCv
     mr r30, r3
     b lbl_8018AC8C
 lbl_8018AC30:
@@ -5243,15 +5243,15 @@ lbl_8018AC30:
     bl fn_8018B948
     addi r3, r29, 0x10
     mr r4, r31
-    bl fn_80222D54
+    bl List_Remove__Q24nw4r2utFPQ34nw4r2ut4ListPv
     addi r3, r29, 0x4
     mr r4, r31
-    bl fn_80222BC4
+    bl List_Append__Q24nw4r2utFPQ34nw4r2ut4ListPv
 lbl_8018AC78:
     mr r31, r30
     addi r3, r29, 0x10
     mr r4, r30
-    bl fn_80222DC0
+    bl List_GetNext__Q24nw4r2utFPCQ34nw4r2ut4ListPCv
     mr r30, r3
 lbl_8018AC8C:
     cmpwi r31, 0x0
@@ -5301,10 +5301,10 @@ lbl_8018ACFC:
     bctrl
     addi r3, r30, 0x4
     mr r4, r31
-    bl fn_80222D54
+    bl List_Remove__Q24nw4r2utFPQ34nw4r2ut4ListPv
     addi r3, r30, 0x10
     mr r4, r31
-    bl fn_80222BC4
+    bl List_Append__Q24nw4r2utFPQ34nw4r2ut4ListPv
     mr r3, r31
 lbl_8018AD30:
     lwz r31, 0xc(r1)
@@ -5334,10 +5334,10 @@ extern "C" asm void fn_8018AD5C() {
     mr r30, r3
     mr r31, r4
     addi r3, r3, 0x10
-    bl fn_80222D54
+    bl List_Remove__Q24nw4r2utFPQ34nw4r2ut4ListPv
     addi r3, r30, 0x4
     mr r4, r31
-    bl fn_80222BC4
+    bl List_Append__Q24nw4r2utFPQ34nw4r2ut4ListPv
     lwz r31, 0xc(r1)
     lwz r30, 0x8(r1)
     lwz r0, 0x14(r1)
@@ -5451,10 +5451,10 @@ lbl_8018AE9C:
     bctrl
     addi r3, r30, 0x4
     mr r4, r31
-    bl fn_80222D54
+    bl List_Remove__Q24nw4r2utFPQ34nw4r2ut4ListPv
     addi r3, r30, 0x10
     mr r4, r31
-    bl fn_80222BC4
+    bl List_Append__Q24nw4r2utFPQ34nw4r2ut4ListPv
     mr r3, r31
 lbl_8018AED0:
     lwz r31, 0xc(r1)
@@ -5484,10 +5484,10 @@ extern "C" asm void fn_8018AEFC() {
     mr r30, r3
     mr r31, r4
     addi r3, r3, 0x10
-    bl fn_80222D54
+    bl List_Remove__Q24nw4r2utFPQ34nw4r2ut4ListPv
     addi r3, r30, 0x4
     mr r4, r31
-    bl fn_80222BC4
+    bl List_Append__Q24nw4r2utFPQ34nw4r2ut4ListPv
     lwz r31, 0xc(r1)
     lwz r30, 0x8(r1)
     lwz r0, 0x14(r1)
@@ -5601,10 +5601,10 @@ lbl_8018B03C:
     bctrl
     addi r3, r30, 0x4
     mr r4, r31
-    bl fn_80222D54
+    bl List_Remove__Q24nw4r2utFPQ34nw4r2ut4ListPv
     addi r3, r30, 0x10
     mr r4, r31
-    bl fn_80222BC4
+    bl List_Append__Q24nw4r2utFPQ34nw4r2ut4ListPv
     mr r3, r31
 lbl_8018B070:
     lwz r31, 0xc(r1)
@@ -5634,10 +5634,10 @@ extern "C" asm void fn_8018B09C() {
     mr r30, r3
     mr r31, r4
     addi r3, r3, 0x10
-    bl fn_80222D54
+    bl List_Remove__Q24nw4r2utFPQ34nw4r2ut4ListPv
     addi r3, r30, 0x4
     mr r4, r31
-    bl fn_80222BC4
+    bl List_Append__Q24nw4r2utFPQ34nw4r2ut4ListPv
     lwz r31, 0xc(r1)
     lwz r30, 0x8(r1)
     lwz r0, 0x14(r1)
@@ -5751,10 +5751,10 @@ lbl_8018B1DC:
     bctrl
     addi r3, r30, 0x4
     mr r4, r31
-    bl fn_80222D54
+    bl List_Remove__Q24nw4r2utFPQ34nw4r2ut4ListPv
     addi r3, r30, 0x10
     mr r4, r31
-    bl fn_80222BC4
+    bl List_Append__Q24nw4r2utFPQ34nw4r2ut4ListPv
     mr r3, r31
 lbl_8018B210:
     lwz r31, 0xc(r1)
@@ -5784,10 +5784,10 @@ extern "C" asm void fn_8018B23C() {
     mr r30, r3
     mr r31, r4
     addi r3, r3, 0x10
-    bl fn_80222D54
+    bl List_Remove__Q24nw4r2utFPQ34nw4r2ut4ListPv
     addi r3, r30, 0x4
     mr r4, r31
-    bl fn_80222BC4
+    bl List_Append__Q24nw4r2utFPQ34nw4r2ut4ListPv
     lwz r31, 0xc(r1)
     lwz r30, 0x8(r1)
     lwz r0, 0x14(r1)
@@ -6062,7 +6062,7 @@ extern "C" asm void fn_8018B5A0() {
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
     mr r31, r3
-    bl fn_801BA1A0
+    bl __as__Q34nw4r2ef10HandleBaseFRCQ34nw4r2ef10HandleBase
     mr r3, r31
     lwz r31, 0xc(r1)
     lwz r0, 0x14(r1)
@@ -6078,7 +6078,7 @@ extern "C" asm void fn_8018B5D0() {
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
     mr r31, r3
-    bl fn_801BA190
+    bl __ct__Q34nw4r2ef10HandleBaseFv
     mr r3, r31
     lwz r31, 0xc(r1)
     lwz r0, 0x14(r1)
@@ -6094,7 +6094,7 @@ extern "C" asm void fn_8018B600() {
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
     mr r31, r3
-    bl fn_801BA1B4
+    bl __as__Q34nw4r2ef10HandleBaseFPQ34nw4r2ef12LinkedObject
     mr r3, r31
     lwz r31, 0xc(r1)
     lwz r0, 0x14(r1)
@@ -6105,7 +6105,7 @@ extern "C" asm void fn_8018B600() {
 
 extern "C" asm void fn_8018B630() {
     nofralloc
-    b fn_801BA208
+    b GetPtr__Q34nw4r2ef10HandleBaseCFv
 }
 
 extern "C" asm void fn_8018B634() {
@@ -6134,7 +6134,7 @@ extern "C" asm void fn_8018B670() {
     stwu r1, -0x10(r1)
     mflr r0
     stw r0, 0x14(r1)
-    bl fn_801BA208
+    bl GetPtr__Q34nw4r2ef10HandleBaseCFv
     cmpwi r3, 0x0
     bne lbl_8018B690
     li r3, 0x0
@@ -6163,13 +6163,13 @@ extern "C" asm void fn_8018B6AC() {
 extern "C" asm void fn_8018B6B4() {
     nofralloc
     li r4, 0x0
-    b fn_80222DE0
+    b List_GetPrev__Q24nw4r2utFPCQ34nw4r2ut4ListPCv
 }
 
 extern "C" asm void fn_8018B6BC() {
     nofralloc
     li r4, 0x0
-    b fn_80222DC0
+    b List_GetNext__Q24nw4r2utFPCQ34nw4r2ut4ListPCv
 }
 
 extern "C" asm void fn_8018B6C4() {
@@ -6403,7 +6403,7 @@ extern "C" asm void fn_8018B940() {
 extern "C" asm void fn_8018B948() {
     nofralloc
     addi r3, r3, 0xc
-    b fn_80222D54
+    b List_Remove__Q24nw4r2utFPQ34nw4r2ut4ListPv
 }
 
 extern "C" asm void fn_8018B950() {
@@ -6466,26 +6466,26 @@ extern "C" asm void fn_8018BA04() {
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
     mr r31, r3
-    bl fn_802E0688
+    bl GXClearVtxDesc
     cmplwi r31, 0x1
     bne lbl_8018BA4C
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xb
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xd
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     b lbl_8018BA64
 lbl_8018BA4C:
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xb
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
 lbl_8018BA64:
     lwz r31, 0xc(r1)
     lwz r0, 0x14(r1)
@@ -6500,7 +6500,7 @@ extern "C" asm void fn_8018BA78() {
     mflr r0
     stw r0, 0x14(r1)
     li r3, 0x1
-    bl fn_802E2ED8
+    bl GXSetNumChans
     li r3, 0x4
     li r4, 0x0
     li r5, 0x0
@@ -6508,7 +6508,7 @@ extern "C" asm void fn_8018BA78() {
     li r7, 0x0
     li r8, 0x2
     li r9, 0x2
-    bl fn_802E2EFC
+    bl GXSetChanCtrl
     li r3, 0x1
     bl fn_802E4A28
     li r3, 0x0
@@ -6520,37 +6520,37 @@ extern "C" asm void fn_8018BA78() {
     li r4, 0x4
     bl fn_802E43CC
     li r3, 0x0
-    bl fn_802E0FF8
+    bl GXSetNumTexGens
     li r3, 0x0
-    bl fn_802E1DA0
+    bl GXSetCullMode
     bl fn_8018C980
     bl fn_8018C9DC
     li r3, 0x1
     li r4, 0x4
     li r5, 0x5
     li r6, 0xf
-    bl fn_802E4EFC
+    bl GXSetBlendMode
     li r3, 0x0
     li r4, 0x9
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xb
     li r5, 0x1
     li r6, 0x5
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     bl fn_8018BA04
-    bl fn_802E0688
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xb
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     lwz r0, 0x14(r1)
     mtlr r0
     addi r1, r1, 0x10
@@ -6563,9 +6563,9 @@ extern "C" asm void fn_8018BB64() {
     mflr r0
     stw r0, 0x44(r1)
     li r3, 0x7ff
-    bl fn_801E2B68
+    bl Invalidate__Q34nw4r3g3d8G3DStateFUl
     li r3, 0x1
-    bl fn_802E2ED8
+    bl GXSetNumChans
     li r3, 0x4
     li r4, 0x0
     li r5, 0x0
@@ -6573,7 +6573,7 @@ extern "C" asm void fn_8018BB64() {
     li r7, 0x0
     li r8, 0x2
     li r9, 0x2
-    bl fn_802E2EFC
+    bl GXSetChanCtrl
     li r3, 0x1
     bl fn_802E4A28
     li r3, 0x0
@@ -6612,7 +6612,7 @@ extern "C" asm void fn_8018BB64() {
     li r5, 0x1
     li r6, 0x2
     li r7, 0x3
-    bl fn_802E478C
+    bl GXSetTexCoordScaleManually
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
@@ -6625,7 +6625,7 @@ extern "C" asm void fn_8018BB64() {
     li r6, 0x1e
     bl fn_8018CA80
     li r3, 0x1
-    bl fn_802E0FF8
+    bl GXSetNumTexGens
     li r3, 0x0
     li r4, 0x1
     li r5, 0x4
@@ -6636,45 +6636,45 @@ extern "C" asm void fn_8018BB64() {
     addi r3, r1, 0x8
     li r4, 0x1e
     li r5, 0x1
-    bl fn_802E576C
+    bl GXLoadTexMtxImm
     bl fn_8018C9DC
     li r3, 0x0
-    bl fn_802E1DA0
+    bl GXSetCullMode
     li r3, 0x1
     li r4, 0x4
     li r5, 0x5
     li r6, 0xf
-    bl fn_802E4EFC
+    bl GXSetBlendMode
     li r3, 0x0
     li r4, 0x9
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xb
     li r5, 0x1
     li r6, 0x5
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x0
     li r4, 0xd
     li r5, 0x1
     li r6, 0x4
     li r7, 0x0
-    bl fn_802E06BC
+    bl GXSetVtxAttrFmt
     li r3, 0x1
     bl fn_8018BA04
-    bl fn_802E0688
+    bl GXClearVtxDesc
     li r3, 0x9
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xb
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     li r3, 0xd
     li r4, 0x1
-    bl fn_802DFDF8
+    bl GXSetVtxDesc
     lwz r0, 0x44(r1)
     mtlr r0
     addi r1, r1, 0x40
@@ -6709,9 +6709,9 @@ extern "C" asm void fn_8018BD44() {
     bl fn_80016CCC
     addi r3, r1, 0x8
     li r4, 0x1
-    bl fn_802E5554
+    bl GXSetProjection
     li r3, 0x3c
-    bl fn_802E574C
+    bl GXSetCurrentMtx
     lwz r0, 0x54(r1)
     mtlr r0
     addi r1, r1, 0x50
@@ -6764,9 +6764,9 @@ lbl_8018BE44:
 lbl_8018BE68:
     addi r3, r1, 0x8
     li r4, 0x1
-    bl fn_802E5554
+    bl GXSetProjection
     li r3, 0x3c
-    bl fn_802E574C
+    bl GXSetCurrentMtx
     lwz r0, 0x54(r1)
     mtlr r0
     addi r1, r1, 0x50
@@ -6780,7 +6780,7 @@ extern "C" asm void fn_8018BE8C() {
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
     mr r31, r3
-    bl fn_802E5264
+    bl GXBeginDisplayList
     cmpwi r3, 0x0
     bne lbl_8018BEB4
     li r0, 0x0
@@ -6817,7 +6817,7 @@ extern "C" asm void fn_8018BED8() {
     li r3, 0x1
     li r4, 0x1
     li r5, 0x0
-    bl fn_802E4FA4
+    bl GXSetZMode
     li r3, 0x0
     bl fn_8017C22C
     lwz r3, lbl_8049D86C
@@ -6825,7 +6825,7 @@ extern "C" asm void fn_8018BED8() {
     bl DCFlushRange
     lwz r3, lbl_8049D86C
     lwz r4, lbl_8049D87C
-    bl fn_802E5314
+    bl GXCallDisplayList
 lbl_8018BF34:
     li r0, 0x0
     stw r0, lbl_8049D87C
@@ -6841,7 +6841,7 @@ lbl_8018BF3C:
     li r3, 0x0
     li r4, 0x1
     li r5, 0x0
-    bl fn_802E4FA4
+    bl GXSetZMode
     li r3, 0x0
     bl fn_8017C22C
     lwz r3, lbl_8049D868
@@ -6849,7 +6849,7 @@ lbl_8018BF3C:
     bl DCFlushRange
     lwz r3, lbl_8049D868
     lwz r4, lbl_8049D878
-    bl fn_802E5314
+    bl GXCallDisplayList
 lbl_8018BF8C:
     li r0, 0x0
     stw r0, lbl_8049D878
@@ -6863,7 +6863,7 @@ lbl_8018BF94:
     bl DCFlushRange
     lwz r3, lbl_8049D860
     lwz r4, lbl_8049D870
-    bl fn_802E5314
+    bl GXCallDisplayList
     li r0, 0x0
     stw r0, lbl_8049D870
 lbl_8018BFC4:
@@ -6876,7 +6876,7 @@ lbl_8018BFC4:
     bl DCFlushRange
     lwz r3, lbl_8049D864
     lwz r4, lbl_8049D874
-    bl fn_802E5314
+    bl GXCallDisplayList
     li r0, 0x0
     stw r0, lbl_8049D874
 lbl_8018BFF4:
@@ -6924,7 +6924,7 @@ extern "C" asm void fn_8018C01C() {
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     lfd f2, lbl_804A1050
     xoris r0, r30, 0x8000
     stw r0, 0xc(r1)
@@ -7030,11 +7030,11 @@ extern "C" asm void fn_8018C184() {
     bl fn_802E51B0
     mr r3, r28
     li r4, 0x0
-    bl fn_802E37E0
+    bl GXLoadTexObj
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
-    bl fn_802E1ABC
+    bl GXBegin
     lfd f2, lbl_804A1050
     xoris r0, r30, 0x8000
     stw r0, 0xc(r1)
@@ -7146,7 +7146,7 @@ extern "C" asm void fn_8018C38C() {
     li r3, 0xa8
     li r4, 0x0
     li r5, 0x2
-    bl fn_802E1ABC
+    bl GXBegin
     lfs f1, 0x0(r29)
     lfs f2, 0x4(r29)
     lfs f3, 0x8(r29)
@@ -7308,7 +7308,7 @@ lbl_8018C5BC:
     li r3, 0xb0
     li r4, 0x0
     li r5, 0x11
-    bl fn_802E1ABC
+    bl GXBegin
     li r30, 0x0
     li r31, 0x0
 lbl_8018C64C:
@@ -7354,46 +7354,46 @@ extern "C" asm void fn_8018C6D0() {
     stw r0, 0x14(r1)
     li r3, 0x6
     li r4, 0x0
-    bl fn_802E1CE0
+    bl GXSetLineWidth
     li r3, 0x6
     li r4, 0x0
-    bl fn_802E1D30
+    bl GXSetPointSize
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_802E1D64
+    bl GXEnableTexOffsets
     li r3, 0x1
     li r4, 0x0
     li r5, 0x0
-    bl fn_802E1D64
+    bl GXEnableTexOffsets
     li r3, 0x2
     li r4, 0x0
     li r5, 0x0
-    bl fn_802E1D64
+    bl GXEnableTexOffsets
     li r3, 0x3
     li r4, 0x0
     li r5, 0x0
-    bl fn_802E1D64
+    bl GXEnableTexOffsets
     li r3, 0x4
     li r4, 0x0
     li r5, 0x0
-    bl fn_802E1D64
+    bl GXEnableTexOffsets
     li r3, 0x5
     li r4, 0x0
     li r5, 0x0
-    bl fn_802E1D64
+    bl GXEnableTexOffsets
     li r3, 0x6
     li r4, 0x0
     li r5, 0x0
-    bl fn_802E1D64
+    bl GXEnableTexOffsets
     li r3, 0x7
     li r4, 0x0
     li r5, 0x0
-    bl fn_802E1D64
+    bl GXEnableTexOffsets
     li r3, 0x2
-    bl fn_802E1DA0
+    bl GXSetCullMode
     li r3, 0x0
-    bl fn_802E59DC
+    bl GXSetClipMode
     li r3, 0x0
     bl fn_802E1DE4
     addi r3, r1, 0xc
@@ -7407,29 +7407,29 @@ extern "C" asm void fn_8018C6D0() {
     fmr f2, f1
     fmr f3, f1
     fmr f4, f1
-    bl fn_802E4A4C
+    bl GXSetFog
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_802E4DD8
+    bl GXSetFogRangeAdj
     li r3, 0x1
     li r4, 0x4
     li r5, 0x5
     li r6, 0x3
-    bl fn_802E4EFC
+    bl GXSetBlendMode
     li r3, 0x1
-    bl fn_802E4F4C
+    bl GXSetColorUpdate
     li r3, 0x1
-    bl fn_802E4F78
+    bl GXSetAlphaUpdate
     li r3, 0x1
     li r4, 0x3
     li r5, 0x1
-    bl fn_802E4FA4
+    bl GXSetZMode
     li r3, 0x0
-    bl fn_802E4FD8
+    bl GXSetZCompLoc
     li r3, 0x0
     li r4, 0xff
-    bl fn_802E50DC
+    bl GXSetDstAlpha
     li r3, 0x1
     bl fn_802E4A28
     li r3, 0x7
@@ -7507,16 +7507,16 @@ extern "C" asm void fn_8018C6D0() {
     li r5, 0x1
     li r6, 0x2
     li r7, 0x3
-    bl fn_802E478C
+    bl GXSetTexCoordScaleManually
     li r3, 0x0
     li r4, 0x11
     li r5, 0x0
     bl fn_802E4840
     bl fn_8018C9DC
     li r3, 0x0
-    bl fn_802E2ED8
+    bl GXSetNumChans
     li r3, 0x0
-    bl fn_802E0FF8
+    bl GXSetNumTexGens
     lwz r0, 0x14(r1)
     mtlr r0
     addi r1, r1, 0x10
@@ -7539,11 +7539,11 @@ extern "C" asm void fn_8018C980() {
     fmr f2, f1
     fmr f3, f1
     fmr f4, f1
-    bl fn_802E4A4C
+    bl GXSetFog
     li r3, 0x0
     li r4, 0x0
     li r5, 0x0
-    bl fn_802E4DD8
+    bl GXSetFogRangeAdj
     lwz r0, 0x14(r1)
     mtlr r0
     addi r1, r1, 0x10
@@ -7599,7 +7599,7 @@ extern "C" asm void fn_8018CA80() {
     nofralloc
     li r7, 0x0
     li r8, 0x7d
-    b fn_802E0DD0
+    b GXSetTexCoordGen2
 }
 
 extern "C" asm void fn_8018CA8C() {
@@ -7686,7 +7686,7 @@ extern "C" asm void fn_8018CB4C() {
     lwz r3, lbl_8049D880
     bl fn_8002ADF8
     mr r4, r31
-    bl fn_801EDC60
+    bl GetCamera__Q34nw4r3g3d7ScnRootFi
     lwz r31, 0xc(r1)
     lwz r0, 0x14(r1)
     mtlr r0
@@ -7701,7 +7701,7 @@ extern "C" asm void fn_8018CB84() {
     stw r0, 0x14(r1)
     lwz r3, lbl_8049D880
     bl fn_8002ADF8
-    bl fn_801EDCBC
+    bl GetCurrentCamera__Q34nw4r3g3d7ScnRootFv
     lwz r0, 0x14(r1)
     mtlr r0
     addi r1, r1, 0x10
@@ -8031,7 +8031,7 @@ extern "C" asm void fn_8018D00C() {
     lwz r3, lbl_8049D880
     bl fn_8002ADF8
     mr r4, r31
-    bl fn_801EDD00
+    bl GetFog__Q34nw4r3g3d7ScnRootFi
     stw r3, 0x8(r1)
     addi r3, r1, 0xc
     addi r4, r1, 0x8
@@ -8043,7 +8043,7 @@ extern "C" asm void fn_8018D00C() {
     addi r7, r30, 0xc
     addi r8, r30, 0x10
     addi r9, r30, 0x14
-    bl fn_801F43C4
+    bl GetFog__Q34nw4r3g3d3FogFP10_GXFogTypePfPfPfPfP8_GXColor
     lwz r31, 0x1c(r1)
     lwz r30, 0x18(r1)
     lwz r0, 0x24(r1)
@@ -8147,12 +8147,12 @@ extern "C" asm void fn_8018D180() {
     stw r0, 0x24(r1)
     stw r31, 0x1c(r1)
     stw r30, 0x18(r1)
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     bne lbl_8018D2EC
     li r3, 0x0
-    bl fn_8029AD58
-    bl fn_8029BB20
+    bl AIInit
+    bl AXInit
     li r3, 0x1
     lis r4, 0x3f
     addi r4, r4, 0x40
@@ -8279,13 +8279,13 @@ extern "C" asm void fn_8018D364() {
     mflr r0
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018D3F4
     bl fn_8018D408
-    bl fn_8029BB74
+    bl AXQuit
     li r3, 0x0
-    bl fn_8029AC1C
+    bl AIRegisterDMACallback
     lis r3, lbl_803C1A40@ha
     addi r3, r3, lbl_803C1A40@l
     lwz r3, 0x80c(r3)
@@ -8327,7 +8327,7 @@ extern "C" asm void fn_8018D408() {
     mflr r0
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018D548
     bl fn_8018F7B8
@@ -8371,11 +8371,11 @@ lbl_8018D4A0:
     cmpwi r3, 0x0
     beq lbl_8018D4C0
     addi r3, r31, lbl_803D2154@l
-    bl fn_80215804
+    bl Shutdown__Q34nw4r3snd18SoundArchivePlayerFv
 lbl_8018D4C0:
     lis r31, lbl_803D1FBC@ha
     addi r3, r31, lbl_803D1FBC@l
-    bl fn_80213774
+    bl IsAvailable__Q34nw4r3snd12SoundArchiveCFv
     cmpwi r3, 0x0
     beq lbl_8018D4F0
     lis r3, lbl_803D3278@ha
@@ -8384,7 +8384,7 @@ lbl_8018D4C0:
     cmpwi r3, 0x0
     beq lbl_8018D4F0
     addi r3, r31, lbl_803D1FBC@l
-    bl fn_8020B99C
+    bl Close__Q34nw4r3snd15DvdSoundArchiveFv
 lbl_8018D4F0:
     lis r31, lbl_803D224C@ha
     addi r3, r31, lbl_803D224C@l
@@ -8392,7 +8392,7 @@ lbl_8018D4F0:
     cmpwi r3, 0x0
     beq lbl_8018D50C
     addi r3, r31, lbl_803D224C@l
-    bl fn_80217DE4
+    bl Destroy__Q34nw4r3snd9SoundHeapFv
 lbl_8018D50C:
     lwz r4, lbl_8049D89C
     cmpwi r4, 0x0
@@ -8407,7 +8407,7 @@ lbl_8018D530:
     lwz r3, lbl_8049D890
     cmpwi r3, 0x0
     beq lbl_8018D548
-    bl fn_8030C478
+    bl MEMDestroyExpHeap
     li r0, 0x0
     stw r0, lbl_8049D890
 lbl_8018D548:
@@ -8424,7 +8424,7 @@ extern "C" asm void fn_8018D55C() {
     mflr r0
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
-    bl fn_8029AD3C
+    bl GetFont__Q34nw4r3lyt7TextBoxCFv
     cmpwi r3, 0x0
     beq lbl_8018D594
     lis r31, lbl_803D224C@ha
@@ -8433,7 +8433,7 @@ extern "C" asm void fn_8018D55C() {
     cmpwi r3, 0x0
     beq lbl_8018D594
     addi r3, r31, lbl_803D224C@l
-    bl fn_80217E5C
+    bl Clear__Q34nw4r3snd9SoundHeapFv
 lbl_8018D594:
     lwz r31, 0xc(r1)
     lwz r0, 0x14(r1)
