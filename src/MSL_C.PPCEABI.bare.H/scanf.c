@@ -1,36 +1,859 @@
-#include "types.h"
+#include <math.h>
+#include <stdarg.h>
+#include <ctype.h>
+#include <stdio.h>
 
-// Translation unit: src/MSL_C.PPCEABI.bare.H/scanf.cpp
-// Total functions: 5
+typedef long long intmax_t;
 
-// Global data symbols (@ha/@l)
-u8 jumptable_8035FE50[];
-u8 jumptable_8035FF30[];
-u8 jumptable_8035FF50[];
-u8 jumptable_8035FF70[];
-u8 lbl_8033B9C8[];
-u8 lbl_8035FBD8[];
-u8 lbl_803D7848[];
-u8 lbl_8049C418[];
+enum argument_options {
+    normal_argument,
+    char_argument,
+    short_argument,
+    long_argument,
+    intmax_argument,
+    size_t_argument,
+    ptrdiff_argument,
+    long_long_argument,
+    double_argument,
+    long_double_argument,
+    wchar_argument
+};
 
-// Forward declarations
-void __va_arg();
-void _restgpr_15();
-void _savegpr_15();
-void exit();
-void mbtowc();
-void fn_8019B580();
-void __sformatter();
-void __StringRead();
-void sscanf();
-void raise();
-void fn_8019D03C();
-void __strtoul();
-void __strtoull();
+typedef unsigned char char_map[32];
 
-// ----------------------------------------------------------------------------
-// fn_8019B580
-// ----------------------------------------------------------------------------
+typedef struct {
+    unsigned char suppress_assignment;
+    unsigned char field_width_specified;
+    unsigned char argument_options;
+    unsigned char conversion_char;
+    int           field_width;
+    char_map char_set;
+} scan_format;
+
+#define set_char_map(map, ch) map[(unsigned char)ch >> 3] |= (1 << (ch & 7))
+#define tst_char_map(map, ch) (map[(unsigned char)ch >> 3] &  (1 << (ch & 7)))
+
+static const char* parse_format(const char* format_string, scan_format *format) {
+    const char* s = format_string;
+    int c;
+    int flag_found, invert;
+    scan_format f = { 0, 0, normal_argument, 0, 2147483647, { 0 } };
+
+    if (((c = *++s) == '%')) {
+        f.conversion_char = c;
+        *format = f;
+        return ((const char*)s + 1);
+    }
+
+    if (c == '*') {
+        f.suppress_assignment = 1;
+        c = *++s;
+    }
+
+    if (isdigit(c)) {
+        f.field_width = 0;
+
+        do {
+            f.field_width = (f.field_width * 10) + (c - '0');
+            c = *++s;
+        } while (isdigit(c));
+
+        if (f.field_width == 0) {
+            f.conversion_char = 0xFF;
+            *format = f;
+            return ((const char*)s + 1);
+        }
+
+        f.field_width_specified = 1;
+    }
+
+    flag_found = 1;
+
+    switch (c) {
+        case 'h':
+            f.argument_options = short_argument;
+
+            if (s[1] == 'h') {
+                f.argument_options = char_argument;
+                c = *++s;
+            }
+
+            break;
+        case 'l':
+            f.argument_options = long_argument;
+
+            if (s[1] == 'l') {
+                f.argument_options = long_long_argument;
+                c = *++s;
+            }
+
+            break;
+        case 'L':
+            f.argument_options = long_double_argument;
+            break;
+
+        case 'j':
+            f.argument_options = intmax_argument;
+            break;
+        case 'z':
+            f.argument_options = size_t_argument;
+            break;
+        case 't':
+            f.argument_options = ptrdiff_argument;
+            break;
+        default:
+            flag_found = 0;
+    }
+
+    if (flag_found) {
+        c = *++s;
+    }
+
+    f.conversion_char = c;
+    
+    switch (c) {
+        case 'd':
+        case 'i':
+        case 'u':
+        case 'o':
+        case 'x':
+        case 'X':
+            if (f.argument_options == long_double_argument) {
+                f.conversion_char = 0xFF;
+                break;
+            }
+
+            break;
+
+        case 'a':
+        case 'A':
+        case 'f':
+        case 'F':
+        case 'e':
+        case 'E':
+        case 'g':
+        case 'G':
+            if (f.argument_options == char_argument || f.argument_options == short_argument || f.argument_options == intmax_argument || f.argument_options == size_t_argument || f.argument_options == ptrdiff_argument || f.argument_options == long_long_argument) {
+                f.conversion_char = 0xFF;
+                break;
+            }
+
+            if (f.argument_options == long_argument) {
+                f.argument_options = double_argument;
+            }
+
+            break;
+
+        case 'p':
+            f.argument_options = long_argument;
+            f.conversion_char = 'x';
+            break;
+
+        case 'c':
+            if (f.argument_options == long_argument) {
+                f.argument_options = wchar_argument;
+            }
+            else {
+                if (f.argument_options != normal_argument) {
+                    f.conversion_char = 0xFF;
+                }
+            }
+
+            break;
+
+        case 's':
+            if (f.argument_options == long_argument) {
+                f.argument_options = wchar_argument;
+            }
+            else {
+                if (f.argument_options != normal_argument) {
+                    f.conversion_char = 0xFF;
+                }
+            }
+
+            {
+                int i;
+                unsigned char* p;
+
+                for (i = sizeof(f.char_set), p = f.char_set; i; --i) {
+                    *p++ = 0xFF;
+                }
+
+                f.char_set[1] = 0xC1;
+                f.char_set[4] = 0xFE;
+            }
+
+            break;
+
+        case 'n':
+            break;
+
+        case '[':
+            if (f.argument_options == long_argument) {
+                f.argument_options = wchar_argument;
+            }
+            else {
+                if (f.argument_options != normal_argument) {
+                    f.conversion_char = 0xFF;
+                }
+            }
+
+            c = *++s;
+            invert = 0;
+
+            if (c == '^') {
+                invert = 1;
+                c = *++s;
+            }
+
+            if (c == ']') {
+                set_char_map(f.char_set, ']');
+                c = *++s;
+            }
+
+            while (c && c != ']') {
+                int d;
+                set_char_map(f.char_set, c);
+
+                if (*(s + 1) == '-' && (d = *(s + 2)) != 0 && d != ']') {
+                    while (++c <= d) {
+                        set_char_map(f.char_set, c);
+                    }
+
+                    c = *(s += 3);
+                }
+                else {
+                    c = *++s;
+                }
+            }
+
+            if (!c) {
+                f.conversion_char = 0xFF;
+                break;
+            }
+
+            if (invert) {
+                int i;
+                unsigned char* p;
+
+                for (i = sizeof(f.char_set), p = f.char_set; i; --i, ++p) {
+                    *p = ~*p;
+                }
+
+                break;
+            }
+
+            break;
+        default:
+            f.conversion_char = 0xFF;
+            break;
+    }
+
+    *format = f;
+    return ((const char*)s + 1);
+}
+
+
+static int __sformatter(int (*ReadProc)(void *, int, int), void * ReadProcArg, const char * format_str, va_list arg, int is_secure)
+{
+    int num_chars, chars_read, items_assigned, conversions;
+    int base, negative, overflow;
+    int rval;
+    const char* format_ptr;
+    char format_char;
+    char c;
+    scan_format format;
+    long long_num;
+    unsigned long u_long_num;
+    long long long_long_num = 0;
+    unsigned long long u_long_long_num;
+    long double long_double_num;
+    char * arg_ptr;
+    int elem_valid;
+    size_t elem_maxsize;
+    int match_failure = 0;
+    int terminate = 0;
+
+    format_ptr = format_str;
+    chars_read = 0;
+    items_assigned = 0;
+    conversions = 0;
+    
+    while (!terminate && (format_char = *format_ptr) != 0)
+    {
+        if (isspace(format_char))
+        {
+            do{
+                format_char = *++format_ptr;
+            } while (isspace(format_char));
+            
+            if (!match_failure)
+            {
+                while (isspace(c = (*ReadProc)(ReadProcArg, 0, __GetAChar)))
+                    ++chars_read;
+                
+                (*ReadProc)(ReadProcArg, c, __UngetAChar);
+            }
+            continue;
+        }
+        
+        if ((format_char != '%') && (!match_failure))
+        {
+            if ((c = (*ReadProc)(ReadProcArg, 0, __GetAChar)) != (unsigned char)format_char)
+            {
+                (*ReadProc)(ReadProcArg, c, __UngetAChar);
+                if (!is_secure)
+                    goto exit;
+                else
+                {
+                    match_failure = 1;
+                    ++format_ptr;
+                    continue;
+                }
+            }
+            
+            chars_read++;
+            format_ptr++;
+            
+            continue;
+        }
+
+        format_ptr = parse_format(format_ptr, &format);
+
+        if (!format.suppress_assignment && format.conversion_char != '%')
+        {
+            arg_ptr = va_arg(arg, char *);
+        }
+        else
+        {
+            arg_ptr = 0;
+        }
+            
+        if ((format.conversion_char != 'n') && (!match_failure) && (*ReadProc)(ReadProcArg, 0, __TestForError))
+        {
+            if (!is_secure)
+                goto exit;
+            else
+                match_failure = 1;
+        }
+        
+        switch (format.conversion_char)
+        {
+            case 'd':
+                base = 10;
+                goto signed_int;
+            case 'i':
+                base = 0;
+            signed_int:
+                
+                if (match_failure)
+                {
+                    long_num = 0;
+                    long_long_num = 0;
+                }
+                else
+                {
+                    if ((format.argument_options == long_long_argument) || (format.argument_options == intmax_argument))
+                        u_long_long_num = __strtoull(base, format.field_width, ReadProc, ReadProcArg, &num_chars, &negative, &overflow);
+                    else
+                        u_long_num = __strtoul(base, format.field_width, ReadProc, ReadProcArg, &num_chars, &negative, &overflow);
+                    
+                    if (!num_chars)
+                    {
+                        if (!is_secure)
+                            goto exit;
+                        else
+                        {
+                            match_failure = 1;
+                            long_num = 0;
+                            long_long_num = 0;
+                            goto signed_int_assign;
+                        }
+                    }
+                    
+                    chars_read += num_chars;
+                    
+                    if ((format.argument_options == long_long_argument) || (format.argument_options == intmax_argument))
+                        long_long_num = (negative ? -u_long_long_num : u_long_long_num);
+                    else
+                        long_num = (negative ? -u_long_num : u_long_num);
+                }
+                
+            signed_int_assign:
+
+                if (arg_ptr)
+                {
+                    switch (format.argument_options)
+                    {
+                        case normal_argument:  * (int *)         arg_ptr = long_num; break;
+                        case char_argument:    * (signed char *) arg_ptr = long_num; break;
+                        case short_argument:   * (short *)       arg_ptr = long_num; break;
+                        case long_argument:    * (long *)        arg_ptr = long_num; break;
+                        case intmax_argument:  * (intmax_t *)    arg_ptr = long_long_num; break;
+                        case size_t_argument:  * (size_t *)      arg_ptr = long_num; break;
+                        case ptrdiff_argument: * (ptrdiff_t *)   arg_ptr = long_num; break;
+                        case long_long_argument: * (long long *) arg_ptr = long_long_num; break;
+                    }
+                    if (!match_failure) items_assigned++;
+                }
+
+                conversions++;
+                break;
+            case 'o':
+                base = 8;
+                goto unsigned_int;
+            case 'u':
+                base = 10;
+                goto unsigned_int;
+            case 'x':
+            case 'X':
+                base = 16;
+            unsigned_int:
+                
+                if (match_failure)
+                {
+                    u_long_num = 0;
+                    u_long_long_num = 0;
+                }
+                else
+                {
+                    if ((format.argument_options == long_long_argument) || (format.argument_options == intmax_argument))
+                       u_long_long_num = __strtoull(base, format.field_width, ReadProc, ReadProcArg, &num_chars, &negative, &overflow);
+                    else
+                        u_long_num = __strtoul(base, format.field_width, ReadProc, ReadProcArg, &num_chars, &negative, &overflow);
+                    
+                    if (!num_chars)
+                    {
+                        if (!is_secure)
+                            goto exit;
+                        else
+                        {
+                            match_failure = 1;
+                            u_long_num = 0;
+                            u_long_long_num = 0;
+                            goto unsigned_int_assign;
+                        }
+                    }
+                    
+                    chars_read += num_chars;
+                    
+                    if (negative)
+                    if (format.argument_options == long_long_argument)
+                        u_long_long_num = -u_long_long_num;
+                    else
+                        u_long_num = -u_long_num;
+                }
+                
+            unsigned_int_assign:
+
+                if (arg_ptr)
+                {
+                    switch (format.argument_options)
+                    {
+                        case normal_argument:  * (unsigned int *)arg_ptr = u_long_num; break;
+                        case char_argument:    * (unsigned char *)arg_ptr = u_long_num; break;
+                        case short_argument:   * (unsigned short *)arg_ptr = u_long_num; break;
+                        case long_argument:    * (unsigned long *)arg_ptr = u_long_num; break;
+                        case intmax_argument:  * (intmax_t *)    arg_ptr = u_long_long_num; break;
+                        case size_t_argument:  * (size_t *)      arg_ptr = u_long_num; break;
+                        case ptrdiff_argument: * (ptrdiff_t *)   arg_ptr = u_long_num; break;
+                        case long_long_argument: * (unsigned long long *) arg_ptr = u_long_long_num; break;
+
+
+                    }
+                    
+                    if (!match_failure) items_assigned++;
+                }
+                
+                conversions++;
+                break;
+            case 'a':
+            case 'A':
+            case 'f':
+            case 'F':
+            case 'e':
+            case 'E':
+            case 'g':
+            case 'G':
+            flt:
+                if (match_failure) long_double_num = NAN;
+                else
+                {
+                    long_double_num = __strtold(format.field_width, ReadProc, ReadProcArg, &num_chars, &overflow);
+                    
+                    if (!num_chars)
+                    {
+                        if (!is_secure)
+                            goto exit;
+                        else
+                        {
+                            match_failure = 1;
+                            long_double_num = NAN;
+                            goto assign_float;
+                        }
+                    }
+                    
+                    chars_read += num_chars;
+                }
+                
+            assign_float:
+
+                if (arg_ptr)
+                {
+                    switch (format.argument_options)
+                    {
+                        case normal_argument:      * (float *)       arg_ptr = long_double_num; break;
+                        case double_argument:      * (double *)      arg_ptr = long_double_num; break;
+                        case long_double_argument: * (long double *) arg_ptr = long_double_num; break;
+                    }
+                    
+                    if (!match_failure) items_assigned++;
+                }
+
+                conversions++;
+                break;
+
+            case 'c':
+                
+                if (!format.field_width_specified) format.field_width = 1;
+
+                if (arg_ptr)
+                {
+                    if (is_secure)
+                    {
+                        elem_valid = 1;
+                        elem_maxsize = va_arg(arg, size_t);
+                    }
+                    
+                    num_chars = 0;
+                    
+                    if (match_failure)
+                    {
+                        if (elem_maxsize > 0)
+                            *arg_ptr = 0;
+                        continue;
+                    }
+                    else
+                    {
+                        char * arg_start = arg_ptr;
+                        
+                        while (format.field_width-- && (!is_secure || ((elem_valid = (elem_maxsize > num_chars)) != 0)) && ((rval = ((*ReadProc)(ReadProcArg, 0, __GetAChar))) != -1))
+                        {
+                            c = rval;
+                            
+                            if (format.argument_options == wchar_argument)
+                            {
+                                mbtowc(((wchar_t*)arg_ptr), (char*)(&c), 1);
+                                arg_ptr += sizeof(wchar_t);
+                            }
+                            else
+                                *arg_ptr++ = c;
+                            num_chars++;
+                        }
+                        
+                        c = rval;
+                        if (!num_chars || (is_secure && !elem_valid))
+                        {
+                            if (!is_secure)
+                                goto exit;
+                            else
+                            {
+                                match_failure = 1;
+                                if (elem_maxsize > 0)
+                                    *arg_start = 0;
+                                continue;
+                            }
+                        }
+                        
+                        chars_read += num_chars;
+                        
+                        items_assigned++;
+                    }
+                }
+                else
+                {
+                    num_chars = 0;
+                    
+                    while (format.field_width-- && ((rval = ((*ReadProc)(ReadProcArg, 0, __GetAChar))) != -1))
+                    {
+                        c = rval;
+                        num_chars++;
+                    }
+                    c = rval;
+                    if (!num_chars) goto exit;
+                }
+                
+                conversions++;
+                break;
+            
+            case '%':
+                if (match_failure)
+                    continue;
+                else
+                {
+                    while (isspace(c = (*ReadProc)(ReadProcArg, 0, __GetAChar)))
+                        chars_read++;
+                    
+                    if (c != '%')
+                    {
+                        (*ReadProc)(ReadProcArg, c, __UngetAChar);
+                        if (!is_secure)
+                            goto exit;
+                        else
+                        {
+                            match_failure = 1;
+                            continue;
+                        }
+                    }
+                    
+                    chars_read++;
+                }
+                break;
+            
+            case 's':
+                if (!match_failure)
+                {
+                    c = (*ReadProc)(ReadProcArg, 0, __GetAChar);
+                    while(isspace(c))
+                    {
+                        chars_read++;
+                        c = (*ReadProc)(ReadProcArg, 0, __GetAChar);
+                    }
+                    
+                    (*ReadProc)(ReadProcArg, c, __UngetAChar);
+                }
+            case '[':
+                if (arg_ptr)
+                {
+                    if (is_secure)
+                    {
+                        elem_valid = 1;
+                        elem_maxsize = va_arg(arg, size_t) - 1;
+                    }
+                    
+                    num_chars = 0;
+                    
+                    if (match_failure)
+                    {
+                        if (elem_maxsize > 0)
+                            *arg_ptr = 0;
+                        continue;
+                    }
+                    else
+                    {
+                        char * arg_start = arg_ptr;
+                        
+                        while (format.field_width-- &&
+                            (!is_secure || ((elem_valid = (elem_maxsize >= num_chars)) != 0)) &&
+                                    ((rval = ((*ReadProc)(ReadProcArg, 0, __GetAChar))) != -1))
+                        {
+                            c = rval;
+                            
+                            if (!tst_char_map(format.char_set, c))
+                                break;
+
+                            if (format.argument_options == wchar_argument)
+                            {
+                                mbtowc(((wchar_t*)arg_ptr), (char*)&c, 1);
+                                arg_ptr = (char*)((wchar_t*)arg_ptr + 1);
+                            }
+                            else
+                                *arg_ptr++ = c;
+                            num_chars++;
+                        }
+                        c = rval;
+                        
+                        if (!num_chars || (is_secure && !elem_valid))
+                        {
+                            (*ReadProc)(ReadProcArg, c, __UngetAChar);
+                            if (!is_secure)
+                                goto exit;
+                            else
+                            {
+                                match_failure = 1;
+                                if (elem_maxsize > 0)
+                                    *arg_start = 0;
+                                continue;
+                            }
+                        }
+                        
+                        chars_read += num_chars;
+                        
+                        if (format.argument_options == wchar_argument)
+                            *(wchar_t*)arg_ptr = L'\0';
+                        else
+                            *arg_ptr = 0;
+                        
+                        items_assigned++;
+                    }
+                }
+                else
+                {
+                    num_chars = 0;
+                    
+                    while (format.field_width-- &&
+                        ((rval = ((*ReadProc)(ReadProcArg, 0, __GetAChar))) != -1))
+                    {
+                        c = rval;
+                        if (!tst_char_map(format.char_set, c))
+                            break;
+                        
+                        num_chars++;
+                    }
+                    c = rval;
+                    
+                    if (!num_chars)
+                    {
+                        (*ReadProc)(ReadProcArg, c, __UngetAChar);
+                        break;
+                    }
+                    chars_read += num_chars;
+                }
+                
+                if (format.field_width >= 0)
+                    (*ReadProc)(ReadProcArg, c, __UngetAChar);
+                
+                conversions++;
+                break;
+            case 'n':
+                if (arg_ptr)
+                    switch (format.argument_options)
+                    {
+                        case normal_argument: * (int *)   arg_ptr = chars_read; break;
+                        case short_argument:  * (short *) arg_ptr = chars_read; break;
+                        case long_argument:   * (long *)  arg_ptr = chars_read; break;
+                        case char_argument:   * (char *)  arg_ptr = chars_read; break;
+                        case long_long_argument: * (long long *) arg_ptr = chars_read; break;
+                    }
+                continue;
+            case 0xFF:
+            default:
+                goto exit;
+        }
+    }
+    
+exit:
+    
+    if ((*ReadProc)(ReadProcArg, 0, __TestForError) && conversions == 0)
+        return -1;
+    
+    return items_assigned;
+}
+
+//unused
+void __FileRead(){
+}
+
+
+int __StringRead(void *pPtr, int ch, int act) {
+    char ret;
+    __InStrCtrl* Iscp = (__InStrCtrl*)pPtr;
+
+    switch (act) {
+        case __GetAChar:
+            ret = *(Iscp->NextChar);
+            
+            if (ret == '\0') {
+                Iscp->NullCharDetected = 1;
+                return -1;
+            }
+            else {
+                Iscp->NextChar++;
+                return (unsigned char)ret;
+            }
+
+        case __UngetAChar:
+            if (Iscp->NullCharDetected == 0) {
+                Iscp->NextChar--;
+            }
+            else {
+                Iscp->NullCharDetected = 0;
+            }
+
+            return ch;
+
+        case __TestForError:
+            return Iscp->NullCharDetected;
+    }
+
+    return 0;
+}
+
+//unsued
+void fscanf(){
+}
+
+//unused
+void fscanf_s(){
+}
+
+//unused
+void vscanf(){
+}
+
+//unused
+void scanf(){
+}
+
+//unused
+void scanf_s(){
+}
+
+//unused
+void vfscanf(){
+}
+
+//unused
+void vfscanf_s(){
+}
+
+int isspace_string(const char *s) {
+    int i = 0;
+
+    while(s[i] != '\0'){
+       if(!isspace(s[i++])) return 0;
+    }
+
+    return 1;
+}
+
+int vsscanf(const char *s, const char *format, va_list arg) {
+    __InStrCtrl isc;
+    isc.NextChar = (char*)s;
+
+    if ((s == 0) || (*isc.NextChar == '\0') || isspace_string(s)) {
+        return -1;
+    }
+
+    isc.NullCharDetected = 0;
+    return __sformatter(&__StringRead, (void*)&isc, format, arg, 0);
+}
+
+//unused
+void vsscanf_s(){
+}
+
+int sscanf(const char *s, const char *pFormat, ...) {
+    int ret;
+    va_list args;
+    va_start(args, pFormat);
+    return vsscanf(s, pFormat, args);
+}
+
+//unused
+void sscanf_s(){
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+extern u8 jumptable_8035FE50[];
+extern u8 lbl_8033B9C8[];
+extern u8 lbl_8035FBD8[];
+extern u8 lbl_803D7848[];
+extern void exit();
+extern void fn_8019B580();
+extern void raise();
+
+// asm_to_cpp: fn_8019B580
 asm void fn_8019B580() {
     nofralloc
     stwu r1, -0x40(r1)
@@ -493,1068 +1316,7 @@ lbl_8019BBF8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __sformatter
-// ----------------------------------------------------------------------------
-asm void __sformatter() {
-    nofralloc
-    stwu r1, -0xb0(r1)
-    mflr r0
-    stw r0, 0xb4(r1)
-    addi r11, r1, 0xb0
-    bl _savegpr_15
-    lis r8, lbl_8035FBD8@ha
-    li r0, 0x0
-    stw r0, 0x5c(r1)
-    li r0, 0x0
-    mr r26, r3
-    mr r27, r4
-    stw r6, 0x8(r1)
-    mr r17, r5
-    mr r28, r7
-    addi r25, r1, 0x20
-    stw r0, 0x58(r1)
-    addi r23, r8, lbl_8035FBD8@l
-    li r29, 0x0
-    li r21, 0x0
-    li r20, 0x0
-    li r19, 0x0
-    li r24, 0x1
-    b lbl_8019C848
-lbl_8019BC64:
-    cmplwi r22, 0xff
-    li r0, 0x1
-    bgt lbl_8019BC74
-    li r0, 0x0
-lbl_8019BC74:
-    cmpwi r0, 0x0
-    beq lbl_8019BC84
-    li r0, 0x0
-    b lbl_8019BC98
-lbl_8019BC84:
-    lwz r3, 0x38(r23)
-    slwi r0, r22, 1
-    lwz r3, 0x8(r3)
-    lhzx r0, r3, r0
-    rlwinm r0, r0, 0, 23, 23
-lbl_8019BC98:
-    cmpwi r0, 0x0
-    beq lbl_8019BD70
-    lwz r4, 0x38(r23)
-lbl_8019BCA4:
-    lbzu r0, 0x1(r17)
-    li r3, 0x1
-    extsb r0, r0
-    cmplwi r0, 0xff
-    bgt lbl_8019BCBC
-    li r3, 0x0
-lbl_8019BCBC:
-    cmpwi r3, 0x0
-    beq lbl_8019BCCC
-    li r0, 0x0
-    b lbl_8019BCDC
-lbl_8019BCCC:
-    lwz r3, 0x8(r4)
-    slwi r0, r0, 1
-    lhzx r0, r3, r0
-    rlwinm r0, r0, 0, 23, 23
-lbl_8019BCDC:
-    cmpwi r0, 0x0
-    bne lbl_8019BCA4
-    cmpwi r29, 0x0
-    bne lbl_8019C848
-    b lbl_8019BCF4
-lbl_8019BCF0:
-    addi r21, r21, 0x1
-lbl_8019BCF4:
-    mr r12, r26
-    mr r3, r27
-    li r4, 0x0
-    li r5, 0x0
-    mtctr r12
-    bctrl
-    extsb r0, r3
-    stb r3, 0xc(r1)
-    cmplwi r0, 0xff
-    li r4, 0x1
-    bgt lbl_8019BD24
-    li r4, 0x0
-lbl_8019BD24:
-    cmpwi r4, 0x0
-    beq lbl_8019BD34
-    li r0, 0x0
-    b lbl_8019BD48
-lbl_8019BD34:
-    lwz r4, 0x38(r23)
-    slwi r0, r0, 1
-    lwz r4, 0x8(r4)
-    lhzx r0, r4, r0
-    rlwinm r0, r0, 0, 23, 23
-lbl_8019BD48:
-    cmpwi r0, 0x0
-    bne lbl_8019BCF0
-    clrlwi r4, r3, 24
-    mr r12, r26
-    mr r3, r27
-    li r5, 0x1
-    extsb r4, r4
-    mtctr r12
-    bctrl
-    b lbl_8019C848
-lbl_8019BD70:
-    cmpwi r22, 0x25
-    beq lbl_8019BDE8
-    cmpwi r29, 0x0
-    bne lbl_8019BDE8
-    mr r12, r26
-    mr r3, r27
-    li r4, 0x0
-    li r5, 0x0
-    mtctr r12
-    bctrl
-    extsb r4, r3
-    clrlwi r0, r22, 24
-    cmpw r0, r4
-    stb r3, 0xc(r1)
-    beq lbl_8019BDDC
-    clrlwi r4, r3, 24
-    mr r12, r26
-    mr r3, r27
-    li r5, 0x1
-    extsb r4, r4
-    mtctr r12
-    bctrl
-    cmpwi r28, 0x0
-    beq lbl_8019C854
-    li r29, 0x1
-    addi r17, r17, 0x1
-    b lbl_8019C848
-lbl_8019BDDC:
-    addi r21, r21, 0x1
-    addi r17, r17, 0x1
-    b lbl_8019C848
-lbl_8019BDE8:
-    mr r3, r17
-    addi r4, r1, 0x20
-    bl fn_8019B580
-    lbz r0, 0x20(r1)
-    mr r17, r3
-    cmpwi r0, 0x0
-    bne lbl_8019BE24
-    lbz r0, 0x23(r1)
-    cmplwi r0, 0x25
-    beq lbl_8019BE24
-    lwz r3, 0x8(r1)
-    li r4, 0x1
-    bl __va_arg
-    lwz r22, 0x0(r3)
-    b lbl_8019BE28
-lbl_8019BE24:
-    li r22, 0x0
-lbl_8019BE28:
-    lbz r0, 0x23(r1)
-    cmplwi r0, 0x6e
-    beq lbl_8019BE68
-    cmpwi r29, 0x0
-    bne lbl_8019BE68
-    mr r12, r26
-    mr r3, r27
-    li r4, 0x0
-    li r5, 0x2
-    mtctr r12
-    bctrl
-    cmpwi r3, 0x0
-    beq lbl_8019BE68
-    cmpwi r28, 0x0
-    beq lbl_8019C854
-    li r29, 0x1
-lbl_8019BE68:
-    lbz r3, 0x23(r1)
-    subi r0, r3, 0x25
-    cmplwi r0, 0x53
-    bgt lbl_8019C854
-    lis r3, jumptable_8035FF70@ha
-    slwi r0, r0, 2
-    addi r3, r3, jumptable_8035FF70@l
-    lwzx r3, r3, r0
-    mtctr r3
-    bctr
-    li r3, 0xa
-    b lbl_8019BE9C
-    li r3, 0x0
-lbl_8019BE9C:
-    cmpwi r29, 0x0
-    beq lbl_8019BEBC
-    li r0, 0x0
-    stw r0, 0x5c(r1)
-    li r0, 0x0
-    li r16, 0x0
-    stw r0, 0x58(r1)
-    b lbl_8019BFB0
-lbl_8019BEBC:
-    lbz r0, 0x22(r1)
-    cmplwi r0, 0x7
-    beq lbl_8019BED0
-    cmplwi r0, 0x4
-    bne lbl_8019BEF8
-lbl_8019BED0:
-    lwz r4, 0x24(r1)
-    mr r5, r26
-    mr r6, r27
-    addi r7, r1, 0x18
-    addi r8, r1, 0x14
-    addi r9, r1, 0x10
-    bl __strtoull
-    stw r4, 0x54(r1)
-    stw r3, 0x50(r1)
-    b lbl_8019BF18
-lbl_8019BEF8:
-    lwz r4, 0x24(r1)
-    mr r5, r26
-    mr r6, r27
-    addi r7, r1, 0x18
-    addi r8, r1, 0x14
-    addi r9, r1, 0x10
-    bl __strtoul
-    mr r15, r3
-lbl_8019BF18:
-    lwz r3, 0x18(r1)
-    cmpwi r3, 0x0
-    bne lbl_8019BF48
-    cmpwi r28, 0x0
-    beq lbl_8019C854
-    li r0, 0x0
-    stw r0, 0x5c(r1)
-    li r0, 0x0
-    li r29, 0x1
-    stw r0, 0x58(r1)
-    li r16, 0x0
-    b lbl_8019BFB0
-lbl_8019BF48:
-    lbz r0, 0x22(r1)
-    add r21, r21, r3
-    cmplwi r0, 0x7
-    beq lbl_8019BF60
-    cmplwi r0, 0x4
-    bne lbl_8019BF9C
-lbl_8019BF60:
-    lwz r0, 0x14(r1)
-    cmpwi r0, 0x0
-    beq lbl_8019BF88
-    lwz r0, 0x54(r1)
-    subfic r0, r0, 0x0
-    stw r0, 0x5c(r1)
-    lwz r0, 0x50(r1)
-    subfze r0, r0
-    stw r0, 0x58(r1)
-    b lbl_8019BFB0
-lbl_8019BF88:
-    lwz r0, 0x54(r1)
-    stw r0, 0x5c(r1)
-    lwz r0, 0x50(r1)
-    stw r0, 0x58(r1)
-    b lbl_8019BFB0
-lbl_8019BF9C:
-    lwz r0, 0x14(r1)
-    mr r16, r15
-    cmpwi r0, 0x0
-    beq lbl_8019BFB0
-    neg r16, r15
-lbl_8019BFB0:
-    cmpwi r22, 0x0
-    beq lbl_8019C03C
-    lbz r0, 0x22(r1)
-    cmplwi r0, 0x7
-    bgt lbl_8019C030
-    lis r3, jumptable_8035FF50@ha
-    slwi r0, r0, 2
-    addi r3, r3, jumptable_8035FF50@l
-    lwzx r3, r3, r0
-    mtctr r3
-    bctr
-    stw r16, 0x0(r22)
-    b lbl_8019C030
-    stb r16, 0x0(r22)
-    b lbl_8019C030
-    sth r16, 0x0(r22)
-    b lbl_8019C030
-    stw r16, 0x0(r22)
-    b lbl_8019C030
-    lwz r0, 0x5c(r1)
-    stw r0, 0x4(r22)
-    lwz r0, 0x58(r1)
-    stw r0, 0x0(r22)
-    b lbl_8019C030
-    stw r16, 0x0(r22)
-    b lbl_8019C030
-    stw r16, 0x0(r22)
-    b lbl_8019C030
-    lwz r0, 0x5c(r1)
-    stw r0, 0x4(r22)
-    lwz r0, 0x58(r1)
-    stw r0, 0x0(r22)
-lbl_8019C030:
-    cmpwi r29, 0x0
-    bne lbl_8019C03C
-    addi r20, r20, 0x1
-lbl_8019C03C:
-    addi r19, r19, 0x1
-    b lbl_8019C848
-    li r3, 0x8
-    b lbl_8019C058
-    li r3, 0xa
-    b lbl_8019C058
-    li r3, 0x10
-lbl_8019C058:
-    cmpwi r29, 0x0
-    beq lbl_8019C078
-    li r0, 0x0
-    stw r0, 0x54(r1)
-    li r0, 0x0
-    li r15, 0x0
-    stw r0, 0x50(r1)
-    b lbl_8019C148
-lbl_8019C078:
-    lbz r0, 0x22(r1)
-    cmplwi r0, 0x7
-    beq lbl_8019C08C
-    cmplwi r0, 0x4
-    bne lbl_8019C0B4
-lbl_8019C08C:
-    lwz r4, 0x24(r1)
-    mr r5, r26
-    mr r6, r27
-    addi r7, r1, 0x18
-    addi r8, r1, 0x14
-    addi r9, r1, 0x10
-    bl __strtoull
-    stw r4, 0x54(r1)
-    stw r3, 0x50(r1)
-    b lbl_8019C0D4
-lbl_8019C0B4:
-    lwz r4, 0x24(r1)
-    mr r5, r26
-    mr r6, r27
-    addi r7, r1, 0x18
-    addi r8, r1, 0x14
-    addi r9, r1, 0x10
-    bl __strtoul
-    mr r15, r3
-lbl_8019C0D4:
-    lwz r3, 0x18(r1)
-    cmpwi r3, 0x0
-    bne lbl_8019C104
-    cmpwi r28, 0x0
-    beq lbl_8019C854
-    li r0, 0x0
-    stw r0, 0x54(r1)
-    li r0, 0x0
-    li r29, 0x1
-    stw r0, 0x50(r1)
-    li r15, 0x0
-    b lbl_8019C148
-lbl_8019C104:
-    lwz r0, 0x14(r1)
-    add r21, r21, r3
-    cmpwi r0, 0x0
-    beq lbl_8019C148
-    lbz r0, 0x22(r1)
-    cmplwi r0, 0x7
-    bne lbl_8019C138
-    lwz r0, 0x54(r1)
-    subfic r0, r0, 0x0
-    stw r0, 0x54(r1)
-    lwz r0, 0x50(r1)
-    subfze r0, r0
-    stw r0, 0x50(r1)
-lbl_8019C138:
-    lbz r0, 0x22(r1)
-    cmplwi r0, 0x7
-    beq lbl_8019C148
-    neg r15, r15
-lbl_8019C148:
-    cmpwi r22, 0x0
-    beq lbl_8019C1D4
-    lbz r0, 0x22(r1)
-    cmplwi r0, 0x7
-    bgt lbl_8019C1C8
-    lis r3, jumptable_8035FF30@ha
-    slwi r0, r0, 2
-    addi r3, r3, jumptable_8035FF30@l
-    lwzx r3, r3, r0
-    mtctr r3
-    bctr
-    stw r15, 0x0(r22)
-    b lbl_8019C1C8
-    stb r15, 0x0(r22)
-    b lbl_8019C1C8
-    sth r15, 0x0(r22)
-    b lbl_8019C1C8
-    stw r15, 0x0(r22)
-    b lbl_8019C1C8
-    lwz r0, 0x54(r1)
-    stw r0, 0x4(r22)
-    lwz r0, 0x50(r1)
-    stw r0, 0x0(r22)
-    b lbl_8019C1C8
-    stw r15, 0x0(r22)
-    b lbl_8019C1C8
-    stw r15, 0x0(r22)
-    b lbl_8019C1C8
-    lwz r0, 0x54(r1)
-    stw r0, 0x4(r22)
-    lwz r0, 0x50(r1)
-    stw r0, 0x0(r22)
-lbl_8019C1C8:
-    cmpwi r29, 0x0
-    bne lbl_8019C1D4
-    addi r20, r20, 0x1
-lbl_8019C1D4:
-    addi r19, r19, 0x1
-    b lbl_8019C848
-    cmpwi r29, 0x0
-    beq lbl_8019C1F0
-    lis r3, lbl_8049C418@ha
-    lfs f1, lbl_8049C418@l(r3)
-    b lbl_8019C230
-lbl_8019C1F0:
-    lwz r3, 0x24(r1)
-    mr r4, r26
-    mr r5, r27
-    addi r6, r1, 0x18
-    addi r7, r1, 0x10
-    bl fn_8019D03C
-    lwz r0, 0x18(r1)
-    cmpwi r0, 0x0
-    bne lbl_8019C22C
-    cmpwi r28, 0x0
-    beq lbl_8019C854
-    lis r3, lbl_8049C418@ha
-    li r29, 0x1
-    lfs f1, lbl_8049C418@l(r3)
-    b lbl_8019C230
-lbl_8019C22C:
-    add r21, r21, r0
-lbl_8019C230:
-    cmpwi r22, 0x0
-    beq lbl_8019C27C
-    lbz r0, 0x22(r1)
-    cmpwi r0, 0x0
-    beq lbl_8019C258
-    cmpwi r0, 0x8
-    beq lbl_8019C264
-    cmpwi r0, 0x9
-    beq lbl_8019C26C
-    b lbl_8019C270
-lbl_8019C258:
-    frsp f0, f1
-    stfs f0, 0x0(r22)
-    b lbl_8019C270
-lbl_8019C264:
-    stfd f1, 0x0(r22)
-    b lbl_8019C270
-lbl_8019C26C:
-    stfd f1, 0x0(r22)
-lbl_8019C270:
-    cmpwi r29, 0x0
-    bne lbl_8019C27C
-    addi r20, r20, 0x1
-lbl_8019C27C:
-    addi r19, r19, 0x1
-    b lbl_8019C848
-    lbz r0, 0x21(r1)
-    cmpwi r0, 0x0
-    bne lbl_8019C294
-    stw r24, 0x24(r1)
-lbl_8019C294:
-    cmpwi r22, 0x0
-    beq lbl_8019C3C4
-    cmpwi r28, 0x0
-    beq lbl_8019C2B8
-    lwz r3, 0x8(r1)
-    li r31, 0x1
-    li r4, 0x1
-    bl __va_arg
-    lwz r30, 0x0(r3)
-lbl_8019C2B8:
-    cmpwi r29, 0x0
-    li r0, 0x0
-    stw r0, 0x18(r1)
-    beq lbl_8019C2DC
-    cmpwi r30, 0x0
-    beq lbl_8019C848
-    li r0, 0x0
-    stb r0, 0x0(r22)
-    b lbl_8019C848
-lbl_8019C2DC:
-    stw r22, 0x4c(r1)
-    b lbl_8019C320
-lbl_8019C2E4:
-    lbz r0, 0x22(r1)
-    stb r3, 0xc(r1)
-    cmplwi r0, 0xa
-    bne lbl_8019C30C
-    mr r3, r22
-    addi r4, r1, 0xc
-    li r5, 0x1
-    bl mbtowc
-    addi r22, r22, 0x2
-    b lbl_8019C314
-lbl_8019C30C:
-    stb r3, 0x0(r22)
-    addi r22, r22, 0x1
-lbl_8019C314:
-    lwz r3, 0x18(r1)
-    addi r0, r3, 0x1
-    stw r0, 0x18(r1)
-lbl_8019C320:
-    lwz r3, 0x24(r1)
-    cmpwi r3, 0x0
-    subi r3, r3, 0x1
-    stw r3, 0x24(r1)
-    beq lbl_8019C374
-    cmpwi r28, 0x0
-    beq lbl_8019C350
-    xor r0, r30, r0
-    cntlzw r0, r0
-    slw r0, r30, r0
-    srwi. r31, r0, 31
-    beq lbl_8019C374
-lbl_8019C350:
-    mr r12, r26
-    mr r3, r27
-    li r4, 0x0
-    li r5, 0x0
-    mtctr r12
-    bctrl
-    cmpwi r3, -0x1
-    mr r18, r3
-    bne lbl_8019C2E4
-lbl_8019C374:
-    lwz r0, 0x18(r1)
-    stb r18, 0xc(r1)
-    cmpwi r0, 0x0
-    beq lbl_8019C394
-    cmpwi r28, 0x0
-    beq lbl_8019C3B8
-    cmpwi r31, 0x0
-    bne lbl_8019C3B8
-lbl_8019C394:
-    cmpwi r28, 0x0
-    beq lbl_8019C854
-    cmpwi r30, 0x0
-    li r29, 0x1
-    beq lbl_8019C848
-    lwz r3, 0x4c(r1)
-    li r0, 0x0
-    stb r0, 0x0(r3)
-    b lbl_8019C848
-lbl_8019C3B8:
-    add r21, r21, r0
-    addi r20, r20, 0x1
-    b lbl_8019C428
-lbl_8019C3C4:
-    li r0, 0x0
-    stw r0, 0x18(r1)
-    b lbl_8019C3E0
-lbl_8019C3D0:
-    lwz r4, 0x18(r1)
-    stb r3, 0xc(r1)
-    addi r0, r4, 0x1
-    stw r0, 0x18(r1)
-lbl_8019C3E0:
-    lwz r3, 0x24(r1)
-    cmpwi r3, 0x0
-    subi r0, r3, 0x1
-    stw r0, 0x24(r1)
-    beq lbl_8019C418
-    mr r12, r26
-    mr r3, r27
-    li r4, 0x0
-    li r5, 0x0
-    mtctr r12
-    bctrl
-    cmpwi r3, -0x1
-    mr r18, r3
-    bne lbl_8019C3D0
-lbl_8019C418:
-    lwz r0, 0x18(r1)
-    stb r18, 0xc(r1)
-    cmpwi r0, 0x0
-    beq lbl_8019C854
-lbl_8019C428:
-    addi r19, r19, 0x1
-    b lbl_8019C848
-    cmpwi r29, 0x0
-    bne lbl_8019C848
-    b lbl_8019C440
-lbl_8019C43C:
-    addi r21, r21, 0x1
-lbl_8019C440:
-    mr r12, r26
-    mr r3, r27
-    li r4, 0x0
-    li r5, 0x0
-    mtctr r12
-    bctrl
-    extsb r0, r3
-    stb r3, 0xc(r1)
-    cmplwi r0, 0xff
-    li r4, 0x1
-    bgt lbl_8019C470
-    li r4, 0x0
-lbl_8019C470:
-    cmpwi r4, 0x0
-    beq lbl_8019C480
-    li r0, 0x0
-    b lbl_8019C494
-lbl_8019C480:
-    lwz r4, 0x38(r23)
-    slwi r0, r0, 1
-    lwz r4, 0x8(r4)
-    lhzx r0, r4, r0
-    rlwinm r0, r0, 0, 23, 23
-lbl_8019C494:
-    cmpwi r0, 0x0
-    bne lbl_8019C43C
-    clrlwi r0, r3, 24
-    extsb r4, r0
-    cmpwi r4, 0x25
-    beq lbl_8019C4D0
-    mr r12, r26
-    mr r3, r27
-    li r5, 0x1
-    mtctr r12
-    bctrl
-    cmpwi r28, 0x0
-    beq lbl_8019C854
-    li r29, 0x1
-    b lbl_8019C848
-lbl_8019C4D0:
-    addi r21, r21, 0x1
-    b lbl_8019C848
-    cmpwi r29, 0x0
-    bne lbl_8019C57C
-    mr r12, r26
-    mr r3, r27
-    li r4, 0x0
-    li r5, 0x0
-    mtctr r12
-    bctrl
-    stb r3, 0xc(r1)
-    b lbl_8019C520
-lbl_8019C500:
-    mr r12, r26
-    mr r3, r27
-    li r4, 0x0
-    li r5, 0x0
-    mtctr r12
-    addi r21, r21, 0x1
-    bctrl
-    stb r3, 0xc(r1)
-lbl_8019C520:
-    clrlwi r4, r3, 24
-    li r3, 0x1
-    extsb r0, r4
-    cmplwi r0, 0xff
-    bgt lbl_8019C538
-    li r3, 0x0
-lbl_8019C538:
-    cmpwi r3, 0x0
-    beq lbl_8019C548
-    li r0, 0x0
-    b lbl_8019C55C
-lbl_8019C548:
-    lwz r3, 0x38(r23)
-    slwi r0, r0, 1
-    lwz r3, 0x8(r3)
-    lhzx r0, r3, r0
-    rlwinm r0, r0, 0, 23, 23
-lbl_8019C55C:
-    cmpwi r0, 0x0
-    bne lbl_8019C500
-    mr r12, r26
-    mr r3, r27
-    extsb r4, r4
-    li r5, 0x1
-    mtctr r12
-    bctrl
-lbl_8019C57C:
-    cmpwi r22, 0x0
-    beq lbl_8019C710
-    cmpwi r28, 0x0
-    beq lbl_8019C5A4
-    lwz r3, 0x8(r1)
-    li r31, 0x1
-    li r4, 0x1
-    bl __va_arg
-    lwz r3, 0x0(r3)
-    subi r30, r3, 0x1
-lbl_8019C5A4:
-    cmpwi r29, 0x0
-    li r0, 0x0
-    stw r0, 0x18(r1)
-    beq lbl_8019C5C8
-    cmpwi r30, 0x0
-    beq lbl_8019C848
-    li r0, 0x0
-    stb r0, 0x0(r22)
-    b lbl_8019C848
-lbl_8019C5C8:
-    stw r22, 0x48(r1)
-    b lbl_8019C62C
-lbl_8019C5D0:
-    extrwi r0, r3, 5, 24
-    clrlwi r5, r3, 29
-    add r4, r25, r0
-    stb r3, 0xc(r1)
-    lbz r0, 0x8(r4)
-    slw r4, r24, r5
-    clrlwi r3, r3, 24
-    and. r0, r4, r0
-    beq lbl_8019C684
-    lbz r0, 0x22(r1)
-    cmplwi r0, 0xa
-    bne lbl_8019C618
-    mr r3, r22
-    addi r4, r1, 0xc
-    li r5, 0x1
-    bl mbtowc
-    addi r22, r22, 0x2
-    b lbl_8019C620
-lbl_8019C618:
-    stb r3, 0x0(r22)
-    addi r22, r22, 0x1
-lbl_8019C620:
-    lwz r3, 0x18(r1)
-    addi r0, r3, 0x1
-    stw r0, 0x18(r1)
-lbl_8019C62C:
-    lwz r3, 0x24(r1)
-    cmpwi r3, 0x0
-    subi r3, r3, 0x1
-    stw r3, 0x24(r1)
-    beq lbl_8019C684
-    cmpwi r28, 0x0
-    beq lbl_8019C660
-    subf r4, r0, r30
-    orc r3, r30, r0
-    srwi r0, r4, 1
-    subf r0, r0, r3
-    srwi. r31, r0, 31
-    beq lbl_8019C684
-lbl_8019C660:
-    mr r12, r26
-    mr r3, r27
-    li r4, 0x0
-    li r5, 0x0
-    mtctr r12
-    bctrl
-    cmpwi r3, -0x1
-    mr r18, r3
-    bne lbl_8019C5D0
-lbl_8019C684:
-    lwz r3, 0x18(r1)
-    stb r18, 0xc(r1)
-    cmpwi r3, 0x0
-    beq lbl_8019C6A4
-    cmpwi r28, 0x0
-    beq lbl_8019C6E4
-    cmpwi r31, 0x0
-    bne lbl_8019C6E4
-lbl_8019C6A4:
-    clrlwi r4, r18, 24
-    mr r12, r26
-    mr r3, r27
-    li r5, 0x1
-    extsb r4, r4
-    mtctr r12
-    bctrl
-    cmpwi r28, 0x0
-    beq lbl_8019C854
-    cmpwi r30, 0x0
-    li r29, 0x1
-    beq lbl_8019C848
-    lwz r3, 0x48(r1)
-    li r0, 0x0
-    stb r0, 0x0(r3)
-    b lbl_8019C848
-lbl_8019C6E4:
-    lbz r0, 0x22(r1)
-    add r21, r21, r3
-    cmplwi r0, 0xa
-    bne lbl_8019C700
-    li r0, 0x0
-    sth r0, 0x0(r22)
-    b lbl_8019C708
-lbl_8019C700:
-    li r0, 0x0
-    stb r0, 0x0(r22)
-lbl_8019C708:
-    addi r20, r20, 0x1
-    b lbl_8019C7B4
-lbl_8019C710:
-    li r0, 0x0
-    stw r0, 0x18(r1)
-    b lbl_8019C748
-lbl_8019C71C:
-    extrwi r0, r3, 5, 24
-    clrlwi r5, r3, 29
-    add r4, r25, r0
-    stb r3, 0xc(r1)
-    lbz r0, 0x8(r4)
-    slw r3, r24, r5
-    and. r0, r3, r0
-    beq lbl_8019C780
-    lwz r3, 0x18(r1)
-    addi r0, r3, 0x1
-    stw r0, 0x18(r1)
-lbl_8019C748:
-    lwz r3, 0x24(r1)
-    cmpwi r3, 0x0
-    subi r0, r3, 0x1
-    stw r0, 0x24(r1)
-    beq lbl_8019C780
-    mr r12, r26
-    mr r3, r27
-    li r4, 0x0
-    li r5, 0x0
-    mtctr r12
-    bctrl
-    cmpwi r3, -0x1
-    mr r18, r3
-    bne lbl_8019C71C
-lbl_8019C780:
-    lwz r0, 0x18(r1)
-    stb r18, 0xc(r1)
-    cmpwi r0, 0x0
-    bne lbl_8019C7B0
-    clrlwi r4, r18, 24
-    mr r12, r26
-    mr r3, r27
-    li r5, 0x1
-    extsb r4, r4
-    mtctr r12
-    bctrl
-    b lbl_8019C848
-lbl_8019C7B0:
-    add r21, r21, r0
-lbl_8019C7B4:
-    lwz r0, 0x24(r1)
-    cmpwi r0, 0x0
-    blt lbl_8019C7DC
-    lbz r4, 0xc(r1)
-    mr r12, r26
-    mr r3, r27
-    li r5, 0x1
-    extsb r4, r4
-    mtctr r12
-    bctrl
-lbl_8019C7DC:
-    addi r19, r19, 0x1
-    b lbl_8019C848
-    cmpwi r22, 0x0
-    beq lbl_8019C848
-    lbz r0, 0x22(r1)
-    cmpwi r0, 0x0
-    beq lbl_8019C81C
-    cmpwi r0, 0x2
-    beq lbl_8019C824
-    cmpwi r0, 0x3
-    beq lbl_8019C82C
-    cmpwi r0, 0x1
-    beq lbl_8019C834
-    cmpwi r0, 0x7
-    beq lbl_8019C83C
-    b lbl_8019C848
-lbl_8019C81C:
-    stw r21, 0x0(r22)
-    b lbl_8019C848
-lbl_8019C824:
-    sth r21, 0x0(r22)
-    b lbl_8019C848
-lbl_8019C82C:
-    stw r21, 0x0(r22)
-    b lbl_8019C848
-lbl_8019C834:
-    stb r21, 0x0(r22)
-    b lbl_8019C848
-lbl_8019C83C:
-    stw r21, 0x4(r22)
-    srawi r0, r21, 31
-    stw r0, 0x0(r22)
-lbl_8019C848:
-    lbz r0, 0x0(r17)
-    extsb. r22, r0
-    bne lbl_8019BC64
-lbl_8019C854:
-    mr r12, r26
-    mr r3, r27
-    li r4, 0x0
-    li r5, 0x2
-    mtctr r12
-    bctrl
-    cmpwi r3, 0x0
-    beq lbl_8019C884
-    cmpwi r19, 0x0
-    bne lbl_8019C884
-    li r3, -0x1
-    b lbl_8019C888
-lbl_8019C884:
-    mr r3, r20
-lbl_8019C888:
-    addi r11, r1, 0xb0
-    bl _restgpr_15
-    lwz r0, 0xb4(r1)
-    mtlr r0
-    addi r1, r1, 0xb0
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// __StringRead
-// ----------------------------------------------------------------------------
-asm void __StringRead() {
-    nofralloc
-    cmpwi r5, 0x0
-    beq lbl_8019C8BC
-    cmpwi r5, 0x1
-    beq lbl_8019C8EC
-    cmpwi r5, 0x2
-    beq lbl_8019C918
-    b lbl_8019C920
-lbl_8019C8BC:
-    lwz r4, 0x0(r3)
-    lbz r5, 0x0(r4)
-    extsb. r0, r5
-    bne lbl_8019C8DC
-    li r0, 0x1
-    stw r0, 0x4(r3)
-    li r3, -0x1
-    blr
-lbl_8019C8DC:
-    addi r0, r4, 0x1
-    stw r0, 0x0(r3)
-    mr r3, r5
-    blr
-lbl_8019C8EC:
-    lwz r0, 0x4(r3)
-    cmpwi r0, 0x0
-    bne lbl_8019C908
-    lwz r5, 0x0(r3)
-    subi r0, r5, 0x1
-    stw r0, 0x0(r3)
-    b lbl_8019C910
-lbl_8019C908:
-    li r0, 0x0
-    stw r0, 0x4(r3)
-lbl_8019C910:
-    mr r3, r4
-    blr
-lbl_8019C918:
-    lwz r3, 0x4(r3)
-    blr
-lbl_8019C920:
-    li r3, 0x0
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// sscanf
-// ----------------------------------------------------------------------------
-asm void sscanf() {
-    nofralloc
-    stwu r1, -0x80(r1)
-    mflr r0
-    stw r0, 0x84(r1)
-    bne cr1, lbl_8019C958
-    stfd f1, 0x28(r1)
-    stfd f2, 0x30(r1)
-    stfd f3, 0x38(r1)
-    stfd f4, 0x40(r1)
-    stfd f5, 0x48(r1)
-    stfd f6, 0x50(r1)
-    stfd f7, 0x58(r1)
-    stfd f8, 0x60(r1)
-lbl_8019C958:
-    cmpwi r3, 0x0
-    addi r11, r1, 0x88
-    addi r0, r1, 0x8
-    lis r12, 0x200
-    stw r3, 0x8(r1)
-    stw r4, 0xc(r1)
-    stw r5, 0x10(r1)
-    stw r6, 0x14(r1)
-    stw r7, 0x18(r1)
-    stw r8, 0x1c(r1)
-    stw r9, 0x20(r1)
-    stw r10, 0x24(r1)
-    stw r12, 0x70(r1)
-    stw r11, 0x74(r1)
-    stw r0, 0x78(r1)
-    stw r3, 0x68(r1)
-    beq lbl_8019CA1C
-    lbz r0, 0x0(r3)
-    extsb. r0, r0
-    beq lbl_8019CA1C
-    lis r5, lbl_8035FBD8@ha
-    addi r5, r5, lbl_8035FBD8@l
-    lwz r6, 0x38(r5)
-    b lbl_8019CA04
-lbl_8019C9B8:
-    lbz r0, 0x0(r3)
-    li r5, 0x1
-    addi r3, r3, 0x1
-    extsb r0, r0
-    cmplwi r0, 0xff
-    bgt lbl_8019C9D4
-    li r5, 0x0
-lbl_8019C9D4:
-    cmpwi r5, 0x0
-    beq lbl_8019C9E4
-    li r0, 0x0
-    b lbl_8019C9F4
-lbl_8019C9E4:
-    lwz r5, 0x8(r6)
-    slwi r0, r0, 1
-    lhzx r0, r5, r0
-    rlwinm r0, r0, 0, 23, 23
-lbl_8019C9F4:
-    cmpwi r0, 0x0
-    bne lbl_8019CA04
-    li r0, 0x0
-    b lbl_8019CA14
-lbl_8019CA04:
-    lbz r0, 0x0(r3)
-    extsb. r0, r0
-    bne lbl_8019C9B8
-    li r0, 0x1
-lbl_8019CA14:
-    cmpwi r0, 0x0
-    beq lbl_8019CA24
-lbl_8019CA1C:
-    li r3, -0x1
-    b lbl_8019CA48
-lbl_8019CA24:
-    li r0, 0x0
-    lis r3, __StringRead@ha
-    mr r5, r4
-    stw r0, 0x6c(r1)
-    addi r3, r3, __StringRead@l
-    addi r4, r1, 0x68
-    addi r6, r1, 0x70
-    li r7, 0x0
-    bl __sformatter
-lbl_8019CA48:
-    lwz r0, 0x84(r1)
-    mtlr r0
-    addi r1, r1, 0x80
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// raise
-// ----------------------------------------------------------------------------
+// asm_to_cpp: raise
 asm void raise() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1606,4 +1368,3 @@ lbl_8019CAE8:
     addi r1, r1, 0x10
     blr
 }
-

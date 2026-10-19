@@ -1,1200 +1,685 @@
-#include "types.h"
+#include "PowerPC_EABI_Support/MSL_C/MSL_Common/ansi_fp.h"
+#include <float.h>
 
-// Translation unit: src/MSL_C.PPCEABI.bare.H/ansi_fp.cpp
-// Total functions: 10
+typedef unsigned long long d_int;
 
-// Small Data symbols (@sda21)
-float lbl_804A1158;
-float lbl_804A1160;
-float lbl_804A1168;
-float lbl_804A1170;
-float lbl_804A1178;
-float lbl_804A1180;
-float lbl_804A1188;
-
-// Global data symbols (@ha/@l)
-u8 jumptable_8035F8C0[];
-u8 lbl_8033B3B8[];
-u8 lbl_8035F9E8[];
-u8 lbl_8049C41C[];
-
-// Forward declarations
-void __div2u();
-void __mod2u();
-void _restgpr_21();
-void _savegpr_21();
-void __cvt_dbl_ull();
-void fn_80195C14();
-void fn_80195C2C();
-void __ull2dec();
-void __timesdec();
-void __str2dec();
-void __two_exp();
-void __equals_dec();
-void __less_dec();
-void __minus_dec();
-void __num2dec_internal();
-void fn_801972E0();
-void fn_80197480();
-void copysign();
-void frexp();
-void ldexp();
-void log10();
-
-// ----------------------------------------------------------------------------
-// __ull2dec
-// ----------------------------------------------------------------------------
-asm void __ull2dec() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    li r0, 0x0
-    stw r31, 0x1c(r1)
-    mr r31, r5
-    stw r30, 0x18(r1)
-    mr r30, r6
-    stw r29, 0x14(r1)
-    mr r29, r3
-    stb r0, 0x0(r3)
-    stb r0, 0x4(r3)
-    b lbl_801963C8
-lbl_80196384:
-    mr r3, r31
-    mr r4, r30
-    li r6, 0xa
-    li r5, 0x0
-    bl __mod2u
-    lbz r8, 0x4(r29)
-    mr r3, r31
-    li r6, 0xa
-    li r5, 0x0
-    add r7, r29, r8
-    addi r0, r8, 0x1
-    stb r4, 0x5(r7)
-    mr r4, r30
-    stb r0, 0x4(r29)
-    bl __div2u
-    mr r30, r4
-    mr r31, r3
-lbl_801963C8:
-    or. r0, r30, r31
-    bne lbl_80196384
-    lbz r0, 0x4(r29)
-    addi r4, r29, 0x5
-    add r3, r29, r0
-    addi r3, r3, 0x5
-    b lbl_801963F8
-lbl_801963E4:
-    lbz r5, 0x0(r4)
-    lbz r0, 0x0(r3)
-    stb r0, 0x0(r4)
-    addi r4, r4, 0x1
-    stb r5, 0x0(r3)
-lbl_801963F8:
-    subi r3, r3, 0x1
-    cmplw r4, r3
-    blt lbl_801963E4
-    lbz r3, 0x4(r29)
-    subi r0, r3, 0x1
-    sth r0, 0x2(r29)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+static inline int __count_trailing_zerol(u32 x){
+    return 32 - __cntlzw(~x & (x - 1));
 }
 
-// ----------------------------------------------------------------------------
-// __timesdec
-// ----------------------------------------------------------------------------
-asm void __timesdec() {
-    nofralloc
-    stwu r1, -0x60(r1)
-    lis r6, 0xcccd
-    lbz r8, 0x4(r4)
-    subi r9, r6, 0x3333
-    stw r31, 0x5c(r1)
-    addi r0, r1, 0x8
-    lbz r7, 0x4(r5)
-    li r11, 0x0
-    stw r30, 0x58(r1)
-    add r12, r8, r7
-    stw r29, 0x54(r1)
-    subi r12, r12, 0x1
-    add r6, r0, r12
-    addi r6, r6, 0x1
-    stb r11, 0x0(r3)
-    mr r0, r6
-    b lbl_8019659C
-lbl_80196470:
-    lbz r7, 0x4(r5)
-    subi r31, r7, 0x1
-    subf r7, r31, r12
-    subic. r30, r7, 0x1
-    bge lbl_8019648C
-    li r30, 0x0
-    subi r31, r12, 0x1
-lbl_8019648C:
-    lbz r7, 0x4(r4)
-    add r8, r5, r31
-    addi r31, r31, 0x1
-    add r10, r4, r30
-    subf r7, r30, r7
-    addi r29, r8, 0x5
-    cmpw r31, r7
-    addi r30, r10, 0x5
-    ble lbl_801964B4
-    mr r31, r7
-lbl_801964B4:
-    cmpwi r31, 0x0
-    ble lbl_8019657C
-    srwi. r7, r31, 3
-    mtctr r7
-    beq lbl_8019655C
-lbl_801964C8:
-    lbz r10, 0x0(r30)
-    lbz r8, 0x0(r29)
-    mullw r7, r10, r8
-    lbz r10, 0x1(r30)
-    lbz r8, -0x1(r29)
-    add r11, r11, r7
-    mullw r7, r10, r8
-    lbz r10, 0x2(r30)
-    lbz r8, -0x2(r29)
-    add r11, r11, r7
-    mullw r7, r10, r8
-    lbz r10, 0x3(r30)
-    lbz r8, -0x3(r29)
-    add r11, r11, r7
-    mullw r7, r10, r8
-    lbz r10, 0x4(r30)
-    lbz r8, -0x4(r29)
-    add r11, r11, r7
-    mullw r7, r10, r8
-    lbz r10, 0x5(r30)
-    lbz r8, -0x5(r29)
-    add r11, r11, r7
-    mullw r7, r10, r8
-    lbz r10, 0x6(r30)
-    lbz r8, -0x6(r29)
-    add r11, r11, r7
-    mullw r7, r10, r8
-    lbz r10, 0x7(r30)
-    lbz r8, -0x7(r29)
-    addi r30, r30, 0x8
-    subi r29, r29, 0x8
-    add r11, r11, r7
-    mullw r7, r10, r8
-    add r11, r11, r7
-    bdnz lbl_801964C8
-    andi. r31, r31, 0x7
-    beq lbl_8019657C
-lbl_8019655C:
-    mtctr r31
-lbl_80196560:
-    lbz r10, 0x0(r30)
-    addi r30, r30, 0x1
-    lbz r8, 0x0(r29)
-    subi r29, r29, 0x1
-    mullw r7, r10, r8
-    add r11, r11, r7
-    bdnz lbl_80196560
-lbl_8019657C:
-    mulhwu r8, r9, r11
-    subi r12, r12, 0x1
-    mr r7, r8
-    srwi r8, r8, 3
-    mulli r8, r8, 0xa
-    subf r8, r8, r11
-    stbu r8, -0x1(r6)
-    srwi r11, r7, 3
-lbl_8019659C:
-    cmpwi r12, 0x0
-    bgt lbl_80196470
-    lha r7, 0x2(r4)
-    cmpwi r11, 0x0
-    lha r4, 0x2(r5)
-    add r4, r7, r4
-    sth r4, 0x2(r3)
-    beq lbl_801965CC
-    stbu r11, -0x1(r6)
-    extsh r4, r4
-    addi r4, r4, 0x1
-    sth r4, 0x2(r3)
-lbl_801965CC:
-    li r7, 0x0
-    b lbl_801965E8
-lbl_801965D4:
-    add r4, r3, r7
-    lbz r5, 0x0(r6)
-    stb r5, 0x5(r4)
-    addi r7, r7, 0x1
-    addi r6, r6, 0x1
-lbl_801965E8:
-    cmpwi r7, 0x24
-    bge lbl_801965F8
-    cmplw r6, r0
-    blt lbl_801965D4
-lbl_801965F8:
-    cmplw r6, r0
-    stb r7, 0x4(r3)
-    bge lbl_801966A0
-    lbz r4, 0x0(r6)
-    cmplwi r4, 0x5
-    blt lbl_801966A0
-    bne lbl_80196648
-    addi r5, r6, 0x1
-    subf r4, r5, r0
-    mtctr r4
-    cmplw r5, r0
-    bge lbl_8019663C
-lbl_80196628:
-    lbz r0, 0x0(r5)
-    cmpwi r0, 0x0
-    bne lbl_80196648
-    addi r5, r5, 0x1
-    bdnz lbl_80196628
-lbl_8019663C:
-    lbz r0, -0x1(r6)
-    clrlwi. r0, r0, 31
-    beq lbl_801966A0
-lbl_80196648:
-    lbz r4, 0x4(r3)
-    addi r6, r3, 0x5
-    li r0, 0x0
-    add r5, r6, r4
-    subi r5, r5, 0x1
-lbl_8019665C:
-    lbz r4, 0x0(r5)
-    cmplwi r4, 0x9
-    bge lbl_80196674
-    addi r0, r4, 0x1
-    stb r0, 0x0(r5)
-    b lbl_801966A0
-lbl_80196674:
-    cmplw r5, r6
-    bne lbl_80196694
-    li r0, 0x1
-    stb r0, 0x0(r5)
-    lha r4, 0x2(r3)
-    addi r0, r4, 0x1
-    sth r0, 0x2(r3)
-    b lbl_801966A0
-lbl_80196694:
-    stb r0, 0x0(r5)
-    subi r5, r5, 0x1
-    b lbl_8019665C
-lbl_801966A0:
-    lwz r31, 0x5c(r1)
-    lwz r30, 0x58(r1)
-    lwz r29, 0x54(r1)
-    addi r1, r1, 0x60
-    blr
+static int __count_trailing_zero(double n){
+    u32* array = (u32*)&n;
+
+    u32 hi = array[0] | 0x100000;
+    u32 lo = array[1];
+    int zeros = __count_trailing_zerol(lo);
+    
+    if (lo == 0) {
+        return 32 + __count_trailing_zerol(hi);
+    }
+    return zeros;
 }
 
-// ----------------------------------------------------------------------------
-// __str2dec
-// ----------------------------------------------------------------------------
-asm void __str2dec() {
-    nofralloc
-    li r0, 0x0
-    sth r5, 0x2(r3)
-    li r7, 0x0
-    stb r0, 0x0(r3)
-    b lbl_801966E0
-lbl_801966C8:
-    lbz r6, 0x0(r4)
-    add r5, r3, r7
-    addi r4, r4, 0x1
-    addi r7, r7, 0x1
-    subi r0, r6, 0x30
-    stb r0, 0x5(r5)
-lbl_801966E0:
-    cmpwi r7, 0x24
-    bge lbl_801966F4
-    lbz r0, 0x0(r4)
-    extsb. r0, r0
-    bne lbl_801966C8
-lbl_801966F4:
-    lbz r0, 0x0(r4)
-    stb r7, 0x4(r3)
-    extsb. r0, r0
-    beqlr
-    cmpwi r0, 0x5
-    bltlr
-    bgt lbl_80196744
-    addi r5, r4, 0x1
-    b lbl_80196728
-lbl_80196718:
-    extsb r0, r4
-    cmpwi r0, 0x30
-    bne lbl_80196744
-    addi r5, r5, 0x1
-lbl_80196728:
-    lbz r4, 0x0(r5)
-    extsb. r0, r4
-    bne lbl_80196718
-    add r4, r7, r3
-    lbz r0, 0x4(r4)
-    clrlwi. r0, r0, 31
-    beqlr
-lbl_80196744:
-    lbz r4, 0x4(r3)
-    addi r6, r3, 0x5
-    li r0, 0x0
-    add r5, r6, r4
-    subi r5, r5, 0x1
-lbl_80196758:
-    lbz r4, 0x0(r5)
-    cmplwi r4, 0x9
-    bge lbl_80196770
-    addi r0, r4, 0x1
-    stb r0, 0x0(r5)
-    blr
-lbl_80196770:
-    cmplw r5, r6
-    bne lbl_80196790
-    li r0, 0x1
-    stb r0, 0x0(r5)
-    lha r4, 0x2(r3)
-    addi r0, r4, 0x1
-    sth r0, 0x2(r3)
-    blr
-lbl_80196790:
-    stb r0, 0x0(r5)
-    subi r5, r5, 0x1
-    b lbl_80196758
-    blr
+static int __must_round(const decimal* d, int digits){
+    u8 const* i = d->sig.text + digits;
+            
+    if (*i > 5) {
+        return 1;
+    }
+    
+    if (*i < 5) {
+        return -1;
+    }
+
+    {
+        u8 const* e = d->sig.text + d->sig.length;
+
+        for(i++; i < e; i++){
+            if (*i != 0) {
+                return 1;
+            }
+        }
+    }
+                  
+    if (d->sig.text[digits - 1] & 1) {
+        return 1;
+    }
+
+    return -1;
 }
 
-// ----------------------------------------------------------------------------
-// __two_exp
-// ----------------------------------------------------------------------------
-asm void __two_exp() {
-    nofralloc
-    stwu r1, -0x70(r1)
-    mflr r0
-    stw r0, 0x74(r1)
-    addi r0, r4, 0x40
-    cmplwi r0, 0x48
-    stw r31, 0x6c(r1)
-    mr r31, r3
-    stw r30, 0x68(r1)
-    mr r30, r4
-    bgt lbl_801969D4
-    lis r5, jumptable_8035F8C0@ha
-    slwi r0, r0, 2
-    addi r5, r5, jumptable_8035F8C0@l
-    lwzx r5, r5, r0
-    mtctr r5
-    bctr
-    lis r4, lbl_8033B3B8@ha
-    li r5, -0x14
-    addi r4, r4, lbl_8033B3B8@l
-    bl __str2dec
-    b lbl_80196AA4
-    lis r4, lbl_8033B3B8@ha
-    li r5, -0x10
-    addi r4, r4, lbl_8033B3B8@l
-    addi r4, r4, 0x2e
-    bl __str2dec
-    b lbl_80196AA4
-    lis r4, lbl_8033B3B8@ha
-    li r5, -0xa
-    addi r4, r4, lbl_8033B3B8@l
-    addi r4, r4, 0x55
-    bl __str2dec
-    b lbl_80196AA4
-    lis r4, lbl_8033B3B8@ha
-    li r5, -0x5
-    addi r4, r4, lbl_8033B3B8@l
-    addi r4, r4, 0x6d
-    bl __str2dec
-    b lbl_80196AA4
-    lis r4, lbl_8033B3B8@ha
-    li r5, -0x3
-    addi r4, r4, lbl_8033B3B8@l
-    addi r4, r4, 0x7a
-    bl __str2dec
-    b lbl_80196AA4
-    lis r4, lbl_8033B3B8@ha
-    li r5, -0x3
-    addi r4, r4, lbl_8033B3B8@l
-    addi r4, r4, 0x81
-    bl __str2dec
-    b lbl_80196AA4
-    lis r4, lbl_8033B3B8@ha
-    li r5, -0x2
-    addi r4, r4, lbl_8033B3B8@l
-    addi r4, r4, 0x87
-    bl __str2dec
-    b lbl_80196AA4
-    lis r4, lbl_8033B3B8@ha
-    li r5, -0x2
-    addi r4, r4, lbl_8033B3B8@l
-    addi r4, r4, 0x8d
-    bl __str2dec
-    b lbl_80196AA4
-    lis r4, lbl_8033B3B8@ha
-    li r5, -0x2
-    addi r4, r4, lbl_8033B3B8@l
-    addi r4, r4, 0x92
-    bl __str2dec
-    b lbl_80196AA4
-    lis r4, lbl_8033B3B8@ha
-    li r5, -0x1
-    addi r4, r4, lbl_8033B3B8@l
-    addi r4, r4, 0x96
-    bl __str2dec
-    b lbl_80196AA4
-    lis r4, lbl_8033B3B8@ha
-    li r5, -0x1
-    addi r4, r4, lbl_8033B3B8@l
-    addi r4, r4, 0x9a
-    bl __str2dec
-    b lbl_80196AA4
-    lis r4, lbl_8033B3B8@ha
-    li r5, -0x1
-    addi r4, r4, lbl_8033B3B8@l
-    addi r4, r4, 0x9d
-    bl __str2dec
-    b lbl_80196AA4
-    lis r4, lbl_8033B3B8@ha
-    li r5, 0x0
-    addi r4, r4, lbl_8033B3B8@l
-    addi r4, r4, 0x9f
-    bl __str2dec
-    b lbl_80196AA4
-    lis r4, lbl_8033B3B8@ha
-    li r5, 0x0
-    addi r4, r4, lbl_8033B3B8@l
-    addi r4, r4, 0xa1
-    bl __str2dec
-    b lbl_80196AA4
-    lis r4, lbl_8033B3B8@ha
-    li r5, 0x0
-    addi r4, r4, lbl_8033B3B8@l
-    addi r4, r4, 0xa3
-    bl __str2dec
-    b lbl_80196AA4
-    lis r4, lbl_8033B3B8@ha
-    li r5, 0x0
-    addi r4, r4, lbl_8033B3B8@l
-    addi r4, r4, 0xa5
-    bl __str2dec
-    b lbl_80196AA4
-    lis r4, lbl_8033B3B8@ha
-    li r5, 0x1
-    addi r4, r4, lbl_8033B3B8@l
-    addi r4, r4, 0xa7
-    bl __str2dec
-    b lbl_80196AA4
-    lis r4, lbl_8033B3B8@ha
-    li r5, 0x1
-    addi r4, r4, lbl_8033B3B8@l
-    addi r4, r4, 0xaa
-    bl __str2dec
-    b lbl_80196AA4
-    lis r4, lbl_8033B3B8@ha
-    li r5, 0x1
-    addi r4, r4, lbl_8033B3B8@l
-    addi r4, r4, 0xad
-    bl __str2dec
-    b lbl_80196AA4
-    lis r4, lbl_8033B3B8@ha
-    li r5, 0x2
-    addi r4, r4, lbl_8033B3B8@l
-    addi r4, r4, 0xb0
-    bl __str2dec
-    b lbl_80196AA4
-    lis r4, lbl_8033B3B8@ha
-    li r5, 0x2
-    addi r4, r4, lbl_8033B3B8@l
-    addi r4, r4, 0xb4
-    bl __str2dec
-    b lbl_80196AA4
-lbl_801969D4:
-    srwi r0, r4, 31
-    addi r3, r1, 0x34
-    add r0, r0, r4
-    srawi r4, r0, 1
-    bl __two_exp
-    addi r4, r1, 0x34
-    mr r3, r31
-    mr r5, r4
-    bl __timesdec
-    clrlwi. r0, r30, 31
-    beq lbl_80196AA4
-    lwz r3, 0x0(r31)
-    cmpwi r30, 0x0
-    lwz r0, 0x4(r31)
-    stw r0, 0xc(r1)
-    stw r3, 0x8(r1)
-    lwz r3, 0x8(r31)
-    lwz r0, 0xc(r31)
-    stw r0, 0x14(r1)
-    stw r3, 0x10(r1)
-    lwz r3, 0x10(r31)
-    lwz r0, 0x14(r31)
-    stw r0, 0x1c(r1)
-    stw r3, 0x18(r1)
-    lwz r3, 0x18(r31)
-    lwz r0, 0x1c(r31)
-    stw r0, 0x24(r1)
-    stw r3, 0x20(r1)
-    lwz r3, 0x20(r31)
-    lwz r0, 0x24(r31)
-    stw r0, 0x2c(r1)
-    stw r3, 0x28(r1)
-    lhz r0, 0x28(r31)
-    sth r0, 0x30(r1)
-    ble lbl_80196A7C
-    lis r4, lbl_8033B3B8@ha
-    addi r3, r1, 0x34
-    addi r4, r4, lbl_8033B3B8@l
-    li r5, 0x0
-    addi r4, r4, 0xa1
-    bl __str2dec
-    b lbl_80196A94
-lbl_80196A7C:
-    lis r4, lbl_8033B3B8@ha
-    addi r3, r1, 0x34
-    addi r4, r4, lbl_8033B3B8@l
-    li r5, -0x1
-    addi r4, r4, 0x9d
-    bl __str2dec
-lbl_80196A94:
-    mr r3, r31
-    addi r4, r1, 0x8
-    addi r5, r1, 0x34
-    bl __timesdec
-lbl_80196AA4:
-    lwz r0, 0x74(r1)
-    lwz r31, 0x6c(r1)
-    lwz r30, 0x68(r1)
-    mtlr r0
-    addi r1, r1, 0x70
-    blr
+static void __dorounddecup(decimal* d, int digits){
+    u8* b = d->sig.text;
+    u8* i = b + digits - 1;
+                
+    while(1){
+        if (*i < 9) {
+            *i += 1;
+            break;
+        }
+        if (i == b) {
+            *i = 1;
+            d->exp++;
+            break;
+        }
+        *i-- = 0;
+    }
 }
 
-// ----------------------------------------------------------------------------
-// __equals_dec
-// ----------------------------------------------------------------------------
-asm void __equals_dec() {
-    nofralloc
-    lbz r5, 0x5(r3)
-    cmpwi r5, 0x0
-    bne lbl_80196AD8
-    lbz r0, 0x5(r4)
-    cntlzw r0, r0
-    srwi r3, r0, 5
-    blr
-lbl_80196AD8:
-    lbz r0, 0x5(r4)
-    cmpwi r0, 0x0
-    bne lbl_80196AF0
-    cntlzw r0, r5
-    srwi r3, r0, 5
-    blr
-lbl_80196AF0:
-    lha r5, 0x2(r3)
-    lha r0, 0x2(r4)
-    cmpw r5, r0
-    bne lbl_80196B98
-    lbz r7, 0x4(r3)
-    lbz r0, 0x4(r4)
-    mr r9, r7
-    cmpw r7, r0
-    ble lbl_80196B18
-    mr r9, r0
-lbl_80196B18:
-    li r8, 0x0
-    mtctr r9
-    cmpwi r9, 0x0
-    ble lbl_80196B50
-lbl_80196B28:
-    add r6, r3, r8
-    add r5, r4, r8
-    lbz r6, 0x5(r6)
-    lbz r0, 0x5(r5)
-    cmplw r6, r0
-    beq lbl_80196B48
-    li r3, 0x0
-    blr
-lbl_80196B48:
-    addi r8, r8, 0x1
-    bdnz lbl_80196B28
-lbl_80196B50:
-    cmpw r9, r7
-    bne lbl_80196B5C
-    mr r3, r4
-lbl_80196B5C:
-    lbz r4, 0x4(r3)
-    subf r0, r8, r4
-    mtctr r0
-    cmpw r8, r4
-    bge lbl_80196B90
-lbl_80196B70:
-    add r4, r3, r8
-    lbz r0, 0x5(r4)
-    cmpwi r0, 0x0
-    beq lbl_80196B88
-    li r3, 0x0
-    blr
-lbl_80196B88:
-    addi r8, r8, 0x1
-    bdnz lbl_80196B70
-lbl_80196B90:
-    li r3, 0x1
-    blr
-lbl_80196B98:
-    li r3, 0x0
-    blr
+static void __rounddec(decimal* d, int digits){
+    if (digits > 0 && digits < d->sig.length) {
+        int unkBool = __must_round(d,digits);
+        d->sig.length = digits;
+            
+        if (unkBool >= 0) {
+            __dorounddecup(d, digits);
+        }
+    }
 }
 
-// ----------------------------------------------------------------------------
-// __less_dec
-// ----------------------------------------------------------------------------
-asm void __less_dec() {
-    nofralloc
-    lbz r0, 0x5(r3)
-    cmpwi r0, 0x0
-    bne lbl_80196BC0
-    lbz r3, 0x5(r4)
-    neg r0, r3
-    or r0, r0, r3
-    srwi r3, r0, 31
-    blr
-lbl_80196BC0:
-    lbz r0, 0x5(r4)
-    cmpwi r0, 0x0
-    bne lbl_80196BD4
-    li r3, 0x0
-    blr
-lbl_80196BD4:
-    lha r5, 0x2(r4)
-    lha r0, 0x2(r3)
-    cmpw r0, r5
-    bne lbl_80196C88
-    lbz r7, 0x4(r3)
-    lbz r0, 0x4(r4)
-    mr r9, r7
-    cmpw r7, r0
-    ble lbl_80196BFC
-    mr r9, r0
-lbl_80196BFC:
-    li r8, 0x0
-    mtctr r9
-    cmpwi r9, 0x0
-    ble lbl_80196C44
-lbl_80196C0C:
-    add r6, r4, r8
-    add r5, r3, r8
-    lbz r6, 0x5(r6)
-    lbz r0, 0x5(r5)
-    cmplw r0, r6
-    bge lbl_80196C2C
-    li r3, 0x1
-    blr
-lbl_80196C2C:
-    cmplw r6, r0
-    bge lbl_80196C3C
-    li r3, 0x0
-    blr
-lbl_80196C3C:
-    addi r8, r8, 0x1
-    bdnz lbl_80196C0C
-lbl_80196C44:
-    cmpw r9, r7
-    bne lbl_80196C80
-    lbz r3, 0x4(r4)
-    subf r0, r8, r3
-    mtctr r0
-    cmpw r8, r3
-    bge lbl_80196C80
-lbl_80196C60:
-    add r3, r4, r8
-    lbz r0, 0x5(r3)
-    cmpwi r0, 0x0
-    beq lbl_80196C78
-    li r3, 0x1
-    blr
-lbl_80196C78:
-    addi r8, r8, 0x1
-    bdnz lbl_80196C60
-lbl_80196C80:
-    li r3, 0x0
-    blr
-lbl_80196C88:
-    xor r0, r5, r0
-    srawi r3, r0, 1
-    and r0, r0, r5
-    subf r0, r0, r3
-    srwi r3, r0, 31
-    blr
+void __ull2dec(decimal* result, u64 val) {
+    result->sign = 0;
+    result->sig.length = 0;
+
+    for(; val != 0; val /= 10) {
+        result->sig.text[result->sig.length++] = (u8)(val % 10);
+    }
+    
+    {
+        u8* i = result->sig.text;
+        u8* j = result->sig.text + result->sig.length;
+
+        for (; i < --j; ++i) {
+            u8 t = *i;
+            *i = *j;
+            *j = t;
+        }
+    }
+    
+    result->exp = result->sig.length - 1;
 }
 
-// ----------------------------------------------------------------------------
-// __minus_dec
-// ----------------------------------------------------------------------------
-asm void __minus_dec() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    lwz r12, 0xc(r4)
-    stw r31, 0x1c(r1)
-    lwz r31, 0x8(r4)
-    stw r30, 0x18(r1)
-    lwz r30, 0x4(r4)
-    stw r29, 0x14(r1)
-    lwz r29, 0x0(r4)
-    lwz r11, 0x10(r4)
-    lwz r10, 0x14(r4)
-    lwz r9, 0x18(r4)
-    lwz r8, 0x1c(r4)
-    lwz r7, 0x20(r4)
-    lwz r6, 0x24(r4)
-    lhz r0, 0x28(r4)
-    stw r29, 0x0(r3)
-    stw r30, 0x4(r3)
-    stw r31, 0x8(r3)
-    stw r12, 0xc(r3)
-    stw r11, 0x10(r3)
-    stw r10, 0x14(r3)
-    stw r9, 0x18(r3)
-    stw r8, 0x1c(r3)
-    stw r7, 0x20(r3)
-    stw r6, 0x24(r3)
-    sth r0, 0x28(r3)
-    lbz r0, 0x5(r5)
-    cmpwi r0, 0x0
-    beq lbl_80197168
-    lbz r8, 0x4(r3)
-    lbz r0, 0x4(r5)
-    cmpw r8, r0
-    bge lbl_80196D28
-    mr r8, r0
-lbl_80196D28:
-    lha r4, 0x2(r5)
-    lha r0, 0x2(r3)
-    subf r0, r4, r0
-    add r8, r8, r0
-    cmpwi r8, 0x24
-    ble lbl_80196D44
-    li r8, 0x24
-lbl_80196D44:
-    li r7, 0x0
-    b lbl_80196D60
-lbl_80196D4C:
-    lbz r6, 0x4(r3)
-    add r4, r3, r6
-    addi r6, r6, 0x1
-    stb r7, 0x5(r4)
-    stb r6, 0x4(r3)
-lbl_80196D60:
-    lbz r4, 0x4(r3)
-    cmpw r4, r8
-    blt lbl_80196D4C
-    lbz r7, 0x4(r5)
-    addi r4, r3, 0x5
-    add r6, r4, r8
-    add r7, r7, r0
-    cmpw r7, r8
-    bge lbl_80196D88
-    add r6, r4, r7
-lbl_80196D88:
-    subf r7, r4, r6
-    addi r9, r5, 0x5
-    subf r7, r0, r7
-    add r10, r9, r7
-    mr r11, r10
-    b lbl_80196EC0
-lbl_80196DA0:
-    lbzu r8, -0x1(r6)
-    lbzu r7, -0x1(r10)
-    cmplw r8, r7
-    bge lbl_80196EB0
-    subi r12, r6, 0x1
-    b lbl_80196DBC
-lbl_80196DB8:
-    subi r12, r12, 0x1
-lbl_80196DBC:
-    lbz r7, 0x0(r12)
-    cmpwi r7, 0x0
-    beq lbl_80196DB8
-    cmplw r12, r6
-    subf r8, r12, r6
-    beq lbl_80196EB0
-    srwi. r7, r8, 3
-    mtctr r7
-    beq lbl_80196E90
-lbl_80196DE0:
-    lbz r7, 0x0(r12)
-    subi r7, r7, 0x1
-    stb r7, 0x0(r12)
-    lbz r7, 0x1(r12)
-    addi r7, r7, 0xa
-    clrlwi r7, r7, 24
-    subi r7, r7, 0x1
-    stb r7, 0x1(r12)
-    lbz r7, 0x2(r12)
-    addi r7, r7, 0xa
-    clrlwi r7, r7, 24
-    subi r7, r7, 0x1
-    stb r7, 0x2(r12)
-    lbz r7, 0x3(r12)
-    addi r7, r7, 0xa
-    clrlwi r7, r7, 24
-    subi r7, r7, 0x1
-    stb r7, 0x3(r12)
-    lbz r7, 0x4(r12)
-    addi r7, r7, 0xa
-    clrlwi r7, r7, 24
-    subi r7, r7, 0x1
-    stb r7, 0x4(r12)
-    lbz r7, 0x5(r12)
-    addi r7, r7, 0xa
-    clrlwi r7, r7, 24
-    subi r7, r7, 0x1
-    stb r7, 0x5(r12)
-    lbz r7, 0x6(r12)
-    addi r7, r7, 0xa
-    clrlwi r7, r7, 24
-    subi r7, r7, 0x1
-    stb r7, 0x6(r12)
-    lbz r7, 0x7(r12)
-    addi r7, r7, 0xa
-    clrlwi r7, r7, 24
-    subi r7, r7, 0x1
-    stb r7, 0x7(r12)
-    lbz r7, 0x8(r12)
-    addi r7, r7, 0xa
-    stbu r7, 0x8(r12)
-    bdnz lbl_80196DE0
-    andi. r8, r8, 0x7
-    beq lbl_80196EB0
-lbl_80196E90:
-    mtctr r8
-lbl_80196E94:
-    lbz r7, 0x0(r12)
-    subi r7, r7, 0x1
-    stb r7, 0x0(r12)
-    lbz r7, 0x1(r12)
-    addi r7, r7, 0xa
-    stbu r7, 0x1(r12)
-    bdnz lbl_80196E94
-lbl_80196EB0:
-    lbz r8, 0x0(r10)
-    lbz r7, 0x0(r6)
-    subf r7, r8, r7
-    stb r7, 0x0(r6)
-lbl_80196EC0:
-    cmplw r6, r4
-    ble lbl_80196ED0
-    cmplw r10, r9
-    bgt lbl_80196DA0
-lbl_80196ED0:
-    lbz r8, 0x4(r5)
-    subf r9, r9, r11
-    cmpw r9, r8
-    bge lbl_80197064
-    lbz r7, 0x0(r11)
-    li r10, 0x0
-    cmplwi r7, 0x5
-    bge lbl_80196EF8
-    li r10, 0x1
-    b lbl_80196F44
-lbl_80196EF8:
-    bne lbl_80196F44
-    add r5, r5, r8
-    addi r6, r11, 0x1
-    addi r7, r5, 0x5
-    subf r5, r6, r7
-    mtctr r5
-    cmplw r6, r7
-    bge lbl_80196F2C
-lbl_80196F18:
-    lbz r5, 0x0(r6)
-    cmpwi r5, 0x0
-    bne lbl_80197064
-    addi r6, r6, 0x1
-    bdnz lbl_80196F18
-lbl_80196F2C:
-    add r5, r4, r9
-    add r6, r0, r5
-    lbzu r0, -0x1(r6)
-    clrlwi. r0, r0, 31
-    beq lbl_80196F44
-    li r10, 0x1
-lbl_80196F44:
-    cmpwi r10, 0x0
-    beq lbl_80197064
-    lbz r0, 0x0(r6)
-    cmplwi r0, 0x1
-    bge lbl_80197058
-    subi r8, r6, 0x1
-    b lbl_80196F64
-lbl_80196F60:
-    subi r8, r8, 0x1
-lbl_80196F64:
-    lbz r0, 0x0(r8)
-    cmpwi r0, 0x0
-    beq lbl_80196F60
-    cmplw r8, r6
-    subf r5, r8, r6
-    beq lbl_80197058
-    srwi. r0, r5, 3
-    mtctr r0
-    beq lbl_80197038
-lbl_80196F88:
-    lbz r7, 0x0(r8)
-    subi r0, r7, 0x1
-    stb r0, 0x0(r8)
-    lbz r7, 0x1(r8)
-    addi r0, r7, 0xa
-    clrlwi r7, r0, 24
-    subi r0, r7, 0x1
-    stb r0, 0x1(r8)
-    lbz r7, 0x2(r8)
-    addi r0, r7, 0xa
-    clrlwi r7, r0, 24
-    subi r0, r7, 0x1
-    stb r0, 0x2(r8)
-    lbz r7, 0x3(r8)
-    addi r0, r7, 0xa
-    clrlwi r7, r0, 24
-    subi r0, r7, 0x1
-    stb r0, 0x3(r8)
-    lbz r7, 0x4(r8)
-    addi r0, r7, 0xa
-    clrlwi r7, r0, 24
-    subi r0, r7, 0x1
-    stb r0, 0x4(r8)
-    lbz r7, 0x5(r8)
-    addi r0, r7, 0xa
-    clrlwi r7, r0, 24
-    subi r0, r7, 0x1
-    stb r0, 0x5(r8)
-    lbz r7, 0x6(r8)
-    addi r0, r7, 0xa
-    clrlwi r7, r0, 24
-    subi r0, r7, 0x1
-    stb r0, 0x6(r8)
-    lbz r7, 0x7(r8)
-    addi r0, r7, 0xa
-    clrlwi r7, r0, 24
-    subi r0, r7, 0x1
-    stb r0, 0x7(r8)
-    lbz r7, 0x8(r8)
-    addi r0, r7, 0xa
-    stbu r0, 0x8(r8)
-    bdnz lbl_80196F88
-    andi. r5, r5, 0x7
-    beq lbl_80197058
-lbl_80197038:
-    mtctr r5
-lbl_8019703C:
-    lbz r7, 0x0(r8)
-    subi r0, r7, 0x1
-    stb r0, 0x0(r8)
-    lbz r7, 0x1(r8)
-    addi r0, r7, 0xa
-    stbu r0, 0x1(r8)
-    bdnz lbl_8019703C
-lbl_80197058:
-    lbz r5, 0x0(r6)
-    subi r0, r5, 0x1
-    stb r0, 0x0(r6)
-lbl_80197064:
-    mr r7, r4
-    b lbl_80197070
-lbl_8019706C:
-    addi r7, r7, 0x1
-lbl_80197070:
-    lbz r0, 0x0(r7)
-    cmpwi r0, 0x0
-    beq lbl_8019706C
-    cmplw r7, r4
-    ble lbl_80197130
-    lbz r0, 0x4(r3)
-    subf r6, r4, r7
-    clrlwi r8, r6, 24
-    lha r5, 0x2(r3)
-    add r6, r4, r0
-    cmplw r7, r6
-    subf r0, r8, r5
-    sth r0, 0x2(r3)
-    subf r5, r7, r6
-    bge lbl_80197124
-    srwi. r0, r5, 3
-    mtctr r0
-    beq lbl_8019710C
-lbl_801970B8:
-    lbz r0, 0x0(r7)
-    stb r0, 0x0(r4)
-    lbz r0, 0x1(r7)
-    stb r0, 0x1(r4)
-    lbz r0, 0x2(r7)
-    stb r0, 0x2(r4)
-    lbz r0, 0x3(r7)
-    stb r0, 0x3(r4)
-    lbz r0, 0x4(r7)
-    stb r0, 0x4(r4)
-    lbz r0, 0x5(r7)
-    stb r0, 0x5(r4)
-    lbz r0, 0x6(r7)
-    stb r0, 0x6(r4)
-    lbz r0, 0x7(r7)
-    addi r7, r7, 0x8
-    stb r0, 0x7(r4)
-    addi r4, r4, 0x8
-    bdnz lbl_801970B8
-    andi. r5, r5, 0x7
-    beq lbl_80197124
-lbl_8019710C:
-    mtctr r5
-lbl_80197110:
-    lbz r0, 0x0(r7)
-    addi r7, r7, 0x1
-    stb r0, 0x0(r4)
-    addi r4, r4, 0x1
-    bdnz lbl_80197110
-lbl_80197124:
-    lbz r0, 0x4(r3)
-    subf r0, r8, r0
-    stb r0, 0x4(r3)
-lbl_80197130:
-    lbz r0, 0x4(r3)
-    addi r4, r3, 0x5
-    add r5, r4, r0
-    subf r0, r4, r5
-    mtctr r0
-    cmplw r5, r4
-    ble lbl_8019715C
-lbl_8019714C:
-    lbzu r0, -0x1(r5)
-    cmpwi r0, 0x0
-    bne lbl_8019715C
-    bdnz lbl_8019714C
-lbl_8019715C:
-    subf r4, r4, r5
-    addi r0, r4, 0x1
-    stb r0, 0x4(r3)
-lbl_80197168:
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    addi r1, r1, 0x20
-    blr
+void __timesdec(decimal* result, const decimal* x, const decimal* y) {
+    u32 accumulator = 0;
+    u8 mantissa[SIGDIGLEN * 2];
+    int i = x->sig.length + y->sig.length - 1;
+    u8* pDigit;
+    u8* ip = mantissa + i + 1;
+    u8* ep = ip;
+
+    result->sign = 0;
+    
+    for(; i > 0; i--) {
+        int k = y->sig.length - 1;
+        int j = i - k - 1;
+        int l;
+        int t;
+        const u8* jp;
+        const u8* kp;
+        
+        if (j < 0) {
+            j = 0;
+            k = i - 1;
+        }
+        
+        jp = x->sig.text + j;
+        kp = y->sig.text + k;
+        l = k + 1;
+        t = x->sig.length - j;
+        
+        if (l > t) l = t;
+        
+        for (; l > 0; l--, jp++, kp--) {
+            accumulator += *jp * *kp;
+        }
+        
+        *--ip = (u8)(accumulator % 10);
+        accumulator /= 10;
+    }
+    
+    result->exp = (short)(x->exp + y->exp);
+    
+    if (accumulator) {
+        *--ip = (u8)(accumulator);
+        result->exp++;
+    }
+
+    for (i = 0; i < SIGDIGLEN && ip < ep; i++, ip++) {
+        result->sig.text[i] = *ip;
+    }
+    result->sig.length = (u8)(i);
+    
+    if (ip < ep && *ip >= 5){
+        if (*ip == 5){
+            u8* jp = ip + 1;
+            for (; jp < ep; jp++) {
+                if (*jp != 0) goto round;
+            }
+            if ((ip[-1] & 1) == 0) return;
+        }
+    round:
+        __dorounddecup(result, result->sig.length);
+    }
 }
 
-// ----------------------------------------------------------------------------
-// __num2dec_internal
-// ----------------------------------------------------------------------------
-asm void __num2dec_internal() {
-    nofralloc
-    stwu r1, -0x90(r1)
-    mflr r0
-    stw r0, 0x94(r1)
-    stfd f31, 0x88(r1)
-    fmr f31, f1
-    stw r31, 0x84(r1)
-    stw r30, 0x80(r1)
-    mr r30, r3
-    stw r29, 0x7c(r1)
-    bl fn_80195C14
-    lfd f0, lbl_804A1158
-    neg r0, r3
-    or r0, r0, r3
-    fcmpu cr0, f0, f31
-    srwi r0, r0, 31
-    extsb r31, r0
-    bne lbl_801971DC
-    li r3, 0x0
-    li r0, 0x1
-    stb r31, 0x0(r30)
-    sth r3, 0x2(r30)
-    stb r0, 0x4(r30)
-    stb r3, 0x5(r30)
-    b lbl_801972C0
-lbl_801971DC:
-    fmr f1, f31
-    bl fn_80195C2C
-    cmpwi r3, 0x2
-    bgt lbl_80197220
-    fmr f1, f31
-    li r3, 0x0
-    li r0, 0x1
-    stb r31, 0x0(r30)
-    sth r3, 0x2(r30)
-    stb r0, 0x4(r30)
-    bl fn_80195C2C
-    cmpwi r3, 0x1
-    li r0, 0x49
-    bne lbl_80197218
-    li r0, 0x4e
-lbl_80197218:
-    stb r0, 0x5(r30)
-    b lbl_801972C0
-lbl_80197220:
-    cmpwi r31, 0x0
-    beq lbl_8019722C
-    fneg f31, f31
-lbl_8019722C:
-    fmr f1, f31
-    addi r3, r1, 0x8
-    bl frexp
-    stfd f1, 0x10(r1)
-    fmr f31, f1
-    lwz r4, 0x14(r1)
-    lwz r3, 0x10(r1)
-    subi r0, r4, 0x1
-    cmpwi r4, 0x0
-    andc r0, r0, r4
-    oris r3, r3, 0x10
-    cntlzw r0, r0
-    subfic r4, r0, 0x20
-    bne lbl_80197278
-    subi r0, r3, 0x1
-    andc r0, r0, r3
-    cntlzw r0, r0
-    subfic r3, r0, 0x20
-    addi r4, r3, 0x20
-lbl_80197278:
-    lwz r0, 0x8(r1)
-    subfic r29, r4, 0x35
-    addi r3, r1, 0x18
-    subf r4, r29, r0
-    bl __two_exp
-    fmr f1, f31
-    mr r3, r29
-    bl ldexp
-    bl __cvt_dbl_ull
-    mr r5, r3
-    mr r6, r4
-    addi r3, r1, 0x44
-    bl __ull2dec
-    mr r3, r30
-    addi r4, r1, 0x44
-    addi r5, r1, 0x18
-    bl __timesdec
-    stb r31, 0x0(r30)
-lbl_801972C0:
-    lwz r0, 0x94(r1)
-    lfd f31, 0x88(r1)
-    lwz r31, 0x84(r1)
-    lwz r30, 0x80(r1)
-    lwz r29, 0x7c(r1)
-    mtlr r0
-    addi r1, r1, 0x90
-    blr
+
+
+void __str2dec(decimal* d, const char* s, short exp) {
+    int i;
+
+    d->exp = exp;
+    d->sign = 0;
+
+    for (i = 0; i < SIGDIGLEN && *s; ) {
+        d->sig.text[i++] = *s++ - '0';
+    }
+    d->sig.length = i;
+    
+    if (*s != 0){
+        if (*s < 5) return;
+        if (*s > 5) goto round;
+        
+        {
+            const char* p = s + 1;
+
+            for (; *p != 0; p++) {
+                if (*p != '0') goto round;
+            }
+
+            if ((d->sig.text[i - 1] & 1) == 0) return;
+        }
+    round:
+        __dorounddecup(d, d->sig.length);
+    }
 }
 
-// ----------------------------------------------------------------------------
-// fn_801972E0
-// ----------------------------------------------------------------------------
+
+void __two_exp(decimal* result, long exp) {
+    switch(exp){
+        case -64:
+            __str2dec(result,"542101086242752217003726400434970855712890625",-20);
+            return;
+        case -53:
+             __str2dec(result,"11102230246251565404236316680908203125",-16);
+             return;
+        case -32:
+            __str2dec(result,"23283064365386962890625",-10);
+            return;
+        case -16:
+            __str2dec(result,"152587890625",-5);
+            return;
+        case -8:
+            __str2dec(result,"390625",-3);
+            return;
+        case -7:
+            __str2dec(result,"78125",-3);
+            return;
+        case -6:
+            __str2dec(result,"15625",-2);
+            return;
+        case -5:
+            __str2dec(result,"3125",-2);
+            return;
+        case -4:
+            __str2dec(result,"625",-2);
+            return;
+        case -3:
+            __str2dec(result,"125",-1);
+            return;
+        case -2:
+            __str2dec(result,"25",-1);
+            return;
+        case -1:
+            __str2dec(result,"5",-1);
+            return;
+        case 0:
+            __str2dec(result,"1",0);
+            return;
+        case 1:
+            __str2dec(result,"2",0);
+            return;
+        case 2:
+            __str2dec(result,"4",0);
+            return;
+        case 3:
+            __str2dec(result,"8",0);
+            return;
+        case 4:
+            __str2dec(result,"16",1);
+            return;
+        case 5:
+            __str2dec(result,"32",1);
+            return;
+        case 6:
+            __str2dec(result,"64",1);
+            return;
+        case 7:
+            __str2dec(result,"128",2);
+            return;
+        case 8:
+            __str2dec(result,"256",2);
+            return;
+    }
+    
+    {
+        decimal x2, temp;
+
+        __two_exp(&x2,exp/2);
+        __timesdec(result,&x2,&x2);
+            
+        if(exp & 1){
+            temp = *result;
+            if(exp > 0){
+                __str2dec(&x2,"2",0);
+            }else{
+                __str2dec(&x2,"5",-1);
+            }
+            __timesdec(result,&temp,&x2);
+        }
+    }
+}
+
+BOOL __equals_dec(const decimal* x, const decimal* y) {
+    if (x->sig.text[0] == 0) {
+        return y->sig.text[0] == 0;
+    }
+    
+    if (y->sig.text[0] == 0) {
+        return x->sig.text[0] == 0;
+    }
+    
+    if (x->exp == y->exp) {
+        int i;
+        int l = x->sig.length;
+        
+        if (l > y->sig.length) {
+            l = y->sig.length;
+        }
+        
+        for(i = 0; i < l; i++){
+            if (x->sig.text[i] != y->sig.text[i]) {
+                return FALSE;
+            }
+        }
+
+        if (l == x->sig.length) {
+            x = y;
+        }
+        
+        for(; i < x->sig.length; i++){
+            if (x->sig.text[i] != 0) {
+                return FALSE;
+            }
+        }
+
+        return TRUE;
+    }
+    return FALSE;
+}
+
+
+BOOL __less_dec(const decimal* x, const decimal* y) {
+    if (x->sig.text[0] == 0) {
+        u8 temp_r3 = y->sig.text[0];
+        return ((u32) (-temp_r3 | temp_r3) >> 31);
+    }
+    
+    if (y->sig.text[0] == 0) {
+        return FALSE;
+    }
+
+    if (x->exp == y->exp) {
+        int i;
+        int l = x->sig.length;
+        
+        if (l > y->sig.length) {
+            l = y->sig.length;
+        }
+
+        for(i = 0; i < l; i++){
+            if (x->sig.text[i] < y->sig.text[i]) {
+                return TRUE;
+            }else if (y->sig.text[i] < x->sig.text[i]) {
+                return FALSE;
+            }
+        }
+
+        if (l == x->sig.length) {
+            for(; i < y->sig.length; i++){
+                if (y->sig.text[i] != 0) {
+                    return TRUE;
+                }
+            }
+        }
+        return FALSE;
+    }
+
+    return x->exp < y->exp;
+}
+
+void __minus_dec(decimal *z, const decimal *x, const decimal *y)
+{
+    int zlen, dexp;
+    u8 *ib, *i, *ie;
+    u8 const *jb, *j, *jn;
+    
+    *z = *x;
+
+    if (y->sig.text[0] == 0) return;
+    
+    zlen = z->sig.length;
+    if (zlen < y->sig.length) zlen = y->sig.length;
+    
+    dexp = z->exp - y->exp;
+    zlen += dexp;
+    
+    if (zlen > SIGDIGLEN) zlen = SIGDIGLEN;
+    
+    while (z->sig.length < zlen){
+        z->sig.text[z->sig.length++] = 0;
+    }
+    
+    ib = z->sig.text;
+    i = ib + zlen;
+    
+    if (y->sig.length + dexp < zlen){
+        i = ib + (y->sig.length + dexp);
+    }
+    
+    jb = y->sig.text;
+    j = jb + (i - ib - dexp);
+    jn = j;
+    
+    while (i > ib && j > jb){
+        i--;
+        j--;
+        if (*i < *j){
+            u8 *k = i - 1;
+            while (*k == 0) k--;
+            while (k != i){
+                --*k;
+                *++k += 10;
+            }
+        }
+        *i -= *j;
+    }
+
+    if (jn - jb < y->sig.length){
+        BOOL round_down = FALSE;
+        if (*jn < 5) round_down = TRUE;
+        else if (*jn == 5) {
+            u8 const *ibPtr = y->sig.text + y->sig.length;
+            
+            for (j = jn + 1; j < ibPtr; j++){
+                if (*j != 0) goto done;
+            }
+            i = ib + (jn - jb) + dexp - 1;
+            if (*i & 1) round_down = 1;
+        }
+        if (round_down){
+            if (*i < 1){
+                u8 *k = i - 1;
+                while (*k == 0) k--;
+                while (k != i)
+                {
+                    --*k;
+                    *++k += 10;
+                }
+            }
+            *i -= 1;
+        }
+    }
+done:
+    for (i = ib; *i == 0; ++i){}
+    
+    if (i > ib){
+        u8 dl = (u8)(i - ib);
+        z->exp -= dl;
+        ie = ib + z->sig.length;
+        for (; i < ie; ++i, ++ib)
+            *ib = *i;
+        z->sig.length -= dl;
+    }
+
+    ib = z->sig.text;
+    for (i = ib + z->sig.length; i > ib;){
+        i--;
+        if (*i != 0) break;
+    }
+    z->sig.length = (u8)(i - ib + 1);
+}
+
+void __num2dec_internal(decimal* d, double x) {
+    s8 sign = (s8)(signbit(x) != 0);
+    
+    
+    if (x == 0) {
+        d->sign = sign;
+        d->exp = 0;
+        d->sig.length = 1;
+        d->sig.text[0] = 0;
+        return;
+    }
+    
+    if (!isfinite(x)) {
+        d->sign = sign;
+        d->exp = 0;
+        d->sig.length = 1;
+        d->sig.text[0] = fpclassify(x) == 1 ? 'N' : 'I';
+        return;
+    }
+    
+    if (sign != 0) {
+        x = -x;
+    }
+
+    {
+        int exp;
+        double frac = frexp(x, &exp);
+        int num_bits_extract = DBL_MANT_DIG - __count_trailing_zero(frac);
+        decimal int_d, pow2_d;
+
+        __two_exp(&pow2_d, exp - num_bits_extract);
+        __ull2dec(&int_d, ldexp(frac, num_bits_extract));
+        __timesdec(d, &int_d, &pow2_d);
+        d->sign = sign;
+    }
+}
+
+void __num2dec(const decform* form, double x, decimal* d) {
+    short digits = form->digits;
+    int i;
+    __num2dec_internal(d, x);
+    
+    if (d->sig.text[0] > 9) {
+        return;
+    }
+        
+    if (digits > SIGDIGLEN) {
+        digits = SIGDIGLEN;
+    }
+    
+    __rounddec(d, digits);
+
+    while(d->sig.length < digits){
+        d->sig.text[d->sig.length++] = 0;
+    }
+    
+    d->exp -= d->sig.length - 1;
+
+    for(i = 0; i < d->sig.length; i++) {
+        d->sig.text[i] += '0';
+    }
+}
+
+double __dec2num(const decimal *d)
+{
+    if (d->sig.length <= 0){
+        return copysign(0.0, d->sign == 0 ? 1.0 : -1.0);
+    }
+
+    switch (d->sig.text[0]){
+    case '0':
+        return copysign(0.0, d->sign == 0 ? 1.0 : -1.0);
+    case 'I':
+        return copysign((double)INFINITY, d->sign == 0 ? 1.0 : -1.0);
+    case 'N':
+        {
+            double result;
+            d_int* ll = (d_int*)&result;
+
+            *ll = 0x7FF0000000000000;
+            if (d->sign)
+                *ll |= 0x8000000000000000;
+            *ll |= 0x8000000000000;
+
+            return result;
+        }
+    }
+    
+    {
+        static double pow_10[8] = {1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8};
+
+        decimal dec = *d;
+        u8 *i = dec.sig.text;
+        u8 *e = i + dec.sig.length;
+        double first_guess;
+        int exponent;
+
+        for (; i < e; ++i)
+            *i -= '0';
+        dec.exp += dec.sig.length - 1;
+        exponent = dec.exp;
+
+        {
+            decimal max;
+
+            __str2dec(&max, "179769313486231580793728714053034151", 308);
+            if (__less_dec(&max, &dec)){
+                return copysign((double)INFINITY, d->sign == 0 ? 1.0 : -1.0);
+            }
+        }
+
+        i = dec.sig.text;
+        first_guess = *i++;
+
+        while (i < e){
+            u32 ival = 0;
+            int j;
+            double temp1, temp2;
+            int ndig = (int)(e - i) % 8;
+
+            if (ndig == 0) ndig = 8;
+
+            for (j = 0; j < ndig; ++j, ++i){
+                ival = ival * 10 + *i;
+            }
+
+            temp1 = first_guess * pow_10[ndig - 1];
+            temp2 = temp1 + ival;
+
+            if (ival != 0 && temp1 == temp2) break;
+
+            first_guess = temp2;
+            exponent -= ndig;
+        }
+
+        if(exponent < 0){
+            first_guess /= pow(5.0, -exponent);
+        }else{
+            first_guess *= pow(5.0, exponent);
+        }
+
+        first_guess = ldexp(first_guess, exponent);
+
+        if (fpclassify(first_guess) == 2){
+            first_guess = DBL_MAX;
+        }
+    
+        {
+            decimal feedback1, feedback2, difflow, diffhigh;
+            double next_guess;
+            d_int* ull = (d_int*)&next_guess;
+            int guessed_low = 0;
+
+            __num2dec_internal(&feedback1, first_guess);
+
+            if (__equals_dec(&feedback1, &dec)){
+                goto done;
+            }
+            if (__less_dec(&feedback1, &dec)){
+                guessed_low = 1;
+            }
+
+            next_guess = first_guess;
+
+            while (1){
+                if (guessed_low){
+                    ++*ull;
+                    if (fpclassify(next_guess) == 2){
+                        goto done;
+                    }
+                } else {
+                    --*ull;
+                }
+
+                __num2dec_internal(&feedback2, next_guess);
+                if (guessed_low && !__less_dec(&feedback2, &dec)){
+                    break;
+                }
+                else if (!guessed_low && !__less_dec(&dec, &feedback2)){
+                    difflow = feedback1;
+                    feedback1 = feedback2;
+                    feedback2 = difflow;
+                    {
+                        double temp = first_guess;
+                        first_guess = next_guess;
+                        next_guess = temp;
+                    }
+                    break;
+                }
+                feedback1 = feedback2;
+                first_guess = next_guess;
+            }
+
+            __minus_dec(&difflow, &dec, &feedback1);
+            __minus_dec(&diffhigh, &feedback2, &dec);
+
+            if (__equals_dec(&difflow, &diffhigh)){
+                if (*(u64*)&first_guess & 1){
+                    first_guess = next_guess;
+                }
+            } else if (!__less_dec(&difflow, &diffhigh)){
+                first_guess = next_guess;
+            }
+        }
+    done:
+        if (dec.sign){
+            first_guess = -first_guess;
+        }
+        return first_guess;
+    }
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+extern float lbl_804A1158;
+extern float lbl_804A1160;
+extern float lbl_804A1168;
+extern float lbl_804A1170;
+extern float lbl_804A1178;
+extern float lbl_804A1180;
+extern float lbl_804A1188;
+extern u8 lbl_8033B3B8[];
+extern u8 lbl_8035F9E8[];
+extern u8 lbl_8049C41C[];
+extern void _restgpr_21();
+extern void _savegpr_21();
+extern void fn_80195C2C();
+extern void fn_801972E0();
+extern void fn_80197480();
+extern void log10();
+
+// asm_to_cpp: fn_801972E0
 asm void fn_801972E0() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1319,9 +804,7 @@ lbl_80197468:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80197480
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80197480
 asm void fn_80197480() {
     nofralloc
     stwu r1, -0x180(r1)
@@ -1834,4 +1317,3 @@ lbl_80197BA8:
     addi r1, r1, 0x180
     blr
 }
-

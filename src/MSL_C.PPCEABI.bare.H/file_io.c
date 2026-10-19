@@ -1,178 +1,161 @@
-#include "types.h"
+#include "PowerPC_EABI_Support/MSL_C/MSL_Common/buffer_io.h"
+#include "PowerPC_EABI_Support/MSL_C/MSL_Common/ansi_files.h"
+#include <stdlib.h>
+#include <stdio.h>
 
-// Translation unit: src/MSL_C.PPCEABI.bare.H/file_io.cpp
-// Total functions: 3
-
-// Global data symbols (@ha/@l)
-u8 lbl_8035FBD8[];
-
-// Forward declarations
-void __flush_buffer();
-void free();
-void __flush_all();
-void fclose();
-void fflush();
-void fn_80198624();
-void ftell();
-
-// ----------------------------------------------------------------------------
-// fclose
-// ----------------------------------------------------------------------------
-asm void fclose() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    cmpwi r3, 0x0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    stw r30, 0x18(r1)
-    stw r29, 0x14(r1)
-    mr r29, r3
-    bne lbl_80198460
-    li r3, -0x1
-    b lbl_801984D4
-lbl_80198460:
-    lwz r0, 0x4(r3)
-    extrwi. r0, r0, 3, 7
-    bne lbl_80198474
-    li r3, 0x0
-    b lbl_801984D4
-lbl_80198474:
-    bl fflush
-    lwz r12, 0x44(r29)
-    mr r30, r3
-    lwz r3, 0x0(r29)
-    mtctr r12
-    bctrl
-    lwz r0, 0x8(r29)
-    li r5, 0x0
-    lwz r4, 0x4(r29)
-    mr r31, r3
-    extrwi. r0, r0, 1, 3
-    stw r5, 0x0(r29)
-    rlwinm r4, r4, 0, 10, 6
-    stw r4, 0x4(r29)
-    beq lbl_801984B8
-    lwz r3, 0x1c(r29)
-    bl free
-lbl_801984B8:
-    cmpwi r30, 0x0
-    li r0, 0x0
-    bne lbl_801984CC
-    cmpwi r31, 0x0
-    beq lbl_801984D0
-lbl_801984CC:
-    li r0, 0x1
-lbl_801984D0:
-    neg r3, r0
-lbl_801984D4:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+//unused
+void remove(){
 }
 
-// ----------------------------------------------------------------------------
-// fflush
-// ----------------------------------------------------------------------------
-asm void fflush() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    cmpwi r3, 0x0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    stw r30, 0x8(r1)
-    bne lbl_80198518
-    bl __flush_all
-    b lbl_8019860C
-lbl_80198518:
-    lbz r0, 0xa(r3)
-    cmpwi r0, 0x0
-    bne lbl_80198530
-    lwz r4, 0x4(r3)
-    extrwi. r0, r4, 3, 7
-    bne lbl_80198538
-lbl_80198530:
-    li r3, -0x1
-    b lbl_8019860C
-lbl_80198538:
-    extrwi r0, r4, 3, 2
-    cmplwi r0, 0x1
-    bne lbl_8019854C
-    li r3, 0x0
-    b lbl_8019860C
-lbl_8019854C:
-    lwz r4, 0x8(r3)
-    srwi r0, r4, 29
-    cmplwi r0, 0x3
-    blt lbl_80198568
-    li r0, 0x2
-    rlwimi r4, r0, 29, 0, 2
-    stw r4, 0x8(r3)
-lbl_80198568:
-    lwz r0, 0x8(r3)
-    srwi r0, r0, 29
-    cmplwi r0, 0x2
-    bne lbl_80198580
-    li r0, 0x0
-    stw r0, 0x28(r3)
-lbl_80198580:
-    lwz r4, 0x8(r3)
-    srwi r0, r4, 29
-    cmplwi r0, 0x1
-    beq lbl_801985A0
-    clrlwi r0, r4, 3
-    stw r0, 0x8(r3)
-    li r3, 0x0
-    b lbl_8019860C
-lbl_801985A0:
-    lwz r0, 0x4(r3)
-    extrwi r0, r0, 3, 7
-    cmplwi r0, 0x1
-    beq lbl_801985B8
-    li r30, 0x0
-    b lbl_801985C4
-lbl_801985B8:
-    mr r3, r31
-    bl ftell
-    mr r30, r3
-lbl_801985C4:
-    mr r3, r31
-    li r4, 0x0
-    bl __flush_buffer
-    cmpwi r3, 0x0
-    beq lbl_801985F0
-    li r3, 0x1
-    li r0, 0x0
-    stb r3, 0xa(r31)
-    li r3, -0x1
-    stw r0, 0x28(r31)
-    b lbl_8019860C
-lbl_801985F0:
-    lwz r0, 0x8(r31)
-    li r4, 0x0
-    stw r30, 0x18(r31)
-    li r3, 0x0
-    clrlwi r0, r0, 3
-    stw r0, 0x8(r31)
-    stw r4, 0x28(r31)
-lbl_8019860C:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+//unused
+void rename(){
 }
 
-// ----------------------------------------------------------------------------
-// fn_80198624
-// ----------------------------------------------------------------------------
+//unused
+void tmpnam(){
+}
+
+//unused
+void tmpnam_s(){
+}
+
+//unused
+void tmpfile(){
+}
+
+//unused
+void tmpfile_s(){
+}
+
+int fclose(FILE* file)
+{
+    int flush_result, close_result;
+
+    if (file == nullptr)
+        return (-1);
+    if (file->mode.file_kind == __closed_file)
+        return (0);
+
+    flush_result = fflush(file);
+
+    close_result = (*file->close_proc)(file->handle);
+
+    file->mode.file_kind = __closed_file;
+    file->handle = 0;
+
+    if (file->state.free_buffer)
+        free(file->buffer);
+    return ((flush_result || close_result) ? -1 : 0);
+}
+
+int fflush(FILE* file)
+{
+    int pos;
+
+    if (file == nullptr) {
+        return __flush_all();
+    }
+
+    if (file->state.error != 0 || file->mode.file_kind == __closed_file) {
+        return -1;
+    }
+
+    if (file->mode.io_mode == 1) {
+        return 0;
+    }
+
+    if (file->state.io_state >= 3) {
+        file->state.io_state = 2;
+    }
+
+    if (file->state.io_state == 2) {
+        file->buffer_len = 0;
+    }
+
+    if (file->state.io_state != 1) {
+        file->state.io_state = 0;
+        return 0;
+    }
+
+    if (file->mode.file_kind != __disk_file) {
+        pos = 0;
+    } else {
+        pos = ftell(file);
+    }
+
+    if (__flush_buffer(file, 0) != 0) {
+        file->state.error = 1;
+        file->buffer_len = 0;
+        return -1;
+    }
+
+    file->state.io_state = 0;
+    file->position = pos;
+    file->buffer_len = 0;
+    return 0;
+}
+
+//unused
+void fopen(){
+}
+
+//unused
+void fopen_s(){
+}
+
+//unused
+void freopen(){
+}
+
+//unused
+void freopen_s(){
+}
+
+//unused
+void __reopen(){
+}
+
+//unused
+void __handle_open(){
+}
+
+//unused
+void __handle_reopen(){
+}
+
+//unused
+void __get_file_modes(){
+}
+
+//unused
+void __set_ref_con(){
+}
+
+//unused
+void __set_idle_proc(){
+}
+
+//unused
+void __msl_strnicmp(){
+}
+
+//unused
+void __msl_strrev(){
+}
+
+//unused
+void __msl_itoa(){
+}
+
+//unused
+void __msl_strdup(){
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+extern u8 lbl_8035FBD8[];
+extern void fn_80198624();
+
+// asm_to_cpp: fn_80198624
 asm void fn_80198624() {
     nofralloc
     lis r6, lbl_8035FBD8@ha
@@ -233,4 +216,3 @@ lbl_801986D4:
     li r3, 0x0
     blr
 }
-

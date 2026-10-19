@@ -1,39 +1,68 @@
-#include "types.h"
+#include "PowerPC_EABI_Support/MSL_C/MSL_Common/buffer_io.h"
+#include <stdio.h>
 
-// Translation unit: src/MSL_C.PPCEABI.bare.H/buffer_io.cpp
-// Total functions: 5
-
-// Global data symbols (@ha/@l)
-u8 lbl_8035FBD8[];
-
-// Forward declarations
-void __flush_buffer();
-void __prep_buffer();
-void fn_80197C00();
-void fn_80197DB4();
-void fn_80197DE4();
-void fn_80197DE8();
-
-// ----------------------------------------------------------------------------
-// __prep_buffer
-// ----------------------------------------------------------------------------
-asm void __prep_buffer() {
-    nofralloc
-    lwz r4, 0x18(r3)
-    lwz r0, 0x2c(r3)
-    lwz r6, 0x1c(r3)
-    lwz r5, 0x20(r3)
-    and r0, r4, r0
-    stw r6, 0x24(r3)
-    subf r0, r0, r5
-    stw r0, 0x28(r3)
-    stw r4, 0x34(r3)
-    blr
+//unused
+void __convert_from_newlines(){
 }
 
-// ----------------------------------------------------------------------------
-// fn_80197C00
-// ----------------------------------------------------------------------------
+//unused
+void __convert_to_newlines(){
+}
+
+void __prep_buffer(FILE* file)
+{
+    file->buffer_ptr = file->buffer;
+    file->buffer_len = file->buffer_size;
+    file->buffer_len = file->buffer_len - (file->position & file->buffer_alignment);
+    file->buffer_pos = file->position;
+    return;
+}
+
+//unused
+void __load_buffer(){
+}
+
+int __flush_buffer(FILE* file, size_t* length)
+{
+    size_t bufferLen;
+    int writeCode;
+
+    bufferLen = file->buffer_ptr - file->buffer;
+    if (bufferLen) {
+        file->buffer_len = bufferLen;
+        writeCode = file->write_proc(file->handle, file->buffer, &file->buffer_len, file->ref_con);
+        if (length) {
+            *length = file->buffer_len;
+        }
+        if (writeCode) {
+            return writeCode;
+        }
+        file->position += file->buffer_len;
+    }
+
+    file->buffer_ptr = file->buffer;
+    file->buffer_len = file->buffer_size;
+    file->buffer_len = file->buffer_len - (file->position & file->buffer_alignment);
+    file->buffer_pos = file->position;
+    return 0;
+}
+
+//unused
+void setvbuf(){
+}
+
+//unused
+void setbuf(){
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+extern u8 lbl_8035FBD8[];
+extern void fn_80197C00();
+extern void fn_80197DB4();
+extern void fn_80197DE4();
+extern void fn_80197DE8();
+
+// asm_to_cpp: fn_80197C00
 asm void fn_80197C00() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -109,66 +138,7 @@ lbl_80197CE4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __flush_buffer
-// ----------------------------------------------------------------------------
-asm void __flush_buffer() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r4
-    stw r30, 0x8(r1)
-    mr r30, r3
-    lwz r5, 0x1c(r3)
-    lwz r0, 0x24(r3)
-    subf. r0, r5, r0
-    beq lbl_80197D74
-    lwz r12, 0x40(r30)
-    mr r4, r5
-    stw r0, 0x28(r3)
-    addi r5, r30, 0x28
-    lwz r3, 0x0(r3)
-    lwz r6, 0x48(r30)
-    mtctr r12
-    bctrl
-    cmpwi r31, 0x0
-    beq lbl_80197D58
-    lwz r0, 0x28(r30)
-    stw r0, 0x0(r31)
-lbl_80197D58:
-    cmpwi r3, 0x0
-    beq lbl_80197D64
-    b lbl_80197D9C
-lbl_80197D64:
-    lwz r3, 0x18(r30)
-    lwz r0, 0x28(r30)
-    add r0, r3, r0
-    stw r0, 0x18(r30)
-lbl_80197D74:
-    lwz r4, 0x18(r30)
-    li r3, 0x0
-    lwz r0, 0x2c(r30)
-    lwz r6, 0x1c(r30)
-    lwz r5, 0x20(r30)
-    and r0, r4, r0
-    stw r6, 0x24(r30)
-    subf r0, r0, r5
-    stw r0, 0x28(r30)
-    stw r4, 0x34(r30)
-lbl_80197D9C:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_80197DB4
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80197DB4
 asm void fn_80197DB4() {
     nofralloc
     cmplwi r3, 0xff
@@ -186,11 +156,8 @@ lbl_80197DC4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80197DE4
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80197DE4
 asm void fn_80197DE4() {
     nofralloc
     b fn_80197DE8
 }
-

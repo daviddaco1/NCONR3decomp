@@ -1,302 +1,213 @@
-#include "types.h"
+#include "PowerPC_EABI_Support/MetroTRK/trk.h"
+#include "PowerPC_EABI_Support/MetroTRK/mem_TRK.h"
+#include "PowerPC_EABI_Support/MetroTRK/dolphin_trk.h"
+#include "PowerPC_EABI_Support/MetroTRK/dolphin_trk_glue.h"
+#include "PowerPC_EABI_Support/MetroTRK/__exception.h"
+#include "PowerPC_EABI_Support/MetroTRK/mpc_7xx_603e.h"
+#include "PowerPC_EABI_Support/MetroTRK/Processor/ppc/Generic/ppc_targimpl.h"
+#include "PowerPC_EABI_Support/MetroTRK/main_TRK.h"
+#include "PowerPC_EABI_Support/MetroTRK/rvl_mem.h"
 
-// Translation unit: src/TRK_MINNOW_DOLPHIN/dolphin_trk.cpp
-// Total functions: 8
+#define EXCEPTION_SIZE  0x100
+#define NUM_EXCEPTIONS  15
 
-// Small Data symbols (@sda21)
-float lbl_8049D8F8;
+static ui32 TRK_ISR_OFFSETS[NUM_EXCEPTIONS] = {
+    PPC_SYSTEMRESET,
+    PPC_MACHINECHECK,
+    PPC_DATAACCESSERROR,
+    PPC_INSTACCESSERROR,
+    PPC_EXTERNALINTERRUPT,
+    PPC_ALIGNMENTERROR,
+    PPC_PROGRAMERROR,
+    PPC_FPUNAVAILABLE,
+    PPC_DECREMENTERINTERRUPT,
+    PPC_SYSTEMCALL,
+    PPC_TRACE,
+    PPC_PERFORMANCE_MONITOR,
+    PPC7xx_603E_INSTR_ADDR_BREAK,
+    PPC7xx_603E_SYS_MANAGE,
+    PPC_THERMAL_MANAGE
+};
 
-// Global data symbols (@ha/@l)
-u8 _db_stack_addr[];
-u8 gTRKCPUState[];
-u8 gTRKInterruptVectorTable[];
-u8 gTRKState[];
-u8 lbl_80360130[];
+static ui32* lc_base;
 
-// Forward declarations
-void EnableMetroTRKInterrupts();
-void InitMetroTRK();
-void InitMetroTRKCommTable();
-void InitMetroTRK_BBA();
-void OSResetSystem();
-void TRKInitializeTarget();
-void TRKSaveExtended1Block();
-void TRK_main();
-void TRK_flush_cache();
-void TRK_memcpy();
-void TRKTargetTranslate();
-void __TRK_copy_vectors();
-void __TRKreset();
-void EnableEXI2Interrupts();
-void __TRK_get_MSR();
-void gap_03_801A3F44_text();
-
-// ----------------------------------------------------------------------------
-// InitMetroTRK
-// ----------------------------------------------------------------------------
-asm void InitMetroTRK() {
+//r5: hardware id
+asm void InitMetroTRK(){
     nofralloc
-    subi r1, r1, 0x4
-    stw r3, 0x0(r1)
+    addi r1, r1, -4
+    stw r3, 0(r1)
     lis r3, gTRKCPUState@h
     ori r3, r3, gTRKCPUState@l
-    stmw r0, 0x0(r3)
-    lwz r4, 0x0(r1)
-    addi r1, r1, 0x4
-    stw r1, 0x4(r3)
-    stw r4, 0xc(r3)
+    stmw r0, ProcessorState_PPC.Default.GPR(r3) //Save the gprs
+    lwz r4, 0(r1)
+    addi r1, r1, 4
+    stw r1, ProcessorState_PPC.Default.GPR[1](r3)
+    stw r4, ProcessorState_PPC.Default.GPR[3](r3)
     mflr r4
-    stw r4, 0x84(r3)
-    stw r4, 0x80(r3)
+    stw r4, ProcessorState_PPC.Default.LR(r3)
+    stw r4, ProcessorState_PPC.Default.PC(r3)
     mfcr r4
-    stw r4, 0x88(r3)
+    stw r4, ProcessorState_PPC.Default.CR(r3)
+    //???
     mfmsr r4
-    ori r3, r4, 0x8000
-    xori r3, r3, 0x8000
+    ori r3, r4, MSR_EE
+    xori r3, r3, MSR_EE
     mtmsr r3
-    mtsrr1 r4
+    mtsrr1 r4 //Copy msr to srr1
+    //Save misc registers to gTRKCPUState
     bl TRKSaveExtended1Block
     lis r3, gTRKCPUState@h
     ori r3, r3, gTRKCPUState@l
-    opword 0xB8030000 /* illegal: lmw r0, 0x0(r3) */
-    li r0, 0x0
-    mtspr IABR, r0
-    mtspr DABR, r0
+    lmw r0, ProcessorState_PPC.Default.GPR(r3) //Restore the gprs
+    //Reset IABR and DABR
+    li r0, 0
+    mtiabr r0
+    mtdabr r0
+    //Restore stack pointer
     lis r1, _db_stack_addr@h
     ori r1, r1, _db_stack_addr@l
     mr r3, r5
-    bl InitMetroTRKCommTable
-    cmpwi r3, 0x1
-    bne lbl_801A3F40
-    lwz r4, 0x84(r3)
+    bl InitMetroTRKCommTable //Initialize comm table
+    /*
+    If InitMetroTRKCommTable returned 1 (failure), an invalid hardware
+    id or the id for GDEV was somehow passed. Since only BBA or NDEV
+    are supported, we return early. Otherwise, we proceed with
+    starting up TRK.
+    */
+    cmpwi r3, 1
+    bne initCommTableSuccess
+    /*
+    BUG: The code probably orginally reloaded gTRKCPUState here, but
+    as is it will read the returned value of InitMetroTRKCommTable
+    as a TRKCPUState struct pointer, causing the CPU to return to
+    a garbage code address.
+    */
+    lwz r4, ProcessorState_PPC.Default.LR(r3)
     mtlr r4
-    opword 0xB8030000 /* illegal: lmw r0, 0x0(r3) */
+    lmw r0, ProcessorState_PPC.Default.GPR(r3) //Restore the gprs
     blr
-lbl_801A3F40:
-    b TRK_main
+initCommTableSuccess:
+    b TRK_main //Jump to TRK_main
+    // RNEPDA: sin el blr muerto que trae la version de Xenoblade
 }
 
-// ----------------------------------------------------------------------------
-// gap_03_801A3F44_text
-// ----------------------------------------------------------------------------
-asm void gap_03_801A3F44_text() {
+asm void InitMetroTRK_BBA(){
     nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// InitMetroTRK_BBA
-// ----------------------------------------------------------------------------
-asm void InitMetroTRK_BBA() {
-    nofralloc
-    subi r1, r1, 0x4
-    stw r3, 0x0(r1)
+    addi r1, r1, -4
+    stw r3, 0(r1)
     lis r3, gTRKCPUState@h
     ori r3, r3, gTRKCPUState@l
-    stmw r0, 0x0(r3)
-    lwz r4, 0x0(r1)
-    addi r1, r1, 0x4
-    stw r1, 0x4(r3)
-    stw r4, 0xc(r3)
+    stmw r0, ProcessorState_PPC.Default.GPR(r3) //Save the gprs
+    lwz r4, 0(r1)
+    addi r1, r1, 4
+    stw r1, ProcessorState_PPC.Default.GPR[1](r3)
+    stw r4, ProcessorState_PPC.Default.GPR[3](r3)
     mflr r4
-    stw r4, 0x84(r3)
-    stw r4, 0x80(r3)
+    stw r4, ProcessorState_PPC.Default.LR(r3)
+    stw r4, ProcessorState_PPC.Default.PC(r3)
     mfcr r4
-    stw r4, 0x88(r3)
+    stw r4, ProcessorState_PPC.Default.CR(r3)
+    //Turn on external interrupts
     mfmsr r4
-    ori r3, r4, 0x8000
+    ori r3, r4, MSR_EE
     mtmsr r3
-    mtsrr1 r4
+    mtsrr1 r4 //Copy original msr to srr1
+    //Save misc registers to gTRKCPUState
     bl TRKSaveExtended1Block
     lis r3, gTRKCPUState@h
     ori r3, r3, gTRKCPUState@l
-    opword 0xB8030000 /* illegal: lmw r0, 0x0(r3) */
-    li r0, 0x0
-    mtspr IABR, r0
-    mtspr DABR, r0
+    lmw r0, ProcessorState_PPC.Default.GPR(r3) //Restore the gprs
+    //Reset IABR and DABR
+    li r0, 0
+    mtiabr r0
+    mtdabr r0
+    //Restore the stack pointer
     lis r1, _db_stack_addr@h
     ori r1, r1, _db_stack_addr@l
-    li r3, 0x2
-    bl InitMetroTRKCommTable
-    cmpwi r3, 0x1
-    bne lbl_801A3FD4
-    lwz r4, 0x84(r3)
+    li r3, 2
+    bl InitMetroTRKCommTable //Initialize comm table as BBA hardware
+    /*
+    If InitMetroTRKCommTable returned 1 (failure), something went wrong
+    or whatever reason. If everything goes as expected, we proceed with
+    starting up TRK.
+    */
+    cmpwi r3, 1
+    bne initCommTableSuccess
+    /*
+    BUG: The code probably orginally reloaded gTRKCPUState here, but
+    as is it will read the returned value of InitMetroTRKCommTable
+    as a TRKCPUState struct pointer, causing the CPU to return to
+    a garbage code address.
+    */
+    lwz r4, ProcessorState_PPC.Default.LR(r3)
     mtlr r4
-    opword 0xB8030000 /* illegal: lmw r0, 0x0(r3) */
+    lmw r0, ProcessorState_PPC.Default.GPR(r3)
     blr
-lbl_801A3FD4:
-    b TRK_main
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// EnableMetroTRKInterrupts
-// ----------------------------------------------------------------------------
-asm void EnableMetroTRKInterrupts() {
-    nofralloc
-    b EnableEXI2Interrupts
-}
-
-// ----------------------------------------------------------------------------
-// TRKTargetTranslate
-// ----------------------------------------------------------------------------
-asm void TRKTargetTranslate() {
-    nofralloc
-    lwz r4, lbl_8049D8F8
-    cmplw r3, r4
-    blt lbl_801A400C
-    addi r0, r4, 0x4000
-    cmplw r3, r0
-    bge lbl_801A400C
-    lis r4, gTRKCPUState@ha
-    addi r4, r4, gTRKCPUState@l
-    lwz r0, 0x238(r4)
-    clrlwi. r0, r0, 30
-    bnelr
-lbl_801A400C:
-    lis r0, 0x300
-    cmplw r3, r0
-    bge lbl_801A4024
-    clrlwi r0, r3, 2
-    oris r3, r0, 0x8000
-    blr
-lbl_801A4024:
-    lis r0, 0x1000
-    cmplw r3, r0
-    bltlr
-    lis r0, 0x1c00
-    cmplw r3, r0
-    bgelr
-    clrlwi r0, r3, 2
-    oris r3, r0, 0x9000
+initCommTableSuccess:
+    b TRK_main //Jump to TRK_main
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __TRK_copy_vectors
-// ----------------------------------------------------------------------------
-asm void __TRK_copy_vectors() {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    stmw r22, 0x8(r1)
-    lwz r3, lbl_8049D8F8
-    cmplwi r3, 0x44
-    bgt lbl_801A408C
-    addi r0, r3, 0x4000
-    cmplwi r0, 0x44
-    ble lbl_801A408C
-    lis r3, gTRKCPUState@ha
-    addi r3, r3, gTRKCPUState@l
-    lwz r0, 0x238(r3)
-    clrlwi. r0, r0, 30
-    beq lbl_801A408C
-    li r3, 0x44
-    b lbl_801A4094
-lbl_801A408C:
-    lis r3, 0x8000
-    addi r3, r3, 0x44
-lbl_801A4094:
-    lis r31, lbl_80360130@ha
-    lis r24, gTRKCPUState@ha
-    lis r28, gTRKInterruptVectorTable@ha
-    lwz r29, 0x0(r3)
-    addi r31, r31, lbl_80360130@l
-    addi r24, r24, gTRKCPUState@l
-    addi r28, r28, gTRKInterruptVectorTable@l
-    li r30, 0x0
-    lis r25, 0x300
-    lis r27, 0x1c00
-    lis r26, 0x1000
-    li r23, 0x1
-lbl_801A40C4:
-    slw r0, r23, r30
-    and. r0, r29, r0
-    beq lbl_801A4158
-    cmpwi r30, 0x4
-    beq lbl_801A4158
-    lwz r4, 0x0(r31)
-    lwz r3, lbl_8049D8F8
-    cmplw r4, r3
-    blt lbl_801A4108
-    addi r0, r3, 0x4000
-    cmplw r4, r0
-    bge lbl_801A4108
-    lwz r0, 0x238(r24)
-    clrlwi. r0, r0, 30
-    beq lbl_801A4108
-    mr r22, r4
-    b lbl_801A413C
-lbl_801A4108:
-    cmplw r4, r25
-    bge lbl_801A411C
-    clrlwi r0, r4, 2
-    oris r22, r0, 0x8000
-    b lbl_801A413C
-lbl_801A411C:
-    cmplw r4, r26
-    blt lbl_801A4138
-    cmplw r4, r27
-    bge lbl_801A4138
-    clrlwi r0, r4, 2
-    oris r22, r0, 0x9000
-    b lbl_801A413C
-lbl_801A4138:
-    mr r22, r4
-lbl_801A413C:
-    mr r3, r22
-    add r4, r28, r4
-    li r5, 0x100
-    bl TRK_memcpy
-    mr r3, r22
-    li r4, 0x100
-    bl TRK_flush_cache
-lbl_801A4158:
-    addi r30, r30, 0x1
-    addi r31, r31, 0x4
-    cmpwi r30, 0xe
-    ble lbl_801A40C4
-    lmw r22, 0x8(r1)
-    lwz r0, 0x34(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
+void EnableMetroTRKInterrupts(){
+    EnableEXI2Interrupts();
 }
 
-// ----------------------------------------------------------------------------
-// TRKInitializeTarget
-// ----------------------------------------------------------------------------
-asm void TRKInitializeTarget() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    li r0, 0x1
-    stw r31, 0xc(r1)
-    lis r31, gTRKState@ha
-    addi r31, r31, gTRKState@l
-    stw r0, 0x98(r31)
-    bl __TRK_get_MSR
-    stw r3, 0x8c(r31)
-    lis r0, 0xe000
-    li r3, 0x0
-    stw r0, lbl_8049D8F8
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void* TRKTargetTranslate(ui32* addr){
+    if(addr >= lc_base && addr < &lc_base[0x1000]){
+        if(gTRKCPUState.Extended1.DBAT2L & 3) return addr;
+    }
+
+    if((ui32)addr < 0x3000000){
+        return (void*)(((ui32)addr & 0x3FFFFFFF) | BOOTINFO);
+    }
+
+    if((ui32)addr >= 0x10000000 && 0x1C000000 > (ui32)addr){
+        return (void*)(((ui32)addr & 0x3FFFFFFF) | MEM2_CACHED);
+    }
+    
+    return addr;
 }
 
-// ----------------------------------------------------------------------------
-// __TRKreset
-// ----------------------------------------------------------------------------
-asm void __TRKreset() {
-    nofralloc
-    li r3, 0x0
-    li r4, 0x0
-    li r5, 0x0
-    b OSResetSystem
+static void TRK_copy_vector(ui32 offset){
+    void* destPtr = (void*)TRKTargetTranslate((ui32*)offset);
+    TRK_memcpy(destPtr, (void*)(gTRKInterruptVectorTable + offset), EXCEPTION_SIZE);
+    TRK_flush_cache(destPtr, EXCEPTION_SIZE);
 }
 
+void __TRK_copy_vectors(){
+    ui32* data_ptr;
+    ui32* isrOffsetPtr;
+    int i;
+    ui32 data;
+
+    if((ui32)lc_base <= DB_EXCEPTION_MASK && (ui32)&lc_base[0x1000] > DB_EXCEPTION_MASK && gTRKCPUState.Extended1.DBAT2L & 0x3){
+        data_ptr = (ui32*)DB_EXCEPTION_MASK;
+    }else{
+        data_ptr = (ui32*)(BOOTINFO + DB_EXCEPTION_MASK);
+    }
+
+    isrOffsetPtr = TRK_ISR_OFFSETS;
+    i = 0;
+    data = *data_ptr;
+
+    do{
+        if((data & (1 << i)) != 0 && i != 4){
+            TRK_copy_vector(*isrOffsetPtr);
+        }
+
+        i++;
+        isrOffsetPtr++;
+    }while(i <= 14);
+}
+
+DSError TRKInitializeTarget(){
+    gTRKState.stopped = true;
+    gTRKState.MSR = __TRK_get_MSR();
+    lc_base = (ui32*)0xE0000000;
+    return kNoError;
+}
+
+void __TRKreset(){
+    //Looks like the devs forgot to update this lol
+    OSResetSystem(false, 0, false);
+}

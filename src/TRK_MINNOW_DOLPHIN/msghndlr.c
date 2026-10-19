@@ -1,1211 +1,539 @@
-#include "types.h"
+#include "PowerPC_EABI_Support/MetroTRK/msghndlr.h"
+#include "PowerPC_EABI_Support/MetroTRK/msgxtrct.h"
+#include "PowerPC_EABI_Support/MetroTRK/mem_TRK.h"
+#include "PowerPC_EABI_Support/MetroTRK/dolphin_trk_glue.h"
+#include "PowerPC_EABI_Support/MetroTRK/nubevent.h"
+#include "PowerPC_EABI_Support/MetroTRK/msg.h"
+#include "PowerPC_EABI_Support/MetroTRK/msgbuf.h"
+#include "PowerPC_EABI_Support/MetroTRK/target_options.h"
+#include <revolution/OS.h>
 
-// Translation unit: src/TRK_MINNOW_DOLPHIN/msghndlr.cpp
-// Total functions: 13
+extern void __TRK_copy_vectors();
+extern void __TRKreset();
 
-// Small Data symbols (@sda21)
-float lbl_8049D920;
-float lbl_8049D924;
+static bool IsTRKConnected;
+static ui32 g_CurrentSequence;
 
-// Global data symbols (@ha/@l)
-u8 jumptable_80360330[];
-u8 jumptable_8036034C[];
-u8 lbl_80360368[];
-
-// Forward declarations
-void OSReport();
-void TRKTargetContinue();
-void TRKTargetStopped();
-void TRK_memset();
-void __TRK_copy_vectors();
-void __TRKreset();
-void TRK_WriteUARTN();
-void TRKPostEvent();
-void TRKConstructEvent();
-void TRK_MessageSend();
-void TRKResetBuffer();
-void TRK_SetBufferPosition();
-void TRK_AppendBuffer();
-void TRK_ReadBuffer();
-void TRKAppendBuffer_ui8();
-void GetTRKConnected();
-void TRK_DoConnect();
-void TRKDoDisconnect();
-void TRKDoReset();
-void TRKDoOverride();
-void TRKDoReadMemory();
-void TRKDoWriteMemory();
-void TRKDoReadRegisters();
-void TRKDoWriteRegisters();
-void TRKDoContinue();
-void TRKDoStep();
-void TRKDoStop();
-void TRKDoSetOption();
-void TRKTargetAccessMemory();
-void TRKTargetAccessDefault();
-void TRKTargetAccessFP();
-void TRKTargetAccessExtended1();
-void TRKTargetAccessExtended2();
-void TRKTargetSingleStep();
-void TRKTargetStepOutOfRange();
-void TRKTargetGetPC();
-void TRKTargetStop();
-void SetUseSerialIO();
-
-// ----------------------------------------------------------------------------
-// GetTRKConnected
-// ----------------------------------------------------------------------------
-asm void GetTRKConnected() {
-    nofralloc
-    lwz r3, lbl_8049D924
-    blr
+bool GetTRKConnected(){
+    return IsTRKConnected;
 }
 
-// ----------------------------------------------------------------------------
-// TRK_DoConnect
-// ----------------------------------------------------------------------------
-asm void TRK_DoConnect() {
-    nofralloc
-    stwu r1, -0x50(r1)
-    mflr r0
-    li r4, 0x0
-    li r5, 0x40
-    stw r0, 0x54(r1)
-    li r0, 0x1
-    addi r3, r1, 0x8
-    stw r0, lbl_8049D924
-    bl TRK_memset
-    lwz r3, lbl_8049D920
-    li r0, 0x80
-    li r4, 0x40
-    li r5, 0x0
-    addi r6, r3, 0x1
-    stb r0, 0xc(r1)
-    addi r0, r6, 0x1
-    addi r3, r1, 0x8
-    stw r4, 0x8(r1)
-    li r4, 0x40
-    stb r5, 0x10(r1)
-    stw r6, 0x14(r1)
-    stw r0, lbl_8049D920
-    bl TRK_WriteUARTN
-    lwz r0, 0x54(r1)
-    li r3, 0x0
-    mtlr r0
-    addi r1, r1, 0x50
-    blr
+//unused
+void SetTRKConnected(bool value){
+    IsTRKConnected = value;
 }
 
-// ----------------------------------------------------------------------------
-// TRKDoDisconnect
-// ----------------------------------------------------------------------------
-asm void TRKDoDisconnect() {
-    nofralloc
-    stwu r1, -0x60(r1)
-    mflr r0
-    li r4, 0x0
-    li r5, 0x40
-    stw r0, 0x64(r1)
-    addi r3, r1, 0x18
-    stw r31, 0x5c(r1)
-    li r31, 0x0
-    stw r31, lbl_8049D924
-    bl TRK_memset
-    lwz r4, lbl_8049D920
-    li r0, 0x80
-    li r3, 0x40
-    stw r3, 0x18(r1)
-    addi r5, r4, 0x1
-    li r4, 0x40
-    stb r0, 0x1c(r1)
-    addi r0, r5, 0x1
-    addi r3, r1, 0x18
-    stb r31, 0x20(r1)
-    stw r5, 0x24(r1)
-    stw r0, lbl_8049D920
-    bl TRK_WriteUARTN
-    addi r3, r1, 0x8
-    li r4, 0x1
-    bl TRKConstructEvent
-    addi r3, r1, 0x8
-    bl TRKPostEvent
-    lwz r31, 0x5c(r1)
-    li r3, 0x0
-    lwz r0, 0x64(r1)
-    mtlr r0
-    addi r1, r1, 0x60
-    blr
+static DSError TRKSendACK(MessageBuffer* b){
+    return TRK_MessageSend(b);
 }
 
-// ----------------------------------------------------------------------------
-// TRKDoReset
-// ----------------------------------------------------------------------------
-asm void TRKDoReset() {
-    nofralloc
-    stwu r1, -0x50(r1)
-    mflr r0
-    li r4, 0x0
-    li r5, 0x40
-    stw r0, 0x54(r1)
-    addi r3, r1, 0x8
-    bl TRK_memset
-    lwz r3, lbl_8049D920
-    li r0, 0x80
-    li r4, 0x40
-    li r5, 0x0
-    addi r6, r3, 0x1
-    stb r0, 0xc(r1)
-    addi r0, r6, 0x1
-    addi r3, r1, 0x8
-    stw r4, 0x8(r1)
-    li r4, 0x40
-    stb r5, 0x10(r1)
-    stw r6, 0x14(r1)
-    stw r0, lbl_8049D920
-    bl TRK_WriteUARTN
-    bl __TRKreset
-    lwz r0, 0x54(r1)
-    li r3, 0x0
-    mtlr r0
-    addi r1, r1, 0x50
-    blr
+static DSError TRKStandardACK(MessageBuffer* b, MessageCommandID commandId, DSReplyError replyError){
+    msgbuf_t reply;
+    ui32 nextSequence;
+
+    TRK_memset((void*)&reply, 0, sizeof(msgbuf_t));
+    nextSequence = g_CurrentSequence + 1;
+    reply.commandId = commandId;
+    reply.msgLength = sizeof(msgbuf_t);
+    reply.replyError = replyError;
+    reply.unkC = nextSequence;
+    g_CurrentSequence = nextSequence + 1;
+    TRK_WriteUARTN((void*)&reply, sizeof(msgbuf_t));
+    return kNoError;
 }
 
-// ----------------------------------------------------------------------------
-// TRKDoOverride
-// ----------------------------------------------------------------------------
-asm void TRKDoOverride() {
-    nofralloc
-    stwu r1, -0x50(r1)
-    mflr r0
-    li r4, 0x0
-    li r5, 0x40
-    stw r0, 0x54(r1)
-    addi r3, r1, 0x8
-    bl TRK_memset
-    lwz r3, lbl_8049D920
-    li r0, 0x80
-    li r4, 0x40
-    li r5, 0x0
-    addi r6, r3, 0x1
-    stb r0, 0xc(r1)
-    addi r0, r6, 0x1
-    addi r3, r1, 0x8
-    stw r4, 0x8(r1)
-    li r4, 0x40
-    stb r5, 0x10(r1)
-    stw r6, 0x14(r1)
-    stw r0, lbl_8049D920
-    bl TRK_WriteUARTN
-    bl __TRK_copy_vectors
-    lwz r0, 0x54(r1)
-    li r3, 0x0
-    mtlr r0
-    addi r1, r1, 0x50
-    blr
+//unused
+DSError TRKDoError(MessageBuffer* b){
+    return kNoError;
 }
 
-// ----------------------------------------------------------------------------
-// TRKDoReadMemory
-// ----------------------------------------------------------------------------
-asm void TRKDoReadMemory() {
-    nofralloc
-    clrlwi r11, r1, 27
-    mr r12, r1
-    subfic r11, r11, -0x940
-    stwux r1, r1, r11
-    mflr r0
-    stw r0, 0x4(r12)
-    stw r31, -0x4(r12)
-    li r31, 0x0
-    stw r30, -0x8(r12)
-    stw r29, -0xc(r12)
-    stw r28, -0x10(r12)
-    mr r28, r3
-    lbz r30, 0x14(r3)
-    lwz r29, 0x1c(r3)
-    rlwinm. r0, r30, 0, 30, 30
-    lhz r3, 0x18(r3)
-    beq lbl_801A5EAC
-    addi r3, r1, 0x68
-    li r4, 0x0
-    li r5, 0x40
-    bl TRK_memset
-    lwz r3, lbl_8049D920
-    li r0, 0x80
-    li r4, 0x40
-    li r5, 0x12
-    addi r6, r3, 0x1
-    stb r0, 0x6c(r1)
-    addi r0, r6, 0x1
-    addi r3, r1, 0x68
-    stw r4, 0x68(r1)
-    li r4, 0x40
-    stb r5, 0x70(r1)
-    stw r6, 0x74(r1)
-    stw r0, lbl_8049D920
-    bl TRK_WriteUARTN
-    li r3, 0x0
-    b lbl_801A6028
-lbl_801A5EAC:
-    cmpwi r31, 0x0
-    bne lbl_801A5F7C
-    rlwinm. r0, r30, 0, 28, 28
-    stw r3, 0x20(r1)
-    beq lbl_801A5EC8
-    li r6, 0x0
-    b lbl_801A5ECC
-lbl_801A5EC8:
-    li r6, 0x1
-lbl_801A5ECC:
-    mr r4, r29
-    addi r3, r1, 0x100
-    addi r5, r1, 0x20
-    li r7, 0x1
-    bl TRKTargetAccessMemory
-    mr r31, r3
-    mr r3, r28
-    li r4, 0x0
-    bl TRKResetBuffer
-    cmpwi r31, 0x0
-    bne lbl_801A5F7C
-    addi r3, r1, 0xa8
-    li r4, 0x0
-    li r5, 0x40
-    bl TRK_memset
-    lwz r6, lbl_8049D920
-    li r7, 0x80
-    lwz r4, 0x20(r1)
-    mr r3, r28
-    addi r0, r6, 0x1
-    stb r31, 0xb0(r1)
-    addi r5, r4, 0x40
-    addi r4, r1, 0xa8
-    stw r5, 0xa8(r1)
-    li r5, 0x40
-    stb r7, 0xac(r1)
-    stw r6, 0xb4(r1)
-    stw r0, lbl_8049D920
-    bl TRK_AppendBuffer
-    rlwinm. r0, r30, 0, 25, 25
-    beq lbl_801A5F68
-    clrlwi r0, r29, 27
-    addi r4, r1, 0x100
-    lwz r5, 0x20(r1)
-    mr r3, r28
-    add r4, r4, r0
-    bl TRK_AppendBuffer
-    mr r31, r3
-    b lbl_801A5F7C
-lbl_801A5F68:
-    lwz r5, 0x20(r1)
-    mr r3, r28
-    addi r4, r1, 0x100
-    bl TRK_AppendBuffer
-    mr r31, r3
-lbl_801A5F7C:
-    cmpwi r31, 0x0
-    beq lbl_801A6020
-    subi r0, r31, 0x700
-    cmplwi r0, 0x6
-    bgt lbl_801A5FD0
-    lis r3, jumptable_80360330@ha
-    slwi r0, r0, 2
-    addi r3, r3, jumptable_80360330@l
-    lwzx r3, r3, r0
-    mtctr r3
-    bctr
-    li r31, 0x15
-    b lbl_801A5FD4
-    li r31, 0x13
-    b lbl_801A5FD4
-    li r31, 0x21
-    b lbl_801A5FD4
-    li r31, 0x22
-    b lbl_801A5FD4
-    li r31, 0x20
-    b lbl_801A5FD4
-lbl_801A5FD0:
-    li r31, 0x3
-lbl_801A5FD4:
-    addi r3, r1, 0x28
-    li r4, 0x0
-    li r5, 0x40
-    bl TRK_memset
-    lwz r3, lbl_8049D920
-    li r0, 0x80
-    li r4, 0x40
-    stw r4, 0x28(r1)
-    addi r5, r3, 0x1
-    addi r3, r1, 0x28
-    stb r0, 0x2c(r1)
-    addi r0, r5, 0x1
-    li r4, 0x40
-    stb r31, 0x30(r1)
-    stw r5, 0x34(r1)
-    stw r0, lbl_8049D920
-    bl TRK_WriteUARTN
-    li r3, 0x0
-    b lbl_801A6028
-lbl_801A6020:
-    mr r3, r28
-    bl TRK_MessageSend
-lbl_801A6028:
-    lwz r10, 0x0(r1)
-    lwz r0, 0x4(r10)
-    lwz r31, -0x4(r10)
-    lwz r30, -0x8(r10)
-    lwz r29, -0xc(r10)
-    lwz r28, -0x10(r10)
-    mtlr r0
-    mr r1, r10
-    blr
+//unused
+DSError TRKDoUnsupported(MessageBuffer* b){
+    TRKStandardACK(b,0x80,kDSReplyUnsupportedCommandError);
+    return kNoError;
 }
 
-// ----------------------------------------------------------------------------
-// TRKDoWriteMemory
-// ----------------------------------------------------------------------------
-asm void TRKDoWriteMemory() {
-    nofralloc
-    clrlwi r11, r1, 27
-    mr r12, r1
-    subfic r11, r11, -0x940
-    stwux r1, r1, r11
-    mflr r0
-    stw r0, 0x4(r12)
-    stw r31, -0x4(r12)
-    li r31, 0x0
-    stw r30, -0x8(r12)
-    stw r29, -0xc(r12)
-    stw r28, -0x10(r12)
-    mr r28, r3
-    lbz r30, 0x14(r3)
-    lwz r29, 0x1c(r3)
-    rlwinm. r0, r30, 0, 30, 30
-    lhz r0, 0x18(r3)
-    beq lbl_801A60E0
-    addi r3, r1, 0x68
-    li r4, 0x0
-    li r5, 0x40
-    bl TRK_memset
-    lwz r3, lbl_8049D920
-    li r0, 0x80
-    li r4, 0x40
-    li r5, 0x12
-    addi r6, r3, 0x1
-    stb r0, 0x6c(r1)
-    addi r0, r6, 0x1
-    addi r3, r1, 0x68
-    stw r4, 0x68(r1)
-    li r4, 0x40
-    stb r5, 0x70(r1)
-    stw r6, 0x74(r1)
-    stw r0, lbl_8049D920
-    bl TRK_WriteUARTN
-    li r3, 0x0
-    b lbl_801A6238
-lbl_801A60E0:
-    cmpwi r31, 0x0
-    bne lbl_801A618C
-    stw r0, 0x20(r1)
-    li r4, 0x40
-    bl TRK_SetBufferPosition
-    lwz r5, 0x20(r1)
-    mr r3, r28
-    addi r4, r1, 0x100
-    bl TRK_ReadBuffer
-    rlwinm. r0, r30, 0, 28, 28
-    beq lbl_801A6114
-    li r6, 0x0
-    b lbl_801A6118
-lbl_801A6114:
-    li r6, 0x1
-lbl_801A6118:
-    mr r4, r29
-    addi r3, r1, 0x100
-    addi r5, r1, 0x20
-    li r7, 0x0
-    bl TRKTargetAccessMemory
-    mr r31, r3
-    mr r3, r28
-    li r4, 0x0
-    bl TRKResetBuffer
-    cmpwi r31, 0x0
-    bne lbl_801A618C
-    addi r3, r1, 0xa8
-    li r4, 0x0
-    li r5, 0x40
-    bl TRK_memset
-    lwz r6, lbl_8049D920
-    li r0, 0x40
-    li r4, 0x80
-    stw r0, 0xa8(r1)
-    addi r0, r6, 0x1
-    mr r3, r28
-    stb r4, 0xac(r1)
-    addi r4, r1, 0xa8
-    li r5, 0x40
-    stb r31, 0xb0(r1)
-    stw r6, 0xb4(r1)
-    stw r0, lbl_8049D920
-    bl TRK_AppendBuffer
-    mr r31, r3
-lbl_801A618C:
-    cmpwi r31, 0x0
-    beq lbl_801A6230
-    subi r0, r31, 0x700
-    cmplwi r0, 0x6
-    bgt lbl_801A61E0
-    lis r3, jumptable_8036034C@ha
-    slwi r0, r0, 2
-    addi r3, r3, jumptable_8036034C@l
-    lwzx r3, r3, r0
-    mtctr r3
-    bctr
-    li r31, 0x15
-    b lbl_801A61E4
-    li r31, 0x13
-    b lbl_801A61E4
-    li r31, 0x21
-    b lbl_801A61E4
-    li r31, 0x22
-    b lbl_801A61E4
-    li r31, 0x20
-    b lbl_801A61E4
-lbl_801A61E0:
-    li r31, 0x3
-lbl_801A61E4:
-    addi r3, r1, 0x28
-    li r4, 0x0
-    li r5, 0x40
-    bl TRK_memset
-    lwz r3, lbl_8049D920
-    li r0, 0x80
-    li r4, 0x40
-    stw r4, 0x28(r1)
-    addi r5, r3, 0x1
-    addi r3, r1, 0x28
-    stb r0, 0x2c(r1)
-    addi r0, r5, 0x1
-    li r4, 0x40
-    stb r31, 0x30(r1)
-    stw r5, 0x34(r1)
-    stw r0, lbl_8049D920
-    bl TRK_WriteUARTN
-    li r3, 0x0
-    b lbl_801A6238
-lbl_801A6230:
-    mr r3, r28
-    bl TRK_MessageSend
-lbl_801A6238:
-    lwz r10, 0x0(r1)
-    lwz r0, 0x4(r10)
-    lwz r31, -0x4(r10)
-    lwz r30, -0x8(r10)
-    lwz r29, -0xc(r10)
-    lwz r28, -0x10(r10)
-    mtlr r0
-    mr r1, r10
-    blr
+DSError TRK_DoConnect(MessageBuffer* b){
+    IsTRKConnected = true;
+    return TRKStandardACK(b,0x80,kDSReplyNoError);
 }
 
-// ----------------------------------------------------------------------------
-// TRKDoReadRegisters
-// ----------------------------------------------------------------------------
-asm void TRKDoReadRegisters() {
-    nofralloc
-    stwu r1, -0xe0(r1)
-    mflr r0
-    stw r0, 0xe4(r1)
-    stw r31, 0xdc(r1)
-    mr r31, r3
-    lhz r4, 0x18(r3)
-    lhz r0, 0x1c(r3)
-    cmplw r4, r0
-    ble lbl_801A62D0
-    addi r3, r1, 0x50
-    li r4, 0x0
-    li r5, 0x40
-    bl TRK_memset
-    lwz r3, lbl_8049D920
-    li r0, 0x80
-    li r4, 0x40
-    li r5, 0x14
-    addi r6, r3, 0x1
-    stb r0, 0x54(r1)
-    addi r0, r6, 0x1
-    addi r3, r1, 0x50
-    stw r4, 0x50(r1)
-    li r4, 0x40
-    stb r5, 0x58(r1)
-    stw r6, 0x5c(r1)
-    stw r0, lbl_8049D920
-    bl TRK_WriteUARTN
-    li r3, 0x0
-    b lbl_801A6444
-lbl_801A62D0:
-    lwz r5, lbl_8049D920
-    li r0, 0x80
-    li r6, 0x468
-    stb r0, 0x94(r1)
-    addi r0, r5, 0x1
-    li r4, 0x0
-    stw r6, 0x90(r1)
-    stw r5, 0x9c(r1)
-    stw r0, lbl_8049D920
-    bl TRKResetBuffer
-    mr r3, r31
-    addi r4, r1, 0x90
-    li r5, 0x40
-    bl TRKAppendBuffer_ui8
-    mr r5, r31
-    addi r6, r1, 0x8
-    li r3, 0x0
-    li r4, 0x24
-    li r7, 0x1
-    bl TRKTargetAccessDefault
-    cmpwi r3, 0x0
-    bne lbl_801A6340
-    mr r5, r31
-    addi r6, r1, 0x8
-    li r3, 0x0
-    li r4, 0x21
-    li r7, 0x1
-    bl TRKTargetAccessFP
-lbl_801A6340:
-    cmpwi r3, 0x0
-    bne lbl_801A6360
-    mr r5, r31
-    addi r6, r1, 0x8
-    li r3, 0x0
-    li r4, 0x60
-    li r7, 0x1
-    bl TRKTargetAccessExtended1
-lbl_801A6360:
-    cmpwi r3, 0x0
-    bne lbl_801A6380
-    mr r5, r31
-    addi r6, r1, 0x8
-    li r3, 0x0
-    li r4, 0x1f
-    li r7, 0x1
-    bl TRKTargetAccessExtended2
-lbl_801A6380:
-    cmpwi r3, 0x0
-    beq lbl_801A643C
-    cmpwi r3, 0x703
-    beq lbl_801A63BC
-    cmpwi r3, 0x701
-    beq lbl_801A63C4
-    cmpwi r3, 0x702
-    beq lbl_801A63CC
-    cmpwi r3, 0x704
-    beq lbl_801A63D4
-    cmpwi r3, 0x705
-    beq lbl_801A63DC
-    cmpwi r3, 0x706
-    beq lbl_801A63E4
-    b lbl_801A63EC
-lbl_801A63BC:
-    li r31, 0x12
-    b lbl_801A63F0
-lbl_801A63C4:
-    li r31, 0x14
-    b lbl_801A63F0
-lbl_801A63CC:
-    li r31, 0x15
-    b lbl_801A63F0
-lbl_801A63D4:
-    li r31, 0x21
-    b lbl_801A63F0
-lbl_801A63DC:
-    li r31, 0x22
-    b lbl_801A63F0
-lbl_801A63E4:
-    li r31, 0x20
-    b lbl_801A63F0
-lbl_801A63EC:
-    li r31, 0x3
-lbl_801A63F0:
-    addi r3, r1, 0x10
-    li r4, 0x0
-    li r5, 0x40
-    bl TRK_memset
-    lwz r3, lbl_8049D920
-    li r0, 0x80
-    li r4, 0x40
-    stw r4, 0x10(r1)
-    addi r5, r3, 0x1
-    addi r3, r1, 0x10
-    stb r0, 0x14(r1)
-    addi r0, r5, 0x1
-    li r4, 0x40
-    stb r31, 0x18(r1)
-    stw r5, 0x1c(r1)
-    stw r0, lbl_8049D920
-    bl TRK_WriteUARTN
-    li r3, 0x0
-    b lbl_801A6444
-lbl_801A643C:
-    mr r3, r31
-    bl TRK_MessageSend
-lbl_801A6444:
-    lwz r0, 0xe4(r1)
-    lwz r31, 0xdc(r1)
-    mtlr r0
-    addi r1, r1, 0xe0
-    blr
+DSError TRKDoDisconnect(MessageBuffer* b){
+    NubEvent event;
+
+    IsTRKConnected = false;
+    TRKStandardACK(b,0x80,kDSReplyNoError);
+    TRKConstructEvent(&event, 1);
+    TRKPostEvent(&event);
+    return kNoError;
 }
 
-// ----------------------------------------------------------------------------
-// TRKDoWriteRegisters
-// ----------------------------------------------------------------------------
-asm void TRKDoWriteRegisters() {
-    nofralloc
-    stwu r1, -0xe0(r1)
-    mflr r0
-    li r4, 0x0
-    stw r0, 0xe4(r1)
-    stw r31, 0xdc(r1)
-    stw r30, 0xd8(r1)
-    stw r29, 0xd4(r1)
-    stw r28, 0xd0(r1)
-    mr r28, r3
-    lbz r31, 0x14(r3)
-    lhz r30, 0x18(r3)
-    lhz r29, 0x1c(r3)
-    bl TRK_SetBufferPosition
-    cmplw r30, r29
-    ble lbl_801A64E4
-    addi r3, r1, 0x50
-    li r4, 0x0
-    li r5, 0x40
-    bl TRK_memset
-    lwz r3, lbl_8049D920
-    li r0, 0x80
-    li r4, 0x40
-    li r5, 0x14
-    addi r6, r3, 0x1
-    stb r0, 0x54(r1)
-    addi r0, r6, 0x1
-    addi r3, r1, 0x50
-    stw r4, 0x50(r1)
-    li r4, 0x40
-    stb r5, 0x58(r1)
-    stw r6, 0x5c(r1)
-    stw r0, lbl_8049D920
-    bl TRK_WriteUARTN
-    li r3, 0x0
-    b lbl_801A66D8
-lbl_801A64E4:
-    mr r3, r28
-    li r4, 0x40
-    bl TRK_SetBufferPosition
-    cmpwi r31, 0x0
-    beq lbl_801A6514
-    cmpwi r31, 0x1
-    beq lbl_801A6534
-    cmpwi r31, 0x2
-    beq lbl_801A6554
-    cmpwi r31, 0x3
-    beq lbl_801A6574
-    b lbl_801A6594
-lbl_801A6514:
-    mr r3, r30
-    mr r4, r29
-    mr r5, r28
-    addi r6, r1, 0x8
-    li r7, 0x0
-    bl TRKTargetAccessDefault
-    mr r31, r3
-    b lbl_801A6598
-lbl_801A6534:
-    mr r3, r30
-    mr r4, r29
-    mr r5, r28
-    addi r6, r1, 0x8
-    li r7, 0x0
-    bl TRKTargetAccessFP
-    mr r31, r3
-    b lbl_801A6598
-lbl_801A6554:
-    mr r3, r30
-    mr r4, r29
-    mr r5, r28
-    addi r6, r1, 0x8
-    li r7, 0x0
-    bl TRKTargetAccessExtended1
-    mr r31, r3
-    b lbl_801A6598
-lbl_801A6574:
-    mr r3, r30
-    mr r4, r29
-    mr r5, r28
-    addi r6, r1, 0x8
-    li r7, 0x0
-    bl TRKTargetAccessExtended2
-    mr r31, r3
-    b lbl_801A6598
-lbl_801A6594:
-    li r31, 0x703
-lbl_801A6598:
-    mr r3, r28
-    li r4, 0x0
-    bl TRKResetBuffer
-    cmpwi r31, 0x0
-    bne lbl_801A65F4
-    addi r3, r1, 0x90
-    li r4, 0x0
-    li r5, 0x40
-    bl TRK_memset
-    lwz r6, lbl_8049D920
-    li r0, 0x40
-    li r4, 0x80
-    stw r0, 0x90(r1)
-    addi r0, r6, 0x1
-    mr r3, r28
-    stb r4, 0x94(r1)
-    addi r4, r1, 0x90
-    li r5, 0x40
-    stb r31, 0x98(r1)
-    stw r6, 0x9c(r1)
-    stw r0, lbl_8049D920
-    bl TRK_AppendBuffer
-    mr r31, r3
-lbl_801A65F4:
-    cmpwi r31, 0x702
-    beq lbl_801A6660
-    bge lbl_801A6624
-    cmpwi r31, 0x302
-    beq lbl_801A6658
-    bge lbl_801A6618
-    cmpwi r31, 0x0
-    beq lbl_801A66D0
-    b lbl_801A6680
-lbl_801A6618:
-    cmpwi r31, 0x701
-    bge lbl_801A6650
-    b lbl_801A6680
-lbl_801A6624:
-    cmpwi r31, 0x705
-    beq lbl_801A6670
-    bge lbl_801A663C
-    cmpwi r31, 0x704
-    bge lbl_801A6668
-    b lbl_801A6648
-lbl_801A663C:
-    cmpwi r31, 0x707
-    bge lbl_801A6680
-    b lbl_801A6678
-lbl_801A6648:
-    li r31, 0x12
-    b lbl_801A6684
-lbl_801A6650:
-    li r31, 0x14
-    b lbl_801A6684
-lbl_801A6658:
-    li r31, 0x2
-    b lbl_801A6684
-lbl_801A6660:
-    li r31, 0x15
-    b lbl_801A6684
-lbl_801A6668:
-    li r31, 0x21
-    b lbl_801A6684
-lbl_801A6670:
-    li r31, 0x22
-    b lbl_801A6684
-lbl_801A6678:
-    li r31, 0x20
-    b lbl_801A6684
-lbl_801A6680:
-    li r31, 0x3
-lbl_801A6684:
-    addi r3, r1, 0x10
-    li r4, 0x0
-    li r5, 0x40
-    bl TRK_memset
-    lwz r3, lbl_8049D920
-    li r0, 0x80
-    li r4, 0x40
-    stw r4, 0x10(r1)
-    addi r5, r3, 0x1
-    addi r3, r1, 0x10
-    stb r0, 0x14(r1)
-    addi r0, r5, 0x1
-    li r4, 0x40
-    stb r31, 0x18(r1)
-    stw r5, 0x1c(r1)
-    stw r0, lbl_8049D920
-    bl TRK_WriteUARTN
-    li r3, 0x0
-    b lbl_801A66D8
-lbl_801A66D0:
-    mr r3, r28
-    bl TRK_MessageSend
-lbl_801A66D8:
-    lwz r0, 0xe4(r1)
-    lwz r31, 0xdc(r1)
-    lwz r30, 0xd8(r1)
-    lwz r29, 0xd4(r1)
-    lwz r28, 0xd0(r1)
-    mtlr r0
-    addi r1, r1, 0xe0
-    blr
+DSError TRKDoReset(MessageBuffer* b){
+    TRKStandardACK(b,0x80,kDSReplyNoError);
+    __TRKreset();
+    return kNoError;
 }
 
-// ----------------------------------------------------------------------------
-// TRKDoContinue
-// ----------------------------------------------------------------------------
-asm void TRKDoContinue() {
-    nofralloc
-    stwu r1, -0x90(r1)
-    mflr r0
-    stw r0, 0x94(r1)
-    bl TRKTargetStopped
-    cmpwi r3, 0x0
-    bne lbl_801A6760
-    addi r3, r1, 0x48
-    li r4, 0x0
-    li r5, 0x40
-    bl TRK_memset
-    lwz r3, lbl_8049D920
-    li r0, 0x80
-    li r4, 0x40
-    li r5, 0x16
-    addi r6, r3, 0x1
-    stb r0, 0x4c(r1)
-    addi r0, r6, 0x1
-    addi r3, r1, 0x48
-    stw r4, 0x48(r1)
-    li r4, 0x40
-    stb r5, 0x50(r1)
-    stw r6, 0x54(r1)
-    stw r0, lbl_8049D920
-    bl TRK_WriteUARTN
-    li r3, 0x0
-    b lbl_801A67AC
-lbl_801A6760:
-    addi r3, r1, 0x8
-    li r4, 0x0
-    li r5, 0x40
-    bl TRK_memset
-    lwz r3, lbl_8049D920
-    li r0, 0x80
-    li r4, 0x40
-    li r5, 0x0
-    addi r6, r3, 0x1
-    stb r0, 0xc(r1)
-    addi r0, r6, 0x1
-    addi r3, r1, 0x8
-    stw r4, 0x8(r1)
-    li r4, 0x40
-    stb r5, 0x10(r1)
-    stw r6, 0x14(r1)
-    stw r0, lbl_8049D920
-    bl TRK_WriteUARTN
-    bl TRKTargetContinue
-lbl_801A67AC:
-    lwz r0, 0x94(r1)
-    mtlr r0
-    addi r1, r1, 0x90
-    blr
+DSError TRKDoOverride(MessageBuffer* b){
+    TRKStandardACK(b,0x80,kDSReplyNoError);
+    __TRK_copy_vectors();
+    return kNoError;
 }
 
-// ----------------------------------------------------------------------------
-// TRKDoStep
-// ----------------------------------------------------------------------------
-asm void TRKDoStep() {
-    nofralloc
-    stwu r1, -0x160(r1)
-    mflr r0
-    li r4, 0x0
-    stw r0, 0x164(r1)
-    stw r31, 0x15c(r1)
-    stw r30, 0x158(r1)
-    mr r30, r3
-    stw r29, 0x154(r1)
-    stw r28, 0x150(r1)
-    bl TRK_SetBufferPosition
-    lbz r31, 0x14(r30)
-    lwz r29, 0x1c(r30)
-    cmpwi r31, 0x0
-    lwz r28, 0x20(r30)
-    beq lbl_801A6814
-    cmpwi r31, 0x10
-    beq lbl_801A6814
-    cmpwi r31, 0x1
-    beq lbl_801A6870
-    cmpwi r31, 0x11
-    beq lbl_801A6870
-    b lbl_801A68D4
-lbl_801A6814:
-    lbz r30, 0x18(r30)
-    cmplwi r30, 0x1
-    bge lbl_801A6924
-    addi r3, r1, 0x108
-    li r4, 0x0
-    li r5, 0x40
-    bl TRK_memset
-    lwz r3, lbl_8049D920
-    li r0, 0x80
-    li r4, 0x40
-    li r5, 0x11
-    addi r6, r3, 0x1
-    stb r0, 0x10c(r1)
-    addi r0, r6, 0x1
-    addi r3, r1, 0x108
-    stw r4, 0x108(r1)
-    li r4, 0x40
-    stb r5, 0x110(r1)
-    stw r6, 0x114(r1)
-    stw r0, lbl_8049D920
-    bl TRK_WriteUARTN
-    li r3, 0x0
-    b lbl_801A6A20
-lbl_801A6870:
-    bl TRKTargetGetPC
-    cmplw r3, r29
-    blt lbl_801A6884
-    cmplw r3, r28
-    ble lbl_801A6924
-lbl_801A6884:
-    addi r3, r1, 0xc8
-    li r4, 0x0
-    li r5, 0x40
-    bl TRK_memset
-    lwz r3, lbl_8049D920
-    li r0, 0x80
-    li r4, 0x40
-    li r5, 0x11
-    addi r6, r3, 0x1
-    stb r0, 0xcc(r1)
-    addi r0, r6, 0x1
-    addi r3, r1, 0xc8
-    stw r4, 0xc8(r1)
-    li r4, 0x40
-    stb r5, 0xd0(r1)
-    stw r6, 0xd4(r1)
-    stw r0, lbl_8049D920
-    bl TRK_WriteUARTN
-    li r3, 0x0
-    b lbl_801A6A20
-lbl_801A68D4:
-    addi r3, r1, 0x88
-    li r4, 0x0
-    li r5, 0x40
-    bl TRK_memset
-    lwz r3, lbl_8049D920
-    li r0, 0x80
-    li r4, 0x40
-    li r5, 0x12
-    addi r6, r3, 0x1
-    stb r0, 0x8c(r1)
-    addi r0, r6, 0x1
-    addi r3, r1, 0x88
-    stw r4, 0x88(r1)
-    li r4, 0x40
-    stb r5, 0x90(r1)
-    stw r6, 0x94(r1)
-    stw r0, lbl_8049D920
-    bl TRK_WriteUARTN
-    li r3, 0x0
-    b lbl_801A6A20
-lbl_801A6924:
-    bl TRKTargetStopped
-    cmpwi r3, 0x0
-    bne lbl_801A6980
-    addi r3, r1, 0x48
-    li r4, 0x0
-    li r5, 0x40
-    bl TRK_memset
-    lwz r3, lbl_8049D920
-    li r0, 0x80
-    li r4, 0x40
-    li r5, 0x16
-    addi r6, r3, 0x1
-    stb r0, 0x4c(r1)
-    addi r0, r6, 0x1
-    addi r3, r1, 0x48
-    stw r4, 0x48(r1)
-    li r4, 0x40
-    stb r5, 0x50(r1)
-    stw r6, 0x54(r1)
-    stw r0, lbl_8049D920
-    bl TRK_WriteUARTN
-    li r3, 0x0
-    b lbl_801A6A20
-lbl_801A6980:
-    addi r3, r1, 0x8
-    li r4, 0x0
-    li r5, 0x40
-    bl TRK_memset
-    lwz r3, lbl_8049D920
-    li r0, 0x80
-    li r4, 0x40
-    li r5, 0x0
-    addi r6, r3, 0x1
-    stb r0, 0xc(r1)
-    addi r0, r6, 0x1
-    addi r3, r1, 0x8
-    stw r4, 0x8(r1)
-    li r4, 0x40
-    stb r5, 0x10(r1)
-    stw r6, 0x14(r1)
-    stw r0, lbl_8049D920
-    bl TRK_WriteUARTN
-    cmpwi r31, 0x0
-    li r3, 0x0
-    beq lbl_801A69F0
-    cmpwi r31, 0x10
-    beq lbl_801A69F0
-    cmpwi r31, 0x1
-    beq lbl_801A6A08
-    cmpwi r31, 0x11
-    beq lbl_801A6A08
-    b lbl_801A6A20
-lbl_801A69F0:
-    subi r0, r31, 0x10
-    mr r3, r30
-    cntlzw r0, r0
-    srwi r4, r0, 5
-    bl TRKTargetSingleStep
-    b lbl_801A6A20
-lbl_801A6A08:
-    subi r0, r31, 0x11
-    mr r3, r29
-    cntlzw r0, r0
-    mr r4, r28
-    srwi r5, r0, 5
-    bl TRKTargetStepOutOfRange
-lbl_801A6A20:
-    lwz r0, 0x164(r1)
-    lwz r31, 0x15c(r1)
-    lwz r30, 0x158(r1)
-    lwz r29, 0x154(r1)
-    lwz r28, 0x150(r1)
-    mtlr r0
-    addi r1, r1, 0x160
-    blr
+
+/*
+Message parameters:
+0x4: command (ui8)
+0x8: options (ui8)
+0xc: length (ui16)
+0x10: start (ui16)
+0x14: register data (void*)
+*/
+DSError TRKDoReadMemory(MessageBuffer* b){
+    DSError result = kNoError;
+    DSReplyError replyError;
+    ui8 options;
+    ui32 test;
+    ui32 start;
+    ui32 length;
+    msgbuf_t reply3;
+
+    options = b->fData[8];
+    start = *(ui32*)(b->fData + 16);
+    length = *(ui16*)(b->fData + 12);
+    
+    if(options & DS_MSG_MEMORY_EXTENDED){
+        return TRKStandardACK(b, kDSReplyACK, kDSReplyUnsupportedOptionError);
+    }
+
+    if (result == 0) {
+        ui8 buf[0x820] ALIGN(32);
+        
+        size_t tempLength = length;
+
+        result = TRKTargetAccessMemory(buf, start, &tempLength, options & DS_MSG_MEMORY_USERVIEW ? 0 : 1, true);
+        TRKResetBuffer(b, 0);
+
+        if(result == kNoError){
+            TRK_memset(&reply3,0,sizeof(msgbuf_t));
+            reply3.replyError = result;
+            reply3.msgLength = tempLength + sizeof(msgbuf_t);
+            reply3.commandId = kDSReplyACK;
+            reply3.unkC = g_CurrentSequence;
+            g_CurrentSequence++;
+            TRK_AppendBuffer(b,(ui8*)&reply3,sizeof(msgbuf_t));
+
+            if (options & DS_MSG_MEMORY_SPACE_DATA) {
+                result = TRK_AppendBuffer(b, buf + (start & 0x1F), tempLength);
+            }else {
+                result = TRK_AppendBuffer(b, buf, tempLength);
+            }
+        }
+    }
+
+    if(result != kNoError){
+        switch(result) {
+            case kCWDSException:
+            replyError = kDSReplyCWDSException;
+            break;
+              case kInvalidMemory:
+            replyError = kDSReplyInvalidMemoryRange;
+            break;
+            case kInvalidProcessId:
+            replyError = kDSReplyInvalidProcessId;
+            break;
+            case kInvalidThreadId:
+            replyError = kDSReplyInvalidThreadId;
+            break;
+            case kOsError:
+            replyError = kDSReplyOsError;
+            break;
+            default:
+            replyError = kDSReplyCWDSError;
+            break;
+        }
+
+        return TRKStandardACK(b, kDSReplyACK, replyError);
+    }
+    
+    return TRKSendACK(b);
 }
 
-// ----------------------------------------------------------------------------
-// TRKDoStop
-// ----------------------------------------------------------------------------
-asm void TRKDoStop() {
-    nofralloc
-    stwu r1, -0x50(r1)
-    mflr r0
-    stw r0, 0x54(r1)
-    stw r31, 0x4c(r1)
-    bl TRKTargetStop
-    cmpwi r3, 0x0
-    beq lbl_801A6A78
-    cmpwi r3, 0x704
-    beq lbl_801A6A80
-    cmpwi r3, 0x705
-    beq lbl_801A6A88
-    cmpwi r3, 0x706
-    beq lbl_801A6A90
-    b lbl_801A6A98
-lbl_801A6A78:
-    li r31, 0x0
-    b lbl_801A6A9C
-lbl_801A6A80:
-    li r31, 0x21
-    b lbl_801A6A9C
-lbl_801A6A88:
-    li r31, 0x22
-    b lbl_801A6A9C
-lbl_801A6A90:
-    li r31, 0x20
-    b lbl_801A6A9C
-lbl_801A6A98:
-    li r31, 0x1
-lbl_801A6A9C:
-    addi r3, r1, 0x8
-    li r4, 0x0
-    li r5, 0x40
-    bl TRK_memset
-    lwz r3, lbl_8049D920
-    li r0, 0x80
-    li r4, 0x40
-    stw r4, 0x8(r1)
-    addi r5, r3, 0x1
-    addi r3, r1, 0x8
-    stb r0, 0xc(r1)
-    addi r0, r5, 0x1
-    li r4, 0x40
-    stb r31, 0x10(r1)
-    stw r5, 0x14(r1)
-    stw r0, lbl_8049D920
-    bl TRK_WriteUARTN
-    lwz r31, 0x4c(r1)
-    li r3, 0x0
-    lwz r0, 0x54(r1)
-    mtlr r0
-    addi r1, r1, 0x50
-    blr
+/*
+Message parameters:
+0x4: command (ui8)
+0x8: options (ui8)
+0xc: first register (ui16)
+0x10: last register (ui16)
+0x14: register data (void*)
+*/
+DSError TRKDoWriteMemory(MessageBuffer* b){
+    DSError result = kNoError;
+    DSReplyError replyError;
+    ui8 options;
+    ui32 start;
+    ui32 length;
+    msgbuf_t reply3;
+
+    options = b->fData[8];
+    start = *(ui32*)(b->fData + 16);
+    length = *(ui16*)(b->fData + 12);
+    
+    if(options & DS_MSG_MEMORY_EXTENDED){
+        return TRKStandardACK(b, kDSReplyACK, kDSReplyUnsupportedOptionError);
+    }
+
+    if (result == kNoError) {
+        ui8 buf[0x820] ALIGN(32);
+
+        size_t tempLength = length;
+
+        TRK_SetBufferPosition(b,0x40);
+        result = TRK_ReadBuffer(b,buf,tempLength);
+        result = TRKTargetAccessMemory(buf, start, &tempLength, options & DS_MSG_MEMORY_USERVIEW ? 0 : 1, false);
+        TRKResetBuffer(b, 0);
+    
+        if(result == kNoError){
+            TRK_memset(&reply3,0,sizeof(msgbuf_t));
+            reply3.msgLength = sizeof(msgbuf_t);
+            reply3.commandId = kDSReplyACK;
+            reply3.replyError = result;
+            reply3.unkC = g_CurrentSequence;
+            g_CurrentSequence++;
+            result = TRK_AppendBuffer(b,(ui8*)&reply3,sizeof(msgbuf_t));
+        }
+    }
+
+    if(result != kNoError){
+        switch(result) {
+            case kCWDSException:
+            replyError = kDSReplyCWDSException;
+            break;
+              case kInvalidMemory:
+            replyError = kDSReplyInvalidMemoryRange;
+            break;
+            case kInvalidProcessId:
+            replyError = kDSReplyInvalidProcessId;
+            break;
+            case kInvalidThreadId:
+            replyError = kDSReplyInvalidThreadId;
+            break;
+            case kOsError:
+            replyError = kDSReplyOsError;
+            break;
+            default:
+            replyError = kDSReplyCWDSError;
+            break;
+        }
+
+        return TRKStandardACK(b, kDSReplyACK, replyError);
+    }
+    
+    return TRKSendACK(b);
 }
 
-// ----------------------------------------------------------------------------
-// TRKDoSetOption
-// ----------------------------------------------------------------------------
-asm void TRKDoSetOption() {
-    nofralloc
-    stwu r1, -0x50(r1)
-    mflr r0
-    stw r0, 0x54(r1)
-    stw r31, 0x4c(r1)
-    stw r30, 0x48(r1)
-    lbz r0, 0x14(r3)
-    lbz r30, 0x18(r3)
-    cmplwi r0, 0x1
-    bne lbl_801A6B60
-    lis r31, lbl_80360368@ha
-    addi r3, r31, lbl_80360368@l
-    opword 0x4CC63182
-    bl OSReport
-    cmpwi r30, 0x0
-    beq lbl_801A6B48
-    addi r3, r31, lbl_80360368@l
-    addi r3, r3, 0x1f
-    opword 0x4CC63182
-    bl OSReport
-    b lbl_801A6B58
-lbl_801A6B48:
-    addi r3, r31, lbl_80360368@l
-    addi r3, r3, 0x27
-    opword 0x4CC63182
-    bl OSReport
-lbl_801A6B58:
-    mr r3, r30
-    bl SetUseSerialIO
-lbl_801A6B60:
-    addi r3, r1, 0x8
-    li r4, 0x0
-    li r5, 0x40
-    bl TRK_memset
-    lwz r3, lbl_8049D920
-    li r0, 0x80
-    li r4, 0x40
-    li r5, 0x0
-    addi r6, r3, 0x1
-    stb r0, 0xc(r1)
-    addi r0, r6, 0x1
-    addi r3, r1, 0x8
-    stw r4, 0x8(r1)
-    li r4, 0x40
-    stb r5, 0x10(r1)
-    stw r6, 0x14(r1)
-    stw r0, lbl_8049D920
-    bl TRK_WriteUARTN
-    lwz r31, 0x4c(r1)
-    li r3, 0x0
-    lwz r30, 0x48(r1)
-    lwz r0, 0x54(r1)
-    mtlr r0
-    addi r1, r1, 0x50
-    blr
+/*
+Message parameters:
+0x4: command (ui8)
+0x8: options (ui8)
+0xC: first register (ui16)
+0x10: last register (ui16)
+0x14: register data (ui32[])
+*/
+DSError TRKDoReadRegisters(MessageBuffer* b){
+    DSError error;
+    DSReplyError replyError;
+    ui8 options;
+    ui16 firstRegister;
+    ui16 lastRegister;
+    size_t registersLength;
+    msgbuf_t local_50;
+    
+    options = b->fData[8];
+    firstRegister = *(ui16*)(b->fData + 12);
+    lastRegister = *(ui16*)(b->fData + 16);
+
+    if(firstRegister > lastRegister){
+        return TRKStandardACK(b, kDSReplyACK, kDSReplyInvalidRegisterRange);
+    }
+
+    local_50.commandId = kDSReplyACK;
+    local_50.msgLength = 0x468;
+    local_50.unkC = g_CurrentSequence;
+    g_CurrentSequence++;
+
+    TRKResetBuffer(b,0);
+    TRKAppendBuffer_ui8(b,(ui8*)&local_50,sizeof(msgbuf_t));
+
+    //???
+    error = TRKTargetAccessDefault(0, 36, b, &registersLength, true);
+
+    if(error == kNoError){
+        error = TRKTargetAccessFP(0, 33, b, &registersLength, true);
+    }
+    if(error == kNoError){
+        error = TRKTargetAccessExtended1(0, 0x60, b, &registersLength, true);
+    }
+    if(error == kNoError){
+        error = TRKTargetAccessExtended2(0, 31, b, &registersLength, true);
+    }
+
+    //Check if there was an error, and respond accordingly
+    if(error != kNoError){
+        switch(error){
+            case kUnsupportedError:
+            replyError = kDSReplyUnsupportedOptionError;
+            break;
+            case kInvalidRegister:
+            replyError = kDSReplyInvalidRegisterRange;
+            break;
+            case kCWDSException:
+            replyError = kDSReplyCWDSException;
+            break;
+            case kInvalidProcessId:
+            replyError = kDSReplyInvalidProcessId;
+            break;
+            case kInvalidThreadId:
+            replyError = kDSReplyInvalidThreadId;
+            break;
+            case kOsError:
+            replyError = kDSReplyOsError;
+            break;
+            default:
+            replyError = kDSReplyCWDSError;
+        }
+
+        return TRKStandardACK(b, kDSReplyACK, replyError);
+    }else{
+        //No error, send ack
+        return TRKSendACK(b);
+    }
 }
 
+/*
+Message parameters:
+0x4: command (ui8)
+0x8: options (ui8)
+0xC: first register (ui16)
+0x10: last register (ui16)
+0x14: register data (ui32[])
+*/
+DSError TRKDoWriteRegisters(MessageBuffer* b){
+    DSError error;
+    DSReplyError replyError;
+    ui8 options;
+    ui16 firstRegister;
+    ui16 lastRegister;
+    size_t registersLength;
+    msgbuf_t local_50;
+    
+    options = b->fData[8];
+    firstRegister = *(ui16*)(b->fData + 12);
+    lastRegister = *(ui16*)(b->fData + 16);
+
+    TRK_SetBufferPosition(b,0);
+
+    if(firstRegister > lastRegister){
+        return TRKStandardACK(b, kDSReplyACK, kDSReplyInvalidRegisterRange);
+    }
+
+    TRK_SetBufferPosition(b,0x40);
+
+    switch(options){
+        case kDSRegistersDefault:
+        error = TRKTargetAccessDefault(firstRegister, lastRegister, b, &registersLength, false);
+        break;
+        case kDSRegistersFP:
+        error = TRKTargetAccessFP(firstRegister, lastRegister, b, &registersLength, false);
+        break;
+        case kDSRegistersExtended1:
+        error = TRKTargetAccessExtended1(firstRegister, lastRegister, b, &registersLength, false);
+        break;
+        case kDSRegistersExtended2:
+        error = TRKTargetAccessExtended2(firstRegister, lastRegister, b, &registersLength, false);
+        break;
+        default:
+        //invalid option
+        error = kUnsupportedError;
+        break;
+    }
+
+    TRKResetBuffer(b,0);
+
+    if (error == kDSReplyNoError) {
+        TRK_memset(&local_50, 0, sizeof(msgbuf_t));
+        local_50.msgLength = sizeof(msgbuf_t);
+        local_50.commandId = kDSReplyACK;
+        local_50.replyError = error;
+        local_50.unkC = g_CurrentSequence;
+        g_CurrentSequence = g_CurrentSequence + 1;
+        error = TRK_AppendBuffer(b, (ui8*)&local_50, sizeof(msgbuf_t));
+    }
+
+    //Check if there was an error, and respond accordingly
+    if(error != kNoError){
+        switch(error){
+            case kUnsupportedError:
+            replyError = kDSReplyUnsupportedOptionError;
+            break;
+            case kInvalidRegister:
+            replyError = kDSReplyInvalidRegisterRange;
+            break;
+            case kMessageBufferReadError:
+            replyError = kDSReplyPacketSizeError;
+            break;
+            case kCWDSException:
+            replyError = kDSReplyCWDSException;
+            break;
+            case kInvalidProcessId:
+            replyError = kDSReplyInvalidProcessId;
+            break;
+            case kInvalidThreadId:
+            replyError = kDSReplyInvalidThreadId;
+            break;
+            case kOsError:
+            replyError = kDSReplyOsError;
+            break;
+            default:
+            replyError = kDSReplyCWDSError;
+        }
+
+        return TRKStandardACK(b, kDSReplyACK, replyError);
+    }else{
+        //No error, send ack
+        return TRKSendACK(b);
+    }
+}
+
+DSError TRKDoContinue(MessageBuffer* b){
+    DSError result;
+    
+    if(!TRKTargetStopped()){
+        result = TRKStandardACK(b, kDSReplyACK, kDSReplyNotStopped);
+    }else{
+        TRKStandardACK(b, kDSReplyACK, kDSReplyNoError);
+        result = TRKTargetContinue();
+    }
+
+    return result;
+}
+
+/*
+Message parameters:
+0x4: command (ui8)
+0x8: options (ui8, DSMessageStepOptions enum value)
+If kDSStepIntoCount/kDSStepOverCount:
+0xC: count (ui8, instructions to step over)
+If kDSStepIntoRange/kDSStepOverRange:
+0x10: range start (ui32)
+0x14: range end (ui32)
+*/
+DSError TRKDoStep(MessageBuffer *b){
+    DSError result;
+    ui8 options;
+    ui8 count;
+    ui32 rangeStart;
+    ui32 rangeEnd;
+    ui32 pc;
+
+    TRK_SetBufferPosition(b, 0);
+
+    options = b->fData[8];
+    rangeStart = *(ui32*)(b->fData + 16);
+    rangeEnd = *(ui32*)(b->fData + 20);
+
+    switch(options){
+    //Count step
+    case kDSStepIntoCount:
+    case kDSStepOverCount:
+        //Continue if the step count is at least 1
+        count = b->fData[12];
+        if(count >= 1){
+            break;
+        }
+        return TRKStandardACK(b,kDSReplyACK,kDSReplyParameterError);
+    //Range step
+    case kDSStepIntoRange:
+    case kDSStepOverRange:
+        pc = TRKTargetGetPC();
+        //Continue if the current pc is within the step range
+        if(pc >= rangeStart && pc <= rangeEnd){
+            break;
+        }
+        return TRKStandardACK(b,kDSReplyACK,kDSReplyParameterError);
+    default:
+        //Invalid option value
+        return TRKStandardACK(b,kDSReplyACK,kDSReplyUnsupportedOptionError);
+    }
+
+    if(!TRKTargetStopped()){
+        return TRKStandardACK(b,kDSReplyACK,kDSReplyNotStopped);
+    }else{
+        result = TRKStandardACK(b,kDSReplyACK,kDSReplyNoError);
+
+        switch(options){
+        //Count step
+        case kDSStepIntoCount:
+        case kDSStepOverCount:
+            result = TRKTargetSingleStep(count, options == kDSStepOverCount);
+            break;
+        //Range step
+        case kDSStepIntoRange:
+        case kDSStepOverRange:
+            result = TRKTargetStepOutOfRange(rangeStart, rangeEnd, options == kDSStepOverRange);
+            break;
+        }
+    }
+
+    return result;
+}
+
+DSError TRKDoStop(MessageBuffer* b){
+    msgbuf_t reply;
+    ui8 replyError;
+
+    switch(TRKTargetStop()){
+        case kNoError:
+        replyError = 0;
+        break;
+        case kInvalidProcessId:
+        replyError = kDSReplyInvalidProcessId;
+        break;
+        case kInvalidThreadId:
+        replyError = kDSReplyInvalidThreadId;
+        break;
+        case kOsError:
+        replyError = kDSReplyOsError;
+        break;
+        default:
+        replyError = kDSReplyError;
+        break;
+    }
+
+    return TRKStandardACK(b,kDSReplyACK,replyError);
+}
+
+/*
+Doesn't exist in standard MetroTRK, might be GC/Wii exclusive
+Message parameters:
+0x4: command? (ui8?)
+0x8:
+0xC: options? (ui8?)
+*/
+DSError TRKDoSetOption(MessageBuffer *b){
+    ui8 options = b->fData[12];
+
+    if(b->fData[8] == 1) {
+        OSReport("\nMetroTRK Option : SerialIO - ");
+
+        if(options != 0){
+            OSReport("Enable\n");
+        }else{
+            OSReport("Disable\n");
+        }
+
+        SetUseSerialIO(options);
+    }
+
+    return TRKStandardACK(b,kDSReplyACK,kDSReplyNoError);
+}

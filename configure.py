@@ -13,6 +13,7 @@
 ###
 
 import argparse
+import re
 import sys
 from pathlib import Path
 from typing import Any, Dict, List
@@ -267,7 +268,7 @@ cflags_mslc = lib_cflags(
     "-use_lmw_stmw on", "-str reuse,pool,readonly", "-fp_contract off", "-inline on",
     "-ipa file", "-func_align 4",
 )
-cflags_trk = lib_cflags("-use_lmw_stmw on", "-inline on", "-func_align 4")
+cflags_trk = lib_cflags("-use_lmw_stmw on", "-inline on", "-func_align 4", "-str reuse,pool")
 
 # REL flags
 cflags_rel = [
@@ -393,11 +394,11 @@ config.libs = [
             Object(NonMatching, "Runtime.PPCEABI.H/__ppc_eabi_init.c"),
             Object(NonMatching, "Runtime.PPCEABI.H/exit.c"),
             Object(NonMatching, "Runtime.PPCEABI.H/__va_arg.c", src_dir="libs", source="PowerPC_EABI_Support/src/Runtime/__va_arg.c", cflags=cflags_mw_runtime, mw_version="Wii/1.0"),
-            AsmObject("Runtime.PPCEABI.H/NMWException.cp"),
+            Object(NonMatching, "Runtime.PPCEABI.H/NMWException.cp", cflags=cflags_mw_runtime_eh, mw_version="Wii/1.0"),
             Object(NonMatching, "Runtime.PPCEABI.H/ptmf.c", src_dir="libs", source="PowerPC_EABI_Support/src/Runtime/ptmf.c", cflags=cflags_mw_runtime, mw_version="Wii/1.0"),
-            AsmObject("Runtime.PPCEABI.H/runtime.c"),
+            Object(NonMatching, "Runtime.PPCEABI.H/runtime.c", cflags=cflags_mw_runtime, mw_version="Wii/1.0"),
             AsmObject("Runtime.PPCEABI.H/Gecko_ExceptionPPC.cp"),
-            AsmObject("Runtime.PPCEABI.H/GCN_Mem_Alloc.c"),
+            Object(NonMatching, "Runtime.PPCEABI.H/GCN_Mem_Alloc.c", cflags=cflags_mw_runtime, mw_version="Wii/1.0"),
         ],
     },
     {
@@ -409,22 +410,22 @@ config.libs = [
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/secure_error.c", src_dir="libs", source="PowerPC_EABI_Support/src/MSL_C/MSL_Common/secure_error.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             AsmObject("MSL_C.PPCEABI.bare.H/abort_exit.c"),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/alloc.c", src_dir="libs", source="PowerPC_EABI_Support/src/MSL_C/MSL_Common/alloc.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
-            AsmObject("MSL_C.PPCEABI.bare.H/ansi_files.c"),
-            AsmObject("MSL_C.PPCEABI.bare.H/ansi_fp.c"),
+            Object(NonMatching, "MSL_C.PPCEABI.bare.H/ansi_files.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
+            Object(NonMatching, "MSL_C.PPCEABI.bare.H/ansi_fp.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/arith.c", src_dir="libs", source="PowerPC_EABI_Support/src/MSL_C/MSL_Common/arith.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
-            AsmObject("MSL_C.PPCEABI.bare.H/buffer_io.c"),
+            Object(NonMatching, "MSL_C.PPCEABI.bare.H/buffer_io.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             AsmObject("MSL_C.PPCEABI.bare.H/direct_io.c"),
-            AsmObject("MSL_C.PPCEABI.bare.H/file_io.c"),
-            AsmObject("MSL_C.PPCEABI.bare.H/FILE_POS.c"),
+            Object(NonMatching, "MSL_C.PPCEABI.bare.H/file_io.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
+            Object(NonMatching, "MSL_C.PPCEABI.bare.H/FILE_POS.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/mbstring.c", src_dir="libs", source="PowerPC_EABI_Support/src/MSL_C/MSL_Common/mbstring.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/mem.c", src_dir="libs", source="PowerPC_EABI_Support/src/MSL_C/MSL_Common/mem.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/mem_funcs.c", src_dir="libs", source="PowerPC_EABI_Support/src/MSL_C/MSL_Common/mem_funcs.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/misc_io.c", src_dir="libs", source="PowerPC_EABI_Support/src/MSL_C/MSL_Common/misc_io.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             AsmObject("MSL_C.PPCEABI.bare.H/printf.c"),
-            AsmObject("MSL_C.PPCEABI.bare.H/scanf.c"),
-            AsmObject("MSL_C.PPCEABI.bare.H/string.c"),
-            AsmObject("MSL_C.PPCEABI.bare.H/strtold.c"),
-            AsmObject("MSL_C.PPCEABI.bare.H/strtoul.c"),
+            Object(NonMatching, "MSL_C.PPCEABI.bare.H/scanf.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
+            Object(NonMatching, "MSL_C.PPCEABI.bare.H/string.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
+            Object(NonMatching, "MSL_C.PPCEABI.bare.H/strtold.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
+            Object(NonMatching, "MSL_C.PPCEABI.bare.H/strtoul.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             AsmObject("MSL_C.PPCEABI.bare.H/wstring.c"),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/wchar_io.c", src_dir="libs", source="PowerPC_EABI_Support/src/MSL_C/MSL_Common/wchar_io.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/uart_console_io_gcn.c", src_dir="libs", source="PowerPC_EABI_Support/src/MSL_C/PPC_EABI/uart_console_io_gcn.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
@@ -461,7 +462,7 @@ config.libs = [
             AsmObject("MSL_C.PPCEABI.bare.H/w_pow.c"),
             AsmObject("MSL_C.PPCEABI.bare.H/math_ppc.c"),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/w_sqrt.c", src_dir="libs", source="PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_sqrt.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
-            AsmObject("MSL_C.PPCEABI.bare.H/extras.c"),
+            Object(NonMatching, "MSL_C.PPCEABI.bare.H/extras.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
         ],
     },
     {
@@ -479,19 +480,19 @@ config.libs = [
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/mainloop.c", src_dir="libs", source="PowerPC_EABI_Support/src/MetroTRK/mainloop.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/mem_TRK.c", src_dir="libs", source="PowerPC_EABI_Support/src/MetroTRK/mem_TRK.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/dispatch.c", src_dir="libs", source="PowerPC_EABI_Support/src/MetroTRK/dispatch.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
-            AsmObject("TRK_MINNOW_DOLPHIN/dolphin_trk.c"),
-            AsmObject("TRK_MINNOW_DOLPHIN/dolphin_trk_glue.c"),
+            Object(NonMatching, "TRK_MINNOW_DOLPHIN/dolphin_trk.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
+            Object(NonMatching, "TRK_MINNOW_DOLPHIN/dolphin_trk_glue.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/notify.c", src_dir="libs", source="PowerPC_EABI_Support/src/MetroTRK/notify.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/nubevent.c", src_dir="libs", source="PowerPC_EABI_Support/src/MetroTRK/nubevent.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/nubinit.c", src_dir="libs", source="PowerPC_EABI_Support/src/MetroTRK/nubinit.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/serpoll.c", src_dir="libs", source="PowerPC_EABI_Support/src/MetroTRK/serpoll.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/string_TRK.c", src_dir="libs", source="PowerPC_EABI_Support/src/MetroTRK/string_TRK.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
-            AsmObject("TRK_MINNOW_DOLPHIN/support.c"),
+            Object(NonMatching, "TRK_MINNOW_DOLPHIN/support.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/targcont.c", src_dir="libs", source="PowerPC_EABI_Support/src/MetroTRK/targcont.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/mpc_7xx_603e.c", src_dir="libs", source="PowerPC_EABI_Support/src/MetroTRK/mpc_7xx_603e.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/msg.c", src_dir="libs", source="PowerPC_EABI_Support/src/MetroTRK/msg.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/msgbuf.c", src_dir="libs", source="PowerPC_EABI_Support/src/MetroTRK/msgbuf.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
-            AsmObject("TRK_MINNOW_DOLPHIN/msghndlr.c"),
+            Object(NonMatching, "TRK_MINNOW_DOLPHIN/msghndlr.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/mslsupp.c", src_dir="libs", source="PowerPC_EABI_Support/src/MetroTRK/mslsupp.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/targimpl.c", src_dir="libs", source="PowerPC_EABI_Support/src/MetroTRK/targimpl.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/target_options.c", src_dir="libs", source="PowerPC_EABI_Support/src/MetroTRK/target_options.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
@@ -1022,7 +1023,21 @@ elif args.mode == "progress":
         (int(c["measures"].get("matched_code", 0)) for c in report["categories"] if c["id"] == "asm"),
         0,
     )
-    real = int(report["measures"]["matched_code"]) - asm
+    # Fuentes mixtos (tools/mix_asm.py): restar las funciones asm marcadas dentro de objetos C.
+    mixed = 0
+    for unit in report["units"]:
+        name = unit["name"].removeprefix("main/")
+        for ext in (".c", ".cpp", ".cp"):
+            path = Path("src") / (name + ext)
+            if path.exists():
+                marked = set(re.findall(r"^// asm_to_cpp: (\S+)$", path.read_text(errors="replace"), re.M))
+                mixed += sum(
+                    int(f.get("size", 0))
+                    for f in unit.get("functions", [])
+                    if f["name"] in marked and f.get("fuzzy_match_percent", 0) == 100
+                )
+                break
+    real = int(report["measures"]["matched_code"]) - asm - mixed
     print(f"  C real (sin asm inline): {real / total:.2%} ({real} / {total} bytes)")
 else:
     sys.exit("Unknown mode: " + args.mode)

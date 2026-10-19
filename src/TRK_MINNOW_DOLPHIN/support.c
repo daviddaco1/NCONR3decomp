@@ -1,489 +1,268 @@
-#include "types.h"
+#include "PowerPC_EABI_Support/MetroTRK/support.h"
+#include "PowerPC_EABI_Support/MetroTRK/msgcmd.h"
+#include <revolution/OS.h>
 
-// Translation unit: src/TRK_MINNOW_DOLPHIN/support.cpp
-// Total functions: 5
 
-// Global data symbols (@ha/@l)
-u8 lbl_80360298[];
+// Custom structure used as temporary buffer for message data transmission
+typedef struct
+{
+    u32 msg_length;
+    u8 command[4];
+    u8 handle[4];
+    u16 length[2];
+    u8 data[4];
 
-// Forward declarations
-void OSReport();
-void TRKGetBuffer();
-void TRK_memset();
-void TRKTestForPacket();
-void TRKProcessInput();
-void TRK_strlen();
-void TRK_SuppAccessFile();
-void TRK_RequestSend();
-void HandleOpenFileSupportRequest();
-void HandleCloseFileSupportRequest();
-void HandlePositionFileSupportRequest();
-void TRK_MessageSend();
-void TRK_GetFreeBuffer();
-void TRK_ReleaseBuffer();
-void TRK_SetBufferPosition();
-void TRKAppendBuffer_ui8();
-void TRKReadBuffer_ui8();
+    // most likely used for padding to 64 bytes
+    // (as this is the length of the whole message)
+    u8 unknown[0x2C];
+} msgbuf_t;
 
-// ----------------------------------------------------------------------------
-// TRK_SuppAccessFile
-// ----------------------------------------------------------------------------
-asm void TRK_SuppAccessFile() {
-    nofralloc
-    stwu r1, -0x90(r1)
-    mflr r0
-    cmpwi r4, 0x0
-    stw r0, 0x94(r1)
-    stmw r19, 0x5c(r1)
-    mr r24, r3
-    mr r25, r4
-    mr r26, r5
-    mr r27, r6
-    mr r28, r7
-    mr r29, r8
-    beq lbl_801A4A8C
-    lwz r0, 0x0(r5)
-    cmpwi r0, 0x0
-    bne lbl_801A4A94
-lbl_801A4A8C:
-    li r3, 0x2
-    b lbl_801A4C30
-lbl_801A4A94:
-    li r30, 0x0
-    stw r30, 0x0(r6)
-    li r31, 0x0
-    li r23, 0x0
-    b lbl_801A4C00
-lbl_801A4AA8:
-    addi r3, r1, 0x18
-    li r4, 0x0
-    li r5, 0x40
-    bl TRK_memset
-    lwz r0, 0x0(r26)
-    li r21, 0x800
-    subf r0, r31, r0
-    cmplwi r0, 0x800
-    bgt lbl_801A4AD0
-    mr r21, r0
-lbl_801A4AD0:
-    cmpwi r29, 0x0
-    li r0, 0xd0
-    beq lbl_801A4AE0
-    li r0, 0xd1
-lbl_801A4AE0:
-    cmpwi r29, 0x0
-    stb r0, 0x1c(r1)
-    li r0, 0x40
-    bne lbl_801A4AF4
-    addi r0, r21, 0x40
-lbl_801A4AF4:
-    stw r0, 0x18(r1)
-    addi r3, r1, 0xc
-    addi r4, r1, 0x8
-    stw r24, 0x20(r1)
-    sth r21, 0x24(r1)
-    bl TRK_GetFreeBuffer
-    lwz r3, 0x8(r1)
-    addi r4, r1, 0x18
-    li r5, 0x40
-    bl TRKAppendBuffer_ui8
-    cmpwi r29, 0x0
-    mr r23, r3
-    bne lbl_801A4B44
-    cmpwi r3, 0x0
-    bne lbl_801A4B44
-    lwz r3, 0x8(r1)
-    mr r5, r21
-    add r4, r25, r31
-    bl TRKAppendBuffer_ui8
-    mr r23, r3
-lbl_801A4B44:
-    cmpwi r23, 0x0
-    bne lbl_801A4BF4
-    cmpwi r28, 0x0
-    beq lbl_801A4BE8
-    lwz r3, 0x8(r1)
-    addi r4, r1, 0x10
-    bl TRK_RequestSend
-    cmpwi r3, 0x0
-    mr r23, r3
-    bne lbl_801A4B78
-    lwz r3, 0x10(r1)
-    bl TRKGetBuffer
-    mr r22, r3
-lbl_801A4B78:
-    lwz r0, 0x1c(r22)
-    cmpwi r29, 0x0
-    lhz r19, 0x20(r22)
-    clrlwi r20, r0, 24
-    beq lbl_801A4BC8
-    cmpwi r23, 0x0
-    bne lbl_801A4BC8
-    cmplw r19, r21
-    bgt lbl_801A4BC8
-    mr r3, r22
-    li r4, 0x40
-    bl TRK_SetBufferPosition
-    mr r3, r22
-    mr r5, r19
-    add r4, r25, r31
-    bl TRKReadBuffer_ui8
-    cmpwi r3, 0x302
-    mr r23, r3
-    bne lbl_801A4BC8
-    li r23, 0x0
-lbl_801A4BC8:
-    cmplw r19, r21
-    beq lbl_801A4BD8
-    mr r21, r19
-    li r30, 0x1
-lbl_801A4BD8:
-    stw r20, 0x0(r27)
-    lwz r3, 0x10(r1)
-    bl TRK_ReleaseBuffer
-    b lbl_801A4BF4
-lbl_801A4BE8:
-    lwz r3, 0x8(r1)
-    bl TRK_MessageSend
-    mr r23, r3
-lbl_801A4BF4:
-    lwz r3, 0xc(r1)
-    bl TRK_ReleaseBuffer
-    add r31, r31, r21
-lbl_801A4C00:
-    cmpwi r30, 0x0
-    bne lbl_801A4C28
-    lwz r0, 0x0(r26)
-    cmplw r31, r0
-    bge lbl_801A4C28
-    cmpwi r23, 0x0
-    bne lbl_801A4C28
-    lwz r0, 0x0(r27)
-    cmpwi r0, 0x0
-    beq lbl_801A4AA8
-lbl_801A4C28:
-    stw r31, 0x0(r26)
-    mr r3, r23
-lbl_801A4C30:
-    lmw r19, 0x5c(r1)
-    lwz r0, 0x94(r1)
-    mtlr r0
-    addi r1, r1, 0x90
-    blr
+DSError TRK_SuppAccessFile(ui32 file_handle, ui8* data, size_t* count, DSIOResult* io_result,
+bool need_reply, bool read){
+    DSError error;
+    int replyBufferId;
+    MessageBuffer* replyBuffer;
+    int bufferId;
+    MessageBuffer* buffer;
+    ui32 length;
+    ui32 i;
+    ui8 replyIOResult;
+    ui32 replyLength;
+    bool exit;
+    msgbuf_t reply;
+    
+  
+    if(data == NULL || *count == 0){
+        return kParameterError;
+    }
+        
+    for (exit = false, *io_result = kDSIONoError, i = 0, error = kNoError;
+        !exit && i < *count && error == kNoError && *io_result == 0; i += length) {
+        TRK_memset(&reply, 0, sizeof(msgbuf_t));
+        
+        length = DS_MAXREADWRITELENGTH;
+            
+        if (*count - i <= DS_MAXREADWRITELENGTH) {
+            length = *count - i;
+        }
+            
+        reply.command[0] = read ? kDSReadFile : kDSWriteFile;
+        reply.msg_length = read ? TRK_MSG_HEADER_LENGTH : ((ui32)length + TRK_MSG_HEADER_LENGTH);
+        *(DSFileHandle*)reply.handle = file_handle;
+        reply.length[0] = (ui16)length;
+        
+        TRK_GetFreeBuffer(&bufferId,&buffer);
+        error = TRKAppendBuffer_ui8(buffer,(const ui8*)&reply,TRK_MSG_HEADER_LENGTH);
+        
+        if (!read && error == kNoError) {
+            error = TRKAppendBuffer_ui8(buffer,data + i,length);
+        }
+        
+        if (error == kNoError) {
+            if (need_reply) {
+                error = TRK_RequestSend(buffer, &replyBufferId);
+                if (error == kNoError) {
+                    replyBuffer = TRKGetBuffer(replyBufferId);
+                }
+                replyIOResult = (ui8)*(ui32*)(replyBuffer->fData + 0x10);
+                replyLength = *(ui16*)(replyBuffer->fData + 0x14);
+                if (read && error == kNoError && replyLength <= length) {
+                    TRK_SetBufferPosition(replyBuffer, 0x40);
+                    error = TRKReadBuffer_ui8(replyBuffer, data + i, replyLength);
+                    if (error == kMessageBufferReadError) {
+                        error = kNoError;
+                    }
+                }
+                
+                if (replyLength != length) {
+                    length = replyLength;
+                    exit = true;
+                }
+                
+                *io_result = replyIOResult;
+                TRK_ReleaseBuffer(replyBufferId);
+            }else{
+                error = TRK_MessageSend(buffer);
+            }
+        }
+        
+        TRK_ReleaseBuffer(bufferId);
+    }
+        
+    *count = i;
+    return error;
 }
 
-// ----------------------------------------------------------------------------
-// TRK_RequestSend
-// ----------------------------------------------------------------------------
-asm void TRK_RequestSend() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stmw r26, 0x8(r1)
-    mr r26, r4
-    bl TRK_MessageSend
-    cmpwi r3, 0x0
-    mr r30, r3
-    bne lbl_801A4D30
-    li r27, 0x0
-    li r31, -0x1
-lbl_801A4C70:
-    bl TRKTestForPacket
-    cmpwi r3, -0x1
-    stw r3, 0x0(r26)
-    beq lbl_801A4C70
-    bl TRKGetBuffer
-    mr r29, r3
-    li r4, 0x0
-    bl TRK_SetBufferPosition
-    lbz r28, 0x10(r29)
-    cmplwi r28, 0x80
-    bge lbl_801A4CAC
-    lwz r3, 0x0(r26)
-    bl TRKProcessInput
-    stw r31, 0x0(r26)
-    b lbl_801A4C70
-lbl_801A4CAC:
-    lwz r0, 0x0(r26)
-    cmpwi r0, -0x1
-    beq lbl_801A4D30
-    lwz r4, 0x4(r29)
-    cmplwi r4, 0x40
-    bge lbl_801A4CD8
-    lis r3, lbl_80360298@ha
-    addi r3, r3, lbl_80360298@l
-    opword 0x4CC63182
-    bl OSReport
-    li r27, 0x1
-lbl_801A4CD8:
-    cmpwi r30, 0x0
-    bne lbl_801A4CEC
-    cmpwi r27, 0x0
-    bne lbl_801A4CEC
-    lbz r31, 0x14(r29)
-lbl_801A4CEC:
-    cmpwi r30, 0x0
-    bne lbl_801A4D10
-    cmpwi r27, 0x0
-    bne lbl_801A4D10
-    cmpwi r28, 0x80
-    bne lbl_801A4D0C
-    cmpwi r31, 0x0
-    beq lbl_801A4D10
-lbl_801A4D0C:
-    li r27, 0x1
-lbl_801A4D10:
-    cmpwi r30, 0x0
-    bne lbl_801A4D20
-    cmpwi r27, 0x0
-    beq lbl_801A4D30
-lbl_801A4D20:
-    lwz r3, 0x0(r26)
-    bl TRK_ReleaseBuffer
-    li r0, -0x1
-    stw r0, 0x0(r26)
-lbl_801A4D30:
-    lwz r0, 0x0(r26)
-    cmpwi r0, -0x1
-    bne lbl_801A4D54
-    lis r3, lbl_80360298@ha
-    addi r3, r3, lbl_80360298@l
-    addi r3, r3, 0x1f
-    opword 0x4CC63182
-    bl OSReport
-    li r30, 0x800
-lbl_801A4D54:
-    mr r3, r30
-    lmw r26, 0x8(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+
+
+DSError TRK_RequestSend(MessageBuffer* msgBuf, int* bufferId){
+    DSError error;
+    MessageBuffer* buffer;
+    ui8 msgCmd;
+    ui8 msgReplyError;
+    bool badReply;
+    
+    
+    error = TRK_MessageSend(msgBuf);
+    if (error == kNoError) {
+        badReply = false;
+        
+        while(true) {
+            do {
+                *bufferId = TRKTestForPacket();
+            } while (*bufferId == -1);
+            
+            buffer = TRKGetBuffer(*bufferId);
+            TRK_SetBufferPosition(buffer, 0);
+            msgCmd = buffer->fData[4];
+            if (msgCmd >= kDSReplyACK) break;
+            TRKProcessInput(*bufferId);
+            *bufferId = -1;
+        }
+        
+        if (*bufferId != -1) {
+            if(buffer->fLength < TRK_MSG_HEADER_LENGTH) {
+                OSReport("MetroTRK - bad reply size %ld\n", buffer->fLength);
+                badReply = true;
+            }
+            if (error == kNoError && !badReply) {
+                msgReplyError = buffer->fData[8];
+            }
+            if (error == kNoError && !badReply) {
+                if((int)msgCmd != kDSReplyACK || msgReplyError != kDSReplyNoError){
+                    badReply = true;
+                }
+            }
+            if (error != kNoError || badReply) {
+                TRK_ReleaseBuffer(*bufferId);
+                *bufferId = -1;
+            }
+        }
+    }
+    
+    if (*bufferId == -1) {
+        OSReport("MetroTRK - failed in RequestSend\n");
+        error = kWaitACKError;
+    }
+    
+    return error;
 }
 
-// ----------------------------------------------------------------------------
-// HandleOpenFileSupportRequest
-// ----------------------------------------------------------------------------
-asm void HandleOpenFileSupportRequest() {
-    nofralloc
-    stwu r1, -0x70(r1)
-    mflr r0
-    stw r0, 0x74(r1)
-    stmw r27, 0x5c(r1)
-    mr r27, r3
-    mr r30, r4
-    mr r28, r5
-    mr r29, r6
-    addi r3, r1, 0x18
-    li r4, 0x0
-    li r5, 0x40
-    bl TRK_memset
-    li r0, 0x0
-    stw r0, 0x0(r28)
-    li r0, 0xd2
-    mr r3, r27
-    stb r0, 0x1c(r1)
-    bl TRK_strlen
-    addi r0, r3, 0x41
-    stw r0, 0x18(r1)
-    mr r3, r27
-    stb r30, 0x20(r1)
-    bl TRK_strlen
-    addi r0, r3, 0x1
-    sth r0, 0x24(r1)
-    addi r3, r1, 0xc
-    addi r4, r1, 0x8
-    bl TRK_GetFreeBuffer
-    lwz r3, 0x8(r1)
-    addi r4, r1, 0x18
-    li r5, 0x40
-    bl TRKAppendBuffer_ui8
-    cmpwi r3, 0x0
-    mr r31, r3
-    bne lbl_801A4E18
-    mr r3, r27
-    bl TRK_strlen
-    mr r5, r3
-    lwz r3, 0x8(r1)
-    mr r4, r27
-    addi r5, r5, 0x1
-    bl TRKAppendBuffer_ui8
-    mr r31, r3
-lbl_801A4E18:
-    cmpwi r31, 0x0
-    bne lbl_801A4E64
-    li r0, 0x0
-    stw r0, 0x0(r29)
-    addi r4, r1, 0x10
-    lwz r3, 0x8(r1)
-    bl TRK_RequestSend
-    cmpwi r3, 0x0
-    mr r31, r3
-    bne lbl_801A4E4C
-    lwz r3, 0x10(r1)
-    bl TRKGetBuffer
-    mr r30, r3
-lbl_801A4E4C:
-    lwz r0, 0x1c(r30)
-    stw r0, 0x0(r29)
-    lwz r0, 0x14(r30)
-    stw r0, 0x0(r28)
-    lwz r3, 0x10(r1)
-    bl TRK_ReleaseBuffer
-lbl_801A4E64:
-    lwz r3, 0xc(r1)
-    bl TRK_ReleaseBuffer
-    mr r3, r31
-    lmw r27, 0x5c(r1)
-    lwz r0, 0x74(r1)
-    mtlr r0
-    addi r1, r1, 0x70
-    blr
+DSError HandleOpenFileSupportRequest(const char* path, ui8 replyError, ui32* param_3, DSIOResult* ioResult){
+    DSError error;
+    int bufferId2;
+    int bufferId1;
+    MessageBuffer* tempBuffer;
+    MessageBuffer* buffer;
+    msgbuf_t reply;
+    
+    TRK_memset(&reply,0,sizeof(msgbuf_t));
+    *param_3 = 0;
+    reply.command[0] = kDSOpenFile;
+    reply.msg_length = TRK_strlen(path) + TRK_MSG_REPLY_HEADER_LENGTH;
+    reply.handle[0] = replyError;
+    reply.length[0] = (ui16)(TRK_strlen(path) + 1);
+    TRK_GetFreeBuffer(&bufferId1,&buffer);
+    error = TRKAppendBuffer_ui8(buffer, (ui8 *)&reply, 0x40);
+    
+    if (error == kNoError) {
+        error = TRKAppendBuffer_ui8(buffer, (ui8*)path, TRK_strlen(path) + 1);
+    }
+    
+    if (error == kNoError) {
+        *ioResult = kDSIONoError;
+        error = TRK_RequestSend(buffer,&bufferId2);
+        
+        if (error == kNoError) {
+            tempBuffer = TRKGetBuffer(bufferId2);
+        }
+        
+        *ioResult = *(ui32*)(tempBuffer->fData + 0x10);
+        *param_3 = *(ui32*)(tempBuffer->fData + 0x8);
+        TRK_ReleaseBuffer(bufferId2);
+    }
+    TRK_ReleaseBuffer(bufferId1);
+    return error;
 }
 
-// ----------------------------------------------------------------------------
-// HandleCloseFileSupportRequest
-// ----------------------------------------------------------------------------
-asm void HandleCloseFileSupportRequest() {
-    nofralloc
-    stwu r1, -0x70(r1)
-    mflr r0
-    li r5, 0x40
-    stw r0, 0x74(r1)
-    stw r31, 0x6c(r1)
-    stw r30, 0x68(r1)
-    mr r30, r3
-    addi r3, r1, 0x18
-    stw r29, 0x64(r1)
-    mr r29, r4
-    li r4, 0x0
-    bl TRK_memset
-    li r3, 0xd3
-    li r0, 0x40
-    stb r3, 0x1c(r1)
-    addi r3, r1, 0xc
-    addi r4, r1, 0x8
-    stw r0, 0x18(r1)
-    stw r30, 0x20(r1)
-    bl TRK_GetFreeBuffer
-    cmpwi r3, 0x0
-    mr r31, r3
-    bne lbl_801A4EF4
-    lwz r3, 0x8(r1)
-    addi r4, r1, 0x18
-    li r5, 0x40
-    bl TRKAppendBuffer_ui8
-    mr r31, r3
-lbl_801A4EF4:
-    cmpwi r31, 0x0
-    bne lbl_801A4F40
-    li r0, 0x0
-    stw r0, 0x0(r29)
-    addi r4, r1, 0x10
-    lwz r3, 0x8(r1)
-    bl TRK_RequestSend
-    cmpwi r3, 0x0
-    mr r31, r3
-    bne lbl_801A4F28
-    lwz r3, 0x10(r1)
-    bl TRKGetBuffer
-    mr r30, r3
-lbl_801A4F28:
-    cmpwi r31, 0x0
-    bne lbl_801A4F38
-    lwz r0, 0x1c(r30)
-    stw r0, 0x0(r29)
-lbl_801A4F38:
-    lwz r3, 0x10(r1)
-    bl TRK_ReleaseBuffer
-lbl_801A4F40:
-    lwz r3, 0xc(r1)
-    bl TRK_ReleaseBuffer
-    mr r3, r31
-    lwz r31, 0x6c(r1)
-    lwz r30, 0x68(r1)
-    lwz r29, 0x64(r1)
-    lwz r0, 0x74(r1)
-    mtlr r0
-    addi r1, r1, 0x70
-    blr
+
+
+DSError HandleCloseFileSupportRequest(int replyError, DSIOResult* ioResult){
+    DSError error;
+    int replyBufferId;
+    int bufferId;
+    MessageBuffer *buffer1;
+    MessageBuffer *buffer2;
+    msgbuf_t reply;
+    
+    TRK_memset(&reply,0, TRK_MSG_HEADER_LENGTH);
+    reply.command[0] = kDSCloseFile;
+    reply.msg_length = TRK_MSG_HEADER_LENGTH;
+    *(DSFileHandle *)reply.handle = replyError;
+    error = TRK_GetFreeBuffer(&bufferId,&buffer1);
+    
+    if (error == kNoError) {
+        error = TRKAppendBuffer_ui8(buffer1, (ui8*)&reply, sizeof(msgbuf_t));
+    }
+    
+    if (error == kNoError) {
+        *ioResult = kDSIONoError;
+        error = TRK_RequestSend(buffer1,&replyBufferId);
+        
+        if (error == kNoError) {
+            buffer2 = TRKGetBuffer(replyBufferId);
+        }
+        
+        if(error == kNoError){
+            *ioResult = *(ui32*)(buffer2->fData + 0x10);
+        }
+        
+        TRK_ReleaseBuffer(replyBufferId);
+    }
+    
+    TRK_ReleaseBuffer(bufferId);
+    return error;
 }
 
-// ----------------------------------------------------------------------------
-// HandlePositionFileSupportRequest
-// ----------------------------------------------------------------------------
-asm void HandlePositionFileSupportRequest() {
-    nofralloc
-    stwu r1, -0x70(r1)
-    mflr r0
-    stw r0, 0x74(r1)
-    stw r31, 0x6c(r1)
-    mr r31, r5
-    li r5, 0x40
-    stw r30, 0x68(r1)
-    mr r30, r6
-    stw r29, 0x64(r1)
-    mr r29, r4
-    li r4, 0x0
-    stw r28, 0x60(r1)
-    mr r28, r3
-    addi r3, r1, 0x18
-    bl TRK_memset
-    li r3, 0xd4
-    li r0, 0x40
-    stb r3, 0x1c(r1)
-    addi r3, r1, 0xc
-    addi r4, r1, 0x8
-    stw r0, 0x18(r1)
-    stw r28, 0x20(r1)
-    lwz r0, 0x0(r29)
-    stw r0, 0x24(r1)
-    stb r31, 0x28(r1)
-    bl TRK_GetFreeBuffer
-    cmpwi r3, 0x0
-    mr r31, r3
-    bne lbl_801A4FF0
-    lwz r3, 0x8(r1)
-    addi r4, r1, 0x18
-    li r5, 0x40
-    bl TRKAppendBuffer_ui8
-    mr r31, r3
-lbl_801A4FF0:
-    cmpwi r31, 0x0
-    bne lbl_801A5048
-    li r0, 0x0
-    stw r0, 0x0(r30)
-    li r0, -0x1
-    addi r4, r1, 0x10
-    stw r0, 0x0(r29)
-    lwz r3, 0x8(r1)
-    bl TRK_RequestSend
-    cmpwi r3, 0x0
-    mr r31, r3
-    bne lbl_801A5040
-    lwz r3, 0x10(r1)
-    bl TRKGetBuffer
-    cmpwi r3, 0x0
-    beq lbl_801A5040
-    lwz r0, 0x1c(r3)
-    stw r0, 0x0(r30)
-    lwz r0, 0x24(r3)
-    stw r0, 0x0(r29)
-lbl_801A5040:
-    lwz r3, 0x10(r1)
-    bl TRK_ReleaseBuffer
-lbl_801A5048:
-    lwz r3, 0xc(r1)
-    bl TRK_ReleaseBuffer
-    mr r3, r31
-    lwz r31, 0x6c(r1)
-    lwz r30, 0x68(r1)
-    lwz r29, 0x64(r1)
-    lwz r28, 0x60(r1)
-    lwz r0, 0x74(r1)
-    mtlr r0
-    addi r1, r1, 0x70
-    blr
+
+DSError HandlePositionFileSupportRequest(ui32 param_1, ui32* param_2, ui8 param_3, DSIOResult* ioResult){
+    DSError error;
+    int bufferId2;
+    int bufferId1;
+    MessageBuffer *buffer1;
+    MessageBuffer *buffer2;
+    msgbuf_t reply;
+    
+    TRK_memset(&reply, 0, TRK_MSG_HEADER_LENGTH);
+    reply.command[0] = kDSPositionFile;
+    reply.msg_length = TRK_MSG_HEADER_LENGTH;
+    *(DSFileHandle *)reply.handle = param_1;
+    *(int*)reply.length = *param_2;
+    reply.data[0] = param_3;
+    error = TRK_GetFreeBuffer(&bufferId1,&buffer1);
+    
+    if (error == kNoError) {
+        error = TRKAppendBuffer_ui8(buffer1, (ui8*)&reply, sizeof(msgbuf_t));
+    }
+    
+    if (error == kNoError) {
+        *ioResult = kDSIONoError;
+        *param_2 = -1;
+        error = TRK_RequestSend(buffer1,&bufferId2);
+
+        if(error == kNoError){
+            buffer2 = TRKGetBuffer(bufferId2);
+        
+            if (buffer2 != NULL) {
+                *ioResult = *(ui32*)(buffer2->fData + 0x10);
+                *param_2 = *(ui32*)(buffer2->fData + 0x18);
+            }
+        }
+        
+        TRK_ReleaseBuffer(bufferId2);
+    }
+    
+    TRK_ReleaseBuffer(bufferId1);
+    return error;
 }
 
