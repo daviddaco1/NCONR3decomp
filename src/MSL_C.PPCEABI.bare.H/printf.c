@@ -1,57 +1,1453 @@
-#include "types.h"
+#include "PowerPC_EABI_Support/MSL_C/MSL_Common/ansi_fp.h"
+#include "PowerPC_EABI_Support/MSL_C/MSL_Common/secure_error.h"
+#include <ctype.h>
+#include <math.h>
+#include <stdarg.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-// Translation unit: src/MSL_C.PPCEABI.bare.H/printf.cpp
-// Total functions: 18
+#define TARGET_FLOAT_BITS 64
+#define TARGET_FLOAT_BYTES (TARGET_FLOAT_BITS/8)
+#define TARGET_FLOAT_MAX_EXP LDBL_MAX_EXP
+#define TARGET_FLOAT_MANT_DIG LDBL_MANT_DIG
+#define TARGET_FLOAT_IMPLICIT_J_BIT 1
+#define TARGET_FLOAT_MANT_BITS (TARGET_FLOAT_MANT_DIG - TARGET_FLOAT_IMPLICIT_J_BIT)
+#define TARGET_FLOAT_EXP_BITS (TARGET_FLOAT_BITS - TARGET_FLOAT_MANT_BITS - 1)
 
-// Small Data symbols (@sda21)
-float at_wstringBase0_8049C400;
-float lbl_8049C408;
-float lbl_804A11A8;
+typedef long long intmax_t;
 
-// Global data symbols (@ha/@l)
-u8 __files[];
-u8 at_2934_8035FD00[];
-u8 at_stringBase0_8033B9A0[];
-u8 jumptable_8035FC20[];
-u8 lbl_8035FA28[];
-u8 lbl_8035FBD8[];
+enum justification_options {
+    left_justification,
+    right_justification,
+    zero_fill
+};
 
-// Forward declarations
-void __FileWrite();
-void __StringWrite();
-void __div2u();
-void __fwrite();
-void __mod2u();
-void __msl_runtime_constraint_violation_s();
-void __pformatter_8019A65C();
-void __va_arg();
-void double2hex();
-void float2str();
-void fn_801972E0();
-void round_decimal();
-void fn_8019AFCC();
-void vsprintf();
-void snprintf();
-void fn_8019B3E8();
-void rand();
-void fn_8019B578();
-void fwide();
-void long2str();
-void longlong2str();
-void memchr();
-void memcpy();
-void parse_format_80198F20();
-void sprintf();
-void strchr();
-void strcpy();
-void strlen();
-void vprintf();
-void vsnprintf();
-void wcstombs();
+enum sign_options {
+    only_minus,
+    sign_always,
+    space_holder
+};
 
-// ----------------------------------------------------------------------------
-// parse_format_80198F20
-// ----------------------------------------------------------------------------
+enum argument_options {
+    normal_argument,
+    char_argument,
+    short_argument,
+    long_argument,
+    long_long_argument,
+    wchar_argument,
+    intmax_argument,
+    size_t_argument,
+    ptrdiff_argument,
+    long_double_argument
+};
+
+typedef struct {
+    unsigned char justification_options; // _0
+    unsigned char sign_options;          // _1
+    unsigned char precision_specified;   // _2
+    unsigned char alternate_form;        // _3
+    unsigned char argument_options;      // _4
+    unsigned char conversion_char;       // _5
+    int           field_width;           // _8
+    int           precision;             // _C
+} print_format;
+
+static const char* parse_format(const char *format_string, va_list *arg, print_format *format) {
+    print_format f;
+    const char* s = format_string;
+    int c;
+    int flag_found;
+    f.justification_options = right_justification;
+    f.sign_options = only_minus;
+    f.precision_specified = 0;
+    f.alternate_form = 0;
+    f.argument_options = normal_argument;
+    f.field_width = 0;
+    f.precision = 0;
+    
+    if ((c = *++s) == '%') {
+        f.conversion_char = c;
+        *format = f;
+        return ((const char*)s + 1);
+    }
+
+    for (;;) {
+        flag_found = 1;
+
+        switch (c) {
+            case '-':
+                f.justification_options = left_justification;
+                break;
+            case '+':
+                f.sign_options = sign_always;
+                break;
+            case ' ':
+                if (f.sign_options != sign_always) {
+                    f.sign_options = space_holder;
+                }
+                break;
+            case '#':
+                f.alternate_form = 1;
+                break;
+            case '0':
+                if (f.justification_options != left_justification) {
+                    f.justification_options = zero_fill;
+                }
+                break;
+            default:
+                flag_found = 0;
+                break;
+        }
+
+        if (flag_found) {
+            c = *++s;
+        }
+        else {
+            break;
+        }
+    }
+
+    if (c == '*') {
+        if ((f.field_width = va_arg(*arg, int)) < 0) {
+            f.justification_options = left_justification;
+            f.field_width = -f.field_width;
+        }
+
+        c = *++s;
+    }
+    else {
+        while (isdigit(c)) {
+            f.field_width = (f.field_width * 10) + (c - '0');
+            c = *++s;
+        }
+    }
+
+    if (f.field_width > 509) {
+        f.conversion_char = 0xFF;
+        *format = f;
+        return ((const char*)s + 1);
+    }
+
+    if (c == '.') {
+        f.precision_specified = 1;
+
+        if ((c = *++s) == '*') {
+            if ((f.precision = va_arg(*arg, int)) < 0) {
+                f.precision_specified = 0;
+            }
+
+            c = *++s;
+        }
+        else {
+            while (isdigit(c)) {
+                f.precision = (f.precision * 10) + (c - '0');
+                c = *++s;
+            }
+        }
+    }
+
+    flag_found = 1;
+
+    switch (c) {
+        case 'h':
+            f.argument_options = short_argument;
+
+            if (s[1] == 'h') {
+                f.argument_options = char_argument;
+                c = *++s;
+            }
+
+            break;
+
+        case 'l':
+            f.argument_options = long_argument;
+
+            if (s[1] == 'l') {
+                f.argument_options = long_long_argument;
+                c = *++s;
+            }
+
+            break;
+
+        case 'L':
+            f.argument_options = long_double_argument;
+            break;
+        case 'j':
+            f.argument_options = intmax_argument;
+            break;
+        case 't':
+            f.argument_options = ptrdiff_argument;
+            break;
+        case 'z':
+            f.argument_options = size_t_argument;
+            break;
+        default:
+            flag_found = 0;
+            break;
+    }
+
+    if (flag_found) {
+        c = *++s;
+    }
+
+    f.conversion_char = c;
+
+    switch (c) {
+        case 'd':
+        case 'i':
+        case 'u':
+        case 'o':
+        case 'x':
+        case 'X':
+            if (f.argument_options == long_double_argument) {
+                f.conversion_char = 0xFF;
+                break;
+            }
+
+            if (!f.precision_specified) {
+                f.precision = 1;
+            }
+            else if (f.justification_options == zero_fill) {
+                f.justification_options = right_justification;
+            }
+            break;
+
+        case 'f':
+        case 'F':
+            if (f.argument_options == short_argument || f.argument_options == intmax_argument || f.argument_options == size_t_argument || f.argument_options == ptrdiff_argument || f.argument_options == long_long_argument) {
+                f.conversion_char = 0xFF;
+                break;
+            }
+
+            if (!f.precision_specified) {
+                f.precision = 6;
+            }
+            break;
+
+        case 'a':
+        case 'A':
+            if (!f.precision_specified) {
+                f.precision = 0xD;
+            }
+
+            if (f.argument_options == short_argument || f.argument_options == intmax_argument ||
+                f.argument_options == size_t_argument || f.argument_options == ptrdiff_argument ||
+                f.argument_options == long_long_argument || f.argument_options == char_argument) {
+                f.conversion_char = 0xFF;
+            }
+
+            break;
+
+        case 'g':
+        case 'G':
+            if (!f.precision) {
+                f.precision = 1;
+            }
+
+        case 'e':
+        case 'E':
+            if (f.argument_options == short_argument || f.argument_options == intmax_argument || f.argument_options == size_t_argument || f.argument_options == ptrdiff_argument || f.argument_options == long_long_argument || f.argument_options == char_argument) {
+                f.conversion_char = 0xFF;
+                break;
+            }
+
+            if (!f.precision_specified) {
+                f.precision = 6;
+            }
+            break;
+
+        case 'p':
+            f.conversion_char = 'x';
+            f.alternate_form = 1;
+            f.argument_options = long_argument;
+            f.precision = 8;
+            break;
+
+        case 'c':
+            if (f.argument_options == long_argument) {
+                f.argument_options = wchar_argument;
+            }
+            else {
+                if (f.precision_specified || f.argument_options != normal_argument) {
+                    f.conversion_char = 0xFF;
+                }
+            }
+
+            break;
+
+        case 's':
+            if (f.argument_options == long_argument) {
+                f.argument_options = wchar_argument;
+            }
+            else {
+                if (f.argument_options != normal_argument) {
+                    f.conversion_char = 0xFF;
+                }
+            }
+
+            break;
+
+        case 'n':
+            if (f.argument_options == long_double_argument) {
+                f.conversion_char = 0xFF;
+            }
+            
+            break;
+
+        default:
+            f.conversion_char = 0xFF;
+            break;
+    }
+
+    *format = f;
+    return ((const char*)s + 1);
+}
+
+static char * long2str(long num, char * buff, print_format format) {
+    unsigned long unsigned_num, base;
+    char* p;
+    int n, digits;
+    int minus = 0;
+    unsigned_num = num;
+    minus = 0;
+    
+    p = buff;
+    *--p = 0;
+    digits = 0;
+    
+    if (!num && !format.precision && !(format.alternate_form && format.conversion_char == 'o')) {
+        return p;
+    }
+    
+    switch (format.conversion_char) {
+        case 'd':
+        case 'i':
+            base = 10;
+            
+            if (num < 0) {
+                if(num != 0x8000000000000000L){
+                    unsigned_num = -num;
+                }
+
+                minus = 1;
+            }
+            break;
+        
+        case 'o':
+            base = 8;
+            format.sign_options = only_minus;
+            break;
+        
+        case 'u':
+            base = 10;
+            format.sign_options = only_minus;
+            break;
+        
+        case 'x':
+        case 'X':
+            base = 16;
+            format.sign_options = only_minus;
+            break;
+    }
+    
+    do {
+        n = unsigned_num % base;
+        unsigned_num /= base;
+        
+        if (n < 10) {
+            n += '0';
+        }
+        else {
+            n -= 10;
+            
+            if (format.conversion_char == 'x') {
+                n += 'a';
+            }
+            else {
+                n += 'A';
+            }
+        }
+        
+        *--p = n;
+        ++digits;
+    }
+    while (unsigned_num != 0);
+    
+    if (base == 8 && format.alternate_form && *p != '0') {
+        *--p = '0';
+        ++digits;
+    }
+    
+    if (format.justification_options == zero_fill) {
+        format.precision = format.field_width;
+        
+        if (minus || format.sign_options != only_minus)
+            --format.precision;
+        
+        if (base == 16 && format.alternate_form)
+            format.precision -= 2;
+    }
+    
+    if (buff - p + format.precision > 509)
+        return (0);
+    
+    while (digits < format.precision) {
+        *--p = '0';
+        ++digits;
+    }
+    
+    if (base == 16 && format.alternate_form) {
+        *--p = format.conversion_char;
+        *--p = '0';
+    }
+    
+    if (minus) {
+        *--p = '-';
+    }
+    else if (format.sign_options == sign_always) {
+        *--p = '+';
+    }
+    else if (format.sign_options == space_holder) {
+        *--p = ' ';
+    }
+    
+    return p;
+}
+
+static char* longlong2str(long long num, char *pBuf, print_format fmt) {
+    unsigned long long unsigned_num, base;
+    char* p;
+    int n, digits;
+    int minus = 0;
+    unsigned_num = num;
+    minus = 0;
+    p = pBuf;
+    *--p = 0;
+    digits = 0;
+
+    if (!num && !fmt.precision && !(fmt.alternate_form && fmt.conversion_char == 'o')) {
+        return p;
+    }
+
+    switch (fmt.conversion_char) {
+        case 'd':
+        case 'i':
+            base = 10;
+
+            if (num < 0) {
+                if (num != 0x8000000000000000) {
+                    unsigned_num = -num;
+                }
+
+                minus = 1;
+            }
+            break;
+        case 'o':
+            base = 8;
+            fmt.sign_options = only_minus;
+            break;
+        case 'u':
+            base = 10;
+            fmt.sign_options = only_minus;
+            break;
+        case 'x':
+        case 'X':
+            base = 16;
+            fmt.sign_options = only_minus;
+            break;
+    }
+
+    do {
+        n = unsigned_num % base;
+        unsigned_num /= base;
+
+        if (n < 10) {
+            n += '0';
+        }
+        else {
+            n -= 10;
+            if (fmt.conversion_char == 'x') {
+                n += 'a';
+            }
+            else {
+                n += 'A';
+            }
+        }
+
+        *--p = n;
+        ++digits;
+    } while (unsigned_num != 0);
+
+    if (base == 8 && fmt.alternate_form && *p != '0') {
+        *--p = '0';
+        ++digits;
+    }
+
+    if (fmt.justification_options == zero_fill) {
+        fmt.precision = fmt.field_width;
+
+        if (minus || fmt.sign_options != only_minus) {
+            --fmt.precision;
+        }
+
+        if (base == 16 && fmt.alternate_form) {
+            fmt.precision -= 2;
+        }
+    }
+
+    if (pBuf - p + fmt.precision > 509) {
+        return 0;
+    }
+
+    while (digits < fmt.precision) {
+        *--p = '0';
+        ++digits;
+    }
+
+    if (base == 16 && fmt.alternate_form) {
+        *--p = fmt.conversion_char;
+        *--p = '0';
+    }
+
+    if (minus) {
+        *--p = '-';
+    }
+    else if (fmt.sign_options == sign_always) {
+        *--p = '+';
+    }
+    else if (fmt.sign_options == space_holder) {
+        *--p = ' ';
+    }
+
+    return p;
+}
+
+static char * double2hex(long double num, char * buff, print_format format)  {
+    char *p;
+    unsigned char *q;
+    unsigned char working_byte;
+    long double ld;
+    int expbits, expmask;
+    unsigned snum;
+    long exp;
+    print_format exp_format;
+    int hex_precision;
+    int mantissa_bit;
+    decform form;
+    decimal dec;
+    int radix_marker;
+    
+    radix_marker = *(unsigned char *)(__lconv).decimal_point;
+    p = buff;
+    ld = num;
+    
+    if (format.precision > 509) {
+        return 0;
+    }
+
+    form.style = (char)0;
+    form.digits = 0x20;
+    __num2dec(&form, num, &dec);
+
+    switch(*dec.sig.text){
+        case '0':
+            dec.exp = 0;
+            break;
+        case 'I':
+            if (dec.sign) {
+                p = buff - 5;
+                if (format.conversion_char == 'A') strcpy(p, "-INF");
+                else strcpy(p, "-inf");
+            }
+            else {
+                p = buff - 4;
+                if (format.conversion_char == 'A') strcpy(p, "INF");
+                else strcpy(p, "inf");
+            }
+        
+            return p;
+        case 'N':
+            if (dec.sign) {
+                p = buff - 5;
+                if (format.conversion_char == 'A') strcpy(p, "-NAN");
+                else strcpy(p, "-nan");
+            }
+            else {
+                p = buff - 4;
+                if (format.conversion_char == 'A') strcpy(p, "NAN");
+                else strcpy(p, "nan");
+            }
+            
+            return p;
+    }
+
+    exp_format.justification_options = right_justification;
+    exp_format.sign_options = sign_always;
+    exp_format.precision_specified = 0;
+    exp_format.alternate_form = 0;
+    exp_format.argument_options = normal_argument;
+    exp_format.field_width = 0;
+    exp_format.precision = 1;
+    exp_format.conversion_char = 'd';
+
+    expbits = 11;
+    expmask = 0x7FF;
+
+    snum = ((unsigned char *)&num)[0] << 25;
+    if (TARGET_FLOAT_EXP_BITS > 7)
+        snum |= ((unsigned char *)&num)[1] << 17;
+    if (TARGET_FLOAT_EXP_BITS > 15)
+        snum |= ((unsigned char *)&num)[2] << 9;
+    if (TARGET_FLOAT_EXP_BITS > 23)
+        snum |= ((unsigned char *)&num)[3] << 1;
+
+    snum = (snum >> (32 - expbits)) & expmask;
+
+    if(snum != 0)
+        exp = snum - 0x3FF;
+    else
+        exp = 0;
+
+    p = long2str(exp, buff, exp_format);
+    if (format.conversion_char == 'a')
+        *--p = 'p';
+    else
+        *--p = 'P';
+    q = (unsigned char *)&num;
+
+    if (TARGET_FLOAT_IMPLICIT_J_BIT) {
+        mantissa_bit = (1 + expbits + format.precision * 4) - 1;
+    }
+    else {
+        mantissa_bit = (1 + expbits + format.precision * 4) - 4;
+    }
+    
+    for (hex_precision = format.precision; hex_precision >= 1; hex_precision--) {
+        if (mantissa_bit < 64) {
+            int mantissa_byte;
+            
+            mantissa_byte = mantissa_bit >> 3;
+            working_byte = (*(q + mantissa_byte)) >> (7 - (mantissa_bit & 7));
+
+            if ((mantissa_bit & ~7) != ((mantissa_bit - 4) & ~7)) {
+                working_byte |= ((*(q + (mantissa_byte - 1))) << 8) >> (7 - ((mantissa_bit) & 7));
+            }
+
+            if (!TARGET_FLOAT_IMPLICIT_J_BIT) {
+                if (mantissa_bit == 1 + expbits) {
+                    *--p = radix_marker;
+                    working_byte &= 0x1;
+                }
+            }
+            
+            if ((working_byte &= 0xF) < 10) {
+                working_byte += '0';
+            }
+            else
+                if (format.conversion_char == 'a') {
+                    working_byte += 'a' - 10;
+                }
+                else {
+                    working_byte += 'A' - 10;
+                }
+        }
+        else {
+            working_byte = '0';
+        }
+
+        *--p = working_byte;
+        mantissa_bit -= 4;
+    }
+    
+    if (TARGET_FLOAT_IMPLICIT_J_BIT){
+        if (format.precision || format.alternate_form) {
+            *--p = radix_marker;
+        }
+
+        if(fabsl(ld) != 0.0)
+            *--p = '1';
+        else
+            *--p = '0';
+    }
+
+    if (format.conversion_char == 'a') {
+        *--p = 'x';
+    }
+    else {
+        *--p = 'X';
+    }
+
+    *--p = '0';
+
+    if (dec.sign) {
+        *--p = '-';
+    }
+    else if (format.sign_options == sign_always) {
+        *--p = '+';
+    }
+    else if (format.sign_options == space_holder) {
+        *--p = ' ';
+    }
+
+    return p;
+}
+
+static void round_decimal(decimal *dec, int new_length) {
+    char c;
+    char* p;
+    int carry;
+
+    if (new_length < 0) {
+return_zero:
+        dec->exp = 0;
+        dec->sig.length = 1;
+        *dec->sig.text = '0';
+        return;
+    }
+
+    if (new_length >= dec->sig.length) {
+        return;
+    }
+
+    p = (char*)dec->sig.text + new_length + 1;
+    c = *--p - '0';
+
+    if (c == 5) {
+        char* q = &((char*)dec->sig.text)[dec->sig.length];
+
+        while (--q > p && *q == '0');
+        carry = (q == p) ? p[-1] & 1 : 1;
+    }
+    else {
+        carry = (c > 5);
+    }
+
+    while (new_length != 0) {
+        c = *--p - '0' + carry;
+
+        if ((carry = (c > 9)) != 0 || c == 0) {
+            --new_length;
+        }
+        else {
+            *p = c + '0';
+            break;
+        }
+    }
+
+    if (carry != 0) {
+        dec->exp += 1;
+        dec->sig.length = 1;
+        *dec->sig.text = '1';
+        return;
+    }
+    else if (new_length == 0) {
+        goto return_zero;
+    }
+
+    dec->sig.length = new_length;
+}
+
+static char* float2str(long double num, char *buff, print_format format) {
+    decimal dec;
+    decform form;
+    char* p;
+    char* q;
+    int n, digits, sign;
+    int int_digits, frac_digits;
+    int radix_marker;
+
+    radix_marker = *(unsigned char*)__lconv.decimal_point;
+
+    if (format.precision > 509) {
+        return 0;
+    }
+
+    form.style = 0;
+    form.digits = 0x20;
+    __num2dec(&form, num, &dec);
+    p = (char*)dec.sig.text + dec.sig.length;
+
+    while (dec.sig.length > 1 && *--p == '0') {
+        --dec.sig.length;
+        ++dec.exp;
+    }
+
+    switch (*dec.sig.text) {
+        case '0':
+            dec.exp = 0;
+            break;
+        case 'I':
+            if (num < 0) {
+                p = buff - 5;
+
+                if (isupper(format.conversion_char)) {
+                    strcpy(p, "-INF");
+                }
+                else {
+                    strcpy(p, "-inf");
+                }
+            }
+            else {
+                p = buff - 4;
+                if (isupper(format.conversion_char)) {
+                    strcpy(p, "INF");
+                }
+                else {
+                    strcpy(p, "inf");
+                }
+            }
+
+            return p;
+
+        case 'N':
+            if (dec.sign) {
+                p = buff - 5;
+
+                if (isupper(format.conversion_char)) {
+                    strcpy(p, "-NAN");
+                }
+                else {
+                    strcpy(p, "-nan");
+                }
+            }
+            else {
+                p = buff - 4;
+                if (isupper(format.conversion_char)) {
+                    strcpy(p, "NAN");
+                }
+                else {
+                    strcpy(p, "nan");
+                }
+            }
+
+            return p;
+    }
+
+    dec.exp += dec.sig.length - 1;
+    p = buff;
+    *--p = 0;
+
+    switch (format.conversion_char)
+    {
+        case 'g':
+        case 'G':
+            
+            if (dec.sig.length > format.precision) {
+                round_decimal(&dec, format.precision);
+            }
+            
+            if (dec.exp < -4 || dec.exp >= format.precision)
+            {
+                if (format.alternate_form) {
+                    --format.precision;
+                }
+                else {
+                    format.precision = dec.sig.length - 1;
+                }
+                
+                if (format.conversion_char == 'g') {
+                    format.conversion_char = 'e';
+                }
+                else {
+                    format.conversion_char = 'E';
+                }
+                
+                goto e_format;
+            }
+            
+            if (format.alternate_form) {
+                format.precision -= dec.exp + 1;
+            }
+            else {
+                if ((format.precision = dec.sig.length - (dec.exp + 1)) < 0) {
+                    format.precision = 0;
+                }
+            }
+            
+            goto f_format;
+        
+        case 'e':
+        case 'E':
+        e_format:
+            
+            if (dec.sig.length > format.precision + 1) {
+                round_decimal(&dec, format.precision + 1);
+            }
+            
+            n = dec.exp;
+            sign = '+';
+            
+            if (n < 0) {
+                n = -n;
+                sign = '-';
+            }
+            
+            for (digits = 0; n || digits < 2; ++digits) {
+                *--p = n % 10 + '0';
+                n /= 10;
+            }
+            
+            *--p = sign;
+            *--p = format.conversion_char;
+            
+            if (buff - p + format.precision > 509) {
+                return 0;
+            }
+            
+            if (dec.sig.length < format.precision + 1) {
+                for (n = format.precision + 1 - dec.sig.length + 1; --n;) {
+                    *--p = '0';
+                }
+            }
+            
+            for (n = dec.sig.length, q = (char*)dec.sig.text + dec.sig.length; --n;) {
+                *--p = *--q;
+            }
+            
+            if (format.precision || format.alternate_form) {
+                *--p = radix_marker;
+            }
+            
+            *--p = *dec.sig.text;
+            
+            if (dec.sign)
+                *--p = '-';
+            else if (format.sign_options == sign_always)
+                *--p = '+';
+            else if (format.sign_options == space_holder)
+                *--p = ' ';
+            
+            break;
+
+        case 'f':
+        case 'F':
+        f_format:
+            
+            if ((frac_digits = -dec.exp + dec.sig.length - 1) < 0)
+                frac_digits = 0;
+            
+            if (frac_digits > format.precision) {
+                round_decimal(&dec, dec.sig.length - (frac_digits - format.precision));
+                
+                if ((frac_digits = -dec.exp + dec.sig.length - 1) < 0)
+                    frac_digits = 0;
+            }
+            
+            if ((int_digits = dec.exp + 1) < 0)
+                int_digits = 0;
+            
+            if (int_digits + frac_digits > 509)
+                return 0;
+            
+            q = (char *) dec.sig.text + dec.sig.length;
+            
+            for (digits = 0; digits < (format.precision - frac_digits); ++digits)
+                *--p = '0';
+            
+            for (digits = 0; digits < frac_digits && digits < dec.sig.length; ++digits)
+                *--p = *--q;
+            
+            for (; digits < frac_digits; ++digits)
+                *--p = '0';
+            
+            if (format.precision || format.alternate_form)
+                *--p = radix_marker;
+            
+            if (int_digits) {
+                for (digits = 0; digits < int_digits - dec.sig.length; ++digits) {
+                    *--p = '0';
+                }
+
+                for (; digits < int_digits; ++digits) {
+                    *--p = *--q;
+                }
+            }
+            else {
+                *--p = '0';
+            }
+            
+            if (dec.sign) {
+                *--p = '-';
+            }
+            else if (format.sign_options == sign_always) {
+                *--p = '+';
+            }
+            else if (format.sign_options == space_holder) {
+                *--p = ' ';
+            }
+            
+            break;
+    }
+
+    return p;
+}
+
+static int __pformatter(void *(*WriteProc)(void *, const char *, size_t), void *WriteProcArg, const char * format_str, va_list arg, int is_secure) {
+    int num_chars, chars_written, field_width;
+    const char* format_ptr;
+    const char* curr_format;
+    print_format format;
+    long long_num;
+    long long long_long_num;
+    long double long_double_num;
+    char buff[512];
+    char* buff_ptr;
+    char* string_end;
+    char fill_char = ' ';
+
+    format_ptr = format_str;
+    chars_written = 0;
+
+    while (*format_ptr) {
+        if (!(curr_format = strchr(format_ptr, '%'))) {
+            num_chars = strlen(format_ptr);
+            chars_written += num_chars;
+
+            if (num_chars && !(*WriteProc)(WriteProcArg, format_ptr, num_chars)) {
+                return -1;
+            }
+
+            break;
+        }
+
+        num_chars = curr_format - format_ptr;
+        chars_written += num_chars;
+
+        if (num_chars && !(*WriteProc)(WriteProcArg, format_ptr, num_chars)) {
+            return -1;
+        }
+
+        format_ptr = curr_format;
+        format_ptr = parse_format(format_ptr, (va_list*)arg, &format);
+
+        switch (format.conversion_char) {
+            case 'd':
+            case 'i':
+                if (format.argument_options == long_argument) {
+                    long_num = va_arg(arg, long);
+                }
+                else if (format.argument_options == long_long_argument) {
+                    long_long_num = va_arg(arg, long long);
+                }
+                else if (format.argument_options == intmax_argument) {
+                    long_long_num = va_arg(arg, intmax_t);
+                }
+                else if (format.argument_options == size_t_argument) {
+                    long_num = va_arg(arg, size_t);
+                }
+                else if (format.argument_options == ptrdiff_argument) {
+                    long_num = va_arg(arg, ptrdiff_t);
+                }
+                else {
+                    long_num = va_arg(arg, int);
+                }
+
+                if (format.argument_options == short_argument) {
+                    long_num = (short)long_num;
+                }
+
+                if (format.argument_options == char_argument) {
+                    long_num = (signed char)long_num;
+                }
+
+                if ((format.argument_options == long_long_argument) || (format.argument_options == intmax_argument)) {
+                    if (!(buff_ptr = longlong2str(long_long_num, buff + 512, format))) {
+                        goto conversion_error;
+                    }
+                }
+                else {
+                    if (!(buff_ptr = long2str(long_num, buff + 512, format))) {
+                        goto conversion_error;
+                    }
+                }
+
+                num_chars = buff + 512 - 1 - buff_ptr;
+                break;
+
+            case 'o':
+            case 'u':
+            case 'x':
+            case 'X':
+                if (format.argument_options == long_argument) {
+                    long_num = va_arg(arg, unsigned long);
+                }
+                else if (format.argument_options == long_long_argument) {
+                    long_long_num = va_arg(arg, long long);
+                }
+                else if (format.argument_options == intmax_argument) {
+                    long_long_num = va_arg(arg, intmax_t);
+                }
+                else if (format.argument_options == size_t_argument) {
+                    long_num = va_arg(arg, size_t);
+                }
+                else if (format.argument_options == ptrdiff_argument) {
+                    long_num = va_arg(arg, ptrdiff_t);
+                }
+                else {
+                    long_num = va_arg(arg, unsigned int);
+                }
+
+                if (format.argument_options == short_argument) {
+                    long_num = (unsigned short)long_num;
+                }
+
+                if (format.argument_options == char_argument) {
+                    long_num = (unsigned char)long_num;
+                }
+
+                if ((format.argument_options == long_long_argument) || (format.argument_options == intmax_argument)) {
+                    if (!(buff_ptr = longlong2str(long_long_num, buff + 512, format))) {
+                        goto conversion_error;
+                    }
+                }
+                else {
+                    if (!(buff_ptr = long2str(long_num, buff + 512, format))) {
+                        goto conversion_error;
+                    }
+                }
+
+                num_chars = buff + 512 - 1 - buff_ptr;
+                break;
+
+            case 'f':
+            case 'F':
+            case 'e':
+            case 'E':
+            case 'g':
+            case 'G':
+                if (format.argument_options == long_double_argument) {
+                    long_double_num = va_arg(arg, long double);
+                }
+                else {
+                    long_double_num = va_arg(arg, double);
+                }
+
+                if (!(buff_ptr = float2str(long_double_num, buff + 512, format))) {
+                    goto conversion_error;
+                }
+
+                num_chars = buff + 512 - 1 - buff_ptr;
+                break;
+
+            case 'a':
+            case 'A':
+                if (format.argument_options == long_double_argument) {
+                    long_double_num = va_arg(arg, long double);
+                }
+                else {
+                    long_double_num = va_arg(arg, double);
+                }
+
+                if (!(buff_ptr = double2hex(long_double_num, buff + 512, format))) {
+                    goto conversion_error;
+                }
+
+                num_chars = buff + 512 - 1 - buff_ptr;
+                break;
+
+            case 's':
+                if (format.argument_options == wchar_argument) {
+                    wchar_t* wcs_ptr = va_arg(arg, wchar_t*);
+
+                    if(is_secure && wcs_ptr == NULL){
+                        __msl_runtime_constraint_violation_s(0,0,-1);
+                        return -1;
+                    }
+
+                    if(wcs_ptr == NULL){
+                        wcs_ptr = L"";
+                    }
+
+                    if ((num_chars = wcstombs(buff, wcs_ptr, sizeof(buff))) < 0) {
+                        goto conversion_error;
+                    }
+
+                    buff_ptr = &buff[0];
+                }
+                else {
+                    buff_ptr = va_arg(arg, char *);
+                }
+
+                if(is_secure && buff_ptr == NULL){
+                    __msl_runtime_constraint_violation_s(0,0,-1);
+                    return -1;
+                }
+
+                if (buff_ptr == NULL) {
+                    buff_ptr = "";
+                }
+
+                if (format.alternate_form) {
+                    num_chars = (unsigned char)*buff_ptr++;
+
+                    if (format.precision_specified && num_chars > format.precision) {
+                        num_chars = format.precision;
+                    }
+                }
+                else if (format.precision_specified) {
+                    num_chars = format.precision;
+
+                    if ((string_end = (char*)memchr((unsigned char*)buff_ptr, 0, num_chars)) != 0) {
+                        num_chars = string_end - buff_ptr;
+                    }
+                }
+                else {
+                    num_chars = strlen(buff_ptr);
+                }
+
+                break;
+
+            case 'n':
+                buff_ptr = va_arg(arg, char *);
+
+                if(is_secure){
+                    __msl_runtime_constraint_violation_s(0,0,-1);
+                    return -1;
+                }
+
+                switch (format.argument_options) {
+                    case normal_argument:
+                        *(int*)buff_ptr = chars_written;
+                        break;
+                    case short_argument:
+                        *(short*)buff_ptr = chars_written;
+                        break;
+                    case long_argument:
+                        *(long*)buff_ptr = chars_written;
+                        break;
+                    case intmax_argument:
+                        *(intmax_t*)buff_ptr = chars_written;
+                        break;
+                    case size_t_argument:
+                        *(size_t*)buff_ptr = chars_written;
+                        break;
+                    case ptrdiff_argument:
+                        *(ptrdiff_t*)buff_ptr = chars_written;
+                        break;
+                    case long_long_argument:
+                        *(long long*)buff_ptr = chars_written;
+                        break;
+                }
+
+                continue;
+
+            case 'c':
+                buff_ptr = buff;
+                *buff_ptr = va_arg(arg, int);
+                num_chars = 1;
+                break;
+
+            case '%':
+                buff_ptr = buff;
+                *buff_ptr = '%';
+                num_chars = 1;
+                break;
+            
+            case 0xFF:
+            default:
+                conversion_error:
+                    num_chars = strlen(curr_format);
+                    chars_written += num_chars;
+
+                    if (num_chars && !(*WriteProc)(WriteProcArg, curr_format, num_chars)) {
+                        return -1;
+                    }
+
+                    return chars_written;
+                    break;
+        }
+
+        field_width = num_chars;
+
+        if (format.justification_options != left_justification) {
+            fill_char = (format.justification_options == zero_fill) ? '0' : ' ';
+
+            if (((*buff_ptr == '+') || (*buff_ptr == '-') || (*buff_ptr == ' ')) && (fill_char == '0')) {
+                if ((*WriteProc)(WriteProcArg, buff_ptr, 1) == 0) {
+                    return -1;
+                }
+
+                ++buff_ptr;
+                num_chars--;
+            }
+
+            if ((format.justification_options == zero_fill) && ((format.conversion_char == 'a') || (format.conversion_char == 'A')))
+            {
+                if (num_chars < 2)
+                    return(-1);
+                if ((*WriteProc)(WriteProcArg, buff_ptr, 2) == 0)
+                    return(-1);
+                num_chars -= 2;
+                buff_ptr += 2;
+            }
+            
+
+            while (field_width < format.field_width) {
+                if ((*WriteProc)(WriteProcArg, &fill_char, 1) == 0) {
+                    return -1;
+                }
+
+                ++field_width;
+            }
+        }
+
+        if (num_chars && !(*WriteProc)(WriteProcArg, buff_ptr, num_chars)) {
+            return -1;
+        }
+
+        if (format.justification_options == left_justification) {
+            while (field_width < format.field_width) {
+                char blank = ' ';
+
+                if ((*WriteProc)(WriteProcArg, &blank, 1) == 0) {
+                    return -1;
+                }
+
+                ++field_width;
+            }
+        }
+
+        chars_written += field_width;
+    }
+
+    return chars_written;
+}
+
+static void* __FileWrite(void *file, const char *pBuffer, size_t char_num) {
+    return (__fwrite(pBuffer, 1, char_num, (FILE*)file) == char_num ? file : 0);
+}
+
+static void* __StringWrite(void *pCtrl, const char *pBuffer, size_t char_num) {
+    size_t chars;
+    __OutStrCtrl* ctrl = (__OutStrCtrl*)pCtrl;
+    void* res;
+
+    chars = ((ctrl->CharsWritten + char_num) <= ctrl->MaxCharCount) ? char_num : ctrl->MaxCharCount - ctrl->CharsWritten;
+    res = memcpy(ctrl->CharStr + ctrl->CharsWritten, pBuffer, chars);
+    ctrl->CharsWritten += chars;
+    return (void*)1;
+}
+
+//unused
+void printf(){
+}
+
+//unused
+void printf_s(){
+}
+
+int fprintf(FILE *file, const char *format, ...) {
+    int res;
+
+    if (fwide(file, -1) >= 0) {
+        return -1;
+    }
+
+    {
+        va_list args;
+        va_start(args, format);
+        res = __pformatter(&__FileWrite, (void*)file, format, args, FALSE);
+        return res;
+    }
+}
+
+//unused
+void fprintf_s(){
+}
+
+int vprintf(const char *pFormat, va_list arg) {
+    int ret;
+
+    if (fwide(stdout, -1) >= 0) {
+        return -1;
+    }
+
+    ret = __pformatter(&__FileWrite, (void*)stdout, pFormat, arg, FALSE);
+    return ret;
+}
+
+//unused
+void vprintf_s(){
+}
+
+//unused
+void vfprintf(){
+}
+
+//unused
+void vfprintf_s(){
+}
+
+int vsnprintf(char *s, size_t n, const char *format, va_list arg) {
+    int end;
+    __OutStrCtrl osc;
+    osc.CharStr = s;
+    osc.MaxCharCount = n;
+    osc.CharsWritten = 0;
+
+    end = __pformatter(&__StringWrite, &osc, format, arg, FALSE);
+
+    if (s) {
+        if (end < n) {
+            s[end] = '\0';
+        }
+        else {
+            if (n > 0) {
+                s[n - 1] = '\0';
+            }
+        }
+    }
+
+    return end;
+}
+
+//unused
+void vsnprintf_s(){
+}
+
+int vsprintf(char *s, const char *format, va_list arg) {
+    return vsnprintf(s, 0xFFFFFFFF, format, arg);
+}
+
+//unused
+void vsprintf_s(){
+}
+
+int snprintf(char *s, size_t n, const char *format, ...) {
+    va_list args;
+    va_start(args, format);
+    return vsnprintf(s, n, format, args);
+}
+
+//unused
+void snprintf_s(){
+}
+
+int sprintf(char *s, const char *format, ...) {
+    va_list args;
+    va_start(args, format);
+    return vsnprintf(s, 0xFFFFFFFF, format, args);
+}
+
+//unused
+void sprintf_s(){
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+extern float at_wstringBase0_8049C400;
+extern float lbl_8049C408;
+extern u8 at_2934_8035FD00[];
+extern u8 at_stringBase0_8033B9A0[];
+extern u8 jumptable_8035FC20[];
+extern u8 lbl_8035FBD8[];
+extern void __pformatter_8019A65C();
+extern void fn_8019AFCC();
+extern void fn_8019B3E8();
+extern void fn_8019B578();
+extern void parse_format_80198F20();
+
+// asm_to_cpp: parse_format_80198F20
 asm void parse_format_80198F20() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -474,1330 +1870,7 @@ lbl_801994C0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// long2str
-// ----------------------------------------------------------------------------
-asm void long2str() {
-    nofralloc
-    cmpwi r3, 0x0
-    li r8, 0x0
-    stb r8, -0x1(r4)
-    subi r6, r4, 0x1
-    li r7, 0x0
-    bne lbl_80199520
-    lwz r0, 0xc(r5)
-    cmpwi r0, 0x0
-    bne lbl_80199520
-    lbz r0, 0x3(r5)
-    cmpwi r0, 0x0
-    beq lbl_80199518
-    lbz r0, 0x5(r5)
-    cmplwi r0, 0x6f
-    beq lbl_80199520
-lbl_80199518:
-    mr r3, r6
-    blr
-lbl_80199520:
-    lbz r9, 0x5(r5)
-    cmpwi r9, 0x64
-    beq lbl_80199558
-    cmpwi r9, 0x69
-    beq lbl_80199558
-    cmpwi r9, 0x6f
-    beq lbl_80199584
-    cmpwi r9, 0x75
-    beq lbl_80199594
-    cmpwi r9, 0x78
-    beq lbl_801995A4
-    cmpwi r9, 0x58
-    beq lbl_801995A4
-    b lbl_801995B0
-lbl_80199558:
-    cmpwi r3, 0x0
-    li r0, 0xa
-    bge lbl_801995B0
-    srawi r9, r3, 31
-    lis r8, 0x8000
-    xor r8, r9, r8
-    or. r8, r3, r8
-    beq lbl_8019957C
-    neg r3, r3
-lbl_8019957C:
-    li r8, 0x1
-    b lbl_801995B0
-lbl_80199584:
-    li r0, 0x0
-    stb r0, 0x1(r5)
-    li r0, 0x8
-    b lbl_801995B0
-lbl_80199594:
-    li r0, 0x0
-    stb r0, 0x1(r5)
-    li r0, 0xa
-    b lbl_801995B0
-lbl_801995A4:
-    li r0, 0x0
-    stb r0, 0x1(r5)
-    li r0, 0x10
-lbl_801995B0:
-    divwu r9, r3, r0
-    mullw r9, r9, r0
-    subf r11, r9, r3
-    divwu r3, r3, r0
-    cmpwi r11, 0xa
-    bge lbl_801995D0
-    addi r11, r11, 0x30
-    b lbl_801995E8
-lbl_801995D0:
-    lbz r9, 0x5(r5)
-    addi r10, r11, 0x37
-    cmplwi r9, 0x78
-    bne lbl_801995E4
-    addi r10, r11, 0x57
-lbl_801995E4:
-    mr r11, r10
-lbl_801995E8:
-    cmpwi r3, 0x0
-    stb r11, -0x1(r6)
-    subi r6, r6, 0x1
-    addi r7, r7, 0x1
-    bne lbl_801995B0
-    cmplwi r0, 0x8
-    bne lbl_80199628
-    lbz r3, 0x3(r5)
-    cmpwi r3, 0x0
-    beq lbl_80199628
-    lbz r3, 0x0(r6)
-    cmpwi r3, 0x30
-    beq lbl_80199628
-    li r3, 0x30
-    stbu r3, -0x1(r6)
-    addi r7, r7, 0x1
-lbl_80199628:
-    lbz r3, 0x0(r5)
-    cmplwi r3, 0x2
-    bne lbl_8019967C
-    lwz r3, 0x8(r5)
-    cmpwi r8, 0x0
-    stw r3, 0xc(r5)
-    bne lbl_80199650
-    lbz r3, 0x1(r5)
-    cmpwi r3, 0x0
-    beq lbl_8019965C
-lbl_80199650:
-    lwz r3, 0xc(r5)
-    subi r3, r3, 0x1
-    stw r3, 0xc(r5)
-lbl_8019965C:
-    cmplwi r0, 0x10
-    bne lbl_8019967C
-    lbz r3, 0x3(r5)
-    cmpwi r3, 0x0
-    beq lbl_8019967C
-    lwz r3, 0xc(r5)
-    subi r3, r3, 0x2
-    stw r3, 0xc(r5)
-lbl_8019967C:
-    lwz r9, 0xc(r5)
-    subf r3, r6, r4
-    add r3, r9, r3
-    cmpwi r3, 0x1fd
-    ble lbl_80199698
-    li r3, 0x0
-    blr
-lbl_80199698:
-    li r4, 0x30
-    b lbl_801996A8
-lbl_801996A0:
-    stbu r4, -0x1(r6)
-    addi r7, r7, 0x1
-lbl_801996A8:
-    lwz r3, 0xc(r5)
-    cmpw r7, r3
-    blt lbl_801996A0
-    cmplwi r0, 0x10
-    bne lbl_801996D8
-    lbz r0, 0x3(r5)
-    cmpwi r0, 0x0
-    beq lbl_801996D8
-    lbz r3, 0x5(r5)
-    li r0, 0x30
-    stb r3, -0x1(r6)
-    stbu r0, -0x2(r6)
-lbl_801996D8:
-    cmpwi r8, 0x0
-    beq lbl_801996EC
-    li r0, 0x2d
-    stbu r0, -0x1(r6)
-    b lbl_80199714
-lbl_801996EC:
-    lbz r0, 0x1(r5)
-    cmplwi r0, 0x1
-    bne lbl_80199704
-    li r0, 0x2b
-    stbu r0, -0x1(r6)
-    b lbl_80199714
-lbl_80199704:
-    cmplwi r0, 0x2
-    bne lbl_80199714
-    li r0, 0x20
-    stbu r0, -0x1(r6)
-lbl_80199714:
-    mr r3, r6
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// longlong2str
-// ----------------------------------------------------------------------------
-asm void longlong2str() {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    or. r0, r4, r3
-    stmw r22, 0x8(r1)
-    li r25, 0x0
-    mr r31, r3
-    mr r30, r4
-    mr r23, r5
-    mr r24, r6
-    subi r27, r5, 0x1
-    li r26, 0x0
-    stb r25, -0x1(r5)
-    bne lbl_80199780
-    lwz r0, 0xc(r6)
-    cmpwi r0, 0x0
-    bne lbl_80199780
-    lbz r0, 0x3(r6)
-    cmpwi r0, 0x0
-    beq lbl_80199778
-    lbz r0, 0x5(r6)
-    cmplwi r0, 0x6f
-    beq lbl_80199780
-lbl_80199778:
-    mr r3, r27
-    b lbl_801999B8
-lbl_80199780:
-    lbz r0, 0x5(r6)
-    cmpwi r0, 0x64
-    beq lbl_801997B8
-    cmpwi r0, 0x69
-    beq lbl_801997B8
-    cmpwi r0, 0x6f
-    beq lbl_801997FC
-    cmpwi r0, 0x75
-    beq lbl_8019980C
-    cmpwi r0, 0x78
-    beq lbl_8019981C
-    cmpwi r0, 0x58
-    beq lbl_8019981C
-    b lbl_80199828
-lbl_801997B8:
-    li r29, 0x0
-    xoris r0, r3, 0x8000
-    xoris r6, r29, 0x8000
-    li r28, 0xa
-    subfc r5, r29, r4
-    subfe r6, r6, r0
-    subfe r6, r0, r0
-    neg. r6, r6
-    beq lbl_80199828
-    lis r0, 0x8000
-    xor r0, r3, r0
-    or. r0, r4, r0
-    beq lbl_801997F4
-    subfic r30, r4, 0x0
-    subfze r31, r3
-lbl_801997F4:
-    li r25, 0x1
-    b lbl_80199828
-lbl_801997FC:
-    li r29, 0x0
-    stb r29, 0x1(r6)
-    li r28, 0x8
-    b lbl_80199828
-lbl_8019980C:
-    li r29, 0x0
-    stb r29, 0x1(r6)
-    li r28, 0xa
-    b lbl_80199828
-lbl_8019981C:
-    li r29, 0x0
-    stb r29, 0x1(r6)
-    li r28, 0x10
-lbl_80199828:
-    mr r3, r31
-    mr r4, r30
-    mr r5, r29
-    mr r6, r28
-    bl __mod2u
-    mr r22, r4
-    mr r3, r31
-    mr r4, r30
-    mr r5, r29
-    mr r6, r28
-    bl __div2u
-    cmpwi r22, 0xa
-    mr r30, r4
-    mr r31, r3
-    bge lbl_8019986C
-    addi r5, r22, 0x30
-    b lbl_80199880
-lbl_8019986C:
-    lbz r0, 0x5(r24)
-    addi r5, r22, 0x37
-    cmplwi r0, 0x78
-    bne lbl_80199880
-    addi r5, r22, 0x57
-lbl_80199880:
-    or. r0, r4, r3
-    stbu r5, -0x1(r27)
-    addi r26, r26, 0x1
-    bne lbl_80199828
-    xori r0, r28, 0x8
-    or. r0, r0, r29
-    bne lbl_801998C0
-    lbz r0, 0x3(r24)
-    cmpwi r0, 0x0
-    beq lbl_801998C0
-    lbz r0, 0x0(r27)
-    cmpwi r0, 0x30
-    beq lbl_801998C0
-    li r0, 0x30
-    stbu r0, -0x1(r27)
-    addi r26, r26, 0x1
-lbl_801998C0:
-    lbz r0, 0x0(r24)
-    cmplwi r0, 0x2
-    bne lbl_80199918
-    lwz r0, 0x8(r24)
-    cmpwi r25, 0x0
-    stw r0, 0xc(r24)
-    bne lbl_801998E8
-    lbz r0, 0x1(r24)
-    cmpwi r0, 0x0
-    beq lbl_801998F4
-lbl_801998E8:
-    lwz r3, 0xc(r24)
-    subi r0, r3, 0x1
-    stw r0, 0xc(r24)
-lbl_801998F4:
-    xori r0, r28, 0x10
-    or. r0, r0, r29
-    bne lbl_80199918
-    lbz r0, 0x3(r24)
-    cmpwi r0, 0x0
-    beq lbl_80199918
-    lwz r3, 0xc(r24)
-    subi r0, r3, 0x2
-    stw r0, 0xc(r24)
-lbl_80199918:
-    lwz r3, 0xc(r24)
-    subf r0, r27, r23
-    add r0, r3, r0
-    cmpwi r0, 0x1fd
-    ble lbl_80199934
-    li r3, 0x0
-    b lbl_801999B8
-lbl_80199934:
-    li r3, 0x30
-    b lbl_80199944
-lbl_8019993C:
-    stbu r3, -0x1(r27)
-    addi r26, r26, 0x1
-lbl_80199944:
-    lwz r0, 0xc(r24)
-    cmpw r26, r0
-    blt lbl_8019993C
-    xori r0, r28, 0x10
-    or. r0, r0, r29
-    bne lbl_80199978
-    lbz r0, 0x3(r24)
-    cmpwi r0, 0x0
-    beq lbl_80199978
-    lbz r3, 0x5(r24)
-    li r0, 0x30
-    stb r3, -0x1(r27)
-    stbu r0, -0x2(r27)
-lbl_80199978:
-    cmpwi r25, 0x0
-    beq lbl_8019998C
-    li r0, 0x2d
-    stbu r0, -0x1(r27)
-    b lbl_801999B4
-lbl_8019998C:
-    lbz r0, 0x1(r24)
-    cmplwi r0, 0x1
-    bne lbl_801999A4
-    li r0, 0x2b
-    stbu r0, -0x1(r27)
-    b lbl_801999B4
-lbl_801999A4:
-    cmplwi r0, 0x2
-    bne lbl_801999B4
-    li r0, 0x20
-    stbu r0, -0x1(r27)
-lbl_801999B4:
-    mr r3, r27
-lbl_801999B8:
-    lmw r22, 0x8(r1)
-    lwz r0, 0x34(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// double2hex
-// ----------------------------------------------------------------------------
-asm void double2hex() {
-    nofralloc
-    stwu r1, -0x90(r1)
-    mflr r0
-    lis r5, lbl_8035FA28@ha
-    stw r0, 0x94(r1)
-    stfd f31, 0x80(r1)
-    opword 0xF3E10088
-    fmr f31, f1
-    stw r31, 0x7c(r1)
-    stw r30, 0x78(r1)
-    mr r30, r4
-    stw r29, 0x74(r1)
-    mr r29, r3
-    stw r28, 0x70(r1)
-    lwz r0, 0xc(r4)
-    lwz r5, lbl_8035FA28@l(r5)
-    cmpwi r0, 0x1fd
-    stfd f1, 0x8(r1)
-    lbz r31, 0x0(r5)
-    ble lbl_80199A20
-    li r3, 0x0
-    b lbl_80199D74
-lbl_80199A20:
-    li r28, 0x0
-    li r0, 0x20
-    stb r28, 0x10(r1)
-    addi r3, r1, 0x10
-    addi r4, r1, 0x38
-    sth r0, 0x12(r1)
-    bl fn_801972E0
-    lbz r0, 0x3d(r1)
-    cmpwi r0, 0x30
-    beq lbl_80199A5C
-    cmpwi r0, 0x49
-    beq lbl_80199A64
-    cmpwi r0, 0x4e
-    beq lbl_80199AF0
-    b lbl_80199B80
-lbl_80199A5C:
-    sth r28, 0x3a(r1)
-    b lbl_80199B80
-lbl_80199A64:
-    lbz r0, 0x38(r1)
-    extsb. r0, r0
-    beq lbl_80199AAC
-    lbz r0, 0x5(r30)
-    subi r28, r29, 0x5
-    cmplwi r0, 0x41
-    bne lbl_80199A94
-    lis r4, at_stringBase0_8033B9A0@ha
-    mr r3, r28
-    addi r4, r4, at_stringBase0_8033B9A0@l
-    bl strcpy
-    b lbl_80199AE8
-lbl_80199A94:
-    lis r4, at_stringBase0_8033B9A0@ha
-    mr r3, r28
-    addi r4, r4, at_stringBase0_8033B9A0@l
-    addi r4, r4, 0x5
-    bl strcpy
-    b lbl_80199AE8
-lbl_80199AAC:
-    lbz r0, 0x5(r30)
-    subi r28, r29, 0x4
-    cmplwi r0, 0x41
-    bne lbl_80199AD4
-    lis r4, at_stringBase0_8033B9A0@ha
-    mr r3, r28
-    addi r4, r4, at_stringBase0_8033B9A0@l
-    addi r4, r4, 0xa
-    bl strcpy
-    b lbl_80199AE8
-lbl_80199AD4:
-    lis r4, at_stringBase0_8033B9A0@ha
-    mr r3, r28
-    addi r4, r4, at_stringBase0_8033B9A0@l
-    addi r4, r4, 0xe
-    bl strcpy
-lbl_80199AE8:
-    mr r3, r28
-    b lbl_80199D74
-lbl_80199AF0:
-    lbz r0, 0x38(r1)
-    extsb. r0, r0
-    beq lbl_80199B3C
-    lbz r0, 0x5(r30)
-    subi r28, r29, 0x5
-    cmplwi r0, 0x41
-    bne lbl_80199B24
-    lis r4, at_stringBase0_8033B9A0@ha
-    mr r3, r28
-    addi r4, r4, at_stringBase0_8033B9A0@l
-    addi r4, r4, 0x12
-    bl strcpy
-    b lbl_80199B78
-lbl_80199B24:
-    lis r4, at_stringBase0_8033B9A0@ha
-    mr r3, r28
-    addi r4, r4, at_stringBase0_8033B9A0@l
-    addi r4, r4, 0x17
-    bl strcpy
-    b lbl_80199B78
-lbl_80199B3C:
-    lbz r0, 0x5(r30)
-    subi r28, r29, 0x4
-    cmplwi r0, 0x41
-    bne lbl_80199B64
-    lis r4, at_stringBase0_8033B9A0@ha
-    mr r3, r28
-    addi r4, r4, at_stringBase0_8033B9A0@l
-    addi r4, r4, 0x1c
-    bl strcpy
-    b lbl_80199B78
-lbl_80199B64:
-    lis r4, at_stringBase0_8033B9A0@ha
-    mr r3, r28
-    addi r4, r4, at_stringBase0_8033B9A0@l
-    addi r4, r4, 0x20
-    bl strcpy
-lbl_80199B78:
-    mr r3, r28
-    b lbl_80199D74
-lbl_80199B80:
-    lbz r0, 0x9(r1)
-    li r8, 0x0
-    lbz r3, 0x8(r1)
-    li r9, 0x1
-    slwi r0, r0, 17
-    li r7, 0x64
-    rlwimi r0, r3, 25, 0, 6
-    stb r9, 0x28(r1)
-    srwi r5, r0, 21
-    mr r4, r29
-    neg r0, r5
-    stb r9, 0x29(r1)
-    or r3, r0, r5
-    subi r0, r5, 0x3ff
-    stb r8, 0x2a(r1)
-    srawi r3, r3, 31
-    addi r5, r1, 0x18
-    stb r8, 0x2b(r1)
-    and r3, r0, r3
-    lwz r6, 0x28(r1)
-    stb r8, 0x2c(r1)
-    stb r7, 0x2d(r1)
-    lwz r0, 0x2c(r1)
-    stw r8, 0x30(r1)
-    stw r9, 0x34(r1)
-    stw r6, 0x18(r1)
-    stw r0, 0x1c(r1)
-    stw r8, 0x20(r1)
-    stw r9, 0x24(r1)
-    bl long2str
-    lbz r0, 0x5(r30)
-    cmplwi r0, 0x61
-    bne lbl_80199C10
-    li r0, 0x70
-    stbu r0, -0x1(r3)
-    b lbl_80199C18
-lbl_80199C10:
-    li r0, 0x50
-    stbu r0, -0x1(r3)
-lbl_80199C18:
-    lwz r0, 0xc(r30)
-    addi r8, r1, 0x8
-    slwi r4, r0, 2
-    addi r9, r4, 0xb
-    mtctr r0
-    cmpwi r0, 0x1
-    blt lbl_80199CCC
-lbl_80199C34:
-    cmpwi r9, 0x40
-    bge lbl_80199CBC
-    srawi r4, r9, 3
-    subi r0, r9, 0x4
-    add r7, r8, r4
-    clrlwi r6, r9, 29
-    clrrwi r4, r9, 3
-    clrrwi r0, r0, 3
-    lbz r5, 0x0(r7)
-    subfic r6, r6, 0x7
-    cmpw r4, r0
-    sraw r0, r5, r6
-    clrlwi r4, r0, 24
-    beq lbl_80199C80
-    lbz r0, -0x1(r7)
-    slwi r0, r0, 8
-    sraw r0, r0, r6
-    or r0, r4, r0
-    clrlwi r4, r0, 24
-lbl_80199C80:
-    clrlwi r4, r4, 28
-    cmplwi r4, 0xa
-    bge lbl_80199C98
-    addi r0, r4, 0x30
-    clrlwi r4, r0, 24
-    b lbl_80199CC0
-lbl_80199C98:
-    lbz r0, 0x5(r30)
-    cmplwi r0, 0x61
-    bne lbl_80199CB0
-    addi r0, r4, 0x57
-    clrlwi r4, r0, 24
-    b lbl_80199CC0
-lbl_80199CB0:
-    addi r0, r4, 0x37
-    clrlwi r4, r0, 24
-    b lbl_80199CC0
-lbl_80199CBC:
-    li r4, 0x30
-lbl_80199CC0:
-    stbu r4, -0x1(r3)
-    subi r9, r9, 0x4
-    bdnz lbl_80199C34
-lbl_80199CCC:
-    lwz r0, 0xc(r30)
-    cmpwi r0, 0x0
-    bne lbl_80199CE4
-    lbz r0, 0x3(r30)
-    cmpwi r0, 0x0
-    beq lbl_80199CE8
-lbl_80199CE4:
-    stbu r31, -0x1(r3)
-lbl_80199CE8:
-    fabs f1, f31
-    lfd f0, lbl_804A11A8
-    fcmpu cr0, f0, f1
-    beq lbl_80199D04
-    li r0, 0x31
-    stbu r0, -0x1(r3)
-    b lbl_80199D0C
-lbl_80199D04:
-    li r0, 0x30
-    stbu r0, -0x1(r3)
-lbl_80199D0C:
-    lbz r0, 0x5(r30)
-    cmplwi r0, 0x61
-    bne lbl_80199D24
-    li r0, 0x78
-    stbu r0, -0x1(r3)
-    b lbl_80199D2C
-lbl_80199D24:
-    li r0, 0x58
-    stbu r0, -0x1(r3)
-lbl_80199D2C:
-    li r0, 0x30
-    stbu r0, -0x1(r3)
-    lbz r0, 0x38(r1)
-    extsb. r0, r0
-    beq lbl_80199D4C
-    li r0, 0x2d
-    stbu r0, -0x1(r3)
-    b lbl_80199D74
-lbl_80199D4C:
-    lbz r0, 0x1(r30)
-    cmplwi r0, 0x1
-    bne lbl_80199D64
-    li r0, 0x2b
-    stbu r0, -0x1(r3)
-    b lbl_80199D74
-lbl_80199D64:
-    cmplwi r0, 0x2
-    bne lbl_80199D74
-    li r0, 0x20
-    stbu r0, -0x1(r3)
-lbl_80199D74:
-    lwz r0, 0x94(r1)
-    opword 0xE3E10088
-    lfd f31, 0x80(r1)
-    lwz r31, 0x7c(r1)
-    lwz r30, 0x78(r1)
-    lwz r29, 0x74(r1)
-    lwz r28, 0x70(r1)
-    mtlr r0
-    addi r1, r1, 0x90
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// round_decimal
-// ----------------------------------------------------------------------------
-asm void round_decimal() {
-    nofralloc
-    cmpwi r4, 0x0
-    bge lbl_80199DC0
-lbl_80199DA4:
-    li r5, 0x0
-    li r4, 0x1
-    li r0, 0x30
-    sth r5, 0x2(r3)
-    stb r4, 0x4(r3)
-    stb r0, 0x5(r3)
-    blr
-lbl_80199DC0:
-    lbz r7, 0x4(r3)
-    cmpw r4, r7
-    bgelr
-    add r6, r3, r4
-    lbz r5, 0x5(r6)
-    addi r8, r6, 0x5
-    subi r0, r5, 0x30
-    extsb r6, r0
-    cmpwi r6, 0x5
-    bne lbl_80199E24
-    add r5, r3, r7
-    addi r5, r5, 0x5
-lbl_80199DF0:
-    subi r5, r5, 0x1
-    cmplw r5, r8
-    ble lbl_80199E08
-    lbz r0, 0x0(r5)
-    cmpwi r0, 0x30
-    beq lbl_80199DF0
-lbl_80199E08:
-    cmplw r5, r8
-    bne lbl_80199E1C
-    lbz r0, -0x1(r8)
-    clrlwi r5, r0, 31
-    b lbl_80199E38
-lbl_80199E1C:
-    li r5, 0x1
-    b lbl_80199E38
-lbl_80199E24:
-    xori r0, r6, 0x5
-    srawi r5, r0, 1
-    and r0, r0, r6
-    subf r0, r0, r5
-    srwi r5, r0, 31
-lbl_80199E38:
-    mtctr r4
-    cmpwi r4, 0x0
-    beq lbl_80199E8C
-lbl_80199E44:
-    lbzu r0, -0x1(r8)
-    add r5, r0, r5
-    subi r0, r5, 0x30
-    extsb r6, r0
-    xori r0, r6, 0x9
-    srawi r5, r0, 1
-    and r0, r0, r6
-    subf r0, r0, r5
-    srwi. r5, r0, 31
-    bne lbl_80199E74
-    cmpwi r6, 0x0
-    bne lbl_80199E7C
-lbl_80199E74:
-    subi r4, r4, 0x1
-    b lbl_80199E88
-lbl_80199E7C:
-    addi r0, r6, 0x30
-    stb r0, 0x0(r8)
-    b lbl_80199E8C
-lbl_80199E88:
-    bdnz lbl_80199E44
-lbl_80199E8C:
-    cmpwi r5, 0x0
-    beq lbl_80199EB4
-    lha r5, 0x2(r3)
-    li r4, 0x1
-    li r0, 0x31
-    stb r4, 0x4(r3)
-    addi r4, r5, 0x1
-    sth r4, 0x2(r3)
-    stb r0, 0x5(r3)
-    blr
-lbl_80199EB4:
-    cmpwi r4, 0x0
-    beq lbl_80199DA4
-    stb r4, 0x4(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// float2str
-// ----------------------------------------------------------------------------
-asm void float2str() {
-    nofralloc
-    stwu r1, -0x50(r1)
-    mflr r0
-    lis r5, lbl_8035FA28@ha
-    stw r0, 0x54(r1)
-    stfd f31, 0x48(r1)
-    fmr f31, f1
-    stw r31, 0x44(r1)
-    stw r30, 0x40(r1)
-    stw r29, 0x3c(r1)
-    mr r29, r4
-    stw r28, 0x38(r1)
-    mr r28, r3
-    lwz r0, 0xc(r4)
-    lwz r5, lbl_8035FA28@l(r5)
-    cmpwi r0, 0x1fd
-    lbz r30, 0x0(r5)
-    ble lbl_80199F10
-    li r3, 0x0
-    b lbl_8019A638
-lbl_80199F10:
-    li r3, 0x0
-    li r0, 0x20
-    stb r3, 0x8(r1)
-    addi r3, r1, 0x8
-    addi r4, r1, 0xc
-    sth r0, 0xa(r1)
-    bl fn_801972E0
-    lbz r0, 0x10(r1)
-    addi r5, r1, 0x11
-    add r5, r5, r0
-    b lbl_80199F54
-lbl_80199F3C:
-    lbz r4, 0x10(r1)
-    lha r3, 0xe(r1)
-    subi r0, r4, 0x1
-    stb r0, 0x10(r1)
-    addi r0, r3, 0x1
-    sth r0, 0xe(r1)
-lbl_80199F54:
-    lbz r0, 0x10(r1)
-    cmplwi r0, 0x1
-    ble lbl_80199F6C
-    lbzu r0, -0x1(r5)
-    cmpwi r0, 0x30
-    beq lbl_80199F3C
-lbl_80199F6C:
-    lbz r0, 0x11(r1)
-    cmpwi r0, 0x30
-    beq lbl_80199F8C
-    cmpwi r0, 0x49
-    beq lbl_80199F98
-    cmpwi r0, 0x4e
-    beq lbl_8019A09C
-    b lbl_8019A1A4
-lbl_80199F8C:
-    li r0, 0x0
-    sth r0, 0xe(r1)
-    b lbl_8019A1A4
-lbl_80199F98:
-    lfd f0, lbl_804A11A8
-    fcmpo cr0, f31, f0
-    bge lbl_8019A01C
-    lbz r0, 0x5(r29)
-    subi r31, r28, 0x5
-    li r3, 0x1
-    cmplwi r0, 0xff
-    bgt lbl_80199FBC
-    li r3, 0x0
-lbl_80199FBC:
-    cmpwi r3, 0x0
-    beq lbl_80199FCC
-    li r0, 0x0
-    b lbl_80199FE8
-lbl_80199FCC:
-    lis r3, lbl_8035FBD8@ha
-    slwi r0, r0, 1
-    addi r3, r3, lbl_8035FBD8@l
-    lwz r3, 0x38(r3)
-    lwz r3, 0x8(r3)
-    lhzx r0, r3, r0
-    rlwinm r0, r0, 0, 22, 22
-lbl_80199FE8:
-    cmpwi r0, 0x0
-    beq lbl_8019A004
-    lis r4, at_stringBase0_8033B9A0@ha
-    mr r3, r31
-    addi r4, r4, at_stringBase0_8033B9A0@l
-    bl strcpy
-    b lbl_8019A094
-lbl_8019A004:
-    lis r4, at_stringBase0_8033B9A0@ha
-    mr r3, r31
-    addi r4, r4, at_stringBase0_8033B9A0@l
-    addi r4, r4, 0x5
-    bl strcpy
-    b lbl_8019A094
-lbl_8019A01C:
-    lbz r0, 0x5(r29)
-    subi r31, r28, 0x4
-    li r3, 0x1
-    cmplwi r0, 0xff
-    bgt lbl_8019A034
-    li r3, 0x0
-lbl_8019A034:
-    cmpwi r3, 0x0
-    beq lbl_8019A044
-    li r0, 0x0
-    b lbl_8019A060
-lbl_8019A044:
-    lis r3, lbl_8035FBD8@ha
-    slwi r0, r0, 1
-    addi r3, r3, lbl_8035FBD8@l
-    lwz r3, 0x38(r3)
-    lwz r3, 0x8(r3)
-    lhzx r0, r3, r0
-    rlwinm r0, r0, 0, 22, 22
-lbl_8019A060:
-    cmpwi r0, 0x0
-    beq lbl_8019A080
-    lis r4, at_stringBase0_8033B9A0@ha
-    mr r3, r31
-    addi r4, r4, at_stringBase0_8033B9A0@l
-    addi r4, r4, 0xa
-    bl strcpy
-    b lbl_8019A094
-lbl_8019A080:
-    lis r4, at_stringBase0_8033B9A0@ha
-    mr r3, r31
-    addi r4, r4, at_stringBase0_8033B9A0@l
-    addi r4, r4, 0xe
-    bl strcpy
-lbl_8019A094:
-    mr r3, r31
-    b lbl_8019A638
-lbl_8019A09C:
-    lbz r0, 0xc(r1)
-    extsb. r0, r0
-    beq lbl_8019A124
-    lbz r0, 0x5(r29)
-    subi r31, r28, 0x5
-    li r3, 0x1
-    cmplwi r0, 0xff
-    bgt lbl_8019A0C0
-    li r3, 0x0
-lbl_8019A0C0:
-    cmpwi r3, 0x0
-    beq lbl_8019A0D0
-    li r0, 0x0
-    b lbl_8019A0EC
-lbl_8019A0D0:
-    lis r3, lbl_8035FBD8@ha
-    slwi r0, r0, 1
-    addi r3, r3, lbl_8035FBD8@l
-    lwz r3, 0x38(r3)
-    lwz r3, 0x8(r3)
-    lhzx r0, r3, r0
-    rlwinm r0, r0, 0, 22, 22
-lbl_8019A0EC:
-    cmpwi r0, 0x0
-    beq lbl_8019A10C
-    lis r4, at_stringBase0_8033B9A0@ha
-    mr r3, r31
-    addi r4, r4, at_stringBase0_8033B9A0@l
-    addi r4, r4, 0x12
-    bl strcpy
-    b lbl_8019A19C
-lbl_8019A10C:
-    lis r4, at_stringBase0_8033B9A0@ha
-    mr r3, r31
-    addi r4, r4, at_stringBase0_8033B9A0@l
-    addi r4, r4, 0x17
-    bl strcpy
-    b lbl_8019A19C
-lbl_8019A124:
-    lbz r0, 0x5(r29)
-    subi r31, r28, 0x4
-    li r3, 0x1
-    cmplwi r0, 0xff
-    bgt lbl_8019A13C
-    li r3, 0x0
-lbl_8019A13C:
-    cmpwi r3, 0x0
-    beq lbl_8019A14C
-    li r0, 0x0
-    b lbl_8019A168
-lbl_8019A14C:
-    lis r3, lbl_8035FBD8@ha
-    slwi r0, r0, 1
-    addi r3, r3, lbl_8035FBD8@l
-    lwz r3, 0x38(r3)
-    lwz r3, 0x8(r3)
-    lhzx r0, r3, r0
-    rlwinm r0, r0, 0, 22, 22
-lbl_8019A168:
-    cmpwi r0, 0x0
-    beq lbl_8019A188
-    lis r4, at_stringBase0_8033B9A0@ha
-    mr r3, r31
-    addi r4, r4, at_stringBase0_8033B9A0@l
-    addi r4, r4, 0x1c
-    bl strcpy
-    b lbl_8019A19C
-lbl_8019A188:
-    lis r4, at_stringBase0_8033B9A0@ha
-    mr r3, r31
-    addi r4, r4, at_stringBase0_8033B9A0@l
-    addi r4, r4, 0x20
-    bl strcpy
-lbl_8019A19C:
-    mr r3, r31
-    b lbl_8019A638
-lbl_8019A1A4:
-    lha r4, 0xe(r1)
-    li r0, 0x0
-    lbz r3, 0x10(r1)
-    subi r31, r28, 0x1
-    add r3, r3, r4
-    subi r3, r3, 0x1
-    sth r3, 0xe(r1)
-    stb r0, -0x1(r28)
-    lbz r0, 0x5(r29)
-    cmpwi r0, 0x67
-    beq lbl_8019A1FC
-    cmpwi r0, 0x47
-    beq lbl_8019A1FC
-    cmpwi r0, 0x65
-    beq lbl_8019A2B4
-    cmpwi r0, 0x45
-    beq lbl_8019A2B4
-    cmpwi r0, 0x66
-    beq lbl_8019A418
-    cmpwi r0, 0x46
-    beq lbl_8019A418
-    b lbl_8019A634
-lbl_8019A1FC:
-    lwz r4, 0xc(r29)
-    lbz r0, 0x10(r1)
-    cmpw r0, r4
-    ble lbl_8019A214
-    addi r3, r1, 0xc
-    bl round_decimal
-lbl_8019A214:
-    lha r4, 0xe(r1)
-    cmpwi r4, -0x4
-    blt lbl_8019A22C
-    lwz r3, 0xc(r29)
-    cmpw r4, r3
-    blt lbl_8019A278
-lbl_8019A22C:
-    lbz r0, 0x3(r29)
-    cmpwi r0, 0x0
-    beq lbl_8019A248
-    lwz r3, 0xc(r29)
-    subi r0, r3, 0x1
-    stw r0, 0xc(r29)
-    b lbl_8019A254
-lbl_8019A248:
-    lbz r3, 0x10(r1)
-    subi r0, r3, 0x1
-    stw r0, 0xc(r29)
-lbl_8019A254:
-    lbz r0, 0x5(r29)
-    cmplwi r0, 0x67
-    bne lbl_8019A26C
-    li r0, 0x65
-    stb r0, 0x5(r29)
-    b lbl_8019A2B4
-lbl_8019A26C:
-    li r0, 0x45
-    stb r0, 0x5(r29)
-    b lbl_8019A2B4
-lbl_8019A278:
-    lbz r0, 0x3(r29)
-    cmpwi r0, 0x0
-    beq lbl_8019A294
-    addi r0, r4, 0x1
-    subf r0, r0, r3
-    stw r0, 0xc(r29)
-    b lbl_8019A418
-lbl_8019A294:
-    lbz r0, 0x10(r1)
-    addi r3, r4, 0x1
-    subf. r0, r3, r0
-    stw r0, 0xc(r29)
-    bge lbl_8019A418
-    li r0, 0x0
-    stw r0, 0xc(r29)
-    b lbl_8019A418
-lbl_8019A2B4:
-    lwz r3, 0xc(r29)
-    lbz r0, 0x10(r1)
-    addi r4, r3, 0x1
-    cmpw r0, r4
-    ble lbl_8019A2D0
-    addi r3, r1, 0xc
-    bl round_decimal
-lbl_8019A2D0:
-    lha r6, 0xe(r1)
-    li r8, 0x2b
-    cmpwi r6, 0x0
-    bge lbl_8019A2E8
-    neg r6, r6
-    li r8, 0x2d
-lbl_8019A2E8:
-    lis r3, 0x6666
-    li r7, 0x0
-    addi r5, r3, 0x6667
-    b lbl_8019A32C
-lbl_8019A2F8:
-    mulhw r0, r5, r6
-    addi r7, r7, 0x1
-    srawi r3, r0, 2
-    srwi r4, r3, 31
-    srawi r0, r0, 2
-    add r3, r3, r4
-    mulli r4, r3, 0xa
-    srwi r3, r0, 31
-    subf r4, r4, r6
-    add r6, r0, r3
-    addi r0, r4, 0x30
-    stb r0, -0x1(r31)
-    subi r31, r31, 0x1
-lbl_8019A32C:
-    cmpwi r6, 0x0
-    bne lbl_8019A2F8
-    cmpwi r7, 0x2
-    blt lbl_8019A2F8
-    stb r8, -0x1(r31)
-    lbz r0, 0x5(r29)
-    stbu r0, -0x2(r31)
-    lwz r3, 0xc(r29)
-    subf r0, r31, r28
-    add r0, r3, r0
-    cmpwi r0, 0x1fd
-    ble lbl_8019A364
-    li r3, 0x0
-    b lbl_8019A638
-lbl_8019A364:
-    lbz r4, 0x10(r1)
-    addi r0, r3, 0x1
-    cmpw r4, r0
-    bge lbl_8019A390
-    addi r3, r3, 0x2
-    li r0, 0x30
-    subf r3, r4, r3
-    b lbl_8019A388
-lbl_8019A384:
-    stbu r0, -0x1(r31)
-lbl_8019A388:
-    subic. r3, r3, 0x1
-    bne lbl_8019A384
-lbl_8019A390:
-    lbz r3, 0x10(r1)
-    addi r4, r1, 0x11
-    add r4, r4, r3
-    b lbl_8019A3A8
-lbl_8019A3A0:
-    lbzu r0, -0x1(r4)
-    stbu r0, -0x1(r31)
-lbl_8019A3A8:
-    subic. r3, r3, 0x1
-    bne lbl_8019A3A0
-    lwz r0, 0xc(r29)
-    cmpwi r0, 0x0
-    bne lbl_8019A3C8
-    lbz r0, 0x3(r29)
-    cmpwi r0, 0x0
-    beq lbl_8019A3CC
-lbl_8019A3C8:
-    stbu r30, -0x1(r31)
-lbl_8019A3CC:
-    lbz r0, 0x11(r1)
-    stbu r0, -0x1(r31)
-    lbz r0, 0xc(r1)
-    extsb. r0, r0
-    beq lbl_8019A3EC
-    li r0, 0x2d
-    stbu r0, -0x1(r31)
-    b lbl_8019A634
-lbl_8019A3EC:
-    lbz r0, 0x1(r29)
-    cmplwi r0, 0x1
-    bne lbl_8019A404
-    li r0, 0x2b
-    stbu r0, -0x1(r31)
-    b lbl_8019A634
-lbl_8019A404:
-    cmplwi r0, 0x2
-    bne lbl_8019A634
-    li r0, 0x20
-    stbu r0, -0x1(r31)
-    b lbl_8019A634
-lbl_8019A418:
-    lbz r4, 0x10(r1)
-    lha r5, 0xe(r1)
-    subf r3, r5, r4
-    subic. r8, r3, 0x1
-    bge lbl_8019A430
-    li r8, 0x0
-lbl_8019A430:
-    lwz r0, 0xc(r29)
-    cmpw r8, r0
-    ble lbl_8019A464
-    subf r0, r0, r8
-    addi r3, r1, 0xc
-    subf r4, r0, r4
-    bl round_decimal
-    lbz r4, 0x10(r1)
-    lha r5, 0xe(r1)
-    subf r3, r5, r4
-    subic. r8, r3, 0x1
-    bge lbl_8019A464
-    li r8, 0x0
-lbl_8019A464:
-    addic. r7, r5, 0x1
-    bge lbl_8019A470
-    li r7, 0x0
-lbl_8019A470:
-    add r0, r7, r8
-    cmpwi r0, 0x1fd
-    ble lbl_8019A484
-    li r3, 0x0
-    b lbl_8019A638
-lbl_8019A484:
-    addi r6, r1, 0x11
-    li r5, 0x0
-    add r6, r6, r4
-    li r3, 0x30
-    b lbl_8019A4A0
-lbl_8019A498:
-    stbu r3, -0x1(r31)
-    addi r5, r5, 0x1
-lbl_8019A4A0:
-    lwz r0, 0xc(r29)
-    subf r0, r8, r0
-    cmpw r5, r0
-    blt lbl_8019A498
-    li r3, 0x0
-    b lbl_8019A4C4
-lbl_8019A4B8:
-    lbzu r0, -0x1(r6)
-    addi r3, r3, 0x1
-    stbu r0, -0x1(r31)
-lbl_8019A4C4:
-    cmpw r3, r8
-    bge lbl_8019A4D8
-    lbz r0, 0x10(r1)
-    cmpw r3, r0
-    blt lbl_8019A4B8
-lbl_8019A4D8:
-    cmpw r3, r8
-    subf r3, r3, r8
-    li r4, 0x30
-    bge lbl_8019A52C
-    srwi. r0, r3, 3
-    mtctr r0
-    beq lbl_8019A520
-lbl_8019A4F4:
-    stb r4, -0x1(r31)
-    stb r4, -0x2(r31)
-    stb r4, -0x3(r31)
-    stb r4, -0x4(r31)
-    stb r4, -0x5(r31)
-    stb r4, -0x6(r31)
-    stb r4, -0x7(r31)
-    stbu r4, -0x8(r31)
-    bdnz lbl_8019A4F4
-    andi. r3, r3, 0x7
-    beq lbl_8019A52C
-lbl_8019A520:
-    mtctr r3
-lbl_8019A524:
-    stbu r4, -0x1(r31)
-    bdnz lbl_8019A524
-lbl_8019A52C:
-    lwz r0, 0xc(r29)
-    cmpwi r0, 0x0
-    bne lbl_8019A544
-    lbz r0, 0x3(r29)
-    cmpwi r0, 0x0
-    beq lbl_8019A548
-lbl_8019A544:
-    stbu r30, -0x1(r31)
-lbl_8019A548:
-    cmpwi r7, 0x0
-    beq lbl_8019A5EC
-    li r4, 0x0
-    li r3, 0x30
-    b lbl_8019A564
-lbl_8019A55C:
-    stbu r3, -0x1(r31)
-    addi r4, r4, 0x1
-lbl_8019A564:
-    lbz r0, 0x10(r1)
-    subf r0, r0, r7
-    cmpw r4, r0
-    blt lbl_8019A55C
-    cmpw r4, r7
-    subf r3, r4, r7
-    bge lbl_8019A5F4
-    srwi. r0, r3, 3
-    mtctr r0
-    beq lbl_8019A5D8
-lbl_8019A58C:
-    lbz r0, -0x1(r6)
-    stb r0, -0x1(r31)
-    lbz r0, -0x2(r6)
-    stb r0, -0x2(r31)
-    lbz r0, -0x3(r6)
-    stb r0, -0x3(r31)
-    lbz r0, -0x4(r6)
-    stb r0, -0x4(r31)
-    lbz r0, -0x5(r6)
-    stb r0, -0x5(r31)
-    lbz r0, -0x6(r6)
-    stb r0, -0x6(r31)
-    lbz r0, -0x7(r6)
-    stb r0, -0x7(r31)
-    lbzu r0, -0x8(r6)
-    stbu r0, -0x8(r31)
-    bdnz lbl_8019A58C
-    andi. r3, r3, 0x7
-    beq lbl_8019A5F4
-lbl_8019A5D8:
-    mtctr r3
-lbl_8019A5DC:
-    lbzu r0, -0x1(r6)
-    stbu r0, -0x1(r31)
-    bdnz lbl_8019A5DC
-    b lbl_8019A5F4
-lbl_8019A5EC:
-    li r0, 0x30
-    stbu r0, -0x1(r31)
-lbl_8019A5F4:
-    lbz r0, 0xc(r1)
-    extsb. r0, r0
-    beq lbl_8019A60C
-    li r0, 0x2d
-    stbu r0, -0x1(r31)
-    b lbl_8019A634
-lbl_8019A60C:
-    lbz r0, 0x1(r29)
-    cmplwi r0, 0x1
-    bne lbl_8019A624
-    li r0, 0x2b
-    stbu r0, -0x1(r31)
-    b lbl_8019A634
-lbl_8019A624:
-    cmplwi r0, 0x2
-    bne lbl_8019A634
-    li r0, 0x20
-    stbu r0, -0x1(r31)
-lbl_8019A634:
-    mr r3, r31
-lbl_8019A638:
-    lwz r0, 0x54(r1)
-    lfd f31, 0x48(r1)
-    lwz r31, 0x44(r1)
-    lwz r30, 0x40(r1)
-    lwz r29, 0x3c(r1)
-    lwz r28, 0x38(r1)
-    mtlr r0
-    addi r1, r1, 0x50
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// __pformatter_8019A65C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __pformatter_8019A65C
 asm void __pformatter_8019A65C() {
     nofralloc
     stwu r1, -0x2d0(r1)
@@ -2424,75 +2497,7 @@ lbl_8019AEF4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __FileWrite
-// ----------------------------------------------------------------------------
-asm void __FileWrite() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r5
-    stw r30, 0x8(r1)
-    mr r30, r3
-    mr r3, r4
-    li r4, 0x1
-    mr r6, r30
-    bl __fwrite
-    cmplw r31, r3
-    bne lbl_8019AF40
-    b lbl_8019AF44
-lbl_8019AF40:
-    li r30, 0x0
-lbl_8019AF44:
-    mr r3, r30
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// __StringWrite
-// ----------------------------------------------------------------------------
-asm void __StringWrite() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    lwz r6, 0x8(r3)
-    lwz r7, 0x4(r3)
-    add r0, r6, r5
-    cmplw r0, r7
-    subf r31, r6, r7
-    bgt lbl_8019AF94
-    mr r31, r5
-lbl_8019AF94:
-    lwz r0, 0x0(r3)
-    mr r5, r31
-    add r3, r0, r6
-    bl memcpy
-    lwz r0, 0x8(r30)
-    li r3, 0x1
-    add r0, r0, r31
-    stw r0, 0x8(r30)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8019AFCC
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8019AFCC
 asm void fn_8019AFCC() {
     nofralloc
     stwu r1, -0x80(r1)
@@ -2551,268 +2556,7 @@ lbl_8019B080:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// vprintf
-// ----------------------------------------------------------------------------
-asm void vprintf() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    lis r31, __files@ha
-    addi r31, r31, __files@l
-    stw r30, 0x18(r1)
-    mr r30, r4
-    li r4, -0x1
-    stw r29, 0x14(r1)
-    mr r29, r3
-    addi r3, r31, 0x50
-    bl fwide
-    cmpwi r3, 0x0
-    blt lbl_8019B0DC
-    li r3, -0x1
-    b lbl_8019B0F8
-lbl_8019B0DC:
-    lis r3, __FileWrite@ha
-    mr r5, r29
-    mr r6, r30
-    addi r4, r31, 0x50
-    addi r3, r3, __FileWrite@l
-    li r7, 0x0
-    bl __pformatter_8019A65C
-lbl_8019B0F8:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// vsnprintf
-// ----------------------------------------------------------------------------
-asm void vsnprintf() {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    lis r7, __StringWrite@ha
-    stw r0, 0x34(r1)
-    stw r31, 0x2c(r1)
-    li r31, 0x0
-    stw r30, 0x28(r1)
-    mr r30, r4
-    stw r29, 0x24(r1)
-    mr r29, r3
-    stw r3, 0x8(r1)
-    addi r3, r7, __StringWrite@l
-    li r7, 0x0
-    stw r4, 0xc(r1)
-    addi r4, r1, 0x8
-    stw r31, 0x10(r1)
-    bl __pformatter_8019A65C
-    cmpwi r29, 0x0
-    beq lbl_8019B180
-    cmplw r3, r30
-    bge lbl_8019B170
-    stbx r31, r29, r3
-    b lbl_8019B180
-lbl_8019B170:
-    cmpwi r30, 0x0
-    beq lbl_8019B180
-    add r4, r29, r30
-    stb r31, -0x1(r4)
-lbl_8019B180:
-    lwz r0, 0x34(r1)
-    lwz r31, 0x2c(r1)
-    lwz r30, 0x28(r1)
-    lwz r29, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// vsprintf
-// ----------------------------------------------------------------------------
-asm void vsprintf() {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    mr r6, r5
-    mr r5, r4
-    stw r0, 0x34(r1)
-    lis r7, __StringWrite@ha
-    addi r4, r1, 0x8
-    stw r31, 0x2c(r1)
-    li r31, 0x0
-    stw r30, 0x28(r1)
-    li r30, -0x1
-    stw r29, 0x24(r1)
-    mr r29, r3
-    stw r3, 0x8(r1)
-    addi r3, r7, __StringWrite@l
-    li r7, 0x0
-    stw r30, 0xc(r1)
-    stw r31, 0x10(r1)
-    bl __pformatter_8019A65C
-    cmpwi r29, 0x0
-    beq lbl_8019B204
-    cmplw r3, r30
-    bge lbl_8019B200
-    stbx r31, r29, r3
-    b lbl_8019B204
-lbl_8019B200:
-    stb r31, -0x2(r29)
-lbl_8019B204:
-    lwz r0, 0x34(r1)
-    lwz r31, 0x2c(r1)
-    lwz r30, 0x28(r1)
-    lwz r29, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// snprintf
-// ----------------------------------------------------------------------------
-asm void snprintf() {
-    nofralloc
-    stwu r1, -0x90(r1)
-    mflr r0
-    stw r0, 0x94(r1)
-    stw r31, 0x8c(r1)
-    stw r30, 0x88(r1)
-    stw r29, 0x84(r1)
-    mr r29, r4
-    stw r28, 0x80(r1)
-    mr r28, r3
-    bne cr1, lbl_8019B268
-    stfd f1, 0x28(r1)
-    stfd f2, 0x30(r1)
-    stfd f3, 0x38(r1)
-    stfd f4, 0x40(r1)
-    stfd f5, 0x48(r1)
-    stfd f6, 0x50(r1)
-    stfd f7, 0x58(r1)
-    stfd f8, 0x60(r1)
-lbl_8019B268:
-    addi r12, r1, 0x98
-    addi r0, r1, 0x8
-    lis r30, 0x300
-    stw r7, 0x18(r1)
-    li r31, 0x0
-    addi r7, r1, 0x74
-    stw r6, 0x14(r1)
-    mr r6, r7
-    lis r11, __StringWrite@ha
-    li r7, 0x0
-    stw r5, 0x10(r1)
-    stw r3, 0x8(r1)
-    stw r3, 0x68(r1)
-    addi r3, r11, __StringWrite@l
-    stw r4, 0xc(r1)
-    stw r4, 0x6c(r1)
-    addi r4, r1, 0x68
-    stw r8, 0x1c(r1)
-    stw r9, 0x20(r1)
-    stw r10, 0x24(r1)
-    stw r30, 0x74(r1)
-    stw r12, 0x78(r1)
-    stw r0, 0x7c(r1)
-    stw r31, 0x70(r1)
-    bl __pformatter_8019A65C
-    cmpwi r28, 0x0
-    beq lbl_8019B2F4
-    cmplw r3, r29
-    bge lbl_8019B2E4
-    stbx r31, r28, r3
-    b lbl_8019B2F4
-lbl_8019B2E4:
-    cmpwi r29, 0x0
-    beq lbl_8019B2F4
-    add r4, r28, r29
-    stb r31, -0x1(r4)
-lbl_8019B2F4:
-    lwz r0, 0x94(r1)
-    lwz r31, 0x8c(r1)
-    lwz r30, 0x88(r1)
-    lwz r29, 0x84(r1)
-    lwz r28, 0x80(r1)
-    mtlr r0
-    addi r1, r1, 0x90
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// sprintf
-// ----------------------------------------------------------------------------
-asm void sprintf() {
-    nofralloc
-    stwu r1, -0xa0(r1)
-    mflr r0
-    stw r0, 0xa4(r1)
-    stmw r27, 0x8c(r1)
-    mr r27, r3
-    bne cr1, lbl_8019B34C
-    stfd f1, 0x28(r1)
-    stfd f2, 0x30(r1)
-    stfd f3, 0x38(r1)
-    stfd f4, 0x40(r1)
-    stfd f5, 0x48(r1)
-    stfd f6, 0x50(r1)
-    stfd f7, 0x58(r1)
-    stfd f8, 0x60(r1)
-lbl_8019B34C:
-    addi r12, r1, 0xa8
-    addi r0, r1, 0x8
-    lis r29, 0x200
-    stw r5, 0x10(r1)
-    li r30, -0x1
-    li r31, 0x0
-    stw r7, 0x18(r1)
-    addi r28, r1, 0x74
-    lis r11, __StringWrite@ha
-    mr r5, r4
-    stw r4, 0xc(r1)
-    addi r4, r1, 0x68
-    li r7, 0x0
-    stw r6, 0x14(r1)
-    mr r6, r28
-    stw r3, 0x8(r1)
-    stw r3, 0x68(r1)
-    addi r3, r11, __StringWrite@l
-    stw r8, 0x1c(r1)
-    stw r9, 0x20(r1)
-    stw r10, 0x24(r1)
-    stw r29, 0x74(r1)
-    stw r12, 0x78(r1)
-    stw r0, 0x7c(r1)
-    stw r30, 0x6c(r1)
-    stw r31, 0x70(r1)
-    bl __pformatter_8019A65C
-    cmpwi r27, 0x0
-    beq lbl_8019B3D4
-    cmplw r3, r30
-    bge lbl_8019B3D0
-    stbx r31, r27, r3
-    b lbl_8019B3D4
-lbl_8019B3D0:
-    stb r31, -0x2(r27)
-lbl_8019B3D4:
-    lmw r27, 0x8c(r1)
-    lwz r0, 0xa4(r1)
-    mtlr r0
-    addi r1, r1, 0xa0
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8019B3E8
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8019B3E8
 asm void fn_8019B3E8() {
     nofralloc
     stwu r1, -0x40(r1)
@@ -2920,10 +2664,8 @@ lbl_8019B544:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// rand
-// ----------------------------------------------------------------------------
-asm void rand() {
+// asm_to_cpp: rand
+asm int rand() {
     nofralloc
     lis r3, 0x41c6
     lwz r4, lbl_8049C408
@@ -2935,12 +2677,9 @@ asm void rand() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8019B578
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8019B578
 asm void fn_8019B578() {
     nofralloc
     stw r3, lbl_8049C408
     blr
 }
-

@@ -13,10 +13,12 @@ import os, re, subprocess, sys, tempfile
 
 
 def strip_def(text, name):
-    """Quita la definicion C de `name` (firma + cuerpo entre llaves balanceadas)."""
+    """Quita la definicion C de `name` (firma + cuerpo entre llaves balanceadas).
+    Devuelve (texto, firma); firma None si no habia definicion."""
     m = re.search(r'^[^\n;#]*\b' + re.escape(name) + r'\s*\([^;{]*\)\s*\{', text, re.M)
     if not m:
-        return text
+        return text, None
+    sig = text[m.start():m.end() - 1].strip()
     depth = 0
     for j in range(m.end() - 1, len(text)):
         if text[j] == '{':
@@ -24,8 +26,21 @@ def strip_def(text, name):
         elif text[j] == '}':
             depth -= 1
             if depth == 0:
-                return text[:m.start()] + f'// {name}: definicion C reemplazada por asm (ver abajo)\n' + text[j + 1:]
-    return text
+                return text[:m.start()] + f'// {name}: definicion C reemplazada por asm (ver abajo)\n' + text[j + 1:], sig
+    return text, None
+
+
+def header_sig(name):
+    """Prototipo de `name` en los headers de libs/ (sin el ';'), o None."""
+    pat = re.compile(r'^[ \t]*(?:extern[ \t]+)?([\w \t*]+?[ \t*])' + re.escape(name)
+                     + r'[ \t]*\(([^;{]*)\)[ \t]*;', re.M)
+    for d, _, fs in os.walk('libs'):
+        for f in fs:
+            if f.endswith(('.h', '.hpp')):
+                m = pat.search(open(os.path.join(d, f), errors='replace').read())
+                if m:
+                    return f'{m.group(1).strip()} {name}({m.group(2).strip()})'
+    return None
 
 
 def asm_blocks(split):
@@ -41,16 +56,18 @@ def asm_blocks(split):
     return decls, blocks
 
 
-def render(text, names, decls, blocks, is_c, skip, force):
+def render(text, names, decls, blocks, is_c, skip, force, sigs):
     body = []
     for n in names:
         b = blocks[n]
+        if n in sigs:  # firma real para no chocar con el prototipo
+            b = b.replace(f'asm void {n}() {{', f'asm {sigs[n]} {{', 1)
         body.append(f'// asm_to_cpp: {n}\n' + (b.replace('extern "C" ', '') if is_c else b))
     used = '\n'.join(body)
     ext = []
     for d in decls:
         sym = re.search(r'(\w+)(?:\[\])?(?:\(\))?;$', d).group(1)
-        if sym in skip or not re.search(r'\b' + re.escape(sym) + r'\b', used):
+        if sym in skip or sym in sigs or not re.search(r'\b' + re.escape(sym) + r'\b', used):
             continue
         # se asume declarado por el C/headers salvo que el compilador diga lo contrario
         if sym not in force and sym not in names and re.search(r'\b' + re.escape(sym) + r'\b', text):
@@ -71,19 +88,28 @@ def main():
     out = f'src/{split}'
     text = open(src, newline='').read().replace('\r\n', '\n')
     is_c = not split.endswith(('.cpp', '.cp'))
+    sigs = {}
     for n in names:
-        text = strip_def(text, n)
+        text, sig = strip_def(text, n)
+        if sig:
+            sigs[n] = sig
     decls, blocks = asm_blocks(split)
     skip, force = set(), set()
     for _ in range(40):
-        open(out, 'w', newline='').write(render(text, names, decls, blocks, is_c, skip, force))
+        open(out, 'w', newline='').write(render(text, names, decls, blocks, is_c, skip, force, sigs))
         ok, log = compile_obj(split)
         if ok:
             return
         m = re.search(r"identifier '(\w+)[^']*'\s*(?:#\s*)?redeclared", log)
+        if not m and 'illegal function overloading' in log:
+            m = re.search(r"^#\s+\d+:.*?\b(\w+)\s*\(\)\s*;\s*$", log, re.M)
         u = re.search(r"undefined (?:label|identifier) '(\w+)'", log)
         if m and m.group(1) in names:
-            sys.exit(f'{m.group(1)}: el asm choca con un prototipo del header')
+            hs = header_sig(m.group(1))
+            if not hs or sigs.get(m.group(1)) == hs:
+                sys.exit(f'{m.group(1)}: el asm choca con un prototipo del header')
+            sigs[m.group(1)] = hs
+            continue
         if m and m.group(1) not in skip:
             skip.add(m.group(1))
         elif u and u.group(1) not in force:

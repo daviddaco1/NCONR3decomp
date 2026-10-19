@@ -1,17 +1,136 @@
-#include "types.h"
+#include "PowerPC_EABI_Support/MSL_C/MSL_Common/wstring.h"
 
-// Translation unit: src/MSL_C.PPCEABI.bare.H/wstring.cpp
-// Total functions: 3
+size_t wcslen(const wchar_t *str) {
+    size_t len = -1;
+    wchar_t* p = (wchar_t*)str - 1;
 
-// Forward declarations
-void wcscpy();
-void wcsncpy();
-void wcscmp();
+    do {
+        len++;
+    } while(*++p);
 
-// ----------------------------------------------------------------------------
-// wcscpy
-// ----------------------------------------------------------------------------
-asm void wcscpy() {
+    return len;
+}
+
+//unused
+void wcsnlen_s(){
+}
+
+// wcscpy: definicion C reemplazada por asm (ver abajo)
+
+
+//unused
+void wcscpy_s(){
+}
+
+wchar_t* wcsncpy(wchar_t *dest, const wchar_t *src, size_t num) {
+    const wchar_t* p = (const wchar_t*)src - 1;
+    wchar_t* q = (wchar_t*)dest - 1;
+    wchar_t zero = 0;
+
+    num++;
+
+    while (--num) {
+        if (!(*++q = *++p)) {
+            while (--num) {
+                *++q = 0;
+            }
+
+            break;
+        }
+    }
+
+    return dest;
+}
+
+//unused
+void wcsncpy_s(){
+}
+
+//unused
+wchar_t* wcscat(wchar_t*, const wchar_t*){
+}
+
+//unused
+void wcscat_s(){
+}
+
+//unused
+void wcsncat(){
+}
+
+//unused
+void wcsncat_s(){
+}
+
+int wcscmp(const wchar_t *str1, const wchar_t *str2) {
+    const wchar_t* p1 = (wchar_t *)str1 - 1;
+    const wchar_t* p2 = (wchar_t *)str2 - 1;
+    wchar_t c1, c2;
+
+    while ((c1 = *++p1) == (c2 = *++p2)) {
+        if (!c1) {
+            return 0;
+        }
+    }
+
+    return c1 - c2;
+}
+
+//unused
+void wcsncmp(){
+}
+
+wchar_t* wcschr(const wchar_t *str, const wchar_t chr) {
+    const wchar_t* p = (wchar_t*)str - 1;
+    wchar_t c = (chr & 0xFFFF);
+    wchar_t ch;
+
+    while (ch = (*++p& 0xFFFF)) {
+        if (ch == c) {
+            return ((wchar_t*)p);
+        }
+    }
+    
+    return (c ? 0 : (wchar_t*)p);
+}
+
+//unused
+void wcscoll(){
+}
+
+//unused
+void wcsxfrm(){
+}
+
+//unused
+void wcsrchr(){
+}
+
+//unused
+void wcspbrk(){
+}
+
+//unused
+void wcsspn(){
+}
+
+//unused
+void wcscspn(){
+}
+
+//unused
+void wcstok(){
+}
+
+//unused
+void wcsstr(){
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+
+
+// asm_to_cpp: wcscpy
+asm wchar_t* wcscpy(wchar_t *dest, const wchar_t *src) {
     nofralloc
     subi r4, r3, 0x2
     li r3, -0x1
@@ -22,54 +141,3 @@ lbl_8019EED4:
     bne lbl_8019EED4
     blr
 }
-
-// ----------------------------------------------------------------------------
-// wcsncpy
-// ----------------------------------------------------------------------------
-asm void wcsncpy() {
-    nofralloc
-    subi r4, r4, 0x2
-    subi r6, r3, 0x2
-    addi r5, r5, 0x1
-    b lbl_8019EF20
-lbl_8019EEF8:
-    lhzu r0, 0x2(r4)
-    sthu r0, 0x2(r6)
-    cmpwi r0, 0x0
-    bne lbl_8019EF20
-    li r0, 0x0
-    b lbl_8019EF14
-lbl_8019EF10:
-    sthu r0, 0x2(r6)
-lbl_8019EF14:
-    subic. r5, r5, 0x1
-    bne lbl_8019EF10
-    blr
-lbl_8019EF20:
-    subic. r5, r5, 0x1
-    bne lbl_8019EEF8
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// wcscmp
-// ----------------------------------------------------------------------------
-asm void wcscmp() {
-    nofralloc
-    subi r5, r3, 0x2
-    subi r4, r4, 0x2
-    b lbl_8019EF48
-lbl_8019EF38:
-    cmpwi r3, 0x0
-    bne lbl_8019EF48
-    li r3, 0x0
-    blr
-lbl_8019EF48:
-    lhzu r3, 0x2(r5)
-    lhzu r0, 0x2(r4)
-    cmplw r3, r0
-    beq lbl_8019EF38
-    subf r3, r0, r3
-    blr
-}
-

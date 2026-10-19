@@ -2371,3 +2371,24 @@ el 100% en asm para fijar splits y nombres, y después reescribir a C en una pas
 - Pendientes casi al 100% (versión distinta, corregir a mano): `targimpl`/`support`/`msghndlr`/
   `dolphin_trk` (≥99.5%), `NMWException` 98.9%, `runtime` 97.9%, `dolphin_trk_glue` 97.5%,
   `wstring` 96.6%, `strtoul` 91.7%, `FILE_POS` 89%, `Gecko_ExceptionPPC` 87.7%.
+
+## Fase 99 — MSL/Runtime/TRK completos en C (o mixto) (2026-10-19)
+
+- TRK: el original agrupa strings (`@stringBase0`) → `-str reuse,pool` en `cflags_trk`;
+  `InitMetroTRK` de esta versión no tiene el `blr` muerto que trae Xenoblade. Las 26 TUs TRK al
+  100% con C (las 4 que necesitaban cambios copiadas a `src/TRK_MINNOW_DOLPHIN/`).
+- `tools/mix_asm.py`: fuente mixto = C importado + asm (marcado `// asm_to_cpp: <fn>`) solo para
+  funciones sin C que matchee. Si el C define la función, se quita su definición y el asm usa su
+  firma; si no, toma el prototipo de los headers de `libs/`. Compila en bucle y corrige externs
+  según el error de mwcc. **17 TUs MSL/Runtime al 100% en modo mixto.** Ojo: tras renombrar
+  símbolos hay que regenerar los mixtos (sus `extern` genéricos pasan a chocar con prototipos).
+- `abort_exit.c` era en realidad **`math_api.c`** (`__fpclassifyf`/`__signbitd`/
+  `__fpclassifyd`): renombrado, 100% con C. TRK `main.c` (= `cc_gdev.c`) compila tras los
+  renombres: 100%.
+- `configure.py progress`: el C real descuenta el asm marcado dentro de archivos C.
+- **C real: 1.77% → 2.84%** (93,628 bytes). Total 50.01%, `build.sha1` OK.
+- Quedan asm: `unk_801A3278.c` (6 funciones sin equivalente), `w_pow.c`, `math_ppc.c`, y las
+  funciones marcadas en los mixtos (MSL de esta versión que Xenoblade no tiene o tiene como stub:
+  `strrchr`/`strtok`-like en `string.c`, `__fread` en `direct_io.c`, partes de
+  `Gecko_ExceptionPPC.cp`, `printf.c`, `scanf.c`, `strtold.c`...). Esas requieren descompilar a
+  mano (o otra referencia con esas funciones).

@@ -674,7 +674,6 @@ extern u8 lbl_8035F9E8[];
 extern u8 lbl_8049C41C[];
 extern void _restgpr_21();
 extern void _savegpr_21();
-extern void fn_80195C2C();
 extern void fn_801972E0();
 extern void fn_80197480();
 extern void log10();
@@ -1120,7 +1119,7 @@ lbl_801978D4:
     bl ldexp
     fmr f31, f1
     stfd f1, 0x10(r1)
-    bl fn_80195C2C
+    bl __fpclassifyd
     cmpwi r3, 0x2
     bne lbl_801978FC
     lfd f31, lbl_804A1178
@@ -1158,7 +1157,7 @@ lbl_80197950:
     adde r0, r3, r30
     stw r0, 0x8(r1)
     lfd f1, 0x8(r1)
-    bl fn_80195C2C
+    bl __fpclassifyd
     cmpwi r3, 0x2
     beq lbl_80197B94
     b lbl_8019799C

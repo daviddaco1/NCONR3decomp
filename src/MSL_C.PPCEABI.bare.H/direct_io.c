@@ -1,24 +1,39 @@
-#include "types.h"
+#include <types.h>
 
-// Translation unit: src/MSL_C.PPCEABI.bare.H/direct_io.cpp
-// Total functions: 2
+#ifndef _MSL_WIDE_CHAR
+#define _MSL_WIDE_CHAR
+#endif
 
-// Forward declarations
-void __flush_buffer();
-void __fwrite();
-void __memrchr();
-void __prep_buffer();
-void __stdio_atexit();
-void _fseek();
-void fn_80196260();
-void fn_80197C00();
-void fn_80197DE8();
-void fwide();
-void memcpy();
+#include <wchar.h>
+#include <stdio.h>
+#include <string.h>
+#include "PowerPC_EABI_Support/MSL_C/MSL_Common/buffer_io.h"
+#include "PowerPC_EABI_Support/MSL_C/MSL_Common/misc_io.h"
 
-// ----------------------------------------------------------------------------
-// fn_80197DE8
-// ----------------------------------------------------------------------------
+
+//unused
+void fread(){
+}
+
+//unused
+void __fread(){
+}
+
+//unused
+void fwrite(){
+}
+
+// __fwrite: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+extern void __prep_buffer();
+extern void __stdio_atexit();
+extern void fn_80196260();
+extern void fn_80197C00();
+extern void fn_80197DE8();
+
+// asm_to_cpp: fn_80197DE8
 asm void fn_80197DE8() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -253,10 +268,8 @@ lbl_80198114:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __fwrite
-// ----------------------------------------------------------------------------
-asm void __fwrite() {
+// asm_to_cpp: __fwrite
+asm size_t __fwrite(const void* pPtr, size_t memb_size, size_t num_memb, FILE* file) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -477,4 +490,3 @@ lbl_80198420:
     addi r1, r1, 0x30
     blr
 }
-

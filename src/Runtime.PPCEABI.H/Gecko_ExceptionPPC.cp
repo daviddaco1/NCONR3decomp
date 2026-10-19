@@ -1,42 +1,912 @@
-#include "types.h"
+#include "PowerPC_EABI_Support/Runtime/MWCPlusLib.h"
+#include <exception.h>
+#include "PowerPC_EABI_Support/Runtime/Gecko_ExceptionPPC.h"
+#include "PowerPC_EABI_Support/Runtime/NMWException.h"
+#include "PowerPC_EABI_Support/Runtime/__ppc_eabi_linker.h"
 
-// Translation unit: src/Runtime.PPCEABI.H/Gecko_ExceptionPPC.cpp
-// Total functions: 14
 
-// Global data symbols (@ha/@l)
+#define RETURN_ADDRESS 4
+
+union MWE_GeckoVector64 {
+    double d;
+    float f[2];
+};
+
+typedef union MWE_GeckoVector64 MWE_GeckoVector64;
+
+struct GeckoFPRContext {
+    double d;
+    MWE_GeckoVector64 v;
+};
+
+typedef struct GeckoFPRContext GeckoFPRContext;
+
+typedef struct ThrowContext {
+    GeckoFPRContext FPR[32];
+    long GPR[32];
+    long CR;
+    char* SP;
+    char* FP;
+    char* throwSP;
+    char* returnaddr;
+    char* throwtype;
+    void* location;
+    void* dtor;
+    CatchInfo *catchinfo;
+} ThrowContext;
+
+typedef ThrowContext* ThrowContextPtr;
+
+typedef struct MWExceptionInfo {
+    ExceptionTableSmall* exception_record;
+    char* current_function;
+    char* action_pointer;
+    char* code_section;
+    char* data_section;
+    char* TOC;
+} MWExceptionInfo;
+
+typedef struct FragmentInfo {
+    ExceptionTableIndex* exception_start;
+    ExceptionTableIndex* exception_end;
+    char* code_start;
+    char* code_end;
+    char* data_start;
+    char* data_end;
+    char* TOC;
+    int active;
+} FragmentInfo;
+
+typedef struct ProcessInfo {
+    __eti_init_info* exception_info;
+    char* TOC;
+    int active;
+} ProcessInfo;
+
+typedef struct ActionIterator {
+    MWExceptionInfo info;
+    char* current_SP;
+    char* current_FP;
+    long current_R31;
+} ActionIterator;
+
+#define MAXFRAGMENTS 32
+static ProcessInfo fragmentinfo[MAXFRAGMENTS];
+
+typedef void (*DeleteFunc)(void *);
+
+
+
+//Likely a fakematch
+#pragma schedule once
+// __register_fragment: definicion C reemplazada por asm (ver abajo)
+
+#pragma schedule twice
+
+// __unregister_fragment: definicion C reemplazada por asm (ver abajo)
+
+
+static int ExPPC_FindExceptionFragment(char* returnaddr, FragmentInfo* frag)
+{
+    ProcessInfo* f;
+    int i;
+    __eti_init_info* eti_info;
+    
+    for(i = 0, f = fragmentinfo; i < MAXFRAGMENTS; ++i, ++f){
+        if(f->active){
+            eti_info = f->exception_info;
+            while (1) {
+                if(eti_info->code_size == 0) break;
+                if(returnaddr >= eti_info->code_start && returnaddr < (char*)eti_info->code_start+eti_info->code_size) {
+                    frag->exception_start = (ExceptionTableIndex*)eti_info->eti_start;
+                    frag->exception_end = (ExceptionTableIndex*)eti_info->eti_end;
+                    frag->code_start = 0;
+                    frag->code_end = 0;
+                    frag->data_start = 0;
+                    frag->data_end = 0;
+                    frag->TOC = f->TOC;
+                    frag->active = f->active;
+                    return 1;
+                }
+                 eti_info++;
+            }
+        }
+    }
+    
+    return 0;
+}
+
+
+static void ExPPC_FindExceptionRecord(char* returnaddr, MWExceptionInfo* info){
+    FragmentInfo* fragment;
+    FragmentInfo frag;
+    ExceptionTableIndex *exceptionindex,*p;
+    unsigned long returnoffset;
+    long i, m, n;
+
+    info->exception_record = 0;
+    info->action_pointer = 0;
+    
+    if ((ExPPC_FindExceptionFragment(returnaddr, &frag)) == 0) return;
+    fragment = &frag;
+
+    info->code_section = fragment->code_start;
+    info->data_section = fragment->data_start;
+    info->TOC = fragment->TOC;
+    
+    returnoffset = returnaddr-fragment->code_start;
+    exceptionindex = fragment->exception_start;
+    for(i = 0, n = fragment->exception_end-fragment->exception_start;;){
+        if(i > n) return;
+        p = &exceptionindex[m = (i+n)/2];
+
+        if(returnoffset < p->functionoffset){
+            n = m - 1;
+        }else if(returnoffset > p->functionoffset + ETI_GetFunctionSize(p->eti_field)){
+            i = m + 1;
+        }else break;
+    }
+    info->current_function = fragment->code_start + p->functionoffset;
+    info->exception_record = ETI_GetDirectStore(p->eti_field) ? (ExceptionTableSmall*)(&p->exceptionoffset) : (ExceptionTableSmall*)(fragment->data_start + p->exceptionoffset);
+    
+    returnoffset -= p->functionoffset;
+    
+    if (ET_IsLargeTable(info->exception_record->et_field)){
+        ExceptionTableLarge* etl = (ExceptionTableLarge*)info->exception_record;
+        ExceptionRangeLarge* erl;
+        
+        for(erl = etl->ranges; erl->start != 0; erl++){
+            unsigned long range_end = erl->start + (erl->size * 4);
+            
+            if (erl->start <= returnoffset && range_end >= returnoffset){
+                info->action_pointer = (char*)etl + erl->action;
+                break;
+            }
+        }
+    }else{
+        ExceptionTableSmall* ets = (ExceptionTableSmall*)info->exception_record;
+        ExceptionRangeSmall* ers;
+
+        for(ers = ets->ranges; ers->start != 0; ers++){
+            if(ers->start <= returnoffset && ers->end >= returnoffset){
+                info->action_pointer = (char*)ets + ers->action;
+                break;
+            }
+        }
+
+    }
+}
+
+static long ExPPC_PopR31(char *SP,MWExceptionInfo *info){
+    double* FPR_save_area;
+    long* GPR_save_area;
+    int saved_GPRs, saved_FPRs;
+    
+    saved_FPRs = ET_GetSavedFPRs(info->exception_record->et_field);
+    FPR_save_area = (double*)(SP-saved_FPRs * 8);
+    saved_GPRs = ET_GetSavedGPRs(info->exception_record->et_field);
+    GPR_save_area = (long*)FPR_save_area;
+
+    return GPR_save_area[-1];
+}
+
+static exaction_type ExPPC_CurrentAction(const ActionIterator* iter){
+    if(iter->info.action_pointer == 0){
+        return EXACTION_ENDOFLIST;
+    }
+
+    return ((ex_destroylocal*)iter->info.action_pointer)->action & EXACTION_MASK;
+}
+
+static exaction_type ExPPC_NextAction(ActionIterator* iter){
+    exaction_type action;
+
+    for(;;){
+        if(iter->info.action_pointer == 0 || ((action = ((ex_destroylocal*)iter->info.action_pointer)->action) & EXACTION_ENDBIT) != 0){
+            char* return_addr, *callers_SP;
+            
+            callers_SP = *(char**)iter->current_SP;
+
+            if(ET_GetSavedGPRs(iter->info.exception_record->et_field)){
+                iter->current_R31 = ExPPC_PopR31(callers_SP, &iter->info);
+            }
+
+            return_addr = *(char**)(callers_SP + RETURN_ADDRESS);
+
+            ExPPC_FindExceptionRecord(return_addr, &iter->info);
+
+            if(iter->info.exception_record == 0){
+                terminate();
+            }
+
+            iter->current_SP = callers_SP;
+            iter->current_FP = (ET_GetHasFramePtr(iter->info.exception_record->et_field)) ? (char*)iter->current_R31 : iter->current_SP;
+
+            if(iter->info.action_pointer == 0) continue;
+        }else{
+            switch(action){
+                case EXACTION_DESTROYLOCAL:
+                    iter->info.action_pointer += sizeof(ex_destroylocal);
+                    break;
+                case EXACTION_DESTROYLOCALCOND:
+                    iter->info.action_pointer += sizeof(ex_destroylocalcond);
+                    break;
+                case EXACTION_DESTROYLOCALPOINTER:
+                    iter->info.action_pointer += sizeof(ex_destroylocalpointer);
+                    break;
+                case EXACTION_DESTROYLOCALARRAY:
+                    iter->info.action_pointer += sizeof(ex_destroylocalarray);
+                    break;
+                case EXACTION_DESTROYBASE:
+                case EXACTION_DESTROYMEMBER:
+                    iter->info.action_pointer += sizeof(ex_destroymember);
+                    break;
+                case EXACTION_DESTROYMEMBERCOND:
+                    iter->info.action_pointer += sizeof(ex_destroymembercond);
+                    break;
+                case EXACTION_DESTROYMEMBERARRAY:
+                    iter->info.action_pointer += sizeof(ex_destroymemberarray);
+                    break;
+                case EXACTION_DELETEPOINTER:
+                    iter->info.action_pointer += sizeof(ex_deletepointer);
+                    break;
+                case EXACTION_DELETEPOINTERCOND:
+                    iter->info.action_pointer += sizeof(ex_deletepointercond);
+                    break;
+                case EXACTION_CATCHBLOCK:
+                    iter->info.action_pointer += sizeof(ex_catchblock);
+                    break;
+                case EXACTION_CATCHBLOCK_32:
+                    iter->info.action_pointer += sizeof(ex_catchblock_32);
+                    break;
+                case EXACTION_ACTIVECATCHBLOCK:
+                    iter->info.action_pointer += sizeof(ex_activecatchblock);
+                    break;
+                case EXACTION_SPECIFICATION:
+                    iter->info.action_pointer += sizeof(ex_specification) + ((ex_specification*)iter->info.action_pointer)->specs * sizeof(void*);
+                    break;
+                default:
+                    terminate();
+            }
+        }
+
+        action = ((ex_destroylocal*)iter->info.action_pointer)->action & EXACTION_MASK;
+
+        if(action == EXACTION_BRANCH){
+            iter->info.action_pointer = ((char*)iter->info.exception_record) + ((ex_branch*)iter->info.action_pointer)->target;
+            action = ((ex_destroylocal*)iter->info.action_pointer)->action & EXACTION_MASK;
+        }
+        return action;
+    }
+}
+
+static char* ExPPC_PopStackFrame(ThrowContext* context, MWExceptionInfo* info){
+    char *SP, *callers_SP;
+    double* FPR_save_area;
+    long* GPR_save_area;
+    int saved_GPRs, saved_FPRs;
+    GeckoFPRContext* Vector_save_area;
+    int i, j;
+    
+    SP = context->SP;
+    callers_SP = *(char**)SP;
+    saved_FPRs = ET_GetSavedFPRs(info->exception_record->et_field);
+
+    if(ET_HasElfVector(info->exception_record->et_field)){
+        Vector_save_area = (GeckoFPRContext *)(callers_SP - saved_FPRs*16);
+        FPR_save_area = (double*)Vector_save_area;
+    }else{
+        FPR_save_area = (double*)(callers_SP - saved_FPRs*8);
+    }
+
+    if (ET_HasElfVector(info->exception_record->et_field)){
+        for(i = 32 - saved_FPRs, j = 0; i < 32; ++i, ++j){
+            context->FPR[i].v.f[0] = Vector_save_area[j].v.f[0];
+            context->FPR[i].v.f[1] = Vector_save_area[j].v.f[1];
+            context->FPR[i].d = Vector_save_area[j].d;
+        }
+    }else{
+        for(i = 32 - saved_FPRs, j = 0; i < 32; ++i, ++j){
+             context->FPR[i].d = FPR_save_area[j];
+        }
+    }
+
+    saved_GPRs = ET_GetSavedGPRs(info->exception_record->et_field);
+    GPR_save_area = (long*)FPR_save_area;
+    GPR_save_area -= saved_GPRs;
+
+    for(i = 32 - saved_GPRs, j = 0; i < 32; ++i, ++j){
+        context->GPR[i] = GPR_save_area[j];
+    }
+
+    context->SP = callers_SP;
+    return *(char**)(callers_SP + RETURN_ADDRESS);
+}
+
+static void ExPPC_DestroyLocal(ThrowContext* context, const ex_destroylocal* ex){
+    DTORCALL_COMPLETE(ex->dtor, context->FP + ex->local);
+}
+
+static void ExPPC_DestroyLocalCond(ThrowContext* context, const ex_destroylocalcond* ex){
+    int cond = ex_destroylocalcond_GetRegCond(ex->dlc_field) ? (local_cond_type)context->GPR[ex->cond] : *(local_cond_type*)(context->FP + ex->cond);
+
+    if(cond){
+        DTORCALL_COMPLETE(ex->dtor, context->FP + ex->local);
+    }
+}
+
+static void ExPPC_DestroyLocalPointer(ThrowContext* context, const ex_destroylocalpointer* ex){
+    void *pointer = ex_destroylocalpointer_GetRegPointer(ex->dlp_field) ? (void*)context->GPR[ex->pointer] : *(void**)(context->FP + ex->pointer);
+
+    DTORCALL_COMPLETE(ex->dtor, pointer);
+}
+
+static void ExPPC_DestroyLocalArray(ThrowContext* context, const ex_destroylocalarray* ex){
+    char* ptr = context->FP + ex->localarray;
+    long n = ex->elements;
+    long size = ex->element_size;
+
+    for(ptr = ptr + size*n; n > 0; n--){
+        ptr -= size;
+        DTORCALL_COMPLETE(ex->dtor, ptr);
+    }
+}
+
+static void ExPPC_DestroyMember(ThrowContext* context, const ex_destroymember* ex){
+    char *objectptr = ex_destroymember_GetRegPointer(ex->dm_field) ? (char*)context->GPR[ex->objectptr] : *(char**)(context->FP + ex->objectptr);
+
+    DTORCALL_COMPLETE(ex->dtor,objectptr + ex->offset);
+}
+
+static void ExPPC_DestroyBase(ThrowContext* context, const ex_destroymember* ex){
+    char* objectptr = ex_destroymember_GetRegPointer(ex->dm_field) ? (char*)context->GPR[ex->objectptr] : *(char**)(context->FP + ex->objectptr);
+
+    DTORCALL_PARTIAL(ex->dtor,objectptr + ex->offset);
+}
+
+static void ExPPC_DestroyMemberCond(ThrowContext* context, const ex_destroymembercond* ex){
+    char* objectptr = ex_destroymembercond_GetRegPointer(ex->dmc_field) ? (char*)context->GPR[ex->objectptr] : *(char**)(context->FP + ex->objectptr);
+    int cond = ex_destroymembercond_GetRegCond(ex->dmc_field) ? (vbase_ctor_arg_type)context->GPR[ex->cond] : *(vbase_ctor_arg_type*)(context->FP + ex->cond);
+
+    if(cond){
+        DTORCALL_PARTIAL(ex->dtor, objectptr + ex->offset);
+    }
+}
+
+static void ExPPC_DestroyMemberArray(ThrowContext* context, const ex_destroymemberarray* ex){
+    char* ptr = ex_destroymemberarray_GetRegPointer(ex->dma_field) ? (char*)context->GPR[ex->objectptr] : *(char**)(context->FP + ex->objectptr);
+    long n = ex->elements;
+    long size = ex->element_size;
+
+    ptr += ex->offset;
+
+    for(ptr = ptr + size*n; n > 0; n--){
+        ptr -= size;
+        DTORCALL_COMPLETE(ex->dtor, ptr);
+    }
+}
+
+static void ExPPC_DeletePointer(ThrowContext* context, const ex_deletepointer* ex){
+    char* objectptr = ex_deletepointer_GetRegPointer(ex->dp_field) ? (char*)context->GPR[ex->objectptr] : *(char**)(context->FP + ex->objectptr);
+
+    ((DeleteFunc)ex->deletefunc)(objectptr);
+}
+
+static void ExPPC_DeletePointerCond(ThrowContext* context, const ex_deletepointercond* ex){
+    char* objectptr = ex_deletepointercond_GetRegPointer(ex->dpc_field) ? (char*)context->GPR[ex->objectptr] : *(char**)(context->FP + ex->objectptr);
+    int cond = ex_deletepointercond_GetRegCond(ex->dpc_field) ? (local_cond_type)context->GPR[ex->cond] : *(local_cond_type*)(context->FP+ex->cond);
+
+    if(cond){
+        ((DeleteFunc)ex->deletefunc)(objectptr);
+    }
+}
+
+static void ExPPC_UnwindStack(ThrowContext* context, MWExceptionInfo* info, void* catcher){
+    exaction_type action;
+
+    #pragma exception_terminate
+
+    for(;;){
+        if(info->action_pointer == 0){
+            char* return_addr;
+    
+            return_addr = ExPPC_PopStackFrame(context, info);
+            ExPPC_FindExceptionRecord(return_addr, info);
+
+            if(info->exception_record == 0){
+                terminate();
+            }
+
+            context->FP = (ET_GetHasFramePtr(info->exception_record->et_field)) ? (char*)context->GPR[31] : context->SP;
+            continue;
+        }
+
+        action = ((ex_destroylocal*)info->action_pointer)->action;
+
+        switch(action & EXACTION_MASK){
+            case EXACTION_BRANCH:
+                info->action_pointer = ((char*)info->exception_record) + ((ex_branch*)info->action_pointer)->target;
+                break;
+            case EXACTION_DESTROYLOCAL:
+                ExPPC_DestroyLocal(context, (ex_destroylocal*)info->action_pointer);
+                info->action_pointer += sizeof(ex_destroylocal);
+                break;
+            case EXACTION_DESTROYLOCALCOND:
+                ExPPC_DestroyLocalCond(context, (ex_destroylocalcond*)info->action_pointer);
+                info->action_pointer += sizeof(ex_destroylocalcond);
+                break;
+            case EXACTION_DESTROYLOCALPOINTER:
+                ExPPC_DestroyLocalPointer(context, (ex_destroylocalpointer*)info->action_pointer);
+                info->action_pointer += sizeof(ex_destroylocalpointer);
+                break;
+            case EXACTION_DESTROYLOCALARRAY:
+                ExPPC_DestroyLocalArray(context, (ex_destroylocalarray*)info->action_pointer);
+                info->action_pointer += sizeof(ex_destroylocalarray);
+                break;
+            case EXACTION_DESTROYBASE:
+                ExPPC_DestroyBase(context, (ex_destroymember*)info->action_pointer);
+                info->action_pointer += sizeof(ex_destroymember);
+                break;
+            case EXACTION_DESTROYMEMBER:
+                ExPPC_DestroyMember(context, (ex_destroymember*)info->action_pointer);
+                info->action_pointer += sizeof(ex_destroymember);
+                break;
+            case EXACTION_DESTROYMEMBERCOND:
+                ExPPC_DestroyMemberCond(context, (ex_destroymembercond*)info->action_pointer);
+                info->action_pointer += sizeof(ex_destroymembercond);
+                break;
+            case EXACTION_DESTROYMEMBERARRAY:
+                ExPPC_DestroyMemberArray(context, (ex_destroymemberarray*)info->action_pointer);
+                info->action_pointer += sizeof(ex_destroymemberarray);
+                break;
+            case EXACTION_DELETEPOINTER:
+                ExPPC_DeletePointer(context, (ex_deletepointer*)info->action_pointer);
+                info->action_pointer += sizeof(ex_deletepointer);
+                break;
+            case EXACTION_DELETEPOINTERCOND:
+                ExPPC_DeletePointerCond(context, (ex_deletepointercond*)info->action_pointer);
+                info->action_pointer += sizeof(ex_deletepointercond);
+                break;
+            case EXACTION_CATCHBLOCK:
+                if(catcher == (void *)info->action_pointer) return;
+                info->action_pointer += sizeof(ex_catchblock);
+                break;
+            case EXACTION_CATCHBLOCK_32:
+                if(catcher == (void *)info->action_pointer) return;
+                info->action_pointer += sizeof(ex_catchblock_32);
+                break;
+            case EXACTION_ACTIVECATCHBLOCK:
+                {
+                    CatchInfo* catchinfo;
+
+                    catchinfo = (CatchInfo*)(context->FP + ((ex_activecatchblock*)info->action_pointer)->cinfo_ref);
+                    
+                    if (catchinfo->dtor){
+                        if (context->location == catchinfo->location){
+                            context->dtor = catchinfo->dtor;
+                        }else{
+                            DTORCALL_COMPLETE(catchinfo->dtor, catchinfo->location);
+                        }
+                       }
+                    info->action_pointer += sizeof(ex_activecatchblock);
+                }
+                break;
+            case EXACTION_SPECIFICATION:
+                if(catcher == (void*)info->action_pointer) return;
+                info->action_pointer += sizeof(ex_specification) + ((ex_specification*)info->action_pointer)->specs * sizeof(void*);
+                break;
+            default:
+                terminate();
+        }
+
+        if(action & EXACTION_ENDBIT) info->action_pointer = 0;
+    }
+}
+
+static int ExPPC_IsInSpecification(char* extype, ex_specification* spec){
+    long i, offset;
+
+    for(i = 0; i < spec->specs; i++){
+        if(__throw_catch_compare(extype, spec->spec[i], &offset)) return 1;
+    }
+
+    return 0;
+}
+
+//unused
+extern void __unexpected(CatchInfo* catchinfo){
+    ex_specification* unexp = (ex_specification*)catchinfo->stacktop;
+
+    #pragma exception_magic //allow access to __exception_magic in try/catch blocks
+
+    try {
+        unexpected();
+    }
+    catch(...){
+        if(ExPPC_IsInSpecification((char*)((CatchInfo*)&__exception_magic)->typeinfo, unexp)){
+            throw;
+        }
+        if(ExPPC_IsInSpecification("!bad_exception!!",unexp)){
+            throw bad_exception();
+        }
+        if(ExPPC_IsInSpecification("!std::bad_exception!!",unexp)){
+            throw bad_exception();
+        }
+    }
+    terminate();
+}
+
+static asm void ExPPC_LongJump(register ThrowContext* context, register void* newRTOC, register void* newPC){
+    nofralloc
+
+    mr r8, newPC
+    mr RTOC, newRTOC
+    lwz r0, context->CR
+    mtcrf 255, r0
+
+    lmw r13, context->GPR[13]
+
+    la r7, context->FPR[14].v
+    psq_lx fp14, 0, r7, 0, 0
+    lfd fp14, context->FPR[14].d
+
+    la r7, context->FPR[15].v
+    psq_lx fp15, 0, r7, 0, 0
+    lfd fp15, context->FPR[15].d
+
+    la r7, context->FPR[16].v
+    psq_lx fp16, 0, r7, 0, 0
+    lfd fp16, context->FPR[16].d
+
+    la r7, context->FPR[17].v
+    psq_lx fp17, 0, r7, 0, 0
+    lfd fp17, context->FPR[17].d
+
+    la r7, context->FPR[18].v
+    psq_lx fp18, 0, r7, 0, 0
+    lfd fp18, context->FPR[18].d
+
+    la r7, context->FPR[19].v
+    psq_lx fp19, 0, r7, 0, 0
+    lfd fp19, context->FPR[19].d
+    
+    la r7, context->FPR[20].v
+    psq_lx fp20, 0, r7, 0, 0
+    lfd fp20, context->FPR[20].d
+
+    la r7, context->FPR[21].v
+    psq_lx fp21, 0, r7, 0, 0
+    lfd fp21, context->FPR[21].d
+
+    la r7, context->FPR[22].v
+    psq_lx fp22, 0, r7, 0, 0
+    lfd fp22, context->FPR[22].d
+
+    la r7, context->FPR[23].v
+    psq_lx fp23, 0, r7, 0, 0
+    lfd fp23, context->FPR[23].d
+
+    la r7, context->FPR[24].v
+    psq_lx fp24, 0, r7, 0, 0
+    lfd fp24, context->FPR[24].d
+
+    la r7, context->FPR[25].v
+    psq_lx fp25, 0, r7, 0, 0
+    lfd fp25, context->FPR[25].d
+
+    la r7, context->FPR[26].v
+    psq_lx fp26, 0, r7, 0, 0
+    lfd fp26, context->FPR[26].d
+
+    la r7, context->FPR[27].v
+    psq_lx fp27, 0, r7, 0, 0
+    lfd fp27, context->FPR[27].d
+
+    la r7, context->FPR[28].v
+    psq_lx fp28, 0, r7, 0, 0
+    lfd fp28, context->FPR[28].d
+
+    la r7, context->FPR[29].v
+    psq_lx fp29, 0, r7, 0, 0
+    lfd fp29, context->FPR[29].d
+
+    la r7, context->FPR[30].v
+    psq_lx fp30, 0, r7, 0, 0
+    lfd fp30, context->FPR[30].d
+
+    la r7, context->FPR[31].v
+    psq_lx fp31, 0, r7, 0, 0
+    lfd fp31, context->FPR[31].d
+    
+    mtlr r8
+
+    lwz SP, context->throwSP
+    lwz r3, context->SP
+    lwz r3, 0(r3)
+    stw r3, 0(SP)
+    blr
+}
+
+static void ExPPC_HandleUnexpected(ThrowContext* context, MWExceptionInfo* info, ex_specification* unexp){
+    CatchInfo* catchinfo;
+
+    #pragma exception_terminate
+
+    ExPPC_UnwindStack(context, info, unexp);
+
+    catchinfo = (CatchInfo*)(context->FP + unexp->cinfo_ref);
+    catchinfo->location = context->location;
+    catchinfo->typeinfo = context->throwtype;
+    catchinfo->dtor = context->dtor;
+    catchinfo->stacktop = unexp;
+
+    ExPPC_LongJump(context, info->TOC, info->current_function + unexp->pcoffset);
+}
+
+static void ExPPC_ThrowHandler(ThrowContext* context){
+    ActionIterator iter;
+    MWExceptionInfo info;
+    exaction_type action;
+    CatchInfo* catchinfo;
+    long offset;
+    
+    ExPPC_FindExceptionRecord(context->returnaddr, &info);
+
+    if(info.exception_record == 0){
+        terminate();
+    }
+
+    context->FP = (ET_GetHasFramePtr(info.exception_record->et_field)) ? (char*)context->GPR[31] : context->SP;
+
+    if(context->throwtype == 0){
+        iter.info = info;
+        iter.current_SP = context->SP;
+        iter.current_FP = context->FP;
+        iter.current_R31 = context->GPR[31];
+
+        for(action = ExPPC_CurrentAction(&iter);; action = ExPPC_NextAction(&iter)){
+            switch(action){
+                case EXACTION_ACTIVECATCHBLOCK:
+                    break;
+                case EXACTION_ENDOFLIST:
+                case EXACTION_DESTROYLOCAL:
+                case EXACTION_DESTROYLOCALCOND:
+                case EXACTION_DESTROYLOCALPOINTER:
+                case EXACTION_DESTROYLOCALARRAY:
+                case EXACTION_DESTROYBASE:
+                case EXACTION_DESTROYMEMBER:
+                case EXACTION_DESTROYMEMBERCOND:
+                case EXACTION_DESTROYMEMBERARRAY:
+                case EXACTION_DELETEPOINTER:
+                case EXACTION_DELETEPOINTERCOND:
+                case EXACTION_CATCHBLOCK:
+                case EXACTION_CATCHBLOCK_32:
+                case EXACTION_SPECIFICATION:
+                    continue;
+                case EXACTION_TERMINATE:
+                default:
+                    terminate();
+            }
+            break;
+        }
+
+        catchinfo = (CatchInfo*)(iter.current_FP + ((ex_activecatchblock*)iter.info.action_pointer)->cinfo_ref);
+        context->throwtype = (char*)catchinfo->typeinfo;
+        context->location = catchinfo->location;
+        context->dtor = 0;
+        context->catchinfo = catchinfo;
+    }else{
+        context->catchinfo = 0L;
+    }
+
+    iter.info = info;
+    iter.current_SP = context->SP;
+    iter.current_FP = context->FP;
+    iter.current_R31 = context->GPR[31];
+
+    for(action = ExPPC_CurrentAction(&iter);; action = ExPPC_NextAction(&iter)){
+        switch(action){
+            case EXACTION_CATCHBLOCK_32:
+                if(__throw_catch_compare(context->throwtype, ((ex_catchblock_32*)iter.info.action_pointer)->catch_type, &offset)){
+                    break;
+                }
+                continue;
+            case EXACTION_CATCHBLOCK:
+                if(__throw_catch_compare(context->throwtype, ((ex_catchblock*)iter.info.action_pointer)->catch_type, &offset)){
+                    break;
+                }
+                continue;
+            case EXACTION_SPECIFICATION:
+                if(!ExPPC_IsInSpecification(context->throwtype, (ex_specification*)iter.info.action_pointer)){
+                    ExPPC_HandleUnexpected(context, &info, (ex_specification *)iter.info.action_pointer);
+                }
+                continue;
+            case EXACTION_ENDOFLIST:
+            case EXACTION_DESTROYLOCAL:
+            case EXACTION_DESTROYLOCALCOND:
+            case EXACTION_DESTROYLOCALPOINTER:
+            case EXACTION_DESTROYLOCALARRAY:
+            case EXACTION_DESTROYBASE:
+            case EXACTION_DESTROYMEMBER:
+            case EXACTION_DESTROYMEMBERCOND:
+            case EXACTION_DESTROYMEMBERARRAY:
+            case EXACTION_DELETEPOINTER:
+            case EXACTION_DELETEPOINTERCOND:
+            case EXACTION_ACTIVECATCHBLOCK:
+                continue;
+            case EXACTION_TERMINATE:
+            default:
+                terminate();
+        }
+        break;
+    }
+
+    if (action == EXACTION_CATCHBLOCK_32) {
+        ex_catchblock_32* catchblock_32;
+        catchblock_32 = (ex_catchblock_32*)iter.info.action_pointer;
+
+        ExPPC_UnwindStack(context, &info, catchblock_32);
+
+        catchinfo = (CatchInfo*)(context->FP + catchblock_32->cinfo_ref);
+        catchinfo->location = context->location;
+        catchinfo->typeinfo = context->throwtype;
+        catchinfo->dtor = context->dtor;
+
+        if(*context->throwtype == '*'){
+            catchinfo->sublocation = &catchinfo->pointercopy;
+            catchinfo->pointercopy = *(long*)context->location + offset;
+        }else{
+            catchinfo->sublocation = (char*)context->location + offset;
+        }
+
+        ExPPC_LongJump(context, info.TOC, info.current_function + catchblock_32->catch_pcoffset);
+    }else{
+        ex_catchblock* catchblock;
+    
+        catchblock = (ex_catchblock*)iter.info.action_pointer;
+        ExPPC_UnwindStack(context, &info, catchblock);
+    
+        catchinfo = (CatchInfo*)(context->FP+catchblock->cinfo_ref);
+        catchinfo->location = context->location;
+        catchinfo->typeinfo = context->throwtype;
+        catchinfo->dtor = context->dtor;
+
+        if(*context->throwtype == '*'){
+            catchinfo->sublocation = &catchinfo->pointercopy;
+            catchinfo->pointercopy = *(long*)context->location+offset;
+        }else{
+            catchinfo->sublocation = (char*)context->location+offset;
+        }
+
+        ExPPC_LongJump(context, info.TOC, info.current_function + catchblock->catch_pcoffset);
+    }
+}
+
+asm void __throw(char* throwtype, void* location, void* dtor){
+    ThrowContext throwcontext;
+
+    fralloc
+
+    stmw r13, throwcontext.GPR[13]
+
+    stfd fp14, throwcontext.FPR[14].d
+    la r3, throwcontext.FPR[14].v
+    psq_stx fp14, 0, r3,0,0
+
+    stfd fp15, throwcontext.FPR[15].d
+    la r3, throwcontext.FPR[15].v
+    psq_stx fp15, 0, r3, 0, 0
+
+    stfd fp16, throwcontext.FPR[16].d
+    la r3, throwcontext.FPR[16].v
+    psq_stx fp16, 0, r3, 0, 0
+
+    stfd fp17, throwcontext.FPR[17].d
+    la r3, throwcontext.FPR[17].v
+    psq_stx fp17, 0, r3, 0, 0
+
+    stfd fp18, throwcontext.FPR[18].d
+    la r3, throwcontext.FPR[18].v
+    psq_stx fp18, 0, r3, 0, 0
+
+    stfd fp19, throwcontext.FPR[19].d
+    la r3, throwcontext.FPR[19].v
+    psq_stx fp19, 0, r3, 0, 0
+
+    stfd fp20, throwcontext.FPR[20].d
+    la r3, throwcontext.FPR[20].v
+    psq_stx fp20, 0, r3, 0, 0
+
+    stfd fp21, throwcontext.FPR[21].d
+    la r3, throwcontext.FPR[21].v
+    psq_stx fp21, 0, r3, 0, 0
+
+    stfd fp22, throwcontext.FPR[22].d
+    la r3, throwcontext.FPR[22].v
+    psq_stx fp22, 0, r3, 0, 0
+
+    stfd fp23, throwcontext.FPR[23].d
+    la r3, throwcontext.FPR[23].v
+    psq_stx fp23, 0, r3, 0, 0
+
+    stfd fp24, throwcontext.FPR[24].d
+    la r3, throwcontext.FPR[24].v
+    psq_stx fp24, 0, r3, 0, 0
+
+    stfd fp25, throwcontext.FPR[25].d
+    la r3, throwcontext.FPR[25].v
+    psq_stx fp25, 0, r3, 0, 0
+
+    stfd fp26, throwcontext.FPR[26].d
+    la r3, throwcontext.FPR[26].v
+    psq_stx fp26, 0, r3, 0, 0
+
+    stfd fp27, throwcontext.FPR[27].d
+    la r3, throwcontext.FPR[27].v
+    psq_stx fp27, 0, r3, 0, 0
+
+    stfd fp28, throwcontext.FPR[28].d
+    la r3, throwcontext.FPR[28].v
+    psq_stx fp28, 0, r3, 0, 0
+
+    stfd fp29, throwcontext.FPR[29].d
+    la r3, throwcontext.FPR[29].v
+    psq_stx fp29, 0, r3, 0, 0
+
+    stfd fp30, throwcontext.FPR[30].d
+    la r3, throwcontext.FPR[30].v
+    psq_stx fp30, 0, r3, 0, 0
+
+    stfd fp31, throwcontext.FPR[31].d
+    la r3, throwcontext.FPR[31].v
+    psq_stx fp31, 0, r3, 0, 0
+
+
+    mfcr r3
+    stw r3, throwcontext.CR;
+
+    lwz r3, 0(sp)
+    lwz r4, RETURN_ADDRESS(r3)
+    stw r3, throwcontext.SP;
+    stw r3, throwcontext.throwSP;
+    stw r4, throwcontext.returnaddr;
+
+    lwz r3,throwtype
+    stw r3, throwcontext.throwtype
+    lwz r3,location
+    stw r3, throwcontext.location
+    lwz r3,dtor
+    stw r3, throwcontext.dtor
+    la r3, throwcontext
+    bl ExPPC_ThrowHandler
+    nop
+    frfree
+    blr
+}
+
+//unused
+void __end__catch(CatchInfo* catchinfo){
+    if (catchinfo->location && catchinfo->dtor){
+        DTORCALL_COMPLETE(catchinfo->dtor,catchinfo->location);
+    }
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern "C" u8 fragmentinfo_803D7500[];
-extern "C" u8 jumptable_8035F6C8[];
-extern "C" u8 jumptable_8035F70C[];
 extern "C" u8 lbl_8033B2DC[];
 extern "C" u8 lbl_8035F750[];
 extern "C" u8 lbl_8035F76C[];
-
-// Forward declarations
-extern "C" void __register_fragment();
-extern "C" void __unregister_fragment();
-extern "C" void _restgpr_27();
-extern "C" void _savegpr_27();
 extern "C" void dtor_80136CFC();
 extern "C" void fn_801936E8();
-extern "C" void terminate__3stdFv();
-extern "C" void __throw_catch_compare();
 extern "C" void fn_801943E8();
-extern "C" void ExPPC_FindExceptionRecord__FPcP15MWExceptionInfo();
-extern "C" void ExPPC_NextAction__FP14ActionIterator();
-extern "C" void ExPPC_PopStackFrame__FP12ThrowContextP15MWExceptionInfo();
-extern "C" void ExPPC_UnwindStack__FP12ThrowContextP15MWExceptionInfoPv();
 extern "C" void fn_80195230();
 extern "C" void fn_801953E8();
-extern "C" void ExPPC_LongJump__FP12ThrowContextPvPv();
-extern "C" void ExPPC_ThrowHandler__FP12ThrowContext();
-extern "C" void __throw();
 extern "C" void fn_80195A78();
 extern "C" void fn_80195AA4();
+extern "C" void terminate__3stdFv();
 
-// ----------------------------------------------------------------------------
-// __register_fragment
-// ----------------------------------------------------------------------------
-extern "C" asm void __register_fragment() {
+// asm_to_cpp: __register_fragment
+extern "C" asm int __register_fragment(struct __eti_init_info* info, char* TOC) {
     nofralloc
     lis r5, fragmentinfo_803D7500@ha
     addi r5, r5, fragmentinfo_803D7500@l
@@ -54,10 +924,8 @@ lbl_801943B8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __unregister_fragment
-// ----------------------------------------------------------------------------
-extern "C" asm void __unregister_fragment() {
+// asm_to_cpp: __unregister_fragment
+extern "C" asm void __unregister_fragment(int fragmentID) {
     nofralloc
     cmpwi r3, 0x0
     bnelr
@@ -71,9 +939,7 @@ extern "C" asm void __unregister_fragment() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801943E8
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801943E8
 extern "C" asm void fn_801943E8() {
     nofralloc
     lis r6, fragmentinfo_803D7500@ha
@@ -115,1002 +981,7 @@ lbl_80194468:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// ExPPC_FindExceptionRecord__FPcP15MWExceptionInfo
-// ----------------------------------------------------------------------------
-extern "C" asm void ExPPC_FindExceptionRecord__FPcP15MWExceptionInfo() {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    li r0, 0x0
-    stw r31, 0x2c(r1)
-    mr r31, r4
-    stw r30, 0x28(r1)
-    mr r30, r3
-    stw r0, 0x0(r4)
-    stw r0, 0x8(r4)
-    addi r4, r1, 0x8
-    bl fn_801943E8
-    cmpwi r3, 0x0
-    beq lbl_80194608
-    lwz r0, 0x10(r1)
-    lis r3, 0x2aab
-    stw r0, 0xc(r31)
-    subi r3, r3, 0x5555
-    li r7, 0x0
-    lwz r0, 0x18(r1)
-    stw r0, 0x10(r31)
-    lwz r0, 0x20(r1)
-    stw r0, 0x14(r31)
-    lwz r5, 0x8(r1)
-    lwz r0, 0xc(r1)
-    lwz r4, 0x10(r1)
-    subf r0, r5, r0
-    mulhw r3, r3, r0
-    subf r0, r4, r30
-    srawi r3, r3, 1
-    srwi r4, r3, 31
-    add r9, r3, r4
-lbl_801944F0:
-    cmpw r7, r9
-    bgt lbl_80194608
-    add r4, r7, r9
-    srwi r3, r4, 31
-    add r3, r3, r4
-    srawi r8, r3, 1
-    mulli r3, r8, 0xc
-    lwzx r4, r5, r3
-    add r6, r5, r3
-    cmplw r0, r4
-    bge lbl_80194524
-    subi r9, r8, 0x1
-    b lbl_801944F0
-lbl_80194524:
-    lwz r3, 0x4(r6)
-    clrlwi r3, r3, 1
-    add r3, r4, r3
-    cmplw r0, r3
-    ble lbl_80194540
-    addi r7, r8, 0x1
-    b lbl_801944F0
-lbl_80194540:
-    lwz r3, 0x10(r1)
-    add r3, r3, r4
-    stw r3, 0x4(r31)
-    lwz r3, 0x4(r6)
-    srwi. r3, r3, 31
-    beq lbl_80194560
-    addi r5, r6, 0x8
-    b lbl_8019456C
-lbl_80194560:
-    lwz r4, 0x18(r1)
-    lwz r3, 0x8(r6)
-    add r5, r4, r3
-lbl_8019456C:
-    stw r5, 0x0(r31)
-    lhz r3, 0x0(r5)
-    lwz r4, 0x0(r6)
-    extrwi. r3, r3, 1, 28
-    subf r0, r4, r0
-    beq lbl_801945CC
-    addi r6, r5, 0x4
-    b lbl_801945BC
-lbl_8019458C:
-    lhz r3, 0x4(r6)
-    cmplw r4, r0
-    slwi r3, r3, 2
-    add r3, r4, r3
-    bgt lbl_801945B8
-    cmplw r3, r0
-    blt lbl_801945B8
-    lhz r0, 0x6(r6)
-    add r0, r5, r0
-    stw r0, 0x8(r31)
-    b lbl_80194608
-lbl_801945B8:
-    addi r6, r6, 0x8
-lbl_801945BC:
-    lwz r4, 0x0(r6)
-    cmpwi r4, 0x0
-    bne lbl_8019458C
-    b lbl_80194608
-lbl_801945CC:
-    addi r4, r5, 0x2
-    b lbl_801945FC
-lbl_801945D4:
-    cmplw r3, r0
-    bgt lbl_801945F8
-    lhz r3, 0x2(r4)
-    cmplw r3, r0
-    blt lbl_801945F8
-    lhz r0, 0x4(r4)
-    add r0, r5, r0
-    stw r0, 0x8(r31)
-    b lbl_80194608
-lbl_801945F8:
-    addi r4, r4, 0x6
-lbl_801945FC:
-    lhz r3, 0x0(r4)
-    cmpwi r3, 0x0
-    bne lbl_801945D4
-lbl_80194608:
-    lwz r0, 0x34(r1)
-    lwz r31, 0x2c(r1)
-    lwz r30, 0x28(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// ExPPC_NextAction__FP14ActionIterator
-// ----------------------------------------------------------------------------
-extern "C" asm void ExPPC_NextAction__FP14ActionIterator() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    stw r30, 0x8(r1)
-lbl_80194638:
-    lwz r4, 0x8(r31)
-    cmpwi r4, 0x0
-    beq lbl_80194650
-    lbz r5, 0x0(r4)
-    rlwinm. r0, r5, 0, 24, 24
-    beq lbl_801946C0
-lbl_80194650:
-    lwz r3, 0x0(r31)
-    lwz r4, 0x18(r31)
-    lhz r3, 0x0(r3)
-    lwz r30, 0x0(r4)
-    srawi. r0, r3, 11
-    beq lbl_80194678
-    rlwinm r0, r3, 29, 24, 28
-    subf r3, r0, r30
-    lwz r0, -0x4(r3)
-    stw r0, 0x20(r31)
-lbl_80194678:
-    lwz r3, 0x4(r30)
-    mr r4, r31
-    bl ExPPC_FindExceptionRecord__FPcP15MWExceptionInfo
-    lwz r0, 0x0(r31)
-    cmpwi r0, 0x0
-    bne lbl_80194694
-    bl fn_801936E8
-lbl_80194694:
-    stw r30, 0x18(r31)
-    lwz r3, 0x0(r31)
-    lhz r0, 0x0(r3)
-    extrwi. r0, r0, 1, 27
-    beq lbl_801946AC
-    lwz r30, 0x20(r31)
-lbl_801946AC:
-    lwz r0, 0x8(r31)
-    stw r30, 0x1c(r31)
-    cmpwi r0, 0x0
-    beq lbl_80194638
-    b lbl_8019478C
-lbl_801946C0:
-    cmplwi r5, 0x10
-    bgt lbl_80194788
-    lis r3, jumptable_8035F6C8@ha
-    slwi r0, r5, 2
-    addi r3, r3, jumptable_8035F6C8@l
-    lwzx r3, r3, r0
-    mtctr r3
-    bctr
-    addi r0, r4, 0x8
-    stw r0, 0x8(r31)
-    b lbl_8019478C
-    addi r0, r4, 0xc
-    stw r0, 0x8(r31)
-    b lbl_8019478C
-    addi r0, r4, 0x8
-    stw r0, 0x8(r31)
-    b lbl_8019478C
-    addi r0, r4, 0xc
-    stw r0, 0x8(r31)
-    b lbl_8019478C
-    addi r0, r4, 0xc
-    stw r0, 0x8(r31)
-    b lbl_8019478C
-    addi r0, r4, 0x10
-    stw r0, 0x8(r31)
-    b lbl_8019478C
-    addi r0, r4, 0x14
-    stw r0, 0x8(r31)
-    b lbl_8019478C
-    addi r0, r4, 0x8
-    stw r0, 0x8(r31)
-    b lbl_8019478C
-    addi r0, r4, 0xc
-    stw r0, 0x8(r31)
-    b lbl_8019478C
-    addi r0, r4, 0xc
-    stw r0, 0x8(r31)
-    b lbl_8019478C
-    addi r0, r4, 0x10
-    stw r0, 0x8(r31)
-    b lbl_8019478C
-    addi r0, r4, 0x4
-    stw r0, 0x8(r31)
-    b lbl_8019478C
-    lhz r0, 0x2(r4)
-    slwi r0, r0, 2
-    add r3, r0, r4
-    addi r0, r3, 0xc
-    stw r0, 0x8(r31)
-    b lbl_8019478C
-lbl_80194788:
-    bl fn_801936E8
-lbl_8019478C:
-    lwz r4, 0x8(r31)
-    lbz r0, 0x0(r4)
-    clrlwi r3, r0, 25
-    cmplwi r3, 0x1
-    bne lbl_801947B8
-    lwz r3, 0x0(r31)
-    lhz r0, 0x2(r4)
-    add r3, r3, r0
-    stw r3, 0x8(r31)
-    lbz r0, 0x0(r3)
-    clrlwi r3, r0, 25
-lbl_801947B8:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// ExPPC_PopStackFrame__FP12ThrowContextP15MWExceptionInfo
-// ----------------------------------------------------------------------------
-extern "C" asm void ExPPC_PopStackFrame__FP12ThrowContextP15MWExceptionInfo() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_27
-    lwz r5, 0x0(r4)
-    lwz r6, 0x284(r3)
-    lhz r0, 0x0(r5)
-    lwz r7, 0x0(r6)
-    extrwi. r5, r0, 1, 30
-    extrwi r12, r0, 5, 21
-    beq lbl_8019480C
-    slwi r0, r12, 4
-    subf r8, r0, r7
-    b lbl_80194814
-lbl_8019480C:
-    slwi r0, r12, 3
-    subf r8, r0, r7
-lbl_80194814:
-    cmpwi r5, 0x0
-    beq lbl_80194A30
-    subfic r5, r12, 0x20
-    li r6, 0x0
-    cmpwi r5, 0x20
-    li r9, 0x0
-    bge lbl_80194B90
-    cmpwi r12, 0x8
-    ble lbl_801949E8
-    cmpwi r5, 0x21
-    li r10, 0x0
-    li r11, 0x0
-    li r0, 0x0
-    bge lbl_80194850
-    li r0, 0x1
-lbl_80194850:
-    cmpwi r0, 0x0
-    beq lbl_80194868
-    addis r0, r5, 0x8000
-    cmplwi r0, 0x0
-    beq lbl_80194868
-    li r11, 0x1
-lbl_80194868:
-    cmpwi r11, 0x0
-    beq lbl_80194898
-    neg r0, r5
-    li r11, 0x1
-    clrrwi. r0, r0, 31
-    bne lbl_8019488C
-    clrrwi. r0, r12, 31
-    beq lbl_8019488C
-    li r11, 0x0
-lbl_8019488C:
-    cmpwi r11, 0x0
-    beq lbl_80194898
-    li r10, 0x1
-lbl_80194898:
-    cmpwi r10, 0x0
-    beq lbl_801949E8
-    subfic r0, r5, 0x1f
-    slwi r10, r5, 4
-    srwi r0, r0, 3
-    add r29, r3, r10
-    mtctr r0
-    cmpwi r5, 0x18
-    bge lbl_801949E8
-lbl_801948BC:
-    add r11, r8, r9
-    addi r0, r6, 0x1
-    lfs f0, 0x8(r11)
-    slwi r10, r0, 4
-    stfs f0, 0x8(r29)
-    add r28, r8, r10
-    addi r0, r6, 0x2
-    addi r10, r6, 0x6
-    lfs f0, 0xc(r11)
-    slwi r31, r0, 4
-    stfs f0, 0xc(r29)
-    addi r0, r6, 0x3
-    slwi r30, r0, 4
-    slwi r10, r10, 4
-    lfdx f0, r8, r9
-    addi r0, r6, 0x4
-    stfd f0, 0x0(r29)
-    slwi r12, r0, 4
-    addi r0, r6, 0x5
-    add r31, r8, r31
-    lfs f0, 0x8(r28)
-    slwi r11, r0, 4
-    stfs f0, 0x18(r29)
-    addi r0, r6, 0x7
-    slwi r0, r0, 4
-    add r30, r8, r30
-    lfs f0, 0xc(r28)
-    add r12, r8, r12
-    stfs f0, 0x1c(r29)
-    add r11, r8, r11
-    add r10, r8, r10
-    add r27, r8, r0
-    lfd f0, 0x0(r28)
-    addi r6, r6, 0x8
-    stfd f0, 0x10(r29)
-    addi r9, r9, 0x80
-    addi r5, r5, 0x8
-    lfs f0, 0x8(r31)
-    stfs f0, 0x28(r29)
-    lfs f0, 0xc(r31)
-    stfs f0, 0x2c(r29)
-    lfd f0, 0x0(r31)
-    stfd f0, 0x20(r29)
-    lfs f0, 0x8(r30)
-    stfs f0, 0x38(r29)
-    lfs f0, 0xc(r30)
-    stfs f0, 0x3c(r29)
-    lfd f0, 0x0(r30)
-    stfd f0, 0x30(r29)
-    lfs f0, 0x8(r12)
-    stfs f0, 0x48(r29)
-    lfs f0, 0xc(r12)
-    stfs f0, 0x4c(r29)
-    lfd f0, 0x0(r12)
-    stfd f0, 0x40(r29)
-    lfs f0, 0x8(r11)
-    stfs f0, 0x58(r29)
-    lfs f0, 0xc(r11)
-    stfs f0, 0x5c(r29)
-    lfd f0, 0x0(r11)
-    stfd f0, 0x50(r29)
-    lfs f0, 0x8(r10)
-    stfs f0, 0x68(r29)
-    lfs f0, 0xc(r10)
-    stfs f0, 0x6c(r29)
-    lfd f0, 0x0(r10)
-    stfd f0, 0x60(r29)
-    lfs f0, 0x8(r27)
-    stfs f0, 0x78(r29)
-    lfs f0, 0xc(r27)
-    stfs f0, 0x7c(r29)
-    lfdx f0, r8, r0
-    stfd f0, 0x70(r29)
-    addi r29, r29, 0x80
-    bdnz lbl_801948BC
-lbl_801949E8:
-    slwi r9, r6, 4
-    slwi r6, r5, 4
-    subfic r0, r5, 0x20
-    add r9, r8, r9
-    add r6, r3, r6
-    mtctr r0
-    cmpwi r5, 0x20
-    bge lbl_80194B90
-lbl_80194A08:
-    lfs f0, 0x8(r9)
-    stfs f0, 0x8(r6)
-    lfs f0, 0xc(r9)
-    stfs f0, 0xc(r6)
-    lfd f0, 0x0(r9)
-    addi r9, r9, 0x10
-    stfd f0, 0x0(r6)
-    addi r6, r6, 0x10
-    bdnz lbl_80194A08
-    b lbl_80194B90
-lbl_80194A30:
-    subfic r5, r12, 0x20
-    li r6, 0x0
-    cmpwi r5, 0x20
-    li r9, 0x0
-    bge lbl_80194B90
-    cmpwi r12, 0x8
-    ble lbl_80194B5C
-    cmpwi r5, 0x21
-    li r10, 0x0
-    li r11, 0x0
-    li r0, 0x0
-    bge lbl_80194A64
-    li r0, 0x1
-lbl_80194A64:
-    cmpwi r0, 0x0
-    beq lbl_80194A7C
-    addis r0, r5, 0x8000
-    cmplwi r0, 0x0
-    beq lbl_80194A7C
-    li r11, 0x1
-lbl_80194A7C:
-    cmpwi r11, 0x0
-    beq lbl_80194AAC
-    neg r0, r5
-    li r11, 0x1
-    clrrwi. r0, r0, 31
-    bne lbl_80194AA0
-    clrrwi. r0, r12, 31
-    beq lbl_80194AA0
-    li r11, 0x0
-lbl_80194AA0:
-    cmpwi r11, 0x0
-    beq lbl_80194AAC
-    li r10, 0x1
-lbl_80194AAC:
-    cmpwi r10, 0x0
-    beq lbl_80194B5C
-    subfic r0, r5, 0x1f
-    slwi r10, r5, 4
-    srwi r0, r0, 3
-    add r31, r3, r10
-    mtctr r0
-    cmpwi r5, 0x18
-    bge lbl_80194B5C
-lbl_80194AD0:
-    lfdx f0, r8, r9
-    addi r0, r6, 0x1
-    stfd f0, 0x0(r31)
-    slwi r10, r0, 3
-    addi r0, r6, 0x2
-    addi r30, r6, 0x3
-    lfdx f0, r8, r10
-    addi r12, r6, 0x4
-    stfd f0, 0x10(r31)
-    slwi r0, r0, 3
-    addi r11, r6, 0x5
-    addi r10, r6, 0x6
-    lfdx f0, r8, r0
-    addi r0, r6, 0x7
-    stfd f0, 0x20(r31)
-    slwi r30, r30, 3
-    slwi r12, r12, 3
-    slwi r11, r11, 3
-    lfdx f0, r8, r30
-    slwi r10, r10, 3
-    stfd f0, 0x30(r31)
-    slwi r0, r0, 3
-    addi r6, r6, 0x8
-    addi r9, r9, 0x40
-    lfdx f0, r8, r12
-    addi r5, r5, 0x8
-    stfd f0, 0x40(r31)
-    lfdx f0, r8, r11
-    stfd f0, 0x50(r31)
-    lfdx f0, r8, r10
-    stfd f0, 0x60(r31)
-    lfdx f0, r8, r0
-    stfd f0, 0x70(r31)
-    addi r31, r31, 0x80
-    bdnz lbl_80194AD0
-lbl_80194B5C:
-    slwi r9, r6, 3
-    slwi r6, r5, 4
-    subfic r0, r5, 0x20
-    add r9, r8, r9
-    add r6, r3, r6
-    mtctr r0
-    cmpwi r5, 0x20
-    bge lbl_80194B90
-lbl_80194B7C:
-    lfd f0, 0x0(r9)
-    addi r9, r9, 0x8
-    stfd f0, 0x0(r6)
-    addi r6, r6, 0x10
-    bdnz lbl_80194B7C
-lbl_80194B90:
-    lwz r4, 0x0(r4)
-    li r6, 0x0
-    li r9, 0x0
-    lhz r0, 0x0(r4)
-    srawi r11, r0, 11
-    subfic r5, r11, 0x20
-    cmpwi r5, 0x20
-    slwi r0, r11, 2
-    subf r8, r0, r8
-    bge lbl_80194D04
-    cmpwi r11, 0x8
-    ble lbl_80194CD0
-    cmpwi r5, 0x21
-    li r4, 0x0
-    li r10, 0x0
-    li r0, 0x0
-    bge lbl_80194BD8
-    li r0, 0x1
-lbl_80194BD8:
-    cmpwi r0, 0x0
-    beq lbl_80194BF0
-    addis r0, r5, 0x8000
-    cmplwi r0, 0x0
-    beq lbl_80194BF0
-    li r10, 0x1
-lbl_80194BF0:
-    cmpwi r10, 0x0
-    beq lbl_80194C20
-    neg r0, r5
-    li r10, 0x1
-    clrrwi. r0, r0, 31
-    bne lbl_80194C14
-    clrrwi. r0, r11, 31
-    beq lbl_80194C14
-    li r10, 0x0
-lbl_80194C14:
-    cmpwi r10, 0x0
-    beq lbl_80194C20
-    li r4, 0x1
-lbl_80194C20:
-    cmpwi r4, 0x0
-    beq lbl_80194CD0
-    subfic r0, r5, 0x1f
-    slwi r4, r5, 2
-    srwi r0, r0, 3
-    add r4, r3, r4
-    mtctr r0
-    cmpwi r5, 0x18
-    bge lbl_80194CD0
-lbl_80194C44:
-    lwzx r10, r8, r9
-    addi r31, r6, 0x3
-    addi r0, r6, 0x1
-    stw r10, 0x200(r4)
-    slwi r10, r0, 2
-    addi r12, r6, 0x4
-    lwzx r10, r8, r10
-    addi r0, r6, 0x2
-    stw r10, 0x204(r4)
-    slwi r0, r0, 2
-    addi r11, r6, 0x5
-    addi r10, r6, 0x6
-    lwzx r30, r8, r0
-    addi r0, r6, 0x7
-    stw r30, 0x208(r4)
-    slwi r31, r31, 2
-    slwi r12, r12, 2
-    slwi r11, r11, 2
-    lwzx r31, r8, r31
-    slwi r10, r10, 2
-    stw r31, 0x20c(r4)
-    slwi r0, r0, 2
-    addi r6, r6, 0x8
-    addi r9, r9, 0x20
-    lwzx r12, r8, r12
-    addi r5, r5, 0x8
-    stw r12, 0x210(r4)
-    lwzx r11, r8, r11
-    stw r11, 0x214(r4)
-    lwzx r10, r8, r10
-    stw r10, 0x218(r4)
-    lwzx r0, r8, r0
-    stw r0, 0x21c(r4)
-    addi r4, r4, 0x20
-    bdnz lbl_80194C44
-lbl_80194CD0:
-    slwi r6, r6, 2
-    slwi r4, r5, 2
-    subfic r0, r5, 0x20
-    add r6, r8, r6
-    add r4, r3, r4
-    mtctr r0
-    cmpwi r5, 0x20
-    bge lbl_80194D04
-lbl_80194CF0:
-    lwz r0, 0x0(r6)
-    addi r6, r6, 0x4
-    stw r0, 0x200(r4)
-    addi r4, r4, 0x4
-    bdnz lbl_80194CF0
-lbl_80194D04:
-    stw r7, 0x284(r3)
-    addi r11, r1, 0x20
-    lwz r3, 0x4(r7)
-    bl _restgpr_27
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// ExPPC_UnwindStack__FP12ThrowContextP15MWExceptionInfoPv
-// ----------------------------------------------------------------------------
-extern "C" asm void ExPPC_UnwindStack__FP12ThrowContextP15MWExceptionInfoPv() {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    stmw r22, 0x8(r1)
-    mr r26, r3
-    mr r27, r4
-    mr r28, r5
-    lis r31, jumptable_8035F70C@ha
-    li r25, 0x0
-lbl_80194D48:
-    lwz r30, 0x8(r27)
-    cmpwi r30, 0x0
-    bne lbl_80194D9C
-    mr r3, r26
-    mr r4, r27
-    bl ExPPC_PopStackFrame__FP12ThrowContextP15MWExceptionInfo
-    mr r4, r27
-    bl ExPPC_FindExceptionRecord__FPcP15MWExceptionInfo
-    lwz r0, 0x0(r27)
-    cmpwi r0, 0x0
-    bne lbl_80194D78
-    bl fn_801936E8
-lbl_80194D78:
-    lwz r3, 0x0(r27)
-    lhz r0, 0x0(r3)
-    extrwi. r0, r0, 1, 27
-    beq lbl_80194D90
-    lwz r0, 0x27c(r26)
-    b lbl_80194D94
-lbl_80194D90:
-    lwz r0, 0x284(r26)
-lbl_80194D94:
-    stw r0, 0x288(r26)
-    b lbl_80194D48
-lbl_80194D9C:
-    lbz r29, 0x0(r30)
-    clrlwi r0, r29, 25
-    cmplwi r0, 0x10
-    bgt lbl_80195208
-    addi r3, r31, jumptable_8035F70C@l
-    slwi r0, r0, 2
-    lwzx r3, r3, r0
-    mtctr r3
-    bctr
-    lwz r3, 0x0(r27)
-    lhz r0, 0x2(r30)
-    add r0, r3, r0
-    stw r0, 0x8(r27)
-    b lbl_8019520C
-    lwz r3, 0x288(r26)
-    li r4, -0x1
-    lha r0, 0x2(r30)
-    lwz r12, 0x4(r30)
-    add r3, r3, r0
-    mtctr r12
-    bctrl
-    lwz r3, 0x8(r27)
-    addi r0, r3, 0x8
-    stw r0, 0x8(r27)
-    b lbl_8019520C
-    lbz r0, 0x1(r30)
-    srawi. r0, r0, 7
-    beq lbl_80194E24
-    lha r0, 0x2(r30)
-    slwi r0, r0, 2
-    add r3, r26, r0
-    lwz r0, 0x200(r3)
-    extsb r0, r0
-    b lbl_80194E30
-lbl_80194E24:
-    lwz r3, 0x288(r26)
-    lha r0, 0x2(r30)
-    lbzx r0, r3, r0
-lbl_80194E30:
-    extsb. r0, r0
-    beq lbl_80194E54
-    lwz r3, 0x288(r26)
-    li r4, -0x1
-    lha r0, 0x4(r30)
-    lwz r12, 0x8(r30)
-    add r3, r3, r0
-    mtctr r12
-    bctrl
-lbl_80194E54:
-    lwz r3, 0x8(r27)
-    addi r0, r3, 0xc
-    stw r0, 0x8(r27)
-    b lbl_8019520C
-    lbz r0, 0x1(r30)
-    srawi. r0, r0, 7
-    beq lbl_80194E84
-    lha r0, 0x2(r30)
-    slwi r0, r0, 2
-    add r3, r26, r0
-    lwz r3, 0x200(r3)
-    b lbl_80194E90
-lbl_80194E84:
-    lwz r3, 0x288(r26)
-    lha r0, 0x2(r30)
-    lwzx r3, r3, r0
-lbl_80194E90:
-    lwz r12, 0x4(r30)
-    li r4, -0x1
-    mtctr r12
-    bctrl
-    lwz r3, 0x8(r27)
-    addi r0, r3, 0x8
-    stw r0, 0x8(r27)
-    b lbl_8019520C
-    lhz r23, 0x4(r30)
-    lhz r24, 0x6(r30)
-    lwz r4, 0x288(r26)
-    mullw r0, r24, r23
-    lha r3, 0x2(r30)
-    add r22, r4, r3
-    add r22, r22, r0
-    b lbl_80194EEC
-lbl_80194ED0:
-    lwz r12, 0x8(r30)
-    subf r22, r24, r22
-    mr r3, r22
-    li r4, -0x1
-    mtctr r12
-    bctrl
-    subi r23, r23, 0x1
-lbl_80194EEC:
-    cmpwi r23, 0x0
-    bgt lbl_80194ED0
-    lwz r3, 0x8(r27)
-    addi r0, r3, 0xc
-    stw r0, 0x8(r27)
-    b lbl_8019520C
-    lbz r0, 0x1(r30)
-    srawi. r0, r0, 7
-    beq lbl_80194F24
-    lha r0, 0x2(r30)
-    slwi r0, r0, 2
-    add r3, r26, r0
-    lwz r3, 0x200(r3)
-    b lbl_80194F30
-lbl_80194F24:
-    lwz r3, 0x288(r26)
-    lha r0, 0x2(r30)
-    lwzx r3, r3, r0
-lbl_80194F30:
-    lwz r0, 0x4(r30)
-    li r4, 0x0
-    lwz r12, 0x8(r30)
-    add r3, r3, r0
-    mtctr r12
-    bctrl
-    lwz r3, 0x8(r27)
-    addi r0, r3, 0xc
-    stw r0, 0x8(r27)
-    b lbl_8019520C
-    lbz r0, 0x1(r30)
-    srawi. r0, r0, 7
-    beq lbl_80194F78
-    lha r0, 0x2(r30)
-    slwi r0, r0, 2
-    add r3, r26, r0
-    lwz r3, 0x200(r3)
-    b lbl_80194F84
-lbl_80194F78:
-    lwz r3, 0x288(r26)
-    lha r0, 0x2(r30)
-    lwzx r3, r3, r0
-lbl_80194F84:
-    lwz r0, 0x4(r30)
-    li r4, -0x1
-    lwz r12, 0x8(r30)
-    add r3, r3, r0
-    mtctr r12
-    bctrl
-    lwz r3, 0x8(r27)
-    addi r0, r3, 0xc
-    stw r0, 0x8(r27)
-    b lbl_8019520C
-    lbz r4, 0x1(r30)
-    extrwi. r0, r4, 1, 25
-    beq lbl_80194FCC
-    lha r0, 0x4(r30)
-    slwi r0, r0, 2
-    add r3, r26, r0
-    lwz r5, 0x200(r3)
-    b lbl_80194FD8
-lbl_80194FCC:
-    lwz r3, 0x288(r26)
-    lha r0, 0x4(r30)
-    lwzx r5, r3, r0
-lbl_80194FD8:
-    extrwi. r0, r4, 1, 24
-    beq lbl_80194FF8
-    lha r0, 0x2(r30)
-    slwi r0, r0, 2
-    add r3, r26, r0
-    lwz r0, 0x200(r3)
-    extsh r0, r0
-    b lbl_80195004
-lbl_80194FF8:
-    lwz r3, 0x288(r26)
-    lha r0, 0x2(r30)
-    lhax r0, r3, r0
-lbl_80195004:
-    cmpwi r0, 0x0
-    beq lbl_80195024
-    lwz r0, 0x8(r30)
-    li r4, 0x0
-    lwz r12, 0xc(r30)
-    add r3, r5, r0
-    mtctr r12
-    bctrl
-lbl_80195024:
-    lwz r3, 0x8(r27)
-    addi r0, r3, 0x10
-    stw r0, 0x8(r27)
-    b lbl_8019520C
-    lbz r0, 0x1(r30)
-    srawi. r0, r0, 7
-    beq lbl_80195054
-    lha r0, 0x2(r30)
-    slwi r0, r0, 2
-    add r3, r26, r0
-    lwz r24, 0x200(r3)
-    b lbl_80195060
-lbl_80195054:
-    lwz r3, 0x288(r26)
-    lha r0, 0x2(r30)
-    lwzx r24, r3, r0
-lbl_80195060:
-    lwz r23, 0x8(r30)
-    lwz r22, 0xc(r30)
-    lwz r3, 0x4(r30)
-    mullw r0, r22, r23
-    add r24, r24, r3
-    add r24, r24, r0
-    b lbl_80195098
-lbl_8019507C:
-    lwz r12, 0x10(r30)
-    subf r24, r22, r24
-    mr r3, r24
-    li r4, -0x1
-    mtctr r12
-    bctrl
-    subi r23, r23, 0x1
-lbl_80195098:
-    cmpwi r23, 0x0
-    bgt lbl_8019507C
-    lwz r3, 0x8(r27)
-    addi r0, r3, 0x14
-    stw r0, 0x8(r27)
-    b lbl_8019520C
-    lbz r0, 0x1(r30)
-    srawi. r0, r0, 7
-    beq lbl_801950D0
-    lha r0, 0x2(r30)
-    slwi r0, r0, 2
-    add r3, r26, r0
-    lwz r3, 0x200(r3)
-    b lbl_801950DC
-lbl_801950D0:
-    lwz r3, 0x288(r26)
-    lha r0, 0x2(r30)
-    lwzx r3, r3, r0
-lbl_801950DC:
-    lwz r12, 0x4(r30)
-    mtctr r12
-    bctrl
-    lwz r3, 0x8(r27)
-    addi r0, r3, 0x8
-    stw r0, 0x8(r27)
-    b lbl_8019520C
-    lbz r4, 0x1(r30)
-    extrwi. r0, r4, 1, 25
-    beq lbl_80195118
-    lha r0, 0x4(r30)
-    slwi r0, r0, 2
-    add r3, r26, r0
-    lwz r3, 0x200(r3)
-    b lbl_80195124
-lbl_80195118:
-    lwz r3, 0x288(r26)
-    lha r0, 0x4(r30)
-    lwzx r3, r3, r0
-lbl_80195124:
-    extrwi. r0, r4, 1, 24
-    beq lbl_80195144
-    lha r0, 0x2(r30)
-    slwi r0, r0, 2
-    add r4, r26, r0
-    lwz r0, 0x200(r4)
-    extsb r0, r0
-    b lbl_80195150
-lbl_80195144:
-    lwz r4, 0x288(r26)
-    lha r0, 0x2(r30)
-    lbzx r0, r4, r0
-lbl_80195150:
-    extsb. r0, r0
-    beq lbl_80195164
-    lwz r12, 0x8(r30)
-    mtctr r12
-    bctrl
-lbl_80195164:
-    lwz r3, 0x8(r27)
-    addi r0, r3, 0xc
-    stw r0, 0x8(r27)
-    b lbl_8019520C
-    cmplw r28, r30
-    beq lbl_8019521C
-    addi r0, r30, 0xc
-    stw r0, 0x8(r27)
-    b lbl_8019520C
-    cmplw r28, r30
-    beq lbl_8019521C
-    addi r0, r30, 0x10
-    stw r0, 0x8(r27)
-    b lbl_8019520C
-    lwz r3, 0x288(r26)
-    lha r0, 0x2(r30)
-    add r3, r3, r0
-    lwz r12, 0x8(r3)
-    cmpwi r12, 0x0
-    beq lbl_801951D8
-    lwz r3, 0x0(r3)
-    lwz r0, 0x298(r26)
-    cmplw r0, r3
-    bne lbl_801951CC
-    stw r12, 0x29c(r26)
-    b lbl_801951D8
-lbl_801951CC:
-    li r4, -0x1
-    mtctr r12
-    bctrl
-lbl_801951D8:
-    lwz r3, 0x8(r27)
-    addi r0, r3, 0x4
-    stw r0, 0x8(r27)
-    b lbl_8019520C
-    cmplw r28, r30
-    beq lbl_8019521C
-    lhz r0, 0x2(r30)
-    slwi r0, r0, 2
-    add r3, r0, r30
-    addi r0, r3, 0xc
-    stw r0, 0x8(r27)
-    b lbl_8019520C
-lbl_80195208:
-    bl fn_801936E8
-lbl_8019520C:
-    rlwinm. r0, r29, 0, 24, 24
-    beq lbl_80194D48
-    stw r25, 0x8(r27)
-    b lbl_80194D48
-lbl_8019521C:
-    lmw r22, 0x8(r1)
-    lwz r0, 0x34(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_80195230
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80195230
 extern "C" asm void fn_80195230() {
     nofralloc
     stwu r1, -0x50(r1)
@@ -1241,9 +1112,7 @@ lbl_801953C8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801953E8
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801953E8
 extern "C" asm void fn_801953E8() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1265,461 +1134,7 @@ lbl_80195410:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// ExPPC_LongJump__FP12ThrowContextPvPv
-// ----------------------------------------------------------------------------
-extern "C" asm void ExPPC_LongJump__FP12ThrowContextPvPv() {
-    nofralloc
-    mr r8, r5
-    mr r2, r4
-    lwz r0, 0x280(r3)
-    mtcrf 255, r0
-    lmw r13, 0x234(r3)
-    addi r7, r3, 0xe8
-    opword 0x11C0380C
-    lfd f14, 0xe0(r3)
-    addi r7, r3, 0xf8
-    opword 0x11E0380C
-    lfd f15, 0xf0(r3)
-    addi r7, r3, 0x108
-    opword 0x1200380C
-    lfd f16, 0x100(r3)
-    addi r7, r3, 0x118
-    opword 0x1220380C
-    lfd f17, 0x110(r3)
-    addi r7, r3, 0x128
-    opword 0x1240380C
-    lfd f18, 0x120(r3)
-    addi r7, r3, 0x138
-    opword 0x1260380C
-    lfd f19, 0x130(r3)
-    addi r7, r3, 0x148
-    opword 0x1280380C
-    lfd f20, 0x140(r3)
-    addi r7, r3, 0x158
-    opword 0x12A0380C
-    lfd f21, 0x150(r3)
-    addi r7, r3, 0x168
-    opword 0x12C0380C
-    lfd f22, 0x160(r3)
-    addi r7, r3, 0x178
-    opword 0x12E0380C
-    lfd f23, 0x170(r3)
-    addi r7, r3, 0x188
-    opword 0x1300380C
-    lfd f24, 0x180(r3)
-    addi r7, r3, 0x198
-    opword 0x1320380C
-    lfd f25, 0x190(r3)
-    addi r7, r3, 0x1a8
-    opword 0x1340380C
-    lfd f26, 0x1a0(r3)
-    addi r7, r3, 0x1b8
-    opword 0x1360380C
-    lfd f27, 0x1b0(r3)
-    addi r7, r3, 0x1c8
-    opword 0x1380380C
-    lfd f28, 0x1c0(r3)
-    addi r7, r3, 0x1d8
-    opword 0x13A0380C
-    lfd f29, 0x1d0(r3)
-    addi r7, r3, 0x1e8
-    opword 0x13C0380C
-    lfd f30, 0x1e0(r3)
-    addi r7, r3, 0x1f8
-    opword 0x13E0380C
-    lfd f31, 0x1f0(r3)
-    mtlr r8
-    lwz r1, 0x28c(r3)
-    lwz r3, 0x284(r3)
-    lwz r3, 0x0(r3)
-    stw r3, 0x0(r1)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// ExPPC_ThrowHandler__FP12ThrowContext
-// ----------------------------------------------------------------------------
-extern "C" asm void ExPPC_ThrowHandler__FP12ThrowContext() {
-    nofralloc
-    stwu r1, -0x70(r1)
-    mflr r0
-    stw r0, 0x74(r1)
-    addi r4, r1, 0x10
-    stmw r27, 0x5c(r1)
-    mr r30, r3
-    lwz r3, 0x290(r3)
-    bl ExPPC_FindExceptionRecord__FPcP15MWExceptionInfo
-    lwz r0, 0x10(r1)
-    cmpwi r0, 0x0
-    bne lbl_8019555C
-    bl fn_801936E8
-lbl_8019555C:
-    lwz r3, 0x10(r1)
-    lhz r0, 0x0(r3)
-    extrwi. r0, r0, 1, 27
-    beq lbl_80195574
-    lwz r8, 0x27c(r30)
-    b lbl_80195578
-lbl_80195574:
-    lwz r8, 0x284(r30)
-lbl_80195578:
-    lwz r0, 0x294(r30)
-    stw r8, 0x288(r30)
-    cmpwi r0, 0x0
-    bne lbl_80195654
-    lwz r5, 0x18(r1)
-    lwz r7, 0x10(r1)
-    lwz r6, 0x14(r1)
-    cmpwi r5, 0x0
-    lwz r4, 0x1c(r1)
-    lwz r3, 0x20(r1)
-    lwz r0, 0x24(r1)
-    stw r7, 0x28(r1)
-    stw r6, 0x2c(r1)
-    stw r5, 0x30(r1)
-    stw r4, 0x34(r1)
-    stw r3, 0x38(r1)
-    stw r0, 0x3c(r1)
-    lwz r0, 0x284(r30)
-    stw r0, 0x40(r1)
-    stw r8, 0x44(r1)
-    lwz r0, 0x27c(r30)
-    stw r0, 0x48(r1)
-    bne lbl_801955DC
-    li r3, 0x0
-    b lbl_801955E4
-lbl_801955DC:
-    lbz r0, 0x0(r5)
-    clrlwi r3, r0, 25
-lbl_801955E4:
-    clrlwi r3, r3, 24
-    subi r0, r3, 0x2
-    cmplwi r0, 0xa
-    ble lbl_80195618
-    subi r0, r3, 0xf
-    cmplwi r0, 0x1
-    ble lbl_80195618
-    cmpwi r3, 0xd
-    beq lbl_80195624
-    cmpwi r3, 0x0
-    beq lbl_80195618
-    bl fn_801936E8
-    b lbl_80195624
-lbl_80195618:
-    addi r3, r1, 0x28
-    bl ExPPC_NextAction__FP14ActionIterator
-    b lbl_801955E4
-lbl_80195624:
-    lwz r3, 0x30(r1)
-    li r0, 0x0
-    lwz r4, 0x44(r1)
-    lha r3, 0x2(r3)
-    add r4, r4, r3
-    lwz r3, 0x4(r4)
-    stw r3, 0x294(r30)
-    lwz r3, 0x0(r4)
-    stw r3, 0x298(r30)
-    stw r0, 0x29c(r30)
-    stw r4, 0x2a0(r30)
-    b lbl_8019565C
-lbl_80195654:
-    li r0, 0x0
-    stw r0, 0x2a0(r30)
-lbl_8019565C:
-    lwz r5, 0x18(r1)
-    lwz r7, 0x10(r1)
-    lwz r6, 0x14(r1)
-    cmpwi r5, 0x0
-    lwz r4, 0x1c(r1)
-    lwz r3, 0x20(r1)
-    lwz r0, 0x24(r1)
-    stw r7, 0x28(r1)
-    stw r6, 0x2c(r1)
-    stw r5, 0x30(r1)
-    stw r4, 0x34(r1)
-    stw r3, 0x38(r1)
-    stw r0, 0x3c(r1)
-    lwz r0, 0x284(r30)
-    stw r0, 0x40(r1)
-    lwz r0, 0x288(r30)
-    stw r0, 0x44(r1)
-    lwz r0, 0x27c(r30)
-    stw r0, 0x48(r1)
-    bne lbl_801956B4
-    li r27, 0x0
-    b lbl_801956BC
-lbl_801956B4:
-    lbz r0, 0x0(r5)
-    clrlwi r27, r0, 25
-lbl_801956BC:
-    clrlwi r3, r27, 24
-    subi r0, r3, 0x2
-    cmplwi r0, 0x9
-    ble lbl_801957E8
-    cmpwi r3, 0x10
-    beq lbl_801956F8
-    cmpwi r3, 0xc
-    beq lbl_80195718
-    cmpwi r3, 0xf
-    beq lbl_80195738
-    cmpwi r3, 0x0
-    beq lbl_801957E8
-    cmpwi r3, 0xd
-    beq lbl_801957E8
-    b lbl_801957E0
-lbl_801956F8:
-    lwz r4, 0x30(r1)
-    addi r5, r1, 0xc
-    lwz r3, 0x294(r30)
-    lwz r4, 0x4(r4)
-    bl __throw_catch_compare
-    extsb. r0, r3
-    bne lbl_801957F8
-    b lbl_801957E8
-lbl_80195718:
-    lwz r4, 0x30(r1)
-    addi r5, r1, 0xc
-    lwz r3, 0x294(r30)
-    lwz r4, 0x4(r4)
-    bl __throw_catch_compare
-    extsb. r0, r3
-    bne lbl_801957F8
-    b lbl_801957E8
-lbl_80195738:
-    lwz r29, 0x30(r1)
-    li r28, 0x0
-    lwz r31, 0x294(r30)
-    mr r27, r29
-    b lbl_80195774
-lbl_8019574C:
-    lwz r4, 0xc(r27)
-    mr r3, r31
-    addi r5, r1, 0x8
-    bl __throw_catch_compare
-    extsb. r0, r3
-    beq lbl_8019576C
-    li r0, 0x1
-    b lbl_80195784
-lbl_8019576C:
-    addi r27, r27, 0x4
-    addi r28, r28, 0x1
-lbl_80195774:
-    lhz r0, 0x2(r29)
-    cmpw r28, r0
-    blt lbl_8019574C
-    li r0, 0x0
-lbl_80195784:
-    cmpwi r0, 0x0
-    bne lbl_801957E8
-    lwz r28, 0x30(r1)
-    mr r3, r30
-    addi r4, r1, 0x10
-    mr r5, r28
-    bl ExPPC_UnwindStack__FP12ThrowContextP15MWExceptionInfoPv
-    lwz r5, 0x288(r30)
-    mr r3, r30
-    lwz r4, 0x8(r28)
-    lwz r0, 0x298(r30)
-    stwux r0, r4, r5
-    lwz r0, 0x294(r30)
-    stw r0, 0x4(r4)
-    lwz r0, 0x29c(r30)
-    stw r0, 0x8(r4)
-    stw r28, 0x14(r4)
-    lwz r5, 0x14(r1)
-    lwz r0, 0x4(r28)
-    lwz r4, 0x24(r1)
-    add r5, r5, r0
-    bl ExPPC_LongJump__FP12ThrowContextPvPv
-    b lbl_801957E8
-lbl_801957E0:
-    bl fn_801936E8
-    b lbl_801957F8
-lbl_801957E8:
-    addi r3, r1, 0x28
-    bl ExPPC_NextAction__FP14ActionIterator
-    mr r27, r3
-    b lbl_801956BC
-lbl_801957F8:
-    clrlwi r0, r27, 24
-    cmplwi r0, 0x10
-    bne lbl_80195894
-    lwz r31, 0x30(r1)
-    mr r3, r30
-    addi r4, r1, 0x10
-    mr r5, r31
-    bl ExPPC_UnwindStack__FP12ThrowContextP15MWExceptionInfoPv
-    lwz r4, 0x288(r30)
-    lwz r3, 0xc(r31)
-    lwz r0, 0x298(r30)
-    stwux r0, r4, r3
-    lwz r0, 0x294(r30)
-    stw r0, 0x4(r4)
-    lwz r0, 0x29c(r30)
-    stw r0, 0x8(r4)
-    lwz r3, 0x294(r30)
-    lbz r0, 0x0(r3)
-    cmpwi r0, 0x2a
-    bne lbl_80195868
-    addi r0, r4, 0x10
-    stw r0, 0xc(r4)
-    lwz r3, 0x298(r30)
-    lwz r0, 0xc(r1)
-    lwz r3, 0x0(r3)
-    add r0, r3, r0
-    stw r0, 0x10(r4)
-    b lbl_80195878
-lbl_80195868:
-    lwz r3, 0x298(r30)
-    lwz r0, 0xc(r1)
-    add r0, r3, r0
-    stw r0, 0xc(r4)
-lbl_80195878:
-    lwz r5, 0x14(r1)
-    mr r3, r30
-    lwz r0, 0x8(r31)
-    lwz r4, 0x24(r1)
-    add r5, r5, r0
-    bl ExPPC_LongJump__FP12ThrowContextPvPv
-    b lbl_80195920
-lbl_80195894:
-    lwz r31, 0x30(r1)
-    mr r3, r30
-    addi r4, r1, 0x10
-    mr r5, r31
-    bl ExPPC_UnwindStack__FP12ThrowContextP15MWExceptionInfoPv
-    lwz r4, 0x288(r30)
-    lha r3, 0xa(r31)
-    lwz r0, 0x298(r30)
-    stwux r0, r4, r3
-    lwz r0, 0x294(r30)
-    stw r0, 0x4(r4)
-    lwz r0, 0x29c(r30)
-    stw r0, 0x8(r4)
-    lwz r3, 0x294(r30)
-    lbz r0, 0x0(r3)
-    cmpwi r0, 0x2a
-    bne lbl_801958F8
-    addi r0, r4, 0x10
-    stw r0, 0xc(r4)
-    lwz r3, 0x298(r30)
-    lwz r0, 0xc(r1)
-    lwz r3, 0x0(r3)
-    add r0, r3, r0
-    stw r0, 0x10(r4)
-    b lbl_80195908
-lbl_801958F8:
-    lwz r3, 0x298(r30)
-    lwz r0, 0xc(r1)
-    add r0, r3, r0
-    stw r0, 0xc(r4)
-lbl_80195908:
-    lwz r5, 0x14(r1)
-    mr r3, r30
-    lhz r0, 0x8(r31)
-    lwz r4, 0x24(r1)
-    add r5, r5, r0
-    bl ExPPC_LongJump__FP12ThrowContextPvPv
-lbl_80195920:
-    lmw r27, 0x5c(r1)
-    lwz r0, 0x74(r1)
-    mtlr r0
-    addi r1, r1, 0x70
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// __throw
-// ----------------------------------------------------------------------------
-extern "C" asm void __throw() {
-    nofralloc
-    stwu r1, -0x2c0(r1)
-    mflr r0
-    stw r0, 0x2c4(r1)
-    stw r3, 0x8(r1)
-    stw r4, 0xc(r1)
-    stw r5, 0x10(r1)
-    stmw r13, 0x24c(r1)
-    stfd f14, 0xf8(r1)
-    addi r3, r1, 0x100
-    opword 0x11C0180E
-    stfd f15, 0x108(r1)
-    addi r3, r1, 0x110
-    opword 0x11E0180E
-    stfd f16, 0x118(r1)
-    addi r3, r1, 0x120
-    opword 0x1200180E
-    stfd f17, 0x128(r1)
-    addi r3, r1, 0x130
-    opword 0x1220180E
-    stfd f18, 0x138(r1)
-    addi r3, r1, 0x140
-    opword 0x1240180E
-    stfd f19, 0x148(r1)
-    addi r3, r1, 0x150
-    opword 0x1260180E
-    stfd f20, 0x158(r1)
-    addi r3, r1, 0x160
-    opword 0x1280180E
-    stfd f21, 0x168(r1)
-    addi r3, r1, 0x170
-    opword 0x12A0180E
-    stfd f22, 0x178(r1)
-    addi r3, r1, 0x180
-    opword 0x12C0180E
-    stfd f23, 0x188(r1)
-    addi r3, r1, 0x190
-    opword 0x12E0180E
-    stfd f24, 0x198(r1)
-    addi r3, r1, 0x1a0
-    opword 0x1300180E
-    stfd f25, 0x1a8(r1)
-    addi r3, r1, 0x1b0
-    opword 0x1320180E
-    stfd f26, 0x1b8(r1)
-    addi r3, r1, 0x1c0
-    opword 0x1340180E
-    stfd f27, 0x1c8(r1)
-    addi r3, r1, 0x1d0
-    opword 0x1360180E
-    stfd f28, 0x1d8(r1)
-    addi r3, r1, 0x1e0
-    opword 0x1380180E
-    stfd f29, 0x1e8(r1)
-    addi r3, r1, 0x1f0
-    opword 0x13A0180E
-    stfd f30, 0x1f8(r1)
-    addi r3, r1, 0x200
-    opword 0x13C0180E
-    stfd f31, 0x208(r1)
-    addi r3, r1, 0x210
-    opword 0x13E0180E
-    mfcr r3
-    stw r3, 0x298(r1)
-    lwz r3, 0x0(r1)
-    lwz r4, 0x4(r3)
-    stw r3, 0x29c(r1)
-    stw r3, 0x2a4(r1)
-    stw r4, 0x2a8(r1)
-    lwz r3, 0x8(r1)
-    stw r3, 0x2ac(r1)
-    lwz r3, 0xc(r1)
-    stw r3, 0x2b0(r1)
-    lwz r3, 0x10(r1)
-    stw r3, 0x2b4(r1)
-    addi r3, r1, 0x18
-    bl ExPPC_ThrowHandler__FP12ThrowContext
-    nop
-    lwz r0, 0x2c4(r1)
-    mtlr r0
-    addi r1, r1, 0x2c0
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_80195A78
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80195A78
 extern "C" asm void fn_80195A78() {
     nofralloc
     lwz r0, 0x0(r3)
@@ -1735,13 +1150,10 @@ extern "C" asm void fn_80195A78() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80195AA4
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80195AA4
 extern "C" asm void fn_80195AA4() {
     nofralloc
     lis r3, lbl_8035F76C@ha
     addi r3, r3, lbl_8035F76C@l
     blr
 }
-
