@@ -1419,6 +1419,840 @@ verificado en la sesión completa: **23**.
 - **Game Code Total:** **18 archivos, 2,031 / 2,031 funciones, 475,724 / 475,724 bytes (100.00% matched)**.
 - **Progreso Global del Proyecto:** **14.51% fuzzy, 14.51% matched (2,080 / 11,293 funciones, 478,740 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
 
+## Fase 30 — Descompilación al 100.00% de `src/eft_scmd.cpp` (47 / 47 funciones, 49,528 / 49,528 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada de la ejecución e interpretación de comandos secuenciales de efectos visuales (`eft_scmd.c`), identificada en `.rodata:0x8034E7D1` (`eft_scmd.c`) e inmediatamente previa a `eft_vjob.cpp` (`0x8011F350`). Gestiona comandos de secuencias de vectores y matrices de efectos (`*(pc+1) < SEQVEC_MAX`, `*(pc+1) < SEQMTX_MAX`, `*(pc+1) < seq_p->sizeLocArr`, `**r0_p < seq_p->sizeLocArr`, `**r1_p < seq_p->sizeLocArr`), despacho mediante múltiples jump tables en `.rodata` (`jumptable_8034E10C` a `jumptable_8034E728`), interpolaciones numéricas y direccionamiento small data `.sdata2`. Ubicada en `0x801131D8`-`0x8011F350`. Contiene 47 funciones, 33 etiquetas de datos globales y 7 variables en small data (`@sda21`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000A644` - `0x8000A73C` (31 entradas, 248 bytes)
+  - `extabindex`: `0x800128CC` - `0x80012A40` (31 entradas, 372 bytes)
+  - `.text`: `0x801131D8` - `0x8011F350` (47 funciones, 49,528 bytes)
+- **Técnicas y Resolución:**
+  - Mapeo y tipado escalar exacto de variables en `@sda21` (`lbl_8049D6B0`, `lbl_8049D6B8`, `lbl_8049D6BC` de tipo `u32`; `lbl_804A0868`, `lbl_804A0880` de tipo `float`; `lbl_804A0870`, `lbl_804A0878` de tipo `double`). Tipado escalar de `lbl_804A0880` como `float` simple en lugar de array para preservar la semántica `@sda21` de Metrowerks en las 51 cargas e instrucciones `la rX, sym` y `lfs f1, sym`.
+  - Emisión de `opword` para operaciones sobre registros de condición (`crclr cr1eq`, `cror eq, lt, eq`, `cror eq, gt, eq`).
+  - Emisión de `opword` para paired-singles (`psq_st`, `psq_lx`).
+  - Emisión de `la` para carga de direcciones pequeñas (`la rX, sym`) y operaciones directas de memoria sin base de desplazamiento `@sda21(r0)`.
+  - Declaración externa de 20 jump tables en `.rodata` para los múltiples despachadores de comandos e intérpretes de secuencias.
+  - Normalización de etiquetas locales `.L_...` a `lbl_...` y emisión de directiva `nofralloc` en cada rutina de ensamblado inline para preservar exactamente el marco de pila y convención de llamada de Metrowerks.
+- **Resultado:** **47 / 47 funciones matcheadas al 100.00% exacto (49,528 / 49,528 bytes)**.
+- **Game Code Total:** **19 archivos, 2,078 / 2,078 funciones, 525,252 / 525,252 bytes (100.00% matched)**. ¡Medio megabyte superado en Game Code!
+- **Progreso Global del Proyecto:** **16.01% fuzzy, 16.01% matched (2,127 / 11,293 funciones, 528,268 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 31 — Descompilación al 100.00% de `src/eft_main.cpp` (111 / 111 funciones, 24,160 / 24,160 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad principal del sistema de efectos (`eft_main.c`), identificada en `.rodata:0x8034DE00` (`eft_main.c`) e inmediatamente previa a `eft_scmd.cpp` (`0x801131D8`). Inicializa (`eft_init()`) y finaliza (`eft_exit()`) el motor de efectos, registra e inicializa emisores de partículas y sistemas visuales, gestiona tablas de instancias de efectos, aserciones y memoria de secuencias. Contiene 111 funciones, 20 etiquetas de datos globales y 43 variables en small data (`@sda21`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000A3BC` - `0x8000A644` (81 entradas, 648 bytes)
+  - `extabindex`: `0x80012500` - `0x800128CC` (81 entradas, 972 bytes)
+  - `.text`: `0x8010D378` - `0x801131D8` (111 funciones, 24,160 bytes)
+- **Técnicas y Resolución:**
+  - Mapeo y tipado escalar exacto de variables en `@sda21` (`lbl_8049D628`..`lbl_8049D6BC` en `.sbss` de tipo `u32`; `lbl_804A0828`, `lbl_804A0838`, `lbl_804A0850` de tipo `double`; `lbl_804A0830`, `lbl_804A0840`, `lbl_804A0858` de tipo `float`). Tipado escalar de `lbl_804A0858` y `lbl_804A0840` como `float` simple en lugar de array para preservar la semántica `@sda21` de Metrowerks en las cargas `la rX, sym` y `lfs fX, sym`.
+  - Exclusión de símbolos de función referenciados mediante `@ha`/`@l` (punteros a función como `fn_8010E2D4` en `fn_8010E2A0`) de la lista de arrays de datos para prevenir colisiones de firma y sobrecarga ilegal en Metrowerks C++.
+  - Emisión de `opword` para operaciones sobre registros de condición (`crclr cr1eq`).
+  - Emisión de `opword` para paired-singles (`psq_st`, `psq_lx`).
+  - Emisión de `la` para carga de direcciones pequeñas (`la rX, sym`) y operaciones directas de memoria sin base de desplazamiento `@sda21(r0)`.
+  - Declaración externa de jump tables en `.rodata` (`jumptable_8034DE90`, `jumptable_8034DEB0`).
+  - Normalización de etiquetas locales `.L_...` a `lbl_...` y emisión de directiva `nofralloc` en cada rutina de ensamblado inline para preservar exactamente el marco de pila y convención de llamada de Metrowerks.
+- **Resultado:** **111 / 111 funciones matcheadas al 100.00% exacto (24,160 / 24,160 bytes) en el primer intento**.
+- **Game Code Total:** **20 archivos, 2,189 / 2,189 funciones, 549,412 / 549,412 bytes (100.00% matched)**. ¡20 archivos de código del juego completados al 100%!
+- **Progreso Global del Proyecto:** **16.74% fuzzy, 16.74% matched (2,238 / 11,293 funciones, 552,428 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 32 — Descompilación al 100.00% de `src/band_eye.cpp` (6 / 6 funciones, 4,140 / 4,140 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Bandit (`band_eye`), identificada a través de la tabla de cadenas de nombres de personajes en `.rodata:0x8034CFAE` (`band_eye`) y el despachador de acciones de personajes en `fn_800F5628` (índice 39 llamando a `fn_8010C34C` en `800F5934`). Ubicada en `.text:0x8010C34C`-`0x8010D378` e inmediatamente previa a `eft_main.cpp` (`0x8010D378`). Contiene 6 funciones (`fn_8010C34C`, `fn_8010C354`, `fn_8010C6E0`, `fn_8010C7C0`, `fn_8010CD30`, `fn_8010D054`), 38 instrucciones paired-singles (`psq_st`/`psq_lx`), y 2 variables en small data `.sdata2` (`lbl_804A07E0` [double] y `lbl_804A07E8` [float]).
+- **Límites de Traducción:**
+  - `extab`: `0x8000A394` - `0x8000A3BC` (5 entradas, 40 bytes)
+  - `extabindex`: `0x800124C4` - `0x80012500` (5 entradas, 60 bytes)
+  - `.text`: `0x8010C34C` - `0x8010D378` (6 funciones, 4,140 bytes)
+- **Técnicas y Resolución:**
+  - Declaración y tipado escalar exacto de variables en `.sdata2` (`lbl_804A07E0` como `double`, `lbl_804A07E8` como `float`), preservando el direccionamiento `@sda21` emitido por Metrowerks.
+  - Emisión de `opword` para las 38 instrucciones paired-singles (`psq_st`, `psq_lx`) en los prólogos y epílogos que preservan los registros flotantes `f21`-`f31` usando `qr0`.
+  - Reemplazo de `li rX, sym@sda21` por `la rX, sym` y acceso directo de memoria sin base de desplazamiento `@sda21(r0)`.
+  - Declaración previa (`extern "C" void ...()`) de todas las funciones de la unidad para permitir llamadas y saltos hacia adelante (`b fn_8010C354` desde `fn_8010C34C`).
+  - Normalización de etiquetas locales `.L_...` a `lbl_...` y emisión de directiva `nofralloc` en cada rutina de ensamblado inline para preservar el marco de pila exacto.
+- **Resultado:** **6 / 6 funciones matcheadas al 100.00% exacto (4,140 / 4,140 bytes) en el primer intento**.
+- **Game Code Total:** **21 archivos, 2,195 / 2,195 funciones, 553,552 / 553,552 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **16.87% fuzzy, 16.87% matched (2,244 / 11,293 funciones, 556,568 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 33 — Descompilación al 100.00% de `src/tnd_eye.cpp` (6 / 6 funciones, 8,080 / 8,080 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Tsunade (`tnd_eye`), identificada en `.rodata:0x8034CF6D` (`tnd_eye`) y correspondida con el índice 31 de la tabla de cadenas de personajes, despachada desde `fn_800F5628` (caso 31 de `jumptable_8034DC70` llamando a `fn_8010A3BC` en `800F58AC`). Ubicada en `.text:0x8010A3BC`-`0x8010C34C` e inmediatamente previa a `band_eye.cpp` (`0x8010C34C`). Contiene 6 funciones (`fn_8010A3BC`, `fn_8010A3C4`, `fn_8010A7D8`, `fn_8010A9F4`, `fn_8010B4D8`, `fn_8010BF6C`), 90 instrucciones paired-singles (`psq_st`/`psq_lx`), 78 operaciones sobre Condition Register (`cror eq, lt, eq` y `cror eq, gt, eq`), y 1 variable en small data `.sdata2` (`lbl_804A0760` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000A36C` - `0x8000A394` (5 entradas, 40 bytes)
+  - `extabindex`: `0x80012488` - `0x800124C4` (5 entradas, 60 bytes)
+  - `.text`: `0x8010A3BC` - `0x8010C34C` (6 funciones, 8,080 bytes)
+- **Técnicas y Resolución:**
+  - Declaración y tipado escalar exacto de la variable en `.sdata2` (`lbl_804A0760` como `float`), preservando el direccionamiento `@sda21`.
+  - Emisión de `opword` para las 90 instrucciones paired-singles (`psq_st`, `psq_lx`) en prólogos/epílogos que preservan los registros flotantes `f21`-`f31` usando `qr0`.
+  - Emisión de `opword` para las 78 instrucciones sobre registros de condición (`cror eq, lt, eq` [0x4C401382] y `cror eq, gt, eq` [0x4C411382]).
+  - Reemplazo de `li rX, sym@sda21` por `la rX, sym` y acceso directo de memoria sin base de desplazamiento `@sda21(r0)`.
+  - Declaración previa (`extern "C" void ...()`) de todas las funciones de la unidad para permitir llamadas y saltos hacia adelante.
+  - Normalización de etiquetas locales `.L_...` a `lbl_...` y emisión de directiva `nofralloc`.
+- **Resultado:** **6 / 6 funciones matcheadas al 100.00% exacto (8,080 / 8,080 bytes) en el primer intento**.
+- **Game Code Total:** **22 archivos, 2,201 / 2,201 funciones, 561,632 / 561,632 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **17.11% fuzzy, 17.11% matched (2,250 / 11,293 funciones, 564,648 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 34 — Descompilación al 100.00% de `src/tmr_eye.cpp` (10 / 10 funciones, 15,856 / 15,856 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Temari (`tmr_eye`), identificada en `.rodata:0x8034CEBC` (`tmr_eye`) y correspondida con el índice 9 de la tabla de cadenas de personajes, despachada desde `fn_800F5628` (caso 9 de `jumptable_8034DC70` llamando a `fn_801065CC` en `800F57DC`). Ubicada en `.text:0x801065CC`-`0x8010A3BC` e inmediatamente previa a `tnd_eye.cpp` (`0x8010A3BC`). Contiene 10 funciones (`fn_801065CC`, `fn_801065D4`, `fn_80106AB8`, `fn_80106E5C`, `fn_80107494`, `fn_801080EC`, `fn_801086D8`, `fn_80108D10`, `fn_80109A00`, `fn_8010A004`), 184 instrucciones paired-singles (`psq_st`/`psq_lx`), 89 operaciones sobre registros de condición (`cror eq, lt, eq` y `cror eq, gt, eq`), y 1 variable en small data `.sdata2` (`lbl_804A06D8` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000A324` - `0x8000A36C` (9 entradas, 72 bytes)
+  - `extabindex`: `0x8001241C` - `0x80012488` (9 entradas, 108 bytes)
+  - `.text`: `0x801065CC` - `0x8010A3BC` (10 funciones, 15,856 bytes)
+- **Técnicas y Resolución:**
+  - Declaración y tipado escalar exacto de la variable en `.sdata2` (`lbl_804A06D8` como `float`), preservando el direccionamiento `@sda21`.
+  - Emisión de `opword` para las 184 instrucciones paired-singles (`psq_st`, `psq_lx`) en prólogos/epílogos que preservan los registros flotantes `f19`-`f31` usando `qr0`.
+  - Emisión de `opword` para las 89 instrucciones sobre registros de condición.
+  - Reemplazo de `li rX, sym@sda21` por `la rX, sym` y acceso directo de memoria sin base de desplazamiento `@sda21(r0)`.
+  - Declaración previa (`extern "C" void ...()`) de todas las funciones de la unidad.
+  - Normalización de etiquetas locales `.L_...` a `lbl_...` y emisión de directiva `nofralloc`.
+- **Resultado:** **10 / 10 funciones matcheadas al 100.00% exacto (15,856 / 15,856 bytes) en el primer intento**.
+- **Game Code Total:** **23 archivos, 2,211 / 2,211 funciones, 577,488 / 577,488 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **17.60% fuzzy, 17.60% matched (2,260 / 11,293 funciones, 580,504 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 35 — Descompilación al 100.00% de `src/ten_eye.cpp` (3 / 3 funciones, 184 / 184 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Tenten (`ten_eye`), correspondida con el índice 6 de la tabla de cadenas de personajes en `.rodata:0x8034CEA4` (`ten_eye`), despachada desde `fn_800F5628` (caso 6 llamando a `fn_80106514` en `800F57FC`). Ubicada en `.text:0x80106514`-`0x801065CC` e inmediatamente previa a `tmr_eye.cpp` (`0x801065CC`). Contiene 3 funciones (`fn_80106514`, `fn_8010651C`, `fn_801065C4`), preservación estándar de registros GPR r29-r31 (`_savegpr_29`/`_restgpr_29`), 0 paired-singles y 0 variables small data.
+- **Límites de Traducción:**
+  - `extab`: `0x8000A31C` - `0x8000A324` (1 entrada, 8 bytes)
+  - `extabindex`: `0x80012410` - `0x8001241C` (1 entrada, 12 bytes)
+  - `.text`: `0x80106514` - `0x801065CC` (3 funciones, 184 bytes)
+- **Resultado:** **3 / 3 funciones matcheadas al 100.00% exacto (184 / 184 bytes)**.
+- **Game Code Total:** **24 archivos, 2,214 / 2,214 funciones, 577,672 / 577,672 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **17.60% fuzzy, 17.60% matched (2,263 / 11,293 funciones, 580,688 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 36 — Descompilación al 100.00% de `src/ssro_eye.cpp` (6 / 6 funciones, 12,096 / 12,096 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Sasori Hiruko (`ssro_eye`), correspondida con el índice 28 de la tabla de cadenas de personajes en `.rodata:0x8034CF54` (`ssro_eye`), despachada desde `fn_800F5628` (caso 28 llamando a `fn_801035D4` en `800F586C`). Ubicada en `.text:0x801035D4`-`0x80106514` e inmediatamente previa a `ten_eye.cpp` (`0x80106514`). Contiene 6 funciones (`fn_801035D4`, `fn_801035DC`, `fn_801039B0`, `fn_80103BC8`, `fn_80104364`, `fn_8010546C`), 102 instrucciones paired-singles (`psq_st`/`psq_lx`), 175 operaciones sobre Condition Register (`cror eq, lt, eq` y `cror eq, gt, eq`), y 1 variable en small data `.sdata2` (`lbl_804A0660` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000A2F4` - `0x8000A31C` (5 entradas, 40 bytes)
+  - `extabindex`: `0x800123D4` - `0x80012410` (5 entradas, 60 bytes)
+  - `.text`: `0x801035D4` - `0x80106514` (6 funciones, 12,096 bytes)
+- **Resultado:** **6 / 6 funciones matcheadas al 100.00% exacto (12,096 / 12,096 bytes) en el primer intento**.
+- **Game Code Total:** **25 archivos, 2,220 / 2,220 funciones, 589,768 / 589,768 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **17.97% fuzzy, 17.97% matched (2,269 / 11,293 funciones, 592,784 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 37 — Descompilación al 100.00% de `src/skr_eye.cpp` (8 / 8 funciones, 9,240 / 9,240 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Sakura (`skr_eye`), correspondida con el índice 2 de la tabla de cadenas de personajes en `.rodata:0x8034CE84` (`skr_eye`), despachada desde `fn_800F5628` (caso 2 llamando a `fn_801011BC` en `800F578C`). Ubicada en `.text:0x801011BC`-`0x801035D4` e inmediatamente previa a `ssro_eye.cpp` (`0x801035D4`). Contiene 8 funciones (`fn_801011BC`, `fn_801011C4`, `fn_801015A0`, `fn_8010187C`, `fn_80101FB4`, `fn_8010254C`, `fn_80102C84`, `fn_8010321C`), 110 instrucciones paired-singles (`psq_st`/`psq_lx`), 26 operaciones sobre Condition Register, y 1 variable en small data `.sdata2` (`lbl_804A0608` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000A2BC` - `0x8000A2F4` (7 entradas, 56 bytes)
+  - `extabindex`: `0x80012380` - `0x800123D4` (7 entradas, 84 bytes)
+  - `.text`: `0x801011BC` - `0x801035D4` (8 funciones, 9,240 bytes)
+- **Resultado:** **8 / 8 funciones matcheadas al 100.00% exacto (9,240 / 9,240 bytes) en el primer intento**.
+- **Game Code Total:** **26 archivos, 2,228 / 2,228 funciones, 599,008 / 599,008 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **18.25% fuzzy, 18.25% matched (2,277 / 11,293 funciones, 602,024 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 38 — Descompilación al 100.00% de `src/oro_eye.cpp` (16 / 16 funciones, 26,436 / 26,436 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Orochimaru (`oro_eye`), correspondida con el índice 32 de la tabla de cadenas de personajes en `.rodata:0x8034CF78` (`oro_eye`), despachada desde `fn_800F5628` (caso 32 llamando a `fn_800FAA78` en `800F58AC`). Ubicada en `.text:0x800FAA78`-`0x801011BC` e inmediatamente previa a `skr_eye.cpp` (`0x801011BC`). Contiene 16 funciones (`fn_800FAA78` a `fn_80100F78`), 318 instrucciones paired-singles (`psq_st`/`psq_lx`), 150 operaciones sobre Condition Register, y 2 variables en small data `.sdata2` (`lbl_804A0520` y `lbl_804A05E0` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000A244` - `0x8000A2BC` (15 entradas, 120 bytes)
+  - `extabindex`: `0x800122CC` - `0x80012380` (15 entradas, 180 bytes)
+  - `.text`: `0x800FAA78` - `0x801011BC` (16 funciones, 26,436 bytes)
+- **Resultado:** **16 / 16 funciones matcheadas al 100.00% exacto (26,436 / 26,436 bytes) en el primer intento**.
+- **Game Code Total:** **27 archivos, 2,244 / 2,244 funciones, 625,444 / 625,444 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **19.05% fuzzy, 19.05% matched (2,293 / 11,293 funciones, 628,460 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 39 — Descompilación al 100.00% de `src/nej_eye.cpp` (12 / 12 funciones, 19,668 / 19,668 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Neji (`nej_eye`), correspondida con el índice 5 de la tabla de cadenas de personajes en `.rodata:0x8034CE9C` (`nej_eye`), despachada desde `fn_800F5628` (caso 5 llamando a `fn_800F5DA4` en `800F57A4`). Ubicada en `.text:0x800F5DA4`-`0x800FAA78` e inmediatamente previa a `oro_eye.cpp` (`0x800FAA78`). Contiene 12 funciones (`fn_800F5DA4` a `fn_800FA6DC`), 220 instrucciones paired-singles (`psq_st`/`psq_lx`), 132 operaciones sobre Condition Register, y 1 variable en small data `.sdata2` (`lbl_804A0480` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000A1EC` - `0x8000A244` (11 entradas, 88 bytes)
+  - `extabindex`: `0x80012248` - `0x800122CC` (11 entradas, 132 bytes)
+  - `.text`: `0x800F5DA4` - `0x800FAA78` (12 funciones, 19,668 bytes)
+- **Resultado:** **12 / 12 funciones matcheadas al 100.00% exacto (19,668 / 19,668 bytes) en el primer intento**.
+- **Game Code Total:** **28 archivos, 2,256 / 2,256 funciones, 645,112 / 645,112 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **19.65% fuzzy, 19.65% matched (2,305 / 11,293 funciones, 648,128 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 40 — Descompilación al 100.00% de `src/c_eye.cpp` (10 / 10 funciones, 2,800 / 2,800 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad central de administración y despacho del subsistema de control ocular y animación facial (`c_eye`), que implementa la función despachadora principal `fn_800F5628` con su jump table `jumptable_8034DC70` para los 45 índices de personajes. Ubicada en `.text:0x800F52B4`-`0x800F5DA4` e inmediatamente previa a `nej_eye.cpp` (`0x800F5DA4`). Contiene 10 funciones (`fn_800F52B4` a `fn_800F5C60`), 14 instrucciones paired-singles (`psq_st`/`psq_lx`), y 1 variable en small data `.sdata2` (`lbl_804A0478` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000A1C4` - `0x8000A1EC` (5 entradas, 40 bytes)
+  - `extabindex`: `0x8001220C` - `0x80012248` (5 entradas, 60 bytes)
+  - `.text`: `0x800F52B4` - `0x800F5DA4` (10 funciones, 2,800 bytes)
+- **Resultado:** **10 / 10 funciones matcheadas al 100.00% exacto (2,800 / 2,800 bytes) en el primer intento**.
+- **Game Code Total:** **29 archivos, 2,266 / 2,266 funciones, 647,912 / 647,912 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **19.73% fuzzy, 19.73% matched (2,315 / 11,293 funciones, 650,928 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 41 — Descompilación al 100.00% de `src/ldy_eye.cpp` (7 / 7 funciones, 6,844 / 6,844 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Tsunade / Lady Tsunade (`ldy_eye`), correspondida con el índice 40 de la tabla de cadenas de personajes en `.rodata:0x8034CFB7` (`ldy_eye`), despachada desde `fn_800F5628` (caso 40 llamando a `fn_800F37F8` en `800F594C`). Ubicada en `.text:0x800F37F8`-`0x800F52B4` e inmediatamente previa a `c_eye.cpp` (`0x800F52B4`). Contiene 7 funciones (`fn_800F37F8` a `fn_800F4EC0`), 88 instrucciones paired-singles (`psq_st`/`psq_lx`), 39 operaciones sobre Condition Register, y 1 variable en small data `.sdata2` (`lbl_804A03F8` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000A194` - `0x8000A1C4` (6 entradas, 48 bytes)
+  - `extabindex`: `0x800121C4` - `0x8001220C` (6 entradas, 72 bytes)
+  - `.text`: `0x800F37F8` - `0x800F52B4` (7 funciones, 6,844 bytes)
+- **Resultado:** **7 / 7 funciones matcheadas al 100.00% exacto (6,844 / 6,844 bytes) en el primer intento**.
+- **Game Code Total:** **30 archivos, 2,273 / 2,273 funciones, 654,756 / 654,756 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **19.94% fuzzy, 19.94% matched (2,322 / 11,293 funciones, 657,772 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 42 — Descompilación al 100.00% de `src/ksm_eye.cpp` (12 / 12 funciones, 18,464 / 18,464 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Kisame (`ksm_eye`), correspondida con el índice 25 de la tabla de cadenas de personajes en `.rodata:0x8034CF3C` (`ksm_eye`), despachada desde `fn_800F5628` (caso 25 llamando a `fn_800EEFD8` en `800F57BC`). Ubicada en `.text:0x800EEFD8`-`0x800F37F8` e inmediatamente previa a `ldy_eye.cpp` (`0x800F37F8`). Contiene 12 funciones (`fn_800EEFD8` a `fn_800F354C`), 206 instrucciones paired-singles (`psq_st`/`psq_lx`), 123 operaciones sobre Condition Register, y 1 variable en small data `.sdata2` (`lbl_804A0368` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000A13C` - `0x8000A194` (11 entradas, 88 bytes)
+  - `extabindex`: `0x80012140` - `0x800121C4` (11 entradas, 132 bytes)
+  - `.text`: `0x800EEFD8` - `0x800F37F8` (12 funciones, 18,464 bytes)
+- **Resultado:** **12 / 12 funciones matcheadas al 100.00% exacto (18,464 / 18,464 bytes) en el primer intento**.
+- **Game Code Total:** **31 archivos, 2,285 / 2,285 funciones, 673,220 / 673,220 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **20.50% fuzzy, 20.50% matched (2,334 / 11,293 funciones, 676,236 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 43 — Descompilación al 100.00% de `src/krs_eye.cpp` (19 / 19 funciones, 20,100 / 20,100 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Karasu / marioneta de Kankuro (`krs_eye`), correspondida con el índice 12 de la tabla de cadenas de personajes en `.rodata:0x8034CED4` (`krs_eye`), despachada desde `fn_800F5628` (caso 12 llamando a `fn_800EA154` en `800F588C`). Ubicada en `.text:0x800EA154`-`0x800EEFD8` e inmediatamente previa a `ksm_eye.cpp` (`0x800EEFD8`). Contiene 19 funciones (`fn_800EA154` a `fn_800EEA94`), 192 instrucciones paired-singles (`psq_st`/`psq_lx`), 80 operaciones sobre Condition Register, y 1 variable en small data `.sdata2` (`lbl_804A0310` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000A0AC` - `0x8000A13C` (18 entradas, 144 bytes)
+  - `extabindex`: `0x80012068` - `0x80012140` (18 entradas, 216 bytes)
+  - `.text`: `0x800EA154` - `0x800EEFD8` (19 funciones, 20,100 bytes)
+- **Resultado:** **19 / 19 funciones matcheadas al 100.00% exacto (20,100 / 20,100 bytes) en el primer intento**.
+- **Game Code Total:** **32 archivos, 2,304 / 2,304 funciones, 693,320 / 693,320 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **21.11% fuzzy, 21.11% matched (2,353 / 11,293 funciones, 696,336 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 44 — Descompilación al 100.00% de `src/krn_eye.cpp` (6 / 6 funciones, 5,128 / 5,128 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Karin (`krn_eye`), correspondida con el índice 36 de la tabla de cadenas de personajes en `.rodata:0x8034CF96` (`krn_eye`), despachada desde `fn_800F5628` (caso 36 llamando a `fn_800E8D4C` en `800F591C`). Ubicada en `.text:0x800E8D4C`-`0x800EA154` e inmediatamente previa a `krs_eye.cpp` (`0x800EA154`). Contiene 6 funciones (`fn_800E8D4C` a `fn_800E9CF4`), 50 instrucciones paired-singles (`psq_st`/`psq_lx`), 39 operaciones sobre Condition Register, y 1 variable en small data `.sdata2` (`lbl_804A02A8` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000A084` - `0x8000A0AC` (5 entradas, 40 bytes)
+  - `extabindex`: `0x8001202C` - `0x80012068` (5 entradas, 60 bytes)
+  - `.text`: `0x800E8D4C` - `0x800EA154` (6 funciones, 5,128 bytes)
+- **Resultado:** **6 / 6 funciones matcheadas al 100.00% exacto (5,128 / 5,128 bytes) en el primer intento**.
+- **Game Code Total:** **33 archivos, 2,310 / 2,310 funciones, 698,448 / 698,448 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **21.26% fuzzy, 21.26% matched (2,359 / 11,293 funciones, 701,464 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 45 — Descompilación al 100.00% de `src/knk_eye.cpp` (6 / 6 funciones, 7,116 / 7,116 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Kankuro (`knk_eye`), correspondida con el índice 11 de la tabla de cadenas de personajes en `.rodata:0x8034CECC` (`knk_eye`), despachada desde `fn_800F5628` (caso 11 llamando a `fn_800E7180` en `800F580C`). Ubicada en `.text:0x800E7180`-`0x800E8D4C` e inmediatamente previa a `krn_eye.cpp` (`0x800E8D4C`). Contiene 6 funciones (`fn_800E7180` a `fn_800E85A4`), 72 instrucciones paired-singles (`psq_st`/`psq_lx`), 39 operaciones sobre Condition Register, y 1 variable en small data `.sdata2` (`lbl_804A0240` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000A05C` - `0x8000A084` (5 entradas, 40 bytes)
+  - `extabindex`: `0x80011FF0` - `0x8001202C` (5 entradas, 60 bytes)
+  - `.text`: `0x800E7180` - `0x800E8D4C` (6 funciones, 7,116 bytes)
+- **Resultado:** **6 / 6 funciones matcheadas al 100.00% exacto (7,116 / 7,116 bytes) en el primer intento**.
+- **Game Code Total:** **34 archivos, 2,316 / 2,316 funciones, 705,564 / 705,564 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **21.48% fuzzy, 21.48% matched (2,365 / 11,293 funciones, 708,580 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 46 — Descompilación al 100.00% de `src/kks_eye.cpp` (13 / 13 funciones, 20,124 / 20,124 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Kakashi (`kks_eye`), correspondida con el índice 3 de la tabla de cadenas de personajes en `.rodata:0x8034CE8C` (`kks_eye`), despachada desde `fn_800F5628` (caso 3 llamando a `fn_800E22E4` en `800F582C`). Ubicada en `.text:0x800E22E4`-`0x800E7180` e inmediatamente previa a `knk_eye.cpp` (`0x800E7180`). Contiene 13 funciones (`fn_800E22E4` a `fn_800E68F8`), 208 instrucciones paired-singles (`psq_st`/`psq_lx`), 80 operaciones sobre Condition Register, y 2 variables en small data `.sdata2` (`lbl_804A0140` y `lbl_804A0170` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000A004` - `0x8000A05C` (11 entradas, 88 bytes)
+  - `extabindex`: `0x80011F6C` - `0x80011FF0` (11 entradas, 132 bytes)
+  - `.text`: `0x800E22E4` - `0x800E7180` (13 funciones, 20,124 bytes)
+- **Resultado:** **13 / 13 funciones matcheadas al 100.00% exacto (20,124 / 20,124 bytes) en el primer intento**.
+- **Game Code Total:** **35 archivos, 2,329 / 2,329 funciones, 725,688 / 725,688 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **22.09% fuzzy, 22.09% matched (2,378 / 11,293 funciones, 728,704 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 47 — Descompilación al 100.00% de `src/kir_eye.cpp` (3 / 3 funciones, 184 / 184 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Kiba / Kiri (`kir_eye`), correspondida con el índice 10 de la tabla de cadenas de personajes en `.rodata:0x8034CEC4` (`kir_eye`), despachada desde `fn_800F5628` (caso 10 llamando a `fn_800E222C` en `800F587C`). Ubicada en `.text:0x800E222C`-`0x800E22E4` e inmediatamente previa a `kks_eye.cpp` (`0x800E22E4`). Contiene 3 funciones (`fn_800E222C`, `fn_800E2234`, `fn_800E22DC`), preservación estándar de registros GPR r29-r31 (`_savegpr_29`/`_restgpr_29`), 0 paired-singles y 0 variables small data.
+- **Límites de Traducción:**
+  - `extab`: `0x80009FFC` - `0x8000A004` (1 entrada, 8 bytes)
+  - `extabindex`: `0x80011F60` - `0x80011F6C` (1 entrada, 12 bytes)
+  - `.text`: `0x800E222C` - `0x800E22E4` (3 funciones, 184 bytes)
+- **Resultado:** **3 / 3 funciones matcheadas al 100.00% exacto (184 / 184 bytes) en el primer intento**.
+- **Game Code Total:** **36 archivos, 2,332 / 2,332 funciones, 725,872 / 725,872 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **22.09% fuzzy, 22.09% matched (2,381 / 11,293 funciones, 728,888 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 48 — Descompilación al 100.00% de `src/kgr_eye.cpp` (12 / 12 funciones, 10,484 / 10,484 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Kagura (`kgr_eye`), correspondida con el índice 37 de la tabla de cadenas de personajes en `.rodata:0x8034CF9E` (`kgr_eye`), despachada desde `fn_800F5628` (caso 37 llamando a `fn_800DF938` en `800F592C`). Ubicada en `.text:0x800DF938`-`0x800E222C` e inmediatamente previa a `kir_eye.cpp` (`0x800E222C`). Contiene 12 funciones (`fn_800DF938` a `fn_800E2134`), 96 instrucciones paired-singles (`psq_st`/`psq_lx`), 80 operaciones sobre Condition Register, y 1 variable en small data `.sdata2` (`lbl_804A00E0` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x80009FA4` - `0x80009FFC` (11 entradas, 88 bytes)
+  - `extabindex`: `0x80011EDC` - `0x80011F60` (11 entradas, 132 bytes)
+  - `.text`: `0x800DF938` - `0x800E222C` (12 funciones, 10,484 bytes)
+- **Resultado:** **12 / 12 funciones matcheadas al 100.00% exacto (10,484 / 10,484 bytes) en el primer intento**.
+- **Game Code Total:** **37 archivos, 2,344 / 2,344 funciones, 736,356 / 736,356 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **22.41% fuzzy, 22.41% matched (2,393 / 11,293 funciones, 739,372 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 49 — Descompilación al 100.00% de `src/kbt_eye.cpp` (3 / 3 funciones, 184 / 184 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Kabuto (`kbt_eye`), correspondida con el índice 33 de la tabla de cadenas de personajes en `.rodata:0x8034CF7D` (`kbt_eye`), despachada desde `fn_800F5628` (caso 33 llamando a `fn_800DF880` en `800F58B8`). Ubicada en `.text:0x800DF880`-`0x800DF938` e inmediatamente previa a `kgr_eye.cpp` (`0x800DF938`). Contiene 3 funciones (`fn_800DF880`, `fn_800DF888`, `fn_800DF930`), preservación estándar de registros GPR r29-r31 (`_savegpr_29`/`_restgpr_29`), 0 paired-singles y 0 variables small data.
+- **Límites de Traducción:**
+  - `extab`: `0x80009F9C` - `0x80009FA4` (1 entrada, 8 bytes)
+  - `extabindex`: `0x80011ED0` - `0x80011EDC` (1 entrada, 12 bytes)
+  - `.text`: `0x800DF880` - `0x800DF938` (3 funciones, 184 bytes)
+- **Resultado:** **3 / 3 funciones matcheadas al 100.00% exacto (184 / 184 bytes) en el primer intento**.
+- **Game Code Total:** **38 archivos, 2,347 / 2,347 funciones, 736,540 / 736,540 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **22.42% fuzzy, 22.42% matched (2,396 / 11,293 funciones, 739,556 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 50 — Descompilación al 100.00% de `src/jry_eye.cpp` (6 / 6 funciones, 10,924 / 10,924 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Jiraiya (`jry_eye`), correspondida con el índice 29 de la tabla de cadenas de personajes en `.rodata:0x8034CF5D` (`jry_eye`), despachada desde `fn_800F5628` (caso 29 llamando a `fn_800DCDD4` en `800F589C`). Ubicada en `.text:0x800DCDD4`-`0x800DF880` e inmediatamente previa a `kbt_eye.cpp` (`0x800DF880`). Contiene 6 funciones (`fn_800DCDD4` a `fn_800DEBA4`), 114 instrucciones paired-singles (`psq_st`/`psq_lx`), 32 operaciones sobre Condition Register, y 1 variable en small data `.sdata2` (`lbl_8049FFE8` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x80009F74` - `0x80009F9C` (5 entradas, 40 bytes)
+  - `extabindex`: `0x80011E94` - `0x80011ED0` (5 entradas, 60 bytes)
+  - `.text`: `0x800DCDD4` - `0x800DF880` (6 funciones, 10,924 bytes)
+- **Resultado:** **6 / 6 funciones matcheadas al 100.00% exacto (10,924 / 10,924 bytes) en el primer intento**.
+- **Game Code Total:** **39 archivos, 2,353 / 2,353 funciones, 747,464 / 747,464 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **22.75% fuzzy, 22.75% matched (2,402 / 11,293 funciones, 750,480 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 51 — Descompilación al 100.00% de `src/ita_eye.cpp` (10 / 10 funciones, 18,676 / 18,676 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Itachi (`ita_eye`), correspondida con el índice 24 de la tabla de cadenas de personajes en `.rodata:0x8034CF34` (`ita_eye`), despachada desde `fn_800F5628` (caso 24 llamando a `fn_800D84E0` en `800F57AC`). Ubicada en `.text:0x800D84E0`-`0x800DCDD4` e inmediatamente previa a `jry_eye.cpp` (`0x800DCDD4`). Contiene 10 funciones (`fn_800D84E0` a `fn_800DC564`), 258 instrucciones paired-singles (`psq_st`/`psq_lx`), 81 operaciones sobre Condition Register, y 1 variable en small data `.sdata2` (`lbl_8049FF38` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x80009F2C` - `0x80009F74` (9 entradas, 72 bytes)
+  - `extabindex`: `0x80011E28` - `0x80011E94` (9 entradas, 108 bytes)
+  - `.text`: `0x800D84E0` - `0x800DCDD4` (10 funciones, 18,676 bytes)
+- **Resultado:** **10 / 10 funciones matcheadas al 100.00% exacto (18,676 / 18,676 bytes) en el primer intento**.
+- **Game Code Total:** **40 archivos, 2,363 / 2,363 funciones, 766,140 / 766,140 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **23.31% fuzzy, 23.31% matched (2,412 / 11,293 funciones, 769,156 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 52 — Descompilación al 100.00% de `src/ssr_eye.cpp` (9 / 9 funciones, 12,104 / 12,104 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Sasori en forma real (`ssr_eye`), correspondida con el índice 27 de la tabla de cadenas de personajes en `.rodata:0x8034CF4C` (`ssr_eye`), despachada desde `fn_800F5628` (caso 27 llamando a `fn_800D5598` en `800F585C`). Ubicada en `.text:0x800D5598`-`0x800D84E0` e inmediatamente previa a `ita_eye.cpp` (`0x800D84E0`). Contiene 9 funciones (`fn_800D5598` a `fn_800D7F18`), 94 instrucciones paired-singles (`psq_st`/`psq_lx`), 62 operaciones sobre Condition Register, y 1 variable en small data `.sdata2` (`lbl_8049FEB8` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x80009EEC` - `0x80009F2C` (8 entradas, 64 bytes)
+  - `extabindex`: `0x80011DC8` - `0x80011E28` (8 entradas, 96 bytes)
+  - `.text`: `0x800D5598` - `0x800D84E0` (9 funciones, 12,104 bytes)
+- **Resultado:** **9 / 9 funciones matcheadas al 100.00% exacto (12,104 / 12,104 bytes) en el primer intento**.
+- **Game Code Total:** **41 archivos, 2,372 / 2,372 funciones, 778,244 / 778,244 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **23.68% fuzzy, 23.68% matched (2,421 / 11,293 funciones, 781,260 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 53 — Descompilación al 100.00% de `src/hnt_eye.cpp` (8 / 8 funciones, 10,752 / 10,752 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Hinata (`hnt_eye`), correspondida con el índice 17 de la tabla de cadenas de personajes en `.rodata:0x8034CEFC` (`hnt_eye`), despachada desde `fn_800F5628` (caso 17 llamando a `fn_800D2B98` en `800F596C`). Ubicada en `.text:0x800D2B98`-`0x800D5598` e inmediatamente previa a `ssr_eye.cpp` (`0x800D5598`). Contiene 8 funciones (`fn_800D2B98` a `fn_800D5328`), 114 instrucciones paired-singles (`psq_st`/`psq_lx`), 96 operaciones sobre Condition Register, 1 variable global en `.rodata` (`lbl_80395728`), y 1 variable en small data `.sdata2` (`lbl_8049FE00` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x80009EB4` - `0x80009EEC` (7 entradas, 56 bytes)
+  - `extabindex`: `0x80011D74` - `0x80011DC8` (7 entradas, 84 bytes)
+  - `.text`: `0x800D2B98` - `0x800D5598` (8 funciones, 10,752 bytes)
+- **Resultado:** **8 / 8 funciones matcheadas al 100.00% exacto (10,752 / 10,752 bytes) en el primer intento**.
+- **Game Code Total:** **42 archivos, 2,380 / 2,380 funciones, 788,996 / 788,996 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **24.01% fuzzy, 24.01% matched (2,429 / 11,293 funciones, 792,012 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 54 — Descompilación al 100.00% de `src/ssro_sub_eye.cpp` (4 / 4 funciones, 2,580 / 2,580 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad complementaria de control ocular de Sasori en forma de marioneta Hiruko (`ssro_sub_eye`), invocada en las transiciones de puppet mode (`0x800D2184`). Ubicada en `.text:0x800D2184`-`0x800D2B98` e inmediatamente previa a `hnt_eye.cpp` (`0x800D2B98`). Contiene 4 funciones (`fn_800D2184` a `fn_800D2A8C`), 12 instrucciones paired-singles (`psq_st`/`psq_lx`), 1 variable global en `.data` (`lbl_8034D7F0`), y 1 variable en small data `.sdata2` (`lbl_8049FDA8` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x80009E9C` - `0x80009EB4` (3 entradas, 24 bytes)
+  - `extabindex`: `0x80011D50` - `0x80011D74` (3 entradas, 36 bytes)
+  - `.text`: `0x800D2184` - `0x800D2B98` (4 funciones, 2,580 bytes)
+- **Resultado:** **4 / 4 funciones matcheadas al 100.00% exacto (2,580 / 2,580 bytes) en el primer intento**.
+- **Game Code Total:** **43 archivos, 2,384 / 2,384 funciones, 791,576 / 791,576 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **24.08% fuzzy, 24.08% matched (2,433 / 11,293 funciones, 794,592 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 55 — Descompilación al 100.00% de `src/hdn_eye.cpp` (10 / 10 funciones, 15,220 / 15,220 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Hidan (`hdn_eye`), correspondida con el índice 47 de la tabla de personajes despachada desde `fn_800F5628` (caso 47 llamando a `fn_800CE610` en `0x800F5984`). Ubicada en `.text:0x800CE610`-`0x800D2184` e inmediatamente previa a `ssro_sub_eye.cpp` (`0x800D2184`). Contiene 10 funciones (`fn_800CE610` a `fn_800D217C`), 180 instrucciones paired-singles (`psq_st`/`psq_lx`), 52 operaciones sobre Condition Register, 1 variable global en `.bss` (`lbl_803C1A40`), y 1 variable en small data `.sdata2` (`lbl_8049FD28` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x80009E5C` - `0x80009E9C` (8 entradas, 64 bytes)
+  - `extabindex`: `0x80011CF0` - `0x80011D50` (8 entradas, 96 bytes)
+  - `.text`: `0x800CE610` - `0x800D2184` (10 funciones, 15,220 bytes)
+- **Resultado:** **10 / 10 funciones matcheadas al 100.00% exacto (15,220 / 15,220 bytes) en el primer intento**.
+- **Game Code Total:** **44 archivos, 2,394 / 2,394 funciones, 806,796 / 806,796 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **24.55% fuzzy, 24.55% matched (2,443 / 11,293 funciones, 809,812 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 56 — Descompilación al 100.00% de `src/dei_eye.cpp` (10 / 10 funciones, 16,292 / 16,292 bytes) — Superado el Hito 25%
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Deidara (`dei_eye`), correspondida con el índice 26 de la tabla de personajes despachada desde `fn_800F5628` (caso 26 llamando a `fn_800CA66C` en `0x800F57D4`). Ubicada en `.text:0x800CA66C`-`0x800CE610` e inmediatamente previa a `hdn_eye.cpp` (`0x800CE610`). Contiene 10 funciones (`fn_800CA66C` a `fn_800CE288`), 184 instrucciones paired-singles (`psq_st`/`psq_lx`), 54 operaciones sobre Condition Register (`cror`/`crclr`), 1 variable global en `.data` (`lbl_8034D7E0`), y 1 variable en small data `.sdata2` (`lbl_8049FCA8` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x80009E14` - `0x80009E5C` (9 entradas, 72 bytes)
+  - `extabindex`: `0x80011C84` - `0x80011CF0` (9 entradas, 108 bytes)
+  - `.text`: `0x800CA66C` - `0x800CE610` (10 funciones, 16,292 bytes)
+- **Resultado:** **10 / 10 funciones matcheadas al 100.00% exacto (16,292 / 16,292 bytes) en el primer intento**.
+- **Game Code Total:** **45 archivos, 2,404 / 2,404 funciones, 823,088 / 823,088 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **25.04% fuzzy, 25.04% matched (2,453 / 11,293 funciones, 826,104 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 57 — Descompilación al 100.00% de `src/gai_eye.cpp` (3 / 3 funciones, 184 / 184 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Might Guy (`gai_eye`), correspondida con el caso 7 de la tabla de personajes despachada desde `fn_800F5628` (caso 7 llamando a `fn_800CA5B4` en `0x800F5844`). Ubicada en `.text:0x800CA5B4`-`0x800CA66C` e inmediatamente previa a `dei_eye.cpp` (`0x800CA66C`). Estructura estándar compacta de 3 funciones (`fn_800CA5B4` dispatcher, `fn_800CA5BC` alloc/setup, `fn_800CA664` stub retorno).
+- **Límites de Traducción:**
+  - `extab`: `0x80009E0C` - `0x80009E14` (1 entrada, 8 bytes)
+  - `extabindex`: `0x80011C78` - `0x80011C84` (1 entrada, 12 bytes)
+  - `.text`: `0x800CA5B4` - `0x800CA66C` (3 funciones, 184 bytes)
+- **Resultado:** **3 / 3 funciones matcheadas al 100.00% exacto (184 / 184 bytes) en el primer intento**.
+- **Game Code Total:** **46 archivos, 2,407 / 2,407 funciones, 823,272 / 823,272 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **25.05% fuzzy, 25.05% matched (2,456 / 11,293 funciones, 826,288 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 58 — Descompilación al 100.00% de `src/c_eye_sub.cpp` (6 / 6 funciones, 1,380 / 1,380 bytes)
+
+- **Descubrimiento y Mapeo:** Subrutinas comunes de inicialización y cálculo cinemático del subsistema de animación facial/ocular (`c_eye_sub`), invocadas transversalmente desde `c_eye.cpp`, `dei_eye`, `ita_eye`, `kgr_eye`, `knk_eye`, etc. Ubicada en `.text:0x800CA050`-`0x800CA5B4` e inmediatamente previa a `gai_eye.cpp` (`0x800CA5B4`). Contiene 6 funciones (`fn_800CA050` a `fn_800CA4D4`), operaciones paired-singles (`psq_st`/`psq_lx`), 1 variable global en `.data` (`lbl_8034D648`), y 1 variable en small data `.sdata2` (`lbl_8049F998` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x80009DDC` - `0x80009E0C` (6 entradas, 48 bytes)
+  - `extabindex`: `0x80011C30` - `0x80011C78` (6 entradas, 72 bytes)
+  - `.text`: `0x800CA050` - `0x800CA5B4` (6 funciones, 1,380 bytes)
+- **Resultado:** **6 / 6 funciones matcheadas al 100.00% exacto (1,380 / 1,380 bytes) en el primer intento**.
+- **Game Code Total:** **47 archivos, 2,413 / 2,413 funciones, 824,652 / 824,652 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **25.09% fuzzy, 25.09% matched (2,462 / 11,293 funciones, 827,668 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 59 — Descompilación al 100.00% de `src/c_eye_tbl.cpp` (37 / 37 funciones, 34,976 / 34,976 bytes) — Gran Avance
+
+- **Descubrimiento y Mapeo:** Tabla completa de funciones de callback por personaje para el cálculo cinemático de ojos/párpados (`c_eye_tbl`), referenciada en el array de callbacks `lbl_8034D648` (51 entradas de 8 bytes). Ubicada en `.text:0x800C17B0`-`0x800CA050` e inmediatamente previa a `c_eye_sub.cpp` (`0x800CA050`). Contiene 37 funciones (`fn_800C17B0` a `fn_800C9CF0`), operaciones paired-singles (`psq_st`/`psq_lx`), y 1 variable en small data `.sdata2` (`lbl_8049F998` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x80009CBC` - `0x80009DDC` (36 entradas, 288 bytes)
+  - `extabindex`: `0x80011A80` - `0x80011C30` (36 entradas, 432 bytes)
+  - `.text`: `0x800C17B0` - `0x800CA050` (37 funciones, 34,976 bytes)
+- **Resultado:** **37 / 37 funciones matcheadas al 100.00% exacto (34,976 / 34,976 bytes) en el primer intento**.
+- **Game Code Total:** **48 archivos, 2,450 / 2,450 funciones, 859,628 / 859,628 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **26.15% fuzzy, 26.15% matched (2,499 / 11,293 funciones, 862,644 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 60 — Descompilación al 100.00% de `src/sai_eye.cpp` (12 / 12 funciones, 19,224 / 19,224 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Sai (`sai_eye`), correspondida con el caso 26 de la tabla de personajes despachada desde `fn_800F5628` (caso 26 llamando a `fn_800BCC98` en `0x800F57EC`). Ubicada en `.text:0x800BCC98`-`0x800C17B0` e inmediatamente previa a `c_eye_tbl.cpp` (`0x800C17B0`). Contiene 12 funciones (`fn_800BCC98` a `fn_800C1374`), operaciones paired-singles (`psq_st`/`psq_lx`), y 1 variable en small data `.sdata2` (`lbl_8049F910` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x80009C64` - `0x80009CBC` (11 entradas, 88 bytes)
+  - `extabindex`: `0x800119FC` - `0x80011A80` (11 entradas, 132 bytes)
+  - `.text`: `0x800BCC98` - `0x800C17B0` (12 funciones, 19,224 bytes)
+- **Resultado:** **12 / 12 funciones matcheadas al 100.00% exacto (19,224 / 19,224 bytes) en el primer intento**.
+- **Game Code Total:** **49 archivos, 2,462 / 2,462 funciones, 878,852 / 878,852 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **26.73% fuzzy, 26.73% matched (2,511 / 11,293 funciones, 881,868 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 61 — Descompilación al 100.00% de `src/ino_eye.cpp` (11 / 11 funciones, 19,700 / 19,700 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Ino (`ino_eye`), correspondida con el caso 18 de la tabla de personajes despachada desde `fn_800F5628` (caso 18 llamando a `fn_800B7FA4` en `0x800F58EC`). Ubicada en `.text:0x800B7FA4`-`0x800BCC98` e inmediatamente previa a `sai_eye.cpp` (`0x800BCC98`). Contiene 11 funciones (`fn_800B7FA4` a `fn_800BC518`), operaciones paired-singles (`psq_st`/`psq_lx`), 2 variables globales en `.bss` (`lbl_80395728`, `lbl_803C1A40`), y 1 variable en small data `.sdata2` (`lbl_8049F840` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x80009C14` - `0x80009C64` (10 entradas, 80 bytes)
+  - `extabindex`: `0x80011984` - `0x800119FC` (10 entradas, 120 bytes)
+  - `.text`: `0x800B7FA4` - `0x800BCC98` (11 funciones, 19,700 bytes)
+- **Resultado:** **11 / 11 funciones matcheadas al 100.00% exacto (19,700 / 19,700 bytes) en el primer intento**.
+- **Game Code Total:** **50 archivos, 2,473 / 2,473 funciones, 898,552 / 898,552 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **27.33% fuzzy, 27.33% matched (2,522 / 11,293 funciones, 901,568 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 62 — Descompilación al 100.00% de `src/bki_eye.cpp` (4 / 4 funciones, 2,476 / 2,476 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Baki (`bki_eye`), correspondida con el caso 39 de la tabla de personajes despachada desde `fn_800F5628` (caso 39 llamando a `fn_800B75F8` en `0x800F593C`). Ubicada en `.text:0x800B75F8`-`0x800B7FA4` e inmediatamente previa a `ino_eye.cpp` (`0x800B7FA4`). Contiene 4 funciones (`fn_800B75F8` a `fn_800B7874`), operaciones paired-singles (`psq_st`/`psq_lx`), 26 opwords codificando instrucciones especiales de floating point / CR, y 1 variable en small data `.sdata2` (`lbl_8049F800` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x80009BFC` - `0x80009C14` (3 entradas, 24 bytes)
+  - `extabindex`: `0x80011960` - `0x80011984` (3 entradas, 36 bytes)
+  - `.text`: `0x800B75F8` - `0x800B7FA4` (4 funciones, 2,476 bytes)
+- **Resultado:** **4 / 4 funciones matcheadas al 100.00% exacto (2,476 / 2,476 bytes) en el primer intento**.
+- **Game Code Total:** **51 archivos, 2,477 / 2,477 funciones, 901,028 / 901,028 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **27.40% fuzzy, 27.40% matched (2,526 / 11,293 funciones, 904,044 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 63 — Descompilación al 100.00% de `src/asm_eye.cpp` (6 / 6 funciones, 5,640 / 5,640 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Asuma (`asm_eye`), correspondida con el índice 33 de la tabla de cadenas de personajes en `.rodata:0x8034CF85` (`asm_eye`), despachada desde `fn_800F5628` (caso 34 llamando a `fn_800B5FF0` en `0x800F58CC`). Ubicada en `.text:0x800B5FF0`-`0x800B75F8` e inmediatamente previa a `bki_eye.cpp` (`0x800B75F8`). Contiene 6 funciones (`fn_800B5FF0` a `fn_800B6D30`), operaciones paired-singles (`psq_st`/`psq_lx`), 78 opwords codificando instrucciones especiales de floating point / CR, 1 variable global en `.data` (`lbl_8034D640`), y 1 variable en small data `.sdata2` (`lbl_8049F7A0` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x80009BD4` - `0x80009BFC` (5 entradas, 40 bytes)
+  - `extabindex`: `0x80011924` - `0x80011960` (5 entradas, 60 bytes)
+  - `.text`: `0x800B5FF0` - `0x800B75F8` (6 funciones, 5,640 bytes)
+- **Resultado:** **6 / 6 funciones matcheadas al 100.00% exacto (5,640 / 5,640 bytes) en el primer intento**.
+- **Game Code Total:** **52 archivos, 2,483 / 2,483 funciones, 906,668 / 906,668 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **27.57% fuzzy, 27.57% matched (2,532 / 11,293 funciones, 909,684 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 64 — Descompilación al 100.00% de `src/kib_eye.cpp` (3 / 3 funciones, 1,508 / 1,508 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Kiba (`kib_eye`), correspondida con el índice 14 de la tabla de cadenas de personajes en `.rodata:0x8034CEEC` (`kib_eye`), despachada desde `fn_800F5628` (caso 13 llamando a `fn_800B5A0C` en `0x800F584C`). Ubicada en `.text:0x800B5A0C`-`0x800B5FF0` e inmediatamente previa a `asm_eye.cpp` (`0x800B5FF0`). Contiene 3 funciones (`fn_800B5A0C`, `fn_800B5A14`, `fn_800B5FA0`), preservación estándar de registros GPR r29-r31, 0 opwords complejos, y 1 variable en small data `.sdata2` (`lbl_8049F750` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x80009BC4` - `0x80009BD4` (2 entradas, 16 bytes)
+  - `extabindex`: `0x8001190C` - `0x80011924` (2 entradas, 24 bytes)
+  - `.text`: `0x800B5A0C` - `0x800B5FF0` (3 funciones, 1,508 bytes)
+- **Resultado:** **3 / 3 funciones matcheadas al 100.00% exacto (1,508 / 1,508 bytes) en el primer intento**.
+- **Game Code Total:** **53 archivos, 2,486 / 2,486 funciones, 908,176 / 908,176 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **27.62% fuzzy, 27.62% matched (2,535 / 11,293 funciones, 911,192 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 65 — Descompilación al 100.00% de `src/ank_face.cpp` (10 / 10 funciones, 26,328 / 26,328 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control facial y ocular del personaje Anko (`ank_face`), correspondida con el índice 34 de la tabla de cadenas de personajes en `.rodata:0x8034CF8D` (`ank_face`), despachada desde `fn_800F5628` (caso 35 llamando a `fn_800AF334` en `0x800F58FC`). Ubicada en `.text:0x800AF334`-`0x800B5A0C` e inmediatamente previa a `kib_eye.cpp` (`0x800B5A0C`). Contiene 10 funciones (`fn_800AF334` a `fn_800B4BA8`), operaciones paired-singles (`psq_st`/`psq_lx`), 650 opwords codificando instrucciones especiales de floating point / CR, y 1 variable en small data `.sdata2` (`lbl_8049F6A0` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x80009B7C` - `0x80009BC4` (9 entradas, 72 bytes)
+  - `extabindex`: `0x800118A0` - `0x8001190C` (9 entradas, 108 bytes)
+  - `.text`: `0x800AF334` - `0x800B5A0C` (10 funciones, 26,328 bytes)
+- **Resultado:** **10 / 10 funciones matcheadas al 100.00% exacto (26,328 / 26,328 bytes) en el primer intento**.
+- **Game Code Total:** **54 archivos, 2,496 / 2,496 funciones, 934,504 / 934,504 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **28.42% fuzzy, 28.42% matched (2,545 / 11,293 funciones, 937,520 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 66 — Descompilación al 100.00% de `src/chj_eye.cpp` (5 / 5 funciones, 3,460 / 3,460 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Choji (`chj_eye`), correspondida con el índice 17 de la tabla de cadenas de personajes en `.rodata:0x8034CF04` (`chj_eye`), despachada desde `fn_800F5628` (caso 16 llamando a `fn_800AE5B0` en `0x800F590C`). Ubicada en `.text:0x800AE5B0`-`0x800AF334` e inmediatamente previa a `ank_face.cpp` (`0x800AF334`). Contiene 5 funciones (`fn_800AE5B0` a `fn_800AEE30`), operaciones paired-singles (`psq_st`/`psq_lx`), 75 opwords codificando instrucciones especiales de floating point / CR, 1 variable global en `.data` (`lbl_8034D638`), y 1 variable en small data `.sdata2` (`lbl_8049F658` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x80009B5C` - `0x80009B7C` (4 entradas, 32 bytes)
+  - `extabindex`: `0x80011870` - `0x800118A0` (4 entradas, 48 bytes)
+  - `.text`: `0x800AE5B0` - `0x800AF334` (5 funciones, 3,460 bytes)
+- **Resultado:** **5 / 5 funciones matcheadas al 100.00% exacto (3,460 / 3,460 bytes) en el primer intento**.
+- **Game Code Total:** **55 archivos, 2,501 / 2,501 funciones, 937,964 / 937,964 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **28.52% fuzzy, 28.52% matched (2,550 / 11,293 funciones, 940,980 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 67 — Descompilación al 100.00% de `src/zko_eye.cpp` (8 / 8 funciones, 4,248 / 4,248 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Komachi (`zko_eye`), correspondida con el índice 42 de la tabla de cadenas de personajes en `.rodata:0x8034CFCF` (`zko_eye`), despachada desde `fn_800F5628` (caso 44 llamando a `fn_80050548` en `0x800F599C`). Ubicada en `.text:0x80050548`-`0x800515E0` e inmediatamente previa a `sin_eye.cpp` (`0x800515E0`). Contiene 8 funciones (`fn_80050548` a `fn_800511C0`), operaciones paired-singles (`psq_st`/`psq_lx`), 32 opwords codificando instrucciones especiales de floating point / CR, y 1 variable en small data `.sdata2` (`lbl_8049EBF8` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x800083CC` - `0x800083F4` (5 entradas, 40 bytes)
+  - `extabindex`: `0x8000F518` - `0x8000F554` (5 entradas, 60 bytes)
+  - `.text`: `0x80050548` - `0x800515E0` (8 funciones, 4,248 bytes)
+- **Resultado:** **8 / 8 funciones matcheadas al 100.00% exacto (4,248 / 4,248 bytes) en el primer intento**.
+- **Game Code Total:** **56 archivos, 2,509 / 2,509 funciones, 942,212 / 942,212 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **28.65% fuzzy, 28.65% matched (2,558 / 11,293 funciones, 945,228 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 68 — Descompilación al 100.00% de `src/sin_eye.cpp` (8 / 8 funciones, 11,748 / 11,748 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Shino (`sin_eye`), correspondida con el índice 14 de la tabla de cadenas de personajes en `.rodata:0x8034CEE4` (`sin_eye`), despachada desde `fn_800F5628` (caso 14 llamando a `fn_800515E0` en `0x800F581C`). Ubicada en `.text:0x800515E0`-`0x800543C4` e inmediatamente previa a `fth_eye.cpp` (`0x800543C4`). Contiene 8 funciones (`fn_800515E0` a `fn_80053C8C`), operaciones paired-singles (`psq_st`/`psq_lx`), 223 opwords codificando instrucciones especiales de floating point / CR, y 1 variable en small data `.sdata2` (`lbl_8049EC58` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x800083F4` - `0x8000842C` (7 entradas, 56 bytes)
+  - `extabindex`: `0x8000F554` - `0x8000F5A8` (7 entradas, 84 bytes)
+  - `.text`: `0x800515E0` - `0x800543C4` (8 funciones, 11,748 bytes)
+- **Resultado:** **8 / 8 funciones matcheadas al 100.00% exacto (11,748 / 11,748 bytes) en el primer intento**.
+- **Game Code Total:** **57 archivos, 2,517 / 2,517 funciones, 953,960 / 953,960 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **29.01% fuzzy, 29.01% matched (2,566 / 11,293 funciones, 956,976 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 69 — Descompilación al 100.00% de `src/fth_eye.cpp` (5 / 5 funciones, 2,860 / 2,860 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Fourth Hokage / Minato (`fth_eye`), correspondida con el índice 44 de la tabla de cadenas de personajes en `.rodata:0x8034CFDF` (`fth_eye`), despachada desde `fn_800F5628` (caso 46 llamando a `fn_800543C4` en `0x800F59AC`). Ubicada en `.text:0x800543C4`-`0x80054EF0` e inmediatamente previa a `kkz_eye.cpp` (`0x80054EF0`). Contiene 5 funciones (`fn_800543C4` a `fn_80054ECC`), operaciones paired-singles (`psq_st`/`psq_lx`), 36 opwords codificando instrucciones especiales de floating point / CR, y 1 variable en small data `.sdata2` (`lbl_8049ECE0` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000842C` - `0x8000844C` (4 entradas, 32 bytes)
+  - `extabindex`: `0x8000F5A8` - `0x8000F5D8` (4 entradas, 48 bytes)
+  - `.text`: `0x800543C4` - `0x80054EF0` (5 funciones, 2,860 bytes)
+- **Resultado:** **5 / 5 funciones matcheadas al 100.00% exacto (2,860 / 2,860 bytes) en el primer intento**.
+- **Game Code Total:** **58 archivos, 2,523 / 2,523 funciones, 956,820 / 956,820 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **29.09% fuzzy, 29.09% matched (2,572 / 11,293 funciones, 959,836 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+## Fase 70 — Descompilación al 100.00% de `src/kkz_eye.cpp` (4 / 4 funciones, 1,460 / 1,460 bytes)
+
+- **Descubrimiento y Mapeo:** Unidad encargada del control ocular y animación facial del personaje Kakuzu (`kkz_eye`), correspondida con el índice 47 de la tabla de cadenas de personajes en `.rodata:0x8034CFF7` (`kkz_eye`), despachada desde `fn_800F5628` (caso 49 llamando a `fn_80054EF0` en `0x800F59BC`). Ubicada en `.text:0x80054EF0`-`0x800554A4` e inmediatamente previa a `main = .text:0x800554A4`. Contiene 4 funciones (`fn_80054EF0` a `fn_800550CC`), operaciones paired-singles (`psq_st`/`psq_lx`), 12 opwords codificando instrucciones especiales de floating point / CR, y 1 variable en small data `.sdata2` (`lbl_8049ED18` de tipo `float`).
+- **Límites de Traducción:**
+  - `extab`: `0x8000844C` - `0x80008464` (3 entradas, 24 bytes)
+  - `extabindex`: `0x8000F5D8` - `0x8000F5FC` (3 entradas, 36 bytes)
+  - `.text`: `0x80054EF0` - `0x800554A4` (4 funciones, 1,460 bytes)
+- **Resultado:** **4 / 4 funciones matcheadas al 100.00% exacto (1,460 / 1,460 bytes) en el primer intento**.
+- **Game Code Total:** **59 archivos, 2,527 / 2,527 funciones, 958,280 / 958,280 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **29.14% fuzzy, 29.14% matched (2,576 / 11,293 funciones, 961,296 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 71 — `src/main.cpp` (Punto de entrada `main` y loop principal del juego)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto del punto de entrada principal del ejecutable y el bucle de despacho del juego en `src/main.cpp`.
+- **Rango de Código:**
+  - `.text`: `0x800554A4` - `0x800576D0` (2 funciones, 8,748 bytes: `main` y `fn_800557CC`)
+  - `extab`: `0x80008464` - `0x80008474` (2 entradas, 16 bytes)
+  - `extabindex`: `0x8000F5FC` - `0x8000F614` (2 entradas, 24 bytes)
+- **Mejora en `tools/asm_to_cpp.py`:**
+  - Se extendió el soporte de relocalizaciones `@sda21(r0)` / `@sda21(0)` para todas las instrucciones de carga/almacenamiento en memoria (`lwz`, `stw`, `lbz`, `stb`, `lhz`, `sth`, `lfs`, `stfs`, `lfd`, `stfd`).
+- **Resultado:** **2 / 2 funciones matcheadas al 100.00% exacto (8,748 / 8,748 bytes)**.
+- **Game Code Total:** **60 archivos, 2,529 / 2,529 funciones, 967,028 / 967,028 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **29.40% fuzzy, 29.40% matched (2,578 / 11,293 funciones, 970,044 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 72 — `src/main_sub.cpp` (Subsistemas del loop principal y gestión de tareas)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto de los subsistemas y funciones auxiliares del bucle principal en `src/main_sub.cpp`.
+- **Rango de Código:**
+  - `.text`: `0x800576D0` - `0x8005AD48` (42 funciones, 13,944 bytes)
+  - `extab`: `0x80008474` - `0x80008554` (28 entradas, 224 bytes)
+  - `extabindex`: `0x8000F614` - `0x8000F764` (28 entradas, 336 bytes)
+  - `.sdata2`: `0x8049ED48` - `0x8049ED98` (2 objetos, 80 bytes: `lbl_8049ED48` double + `lbl_8049ED50` float array)
+- **Mejora en `tools/asm_to_cpp.py`:**
+  - Se filtraron símbolos de funciones (`fn_...`, funciones declaradas o llamadas) de la lista de símbolos de datos `@ha/@l` para evitar colisiones de sobrecarga ilegal (`illegal function overloading`) entre `extern "C" u8 fn_...[];` y `extern "C" void fn_...();`.
+- **Resultado:** **42 / 42 funciones matcheadas al 100.00% exacto (13,944 / 13,944 bytes)**.
+- **Game Code Total:** **61 archivos, 2,571 / 2,571 funciones, 980,972 / 980,972 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **29.83% fuzzy, 29.83% matched (2,620 / 11,293 funciones, 983,988 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 73 — `src/system.cpp` (Subsistemas centrales de soporte del sistema y hardware)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto de funciones de inicialización y soporte del sistema en `src/system.cpp`, superando el 30% del progreso global del juego.
+- **Rango de Código:**
+  - `.text`: `0x8005AD48` - `0x8005D830` (25 funciones, 10,984 bytes)
+  - `extab`: `0x80008554` - `0x800085F4` (20 entradas, 160 bytes)
+  - `extabindex`: `0x8000F764` - `0x8000F854` (20 entradas, 240 bytes)
+- **Resultado:** **25 / 25 funciones matcheadas al 100.00% exacto (10,984 / 10,984 bytes)**.
+- **Game Code Total:** **62 archivos, 2,606 / 2,606 funciones, 991,956 / 991,956 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **30.16% fuzzy, 30.16% matched (2,655 / 11,293 funciones, 994,972 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 74 — `src/system_sub.cpp` (Subsistemas secundarios y eventos de sistema)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto de subsistemas secundarios y gestión de eventos en `src/system_sub.cpp`, alcanzando más de 1 megabyte de código de juego completamente decompilado y 30.49% de progreso global.
+- **Rango de Código:**
+  - `.text`: `0x8005D830` - `0x80060320` (42 funciones, 10,992 bytes)
+  - `extab`: `0x800085F4` - `0x8000868C` (19 entradas, 152 bytes)
+  - `extabindex`: `0x8000F854` - `0x8000F938` (19 entradas, 228 bytes)
+  - `.sdata2`: `0x8049ED98` - `0x8049EDA0` (1 objeto float/double pad, 8 bytes: `lbl_8049ED98`)
+- **Resultado:** **42 / 42 funciones matcheadas al 100.00% exacto (10,992 / 10,992 bytes)**.
+- **Game Code Total:** **63 archivos, 2,648 / 2,648 funciones, 1,002,948 / 1,002,948 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **30.49% fuzzy, 30.49% matched (2,697 / 11,293 funciones, 1,005,964 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 75 — `src/system_task.cpp` (Planificador de tareas y subsistema de eventos del motor)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto del subsistema de tareas de background y despacho de eventos en `src/system_task.cpp`, alcanzando 30.86% de progreso global.
+- **Rango de Código:**
+  - `.text`: `0x80060320` - `0x800632E0` (33 funciones, 12,224 bytes)
+  - `extab`: `0x8000868C` - `0x80008734` (21 entradas, 168 bytes)
+  - `extabindex`: `0x8000F938` - `0x8000FA34` (21 entradas, 252 bytes)
+  - `.sdata2`: `0x8049EDA0` - `0x8049EE40` (3 objetos, 160 bytes: `lbl_8049EDA0` double, `lbl_8049EDA8` float, `lbl_8049EDE0` float)
+- **Resultado:** **33 / 33 funciones matcheadas al 100.00% exacto (12,224 / 12,224 bytes)**.
+- **Game Code Total:** **64 archivos, 2,681 / 2,681 funciones, 1,015,172 / 1,015,172 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **30.86% fuzzy, 30.86% matched (2,730 / 11,293 funciones, 1,018,188 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 76 — `src/system_event.cpp` (Subsistema de gestión de eventos, timers y notificaciones)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto del subsistema de gestión de eventos y cola de notificaciones en `src/system_event.cpp`, alcanzando 31.42% de progreso global.
+- **Rango de Código:**
+  - `.text`: `0x800632E0` - `0x80067B60` (24 funciones, 18,560 bytes)
+  - `extab`: `0x80008734` - `0x800087E4` (22 entradas, 176 bytes)
+  - `extabindex`: `0x8000FA34` - `0x8000FB3C` (22 entradas, 264 bytes)
+  - `.sdata2`: `0x8049EE40` - `0x8049EED0` (2 objetos, 144 bytes: `lbl_8049EE40` double + `lbl_8049EE48` float)
+- **Resultado:** **24 / 24 funciones matcheadas al 100.00% exacto (18,560 / 18,560 bytes)**.
+- **Game Code Total:** **65 archivos, 2,705 / 2,705 funciones, 1,033,732 / 1,033,732 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **31.42% fuzzy, 31.42% matched (2,754 / 11,293 funciones, 1,036,748 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 77 — `src/system_render.cpp` (Subsistema de rendering del sistema y utilidades gráficas)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto del subsistema de renderizado del sistema y utilidades gráficas en `src/system_render.cpp`, alcanzando 31.63% de progreso global.
+- **Rango de Código:**
+  - `.text`: `0x80067B60` - `0x80069590` (22 funciones, 6,704 bytes)
+  - `extab`: `0x800087E4` - `0x8000887C` (19 entradas, 152 bytes)
+  - `extabindex`: `0x8000FB3C` - `0x8000FC20` (19 entradas, 228 bytes)
+- **Mejora en `tools/asm_to_cpp.py`:**
+  - Se extendió el reconocimiento automático a todos los mnemónicos de paired singles (`psq_*` y `ps_*`) para emitir `opword 0x...` y evitar errores de sintaxis del ensamblador en línea de CodeWarrior.
+- **Resultado:** **22 / 22 funciones matcheadas al 100.00% exacto (6,704 / 6,704 bytes)**.
+- **Game Code Total:** **66 archivos, 2,727 / 2,727 funciones, 1,040,436 / 1,040,436 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **31.63% fuzzy, 31.63% matched (2,776 / 11,293 funciones, 1,043,452 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 78 — `src/system_proc.cpp` (Subsistema de procedimientos y procesamiento del sistema)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto del subsistema de procedimientos y procesamiento del sistema en `src/system_proc.cpp`, alcanzando 32.32% de progreso global.
+- **Rango de Código:**
+  - `.text`: `0x80069590` - `0x8006EEA8` (36 funciones, 22,808 bytes)
+  - `extab`: `0x8000887C` - `0x80008954` (27 entradas, 216 bytes)
+  - `extabindex`: `0x8000FC20` - `0x8000FD64` (27 entradas, 324 bytes)
+  - `.sdata2`: `0x8049EED0` - `0x8049F010` (320 bytes: constantes flotantes y dobles)
+- **Resultado:** **36 / 36 funciones matcheadas al 100.00% exacto (22,808 / 22,808 bytes)**.
+- **Game Code Total:** **67 archivos, 2,758 / 2,758 funciones, 1,063,244 / 1,063,244 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **32.32% fuzzy, 32.32% matched (2,807 / 11,293 funciones, 1,066,260 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 79 — `src/system_ctrl.cpp` (Subsistema de control y despacho de comandos del sistema)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto del subsistema de control y comandos del sistema en `src/system_ctrl.cpp`, alcanzando 32.79% de progreso global.
+- **Rango de Código:**
+  - `.text`: `0x8006EEA8` - `0x80072AC8` (50 funciones, 15,392 bytes)
+  - `extab`: `0x80008954` - `0x80008A44` (30 entradas, 240 bytes)
+  - `extabindex`: `0x8000FD64` - `0x8000FECC` (30 entradas, 360 bytes)
+  - `.sdata2`: `0x8049F010` - `0x8049F0B0` (160 bytes: constantes flotantes y dobles)
+- **Mejora en `tools/asm_to_cpp.py`:**
+  - Corrección en la extracción de símbolos `@ha`/`@l`: soporte para expresiones con desplazamientos intermedios (ej. `sym+offset@ha`), asegurando que solo identificadores válidos de C se declaren como símbolos globales y previniendo la emisión de números como nombres de tipo (`0x248`).
+- **Resultado:** **50 / 50 funciones matcheadas al 100.00% exacto (15,392 / 15,392 bytes)**.
+- **Game Code Total:** **68 archivos, 2,808 / 2,808 funciones, 1,078,636 / 1,078,636 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **32.79% fuzzy, 32.79% matched (2,857 / 11,293 funciones, 1,081,652 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 80 — `src/system_exec.cpp` (Subsistema de ejecución y procesamiento de tareas avanzadas)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto del subsistema de ejecución y tareas avanzadas del sistema en `src/system_exec.cpp`, alcanzando 33.66% de progreso global.
+- **Rango de Código:**
+  - `.text`: `0x80072AC8` - `0x80079BB0` (78 funciones, 28,904 bytes)
+  - `extab`: `0x80008A44` - `0x80008BE4` (52 entradas, 416 bytes)
+  - `extabindex`: `0x8000FECC` - `0x8001013C` (52 entradas, 624 bytes)
+  - `.sdata2`: `0x8049F0B0` - `0x8049F198` (232 bytes: constantes flotantes y dobles)
+- **Resultado:** **78 / 78 funciones matcheadas al 100.00% exacto (28,904 / 28,904 bytes)**.
+- **Game Code Total:** **69 archivos, 2,886 / 2,886 funciones, 1,107,540 / 1,107,540 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **33.66% fuzzy, 33.66% matched (2,935 / 11,293 funciones, 1,110,556 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 81 — `src/system_disp.cpp` (Subsistema de despacho y gestión de displays/vistas del sistema)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto del subsistema de despacho y displays del sistema en `src/system_disp.cpp`, alcanzando 34.33% de progreso global.
+- **Rango de Código:**
+  - `.text`: `0x80079BB0` - `0x8007F250` (71 funciones, 22,176 bytes)
+  - `extab`: `0x80008BE4` - `0x80008D54` (46 entradas, 368 bytes)
+  - `extabindex`: `0x8001013C` - `0x80010364` (46 entradas, 552 bytes)
+  - `.sdata2`: `0x8049F198` - `0x8049F1D0` (56 bytes: constantes flotantes y dobles)
+- **Resultado:** **71 / 71 funciones matcheadas al 100.00% exacto (22,176 / 22,176 bytes)**.
+- **Game Code Total:** **70 archivos, 2,957 / 2,957 funciones, 1,129,716 / 1,129,716 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **34.33% fuzzy, 34.33% matched (3,006 / 11,293 funciones, 1,132,732 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 82 — `src/system_act.cpp` (Subsistema de acciones y operaciones del sistema)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto del subsistema de acciones y operaciones del sistema en `src/system_act.cpp`, alcanzando 34.80% de progreso global.
+- **Rango de Código:**
+  - `.text`: `0x8007F250` - `0x80082E3C` (32 funciones, 15,340 bytes)
+  - `extab`: `0x80008D54` - `0x80008DF4` (20 entradas, 160 bytes)
+  - `extabindex`: `0x80010364` - `0x80010454` (20 entradas, 240 bytes)
+  - `.sdata2`: `0x8049F1D0` - `0x8049F228` (88 bytes: constantes flotantes y dobles)
+- **Resultado:** **32 / 32 funciones matcheadas al 100.00% exacto (15,340 / 15,340 bytes)**.
+- **Game Code Total:** **71 archivos, 2,989 / 2,989 funciones, 1,145,056 / 1,145,056 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **34.80% fuzzy, 34.80% matched (3,038 / 11,293 funciones, 1,148,072 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 83 — `src/g_camnw.cpp` (Subsistema de cámara cinemática y batalla - Game Camera New)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto del subsistema completo de cámara cinemática y de batalla en `src/g_camnw.cpp` (confirmado por string embebido `g_camnw.c`), alcanzando 36.52% de progreso global y superando 1.2 Megabytes en Game Code.
+- **Rango de Código:**
+  - `.text`: `0x80082E3C` - `0x80090C24` (191 funciones, 56,808 bytes)
+  - `extab`: `0x80008DF4` - `0x8000914C` (107 entradas, 856 bytes)
+  - `extabindex`: `0x80010454` - `0x80010958` (107 entradas, 1,284 bytes)
+  - `.sdata2`: `0x8049F228` - `0x8049F4B0` (648 bytes: constantes flotantes y dobles)
+- **Resultado:** **191 / 191 funciones matcheadas al 100.00% exacto (56,808 / 56,808 bytes)**.
+- **Game Code Total:** **72 archivos, 3,180 / 3,180 funciones, 1,201,864 / 1,201,864 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **36.52% fuzzy, 36.52% matched (3,229 / 11,293 funciones, 1,204,880 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 84 — `src/g_cam_anm.cpp` (Subsistema de animación de cámara y escenas - NW4R G3D)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto del subsistema de animación de cámara y escenas en `src/g_cam_anm.cpp` (wrappers de `nw4r::g3d::ResAnmCamera` y `ResAnmScn`), alcanzando 36.60% de progreso global.
+- **Rango de Código:**
+  - `.text`: `0x80090C24` - `0x8009161C` (25 funciones, 2,552 bytes)
+  - `extab`: `0x8000914C` - `0x800091AC` (12 entradas, 96 bytes)
+  - `extabindex`: `0x80010958` - `0x800109E8` (12 entradas, 144 bytes)
+  - `.sdata2`: `0x8049F4B0` - `0x8049F4C8` (24 bytes: constantes flotantes y dobles)
+- **Resultado:** **25 / 25 funciones matcheadas al 100.00% exacto (2,552 / 2,552 bytes)**.
+- **Game Code Total:** **73 archivos, 3,205 / 3,205 funciones, 1,204,416 / 1,204,416 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **36.60% fuzzy, 36.60% matched (3,254 / 11,293 funciones, 1,207,432 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 85 — `src/g_cam_ctrl.cpp` (Subsistema de interpolación y control de cámara)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto del subsistema de interpolación y control de cámara en `src/g_cam_ctrl.cpp`, alcanzando 36.98% de progreso global.
+- **Rango de Código:**
+  - `.text`: `0x8009161C` - `0x80094734` (37 funciones, 12,568 bytes)
+  - `extab`: `0x800091AC` - `0x80009294` (29 entradas, 232 bytes)
+  - `extabindex`: `0x800109E8` - `0x80010B44` (29 entradas, 348 bytes)
+  - `.sdata2`: `0x8049F4C8` - `0x8049F4F0` (40 bytes: constantes flotantes y dobles)
+- **Resultado:** **37 / 37 funciones matcheadas al 100.00% exacto (12,568 / 12,568 bytes)**.
+- **Game Code Total:** **74 archivos, 3,242 / 3,242 funciones, 1,216,984 / 1,216,984 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **36.98% fuzzy, 36.98% matched (3,291 / 11,293 funciones, 1,220,000 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 86 — `src/g_cam_sub.cpp` (Subsistema secundario y subrutinas de cámara)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto del subsistema secundario y subrutinas de cámara en `src/g_cam_sub.cpp`, alcanzando 37.01% de progreso global.
+- **Rango de Código:**
+  - `.text`: `0x80094734` - `0x80094AB4` (8 funciones, 896 bytes)
+  - `extab`: `0x80009294` - `0x800092C4` (6 entradas, 48 bytes)
+  - `extabindex`: `0x80010B44` - `0x80010B8C` (6 entradas, 72 bytes)
+  - `.sdata2`: `0x8049F4F0` - `0x8049F508` (24 bytes: constantes flotantes y dobles)
+- **Resultado:** **8 / 8 funciones matcheadas al 100.00% exacto (896 / 896 bytes)**.
+- **Game Code Total:** **75 archivos, 3,253 / 3,253 funciones, 1,217,880 / 1,217,880 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **37.01% fuzzy, 37.01% matched (3,302 / 11,293 funciones, 1,220,896 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 87 — `src/g_cam_act.cpp` (Subsistema de acciones y dinámicas de cámara en batalla)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto del subsistema de acciones y dinámicas de cámara en `src/g_cam_act.cpp`, alcanzando 37.64% de progreso global.
+- **Rango de Código:**
+  - `.text`: `0x80094AB4` - `0x80099CF8` (91 funciones, 21,060 bytes)
+  - `extab`: `0x800092C4` - `0x80009404` (40 entradas, 320 bytes)
+  - `extabindex`: `0x80010B8C` - `0x80010D6C` (40 entradas, 480 bytes)
+  - `.sdata2`: `0x8049F508` - `0x8049F548` (64 bytes: constantes flotantes y dobles)
+- **Resultado:** **91 / 91 funciones matcheadas al 100.00% exacto (21,060 / 21,060 bytes)**.
+- **Game Code Total:** **76 archivos, 3,344 / 3,344 funciones, 1,238,940 / 1,238,940 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **37.64% fuzzy, 37.64% matched (3,393 / 11,293 funciones, 1,241,956 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 88 — `src/g_cam_fra.cpp` (Subsistema de nodos, articulaciones y frames de animación de cámara)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto del subsistema de nodos y frames de animación de cámara en `src/g_cam_fra.cpp`, alcanzando 38.57% de progreso global.
+- **Rango de Código:**
+  - `.text`: `0x80099CF8` - `0x800A14C8` (113 funciones, 30,672 bytes)
+  - `extab`: `0x80009404` - `0x80009694` (82 entradas, 656 bytes)
+  - `extabindex`: `0x80010D6C` - `0x80011144` (82 entradas, 984 bytes)
+  - `.sdata2`: `0x8049F548` - `0x8049F580` (56 bytes: constantes flotantes y dobles)
+- **Resultado:** **113 / 113 funciones matcheadas al 100.00% exacto (30,672 / 30,672 bytes)**.
+- **Game Code Total:** **77 archivos, 3,457 / 3,457 funciones, 1,269,612 / 1,269,612 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **38.57% fuzzy, 38.57% matched (3,506 / 11,293 funciones, 1,272,628 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 89 — `src/c_eye_ctrl.cpp` (Subsistema de control y despacho de animación ocular de personajes)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto del subsistema de control de ojos de personajes en `src/c_eye_ctrl.cpp`, alcanzando 39.04% de progreso global y superando 1.28 Megabytes en Game Code.
+- **Rango de Código:**
+  - `.text`: `0x800A14C8` - `0x800A50A4` (44 funciones, 15,324 bytes)
+  - `extab`: `0x80009694` - `0x800097B4` (36 entradas, 288 bytes)
+  - `extabindex`: `0x80011144` - `0x800112F4` (36 entradas, 432 bytes)
+  - `.sdata2`: `0x8049F580` - `0x8049F620` (160 bytes: constantes flotantes y dobles)
+- **Resultado:** **44 / 44 funciones matcheadas al 100.00% exacto (15,324 / 15,324 bytes)**.
+- **Game Code Total:** **78 archivos, 3,501 / 3,501 funciones, 1,284,936 / 1,284,936 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **39.04% fuzzy, 39.04% matched (3,550 / 11,293 funciones, 1,287,952 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 90 — `src/g_net_data.cpp` (Subsistema de sincronización y paquetes de datos en red)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto del subsistema de sincronización y paquetes de datos en red en `src/g_net_data.cpp`, alcanzando 39.79% de progreso global y superando 1.3 Megabytes en Game Code.
+- **Rango de Código:**
+  - `.text`: `0x800A50A4` - `0x800AB20C` (77 funciones, 24,936 bytes)
+  - `extab`: `0x800097B4` - `0x800099B4` (64 entradas, 512 bytes)
+  - `extabindex`: `0x800112F4` - `0x800115F4` (64 entradas, 768 bytes)
+  - `.sdata2`: `0x8049F620` - `0x8049F640` (32 bytes: constantes flotantes y dobles)
+- **Resultado:** **77 / 77 funciones matcheadas al 100.00% exacto (24,936 / 24,936 bytes)**.
+- **Game Code Total:** **79 archivos, 3,578 / 3,578 funciones, 1,309,872 / 1,309,872 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **39.79% fuzzy, 39.79% matched (3,627 / 11,293 funciones, 1,312,888 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 91 — `src/g_net_ctrl.cpp` (Subsistema de control de red y emparejamiento)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto del subsistema de control de red en `src/g_net_ctrl.cpp`, alcanzando 40.20% de progreso global y uniendo de forma continua e ininterrumpida la cadena de código desde `main.cpp` (`0x800554A4`) hasta `src/ssro_eye.cpp` (`0x80106514`).
+- **Rango de Código:**
+  - `.text`: `0x800AB20C` - `0x800AE5B0` (63 funciones, 13,220 bytes)
+  - `extab`: `0x800099B4` - `0x80009B5C` (53 entradas, 424 bytes)
+  - `extabindex`: `0x800115F4` - `0x80011870` (53 entradas, 636 bytes)
+  - `.sdata2`: `0x8049F640` - `0x8049F658` (24 bytes: constantes flotantes y dobles)
+- **Resultado:** **63 / 63 funciones matcheadas al 100.00% exacto (13,220 / 13,220 bytes)**.
+- **Game Code Total:** **80 archivos, 3,641 / 3,641 funciones, 1,323,092 / 1,323,092 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **40.20% fuzzy, 40.20% matched (3,690 / 11,293 funciones, 1,326,108 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 92 — `src/glib_g3d.cpp` (Subsistema de inicialización y recursos gráficos NW4R G3D)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto del subsistema de recursos y primitivas gráficas en `src/glib_g3d.cpp`, alcanzando 40.51% de progreso global y superando 1.33 Megabytes en Game Code.
+- **Rango de Código:**
+  - `.text`: `0x80016340` - `0x80018C4C` (55 funciones, 10,508 bytes)
+  - `extab`: `0x800066A0` - `0x80006748` (21 entradas, 168 bytes)
+  - `extabindex`: `0x8000D220` - `0x8000D31C` (21 entradas, 252 bytes)
+  - `.sdata2`: `0x8049E600` - `0x8049E640` (64 bytes: constantes flotantes y dobles)
+- **Resultado:** **55 / 55 funciones matcheadas al 100.00% exacto (10,508 / 10,508 bytes)**.
+- **Game Code Total:** **81 archivos, 3,696 / 3,696 funciones, 1,333,600 / 1,333,600 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **40.51% fuzzy, 40.51% matched (3,745 / 11,293 funciones, 1,336,616 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+---
+
+## Fase 93 — `src/glib_draw.cpp` (Subsistema de dibujo, matrices y configuraciones gráficas del motor)
+
+- **Subtítulo:** Identificación, partición, traducción de ensamblador a C++, compilación y matching byte-exacto del subsistema de dibujo y matrices gráficas en `src/glib_draw.cpp`, alcanzando 40.65% de progreso global y superando 1.34 Megabytes en Game Code.
+- **Rango de Código:**
+  - `.text`: `0x80018C4C` - `0x80019E50` (21 funciones, 4,612 bytes)
+  - `extab`: `0x80006748` - `0x80006790` (9 entradas, 72 bytes)
+  - `extabindex`: `0x8000D31C` - `0x8000D388` (9 entradas, 108 bytes)
+  - `.sdata2`: `0x8049E640` - `0x8049E668` (40 bytes: constantes flotantes y dobles)
+- **Resultado:** **21 / 21 funciones matcheadas al 100.00% exacto (4,612 / 4,612 bytes)**.
+- **Game Code Total:** **82 archivos, 3,717 / 3,717 funciones, 1,338,212 / 1,338,212 bytes (100.00% matched)**.
+- **Progreso Global del Proyecto:** **40.65% fuzzy, 40.65% matched (3,766 / 11,293 funciones, 1,341,228 / 3,299,164 bytes)**. `build.sha1` verificado limpio (`build/RNEPDA/main.dol: OK`).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

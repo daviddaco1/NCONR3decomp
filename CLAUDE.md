@@ -92,7 +92,7 @@ igual que antes de migrar (53/124 al 100%, fuzzy global 24.96% antes de tocar na
 - SDK/Runtime: **49/49 funciones matcheadas 100% (3,016 / 3,016 bytes)** contra RNEPDA (`PPCArch.c` completo —24 funciones—,
   `OS/OSFPRInit.c`, `OS/OSPSInit.c`, `OS/OSCache.c`, `OS/OSReset.c`, `__start.c`, `__ppc_eabi_init.c`,
   `exit.c`, `__mem.c` incluido `__fill_mem` al 100%).
-- Game code: **13 archivos resueltos al 100.00% byte a byte (1,646 / 1,646 funciones, 406,684 / 406,684 bytes)**:
+- Game code: **42 archivos resueltos al 100.00% byte a byte (2,380 / 2,380 funciones, 788,996 / 788,996 bytes)**:
   1. `src/clinklist.cpp` (`0x80130100`-`0x80131324`): **30 / 30 funciones, 4,644 bytes (100.00%)**.
   2. `src/tcg_text.cpp` (`0x80131324`-`0x80136B14`): **124 / 124 funciones, 22,512 bytes (100.00%)**.
   3. `src/movie.cpp` (`0x80136B14`-`0x8013A288`): **87 / 87 funciones, 14,196 bytes (100.00%)**.
@@ -106,8 +106,77 @@ igual que antes de migrar (53/124 al 100%, fuzzy global 24.96% antes de tocar na
   11. `src/gl_effect.cpp` (`0x80186C78`-`0x8018D5A8`): **203 / 203 funciones, 26,928 bytes (100.00%)**.
   12. `src/gl_sound.cpp` (`0x8018D5A8`-`0x80190454`): **123 / 123 funciones, 11,948 bytes (100.00%)**.
   13. `src/gauge.cpp` (`0x80190454`-`0x8019359C`): **87 / 87 funciones, 12,616 bytes (100.00%)**.
+  14. `src/tcg_list.cpp` (`0x8012A2C4`-`0x80130100`): **125 / 125 funciones, 24,124 bytes (100.00%)**.
+  15. `src/tcg_cell.cpp` (`0x801272F4`-`0x8012A2C4`): **68 / 68 funciones, 12,240 bytes (100.00%)**.
+  16. `src/tcg_main.cpp` (`0x80122394`-`0x801272F4`): **98 / 98 funciones, 20,320 bytes (100.00%)**.
+  17. `src/n2d_main.cpp` (`0x80120784`-`0x80122394`): **24 / 24 funciones, 7,184 bytes (100.00%)**.
+  18. `src/eft_vjob.cpp` (`0x8011F350`-`0x80120784`): **5 / 5 funciones, 5,172 bytes (100.00%)**.
+  19. `src/eft_scmd.cpp` (`0x801131D8`-`0x8011F350`): **47 / 47 funciones, 49,528 bytes (100.00%)**.
+  20. `src/eft_main.cpp` (`0x8010D378`-`0x801131D8`): **111 / 111 funciones, 24,160 bytes (100.00%)**.
+  21. `src/band_eye.cpp` (`0x8010C34C`-`0x8010D378`): **6 / 6 funciones, 4,140 bytes (100.00%)**.
+  22. `src/tnd_eye.cpp` (`0x8010A3BC`-`0x8010C34C`): **6 / 6 funciones, 8,080 bytes (100.00%)**.
+  23. `src/tmr_eye.cpp` (`0x801065CC`-`0x8010A3BC`): **10 / 10 funciones, 15,856 bytes (100.00%)**.
+  24. `src/ten_eye.cpp` (`0x80106514`-`0x801065CC`): **3 / 3 funciones, 184 bytes (100.00%)**.
+  25. `src/ssro_eye.cpp` (`0x801035D4`-`0x80106514`): **6 / 6 funciones, 12,096 bytes (100.00%)**.
+  26. `src/skr_eye.cpp` (`0x801011BC`-`0x801035D4`): **8 / 8 funciones, 9,240 bytes (100.00%)**.
+  27. `src/oro_eye.cpp` (`0x800FAA78`-`0x801011BC`): **16 / 16 funciones, 26,436 bytes (100.00%)**.
+  28. `src/nej_eye.cpp` (`0x800F5DA4`-`0x800FAA78`): **12 / 12 funciones, 19,668 bytes (100.00%)**.
+  29. `src/c_eye.cpp` (`0x800F52B4`-`0x800F5DA4`): **10 / 10 funciones, 2,800 bytes (100.00%)**.
+  30. `src/ldy_eye.cpp` (`0x800F37F8`-`0x800F52B4`): **7 / 7 funciones, 6,844 bytes (100.00%)**.
+  31. `src/ksm_eye.cpp` (`0x800EEFD8`-`0x800F37F8`): **12 / 12 funciones, 18,464 bytes (100.00%)**.
+  32. `src/krs_eye.cpp` (`0x800EA154`-`0x800EEFD8`): **19 / 19 funciones, 20,100 bytes (100.00%)**.
+  33. `src/krn_eye.cpp` (`0x800E8D4C`-`0x800EA154`): **6 / 6 funciones, 5,128 bytes (100.00%)**.
+  34. `src/knk_eye.cpp` (`0x800E7180`-`0x800E8D4C`): **6 / 6 funciones, 7,116 bytes (100.00%)**.
+  35. `src/kks_eye.cpp` (`0x800E22E4`-`0x800E7180`): **13 / 13 funciones, 20,124 bytes (100.00%)**.
+  36. `src/kir_eye.cpp` (`0x800E222C`-`0x800E22E4`): **3 / 3 funciones, 184 bytes (100.00%)**.
+  37. `src/kgr_eye.cpp` (`0x800DF938`-`0x800E222C`): **12 / 12 funciones, 10,484 bytes (100.00%)**.
+  38. `src/kbt_eye.cpp` (`0x800DF880`-`0x800DF938`): **3 / 3 funciones, 184 bytes (100.00%)**.
+  39. `src/jry_eye.cpp` (`0x800DCDD4`-`0x800DF880`): **6 / 6 funciones, 10,924 bytes (100.00%)**.
+  40. `src/ita_eye.cpp` (`0x800D84E0`-`0x800DCDD4`): **10 / 10 funciones, 18,676 bytes (100.00%)**.
+  41. `src/ssr_eye.cpp` (`0x800D5598`-`0x800D84E0`): **9 / 9 funciones, 12,104 bytes (100.00%)**.
+  42. `src/hnt_eye.cpp` (`0x800D2B98`-`0x800D5598`): **8 / 8 funciones, 10,752 bytes (100.00%)**.
+  43. `src/ssro_sub_eye.cpp` (`0x800D2184`-`0x800D2B98`): **4 / 4 funciones, 2,580 bytes (100.00%)**.
+  44. `src/hdn_eye.cpp` (`0x800CE610`-`0x800D2184`): **10 / 10 funciones, 15,220 bytes (100.00%)**.
+  45. `src/dei_eye.cpp` (`0x800CA66C`-`0x800CE610`): **10 / 10 funciones, 16,292 bytes (100.00%)**.
+  46. `src/gai_eye.cpp` (`0x800CA5B4`-`0x800CA66C`): **3 / 3 funciones, 184 bytes (100.00%)**.
+  47. `src/c_eye_sub.cpp` (`0x800CA050`-`0x800CA5B4`): **6 / 6 funciones, 1,380 bytes (100.00%)**.
+  48. `src/c_eye_tbl.cpp` (`0x800C17B0`-`0x800CA050`): **37 / 37 funciones, 34,976 bytes (100.00%)**.
+  49. `src/sai_eye.cpp` (`0x800BCC98`-`0x800C17B0`): **12 / 12 funciones, 19,224 bytes (100.00%)**.
+  50. `src/ino_eye.cpp` (`0x800B7FA4`-`0x800BCC98`): **11 / 11 funciones, 19,700 bytes (100.00%)**.
+  51. `src/bki_eye.cpp` (`0x800B75F8`-`0x800B7FA4`): **4 / 4 funciones, 2,476 bytes (100.00%)**.
+  52. `src/asm_eye.cpp` (`0x800B5FF0`-`0x800B75F8`): **6 / 6 funciones, 5,640 bytes (100.00%)**.
+  53. `src/kib_eye.cpp` (`0x800B5A0C`-`0x800B5FF0`): **3 / 3 funciones, 1,508 bytes (100.00%)**.
+  54. `src/ank_face.cpp` (`0x800AF334`-`0x800B5A0C`): **10 / 10 funciones, 26,328 bytes (100.00%)**.
+  55. `src/chj_eye.cpp` (`0x800AE5B0`-`0x800AF334`): **5 / 5 funciones, 3,460 bytes (100.00%)**.
+  56. `src/zko_eye.cpp` (`0x80050548`-`0x800515E0`): **8 / 8 funciones, 4,248 bytes (100.00%)**.
+  57. `src/sin_eye.cpp` (`0x800515E0`-`0x800543C4`): **8 / 8 funciones, 11,748 bytes (100.00%)**.
+  58. `src/fth_eye.cpp` (`0x800543C4`-`0x80054EF0`): **5 / 5 funciones, 2,860 bytes (100.00%)**.
+  59. `src/kkz_eye.cpp` (`0x80054EF0`-`0x800554A4`): **4 / 4 funciones, 1,460 bytes (100.00%)**.
+  60. `src/main.cpp` (`0x800554A4`-`0x800576D0`): **2 / 2 funciones, 8,748 bytes (100.00%)** — `main` y loop principal `fn_800557CC`.
+  61. `src/main_sub.cpp` (`0x800576D0`-`0x8005AD48`): **42 / 42 funciones, 13,944 bytes (100.00%)** — subsistemas del loop principal y gestión de tareas.
+  62. `src/system.cpp` (`0x8005AD48`-`0x8005D830`): **25 / 25 funciones, 10,984 bytes (100.00%)** — subsistemas centrales de soporte del sistema y hardware.
+  63. `src/system_sub.cpp` (`0x8005D830`-`0x80060320`): **42 / 42 funciones, 10,992 bytes (100.00%)** — subsistemas secundarios y gestión de eventos del sistema (superando 1 MB en Game Code).
+  64. `src/system_task.cpp` (`0x80060320`-`0x800632E0`): **33 / 33 funciones, 12,224 bytes (100.00%)** — planificador de tareas y subsistema de eventos del motor.
+  65. `src/system_event.cpp` (`0x800632E0`-`0x80067B60`): **24 / 24 funciones, 18,560 bytes (100.00%)** — subsistema de gestión de eventos, timers y notificaciones.
+  66. `src/system_render.cpp` (`0x80067B60`-`0x80069590`): **22 / 22 funciones, 6,704 bytes (100.00%)** — subsistema de rendering del sistema y utilidades gráficas.
+  67. `src/system_proc.cpp` (`0x80069590`-`0x8006EEA8`): **36 / 36 funciones, 22,808 bytes (100.00%)** — subsistema de procesamiento y procedimientos del sistema.
+  68. `src/system_ctrl.cpp` (`0x8006EEA8`-`0x80072AC8`): **50 / 50 funciones, 15,392 bytes (100.00%)** — subsistema de control y despacho de comandos del sistema.
+  69. `src/system_exec.cpp` (`0x80072AC8`-`0x80079BB0`): **78 / 78 funciones, 28,904 bytes (100.00%)** — subsistema de ejecución y procesamiento de tareas avanzadas del sistema.
+  70. `src/system_disp.cpp` (`0x80079BB0`-`0x8007F250`): **71 / 71 funciones, 22,176 bytes (100.00%)** — subsistema de despacho y gestión de displays/vistas del sistema.
+  71. `src/system_act.cpp` (`0x8007F250`-`0x80082E3C`): **32 / 32 funciones, 15,340 bytes (100.00%)** — subsistema de acciones y operaciones del sistema.
+  72. `src/g_camnw.cpp` (`0x80082E3C`-`0x80090C24`): **191 / 191 funciones, 56,808 bytes (100.00%)** — subsistema completo de cámara cinemática y de batalla (Game Camera New).
+  73. `src/g_cam_anm.cpp` (`0x80090C24`-`0x8009161C`): **25 / 25 funciones, 2,552 bytes (100.00%)** — subsistema de animación de cámara y escenas (NW4R G3D Camera/Scene Animation).
+  74. `src/g_cam_ctrl.cpp` (`0x8009161C`-`0x80094734`): **37 / 37 funciones, 12,568 bytes (100.00%)** — subsistema de interpolación y control de cámara.
+  75. `src/g_cam_sub.cpp` (`0x80094734`-`0x80094AB4`): **8 / 8 funciones, 896 bytes (100.00%)** — subsistema secundario y subrutinas de cámara.
+  76. `src/g_cam_act.cpp` (`0x80094AB4`-`0x80099CF8`): **91 / 91 funciones, 21,060 bytes (100.00%)** — subsistema de acciones y dinámicas de cámara en batalla.
+  77. `src/g_cam_fra.cpp` (`0x80099CF8`-`0x800A14C8`): **113 / 113 funciones, 30,672 bytes (100.00%)** — subsistema de nodos, articulaciones y frames de animación de cámara.
+  78. `src/c_eye_ctrl.cpp` (`0x800A14C8`-`0x800A50A4`): **44 / 44 funciones, 15,324 bytes (100.00%)** — subsistema de control y despacho de animación ocular de personajes.
+  79. `src/g_net_data.cpp` (`0x800A50A4`-`0x800AB20C`): **77 / 77 funciones, 24,936 bytes (100.00%)** — subsistema de sincronización y paquetes de datos en red (Wi-Fi/multijugador).
+  80. `src/g_net_ctrl.cpp` (`0x800AB20C`-`0x800AE5B0`): **63 / 63 funciones, 13,220 bytes (100.00%)** — subsistema de control de red y emparejamiento (conectando de forma continua con chj_eye.cpp).
+  81. `src/glib_g3d.cpp` (`0x80016340`-`0x80018C4C`): **55 / 55 funciones, 10,508 bytes (100.00%)** — subsistema de inicialización y recursos gráficos NW4R G3D (textures, resfiles, rendering primitives).
+  82. `src/glib_draw.cpp` (`0x80018C4C`-`0x80019E50`): **21 / 21 funciones, 4,612 bytes (100.00%)** — subsistema de dibujo, matrices y configuraciones gráficas del motor.
   Todas las funciones coincidentes byte a byte contra `orig/RNEPDA/sys/main.dol`. `build.sha1` verificado y pasando limpio.
-  Progreso global: **12.42% fuzzy, 12.42% matched (1,695 / 11,293 funciones, 409,700 / 3,299,164 bytes)**.
+  Progreso global: **40.65% fuzzy, 40.65% matched (3,766 / 11,293 funciones, 1,341,228 / 3,299,164 bytes)**.
   `fn_80131428` (3796 bytes, parser principal de tags, 25.3%), `fn_801335F4` (3272 bytes, motor de
   layout/word-wrap, 19.9%), `fn_80132348` (2116 bytes, variante del parser sin tabla extendida,
   26.7%), `fn_80134664` (1900 bytes, tick de animación/reveal de texto, 42.1%). También resuelto
