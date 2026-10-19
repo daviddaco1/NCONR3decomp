@@ -2410,3 +2410,13 @@ el 100% en asm para fijar splits y nombres, y después reescribir a C en una pas
 - **C real: 2.84% → 6.97%** (229,956 bytes). Total: 50.01% → 54.14%. `build.sha1` OK.
 - Sin fuente en Xenoblade: 115 TUs (BTE completo, partes de g3d/snd/lyt, `ef`, HBM) — candidatas:
   SS/Wii Sports/TP/MKW (headers distintos, requiere armar otro árbol de includes).
+
+## Fase 101 — GameSpy importado de doldecomp/mkw (2026-10-19)
+
+- SS no tiene fuentes del RVL SDK (solo splits). Relevamiento de fuentes por repo: BTE solo en
+  MKW (8); g3d en SS/OGWS; HBM/VI/NAND/GX/WPAD en TP; GameSpy en MKW (60).
+- `libs/mkw/` (CC0, `libs/LICENSE.mkw`): `lib/{gamespy,dwc,MSL,rvl}` + `include/` de MKW.
+  `cflags_mkw_spy` replica su `cflags_base`+`cflags_rvl`+`cflags_spy` (`-nostdinc -gccinc
+  -lang=c99 -DREVOKART`...) con rutas en `libs/mkw`; compilador `GC/3.0a5.2` como en MKW.
+- 34/34 TUs GameSpy compilan; 89,452 / 111,632 bytes; 20 TUs al 100%. Adoptadas todas.
+- **C real: 6.97% → 9.68%** (319,408 bytes). Total 54.14% → 56.85%. `build.sha1` OK.
