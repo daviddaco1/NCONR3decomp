@@ -5,6 +5,10 @@
 Matching decompilation of **Naruto Shippuden: Clash of Ninja Revolution 3** (Wii), aiming for a
 native PC port.
 
+![Progress](docs/progress.svg)
+
+*Green: real C matched · blue: inline asm (matches but not C yet) · grey: not started.*
+
 ## Legal
 
 This repository does not distribute or include any ISO, DOL, asset, or extracted game file. All
@@ -41,6 +45,7 @@ Metrowerks CodeWarrior compilers themselves) is downloaded automatically on the 
 python3 configure.py          # generates build.ninja + objdiff.json
 ninja                          # builds; first run generates symbols.txt/splits.txt
 python3 configure.py progress  # prints % progress (code/data matched vs. total)
+python3 tools/progress_svg.py  # regenerates docs/progress.svg (after ninja)
 ```
 
 Additional flags (`--non-matching`, `--debug`, tool path overrides) via
