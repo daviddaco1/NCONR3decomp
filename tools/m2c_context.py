@@ -52,7 +52,7 @@ def main():
     files = glob.glob('build/RNEPDA/asm/**/*.s', recursive=True)
     with concurrent.futures.ThreadPoolExecutor(8) as ex:
         outs = list(ex.map(m2c, files))
-    defs, ncall, used = {}, collections.Counter(), set()
+    defs, ncall, used = {}, collections.defaultdict(collections.Counter), set()
     for out in outs:
         for ret, name, params in DEF.findall(out):
             ps = [p for p in (x.strip() for x in params.split(',')) if p and 'arg_sp' not in p and p != 'void']
@@ -60,7 +60,7 @@ def main():
         body = '\n'.join(l for l in out.split('\n') if not l.rstrip().endswith(('*/', '{')) or '=' in l)
         for m in CALL.finditer(body):
             name = m.group(2)
-            ncall[name] = max(ncall[name], nargs(body, m.end()))
+            ncall[name][nargs(body, m.end())] += 1
             if m.group(1) and not m.group(1).startswith(','):
                 used.add(name)
             elif m.group(1):
@@ -70,14 +70,23 @@ def main():
         byidx = {int(m.group(1)): p for p in ps for m in [re.search(r'\barg(\d+)$', p)] if m}
         if len(byidx) != len(ps):
             byidx = {i: p for i, p in enumerate(ps)}
-        n = max(byidx) + 1 if byidx else 0  # la cuenta desde llamadores sobreestima
+        # aridad: max(lo que usa la definicion, moda de lo que pasan los llamadores); la moda
+        # evita llamadores que dejan registros de argumento cargados para otra cosa
+        mode = max(ncall[name].items(), key=lambda kv: (kv[1], kv[0]))[0] if ncall.get(name) else 0
+        n = max(max(byidx) + 1 if byidx else 0, mode)
         params = ', '.join(byidx.get(i, f's32 arg{i}') for i in range(n)) or 'void'
         if ret == 'void' and name in used:
             ret = 'M2C_UNK'
         lines.append(f'{ret} {name}({params});')
     with open('build/m2c_ctx.h', 'w', newline='\n') as f:
         f.write(TYPEDEFS + '\n' + '\n'.join(lines) + '\n')
-    print(len(lines), 'prototipos -> build/m2c_ctx.h')
+    # para incluir en el C generado: solo tipo de retorno (prototipo vacio, compatible con
+    # cualquier definicion) y con void* como s8*, igual que tools/m2c_fix.py
+    with open('build/RNEPDA/include/m2c_protos.h', 'w', newline='\n') as f:
+        for l in lines:
+            m = re.match(r'(.*?)\b(\w+)\(', l)
+            f.write(re.sub(r'\bvoid \*', 's8 *', f'{m.group(1).strip()} {m.group(2)}();') + '\n')
+    print(len(lines), 'prototipos -> build/m2c_ctx.h, build/RNEPDA/include/m2c_protos.h')
 
 
 if __name__ == '__main__':

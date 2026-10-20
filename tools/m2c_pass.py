@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from m2c_fix import fixup  # noqa: E402
 
 M2C = os.environ.get('M2C_DIR', '')
-HEADER = '#include "types.h"\n#include "m2c_macros.h"\n\n'
+HEADER = '#include "types.h"\n#include "m2c_macros.h"\n#include "m2c_protos.h"\n\n'
 DEF = re.compile(r'^[A-Za-z_][^;\n]*?\b(\w+)\(([^;{]*)\)\s*\{\s*$')
 
 
@@ -128,6 +128,8 @@ def main():
         good = [f['name'] for f in fs if f.get('fuzzy_match_percent', 0) == 100 and f['name'] not in forced[sp]]
         bad = [f['name'] for f in fs if f['name'] not in good]
         results[sp] = (good, bad)
+        if os.environ.get('M2C_DEBUG'):
+            print(sp, 'forzadas', forced[sp], 'fuzzy', [(f['name'], f.get('fuzzy_match_percent')) for f in fs])
         if not good:
             print(f'{sp}: ninguna funcion matchea en C')
             cfg = set_object(cfg, sp, f'AsmObject("{sp}")')
@@ -164,7 +166,15 @@ def main():
         if not os.path.exists(obj(sp)) or mm.get('matched_code') != mm.get('total_code'):
             print('revertido a asm', sp)
             cfg = set_object(cfg, sp, f'AsmObject("{sp}")')
-            subprocess.run(['git', 'checkout', '-q', 'HEAD', '--', f'src/{sp}'])
+            subprocess.run([sys.executable, 'tools/asm_to_cpp.py', f'build/RNEPDA/asm/{base(sp)}.s',
+                            f'src/{sp}', base(sp)], check=True, capture_output=True)
+            if os.path.exists(f'src/{base(sp)}.c') and sp != f'{base(sp)}.c':
+                os.remove(f'src/{base(sp)}.c')
+    # todo AsmObject necesita su fuente asm (puede faltar si la TU ya era un mixto)
+    for sp in splits:
+        if f'AsmObject("{sp}")' in cfg and not os.path.exists(f'src/{sp}'):
+            subprocess.run([sys.executable, 'tools/asm_to_cpp.py', f'build/RNEPDA/asm/{base(sp)}.s',
+                            f'src/{sp}', base(sp)], check=True, capture_output=True)
             if os.path.exists(f'src/{base(sp)}.c') and sp != f'{base(sp)}.c':
                 os.remove(f'src/{base(sp)}.c')
     open('configure.py', 'w', newline='').write(cfg)

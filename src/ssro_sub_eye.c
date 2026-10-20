@@ -1,14 +1,22 @@
 #include "types.h"
 #include "m2c_macros.h"
+#include "m2c_protos.h"
 
 M2C_UNK fn_80173580();     /* extern */
 M2C_UNK memset();           /* extern */
 extern M2C_UNK lbl_8034D7F0;
 extern M2C_UNK lbl_8049FDA8;
 
+void fn_800D2184();
+s32 fn_800D218C();
+s32 fn_800D2380();
+void fn_800D2A8C();
+
 void fn_800D2184(s32 arg0, s32 arg1) {
     fn_800D218C(arg0, arg1, NULL);
 }
+
+// fn_800D218C: definicion C reemplazada por asm (ver abajo)
 
 
 s32 fn_800D2380(s32 arg0, s8 *arg1, s8 *arg2);
@@ -23,22 +31,15 @@ extern void _savegpr_28();
 extern void _savegpr_29();
 extern void fn_80018AF8();
 extern void fn_8001B8B0();
-extern void fn_80041290();
-extern void fn_800412A0();
-extern int fn_800D218C();
-s32 fn_800D2380(s32 arg0, s8 *arg1, s8 *arg2);
+s32 fn_800D218C(s8 *arg0, s8 *arg1, s8 *arg2, M2C_UNK arg_sp0);
+s32 fn_800D2380();
 void fn_800D2A8C(f32 *arg0, f32 *arg1);
 extern void fn_800F5B14();
-extern void fn_800F5B78();
-extern void fn_80170E2C();
 extern void fn_80173754();
 extern void fn_8017375C();
-extern void fn_8018149C();
-extern void fn_80181504();
-extern void fn_801A32A0();
 
 // asm_to_cpp: fn_800D218C
-asm int fn_800D218C() {
+asm s32 fn_800D218C(s8 *arg0, s8 *arg1, s8 *arg2, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -177,7 +178,7 @@ lbl_800D2368:
 }
 
 // asm_to_cpp: fn_800D2380
-asm s32 fn_800D2380(s32 arg0, s8 *arg1, s8 *arg2) {
+asm s32 fn_800D2380() {
     nofralloc
     stwu r1, -0xc0(r1)
     mflr r0

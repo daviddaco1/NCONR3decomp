@@ -56,8 +56,22 @@ def fix_unset_args(c):
     return ''.join(out)
 
 
+def add_local_protos(c):
+    """Prototipos sin parametros de todas las funciones definidas, antes de la primera definicion:
+    sin ellos una llamada previa declara la funcion como int implicito y choca con s32 (long)."""
+    defs = list(DEF.finditer(c))
+    if not defs:
+        return c
+    protos = ''.join(f'{m.group(1).strip()} {m.group(2)}();\n' for m in defs)
+    i = defs[0].start()
+    return c[:i] + protos + '\n' + c[i:]
+
+
 def fixup(c):
     c = re.sub(r'\bvoid \*', 's8 *', c)
+    # campos puntero como s8*: m2c suma offsets en bytes a punteros tipados (p + 0x50 escalaria x4)
+    c = re.sub(r'(M2C_FIELD\([^,]+, )\w+ \*\*(, )', r'\1s8 **\2', c)
     c = fix_unset_args(c)
     c = TERN.sub(lambda m: f'{m.group(1)}{m.group(2)} = {m.group(2)} ? {m.group(2)} : {m.group(3)};', c)
-    return PROTO.sub(lambda m: m.group(1) + '();' + m.group(2), c)
+    c = PROTO.sub(lambda m: m.group(1) + '();' + m.group(2), c)
+    return add_local_protos(c)
