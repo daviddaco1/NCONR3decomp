@@ -664,7 +664,7 @@ void fn_80173F88(void);
 void fn_80173F8C(s8 *arg0);
 void fn_80173FAC(void);
 s32 fn_80173FB0(s32 arg0, s32 arg1);
-M2C_UNK * fn_80174000(M2C_UNK *arg0, M2C_UNK *arg1, M2C_UNK *arg2, s32 arg3);
+s32 * fn_80174000(s32 *arg0, s32 *arg1, s32 *arg2, s32 arg3, f32 farg0);
 void fn_8017403C(void);
 void fn_80174108(void);
 void fn_801743AC(void);
@@ -718,7 +718,7 @@ s32 fn_801770C4(s32 *arg0);
 void fn_801770CC(void);
 void fn_80177114(M2C_UNK *arg0);
 s32 * fn_80177130(void);
-void fn_80177138(void);
+s32 fn_80177138(void);
 void fn_80177148(void);
 s32 fn_80177168(void);
 s32 fn_80177170(s32 arg0, M2C_UNK *arg1, s32 arg2);
@@ -15575,24 +15575,9 @@ s32 fn_80173FB0(s32 arg0, s32 arg1) {
     return (s32) (arg0);
 }
 
-// asm_to_cpp: fn_80174000
-asm M2C_UNK * fn_80174000(M2C_UNK *arg0, M2C_UNK *arg1, M2C_UNK *arg2, s32 arg3) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    mr r3, r4
-    mr r4, r5
-    mr r5, r31
-    bl C_QUATSlerp
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 * fn_80174000(s32 *arg0, s32 *arg1, s32 *arg2, s32 arg3, f32 farg0) {
+    C_QUATSlerp((s32) ((s32) arg1), (s32) ((s32) arg2), (s32) ((s32) arg0), farg0);
+    return (s32 *) (arg0);
 }
 
 // asm_to_cpp: fn_8017403C
@@ -19176,13 +19161,12 @@ s32 * fn_80177130(void) {
     return (s32 *) (lbl_8049D7F8);
 }
 
-// asm_to_cpp: fn_80177138
-asm void fn_80177138(void) {
-    nofralloc
-    lwz r3, lbl_8049D7F4
-    addi r3, r3, 0x1
-    stw r3, lbl_8049D7F4
-    blr
+s32 fn_80177138(void) {
+    s32 temp_r3;
+
+    temp_r3 = (s32) (lbl_8049D7F4 + 1);
+    lbl_8049D7F4 = temp_r3;
+    return (s32) (temp_r3);
 }
 
 // asm_to_cpp: fn_80177148

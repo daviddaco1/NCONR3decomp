@@ -1,11 +1,12 @@
 #include "types.h"
 #include "m2c_macros.h"
 
-struct M2C_VC_0 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(M2C_UNK, s32 *);     };
-struct M2C_VC_1 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(M2C_UNK, s32 *);    };
-struct M2C_VC_2 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(M2C_UNK, s32 *);   };
-struct M2C_VC_3 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(M2C_UNK, s32 *);  };
-struct M2C_VC_4 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(M2C_UNK, s32 *); };
+struct M2C_VC_0 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(M2C_UNK, s32 *);      };
+struct M2C_VC_1 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(M2C_UNK, s32 *);     };
+struct M2C_VC_2 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(M2C_UNK, s32 *);    };
+struct M2C_VC_3 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(M2C_UNK, s32 *);   };
+struct M2C_VC_4 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(M2C_UNK, s32 *);  };
+struct M2C_VC_5 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(M2C_UNK, s32 *); };
 
 extern "C" {
 
@@ -206,8 +207,8 @@ void fn_8012B2A4(s32 arg0, s32 arg1);
 void fn_8012B2BC(s32 *arg0, s32 arg1, s32 arg2);
 void fn_8012B2DC(s32 *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3);
 void fn_8012B31C(s32 *arg0, s32 arg1, f32 farg0);
-void fn_8012B388(s32 arg0, s32 arg1);
-void fn_8012B3D0(s32 arg0, s32 arg1, f32 farg0);
+void fn_8012B388(s32 arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3);
+void fn_8012B3D0(s32 arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3);
 void fn_8012B424(s32 arg0, s32 arg1);
 void fn_8012B438(s32 *arg0, s32 arg1, u32 arg2);
 void fn_8012B480(s32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
@@ -5009,53 +5010,14 @@ lbl_8012B354:
     blr
 }
 
-// asm_to_cpp: fn_8012B388
-asm void fn_8012B388(s32 arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    mr r31, r4
-    bl fn_8012B2DC
-    li r4, 0x4
-    slwi r0, r31, 5
-    add r3, r30, r0
-    stw r4, 0x18c(r3)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_8012B388(s32 arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
+    fn_8012B2DC((s32 *) ((s32 *) arg0), (s32) (arg1), farg0, farg1, farg2, farg3);
+    M2C_FIELD((arg0 + (arg1 << 5)), s32 *, 0x18C) = (s32) (4);
 }
 
-// asm_to_cpp: fn_8012B3D0
-asm void fn_8012B3D0(s32 arg0, s32 arg1, f32 farg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    mr r31, r4
-    la r5, lbl_804A0970
-    lfs f0, 0x38(r5)
-    fmuls f1, f0, f1
-    bl fn_8012B2DC
-    li r4, 0x8
-    slwi r0, r31, 5
-    add r3, r30, r0
-    stw r4, 0x18c(r3)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_8012B3D0(s32 arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
+    fn_8012B2DC((s32 *) ((s32 *) arg0), (s32) (arg1), M2C_FIELD(&lbl_804A0970, f32 *, 0x38) * farg0, farg1, farg2, farg3);
+    M2C_FIELD((arg0 + (arg1 << 5)), s32 *, 0x18C) = (s32) (8);
 }
 
 void fn_8012B424(s32 arg0, s32 arg1) {

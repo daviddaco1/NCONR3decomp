@@ -164,7 +164,7 @@ void fn_80137F44(void);
 void fn_80137F48(u16 arg0, u16 arg1);
 void fn_80137F60(s16 arg0, s16 arg1, s16 arg2);
 void fn_80137F80(void);
-void fn_80137F8C(void);
+s32 fn_80137F8C(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 s32 fn_80137FD4(s32 arg0);
 void fn_80138118(void);
 s32 fn_80138164(s32 arg0, s32 arg1);
@@ -1544,28 +1544,13 @@ void fn_80137F80(void) {
     lbl_8049D738 = 1;
 }
 
-// asm_to_cpp: fn_80137F8C
-asm void fn_80137F8C(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    li r0, 0x0
-    stw r0, lbl_8049D738
-    lis r7, fn_80137F80@ha
-    addi r7, r7, fn_80137F80@l
-    li r8, 0x2
-    bl DVDReadAsyncPrio
-lbl_80137FB0:
-    li r3, 0x0
-    bl fn_801780F8
-    lwz r3, lbl_8049D738
-    cmpwi r3, 0x1
-    bne lbl_80137FB0
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_80137F8C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    lbl_8049D738 = 0;
+    DVDReadAsyncPrio((s32) (arg0), (s32) (arg1), (s32) (arg2), (s32) (arg3), (s32) ((s32) fn_80137F80), (s32) (2));
+    do {
+        fn_801780F8((s32) (0));
+    } while ((s32) lbl_8049D738 != 1);
+    return (s32) (lbl_8049D738);
 }
 
 // asm_to_cpp: fn_80137FD4

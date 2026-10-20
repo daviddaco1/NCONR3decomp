@@ -71,7 +71,7 @@ void fn_80040B74(void);
 void fn_80040D08(s8 *arg0, f32 *arg1);
 void fn_80040E60(s8 *arg0, f32 *arg1, s32 arg2);
 void fn_80041224(f32 *arg0, f32 *arg1, f32 *arg2, f32 farg0);
-f32 fn_80041264(s32 arg0, s32 arg1);
+f32 fn_80041264(s32 arg0, s32 arg1, f32 farg0, f32 farg1);
 M2C_UNK fn_80041290(f32 farg0);
 M2C_UNK fn_800412A0(f32 farg0);
 void fn_800412B0(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
@@ -1358,20 +1358,8 @@ asm void fn_80041224(f32 *arg0, f32 *arg1, f32 *arg2, f32 farg0) {
     blr
 }
 
-// asm_to_cpp: fn_80041264
-asm f32 fn_80041264(s32 arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl Atan2FIdx__Q24nw4r4mathFff
-    la r3, lbl_8049E990
-    lfs f0, 0x20(r3)
-    fmuls f1, f0, f1
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+f32 fn_80041264(s32 arg0, s32 arg1, f32 farg0, f32 farg1) {
+    return M2C_FIELD(&lbl_8049E990, f32 *, 0x20) * Atan2FIdx__Q24nw4r4mathFff(farg0, farg1);
 }
 
 // asm_to_cpp: fn_80041290

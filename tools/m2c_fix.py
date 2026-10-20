@@ -13,6 +13,7 @@ import os, re
 DEF = re.compile(r'^([A-Za-z_][\w \*]*?)\b(\w+)\(([^;{)]*)\)\s*\{\s*$', re.M)
 PROTO = re.compile(r'^(\S[^\n(]*?\b\w+)\([^)\n]*\);(\s*/\* (?:extern|static) \*/)$', re.M)
 UNSET = re.compile(r'M2C_ERROR\(/\* Read from unset register \$r(\d+) \*/\)')
+FUNSET = re.compile(r'M2C_ERROR\(/\* Read from unset register \$f(\d+) \*/\)')
 TERN = re.compile(r'^([ \t]*)if \((\w+) != (?:NULL|0)\) \{\n\s*\n\s*\} else \{\n\s*\2 = ([^;\n]+);\n\s*\}', re.M)
 
 
@@ -36,17 +37,25 @@ def fix_unset_args(c):
         end = body_end(c, c.index('{', m.start()))
         body = c[m.end():end]
         regs = sorted({int(n) for n in UNSET.findall(body) if 3 <= int(n) <= 10})
+        fregs = sorted({int(n) for n in FUNSET.findall(body) if 1 <= int(n) <= 8})
         out.append(c[pos:m.start()])
-        if regs:
+        if regs or fregs:
             ps = [p.strip() for p in m.group(3).split(',') if p.strip() and p.strip() != 'void']
             byidx = {int(x.group(1)): p for p in ps for x in [re.search(r'\barg(\d+)$', p)] if x}
-            if len(byidx) == len(ps):
+            fbyidx = {int(x.group(1)): p for p in ps for x in [re.search(r'\bfarg(\d+)$', p)] if x}
+            if len(byidx) + len(fbyidx) == len(ps):
                 for r in regs:
                     byidx.setdefault(r - 3, f's32 arg{r - 3}')
-                n = max(byidx) + 1
-                params = ', '.join(byidx.get(i, f's32 arg{i}') for i in range(n))
+                for r in fregs:  # float que el wrapper pasa intacto (f1..f8)
+                    fbyidx.setdefault(r - 1, f'f32 farg{r - 1}')
+                n = max(byidx) + 1 if byidx else 0
+                fn = max(fbyidx) + 1 if fbyidx else 0
+                params = ', '.join([byidx.get(i, f's32 arg{i}') for i in range(n)] +
+                                   [fbyidx.get(i, f'f32 farg{i}') for i in range(fn)])
                 body = UNSET.sub(lambda u: f'arg{int(u.group(1)) - 3}' if 3 <= int(u.group(1)) <= 10
                                  else u.group(0), body)
+                body = FUNSET.sub(lambda u: f'farg{int(u.group(1)) - 1}' if 1 <= int(u.group(1)) <= 8
+                                  else u.group(0), body)
                 out.append(f'{m.group(1)}{m.group(2)}({params}) {{' + body)
                 pos = end
                 continue

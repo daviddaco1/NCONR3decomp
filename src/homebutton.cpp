@@ -1,11 +1,12 @@
 #include "types.h"
 #include "m2c_macros.h"
 
-struct M2C_VC_0 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);     };
-struct M2C_VC_1 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);    };
-struct M2C_VC_2 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);   };
-struct M2C_VC_3 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);  };
-struct M2C_VC_4 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK); };
+struct M2C_VC_0 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);      };
+struct M2C_VC_1 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);     };
+struct M2C_VC_2 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);    };
+struct M2C_VC_3 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);   };
+struct M2C_VC_4 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);  };
+struct M2C_VC_5 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK); };
 
 extern "C" {
 

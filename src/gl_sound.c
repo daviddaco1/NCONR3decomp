@@ -1996,37 +1996,15 @@ asm void fn_8018F0FC(void) {
     b __destroy_arr
 }
 
-// asm_to_cpp: fn_8018F118
-asm s32 * fn_8018F118(s32 *arg0, s16 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    mr r31, r4
-    cmpwi r3, 0x0
-    beq lbl_8018F168
-    addi r3, r3, 0x50
-    li r4, -0x1
-    bl dtor_8018E6C0
-    addi r3, r30, 0x4c
-    li r4, -0x1
-    bl fn_8018F464
-    extsh r0, r31
-    cmpwi r0, 0x0
-    ble lbl_8018F168
-    mr r3, r30
-    bl dtor_80136CFC
-lbl_8018F168:
-    mr r3, r30
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 * fn_8018F118(s32 *arg0, s16 arg1) {
+    if (arg0 != NULL) {
+        dtor_8018E6C0((s32 *) ((s8 *)arg0 + 0x50), (s16) (-1));
+        fn_8018F464((s32 *) ((s8 *)arg0 + 0x4C), (s16) (-1));
+        if (arg1 > 0) {
+            dtor_80136CFC((s32) ((s32) arg0));
+        }
+    }
+    return (s32 *) (arg0);
 }
 
 // asm_to_cpp: fn_8018F184

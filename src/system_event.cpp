@@ -74,7 +74,7 @@ s32 fn_80065764();
 s32 fn_800668D8(s8 *arg0);
 s32 fn_80066DD4(s8 *arg0);
 s32 fn_80066E2C(s32 *arg0);
-f32 fn_800674B8(s32 arg0, s32 arg1);
+f32 fn_800674B8(s32 arg0, s32 arg1, f32 farg0, f32 farg1);
 void fn_800674E4(s8 *arg0);
 void fn_80067580(s8 *arg0);
 void fn_8006760C(s8 *arg0);
@@ -4730,20 +4730,8 @@ lbl_800674A0:
     blr
 }
 
-// asm_to_cpp: fn_800674B8
-asm f32 fn_800674B8(s32 arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl Atan2FIdx__Q24nw4r4mathFff
-    la r3, lbl_8049EDE0
-    lfs f0, 0x20(r3)
-    fmuls f1, f0, f1
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+f32 fn_800674B8(s32 arg0, s32 arg1, f32 farg0, f32 farg1) {
+    return M2C_FIELD(&lbl_8049EDE0, f32 *, 0x20) * Atan2FIdx__Q24nw4r4mathFff(farg0, farg1);
 }
 
 void fn_800674E4(s8 *arg0) {

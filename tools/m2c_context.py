@@ -88,6 +88,32 @@ def lib_protos():
 VARFIXED = {'snprintf': 3, 'sprintf': 2, 'sscanf': 2, 'OSPanic': 3, 'fn_801A9384': 3}  # el resto: 1 fijo
 
 
+def ret_used():
+    """Funciones cuyo valor de retorno usa algun llamador: tras `bl F`, r3 (o f1) se lee antes de
+    escribirse. m2c sobre el archivo entero propaga su propio `void` y no lo ve."""
+    out = set()
+    for path in glob.glob('build/RNEPDA/asm/**/*.s', recursive=True):
+        if 'auto_' in path:
+            continue
+        lines = [m.group(1) for l in open(path) for m in [re.search(r'\*/\t(.*)', l)] if m]
+        for i, ins in enumerate(lines):
+            m = re.match(r'bl (\w+)$', ins)
+            if not m:
+                continue
+            for nxt in lines[i + 1:i + 8]:
+                op, _, args = nxt.partition(' ')
+                regs = [a.strip() for a in re.split(r'[,()]', args) if a.strip()]
+                if op.startswith('b') or not regs:
+                    break
+                dst, src = (regs[0], regs[1:]) if not op.startswith(('st', 'cmp')) else (None, regs)
+                if any(r in ('r3', 'f1') for r in src):
+                    out.add(m.group(1))
+                    break
+                if dst in ('r3', 'f1'):
+                    break
+    return out
+
+
 def variadics():
     out = set()
     for path in glob.glob('build/RNEPDA/asm/**/*.s', recursive=True):
@@ -122,6 +148,7 @@ def main():
                 used.add(name)
             elif m.group(1):
                 used.add(name)
+    used |= ret_used()
     lib = lib_protos()
     lines = []
     for name, (ret, ps) in sorted(defs.items()):
