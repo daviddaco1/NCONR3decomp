@@ -152,6 +152,8 @@ def main():
             if os.path.exists(f'src/{base(sp)}.c'):
                 os.remove(f'src/{base(sp)}.c')
             print('mixto fallo', sp, (r.stderr or '').strip().splitlines()[-1:])
+            if os.environ.get('M2C_DEBUG'):
+                print(r.stderr[-2500:])
             continue
         if os.path.exists(f'src/{sp}') and sp != f'{base(sp)}.c':
             os.remove(f'src/{sp}')  # el asm generado anterior ya no se usa

@@ -42,7 +42,10 @@ def strip_def(text, name):
     pats = [re.escape(q[0]) + r'\s*::\s*' + re.escape(q[1]), r'(?<!::)\b' + re.escape(q[1])] if q \
         else [re.escape(name)]
     ms = []
-    for pat in pats:
+    if not q:  # funcion C: "tipo nombre(params) {" al inicio de linea (no un if/llamada)
+        ms = list(re.finditer(r'^[A-Za-z_][\w \t\*]*?\b' + re.escape(name) + r'\s*\([^;{)]*\)\s*\{',
+                              text, re.M))
+    for pat in (pats if q else []):
         ms = list(re.finditer(r'^[^\n;#]*' + pat + r'\s*\([^;{]*\)\s*(?:const\s*)?(?::[^{;]*)?\{',
                               text, re.M))
         if ms:
@@ -144,11 +147,12 @@ def main():
             sigs[n] = sig
     decls, blocks = asm_blocks(split)
     skip, force = set(), set()
-    for _ in range(40):
+    for _ in range(300):
         open(out, 'w', newline='').write(render(text, names, decls, blocks, is_c, skip, force, sigs))
         ok, log = compile_obj(split)
         if ok:
             return
+        log = re.sub(r'\n#\s{2,}(?![\d(]|Error|In:|File:|-)', '', log)  # mwcc parte identificadores largos
         m = re.search(r"identifier '(\w+)[^']*'\s*(?:#\s*)?redeclared", log)
         if not m and 'illegal function overloading' in log:
             m = re.search(r"^#\s+\d+:.*?\b(\w+)\s*\(\)\s*;\s*$", log, re.M)
