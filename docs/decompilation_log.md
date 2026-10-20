@@ -2474,3 +2474,42 @@ el 100% en asm para fijar splits y nombres, y después reescribir a C en una pas
 - Detalles útiles para leer asm de mwcc: `beq A; b B` tras comparar un parámetro = ternario
   `x = x ? x : f()`; un `mr r5, r3` "muerto" tras una llamada = el resultado se pasa como 3er
   argumento en otra rama.
+
+## Fase 104b — Pipeline m2c (2026-10-19, resumen a posteriori)
+
+- `tools/m2c_pass.py` + `m2c_context.py` + `m2c_fix.py`: m2c sobre cada TU asm, se queda con lo
+  que matchea al 100% y arma mixtos. Contexto con prototipos inferidos de todo el binario (aridad
+  por moda de llamadores). Pasadas sobre game code y RVL SDK: C real 8.41% → 10.90%.
+
+## Fase 105 — El game code es C++; reescritura con m2c en modo C++ (2026-10-20)
+
+- **Hallazgo de flags:** el game code nunca usa formas record (`clrlwi.`, `rlwinm.`): se compiló
+  con **`-opt nopeephole`**. Con el flag, lo ya matcheado sigue al 100% salvo funciones sueltas
+  que se envuelven en `#pragma peephole on` / `#pragma peephole reset`.
+- **Lenguaje:** el juego es **C++, incluso sus `.c`**. Evidencia: `__FILE__` del DOL dan
+  `glib_*.cpp`/`clinklist.cpp` y también `sys_task.c`, `tcg_cell.c`, `tcg_text.c`...; pero en
+  `tcg_text.c` hay RTTI `@unnamed@tcg_text_c@::CTextEntry_Char` (clases en namespace anónimo) y en
+  `tcg_cell.c`, `eft_scmd.c`, `gl_sound.c`, `seq_cmdeft.c` hay llamadas virtuales reales
+  (`lwz r12,0(r3); lwz r12,N(r12); mtctr r12`, byte-idéntico a un `virtual` de mwcc C++; un
+  puntero a función, en C o C++, carga la vtable en r4). ~1800 llamadas virtuales en el game code.
+- Decisión: cada código en su lenguaje real. Game code → C++ (`-lang=c++`, todo en
+  `extern "C" {}` porque los `fn_*` no tienen nombre mangled conocido); librerías como estaban
+  (SDK/MSL/GameSpy C, NW4R C++). Nombres de archivo = los del DOL (`tools/rename_lang.py`): 14 TUs
+  `.c` (compiladas como C++), el resto `.cpp`.
+- `tools/m2c_cpp.py`: por TU parte del asm completo, genera C++ con `m2c -t ppc-mwcc-c++` y
+  reemplaza cada función que compila y matchea; el resto queda asm. Necesario para C++:
+  prototipos completos (C++ no tiene K&R: la aridad tiene que coincidir — se toma la de las
+  llamadas de la TU y se rellena con parámetros sin usar, que no cambian el código), casts
+  explícitos en argumentos/asignaciones/`return` entre enteros y punteros, `void *` → `s8 *`
+  también en los prototipos del contexto, tipos `nw4r::...*` de nombres mangled → `s8 *`,
+  variádicas de libc con su firma real. Compila con mwcc directo y muchos errores por pasada.
+- Otras mejoras de m2c (sirven a ambas pasadas): firmas reales de `libs/` en el contexto
+  (`GXSetTexCoordGen2` tiene 6 parámetros, la inferencia daba 2); `p + n` sobre punteros tipados
+  y sobre retornos de funciones puntero → `(s8 *)p + n` (m2c da offsets en bytes); `body_end`
+  arrancaba después de la llave si había línea en blanco (cuerpos mal cortados).
+- `include/m2c_protos.h` versionado (antes solo en `build/`: un clon limpio no compilaba sin m2c).
+- `tools/fn_diff.py`: compila una función aislada y la compara instrucción por instrucción con
+  el asm original (para ajustar a mano).
+- **C real: 10.90% → 12.16%** (401,064 bytes; 1602 funciones del juego en C++). `build.sha1` OK.
+- Pendiente: las llamadas virtuales necesitan clases C++ reales con `virtual` (en C emulado no
+  sale el `r12`); los métodos de esas clases tendrán nombre mangled, no `fn_*`.

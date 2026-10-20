@@ -60,8 +60,8 @@ ninja; el resto (dtk, objdiff-cli, binutils, compiladores CodeWarrior) se descar
 
 | Zona | Compilador | Flags |
 |---|---|---|
-| Game code (mayoría) | Wii/1.0 | extra `-O4,s -schedule off -func_align 4`; con scheduler activo queda ~94% por orden de instrucciones |
-| `tcg_text.cpp` | Wii/1.0 | base (`-O4,p`): los flags varían por TU, probar ambos |
+| Game code (mayoría) | Wii/1.0 | **C++** (`-lang=c++`, también los `.c`) + `-O4,s -schedule off -func_align 4 -opt nopeephole`; con scheduler activo queda ~94% por orden de instrucciones; funciones sueltas necesitan `#pragma peephole on` |
+| `tcg_text.c` | Wii/1.0 | base (`-O4,p`) + `-lang=c++`: los flags varían por TU, probar ambos |
 | MSL_C / Runtime | Wii/1.0 | `cflags_mslc` / `cflags_mw_runtime` (`_eh` para `.cp` con excepciones) |
 | TRK | Wii/1.0a | `cflags_trk` (incluye `-str reuse,pool`) |
 | RVL SDK | Wii/1.0 | `cflags_sdk` |
@@ -80,8 +80,15 @@ dtk-template (`project.py`, `download_tool.py`, etc.): no tocar salvo necesidad 
 - Símbolos: `rename_symbols.py` (`--asm-only` no toca C), `pair_unnamed.py`.
 - Asm/C: `asm_to_cpp.py` (asm dtk → asm inline mwcc), `try_import.py` (probar C importado por
   TU y compilador), `mix_asm.py` (arma mixtos), `gen_eye_stub.py`, `list_unmatched.py`.
-- m2c (asm → C automático): `m2c_context.py` (firmas de todo el binario → `build/m2c_ctx.h` y
-  `build/RNEPDA/include/m2c_protos.h`; regenerar antes de `m2c_pass.py`),
+- **Game code = C++** (incluso los `.c` del DOL: RTTI y llamadas virtuales lo prueban, ver fase
+  105 de la bitácora). Nombres de archivo = `__FILE__` del DOL (`rename_lang.py`). Todo dentro de
+  `extern "C" {}` (los `fn_*` no tienen nombre mangled conocido). `m2c_cpp.py <split>|--game`
+  regenera TUs del juego en C++ desde el asm (prototipos completos, casts, aridad por llamadas) y
+  deja asm lo que no matchea; `fn_diff.py <split> <fn> [c]` compara una función aislada contra el
+  asm para ajustarla a mano. No escribir game code en C.
+- m2c (asm → C automático): `m2c_context.py` (firmas de todo el binario + firmas reales de
+  `libs/` → `build/m2c_ctx.h`, tipos de datos → `build/m2c_data.h`; `--protos` reescribe
+  `include/m2c_protos.h`, que está versionado y lo usan los C de librerías ya commiteados),
   `m2c_pass.py "<flags separados por |>" <splits...>` (genera C, se queda con lo que matchea al
   100%, verifica con build completo y revierte lo que falle), `m2c_fix.py` (correcciones sobre la
   salida). m2c es GPL y **no se incluye**: clonar https://github.com/matt-kempster/m2c y exportar
@@ -117,12 +124,13 @@ dtk-template (`project.py`, `download_tool.py`, etc.): no tocar salvo necesidad 
 
 ## Estado (actualizar al cerrar una etapa)
 
-- **Código 100% matcheado** (3,299,164 bytes, 11,293 funciones) mezclando asm y C; **C real
-  ≈10.9%**. Datos 0% (sin splits de datos).
+- **Código 100% matcheado** (3,299,164 bytes, 11,293 funciones) mezclando asm y C/C++; **C real
+  ≈12.2%** (game code en C++: 1602 funciones). Datos 0% (sin splits de datos).
 - `.text` 100% splitteado. TUs `unk_<addr>` = fronteras sin nombre real (los huecos grandes, como
   `dwc/unk_8022813C.c`, pueden contener varios archivos). Funciones del juego siguen como `fn_*`.
-- Siguiente: subir el C real (m2c + ajuste manual) y splits de datos por TU (habilitan enlazar y
-  arreglan funciones casi idénticas por offsets de strings).
+- Siguiente: clases C++ con `virtual` para las ~1800 llamadas virtuales (en C++ con punteros a
+  función no sale el `lwz r12`), ajuste manual de casi-matches (`fn_diff.py`) y splits de datos
+  por TU (habilitan enlazar y arreglan funciones casi idénticas por offsets de strings).
 
 Historial ronda por ronda en [`docs/decompilation_log.md`](docs/decompilation_log.md);
 actualizarlo al cerrar cada sesión.
