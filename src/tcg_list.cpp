@@ -1628,17 +1628,10 @@ lbl_8012F640:
     blr
 }
 
-// asm_to_cpp: fn_8012F658
-asm void fn_8012F658(s32 arg0) {
-    nofralloc
-    li r0, 0x3e9
-    lis r4, lbl_803C1A40@ha
-    addi r4, r4, lbl_803C1A40@l
-    stw r0, 0x28(r4)
-    stw r3, 0x7b4(r4)
-    lis r3, 0x1
-    addi r3, r3, -0x8000
-    b fn_8017743C
+void fn_8012F658(s32 arg0) {
+    M2C_FIELD(&lbl_803C1A40, s32 *, 0x28) = (s32) (0x3E9);
+    M2C_FIELD(&lbl_803C1A40, s32 *, 0x7B4) = (s32) (arg0);
+    fn_8017743C((s32) (0x8000), (s32) ((s32) &lbl_803C1A40));
 }
 
 void fn_8012F678(s8 *arg0, s32 arg1) {

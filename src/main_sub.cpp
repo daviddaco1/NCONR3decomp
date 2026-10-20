@@ -332,18 +332,14 @@ asm void fn_800578EC(void) {
     blr
 }
 
-// asm_to_cpp: fn_8005791C
-asm void fn_8005791C(s32 arg0, s32 arg1, s32 arg2, s8 arg3) {
-    nofralloc
-    lis r7, lbl_80390580@ha
-    addi r7, r7, lbl_80390580@l
-    stw r3, 0x1c(r7)
-    stw r4, 0x20(r7)
-    stb r6, 0x38(r7)
-    ori r0, r5, 0xff
-    stw r0, 0x3c(r7)
-    blr
+#pragma peephole on
+void fn_8005791C(s32 arg0, s32 arg1, s32 arg2, s8 arg3) {
+    M2C_FIELD(&lbl_80390580, s32 *, 0x1C) = (s32) (arg0);
+    M2C_FIELD(&lbl_80390580, s32 *, 0x20) = (s32) (arg1);
+    M2C_FIELD(&lbl_80390580, s8 *, 0x38) = (s8) (arg3);
+    M2C_FIELD(&lbl_80390580, s32 *, 0x3C) = (s32) ((s32) (arg2 | 0xFF));
 }
+#pragma peephole reset
 
 // asm_to_cpp: fn_8005793C
 asm void fn_8005793C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {

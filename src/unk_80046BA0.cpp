@@ -471,52 +471,24 @@ lbl_800470B4:
     blr
 }
 
-// asm_to_cpp: fn_800470CC
-asm void fn_800470CC(s8 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    lwz r4, 0x14(r3)
-    lwz r0, 0x0(r4)
-    rlwinm r0, r0, 0, 19, 19
-    cmpwi r0, 0x0
-    beq lbl_80047108
-    li r0, 0x3c
-    stw r0, 0x24(r3)
-    li r0, 0x2
-    stw r0, 0x4(r3)
-    b lbl_80047158
-lbl_80047108:
-    lwz r4, 0x3854(r4)
-    cmpwi r4, 0x0
-    beq lbl_80047124
-    lwz r0, 0x18(r3)
-    cmplw r4, r0
-    beq lbl_80047124
-    stw r4, 0x18(r3)
-lbl_80047124:
-    lis r3, lbl_80390580@ha
-    addi r3, r3, lbl_80390580@l
-    lwz r3, 0xc(r3)
-    lwz r0, 0x4(r3)
-    cmpwi r0, 0x1
-    bne lbl_80047158
-    bl fn_8005E5AC
-    cmpwi r3, 0x2
-    bgt lbl_80047158
-    li r0, 0x1e
-    stw r0, 0x24(r31)
-    li r0, 0x2
-    stw r0, 0x4(r31)
-lbl_80047158:
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_800470CC(s8 *arg0) {
+    s32 temp_r4_2;
+    s8 *temp_r4;
+
+    temp_r4 = (s8 *) (M2C_FIELD(arg0, s8 **, 0x14));
+    if ((s32) (M2C_FIELD(temp_r4, s32 *, 0) & 0x1000) != 0) {
+        M2C_FIELD(arg0, s32 *, 0x24) = (s32) (0x3C);
+        M2C_FIELD(arg0, s32 *, 4) = (s32) (2);
+        return;
+    }
+    temp_r4_2 = (s32) (M2C_FIELD(temp_r4, s32 *, 0x3854));
+    if ((temp_r4_2 != 0) && ((u32) temp_r4_2 != (u32) M2C_FIELD(arg0, u32 *, 0x18))) {
+        M2C_FIELD(arg0, u32 *, 0x18) = (u32) ((u32) temp_r4_2);
+    }
+    if (((s32) M2C_FIELD(M2C_FIELD(&lbl_80390580, s8 **, 0xC), s32 *, 4) == 1) && (fn_8005E5AC() <= 2)) {
+        M2C_FIELD(arg0, s32 *, 0x24) = (s32) (0x1E);
+        M2C_FIELD(arg0, s32 *, 4) = (s32) (2);
+    }
 }
 
 // asm_to_cpp: fn_8004716C

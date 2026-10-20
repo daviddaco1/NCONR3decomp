@@ -235,7 +235,7 @@ s32 fn_801794A4(s32 arg0, u8 arg1, u8 arg2, s32 arg3, s32 arg4);
 s32 fn_801794B0(s32 arg0);
 s32 fn_801794B4(s32 arg0, s32 arg1, s32 arg2);
 M2C_UNK fn_801794B8(void);
-M2C_UNK fn_801794C8(void);
+s32 fn_801794C8(void);
 s32 fn_801794D4(s32 arg0);
 s32 fn_801794D8(s32 arg0, s32 arg1, s32 arg2);
 s32 fn_801794DC(s32 arg0, s32 arg1);
@@ -1402,12 +1402,8 @@ asm M2C_UNK fn_801794B8(void) {
     b nandChangeDirCallback
 }
 
-// asm_to_cpp: fn_801794C8
-asm M2C_UNK fn_801794C8(void) {
-    nofralloc
-    lis r3, lbl_803C2330@ha
-    addi r3, r3, lbl_803C2330@l
-    b NANDGetHomeDir
+s32 fn_801794C8(void) {
+    return (s32) (NANDGetHomeDir((s32) ((s32) &lbl_803C2330)));
 }
 
 s32 fn_801794D4(s32 arg0) {

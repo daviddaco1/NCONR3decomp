@@ -1761,14 +1761,8 @@ lbl_800960F4:
     blr
 }
 
-// asm_to_cpp: fn_80096138
-asm void fn_80096138(void) {
-    nofralloc
-    li r0, 0x0
-    lis r3, lbl_80395728@ha
-    addi r3, r3, lbl_80395728@l
-    stw r0, 0xff4(r3)
-    blr
+void fn_80096138(void) {
+    M2C_FIELD(&lbl_80395728, s32 *, 0xFF4) = (s32) (0);
 }
 
 // asm_to_cpp: fn_8009614C
@@ -1856,38 +1850,20 @@ asm s32 fn_80096228() {
     blr
 }
 
-// asm_to_cpp: fn_80096240
-asm void fn_80096240(void) {
-    nofralloc
-    lis r3, lbl_80395728@ha
-    addi r4, r3, lbl_80395728@l
-    lwz r3, 0x11c4(r4)
-    addi r0, r3, 0x1
-    stw r0, 0x11c4(r4)
-    cmpwi r0, 0x3e7
-    blelr
-    li r0, 0x3e7
-    stw r0, 0x11c4(r4)
-    blr
+void fn_80096240(void) {
+    s32 temp_r0;
+
+    temp_r0 = (s32) (M2C_FIELD(&lbl_80395728, s32 *, 0x11C4) + 1);
+    M2C_FIELD(&lbl_80395728, s32 *, 0x11C4) = (s32) (temp_r0);
+    if (temp_r0 > 0x3E7) {
+        M2C_FIELD(&lbl_80395728, s32 *, 0x11C4) = (s32) (0x3E7);
+    }
 }
 
-// asm_to_cpp: fn_80096268
-asm void fn_80096268(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lis r3, lbl_8039A0D0@ha
-    addi r3, r3, lbl_8039A0D0@l
-    li r4, 0x0
-    li r5, 0x3c8c
-    bl memset
-    bl fn_80091260
-    bl fn_800962A0
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_80096268(void) {
+    memset((s32) ((s32) &lbl_8039A0D0), (s32) (0), (s32) (0x3C8C));
+    fn_80091260();
+    fn_800962A0();
 }
 
 void fn_800962A0(void) {
@@ -1932,15 +1908,8 @@ lbl_80096300:
     blr
 }
 
-// asm_to_cpp: fn_80096310
-asm void fn_80096310(void) {
-    nofralloc
-    lis r3, lbl_8039DD5C@ha
-    addi r3, r3, lbl_8039DD5C@l
-    lis r4, lbl_8039A0D0@ha
-    addi r4, r4, lbl_8039A0D0@l
-    li r5, 0x3c8c
-    b memcpy
+void fn_80096310(void) {
+    memcpy((s32) ((s32) &lbl_8039DD5C), (s32) ((s32) &lbl_8039A0D0), (s32) (0x3C8C));
 }
 
 // asm_to_cpp: fn_80096328
@@ -1973,14 +1942,9 @@ asm void fn_80096350(s32 arg0) {
     b memcpy
 }
 
-// asm_to_cpp: fn_80096378
-asm void fn_80096378(s32 arg0, s32 arg1) {
-    nofralloc
-    lis r5, lbl_8039A0D0@ha
-    addi r5, r5, lbl_8039A0D0@l
-    stw r3, 0x1ac8(r5)
-    stw r4, 0x1acc(r5)
-    blr
+void fn_80096378(s32 arg0, s32 arg1) {
+    M2C_FIELD(&lbl_8039A0D0, s32 *, 0x1AC8) = (s32) (arg0);
+    M2C_FIELD(&lbl_8039A0D0, s32 *, 0x1ACC) = (s32) (arg1);
 }
 
 // asm_to_cpp: fn_8009638C

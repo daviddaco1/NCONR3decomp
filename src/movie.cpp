@@ -144,7 +144,7 @@ s32 * fn_80136E78(s32 arg0, s32 arg1);
 s32 fn_80136F28(s8 *arg0, s32 arg1);
 void fn_80137364(void);
 void fn_80137368(void);
-M2C_UNK fn_8013736C(s32 arg0);
+s32 fn_8013736C(s32 arg0);
 void fn_801373D0(s32 arg0);
 s32 fn_80137410(s32 arg0, s32 arg1);
 s32 fn_801374EC();
@@ -417,13 +417,8 @@ s32 fn_80136D9C(void) {
     return (s32) (lbl_8049D700);
 }
 
-// asm_to_cpp: fn_80136DA4
-asm s32 fn_80136DA4(void) {
-    nofralloc
-    lis r3, lbl_803C1A40@ha
-    addi r3, r3, lbl_803C1A40@l
-    lwz r3, 0x7f8(r3)
-    blr
+s32 fn_80136DA4(void) {
+    return (s32) (M2C_FIELD(&lbl_803C1A40, s32 *, 0x7F8));
 }
 
 s32 fn_80136DB4(void) {
@@ -822,55 +817,17 @@ void fn_80137364(void) {
 void fn_80137368(void) {
 }
 
-// asm_to_cpp: fn_8013736C
-asm M2C_UNK fn_8013736C(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    li r3, 0x1
-    addi r0, r31, 0x1f
-    clrrwi r4, r0, 5
-    addi r0, r4, 0x3f
-    clrrwi r4, r0, 5
-    addi r4, r4, 0x20
-    li r5, 0x0
-    li r6, 0x4004
-    bl fn_80170410
-    lis r4, lbl_803C1A40@ha
-    addi r4, r4, lbl_803C1A40@l
-    stw r3, 0x838(r4)
-    mr r4, r31
-    li r5, 0x4004
-    bl fn_80170E2C
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_8013736C(s32 arg0) {
+    s32 temp_r3;
+
+    temp_r3 = (s32) (fn_80170410((s32) (1), (s32) (((((arg0 + 0x1F) & 0xFFFFFFE0) + 0x3F) & 0xFFFFFFE0) + 0x20), (s32) (0), (s32) (0x4004)));
+    M2C_FIELD(&lbl_803C1A40, s32 *, 0x838) = (s32) (temp_r3);
+    return (s32) (fn_80170E2C((s32) (temp_r3), (s32) (arg0), (s32) (0x4004)));
 }
 
-// asm_to_cpp: fn_801373D0
-asm void fn_801373D0(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r4, r3
-    lis r3, lbl_803C1A40@ha
-    addi r31, r3, lbl_803C1A40@l
-    lwz r3, 0x838(r31)
-    bl fn_80170E84
-    lwz r3, 0x838(r31)
-    bl fn_80170560
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_801373D0(s32 arg0) {
+    fn_80170E84((s32) (M2C_FIELD(&lbl_803C1A40, s32 *, 0x838)), (s8 *) ((s8 *) arg0));
+    fn_80170560((s32) (M2C_FIELD(&lbl_803C1A40, s32 *, 0x838)));
 }
 
 // asm_to_cpp: fn_80137410
@@ -1086,66 +1043,28 @@ lbl_801376BC:
     blr
 }
 
-// asm_to_cpp: fn_801376D4
-asm s32 ** fn_801376D4(s32 arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lis r3, lbl_803A78F8@ha
-    addi r3, r3, lbl_803A78F8@l
-    addi r4, r1, 0x8
-    li r5, 0x1
-    bl OSReceiveMessage
-    lwz r3, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 ** fn_801376D4(s32 arg0, s32 arg1) {
+    s32 **sp8;
+
+    OSReceiveMessage((s32) ((s32) &lbl_803A78F8), (s32) ((s32) &sp8), (s32) (1));
+    return (s32 **) (sp8);
 }
 
-// asm_to_cpp: fn_80137708
-asm void fn_80137708(s32 **arg0) {
-    nofralloc
-    mr r4, r3
-    lis r3, lbl_803A78F8@ha
-    addi r3, r3, lbl_803A78F8@l
-    li r5, 0x0
-    b OSSendMessage
+void fn_80137708(s32 **arg0) {
+    OSSendMessage((s32) ((s32) &lbl_803A78F8), (s32) ((s32) arg0), (s32) (0));
 }
 
-// asm_to_cpp: fn_8013771C
-asm s32 ** fn_8013771C(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    mr r5, r3
-    lis r3, lbl_803A7918@ha
-    addi r3, r3, lbl_803A7918@l
-    addi r4, r1, 0x8
-    bl OSReceiveMessage
-    cmpwi r3, 0x1
-    bne lbl_8013774C
-    lwz r3, 0x8(r1)
-    b lbl_80137750
-lbl_8013774C:
-    li r3, 0x0
-lbl_80137750:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 ** fn_8013771C(s32 arg0) {
+    s32 **sp8;
+
+    if (OSReceiveMessage((s32) ((s32) &lbl_803A7918), (s32) ((s32) &sp8), (s32) (arg0)) == 1) {
+        return (s32 **) (sp8);
+    }
+    return (s32 **) (NULL);
 }
 
-// asm_to_cpp: fn_80137760
-asm void fn_80137760(s32 **arg0) {
-    nofralloc
-    mr r4, r3
-    lis r3, lbl_803A7918@ha
-    addi r3, r3, lbl_803A7918@l
-    li r5, 0x1
-    b OSSendMessage
+void fn_80137760(s32 **arg0) {
+    OSSendMessage((s32) ((s32) &lbl_803A7918), (s32) ((s32) arg0), (s32) (1));
 }
 
 void fn_80137774(void) {
@@ -1942,32 +1861,13 @@ lbl_801383C0:
     blr
 }
 
-// asm_to_cpp: fn_801383D8
-asm s32 fn_801383D8(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lis r3, lbl_803A7980@ha
-    addi r3, r3, lbl_803A7980@l
-    lwz r0, 0xa0(r3)
-    cmpwi r0, 0x0
-    beq lbl_80138418
-    lbz r0, 0xa4(r3)
-    cmpwi r0, 0x0
-    bne lbl_80138418
-    li r0, 0x0
-    stw r0, 0xa0(r3)
-    bl DVDClose
-    li r3, 0x1
-    b lbl_8013841C
-lbl_80138418:
-    li r3, 0x0
-lbl_8013841C:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_801383D8(void) {
+    if (((s32) M2C_FIELD(&lbl_803A7980, s32 *, 0xA0) != 0) && ((s32) M2C_FIELD(&lbl_803A7980, u8 *, 0xA4) == 0)) {
+        M2C_FIELD(&lbl_803A7980, s32 *, 0xA0) = (s32) (0);
+        DVDClose((s32) ((s32) &lbl_803A7980));
+        return (s32) (1);
+    }
+    return (s32) (0);
 }
 
 // asm_to_cpp: fn_8013842C
@@ -2197,34 +2097,15 @@ lbl_8013870C:
     blr
 }
 
-// asm_to_cpp: fn_80138738
-asm s32 fn_80138738(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lis r3, lbl_803A7BC0@ha
-    addi r3, r3, lbl_803A7BC0@l
-    addi r4, r1, 0x8
-    li r5, 0x1
-    bl OSReceiveMessage
-    lwz r3, 0x8(r1)
-    subic r0, r3, 0x1
-    subfe r3, r0, r3
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_80138738(void) {
+    s32 sp8;
+
+    OSReceiveMessage((s32) ((s32) &lbl_803A7BC0), (s32) ((s32) &sp8), (s32) (1));
+    return (s32) (sp8 != 0);
 }
 
-// asm_to_cpp: fn_80138774
-asm void fn_80138774(s32 **arg0) {
-    nofralloc
-    mr r4, r3
-    lis r3, lbl_803A7BC0@ha
-    addi r3, r3, lbl_803A7BC0@l
-    li r5, 0x1
-    b OSSendMessage
+void fn_80138774(s32 **arg0) {
+    OSSendMessage((s32) ((s32) &lbl_803A7BC0), (s32) ((s32) arg0), (s32) (1));
 }
 
 // asm_to_cpp: fn_80138788
@@ -2490,25 +2371,13 @@ lbl_80138AFC:
     blr
 }
 
-// asm_to_cpp: fn_80138B10
-asm s32 fn_80138B10(void) {
-    nofralloc
-    lis r3, lbl_803A7980@ha
-    addi r3, r3, lbl_803A7980@l
-    lwz r0, 0xa0(r3)
-    cmpwi r0, 0x0
-    beq lbl_80138B44
-    lbz r0, 0xa4(r3)
-    cmplwi r0, 0x2
-    bne lbl_80138B44
-    li r0, 0x4
-    stb r0, 0xa5(r3)
-    stb r0, 0xa4(r3)
-    li r3, 0x1
-    blr
-lbl_80138B44:
-    li r3, 0x0
-    blr
+s32 fn_80138B10(void) {
+    if (((s32) M2C_FIELD(&lbl_803A7980, s32 *, 0xA0) != 0) && ((u8) M2C_FIELD(&lbl_803A7980, u8 *, 0xA4) == 2)) {
+        M2C_FIELD(&lbl_803A7980, s8 *, 0xA5) = (s8) (4);
+        M2C_FIELD(&lbl_803A7980, u8 *, 0xA4) = (u8) (4U);
+        return (s32) (1);
+    }
+    return (s32) (0);
 }
 
 // asm_to_cpp: fn_80138B4C
@@ -2929,47 +2798,21 @@ lbl_801390CC:
     blr
 }
 
-// asm_to_cpp: fn_801390DC
-asm s32 fn_801390DC(void) {
-    nofralloc
-    lis r3, lbl_803A7980@ha
-    addi r3, r3, lbl_803A7980@l
-    lbz r3, 0xa4(r3)
-    blr
+s32 fn_801390DC(void) {
+    return (s32) ((s32) M2C_FIELD(&lbl_803A7980, u8 *, 0xA4));
 }
 
-// asm_to_cpp: fn_801390EC
-asm void fn_801390EC(s32 **arg0) {
-    nofralloc
-    mr r4, r3
-    lis r3, lbl_803A7BE0@ha
-    addi r3, r3, lbl_803A7BE0@l
-    li r5, 0x0
-    b OSSendMessage
+void fn_801390EC(s32 **arg0) {
+    OSSendMessage((s32) ((s32) &lbl_803A7BE0), (s32) ((s32) arg0), (s32) (0));
 }
 
-// asm_to_cpp: fn_80139100
-asm s32 ** fn_80139100(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lis r3, lbl_803A7BE0@ha
-    addi r3, r3, lbl_803A7BE0@l
-    addi r4, r1, 0x8
-    li r5, 0x0
-    bl OSReceiveMessage
-    cmpwi r3, 0x1
-    bne lbl_80139130
-    lwz r3, 0x8(r1)
-    b lbl_80139134
-lbl_80139130:
-    li r3, 0x0
-lbl_80139134:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 ** fn_80139100(void) {
+    s32 **sp8;
+
+    if (OSReceiveMessage((s32) ((s32) &lbl_803A7BE0), (s32) ((s32) &sp8), (s32) (0)) == 1) {
+        return (s32 **) (sp8);
+    }
+    return (s32 **) (NULL);
 }
 
 void fn_80139144(void) {
@@ -3455,25 +3298,11 @@ lbl_801397C8:
     blr
 }
 
-// asm_to_cpp: fn_801397E0
-asm s32 fn_801397E0(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    lis r3, lbl_803A7980@ha
-    addi r3, r3, lbl_803A7980@l
-    lwz r0, 0xa0(r3)
-    cmpwi r0, 0x0
-    beq lbl_8013980C
-    lfs f0, 0xdc(r3)
-    fctiwz f0, f0
-    stfd f0, 0x8(r1)
-    lwz r3, 0xc(r1)
-    b lbl_80139810
-lbl_8013980C:
-    li r3, -0x1
-lbl_80139810:
-    addi r1, r1, 0x10
-    blr
+s32 fn_801397E0(void) {
+    if ((s32) M2C_FIELD(&lbl_803A7980, s32 *, 0xA0) != 0) {
+        return (s32) ((s32) M2C_FIELD(&lbl_803A7980, f32 *, 0xDC));
+    }
+    return (s32) (-1);
 }
 
 // asm_to_cpp: fn_80139818
@@ -3627,88 +3456,37 @@ lbl_801399F8:
     b lbl_80139950
 }
 
-// asm_to_cpp: fn_80139A00
-asm s32 ** fn_80139A00(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lis r3, lbl_803A7F40@ha
-    addi r3, r3, lbl_803A7F40@l
-    addi r4, r1, 0x8
-    li r5, 0x1
-    bl OSReceiveMessage
-    lwz r3, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 ** fn_80139A00(void) {
+    s32 **sp8;
+
+    OSReceiveMessage((s32) ((s32) &lbl_803A7F40), (s32) ((s32) &sp8), (s32) (1));
+    return (s32 **) (sp8);
 }
 
-// asm_to_cpp: fn_80139A34
-asm void fn_80139A34(s32 **arg0) {
-    nofralloc
-    mr r4, r3
-    lis r3, lbl_803A7F40@ha
-    addi r3, r3, lbl_803A7F40@l
-    li r5, 0x1
-    b OSSendMessage
+void fn_80139A34(s32 **arg0) {
+    OSSendMessage((s32) ((s32) &lbl_803A7F40), (s32) ((s32) arg0), (s32) (1));
 }
 
-// asm_to_cpp: fn_80139A48
-asm s32 ** fn_80139A48(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lis r3, lbl_803A7F20@ha
-    addi r3, r3, lbl_803A7F20@l
-    addi r4, r1, 0x8
-    li r5, 0x1
-    bl OSReceiveMessage
-    lwz r3, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 ** fn_80139A48(void) {
+    s32 **sp8;
+
+    OSReceiveMessage((s32) ((s32) &lbl_803A7F20), (s32) ((s32) &sp8), (s32) (1));
+    return (s32 **) (sp8);
 }
 
-// asm_to_cpp: fn_80139A7C
-asm void fn_80139A7C(s32 **arg0) {
-    nofralloc
-    mr r4, r3
-    lis r3, lbl_803A7F20@ha
-    addi r3, r3, lbl_803A7F20@l
-    li r5, 0x1
-    b OSSendMessage
+void fn_80139A7C(s32 **arg0) {
+    OSSendMessage((s32) ((s32) &lbl_803A7F20), (s32) ((s32) arg0), (s32) (1));
 }
 
-// asm_to_cpp: fn_80139A90
-asm s32 ** fn_80139A90(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lis r3, lbl_803A7F60@ha
-    addi r3, r3, lbl_803A7F60@l
-    addi r4, r1, 0x8
-    li r5, 0x1
-    bl OSReceiveMessage
-    lwz r3, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 ** fn_80139A90(void) {
+    s32 **sp8;
+
+    OSReceiveMessage((s32) ((s32) &lbl_803A7F60), (s32) ((s32) &sp8), (s32) (1));
+    return (s32 **) (sp8);
 }
 
-// asm_to_cpp: fn_80139AC4
-asm void fn_80139AC4(s32 **arg0) {
-    nofralloc
-    mr r4, r3
-    lis r3, lbl_803A7F60@ha
-    addi r3, r3, lbl_803A7F60@l
-    li r5, 0x1
-    b OSSendMessage
+void fn_80139AC4(s32 **arg0) {
+    OSSendMessage((s32) ((s32) &lbl_803A7F60), (s32) ((s32) arg0), (s32) (1));
 }
 
 // asm_to_cpp: fn_80139AD8
@@ -4052,66 +3830,28 @@ lbl_80139F34:
     blr
 }
 
-// asm_to_cpp: fn_80139F50
-asm s32 ** fn_80139F50(s32 arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lis r3, lbl_803AA628@ha
-    addi r3, r3, lbl_803AA628@l
-    addi r4, r1, 0x8
-    li r5, 0x1
-    bl OSReceiveMessage
-    lwz r3, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 ** fn_80139F50(s32 arg0, s32 arg1) {
+    s32 **sp8;
+
+    OSReceiveMessage((s32) ((s32) &lbl_803AA628), (s32) ((s32) &sp8), (s32) (1));
+    return (s32 **) (sp8);
 }
 
-// asm_to_cpp: fn_80139F84
-asm void fn_80139F84(s32 **arg0) {
-    nofralloc
-    mr r4, r3
-    lis r3, lbl_803AA628@ha
-    addi r3, r3, lbl_803AA628@l
-    li r5, 0x0
-    b OSSendMessage
+void fn_80139F84(s32 **arg0) {
+    OSSendMessage((s32) ((s32) &lbl_803AA628), (s32) ((s32) arg0), (s32) (0));
 }
 
-// asm_to_cpp: fn_80139F98
-asm s32 ** fn_80139F98(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    mr r5, r3
-    lis r3, lbl_803AA648@ha
-    addi r3, r3, lbl_803AA648@l
-    addi r4, r1, 0x8
-    bl OSReceiveMessage
-    cmpwi r3, 0x1
-    bne lbl_80139FC8
-    lwz r3, 0x8(r1)
-    b lbl_80139FCC
-lbl_80139FC8:
-    li r3, 0x0
-lbl_80139FCC:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 ** fn_80139F98(s32 arg0) {
+    s32 **sp8;
+
+    if (OSReceiveMessage((s32) ((s32) &lbl_803AA648), (s32) ((s32) &sp8), (s32) (arg0)) == 1) {
+        return (s32 **) (sp8);
+    }
+    return (s32 **) (NULL);
 }
 
-// asm_to_cpp: fn_80139FDC
-asm void fn_80139FDC(s32 **arg0) {
-    nofralloc
-    mr r4, r3
-    lis r3, lbl_803AA648@ha
-    addi r3, r3, lbl_803AA648@l
-    li r5, 0x1
-    b OSSendMessage
+void fn_80139FDC(s32 **arg0) {
+    OSSendMessage((s32) ((s32) &lbl_803AA648), (s32) ((s32) arg0), (s32) (1));
 }
 
 // asm_to_cpp: fn_80139FF0

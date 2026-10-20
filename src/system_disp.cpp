@@ -4921,56 +4921,24 @@ lbl_8007DDA4:
     blr
 }
 
-// asm_to_cpp: fn_8007DDC8
-asm s32 fn_8007DDC8(s32 *arg0, s8 *arg1, s8 *arg2, s8 **arg3, f32 farg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lwz r0, 0x0(r3)
-    andi. r0, r0, 0x5
-    cmplwi r0, 0x5
-    beq lbl_8007DDF8
-    lis r7, lbl_80390828@ha
-    addi r8, r7, lbl_80390828@l
-    lwz r7, 0x8(r8)
-    addi r0, r7, 0x1
-    stw r0, 0x8(r8)
-lbl_8007DDF8:
-    lwz r0, 0x0(r3)
-    ori r0, r0, 0x5
-    stw r0, 0x0(r3)
-    stw r4, 0x4(r3)
-    stw r5, 0x8(r3)
-    stfs f1, 0xc(r3)
-    addi r3, r3, 0x10
-    mr r4, r6
-    bl fn_80019DAC
-    li r3, 0x0
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_8007DDC8(s32 *arg0, s8 *arg1, s8 *arg2, s8 **arg3, f32 farg0) {
+    if ((u32) (M2C_FIELD(arg0, s32 *, 0) & 5) != 5) {
+        M2C_FIELD(&lbl_80390828, s32 *, 8) = (s32) ((s32) (M2C_FIELD(&lbl_80390828, s32 *, 8) + 1));
+    }
+    M2C_FIELD(arg0, s32 *, 0) |= 5;
+    M2C_FIELD(arg0, s8 **, 4) = (s8 *) (arg1);
+    M2C_FIELD(arg0, s8 **, 8) = (s8 *) (arg2);
+    M2C_FIELD(arg0, f32 *, 0xC) = farg0;
+    fn_80019DAC((s8 *) ((s8 *)arg0 + 0x10), (f32 *) arg3);
+    return (s32) (0);
 }
 
-// asm_to_cpp: fn_8007DE30
-asm s32 fn_8007DE30(s32 *arg0) {
-    nofralloc
-    cmpwi r3, 0x0
-    beq lbl_8007DE58
-    lis r4, lbl_80390828@ha
-    addi r5, r4, lbl_80390828@l
-    lwz r4, 0x10(r5)
-    addi r0, r4, 0x1
-    stw r0, 0x10(r5)
-    lwz r0, 0x0(r3)
-    ori r0, r0, 0x100
-    stw r0, 0x0(r3)
-lbl_8007DE58:
-    lis r3, lbl_80390828@ha
-    addi r3, r3, lbl_80390828@l
-    lwz r3, 0x10(r3)
-    blr
+s32 fn_8007DE30(s32 *arg0) {
+    if (arg0 != NULL) {
+        M2C_FIELD(&lbl_80390828, s32 *, 0x10) = (s32) ((s32) (M2C_FIELD(&lbl_80390828, s32 *, 0x10) + 1));
+        *arg0 |= 0x100;
+    }
+    return (s32) (M2C_FIELD(&lbl_80390828, s32 *, 0x10));
 }
 
 // asm_to_cpp: fn_8007DE68
@@ -6044,13 +6012,8 @@ lbl_8007ED18:
     blr
 }
 
-// asm_to_cpp: fn_8007ED54
-asm s32 fn_8007ED54(void) {
-    nofralloc
-    lis r3, lbl_80390828@ha
-    addi r3, r3, lbl_80390828@l
-    lwz r3, 0x4(r3)
-    blr
+s32 fn_8007ED54(void) {
+    return (s32) (M2C_FIELD(&lbl_80390828, s32 *, 4));
 }
 
 f32 fn_8007ED64(void) {
@@ -6364,13 +6327,8 @@ void fn_8007F144(void) {
     }
 }
 
-// asm_to_cpp: fn_8007F1C0
-asm s32 fn_8007F1C0(void) {
-    nofralloc
-    lis r3, lbl_803C1A40@ha
-    addi r3, r3, lbl_803C1A40@l
-    lwz r3, 0x844(r3)
-    blr
+s32 fn_8007F1C0(void) {
+    return (s32) (M2C_FIELD(&lbl_803C1A40, s32 *, 0x844));
 }
 
 // asm_to_cpp: fn_8007F1D0

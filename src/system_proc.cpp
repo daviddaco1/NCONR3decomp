@@ -1420,33 +1420,16 @@ lbl_8006A7E0:
     blr
 }
 
-// asm_to_cpp: fn_8006A7F8
-asm void fn_8006A7F8(s8 *arg0, s32 arg1) {
-    nofralloc
-    lwz r5, 0x0(r3)
-    rlwinm r0, r5, 0, 30, 30
-    cmpwi r0, 0x0
-    beqlr
-    rlwinm r0, r5, 0, 19, 19
-    cmpwi r0, 0x0
-    bnelr
-    lis r5, lbl_80390580@ha
-    addi r5, r5, lbl_80390580@l
-    lwz r5, 0xc(r5)
-    lwz r0, 0x10(r5)
-    cmpwi r0, 0xa
-    bgelr
-    lwz r0, 0x2c(r3)
-    add r0, r0, r4
-    stw r0, 0x2c(r3)
-    cmpwi r4, 0x0
-    bgelr
-    lwz r5, 0x30(r3)
-    srawi r0, r4, 1
-    addze r0, r0
-    add r0, r5, r0
-    stw r0, 0x30(r3)
-    blr
+void fn_8006A7F8(s8 *arg0, s32 arg1) {
+    s32 temp_r5;
+
+    temp_r5 = (s32) (M2C_FIELD(arg0, s32 *, 0));
+    if (((s32) (temp_r5 & 2) != 0) && ((s32) (temp_r5 & 0x1000) == 0) && ((s32) M2C_FIELD(M2C_FIELD(&lbl_80390580, s8 **, 0xC), s32 *, 0x10) < 0xA)) {
+        M2C_FIELD(arg0, s32 *, 0x2C) = (s32) ((s32) (M2C_FIELD(arg0, s32 *, 0x2C) + arg1));
+        if (arg1 < 0) {
+            M2C_FIELD(arg0, s32 *, 0x30) = (s32) ((s32) (M2C_FIELD(arg0, s32 *, 0x30) + (arg1 / 2)));
+        }
+    }
 }
 
 // asm_to_cpp: fn_8006A858

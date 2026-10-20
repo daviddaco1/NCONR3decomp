@@ -3127,12 +3127,8 @@ lbl_8003CB78:
     blr
 }
 
-// asm_to_cpp: fn_8003CB94
-asm s32 fn_8003CB94(void) {
-    nofralloc
-    lis r3, lbl_80348918@ha
-    addi r3, r3, lbl_80348918@l
-    blr
+s32 fn_8003CB94(void) {
+    return (s32) ((s32) &lbl_80348918);
 }
 
 // asm_to_cpp: fn_8003CBA0

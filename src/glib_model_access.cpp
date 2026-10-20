@@ -1054,26 +1054,11 @@ lbl_80034614:
     blr
 }
 
-// asm_to_cpp: fn_80034638
-asm s32 * fn_80034638(s32 *arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r4
-    lwz r0, 0x0(r3)
-    stw r0, 0x8(r1)
-    addi r3, r1, 0x8
-    bl fn_800341DC
-    lwz r3, 0xd8(r3)
-    mulli r0, r31, 0xd0
-    add r3, r3, r0
-    lwz r31, 0x1c(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+s32 * fn_80034638(s32 *arg0, s32 arg1) {
+    s32 sp8;
+
+    sp8 = (s32) (*arg0);
+    return (s32 *) ((s8 *) M2C_FIELD(fn_800341DC((s32 *) (&sp8)), s32 *, 0xD8) + (arg1 * 0xD0));
 }
 
 void fn_8003467C(s32 *arg0, s32 arg1, s32 arg2) {

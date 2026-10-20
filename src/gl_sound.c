@@ -4,9 +4,6 @@
 
 extern "C" {
 
-extern u8 __dt__Q34nw4r3snd15DvdSoundArchiveFv[];
-extern u8 __dt__Q34nw4r3snd18SoundArchivePlayerFv[];
-extern u8 __dt__Q34nw4r3snd9SoundHeapFv[];
 extern u8 lbl_8035F3E8[];
 extern u8 lbl_8035F4E0[];
 extern u8 lbl_8035F518[];
@@ -76,6 +73,9 @@ s8 * __ct__Q34nw4r3snd15DvdSoundArchiveFv(s8 *arg0);
 s8 * __ct__Q34nw4r3snd18SoundArchivePlayerFv(s8 *arg0);
 M2C_UNK ** __ct__Q34nw4r3snd9SoundHeapFv(M2C_UNK **arg0);
 s32 __destroy_arr();
+s8 * __dt__Q34nw4r3snd15DvdSoundArchiveFv(s8 *arg0, s32 arg1);
+s8 * __dt__Q34nw4r3snd18SoundArchivePlayerFv(s8 *arg0, s32 arg1);
+M2C_UNK ** __dt__Q34nw4r3snd9SoundHeapFv(M2C_UNK **arg0, s32 arg1);
 void __register_global_object(s32 arg0, s32 arg1, s32 arg2);
 s32 _restgpr_25();
 s32 _restgpr_27();
@@ -515,95 +515,30 @@ lbl_8018D944:
     blr
 }
 
-// asm_to_cpp: fn_8018D95C
-asm s32 fn_8018D95C(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    bl fn_8029AD3C
-    cmpwi r3, 0x0
-    bne lbl_8018D980
-    li r3, -0x1
-    b lbl_8018D9A4
-lbl_8018D980:
-    lis r31, lbl_803D224C@ha
-    addi r3, r31, lbl_803D224C@l
-    bl fn_8018E470
-    cmpwi r3, 0x0
-    beq lbl_8018D9A0
-    addi r3, r31, lbl_803D224C@l
-    bl SaveState__Q34nw4r3snd9SoundHeapFv
-    b lbl_8018D9A4
-lbl_8018D9A0:
-    li r3, -0x1
-lbl_8018D9A4:
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_8018D95C(void) {
+    if (fn_8029AD3C() == 0) {
+        return (s32) (-1);
+    }
+    if (fn_8018E470((s32 *) (&lbl_803D224C)) != 0) {
+        return (s32) (SaveState__Q34nw4r3snd9SoundHeapFv((s32) ((s32) &lbl_803D224C)));
+    }
+    return (s32) (-1);
 }
 
-// asm_to_cpp: fn_8018D9B8
-asm void fn_8018D9B8(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    bl fn_8029AD3C
-    cmpwi r3, 0x0
-    beq lbl_8018D9FC
-    lis r31, lbl_803D224C@ha
-    addi r3, r31, lbl_803D224C@l
-    bl fn_8018E470
-    cmpwi r3, 0x0
-    beq lbl_8018D9FC
-    addi r3, r31, lbl_803D224C@l
-    mr r4, r30
-    bl LoadState__Q34nw4r3snd9SoundHeapFi
-lbl_8018D9FC:
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_8018D9B8(s32 arg0) {
+    if ((fn_8029AD3C() != 0) && (fn_8018E470((s32 *) (&lbl_803D224C)) != 0)) {
+        LoadState__Q34nw4r3snd9SoundHeapFi((s32) ((s32) &lbl_803D224C), (s32) (arg0));
+    }
 }
 
-// asm_to_cpp: fn_8018DA14
-asm s32 fn_8018DA14(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    bl fn_8029AD3C
-    cmpwi r3, 0x0
-    bne lbl_8018DA38
-    li r3, -0x1
-    b lbl_8018DA5C
-lbl_8018DA38:
-    lis r31, lbl_803D224C@ha
-    addi r3, r31, lbl_803D224C@l
-    bl fn_8018E470
-    cmpwi r3, 0x0
-    beq lbl_8018DA58
-    addi r3, r31, lbl_803D224C@l
-    bl fn_8018E478
-    b lbl_8018DA5C
-lbl_8018DA58:
-    li r3, -0x1
-lbl_8018DA5C:
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_8018DA14(void) {
+    if (fn_8029AD3C() == 0) {
+        return (s32) (-1);
+    }
+    if (fn_8018E470((s32 *) (&lbl_803D224C)) != 0) {
+        return (s32) (fn_8018E478((s32 *) (&lbl_803D224C)));
+    }
+    return (s32) (-1);
 }
 
 // asm_to_cpp: fn_8018DA70
@@ -730,13 +665,8 @@ lbl_8018DBFC:
     blr
 }
 
-// asm_to_cpp: fn_8018DC10
-asm s32 fn_8018DC10(void) {
-    nofralloc
-    lis r3, lbl_803D35B0@ha
-    addi r3, r3, lbl_803D35B0@l
-    lwz r3, 0x44(r3)
-    blr
+s32 fn_8018DC10(void) {
+    return (s32) (M2C_FIELD(&lbl_803D35B0, s32 *, 0x44));
 }
 
 // asm_to_cpp: fn_8018DC20
@@ -897,86 +827,35 @@ s32 fn_8018DE10(void) {
     }
 }
 
-// asm_to_cpp: fn_8018DE8C
-asm s32 fn_8018DE8C(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_8029AD3C
-    cmpwi r3, 0x0
-    bne lbl_8018DEAC
-    li r3, 0x0
-    b lbl_8018DED4
-lbl_8018DEAC:
-    lis r3, lbl_803D224C@ha
-    addi r3, r3, lbl_803D224C@l
-    bl fn_8018E470
-    cmpwi r3, 0x0
-    beq lbl_8018DED0
-    lis r3, lbl_803C1A40@ha
-    addi r3, r3, lbl_803C1A40@l
-    lwz r3, 0x82c(r3)
-    b lbl_8018DED4
-lbl_8018DED0:
-    li r3, 0x0
-lbl_8018DED4:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_8018DE8C(void) {
+    if (fn_8029AD3C() == 0) {
+        return (s32) (0);
+    }
+    if (fn_8018E470((s32 *) (&lbl_803D224C)) != 0) {
+        return (s32) (M2C_FIELD(&lbl_803C1A40, s32 *, 0x82C));
+    }
+    return (s32) (0);
 }
 
-// asm_to_cpp: fn_8018DEE4
-asm s32 fn_8018DEE4(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    lis r31, lbl_803D1FBC@ha
-    addi r3, r31, lbl_803D1FBC@l
-    bl IsAvailable__Q34nw4r3snd12SoundArchiveCFv
-    cmpwi r3, 0x0
-    bne lbl_8018DF18
-    li r3, 0x0
-    b lbl_8018DF6C
-lbl_8018DF18:
-    addi r3, r31, lbl_803D1FBC@l
-    mr r4, r30
-    bl GetSoundUserParam__Q34nw4r3snd12SoundArchiveCFUl
-    cmpwi r3, 0x0
-    beq lbl_8018DF48
-    cmpwi r3, 0x1
-    beq lbl_8018DF50
-    cmpwi r3, 0x2
-    beq lbl_8018DF58
-    cmpwi r3, 0x3
-    beq lbl_8018DF60
-    b lbl_8018DF68
-lbl_8018DF48:
-    li r3, 0x0
-    b lbl_8018DF6C
-lbl_8018DF50:
-    li r3, 0x1
-    b lbl_8018DF6C
-lbl_8018DF58:
-    li r3, 0x2
-    b lbl_8018DF6C
-lbl_8018DF60:
-    li r3, 0x3
-    b lbl_8018DF6C
-lbl_8018DF68:
-    li r3, 0x0
-lbl_8018DF6C:
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_8018DEE4(s32 arg0) {
+    s32 temp_r3;
+
+    if (IsAvailable__Q34nw4r3snd12SoundArchiveCFv((s8 *) (&lbl_803D1FBC)) == 0) {
+        return (s32) (0);
+    }
+    temp_r3 = (s32) (GetSoundUserParam__Q34nw4r3snd12SoundArchiveCFUl((s8 *) (&lbl_803D1FBC), (s32) (arg0)));
+    switch (temp_r3) {                              /* irregular */
+    case 0:
+        return (s32) (0);
+    case 1:
+        return (s32) (1);
+    case 2:
+        return (s32) (2);
+    case 3:
+        return (s32) (3);
+    default:
+        return (s32) (0);
+    }
 }
 
 // asm_to_cpp: fn_8018DF84
@@ -1215,45 +1094,13 @@ lbl_8018E2E4:
 void fn_8018E2FC(void) {
 }
 
-// asm_to_cpp: fn_8018E300
-asm void fn_8018E300(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    lis r31, lbl_803D1FBC@ha
-    addi r3, r31, lbl_803D1FBC@l
-    bl __ct__Q34nw4r3snd15DvdSoundArchiveFv
-    addi r3, r31, lbl_803D1FBC@l
-    lis r4, __dt__Q34nw4r3snd15DvdSoundArchiveFv@ha
-    addi r4, r4, __dt__Q34nw4r3snd15DvdSoundArchiveFv@l
-    lis r5, lbl_803D1FB0@ha
-    addi r5, r5, lbl_803D1FB0@l
-    bl __register_global_object
-    lis r31, lbl_803D2154@ha
-    addi r3, r31, lbl_803D2154@l
-    bl __ct__Q34nw4r3snd18SoundArchivePlayerFv
-    addi r3, r31, lbl_803D2154@l
-    lis r4, __dt__Q34nw4r3snd18SoundArchivePlayerFv@ha
-    addi r4, r4, __dt__Q34nw4r3snd18SoundArchivePlayerFv@l
-    lis r5, lbl_803D2148@ha
-    addi r5, r5, lbl_803D2148@l
-    bl __register_global_object
-    lis r31, lbl_803D224C@ha
-    addi r3, r31, lbl_803D224C@l
-    bl __ct__Q34nw4r3snd9SoundHeapFv
-    addi r3, r31, lbl_803D224C@l
-    lis r4, __dt__Q34nw4r3snd9SoundHeapFv@ha
-    addi r4, r4, __dt__Q34nw4r3snd9SoundHeapFv@l
-    lis r5, lbl_803D2240@ha
-    addi r5, r5, lbl_803D2240@l
-    bl __register_global_object
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_8018E300(void) {
+    __ct__Q34nw4r3snd15DvdSoundArchiveFv((s8 *) (&lbl_803D1FBC));
+    __register_global_object((s32) ((s32) &lbl_803D1FBC), (s32) ((s32) __dt__Q34nw4r3snd15DvdSoundArchiveFv), (s32) ((s32) &lbl_803D1FB0));
+    __ct__Q34nw4r3snd18SoundArchivePlayerFv((s8 *) (&lbl_803D2154));
+    __register_global_object((s32) ((s32) &lbl_803D2154), (s32) ((s32) __dt__Q34nw4r3snd18SoundArchivePlayerFv), (s32) ((s32) &lbl_803D2148));
+    __ct__Q34nw4r3snd9SoundHeapFv((M2C_UNK **) ((s32 **) &lbl_803D224C));
+    __register_global_object((s32) ((s32) &lbl_803D224C), (s32) ((s32) __dt__Q34nw4r3snd9SoundHeapFv), (s32) ((s32) &lbl_803D2240));
 }
 
 void fn_8018E390(s8 *arg0) {
@@ -2503,38 +2350,21 @@ asm s32 * fn_8018F5EC(s32 arg0) {
     blr
 }
 
-// asm_to_cpp: fn_8018F600
-asm void fn_8018F600(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    li r3, 0x0
-    bl fn_8018F5EC
-    li r31, 0x0
-    stw r31, 0x4(r3)
-    stw r31, 0x0(r3)
-    li r3, 0x1
-    bl fn_8018F5EC
-    li r0, 0x1
-    stw r0, 0x4(r3)
-    stw r31, 0x0(r3)
-    li r3, 0x2
-    bl fn_8018F5EC
-    li r0, 0x2
-    stw r0, 0x4(r3)
-    stw r31, 0x0(r3)
-    lis r3, lbl_803D5DC8@ha
-    addi r3, r3, lbl_803D5DC8@l
-    li r4, 0x0
-    li r5, 0xd8
-    bl memset
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_8018F600(void) {
+    s32 *temp_r3;
+    s32 *temp_r3_2;
+    s32 *temp_r3_3;
+
+    temp_r3 = (s32 *) (fn_8018F5EC((s32) (0)));
+    M2C_FIELD(temp_r3, s32 *, 4) = (s32) (0);
+    M2C_FIELD(temp_r3, s32 *, 0) = (s32) (0);
+    temp_r3_2 = (s32 *) (fn_8018F5EC((s32) (1)));
+    M2C_FIELD(temp_r3_2, s32 *, 4) = (s32) (1);
+    M2C_FIELD(temp_r3_2, s32 *, 0) = (s32) (0);
+    temp_r3_3 = (s32 *) (fn_8018F5EC((s32) (2)));
+    M2C_FIELD(temp_r3_3, s32 *, 4) = (s32) (2);
+    M2C_FIELD(temp_r3_3, s32 *, 0) = (s32) (0);
+    memset((s32) ((s32) &lbl_803D5DC8), (s32) (0), (s32) (0xD8));
 }
 
 // asm_to_cpp: fn_8018F674

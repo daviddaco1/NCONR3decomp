@@ -484,16 +484,9 @@ void fn_8013067C(void) {
     fn_80130680();
 }
 
-// asm_to_cpp: fn_80130680
-asm void fn_80130680(void) {
-    nofralloc
-    li r0, 0x0
-    lis r3, lbl_803A4C30@ha
-    addi r3, r3, lbl_803A4C30@l
-    stw r0, 0x400(r3)
-    li r4, 0x0
-    li r5, 0x400
-    b memset
+void fn_80130680(void) {
+    M2C_FIELD(&lbl_803A4C30, s32 *, 0x400) = (s32) (0);
+    memset((s32) ((s32) &lbl_803A4C30), (s32) (0), (s32) (0x400));
 }
 
 // asm_to_cpp: fn_8013069C

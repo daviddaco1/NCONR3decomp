@@ -145,6 +145,22 @@ def cast_calls(s, protos):
     return ''.join(out)
 
 
+def ptr_sum(l):
+    """`(T *) (f(...) + x)`: m2c tipa el retorno como entero, pero el original sumaba a un puntero
+    (mwcc ordena distinto los operandos de `add`): -> `(T *) ((s8 *) f(...) + x)`."""
+    out, i = [], 0
+    for m in re.finditer(r'\((\w+ \*+)\) \((?=\w+\()', l):
+        if m.start() < i:
+            continue
+        k = l.index('(', m.end())
+        j = close_paren(l, k)
+        if j > 0 and re.match(r' \+ ', l[j + 1:]):
+            out.append(l[i:m.end()] + '(s8 *) ')
+            i = m.end()
+    out.append(l[i:])
+    return ''.join(out)
+
+
 def cppify(body, protos, ps, ret):
     """El C de m2c se apoya en conversiones implicitas que C++ no hace: casts explicitos en
     argumentos (segun el prototipo), asignaciones (segun el tipo del lado izquierdo) y return."""
@@ -173,7 +189,7 @@ def cppify(body, protos, ps, ret):
         m = re.match(r'^(\s*)return (.+);$', l)
         if m:
             l = f'{m.group(1)}return {cast(ret, m.group(2))};'
-        lines.append(l)
+        lines.append(ptr_sum(l))
     return '\n'.join(lines)
 
 
@@ -250,9 +266,31 @@ class TU:
         for m in re.finditer(r'^(?:static )?(?:extern )?([^\n(=;]*?\b((?:lbl|jumptable)_\w+|__\w+)(?:\[\w*\])?);', out, re.M):
             self.data.setdefault(m.group(2), m.group(1).strip())
         self.ctx, self.peep, self.vclasses = ctx, set(), {}
+        for m in re.finditer(r'^struct (M2C_VC_\d+) \{(.*)\};$', self.orig or '', re.M):
+            self.vclasses[('orig', m.group(1))] = (m.group(1), m.group(2))
         for n, (ret, ps, body) in list(self.c.items()):
             if re.search(r'lwz r12, 0x\w+\(r12\)', self.asm[n]):
                 self.c[n] = (ret, ps, virtualize(body, self.vclasses))
+        # el C++ que ya tiene el fuente (generado antes o ajustado a mano) tiene prioridad sobre m2c
+        self.kept, self.orig_data, self.orig_protos = set(), {}, {}
+        if self.orig and '} // extern "C"' in self.orig:
+            for m in re.finditer(r'^extern ([^(\n]*?\b(\w+)(?:\[\w*\])?);$', self.orig, re.M):
+                self.orig_data[m.group(2)] = m.group(1)
+            for m in re.finditer(r'^([A-Za-z_][\w \*]*?)\s*\b(\w+)\(([^;{}]*)\);$', self.orig, re.M):
+                if not m.group(1).startswith(('extern', 'struct', 'return')):
+                    self.orig_protos[m.group(2)] = (m.group(1).strip(), m.group(3))
+            pos = 0
+            for m in DEF.finditer(self.orig):
+                if m.start() < pos:
+                    continue
+                end = body_end(self.orig, self.orig.index('{', m.start()))
+                pos = end
+                n = m.group(2)
+                if n in self.asm and not m.group(1).startswith('asm'):
+                    self.c[n] = (m.group(1).strip(), m.group(3).strip() or 'void', self.orig[m.end():end])
+                    self.kept.add(n)
+                    if self.orig[:m.start()].rstrip().endswith('#pragma peephole on'):
+                        self.peep.add(n)
 
     @staticmethod
     def norm_params(name, ps, ctx):
@@ -288,7 +326,8 @@ class TU:
         for n in sorted(set(self.decl) | {n for n in self.data if n in used}):
             if n in funcs:
                 continue
-            add('extern ' + (self.data[n] if n in used and n in self.data else self.decl[n]) + ';', ('sym', n))
+            d = self.orig_data.get(n) or (self.data[n] if n in used and n in self.data else self.decl[n])
+            add('extern ' + d + ';', ('sym', n))
         lines.append('')
         protos, ar = {}, call_arities(body_c)
         for n in sorted(funcs):
@@ -297,14 +336,22 @@ class TU:
                 protos[n] = (d.group(1).strip(), d.group(2))
                 add(f'{protos[n][0]} {n}({protos[n][1]});', ('sym', n))
                 continue
+            fixed = n in self.kept or (n not in self.c and n in self.orig_protos)
             if n in self.c:
                 ret, ps, body = self.c[n]
+            elif n in self.orig_protos:  # el fuente ya compilaba y matcheaba con este prototipo
+                ret, ps = self.orig_protos[n]
             elif n in self.ctx:
                 ret, ps = self.ctx[n]
+                # m2c infiere u16/u8 de un lhz/lbz del callee, pero en el game code el original
+                # solia devolver 32 bits (el llamador no extiende; con u16 mwcc agrega clrlwi). Las
+                # de librerias (nombres reales, p. ej. NW4R GetFrameSize) si devuelven u16.
+                if n.startswith('fn_'):
+                    ret = {'u8': 'u32', 'u16': 'u32', 's8': 's32', 's16': 's32'}.get(ret, ret)
             else:
                 ret, ps = 's32', ''
             # aridad: la que usan todas las llamadas de esta TU (en C++ tiene que coincidir)
-            if len(ar.get(n, ())) == 1:
+            if len(ar.get(n, ())) == 1 and not fixed:
                 k, cur = next(iter(ar[n])), [p for p in split_args(ps) if p and p != 'void']
                 if k > len(cur):
                     cur += [f's32 arg{i}_pad' for i in range(len(cur), k)]
@@ -318,7 +365,8 @@ class TU:
         for n in self.order:
             ret, ps = protos[n]
             if n in self.c:
-                text = f'{ret} {n}({ps}) {{' + cppify(self.c[n][2], protos, ps, ret)
+                body = self.c[n][2] if n in self.kept else cppify(self.c[n][2], protos, ps, ret)
+                text = f'{ret} {n}({ps}) {{' + body
                 if n in self.peep:
                     text = '#pragma peephole on\n' + text + '\n#pragma peephole reset'
                 add(text, ('c', n))

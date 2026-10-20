@@ -121,66 +121,18 @@ lbl_80094874:
     blr
 }
 
-// asm_to_cpp: fn_8009488C
-asm f32 fn_8009488C(void) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    lis r3, lbl_80395728@ha
-    addi r3, r3, lbl_80395728@l
-    lwz r4, 0x11a4(r3)
-    cmpwi r4, 0x0
-    bgt lbl_800948AC
-    lfs f1, lbl_8049F4F8
-    b lbl_800948E4
-lbl_800948AC:
-    lwz r0, 0x11a8(r3)
-    lfd f2, lbl_8049F4F0
-    xoris r0, r0, 0x8000
-    stw r0, 0xc(r1)
-    lis r3, 0x4330
-    stw r3, 0x8(r1)
-    lfd f0, 0x8(r1)
-    fsubs f1, f0, f2
-    xoris r0, r4, 0x8000
-    stw r0, 0x14(r1)
-    stw r3, 0x10(r1)
-    lfd f0, 0x10(r1)
-    fsubs f0, f0, f2
-    fdivs f1, f1, f0
-lbl_800948E4:
-    addi r1, r1, 0x20
-    blr
+f32 fn_8009488C(void) {
+    if ((s32) M2C_FIELD(&lbl_80395728, s32 *, 0x11A4) <= 0) {
+        return 0.0f;
+    }
+    return (f32) M2C_FIELD(&lbl_80395728, s32 *, 0x11A8) / (f32) M2C_FIELD(&lbl_80395728, s32 *, 0x11A4);
 }
 
-// asm_to_cpp: fn_800948EC
-asm f32 fn_800948EC(void) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    lis r3, lbl_80395728@ha
-    addi r4, r3, lbl_80395728@l
-    lwz r0, 0x11b4(r4)
-    cmpwi r0, 0x0
-    bgt lbl_8009490C
-    lfs f1, lbl_8049F4F8
-    b lbl_80094944
-lbl_8009490C:
-    lfd f2, lbl_8049F4F0
-    xoris r0, r0, 0x8000
-    stw r0, 0xc(r1)
-    lis r3, 0x4330
-    stw r3, 0x8(r1)
-    lfd f0, 0x8(r1)
-    fsubs f1, f0, f2
-    lwz r0, 0x11b8(r4)
-    xoris r0, r0, 0x8000
-    stw r0, 0x14(r1)
-    stw r3, 0x10(r1)
-    lfd f0, 0x10(r1)
-    fsubs f0, f0, f2
-    fdivs f1, f1, f0
-lbl_80094944:
-    addi r1, r1, 0x20
-    blr
+f32 fn_800948EC(void) {
+    if ((s32) M2C_FIELD(&lbl_80395728, s32 *, 0x11B4) <= 0) {
+        return 0.0f;
+    }
+    return (f32) M2C_FIELD(&lbl_80395728, s32 *, 0x11B4) / (f32) M2C_FIELD(&lbl_80395728, s32 *, 0x11B8);
 }
 
 // asm_to_cpp: fn_8009494C

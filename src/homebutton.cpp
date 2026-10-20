@@ -1,7 +1,8 @@
 #include "types.h"
 #include "m2c_macros.h"
 
-struct M2C_VC_0 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK); };
+struct M2C_VC_0 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);  };
+struct M2C_VC_1 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK); };
 
 extern "C" {
 
@@ -151,7 +152,7 @@ void fn_80181EA8(void);
 void fn_80181EE4(s8 *arg0);
 void fn_80182048(s32 *arg0);
 void fn_80182068(s8 *arg0);
-void fn_80182080(void);
+void fn_80182080(s32 arg0);
 s32 fn_80182084(s8 *arg0, s8 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5);
 s32 * fn_80182140(s32 *arg0, s32 arg1);
 s32 fn_801821BC(s32 arg0);
@@ -4907,37 +4908,16 @@ lbl_8018148C:
     blr
 }
 
-// asm_to_cpp: fn_8018149C
-asm s32 * fn_8018149C(s8 *arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    stw r30, 0x18(r1)
-    mr r30, r3
-    bl fn_80181454
-    mr r31, r3
-    cmpwi r3, 0x0
-    bge lbl_801814CC
-    li r3, 0x0
-    b lbl_801814EC
-lbl_801814CC:
-    lwz r0, 0x114(r30)
-    stw r0, 0x8(r1)
-    addi r3, r1, 0x8
-    bl fn_800341DC
-    lwz r3, 0xd0(r3)
-    mulli r0, r31, 0x280
-    add r3, r3, r0
-    addi r3, r3, 0x40
-lbl_801814EC:
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+s32 * fn_8018149C(s8 *arg0, s32 arg1) {
+    s32 sp8;
+    s32 temp_r3;
+
+    temp_r3 = (s32) (fn_80181454((s8 *) (arg0), (s32) (arg1)));
+    if (temp_r3 < 0) {
+        return (s32 *) (NULL);
+    }
+    sp8 = (s32) (M2C_FIELD(arg0, s32 *, 0x114));
+    return (s32 *) ((s8 *) M2C_FIELD(fn_800341DC((s32 *) (&sp8)), s32 *, 0xD0) + (temp_r3 * 0x280) + 0x40);
 }
 
 // asm_to_cpp: fn_80181504
@@ -5776,10 +5756,8 @@ asm void fn_80182068(s8 *arg0) {
     b fn_8002211C
 }
 
-// asm_to_cpp: fn_80182080
-asm void fn_80182080(void) {
-    nofralloc
-    b fn_80182068
+void fn_80182080(s32 arg0) {
+    fn_80182068((s8 *) (arg0));
 }
 
 // asm_to_cpp: fn_80182084

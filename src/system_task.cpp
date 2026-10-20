@@ -925,69 +925,36 @@ lbl_80060ED0:
     blr
 }
 
-// asm_to_cpp: fn_80060EDC
-asm void fn_80060EDC(s8 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    bl fn_80066E2C
-    clrlwi r6, r3, 18
-    cmpwi r3, 0x0
-    blt lbl_80060FA4
-    lwz r5, 0x140(r31)
-    cmpw r5, r6
-    beq lbl_80060FA4
-    lis r4, lbl_803C1A40@ha
-    addi r4, r4, lbl_803C1A40@l
-    lwz r0, 0x14(r4)
-    cmpwi r0, 0x7
-    beq lbl_80060F3C
-    cmpwi r0, 0x1
-    bne lbl_80060F78
-    lis r4, lbl_80395728@ha
-    addi r4, r4, lbl_80395728@l
-    lwz r0, 0x4(r4)
-    cmplwi r0, 0x12
-    bne lbl_80060F78
-lbl_80060F3C:
-    cmpwi r5, -0x1
-    bne lbl_80060F60
-    lwz r4, 0x3780(r31)
-    cmpwi r4, 0x0
-    beq lbl_80060F78
-    lwz r0, 0x0(r4)
-    ori r0, r0, 0x2000
-    stw r0, 0x0(r4)
-    b lbl_80060F78
-lbl_80060F60:
-    lwz r4, 0x3780(r31)
-    cmpwi r4, 0x0
-    beq lbl_80060F78
-    lwz r0, 0x0(r4)
-    rlwinm r0, r0, 0, 19, 17
-    stw r0, 0x0(r4)
-lbl_80060F78:
-    stw r6, 0x140(r31)
-    rlwinm r0, r3, 0, 16, 16
-    cmpwi r0, 0x0
-    beq lbl_80060F98
-    lwz r0, 0x54(r31)
-    ori r0, r0, 0x40
-    stw r0, 0x54(r31)
-    b lbl_80060FA4
-lbl_80060F98:
-    lwz r0, 0x54(r31)
-    rlwinm r0, r0, 0, 26, 24
-    stw r0, 0x54(r31)
-lbl_80060FA4:
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_80060EDC(s8 *arg0) {
+    s32 *temp_r4;
+    s32 *temp_r4_2;
+    s32 temp_r3;
+    s32 temp_r5;
+    s32 temp_r6;
+
+    temp_r3 = (s32) (fn_80066E2C((s32 *) ((s32 *) arg0)));
+    temp_r6 = (s32) (temp_r3 & 0x3FFF);
+    if ((temp_r3 >= 0) && (temp_r5 = M2C_FIELD(arg0, s32 *, 0x140), ((temp_r5 == temp_r6) == 0))) {
+        if (((s32) M2C_FIELD(&lbl_803C1A40, s32 *, 0x14) == 7) || (((s32) M2C_FIELD(&lbl_803C1A40, s32 *, 0x14) == 1) && ((u32) M2C_FIELD(&lbl_80395728, u32 *, 4) == 0x12U))) {
+            if (temp_r5 == -1) {
+                temp_r4 = (s32 *) (M2C_FIELD(arg0, s8 **, 0x3780));
+                if (temp_r4 != NULL) {
+                    *temp_r4 |= 0x2000;
+                }
+            } else {
+                temp_r4_2 = (s32 *) (M2C_FIELD(arg0, s8 **, 0x3780));
+                if (temp_r4_2 != NULL) {
+                    *temp_r4_2 &= 0xFFFFDFFF;
+                }
+            }
+        }
+        M2C_FIELD(arg0, s32 *, 0x140) = (s32) (temp_r6);
+        if ((s32) (temp_r3 & 0x8000) != 0) {
+            M2C_FIELD(arg0, s32 *, 0x54) = (s32) ((s32) (M2C_FIELD(arg0, s32 *, 0x54) | 0x40));
+            return;
+        }
+        M2C_FIELD(arg0, s32 *, 0x54) = (s32) ((s32) (M2C_FIELD(arg0, s32 *, 0x54) & 0xFFFFFFBF));
+    }
 }
 
 // asm_to_cpp: fn_80060FB8

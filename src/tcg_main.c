@@ -856,39 +856,18 @@ lbl_80122BA4:
     blr
 }
 
-// asm_to_cpp: fn_80122BEC
-asm void fn_80122BEC(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    li r31, 0x0
-lbl_80122C00:
-    mr r3, r31
-    li r4, 0x0
-    li r5, 0x0
-    bl fn_80122D38
-    addi r31, r31, 0x1
-    cmpwi r31, 0x2
-    blt lbl_80122C00
-    lis r3, lbl_803A3C48@ha
-    addi r31, r3, lbl_803A3C48@l
-    lwz r4, 0x8(r31)
-    cmpwi r4, 0x0
-    beq lbl_80122C48
-    lis r3, lbl_803C1A40@ha
-    addi r3, r3, lbl_803C1A40@l
-    lwz r3, 0x830(r3)
-    bl fn_80170E84
-    li r0, 0x0
-    stw r0, 0x8(r31)
-lbl_80122C48:
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_80122BEC(void) {
+    u32 var_r31;
+
+    var_r31 = (u32) (0);
+    do {
+        fn_80122D38((u32) (var_r31), (s32) (0), (s32) (0));
+        var_r31 += 1;
+    } while ((s32) var_r31 < 2);
+    if ((s8 *) M2C_FIELD(&lbl_803A3C48, s8 **, 8) != NULL) {
+        fn_80170E84((s32) (M2C_FIELD(&lbl_803C1A40, s32 *, 0x830)), (s8 *) (M2C_FIELD(&lbl_803A3C48, s8 **, 8)));
+        M2C_FIELD(&lbl_803A3C48, s8 **, 8) = (s8 *) (NULL);
+    }
 }
 
 // asm_to_cpp: fn_80122C5C

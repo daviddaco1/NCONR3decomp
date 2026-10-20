@@ -4251,24 +4251,11 @@ lbl_800A4DE4:
     blr
 }
 
-// asm_to_cpp: fn_800A4DFC
-asm s32 * fn_800A4DFC(s32 arg0) {
-    nofralloc
-    cmpwi r3, 0x0
-    blt lbl_800A4E18
-    lis r4, lbl_803A1D58@ha
-    addi r4, r4, lbl_803A1D58@l
-    lbz r0, 0xc(r4)
-    cmpw r0, r3
-    bgt lbl_800A4E20
-lbl_800A4E18:
-    li r3, 0x0
-    blr
-lbl_800A4E20:
-    lwz r4, 0x30(r4)
-    slwi r0, r3, 8
-    add r3, r4, r0
-    blr
+s32 * fn_800A4DFC(s32 arg0) {
+    if ((arg0 < 0) || ((s32) M2C_FIELD(&lbl_803A1D58, u8 *, 0xC) <= arg0)) {
+        return (s32 *) (NULL);
+    }
+    return (s32 *) ((s8 *) M2C_FIELD(&lbl_803A1D58, s32 *, 0x30) + (arg0 << 8));
 }
 
 s8 * fn_800A4E30(s32 arg0) {

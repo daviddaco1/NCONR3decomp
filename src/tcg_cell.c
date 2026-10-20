@@ -1,7 +1,8 @@
 #include "types.h"
 #include "m2c_macros.h"
 
-struct M2C_VC_0 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(M2C_UNK, s32 *); };
+struct M2C_VC_0 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(M2C_UNK, s32 *);  };
+struct M2C_VC_1 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(M2C_UNK, s32 *); };
 
 extern "C" {
 
@@ -509,38 +510,19 @@ lbl_80127564:
     blr
 }
 
-// asm_to_cpp: fn_80127594
-asm void fn_80127594(s8 **arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    lwz r3, 0x0(r3)
-    cmpwi r3, 0x0
-    beq lbl_801275EC
-    lwz r4, 0x4(r3)
-    cmpwi r4, 0x0
-    beq lbl_801275D0
-    lis r3, lbl_803C1A40@ha
-    addi r3, r3, lbl_803C1A40@l
-    lwz r3, 0x830(r3)
-    bl fn_80170E84
-lbl_801275D0:
-    lis r3, lbl_803C1A40@ha
-    addi r3, r3, lbl_803C1A40@l
-    lwz r3, 0x830(r3)
-    lwz r4, 0x0(r31)
-    bl fn_80170E84
-    li r0, 0x0
-    stw r0, 0x0(r31)
-lbl_801275EC:
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_80127594(s8 **arg0) {
+    s8 *temp_r3;
+    s8 *temp_r4;
+
+    temp_r3 = (s8 *) (*arg0);
+    if (temp_r3 != NULL) {
+        temp_r4 = (s8 *) (M2C_FIELD(temp_r3, s8 **, 4));
+        if (temp_r4 != NULL) {
+            fn_80170E84((s32) (M2C_FIELD(&lbl_803C1A40, s32 *, 0x830)), (s8 *) (temp_r4));
+        }
+        fn_80170E84((s32) (M2C_FIELD(&lbl_803C1A40, s32 *, 0x830)), (s8 *) (*arg0));
+        *arg0 = NULL;
+    }
 }
 
 // asm_to_cpp: fn_80127600
@@ -5371,22 +5353,9 @@ lbl_8012B764:
     blr
 }
 
-// asm_to_cpp: fn_8012B770
-asm void fn_8012B770(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lis r3, lbl_803A4480@ha
-    addi r3, r3, lbl_803A4480@l
-    bl fn_80127174
-    lis r3, lbl_803A44C0@ha
-    addi r3, r3, lbl_803A44C0@l
-    bl fn_8002AE40
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_8012B770(void) {
+    fn_80127174((M2C_UNK *) (&lbl_803A4480));
+    fn_8002AE40((s32) ((s32) &lbl_803A44C0));
 }
 
 // asm_to_cpp: fn_8012B7A4

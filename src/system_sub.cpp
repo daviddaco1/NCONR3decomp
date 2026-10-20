@@ -2736,174 +2736,73 @@ lbl_8005FC18:
     blr
 }
 
-// asm_to_cpp: fn_8005FC24
-asm void fn_8005FC24(s8 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    lis r4, lbl_80395728@ha
-    addi r4, r4, lbl_80395728@l
-    lwz r0, 0x14(r4)
-    cmplwi r0, 0x1
-    bne lbl_8005FC88
-    lwz r0, 0x8(r3)
-    cmpwi r0, 0x0
-    beq lbl_8005FC70
-    li r3, 0x0
-    bl fn_8005E2F4
-    mr r4, r3
-    mr r3, r31
-    bl fn_800602FC
-    b lbl_8005FE5C
-lbl_8005FC70:
-    li r3, 0x1
-    bl fn_8005E2F4
-    mr r4, r3
-    mr r3, r31
-    bl fn_800602FC
-    b lbl_8005FE5C
-lbl_8005FC88:
-    lis r4, lbl_80390580@ha
-    addi r4, r4, lbl_80390580@l
-    lwz r4, 0xc(r4)
-    lwz r0, 0x118(r4)
-    cmpwi r0, 0x1
-    bne lbl_8005FD28
-    lwz r0, 0x8(r3)
-    cmpwi r0, 0x0
-    beq lbl_8005FCC8
-    cmpwi r0, 0x1
-    beq lbl_8005FCE0
-    cmpwi r0, 0x2
-    beq lbl_8005FCF8
-    cmpwi r0, 0x3
-    beq lbl_8005FD10
-    b lbl_8005FE5C
-lbl_8005FCC8:
-    li r3, 0x1
-    bl fn_8005E2F4
-    mr r4, r3
-    mr r3, r31
-    bl fn_800602FC
-    b lbl_8005FE5C
-lbl_8005FCE0:
-    li r3, 0x0
-    bl fn_8005E2F4
-    mr r4, r3
-    mr r3, r31
-    bl fn_800602FC
-    b lbl_8005FE5C
-lbl_8005FCF8:
-    li r3, 0x1
-    bl fn_8005E2F4
-    mr r4, r3
-    mr r3, r31
-    bl fn_800602FC
-    b lbl_8005FE5C
-lbl_8005FD10:
-    li r3, 0x0
-    bl fn_8005E2F4
-    mr r4, r3
-    mr r3, r31
-    bl fn_800602FC
-    b lbl_8005FE5C
-lbl_8005FD28:
-    cmpwi r0, 0x2
-    bne lbl_8005FDB8
-    lwz r0, 0x8(r3)
-    cmpwi r0, 0x0
-    beq lbl_8005FD58
-    cmpwi r0, 0x1
-    beq lbl_8005FD70
-    cmpwi r0, 0x2
-    beq lbl_8005FD88
-    cmpwi r0, 0x3
-    beq lbl_8005FDA0
-    b lbl_8005FE5C
-lbl_8005FD58:
-    li r3, 0x2
-    bl fn_8005E2F4
-    mr r4, r3
-    mr r3, r31
-    bl fn_800602FC
-    b lbl_8005FE5C
-lbl_8005FD70:
-    li r3, 0x2
-    bl fn_8005E2F4
-    mr r4, r3
-    mr r3, r31
-    bl fn_800602FC
-    b lbl_8005FE5C
-lbl_8005FD88:
-    li r3, 0x0
-    bl fn_8005E2F4
-    mr r4, r3
-    mr r3, r31
-    bl fn_800602FC
-    b lbl_8005FE5C
-lbl_8005FDA0:
-    li r3, 0x0
-    bl fn_8005E2F4
-    mr r4, r3
-    mr r3, r31
-    bl fn_800602FC
-    b lbl_8005FE5C
-lbl_8005FDB8:
-    lwz r0, 0x4(r4)
-    cmpwi r0, 0x1
-    bne lbl_8005FE4C
-    lwz r0, 0x8(r3)
-    cmpwi r0, 0x0
-    beq lbl_8005FDEC
-    cmpwi r0, 0x1
-    beq lbl_8005FE04
-    cmpwi r0, 0x2
-    beq lbl_8005FE1C
-    cmpwi r0, 0x3
-    beq lbl_8005FE34
-    b lbl_8005FE5C
-lbl_8005FDEC:
-    li r3, 0x2
-    bl fn_8005E2F4
-    mr r4, r3
-    mr r3, r31
-    bl fn_800602FC
-    b lbl_8005FE5C
-lbl_8005FE04:
-    li r3, 0x3
-    bl fn_8005E2F4
-    mr r4, r3
-    mr r3, r31
-    bl fn_800602FC
-    b lbl_8005FE5C
-lbl_8005FE1C:
-    li r3, 0x0
-    bl fn_8005E2F4
-    mr r4, r3
-    mr r3, r31
-    bl fn_800602FC
-    b lbl_8005FE5C
-lbl_8005FE34:
-    li r3, 0x1
-    bl fn_8005E2F4
-    mr r4, r3
-    mr r3, r31
-    bl fn_800602FC
-    b lbl_8005FE5C
-lbl_8005FE4C:
-    li r0, -0x1
-    stw r0, 0xac(r3)
-    li r0, 0x0
-    stw r0, 0x3854(r3)
-lbl_8005FE5C:
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_8005FC24(s8 *arg0) {
+    s32 temp_r0;
+    s32 temp_r0_2;
+    s32 temp_r0_3;
+    s32 temp_r0_4;
+
+    if ((u32) M2C_FIELD(&lbl_80395728, u32 *, 0x14) == 1U) {
+        if ((s32) M2C_FIELD(arg0, s32 *, 8) != 0) {
+            fn_800602FC((s8 *) (arg0), (s8 *) (fn_8005E2F4((s32) (0))));
+            return;
+        }
+        fn_800602FC((s8 *) (arg0), (s8 *) (fn_8005E2F4((s32) (1))));
+        return;
+    }
+    temp_r0 = (s32) (M2C_FIELD(M2C_FIELD(&lbl_80390580, s8 **, 0xC), s32 *, 0x118));
+    if (temp_r0 == 1) {
+        temp_r0_2 = (s32) (M2C_FIELD(arg0, s32 *, 8));
+        switch (temp_r0_2) {                        /* switch 1; irregular */
+        case 0:                                     /* switch 1 */
+            fn_800602FC((s8 *) (arg0), (s8 *) (fn_8005E2F4((s32) (1))));
+            return;
+        case 1:                                     /* switch 1 */
+            fn_800602FC((s8 *) (arg0), (s8 *) (fn_8005E2F4((s32) (0))));
+            return;
+        case 2:                                     /* switch 1 */
+            fn_800602FC((s8 *) (arg0), (s8 *) (fn_8005E2F4((s32) (1))));
+            return;
+        case 3:                                     /* switch 1 */
+            fn_800602FC((s8 *) (arg0), (s8 *) (fn_8005E2F4((s32) (0))));
+            return;
+        }
+    } else if (temp_r0 == 2) {
+        temp_r0_3 = (s32) (M2C_FIELD(arg0, s32 *, 8));
+        switch (temp_r0_3) {                        /* switch 2; irregular */
+        case 0:                                     /* switch 2 */
+            fn_800602FC((s8 *) (arg0), (s8 *) (fn_8005E2F4((s32) (2))));
+            return;
+        case 1:                                     /* switch 2 */
+            fn_800602FC((s8 *) (arg0), (s8 *) (fn_8005E2F4((s32) (2))));
+            return;
+        case 2:                                     /* switch 2 */
+            fn_800602FC((s8 *) (arg0), (s8 *) (fn_8005E2F4((s32) (0))));
+            return;
+        case 3:                                     /* switch 2 */
+            fn_800602FC((s8 *) (arg0), (s8 *) (fn_8005E2F4((s32) (0))));
+            return;
+        }
+    } else if ((s32) M2C_FIELD(M2C_FIELD(&lbl_80390580, s8 **, 0xC), s32 *, 4) == 1) {
+        temp_r0_4 = (s32) (M2C_FIELD(arg0, s32 *, 8));
+        switch (temp_r0_4) {                        /* switch 3; irregular */
+        case 0:                                     /* switch 3 */
+            fn_800602FC((s8 *) (arg0), (s8 *) (fn_8005E2F4((s32) (2))));
+            return;
+        case 1:                                     /* switch 3 */
+            fn_800602FC((s8 *) (arg0), (s8 *) (fn_8005E2F4((s32) (3))));
+            return;
+        case 2:                                     /* switch 3 */
+            fn_800602FC((s8 *) (arg0), (s8 *) (fn_8005E2F4((s32) (0))));
+            return;
+        case 3:                                     /* switch 3 */
+            fn_800602FC((s8 *) (arg0), (s8 *) (fn_8005E2F4((s32) (1))));
+            return;
+        }
+    } else {
+        M2C_FIELD(arg0, s32 *, 0xAC) = (s32) (-1);
+        M2C_FIELD(arg0, s32 *, 0x3854) = (s32) (0);
+    }
 }
 
 // asm_to_cpp: fn_8005FE70

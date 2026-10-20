@@ -3562,29 +3562,48 @@ lbl_800A82BC:
     blr
 }
 
-#pragma peephole on
-s32 fn_800A8308(void) {
-    s32 var_r0;
-
-    lbl_8049D5D8 = 0;
-    if (fn_8005D018() == 0) {
-        lbl_8049D5D0 = 6;
-    } else {
-        fn_8008D6C4((s32) (3));
-        lbl_8049D5D0 = 0;
-        var_r0 = (s32) (((s32) lbl_8049D5F4 / (s32) (lbl_8049D5F0 << 5)) + 1);
-        lbl_8049D5DC = var_r0;
-        if (var_r0 > 0x14) {
-            var_r0 = (s32) (0x14);
-            lbl_8049D5DC = 0x14;
-        }
-        if (var_r0 < 3) {
-            lbl_8049D5DC = 3;
-        }
-    }
-    return (s32) (1);
+// asm_to_cpp: fn_800A8308
+asm s32 fn_800A8308(void) {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    stw r0, 0x14(r1)
+    stw r31, 0xc(r1)
+    li r31, 0x0
+    stw r31, lbl_8049D5D8
+    bl fn_8005D018
+    cmpwi r3, 0x0
+    bne lbl_800A8338
+    li r0, 0x6
+    stw r0, lbl_8049D5D0
+    b lbl_800A837C
+lbl_800A8338:
+    li r3, 0x3
+    bl fn_8008D6C4
+    stw r31, lbl_8049D5D0
+    lwz r3, lbl_8049D5F4
+    lwz r0, lbl_8049D5F0
+    slwi r0, r0, 5
+    divw r3, r3, r0
+    addi r0, r3, 0x1
+    stw r0, lbl_8049D5DC
+    cmpwi r0, 0x14
+    ble lbl_800A836C
+    li r0, 0x14
+    stw r0, lbl_8049D5DC
+lbl_800A836C:
+    cmpwi r0, 0x3
+    bge lbl_800A837C
+    li r0, 0x3
+    stw r0, lbl_8049D5DC
+lbl_800A837C:
+    li r3, 0x1
+    lwz r31, 0xc(r1)
+    lwz r0, 0x14(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
 }
-#pragma peephole reset
 
 // asm_to_cpp: fn_800A8394
 asm s32 fn_800A8394() {
