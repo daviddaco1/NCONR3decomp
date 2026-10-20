@@ -94,33 +94,49 @@ def render(text, names, decls, blocks, is_c, skip, force, sigs):
         b = blocks[n]
         if n in sigs:  # firma real para no chocar con el prototipo
             b = b.replace(f'asm void {n}() {{', f'asm {sigs[n]} {{', 1)
+        elif is_c:  # sin firma: int, compatible con una declaracion implicita en C
+            b = b.replace(f'asm void {n}() {{', f'asm int {n}() {{', 1)
         body.append(f'// asm_to_cpp: {n}\n' + (b.replace('extern "C" ', '') if is_c else b))
     used = '\n'.join(body)
     ext = []
     for d in decls:
         sym = re.search(r'(\w+)(?:\[\])?(?:\(\))?;$', d).group(1)
-        if sym in skip or sym in sigs or not re.search(r'\b' + re.escape(sym) + r'\b', used):
+        if sym in skip or not re.search(r'\b' + re.escape(sym) + r'\b', used):
             continue
         # se asume declarado por el C/headers salvo que el compilador diga lo contrario
         if sym not in force and sym not in names and re.search(r'\b' + re.escape(sym) + r'\b', text):
             continue
-        ext.append(d.replace('extern "C" ', 'extern ') if is_c else d)
+        if sym in names and sym in sigs:  # funcion asm de este archivo: misma firma que su definicion
+            ext.append(f'{sigs[sym]};')
+        elif sym in names and is_c:
+            ext.append(f'extern int {sym}();')
+        else:
+            ext.append(d.replace('extern "C" ', 'extern ') if is_c else d)
     return (text + '\n// ---- Funciones aun sin C que matchee (asm generado) ----\n'
             + '\n'.join(ext) + '\n\n' + '\n'.join(body))
 
 
 def compile_obj(split):
     obj = os.path.join('build', 'RNEPDA', 'src', os.path.splitext(split)[0] + '.o')
-    r = subprocess.run(['ninja', obj], capture_output=True, text=True)
-    return r.returncode == 0, r.stdout
+    if os.path.exists(obj):  # un .o viejo puede hacer pasar por buena una compilacion fallida
+        os.remove(obj)
+    try:
+        r = subprocess.run(['ninja', obj], capture_output=True, text=True, timeout=120)
+    except subprocess.TimeoutExpired:
+        return False, 'timeout'
+    return r.returncode == 0 and os.path.exists(obj), r.stdout
 
 
 def main():
     split, src, *names = sys.argv[1:]
     out = f'src/{split}'
-    os.makedirs(os.path.dirname(out), exist_ok=True)
+    opts = [n for n in names if n.startswith('--out=')]
+    names = [n for n in names if not n.startswith('--out=')]
+    if opts:  # fuente con otro nombre/extension (Object(..., source=...))
+        out = 'src/' + opts[0][len('--out='):]
+    os.makedirs(os.path.dirname(out) or 'src', exist_ok=True)
     text = open(src, newline='').read().replace('\r\n', '\n')
-    is_c = not split.endswith(('.cpp', '.cp'))
+    is_c = not out.endswith(('.cpp', '.cp'))
     sigs = {}
     for n in names:
         text, sig = strip_def(text, n)
@@ -138,9 +154,13 @@ def main():
             m = re.search(r"^#\s+\d+:.*?\b(\w+)\s*\(\)\s*;\s*$", log, re.M)
         u = re.search(r"undefined (?:label|identifier) '(\w+)'", log)
         if m and m.group(1) in names:
-            hs = header_sig(m.group(1))
+            # firma: prototipo en el propio fuente (p. ej. el que deja tools/m2c_pass.py) o en headers
+            lp = re.search(r'^([A-Za-z_][^\n;(]*?)\b' + re.escape(m.group(1)) + r'\(([^)\n]*)\);', text, re.M)
+            hs = f'{lp.group(1).strip()} {m.group(1)}({lp.group(2)})' if lp else header_sig(m.group(1))
+            if hs and sigs.get(m.group(1)) == hs and lp:
+                hs = header_sig(m.group(1))
             if not hs or sigs.get(m.group(1)) == hs:
-                sys.exit(f'{m.group(1)}: el asm choca con un prototipo del header')
+                sys.exit(f'{m.group(1)}: el asm choca con un prototipo del header\n' + log[-900:])
             sigs[m.group(1)] = hs
             continue
         if m and m.group(1) not in skip:
