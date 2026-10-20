@@ -2511,5 +2511,24 @@ el 100% en asm para fijar splits y nombres, y después reescribir a C en una pas
 - `tools/fn_diff.py`: compila una función aislada y la compara instrucción por instrucción con
   el asm original (para ajustar a mano).
 - **C real: 10.90% → 12.16%** (401,064 bytes; 1602 funciones del juego en C++). `build.sha1` OK.
+- Segunda tanda sobre `m2c_cpp.py`:
+  - conserva el C++ que ya tiene el fuente (generado o ajustado a mano) y sus prototipos/externs:
+    re-pasadas idempotentes, y se puede ajustar una función a mano directamente en `src/`;
+  - llamadas por vtable de m2c (`M2C_FIELD(*X, T (**)(...), off)(X, ...)`) → llamadas virtuales
+    reales con una clase de llamada por slot (`struct M2C_VC_n { virtual void v0(); ... }`);
+  - retornos `u8/u16` inferidos para `fn_*` externos → 32 bits (el original no extiende en el
+    llamador); los de librerías con nombre real (NW4R `GetFrameSize`) se respetan;
+  - escrituras a registros de hardware (`0xCC......`/`0xCD......`) como `volatile` (FIFO de GX);
+  - externs escalares de símbolos fuera de small-data con `__declspec(section ".data")`: si no,
+    mwcc asume `sdata` (`li r3,sym@sda21`) en lugar de `lis/addi`;
+  - **variádicas** detectadas por `crclr/creqv cr1eq` antes del `bl` (24: `OSReport`, `snprintf`,
+    el assert `fn_801A9384(file, line, fmt, ...)`, `fn_802289B0` con 1272 llamadas...): con
+    `...` en el contexto m2c deja de inventar argumentos.
+- `tools/m2c_triage.py`: clasifica las funciones que compilan pero no matchean (registros, orden,
+  inmediatos, largo) y agrupa por plantilla de diferencia; guía qué arreglar en masa.
+- Ajuste a mano: accesores `s8 *f(s8 **p, s32 off) { s8 *b = *p; if (off) return b + off;
+  return 0; }` (6 en `glib_anim.cpp`): m2c tipaba el retorno como entero y mwcc generaba la
+  versión sin salto.
+- **C real: 12.16% → 12.79%** (421,884 bytes; 1861 funciones del juego en C++). `build.sha1` OK.
 - Pendiente: las llamadas virtuales necesitan clases C++ reales con `virtual` (en C emulado no
   sale el `r12`); los métodos de esas clases tendrán nombre mangled, no `fn_*`.

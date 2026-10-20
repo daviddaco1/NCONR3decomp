@@ -125,7 +125,7 @@ dtk-template (`project.py`, `download_tool.py`, etc.): no tocar salvo necesidad 
 ## Estado (actualizar al cerrar una etapa)
 
 - **Código 100% matcheado** (3,299,164 bytes, 11,293 funciones) mezclando asm y C/C++; **C real
-  ≈12.2%** (game code en C++: 1602 funciones). Datos 0% (sin splits de datos).
+  ≈12.8%** (game code en C++: 1861 funciones). Datos 0% (sin splits de datos).
 - `.text` 100% splitteado. TUs `unk_<addr>` = fronteras sin nombre real (los huecos grandes, como
   `dwc/unk_8022813C.c`, pueden contener varios archivos). Funciones del juego siguen como `fn_*`.
 - Siguiente: clases C++ con `virtual` para las ~1800 llamadas virtuales (en C++ con punteros a
