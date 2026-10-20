@@ -311,7 +311,7 @@ system_act.cpp:
 	.text       start:0x8007F250 end:0x80082E3C
 	.sdata2     start:0x8049F1D0 end:0x8049F228
 
-g_camnw.cpp:
+g_camnw.c:
 	extab       start:0x80008DF4 end:0x8000914C
 	extabindex  start:0x80010454 end:0x80010958
 	.text       start:0x80082E3C end:0x80090C24
@@ -542,32 +542,32 @@ band_eye.cpp:
 	extabindex  start:0x800124C4 end:0x80012500
 	.text       start:0x8010C34C end:0x8010D378
 
-eft_main.cpp:
+eft_main.c:
 	extab       start:0x8000A3BC end:0x8000A644
 	extabindex  start:0x80012500 end:0x800128CC
 	.text       start:0x8010D378 end:0x801131D8
 
-eft_scmd.cpp:
+eft_scmd.c:
 	extab       start:0x8000A644 end:0x8000A73C
 	extabindex  start:0x800128CC end:0x80012A40
 	.text       start:0x801131D8 end:0x8011F350
 
-eft_vjob.cpp:
+eft_vjob.c:
 	extab       start:0x8000A73C end:0x8000A764
 	extabindex  start:0x80012A40 end:0x80012A7C
 	.text       start:0x8011F350 end:0x80120784
 
-n2d_main.cpp:
+n2d_main.c:
 	extab       start:0x8000A764 end:0x8000A794
 	extabindex  start:0x80012A7C end:0x80012AC4
 	.text       start:0x80120784 end:0x80122394
 
-tcg_main.cpp:
+tcg_main.c:
 	extab       start:0x8000A794 end:0x8000A9BC
 	extabindex  start:0x80012AC4 end:0x80012E00
 	.text       start:0x80122394 end:0x801272F4
 
-tcg_cell.cpp:
+tcg_cell.c:
 	extab       start:0x8000A9BC end:0x8000AC4C
 	extabindex  start:0x80012E00 end:0x80013178
 	.text       start:0x801272F4 end:0x8012E268
@@ -583,7 +583,7 @@ clinklist.cpp:
 	extabindex  start:0x80013334 end:0x80013424
 	.text       start:0x80130100 end:0x80131324
 
-tcg_text.cpp:
+tcg_text.c:
 	extab       start:0x8000AE14 end:0x8000AFCC
 	extabindex  start:0x80013424 end:0x800136A0
 	.text       start:0x80131324 end:0x80136B14
@@ -598,23 +598,23 @@ seq.cpp:
 	extabindex  start:0x8001394C end:0x800139DC
 	.text       start:0x8013A288 end:0x8013EED4
 
-seq_cmdeft.cpp:
+seq_cmdeft.c:
 	extab       start:0x8000B234 end:0x8000B4E4
 	extabindex  start:0x800139DC end:0x80013DE4
 	.text       start:0x8013EED4 end:0x8015E708
 
-seq_cmdtcg.cpp:
+seq_cmdtcg.c:
 	extab       start:0x8000B4E4 end:0x8000B6B4
 	extabindex  start:0x80013DE4 end:0x8001409C
 	.text       start:0x8015E708 end:0x80167158
 	.ctors      start:0x803394D8 end:0x803394DC
 
-file_task.cpp:
+file_task.c:
 	extab       start:0x8000B6B4 end:0x8000C014
 	extabindex  start:0x8001409C end:0x80014EAC
 	.text       start:0x80167158 end:0x801785A4
 
-sys_task.cpp:
+sys_task.c:
 	extab       start:0x8000C014 end:0x8000C224
 	extabindex  start:0x80014EAC end:0x800151C4
 	.text       start:0x801785A4 end:0x8017CF48
@@ -625,7 +625,7 @@ homebutton.cpp:
 	extabindex  start:0x800151C4 end:0x8001547C
 	.text       start:0x8017CF48 end:0x80182FE0
 
-gl_model.cpp:
+gl_model.c:
 	extab       start:0x8000C3F4 end:0x8000C52C
 	extabindex  start:0x8001547C end:0x80015650
 	.text       start:0x80182FE0 end:0x80186C78
@@ -635,7 +635,7 @@ gl_effect.cpp:
 	extabindex  start:0x80015650 end:0x80015BFC
 	.text       start:0x80186C78 end:0x8018D5A8
 
-gl_sound.cpp:
+gl_sound.c:
 	extab       start:0x8000CB38 end:0x8000CEBC
 	extabindex  start:0x80015BFC end:0x80016004
 	.text       start:0x8018D5A8 end:0x80190454
