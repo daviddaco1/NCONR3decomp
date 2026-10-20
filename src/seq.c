@@ -19,12 +19,12 @@ extern float lbl_804A0B60;
 extern float lbl_804A0B68;
 extern float lbl_804A0B70;
 
-void _restgpr_27();
-void _restgpr_28();
-void _restgpr_29();
-void _savegpr_27();
-void _savegpr_28();
-void _savegpr_29();
+s32 _restgpr_27();
+s32 _restgpr_28();
+s32 _restgpr_29();
+s32 _savegpr_27();
+s32 _savegpr_28();
+s32 _savegpr_29();
 void fn_80018AF8(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018B00(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018B04(s32 arg0, s32 arg1, s32 arg2);
@@ -45,17 +45,17 @@ void fn_8001F9C8(s32 arg0, s32 arg1, s32 arg2);
 void fn_80042FFC(s8 *arg0);
 f32 fn_800674B8(s32 arg0, s32 arg1);
 void fn_8011F190(s8 *arg0, s8 *arg1, s8 *arg2);
-void fn_8013A288();
-void fn_8013AE84();
-void fn_8013B558();
-void fn_8013B754();
-void fn_8013C0A8();
-void fn_8013CB20();
-void fn_8013D4C8();
-void fn_8013DAC8();
-void fn_8013DEEC();
-void fn_8013E3BC();
-void fn_8013E6DC();
+s32 fn_8013A288();
+s32 fn_8013AE84();
+s32 fn_8013B558();
+s32 fn_8013B754();
+s32 fn_8013C0A8();
+s32 fn_8013CB20();
+s32 fn_8013D4C8();
+s32 fn_8013DAC8();
+s32 fn_8013DEEC();
+s32 fn_8013E3BC();
+s32 fn_8013E6DC();
 s32 * fn_8013ECB0(s32 arg0, s8 *arg1, s32 *arg2);
 s32 fn_8013EE80(s8 *arg0);
 void fn_8013EE98(s8 *arg0, s32 arg1);
@@ -70,7 +70,7 @@ s8 * fn_80164828(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 s8 * fn_801648C4(s32 arg0, s32 arg1, s32 arg2);
 s8 * fn_8016499C(s32 arg0, s32 arg1, s32 arg2);
 void fn_80164DB8(M2C_UNK *arg0);
-void fn_80164DEC();
+s32 fn_80164DEC();
 u32 * fn_80164EC8(s32 **arg0, u32 *arg1, u32 *arg2, u32 *arg3);
 u32 * fn_80165074(s32 **arg0, s32 **arg1, u32 *arg2, s32 *arg3, u32 *arg4);
 void fn_801653A0(void);
@@ -84,7 +84,7 @@ f32 fn_801728FC(f32 farg0, f32 farg1, f32 farg2, f32 farg3);
 s32 fn_8017291C(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 f32 fn_8017298C(f32 farg0, f32 farg1, f32 farg2, f32 farg3, s32 arg4);
 void fn_801734E4(s32 arg0, s32 arg1);
-void fn_80173580();
+s32 fn_80173580();
 void fn_801735E8(s8 *arg0, s32 arg1, f32 *arg2);
 void fn_80173750(s32 arg0);
 void fn_80173754(s32 arg0, s32 arg1);
@@ -108,7 +108,7 @@ f32 fn_801A3278(f64 farg0);
 M2C_UNK sprintf(s8 *arg0, s32 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7);
 
 // asm_to_cpp: fn_8013A288
-asm void fn_8013A288() {
+asm s32 fn_8013A288() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -921,7 +921,7 @@ lbl_8013AE68:
 }
 
 // asm_to_cpp: fn_8013AE84
-asm void fn_8013AE84() {
+asm s32 fn_8013AE84() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1381,7 +1381,7 @@ lbl_8013B53C:
 }
 
 // asm_to_cpp: fn_8013B558
-asm void fn_8013B558() {
+asm s32 fn_8013B558() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1519,7 +1519,7 @@ lbl_8013B738:
 }
 
 // asm_to_cpp: fn_8013B754
-asm void fn_8013B754() {
+asm s32 fn_8013B754() {
     nofralloc
     stwu r1, -0x130(r1)
     mflr r0
@@ -2128,7 +2128,7 @@ lbl_8013C08C:
 }
 
 // asm_to_cpp: fn_8013C0A8
-asm void fn_8013C0A8() {
+asm s32 fn_8013C0A8() {
     nofralloc
     stwu r1, -0x130(r1)
     mflr r0
@@ -2810,7 +2810,7 @@ lbl_8013CB04:
 }
 
 // asm_to_cpp: fn_8013CB20
-asm void fn_8013CB20() {
+asm s32 fn_8013CB20() {
     nofralloc
     stwu r1, -0x130(r1)
     mflr r0
@@ -3440,7 +3440,7 @@ lbl_8013D4AC:
 }
 
 // asm_to_cpp: fn_8013D4C8
-asm void fn_8013D4C8() {
+asm s32 fn_8013D4C8() {
     nofralloc
     stwu r1, -0x130(r1)
     mflr r0
@@ -3836,7 +3836,7 @@ lbl_8013DAAC:
 }
 
 // asm_to_cpp: fn_8013DAC8
-asm void fn_8013DAC8() {
+asm s32 fn_8013DAC8() {
     nofralloc
     stwu r1, -0x120(r1)
     mflr r0
@@ -4109,7 +4109,7 @@ lbl_8013DED0:
 }
 
 // asm_to_cpp: fn_8013DEEC
-asm void fn_8013DEEC() {
+asm s32 fn_8013DEEC() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -4424,7 +4424,7 @@ lbl_8013E3A0:
 }
 
 // asm_to_cpp: fn_8013E3BC
-asm void fn_8013E3BC() {
+asm s32 fn_8013E3BC() {
     nofralloc
     stwu r1, -0x40(r1)
     mflr r0
@@ -4631,7 +4631,7 @@ lbl_8013E6C0:
 }
 
 // asm_to_cpp: fn_8013E6DC
-asm void fn_8013E6DC() {
+asm s32 fn_8013E6DC() {
     nofralloc
     clrlwi r11, r1, 28
     subfic r11, r11, -0x190

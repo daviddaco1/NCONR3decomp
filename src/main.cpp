@@ -23,10 +23,10 @@ s32 OSGetTick(void);
 M2C_UNK OSSetPowerCallback(s32 arg0);
 M2C_UNK OSSetResetCallback(s32 arg0);
 u8 SCGetLanguage(void);
-void _restgpr_14();
-void _savegpr_14();
+s32 _restgpr_14();
+s32 _savegpr_14();
 void fn_80048EF0(s8 *arg0, s8 arg1, s8 arg2, s8 arg3, s8 arg4);
-void fn_800557CC();
+s32 fn_800557CC();
 void fn_800576D0(void);
 void fn_800576F8(void);
 void fn_8005772C(void);
@@ -34,7 +34,7 @@ void fn_80057780(void);
 s32 * fn_80057794(void);
 void fn_8005791C(s32 arg0, s32 arg1, s32 arg2, s8 arg3);
 void fn_80057994(void);
-void fn_8005AD48();
+s32 fn_8005AD48();
 void fn_8005C7A4(s8 *arg0, s32 arg1);
 void fn_8005D0DC(void);
 void fn_8005D118(void);
@@ -48,8 +48,8 @@ s32 fn_80086518(s32 arg0);
 void fn_80086634(void);
 void fn_800868BC(void);
 s32 fn_8008AE14(void);
-void fn_8008B160();
-void fn_8008E6DC();
+s32 fn_8008B160();
+s32 fn_8008E6DC();
 void fn_8008E70C(void);
 void fn_800909D8(void);
 void fn_80092FFC(void);
@@ -116,7 +116,7 @@ void fn_801766D4(void);
 void fn_801767F8(s8 arg0);
 void fn_80176908(void);
 void fn_8017691C(void);
-void fn_801769E0();
+s32 fn_801769E0();
 void fn_801770CC(void);
 void fn_8017736C(void);
 void fn_801773E0(s32 arg0);
@@ -144,7 +144,7 @@ void fn_8018C01C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 void fn_8018CAF0(s32 arg0);
 void fn_8018CBAC(void);
 void fn_8018CBDC(void);
-void fn_8018CC00();
+s32 fn_8018CC00();
 void fn_8018CC1C(void);
 void fn_8018D180(void);
 void fn_8018D9B8(s32 arg0);
@@ -381,7 +381,7 @@ lbl_800557C4:
 }
 
 // asm_to_cpp: fn_800557CC
-asm void fn_800557CC() {
+asm s32 fn_800557CC() {
     nofralloc
     stwu r1, -0x1e0(r1)
     mflr r0

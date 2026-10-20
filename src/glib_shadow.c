@@ -71,20 +71,20 @@ void SetViewport__Q34nw4r3g3d6CameraFffff(s8 **arg0, f32 farg0, f32 farg1, f32 f
 M2C_UNK __ct__Q34nw4r3g3d6CameraFPQ34nw4r3g3d10CameraData(s32 *arg0, s32 arg1);
 s8 * __ct__Q44nw4r3g3d6ScnMdl15CopiedMatAccessFPQ34nw4r3g3d6ScnMdlUl(s8 *arg0, s8 *arg1, u32 arg2);
 void __throw(s32 arg0, s32 arg1, s32 arg2);
-void _restgpr_18();
-void _restgpr_22();
-void _restgpr_23();
-void _restgpr_24();
-void _restgpr_25();
-void _restgpr_28();
-void _restgpr_29();
-void _savegpr_18();
-void _savegpr_22();
-void _savegpr_23();
-void _savegpr_24();
-void _savegpr_25();
-void _savegpr_28();
-void _savegpr_29();
+s32 _restgpr_18();
+s32 _restgpr_22();
+s32 _restgpr_23();
+s32 _restgpr_24();
+s32 _restgpr_25();
+s32 _restgpr_28();
+s32 _restgpr_29();
+s32 _savegpr_18();
+s32 _savegpr_22();
+s32 _savegpr_23();
+s32 _savegpr_24();
+s32 _savegpr_25();
+s32 _savegpr_28();
+s32 _savegpr_29();
 s8 * dtor_80027B08(s8 *arg0, s16 arg1);
 M2C_UNK fn_80018B90(s32 arg0);
 void fn_80027AF8(void);
@@ -92,7 +92,7 @@ s32 fn_80027AFC(s32 arg0, s32 arg1);
 M2C_UNK fn_80027B04(s32 arg0, s32 arg1);
 void fn_80027B74(s32 arg0);
 s8 * fn_80027B84(s8 *arg0, s32 arg1);
-void fn_80027CAC();
+s32 fn_80027CAC();
 s32 fn_80027CCC(s32 arg0);
 s32 fn_8002AE00(s8 *arg0);
 s32 fn_8002AE08(s32 arg0);
@@ -3466,20 +3466,14 @@ s32 fn_8003CFE4(s8 *arg0, s32 arg1) {
     return (s32) ((GXGetTexObjFmt((s8 *) (fn_8002B99C((s8 *) (M2C_FIELD(arg0, s8 **, 8))))) - 1) != 0);
 }
 
-// asm_to_cpp: fn_8003D018
-asm s32 fn_8003D018(s8 *arg0) {
-    nofralloc
-    li r4, 0x0
-    lwz r0, 0xa0(r3)
-    cmpwi r0, 0x0
-    beq lbl_8003D038
-    lwz r0, 0xa4(r3)
-    cmpwi r0, -0x1
-    beq lbl_8003D038
-    li r4, 0x1
-lbl_8003D038:
-    mr r3, r4
-    blr
+s32 fn_8003D018(s8 *arg0) {
+    s32 var_r4;
+
+    var_r4 = (s32) (0);
+    if (((s32) M2C_FIELD(arg0, s32 *, 0xA0) != 0) && ((s32) M2C_FIELD(arg0, s32 *, 0xA4) != -1)) {
+        var_r4 = (s32) (1);
+    }
+    return (s32) (var_r4);
 }
 
 s32 fn_8003D040(s8 *arg0) {

@@ -33,12 +33,12 @@ s32 GetResAnmTexSrt__Q34nw4r3g3d7ResFileCFi(s32 *arg0, s32 arg1);
 s32 GetResMdlNumEntries__Q34nw4r3g3d7ResFileCFv(s32 *arg0);
 s32 GetResMdl__Q34nw4r3g3d7ResFileCFi(s32 *arg0, s32 arg1);
 void PSMTXIdentity(s32 arg0);
-void _restgpr_26();
-void _restgpr_27();
-void _restgpr_29();
-void _savegpr_26();
-void _savegpr_27();
-void _savegpr_29();
+s32 _restgpr_26();
+s32 _restgpr_27();
+s32 _restgpr_29();
+s32 _savegpr_26();
+s32 _savegpr_27();
+s32 _savegpr_29();
 s32 fn_80016E44(s32 arg0, s32 arg1);
 void fn_800264D0(s8 *arg0);
 s32 fn_80026B44(M2C_UNK *arg0, s32 arg1, s32 arg2);
@@ -51,7 +51,7 @@ s32 fn_800273A4(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3);
 s32 fn_8002756C(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3);
 s32 fn_80027734(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3);
 s32 fn_800278FC(s32 *arg0, s32 *arg1, s32 *arg2, s32 arg3);
-void fn_80027CAC();
+s32 fn_80027CAC();
 void fn_80027CD8(s32 arg0, s32 arg1);
 void fn_80027D18(s8 *arg0, s32 arg1);
 void fn_80027E3C(s8 *arg0, s32 arg1);
@@ -97,16 +97,16 @@ void fn_8002AB70(s32 *arg0, s32 arg1);
 void fn_8002AB78(s32 *arg0, s32 *arg1);
 s32 fn_8002AB84(s32 *arg0, s8 *arg1);
 s8 * fn_8002AC0C(s32 *arg0, s8 *arg1);
-void fn_8002AC94();
-void fn_8002ACAC();
-void fn_8002ACC4();
-void fn_8002ACDC();
-void fn_8002ACF4();
-void fn_8002AD0C();
-void fn_8002AD20();
-void fn_8002AD34();
-void fn_8002AD48();
-void fn_8002AD5C();
+s32 fn_8002AC94();
+s32 fn_8002ACAC();
+s32 fn_8002ACC4();
+s32 fn_8002ACDC();
+s32 fn_8002ACF4();
+s32 fn_8002AD0C();
+s32 fn_8002AD20();
+s32 fn_8002AD34();
+s32 fn_8002AD48();
+s32 fn_8002AD5C();
 s32 fn_8002AD70(s8 *arg0);
 s32 fn_8002AD78(s8 *arg0);
 s32 fn_8002AD80(s8 *arg0);
@@ -1562,7 +1562,7 @@ lbl_8002AC7C:
 }
 
 // asm_to_cpp: fn_8002AC94
-asm void fn_8002AC94() {
+asm s32 fn_8002AC94() {
     nofralloc
     lwz r3, 0x8(r3)
     li r5, 0x6
@@ -1573,7 +1573,7 @@ asm void fn_8002AC94() {
 }
 
 // asm_to_cpp: fn_8002ACAC
-asm void fn_8002ACAC() {
+asm s32 fn_8002ACAC() {
     nofralloc
     lwz r3, 0x8(r3)
     li r5, 0x6
@@ -1584,7 +1584,7 @@ asm void fn_8002ACAC() {
 }
 
 // asm_to_cpp: fn_8002ACC4
-asm void fn_8002ACC4() {
+asm s32 fn_8002ACC4() {
     nofralloc
     lwz r3, 0x8(r3)
     li r5, 0x6
@@ -1595,7 +1595,7 @@ asm void fn_8002ACC4() {
 }
 
 // asm_to_cpp: fn_8002ACDC
-asm void fn_8002ACDC() {
+asm s32 fn_8002ACDC() {
     nofralloc
     lwz r3, 0x8(r3)
     li r5, 0x6
@@ -1606,7 +1606,7 @@ asm void fn_8002ACDC() {
 }
 
 // asm_to_cpp: fn_8002ACF4
-asm void fn_8002ACF4() {
+asm s32 fn_8002ACF4() {
     nofralloc
     lwz r3, 0x8(r3)
     li r5, 0x6
@@ -1617,7 +1617,7 @@ asm void fn_8002ACF4() {
 }
 
 // asm_to_cpp: fn_8002AD0C
-asm void fn_8002AD0C() {
+asm s32 fn_8002AD0C() {
     nofralloc
     lwz r3, 0x8(r3)
     lwz r12, 0x0(r3)
@@ -1627,7 +1627,7 @@ asm void fn_8002AD0C() {
 }
 
 // asm_to_cpp: fn_8002AD20
-asm void fn_8002AD20() {
+asm s32 fn_8002AD20() {
     nofralloc
     lwz r3, 0x8(r3)
     lwz r12, 0x0(r3)
@@ -1637,7 +1637,7 @@ asm void fn_8002AD20() {
 }
 
 // asm_to_cpp: fn_8002AD34
-asm void fn_8002AD34() {
+asm s32 fn_8002AD34() {
     nofralloc
     lwz r3, 0x8(r3)
     lwz r12, 0x0(r3)
@@ -1647,7 +1647,7 @@ asm void fn_8002AD34() {
 }
 
 // asm_to_cpp: fn_8002AD48
-asm void fn_8002AD48() {
+asm s32 fn_8002AD48() {
     nofralloc
     lwz r3, 0x8(r3)
     lwz r12, 0x0(r3)
@@ -1657,7 +1657,7 @@ asm void fn_8002AD48() {
 }
 
 // asm_to_cpp: fn_8002AD5C
-asm void fn_8002AD5C() {
+asm s32 fn_8002AD5C() {
     nofralloc
     lwz r3, 0x8(r3)
     lwz r12, 0x0(r3)

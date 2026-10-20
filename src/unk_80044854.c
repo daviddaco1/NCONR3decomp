@@ -6,7 +6,7 @@ extern "C" {
 extern u8 lbl_803C1A40[];
 extern u8 lbl_803C22B0[];
 extern s32 **lbl_8049D65C;
-extern float lbl_8049D6B0;
+extern s32 lbl_8049D6B0;
 extern float lbl_8049EA58;
 extern float lbl_8049EA60;
 extern f32 lbl_8049EA68;
@@ -18,22 +18,22 @@ void GXGetViewportv(s32 arg0);
 void GXLoadTexObj(s32 arg0, s32 arg1);
 M2C_UNK GXSetVtxAttrFmt(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 M2C_UNK GXSetVtxDesc(s32 arg0, s32 arg1);
-void _restgpr_25();
-void _restgpr_27();
-void _restgpr_28();
-void _restgpr_29();
-void _savegpr_25();
-void _savegpr_27();
-void _savegpr_28();
-void _savegpr_29();
+s32 _restgpr_25();
+s32 _restgpr_27();
+s32 _restgpr_28();
+s32 _restgpr_29();
+s32 _savegpr_25();
+s32 _savegpr_27();
+s32 _savegpr_28();
+s32 _savegpr_29();
 void fn_800163E4(s32 arg0, s32 arg1);
-void fn_800169F4();
-void fn_80016A44();
+s32 fn_800169F4(s32 arg0_pad);
+s32 fn_80016A44(s32 arg0_pad);
 void fn_80016A94(s32 arg0);
 s32 fn_80016A98(s8 *arg0, s32 *arg1, s32 arg2);
 s32 fn_80016B5C(s8 *arg0, s32 arg1);
 s32 fn_80016C30(s32 arg0, s32 arg1);
-void fn_80016CAC();
+s32 fn_80016CAC();
 void fn_80018AF8(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018B00(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018B04(s32 arg0, s32 arg1, s32 arg2);
@@ -47,7 +47,7 @@ void fn_8001B978(f32 *arg0, f32 *arg1);
 M2C_UNK fn_8001D9AC(s32 arg0, s32 arg1);
 void fn_8001D9D0(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_80020D20(M2C_UNK *arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3);
-s8 * fn_80044854(s32 arg0, s32 arg1, s32 arg2, M2C_UNK arg_sp0);
+s8 * fn_80044854(s32 arg0, s32 arg1, s32 arg2);
 void fn_80044904(s32 arg0);
 s32 fn_80044908(s8 *arg0, s32 arg1);
 s32 fn_80044C58(s8 *arg0, s8 *arg1);
@@ -65,7 +65,7 @@ void fn_800460CC(u8 arg0, u8 arg1, u8 arg2, u8 arg3, s32 arg4);
 void fn_800460F4(f32 farg0, f32 farg1, f32 farg2);
 s32 fn_8010E90C(u32 arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_8010E9A4(s32 arg0, u32 arg1);
-void fn_80173580();
+s32 fn_80173580();
 void fn_80173750(s32 arg0);
 void fn_801739BC(s32 arg0, s32 arg1, f32 farg0);
 void fn_80173B20(s8 *arg0, s32 arg1, f32 *arg2);
@@ -76,7 +76,7 @@ void fn_8017B004(M2C_UNK *arg0, s8 *arg1);
 void fn_8017B144(s32 arg0, s8 *arg1, s32 arg2);
 M2C_UNK memset(s32 arg0, s32 arg1, s32 arg2);
 
-s8 * fn_80044854(s32 arg0, s32 arg1, s32 arg2, M2C_UNK arg_sp0) {
+s8 * fn_80044854(s32 arg0, s32 arg1, s32 arg2) {
     s32 temp_r3;
 
     temp_r3 = (s32) (fn_80177280((s32) (0x12), (M2C_UNK *) ((s32 *) fn_80044908), (M2C_UNK **) (lbl_8049D65C)));
@@ -829,144 +829,45 @@ asm void fn_800452C8(f32 *arg0, f32 *arg1, s8 *arg2, s32 arg3, f32 farg0, f32 fa
     blr
 }
 
-// asm_to_cpp: fn_80045374
-asm void fn_80045374(s8 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    lwz r0, 0x8(r3)
-    cmpwi r0, 0x0
-    beq lbl_80045568
-    lwz r4, 0x4(r3)
-    rlwinm r0, r4, 0, 25, 25
-    cmpwi r0, 0x0
-    beq lbl_800453B0
-    lwz r0, lbl_8049D6B0
-    cmpwi r0, 0x0
-    beq lbl_80045568
-lbl_800453B0:
-    lwz r3, 0x10(r3)
-    bl fn_80016C30
-    cmpwi r3, 0x0
-    bne lbl_80045568
-    li r3, 0x0
-    bl fn_800169F4
-    lwz r3, 0x4(r31)
-    li r4, 0xe
-    bl fn_800163E4
-    lwz r3, 0x4(r31)
-    rlwinm r0, r3, 0, 25, 25
-    cmpwi r0, 0x0
-    beq lbl_80045470
-    lwz r3, lbl_8049D6B0
-    addi r3, r3, 0x4
-    li r4, 0x0
-    bl GXLoadTexObj
-    bl GXClearVtxDesc
-    li r3, 0x9
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0xb
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0xd
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0x0
-    li r4, 0x9
-    li r5, 0x1
-    li r6, 0x4
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    li r3, 0x0
-    li r4, 0xb
-    li r5, 0x1
-    li r6, 0x5
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    li r3, 0x0
-    li r4, 0xd
-    li r5, 0x1
-    li r6, 0x4
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    mr r3, r31
-    bl fn_8004557C
-    b lbl_80045558
-lbl_80045470:
-    rlwinm r0, r3, 0, 24, 24
-    cmpwi r0, 0x0
-    beq lbl_80045504
-    lwz r3, 0x18(r31)
-    li r4, 0x0
-    bl GXLoadTexObj
-    bl GXClearVtxDesc
-    li r3, 0x9
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0xb
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0xd
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0x0
-    li r4, 0x9
-    li r5, 0x1
-    li r6, 0x4
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    li r3, 0x0
-    li r4, 0xb
-    li r5, 0x1
-    li r6, 0x5
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    li r3, 0x0
-    li r4, 0xd
-    li r5, 0x1
-    li r6, 0x4
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    mr r3, r31
-    bl fn_800459BC
-    b lbl_80045558
-lbl_80045504:
-    bl GXClearVtxDesc
-    li r3, 0x9
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0xb
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0x0
-    li r4, 0x9
-    li r5, 0x1
-    li r6, 0x4
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    li r3, 0x0
-    li r4, 0xb
-    li r5, 0x1
-    li r6, 0x5
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    mr r3, r31
-    bl fn_80045DB0
-lbl_80045558:
-    li r3, 0x0
-    bl fn_80016A44
-    li r3, 0x0
-    bl fn_80016A94
-lbl_80045568:
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_80045374(s8 *arg0) {
+    s32 temp_r3;
+    s32 temp_r4;
+
+    if (((s32) M2C_FIELD(arg0, s32 *, 8) != 0) && ((temp_r4 = M2C_FIELD(arg0, s32 *, 4), (((s32) (temp_r4 & 0x40) == 0) != 0)) || ((s32) lbl_8049D6B0 != 0)) && (fn_80016C30((s32) (M2C_FIELD(arg0, s32 *, 0x10)), (s32) (temp_r4)) == 0)) {
+        fn_800169F4((s32) (0));
+        fn_800163E4((s32) (M2C_FIELD(arg0, s32 *, 4)), (s32) (0xE));
+        temp_r3 = (s32) (M2C_FIELD(arg0, s32 *, 4));
+        if ((s32) (temp_r3 & 0x40) != 0) {
+            GXLoadTexObj((s32) (lbl_8049D6B0 + 4), (s32) (0));
+            GXClearVtxDesc();
+            GXSetVtxDesc((s32) (9), (s32) (1));
+            GXSetVtxDesc((s32) (0xB), (s32) (1));
+            GXSetVtxDesc((s32) (0xD), (s32) (1));
+            GXSetVtxAttrFmt((s32) (0), (s32) (9), (s32) (1), (s32) (4), (s32) (0));
+            GXSetVtxAttrFmt((s32) (0), (s32) (0xB), (s32) (1), (s32) (5), (s32) (0));
+            GXSetVtxAttrFmt((s32) (0), (s32) (0xD), (s32) (1), (s32) (4), (s32) (0));
+            fn_8004557C((s32) ((s32) arg0));
+        } else if ((s32) (temp_r3 & 0x80) != 0) {
+            GXLoadTexObj((s32) (M2C_FIELD(arg0, s32 *, 0x18)), (s32) (0));
+            GXClearVtxDesc();
+            GXSetVtxDesc((s32) (9), (s32) (1));
+            GXSetVtxDesc((s32) (0xB), (s32) (1));
+            GXSetVtxDesc((s32) (0xD), (s32) (1));
+            GXSetVtxAttrFmt((s32) (0), (s32) (9), (s32) (1), (s32) (4), (s32) (0));
+            GXSetVtxAttrFmt((s32) (0), (s32) (0xB), (s32) (1), (s32) (5), (s32) (0));
+            GXSetVtxAttrFmt((s32) (0), (s32) (0xD), (s32) (1), (s32) (4), (s32) (0));
+            fn_800459BC((s32) ((s32) arg0));
+        } else {
+            GXClearVtxDesc();
+            GXSetVtxDesc((s32) (9), (s32) (1));
+            GXSetVtxDesc((s32) (0xB), (s32) (1));
+            GXSetVtxAttrFmt((s32) (0), (s32) (9), (s32) (1), (s32) (4), (s32) (0));
+            GXSetVtxAttrFmt((s32) (0), (s32) (0xB), (s32) (1), (s32) (5), (s32) (0));
+            fn_80045DB0((s32) ((s32) arg0));
+        }
+        fn_80016A44((s32) (0));
+        fn_80016A94((s32) (0));
+    }
 }
 
 // asm_to_cpp: fn_8004557C

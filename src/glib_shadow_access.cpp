@@ -20,22 +20,22 @@ void GXSetNumChans(s32 arg0);
 void GXSetNumTexGens(s32 arg0);
 void GXSetProjection(s32 arg0, s32 arg1);
 void GXSetProjection__Q34nw4r3g3d6CameraCFv(s8 **arg0);
-void GXSetScissorBoxOffset__Q34nw4r3g3d6CameraCFv();
-void GXSetScissor__Q34nw4r3g3d6CameraCFv();
+s32 GXSetScissorBoxOffset__Q34nw4r3g3d6CameraCFv();
+s32 GXSetScissor__Q34nw4r3g3d6CameraCFv();
 void GXSetViewport__Q34nw4r3g3d6CameraCFv(s8 **arg0);
 void GXSetZMode(s32 arg0, s32 arg1, s32 arg2);
 void GetCameraMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX34(s8 **arg0, s32 arg1);
 M2C_UNK * GetRenderModeObj__Q34nw4r3g3d8G3DStateFv(void);
-void _restfpr_28();
-void _restgpr_14();
-void _restgpr_25();
-void _restgpr_27();
-void _restgpr_29();
-void _savefpr_28();
-void _savegpr_14();
-void _savegpr_25();
-void _savegpr_27();
-void _savegpr_29();
+s32 _restfpr_28();
+s32 _restgpr_14();
+s32 _restgpr_25();
+s32 _restgpr_27();
+s32 _restgpr_29();
+s32 _savefpr_28();
+s32 _savegpr_14();
+s32 _savegpr_25();
+s32 _savegpr_27();
+s32 _savegpr_29();
 M2C_UNK * fn_80016CCC(M2C_UNK *arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5, s32 arg7, s32 arg8);
 void fn_80016D40(s32 arg0);
 void fn_80016D44(s32 arg0);
@@ -52,12 +52,12 @@ void fn_8003C394(s8 *arg0, u32 arg1);
 void fn_8003C3DC(s32 arg0, s32 arg1, s32 arg2);
 void fn_8003C414(s32 arg0, s32 arg1, s32 arg2);
 s32 fn_8003D1B0(s32 arg0, u16 arg1, u16 arg2, s32 arg3, s32 arg4, s32 arg5);
-s32 fn_8003D25C(s32 arg0, s8 *arg1, s8 *arg2, s8 *arg3, s32 arg4, M2C_UNK arg_sp0);
-s32 fn_8003D310(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3, M2C_UNK arg_sp0);
+s32 fn_8003D25C(s32 arg0, s8 *arg1, s8 *arg2, s8 *arg3, s32 arg4);
+s32 fn_8003D310(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3);
 void fn_8003D3A0(s32 arg0);
 void fn_8003D3F4(s32 arg0);
-void fn_8003D448(s32 arg0, s32 arg1, M2C_UNK arg_sp0);
-void fn_8003D4A4(s32 arg0, s32 arg1, M2C_UNK arg_sp0);
+void fn_8003D448(s32 arg0, s32 arg1);
+void fn_8003D4A4(s32 arg0, s32 arg1);
 s32 fn_8003D500(s32 arg0, s32 arg1);
 void fn_8003D540(void);
 s32 fn_8003D544(s32 arg0);
@@ -131,7 +131,7 @@ lbl_8003D230:
     blr
 }
 
-s32 fn_8003D25C(s32 arg0, s8 *arg1, s8 *arg2, s8 *arg3, s32 arg4, M2C_UNK arg_sp0) {
+s32 fn_8003D25C(s32 arg0, s8 *arg1, s8 *arg2, s8 *arg3, s32 arg4) {
     s32 *temp_r3;
     s32 *temp_r3_2;
 
@@ -152,7 +152,7 @@ s32 fn_8003D25C(s32 arg0, s8 *arg1, s8 *arg2, s8 *arg3, s32 arg4, M2C_UNK arg_sp
     return (s32) (0);
 }
 
-s32 fn_8003D310(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3, M2C_UNK arg_sp0) {
+s32 fn_8003D310(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
     s32 *temp_r3;
     s32 *temp_r3_2;
 
@@ -186,7 +186,7 @@ void fn_8003D3F4(s32 arg0) {
     }
 }
 
-void fn_8003D448(s32 arg0, s32 arg1, M2C_UNK arg_sp0) {
+void fn_8003D448(s32 arg0, s32 arg1) {
     s32 *temp_r3;
 
     temp_r3 = (s32 *) (fn_800389F4());
@@ -195,7 +195,7 @@ void fn_8003D448(s32 arg0, s32 arg1, M2C_UNK arg_sp0) {
     }
 }
 
-void fn_8003D4A4(s32 arg0, s32 arg1, M2C_UNK arg_sp0) {
+void fn_8003D4A4(s32 arg0, s32 arg1) {
     s32 *temp_r3;
 
     temp_r3 = (s32 *) (fn_800389F4());

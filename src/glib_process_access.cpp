@@ -13,8 +13,8 @@ extern float lbl_8049D4C0;
 
 void SetPriorityDrawOpa__Q34nw4r3g3d6ScnObjFi(s8 *arg0, s8 arg1);
 void SetPriorityDrawXlu__Q34nw4r3g3d6ScnObjFi(s8 *arg0, s8 arg1);
-void _restgpr_28();
-void _savegpr_28();
+s32 _restgpr_28();
+s32 _savegpr_28();
 s32 fn_800379D4(s32 arg0, s32 *arg1, s8 **arg2);
 void fn_80037B00(s32 arg0, s32 *arg1, s32 arg2);
 M2C_UNK fn_800389F4(void);

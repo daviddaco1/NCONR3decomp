@@ -19,27 +19,27 @@ void GXLoadTexObj(s32 arg0, s32 arg1);
 void GXProject(s8 *arg0, s8 *arg1, s8 *arg2, f32 *arg3, f32 *arg4, f32 *arg5, f32 farg0, f32 farg1, f32 farg2);
 M2C_UNK GXSetVtxAttrFmt(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 M2C_UNK GXSetVtxDesc(s32 arg0, s32 arg1);
-void _restgpr_21();
-void _restgpr_22();
-void _restgpr_25();
-void _restgpr_26();
-void _restgpr_27();
-void _restgpr_28();
-void _restgpr_29();
-void _savegpr_21();
-void _savegpr_22();
-void _savegpr_25();
-void _savegpr_26();
-void _savegpr_27();
-void _savegpr_28();
-void _savegpr_29();
+s32 _restgpr_21();
+s32 _restgpr_22();
+s32 _restgpr_25();
+s32 _restgpr_26();
+s32 _restgpr_27();
+s32 _restgpr_28();
+s32 _restgpr_29();
+s32 _savegpr_21();
+s32 _savegpr_22();
+s32 _savegpr_25();
+s32 _savegpr_26();
+s32 _savegpr_27();
+s32 _savegpr_28();
+s32 _savegpr_29();
 void fn_800163E4(s32 arg0, s32 arg1);
-void fn_800169F4();
-void fn_80016A44();
+s32 fn_800169F4();
+s32 fn_80016A44();
 void fn_80016A94(s32 arg0);
 s32 fn_80016A98(s8 *arg0, s32 *arg1, s32 arg2);
 s32 fn_80016B5C(s8 *arg0, s32 arg1);
-void fn_80016CAC();
+s32 fn_80016CAC();
 void fn_80018AF8(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018B00(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018B04(s32 arg0, s32 arg1, s32 arg2);
@@ -2163,10 +2163,8 @@ lbl_8001F95C:
     blr
 }
 
-// asm_to_cpp: fn_8001F9C8
-asm void fn_8001F9C8(s32 arg0, s32 arg1, s32 arg2) {
-    nofralloc
-    b fn_8001F9CC
+void fn_8001F9C8(s32 arg0, s32 arg1, s32 arg2) {
+    fn_8001F9CC((s32) (arg0), (s32) (arg1), (s32) (arg2));
 }
 
 // asm_to_cpp: fn_8001F9CC

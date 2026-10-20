@@ -27,16 +27,16 @@ s32 PSMTXInverse(s32 arg0, s32 arg1);
 void SetCurrentCamera__Q34nw4r3g3d7ScnRootFi(s8 *arg0, s8 arg1);
 void SetPriorityDrawOpa__Q34nw4r3g3d6ScnObjFi(s8 *arg0, s8 arg1);
 void SetPriorityDrawXlu__Q34nw4r3g3d6ScnObjFi(s8 *arg0, s8 arg1);
-void _restgpr_22();
-void _restgpr_28();
-void _restgpr_29();
-void _savegpr_22();
-void _savegpr_28();
-void _savegpr_29();
+s32 _restgpr_22();
+s32 _restgpr_28();
+s32 _restgpr_29();
+s32 _savegpr_22();
+s32 _savegpr_28();
+s32 _savegpr_29();
 s32 fn_80016E44(s32 arg0, s32 arg1);
 M2C_UNK fn_80018B0C(M2C_UNK *arg0, f32 farg0, f32 farg1, f32 farg2);
 M2C_UNK fn_80018B90(s32 arg0);
-void fn_80027CAC();
+s32 fn_80027CAC();
 s32 * fn_80029A90(s32 *arg0, s32 arg1);
 void fn_8002AB78(s32 *arg0, s32 *arg1);
 s32 fn_8002AB84(s32 *arg0, s8 *arg1);
@@ -70,7 +70,7 @@ void fn_80033EA0(s32 *arg0, s32 *arg1);
 s32 fn_80033F08(s32 *arg0);
 s32 fn_80033F50(s8 *arg0, s32 arg1, s32 arg2, f32 *arg3);
 void fn_80034064(s32 *arg0);
-void fn_800340BC();
+s32 fn_800340BC();
 void fn_800340D8(s32 *arg0, s32 arg1);
 void fn_80034128(s32 *arg0, s8 *arg1);
 void fn_80034178(s32 *arg0, s32 arg1);
@@ -617,7 +617,7 @@ asm void fn_80034064(s32 *arg0) {
 }
 
 // asm_to_cpp: fn_800340BC
-asm void fn_800340BC() {
+asm s32 fn_800340BC() {
     nofralloc
     lwz r0, 0x0(r3)
     rlwinm r0, r0, 0, 19, 19

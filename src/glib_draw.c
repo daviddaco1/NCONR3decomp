@@ -20,23 +20,23 @@ void GXLoadTexObj(s32 arg0, s32 arg1);
 M2C_UNK GXSetVtxAttrFmt(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 M2C_UNK GXSetVtxDesc(s32 arg0, s32 arg1);
 s32 __cvt_fp2unsigned(f64 arg0);
-void _restgpr_24();
-void _restgpr_26();
-void _restgpr_27();
-void _restgpr_28();
-void _restgpr_29();
-void _savegpr_24();
-void _savegpr_26();
-void _savegpr_27();
-void _savegpr_28();
-void _savegpr_29();
+s32 _restgpr_24();
+s32 _restgpr_26();
+s32 _restgpr_27();
+s32 _restgpr_28();
+s32 _restgpr_29();
+s32 _savegpr_24();
+s32 _savegpr_26();
+s32 _savegpr_27();
+s32 _savegpr_28();
+s32 _savegpr_29();
 void fn_800163E4(s32 arg0, s32 arg1);
-void fn_800169F4();
-void fn_80016A44();
+s32 fn_800169F4();
+s32 fn_80016A44();
 void fn_80016A94(s32 arg0);
 s32 fn_80016A98(s8 *arg0, s32 *arg1, s32 arg2);
 s32 fn_80016B5C(s8 *arg0, s32 arg1);
-void fn_80016CAC();
+s32 fn_80016CAC();
 void fn_80018AF8(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018B00(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018B04(s32 arg0, s32 arg1, s32 arg2);
@@ -44,7 +44,7 @@ M2C_UNK fn_80018B0C(M2C_UNK *arg0, f32 farg0, f32 farg1, f32 farg2);
 M2C_UNK fn_80018C2C(f32 farg0);
 M2C_UNK fn_80018C3C(f32 farg0);
 s8 * fn_80018C4C(u32 arg0, s8 *arg1, s32 arg2, s32 arg3, s32 arg4);
-void fn_80018DAC();
+s32 fn_80018DAC();
 s32 fn_80018DBC(s8 *arg0, s32 arg1);
 void fn_80019290(s8 *arg0);
 void fn_800192E8(s8 *arg0);
@@ -180,7 +180,7 @@ lbl_80018D88:
 }
 
 // asm_to_cpp: fn_80018DAC
-asm void fn_80018DAC() {
+asm s32 fn_80018DAC() {
     nofralloc
     cmpwi r3, 0x0
     beqlr
@@ -1192,84 +1192,38 @@ lbl_80019BF8:
     blr
 }
 
-// asm_to_cpp: fn_80019C10
-asm s32 fn_80019C10(s8 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    li r31, 0x1
-    li r6, 0x0
-    lwz r5, 0x1c(r3)
-    lwz r0, 0x18(r5)
-    cmplwi r0, 0xb
-    bne lbl_80019D00
-    lwz r3, 0x0(r3)
-    rlwinm r4, r3, 0, 4, 4
-    cmpwi r4, 0x0
-    bne lbl_80019C54
-    rlwinm r0, r3, 0, 3, 3
-    cmpwi r0, 0x0
-    beq lbl_80019D00
-lbl_80019C54:
-    cmpwi r4, 0x0
-    beq lbl_80019C70
-    mr r3, r5
-    li r4, 0xc
-    bl fn_8005E564
-    mr r6, r3
-    b lbl_80019C8C
-lbl_80019C70:
-    rlwinm r0, r3, 0, 3, 3
-    cmpwi r0, 0x0
-    beq lbl_80019C8C
-    mr r3, r5
-    li r4, 0xd
-    bl fn_8005E564
-    mr r6, r3
-lbl_80019C8C:
-    cmpwi r6, 0x0
-    bne lbl_80019C98
-    li r31, 0x0
-lbl_80019C98:
-    cmpwi r6, 0x0
-    beq lbl_80019CB4
-    lwz r0, 0x0(r6)
-    rlwinm r0, r0, 0, 30, 30
-    cmpwi r0, 0x0
-    bne lbl_80019CB4
-    li r31, 0x0
-lbl_80019CB4:
-    cmpwi r6, 0x0
-    beq lbl_80019CE0
-    lwz r0, 0x0(r6)
-    rlwinm r0, r0, 0, 19, 19
-    cmpwi r0, 0x0
-    beq lbl_80019CE0
-    lwz r0, 0x58(r6)
-    rlwinm r0, r0, 0, 30, 30
-    cmpwi r0, 0x0
-    beq lbl_80019CE0
-    li r31, 0x0
-lbl_80019CE0:
-    cmpwi r6, 0x0
-    beq lbl_80019D04
-    mr r3, r6
-    bl fn_800609D8
-    cmpwi r3, 0x0
-    bne lbl_80019D04
-    li r31, 0x0
-    b lbl_80019D04
-lbl_80019D00:
-    li r31, 0x1
-lbl_80019D04:
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_80019C10(s8 *arg0) {
+    s32 temp_r3;
+    s32 temp_r4;
+    s32 var_r31;
+    s8 *temp_r5;
+    s8 *var_r6;
+
+    var_r31 = (s32) (1);
+    var_r6 = (s8 *) (NULL);
+    temp_r5 = (s8 *) (M2C_FIELD(arg0, s8 **, 0x1C));
+    if (((u32) M2C_FIELD(temp_r5, u32 *, 0x18) == 0xBU) && ((temp_r3 = M2C_FIELD(arg0, s32 *, 0), temp_r4 = temp_r3 & 0x08000000, ((temp_r4 == 0) == 0)) || ((s32) (temp_r3 & 0x10000000) != 0))) {
+        if (temp_r4 != 0) {
+            var_r6 = (s8 *) (fn_8005E564((s8 *) (temp_r5), (u32) (0xCU)));
+        } else if ((s32) (temp_r3 & 0x10000000) != 0) {
+            var_r6 = (s8 *) (fn_8005E564((s8 *) (temp_r5), (u32) (0xDU)));
+        }
+        if (var_r6 == NULL) {
+            var_r31 = (s32) (0);
+        }
+        if ((var_r6 != NULL) && ((s32) (M2C_FIELD(var_r6, s32 *, 0) & 2) == 0)) {
+            var_r31 = (s32) (0);
+        }
+        if ((var_r6 != NULL) && ((s32) (M2C_FIELD(var_r6, s32 *, 0) & 0x1000) != 0) && ((s32) (M2C_FIELD(var_r6, s32 *, 0x58) & 2) != 0)) {
+            var_r31 = (s32) (0);
+        }
+        if ((var_r6 != NULL) && (fn_800609D8((s8 *) (var_r6)) == 0)) {
+            var_r31 = (s32) (0);
+        }
+    } else {
+        var_r31 = (s32) (1);
+    }
+    return (s32) (var_r31);
 }
 
 s32 fn_80019D1C(s8 *arg0) {

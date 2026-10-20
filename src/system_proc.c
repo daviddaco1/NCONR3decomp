@@ -18,16 +18,16 @@ extern float lbl_8049EED8;
 extern float lbl_8049EF10;
 extern float lbl_8049EF18;
 
-void _restgpr_14();
-void _restgpr_23();
-void _restgpr_26();
-void _restgpr_28();
-void _restgpr_29();
-void _savegpr_14();
-void _savegpr_23();
-void _savegpr_26();
-void _savegpr_28();
-void _savegpr_29();
+s32 _restgpr_14();
+s32 _restgpr_23();
+s32 _restgpr_26();
+s32 _restgpr_28();
+s32 _restgpr_29();
+s32 _savegpr_14();
+s32 _savegpr_23();
+s32 _savegpr_26();
+s32 _savegpr_28();
+s32 _savegpr_29();
 void fn_80018B00(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018B08(s32 arg0, s32 arg1, s32 arg2);
 f32 fn_80018BD4(f32 farg0);
@@ -47,7 +47,7 @@ M2C_UNK fn_800687C0(s8 *arg0, f32 farg0);
 M2C_UNK fn_80069248(s8 *arg0, s32 *arg1);
 M2C_UNK fn_800694F0(u16 arg0);
 M2C_UNK fn_80069524(u16 arg0, s32 arg1);
-void fn_80069590();
+s32 fn_80069590();
 void fn_80069840(s32 *arg0);
 void fn_8006A020(s32 *arg0, s32 arg1);
 void fn_8006A3D8(s32 *arg0, f32 farg0);
@@ -68,7 +68,7 @@ void fn_8006B380(s8 *arg0);
 void fn_8006B40C(s8 *arg0);
 void fn_8006B498(s8 *arg0);
 void fn_8006B564(s32 *arg0, s8 *arg1);
-void fn_8006B79C();
+s32 fn_8006B79C();
 void fn_8006E26C(s32 *arg0);
 void fn_8006EA1C(s32 *arg0, s32 arg1, s32 arg2);
 void fn_8006EAFC(s8 *arg0);
@@ -86,9 +86,9 @@ void fn_8007600C(s8 *arg0);
 s32 fn_800763B4(s32 arg0, s8 *arg1, s32 arg2, s8 *arg3);
 s32 fn_80076C14(s32 arg0, s8 *arg1, s8 *arg2);
 void fn_80078104(s8 *arg0, s8 *arg1);
-void fn_80078314();
+s32 fn_80078314();
 void fn_80078DE0(s32 *arg0);
-void fn_80078E18();
+s32 fn_80078E18();
 void fn_800879C0(s8 *arg0, s8 *arg1);
 void fn_80088248(s8 *arg0, s8 *arg1);
 s32 fn_8008CFD8(u32 arg0);
@@ -98,7 +98,7 @@ s32 fn_8009692C(s8 *arg0, s32 arg1, s32 arg2);
 s32 * fn_80099FD8(s32 arg0, s32 arg1, s32 arg2);
 void fn_800A6D10(s8 *arg0, s32 arg1);
 s32 fn_800A6EA8(s8 *arg0);
-void fn_8011FE90();
+s32 fn_8011FE90();
 f32 fn_80172688(f32 farg0);
 s32 fn_801728DC(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 f32 fn_801728FC(f32 farg0, f32 farg1, f32 farg2, f32 farg3);
@@ -109,7 +109,7 @@ s32 labs(s32 arg0);
 M2C_UNK memset(s32 arg0, s32 arg1, s32 arg2);
 
 // asm_to_cpp: fn_80069590
-asm void fn_80069590() {
+asm s32 fn_80069590() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -2458,7 +2458,7 @@ lbl_8006B77C:
 }
 
 // asm_to_cpp: fn_8006B79C
-asm void fn_8006B79C() {
+asm s32 fn_8006B79C() {
     nofralloc
     stwu r1, -0x100(r1)
     mflr r0

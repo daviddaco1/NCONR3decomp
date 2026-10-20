@@ -5,14 +5,14 @@ extern "C" {
 
 extern float lbl_804A0608;
 
-void _restgpr_24();
-void _restgpr_25();
-void _restgpr_28();
-void _restgpr_29();
-void _savegpr_24();
-void _savegpr_25();
-void _savegpr_28();
-void _savegpr_29();
+s32 _restgpr_24();
+s32 _restgpr_25();
+s32 _restgpr_28();
+s32 _restgpr_29();
+s32 _savegpr_24();
+s32 _savegpr_25();
+s32 _savegpr_28();
+s32 _savegpr_29();
 void fn_80018AF4(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018AF8(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018AFC(s32 arg0, s32 arg1, s32 arg2);
@@ -33,7 +33,7 @@ void fn_800515DC(s32 arg0, s32 arg1, s32 arg2);
 void fn_800CA050(s8 *arg0, s8 *arg1);
 void fn_800F5B14(s8 *arg0, s8 *arg1, s32 arg2, s32 arg3);
 s8 * fn_800F5B78(s8 *arg0, s32 arg1, s32 arg2);
-void fn_801011BC(void);
+void fn_801011BC(s32 arg0, s32 arg1);
 s32 fn_801011C4(s8 *arg0, s32 arg1, s8 *arg2);
 M2C_UNK fn_801015A0(s32 arg0, s32 arg1, s32 arg2);
 void fn_8010187C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6);
@@ -52,267 +52,73 @@ s8 * fn_801D0CD0(s8 **arg0, s32 arg1);
 void fn_801D4A9C(s8 **arg0, f32 farg0, f32 farg1, f32 farg2);
 M2C_UNK memset(s32 arg0, s32 arg1, s32 arg2);
 
-// asm_to_cpp: fn_801011BC
-asm void fn_801011BC(void) {
-    nofralloc
-    li r5, 0x0
-    b fn_801011C4
+void fn_801011BC(s32 arg0, s32 arg1) {
+    fn_801011C4((s8 *) (arg0), (s32) (arg1), (s8 *) (NULL));
 }
 
-// asm_to_cpp: fn_801011C4
-asm s32 fn_801011C4(s8 *arg0, s32 arg1, s8 *arg2) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_29
-    mr r29, r3
-    mr r30, r4
-    mr r31, r5
-    li r4, 0x6
-    li r5, 0x0
-    bl fn_800F5B78
-    mr r5, r3
-    cmpwi r3, 0x0
-    bne lbl_8010157C
-    cmpwi r31, 0x0
-    beq lbl_80101208
-    b lbl_8010121C
-lbl_80101208:
-    lwz r3, 0x110(r29)
-    li r4, 0x418
-    li r5, 0x0
-    bl fn_80170E2C
-    mr r31, r3
-lbl_8010121C:
-    mr r3, r31
-    li r4, 0x0
-    li r5, 0x418
-    bl memset
-    mr r3, r29
-    li r4, 0x3
-    bl fn_8018149C
-    stw r3, 0x18(r31)
-    mr r3, r29
-    li r4, 0x3
-    bl fn_80181504
-    stw r3, 0x1c(r31)
-    mr r3, r29
-    li r4, 0xa8
-    bl fn_8018149C
-    stw r3, 0x20(r31)
-    mr r3, r29
-    li r4, 0xa8
-    bl fn_80181504
-    stw r3, 0x24(r31)
-    addi r3, r31, 0x28
-    lwz r4, 0x1c(r31)
-    addi r4, r4, 0x224
-    lwz r5, 0x20(r31)
-    addi r5, r5, 0x50
-    bl fn_8017375C
-    addi r3, r31, 0x58
-    addi r4, r31, 0x28
-    bl fn_801734E4
-    mr r3, r29
-    li r4, 0x3
-    bl fn_8018149C
-    stw r3, 0x88(r31)
-    mr r3, r29
-    li r4, 0x3
-    bl fn_80181504
-    stw r3, 0x8c(r31)
-    mr r3, r29
-    li r4, 0xa0
-    bl fn_8018149C
-    stw r3, 0x90(r31)
-    mr r3, r29
-    li r4, 0xa1
-    bl fn_8018149C
-    stw r3, 0x94(r31)
-    mr r3, r29
-    li r4, 0xa0
-    bl fn_80181504
-    stw r3, 0x98(r31)
-    mr r3, r29
-    li r4, 0xa1
-    bl fn_80181504
-    stw r3, 0x9c(r31)
-    addi r3, r31, 0xa0
-    lwz r4, 0x8c(r31)
-    addi r4, r4, 0x224
-    lwz r5, 0x90(r31)
-    addi r5, r5, 0x50
-    bl fn_8017375C
-    addi r3, r31, 0x100
-    addi r4, r31, 0xa0
-    bl fn_801734E4
-    mr r3, r29
-    li r4, 0x3
-    bl fn_8018149C
-    stw r3, 0x160(r31)
-    mr r3, r29
-    li r4, 0x3
-    bl fn_80181504
-    stw r3, 0x164(r31)
-    mr r3, r29
-    li r4, 0xa4
-    bl fn_8018149C
-    stw r3, 0x168(r31)
-    mr r3, r29
-    li r4, 0xa5
-    bl fn_8018149C
-    stw r3, 0x16c(r31)
-    mr r3, r29
-    li r4, 0xa4
-    bl fn_80181504
-    stw r3, 0x170(r31)
-    mr r3, r29
-    li r4, 0xa5
-    bl fn_80181504
-    stw r3, 0x174(r31)
-    addi r3, r31, 0x178
-    lwz r4, 0x164(r31)
-    addi r4, r4, 0x224
-    lwz r5, 0x168(r31)
-    addi r5, r5, 0x50
-    bl fn_8017375C
-    addi r3, r31, 0x1d8
-    addi r4, r31, 0x178
-    bl fn_801734E4
-    mr r3, r29
-    li r4, 0x3
-    bl fn_8018149C
-    stw r3, 0x238(r31)
-    mr r3, r29
-    li r4, 0x3
-    bl fn_80181504
-    stw r3, 0x23c(r31)
-    mr r3, r29
-    li r4, 0xa2
-    bl fn_8018149C
-    stw r3, 0x240(r31)
-    mr r3, r29
-    li r4, 0xa3
-    bl fn_8018149C
-    stw r3, 0x244(r31)
-    mr r3, r29
-    li r4, 0xa2
-    bl fn_80181504
-    stw r3, 0x248(r31)
-    mr r3, r29
-    li r4, 0xa3
-    bl fn_80181504
-    stw r3, 0x24c(r31)
-    addi r3, r31, 0x250
-    lwz r4, 0x23c(r31)
-    addi r4, r4, 0x224
-    lwz r5, 0x240(r31)
-    addi r5, r5, 0x50
-    bl fn_8017375C
-    addi r3, r31, 0x2b0
-    addi r4, r31, 0x250
-    bl fn_801734E4
-    mr r3, r29
-    li r4, 0x3
-    bl fn_8018149C
-    stw r3, 0x310(r31)
-    mr r3, r29
-    li r4, 0x3
-    bl fn_80181504
-    stw r3, 0x314(r31)
-    mr r3, r29
-    li r4, 0xa6
-    bl fn_8018149C
-    stw r3, 0x318(r31)
-    mr r3, r29
-    li r4, 0xa7
-    bl fn_8018149C
-    stw r3, 0x31c(r31)
-    mr r3, r29
-    li r4, 0xa6
-    bl fn_80181504
-    stw r3, 0x320(r31)
-    mr r3, r29
-    li r4, 0xa7
-    bl fn_80181504
-    stw r3, 0x324(r31)
-    addi r3, r31, 0x328
-    lwz r4, 0x314(r31)
-    addi r4, r4, 0x224
-    lwz r5, 0x318(r31)
-    addi r5, r5, 0x50
-    bl fn_8017375C
-    addi r3, r31, 0x388
-    addi r4, r31, 0x328
-    bl fn_801734E4
-    mr r3, r29
-    li r4, 0x3
-    bl fn_8018149C
-    stw r3, 0x3e8(r31)
-    mr r3, r29
-    li r4, 0x3
-    bl fn_80181504
-    stw r3, 0x3ec(r31)
-    mr r3, r29
-    li r4, 0x12
-    bl fn_8018149C
-    stw r3, 0x3f0(r31)
-    mr r3, r29
-    li r4, 0x13
-    bl fn_8018149C
-    stw r3, 0x3f4(r31)
-    mr r3, r29
-    li r4, 0x12
-    bl fn_80181504
-    stw r3, 0x3f8(r31)
-    mr r3, r29
-    li r4, 0x13
-    bl fn_80181504
-    stw r3, 0x3fc(r31)
-    mr r3, r29
-    li r4, 0x3
-    bl fn_8018149C
-    stw r3, 0x400(r31)
-    mr r3, r29
-    li r4, 0x3
-    bl fn_80181504
-    stw r3, 0x404(r31)
-    mr r3, r29
-    li r4, 0xf
-    bl fn_8018149C
-    stw r3, 0x408(r31)
-    mr r3, r29
-    li r4, 0x10
-    bl fn_8018149C
-    stw r3, 0x40c(r31)
-    mr r3, r29
-    li r4, 0xf
-    bl fn_80181504
-    stw r3, 0x410(r31)
-    mr r3, r29
-    li r4, 0x10
-    bl fn_80181504
-    stw r3, 0x414(r31)
-    mr r3, r29
-    mr r4, r31
-    li r5, 0x6
-    li r6, 0x0
-    bl fn_800F5B14
-    li r3, 0x0
-    b lbl_80101588
-lbl_8010157C:
-    mr r3, r29
-    mr r4, r30
-    bl fn_801015A0
-lbl_80101588:
-    addi r11, r1, 0x20
-    bl _restgpr_29
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+s32 fn_801011C4(s8 *arg0, s32 arg1, s8 *arg2) {
+    s8 *temp_r3;
+    s8 *var_r31;
+
+    var_r31 = (s8 *) (arg2);
+    temp_r3 = (s8 *) (fn_800F5B78((s8 *) (arg0), (s32) (6), (s32) (0)));
+    if (temp_r3 == NULL) {
+        var_r31 = (s8 *) (var_r31 ? var_r31 : fn_80170E2C((s32) (M2C_FIELD(arg0, s32 *, 0x110)), (s32) (0x418), (s32) (0)));
+        memset((s32) ((s32) var_r31), (s32) (0), (s32) (0x418));
+        M2C_FIELD(var_r31, s8 **, 0x18) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (3)));
+        M2C_FIELD(var_r31, s32 *, 0x1C) = (s32) (fn_80181504((s8 *) (arg0), (s32) (3)));
+        M2C_FIELD(var_r31, s8 **, 0x20) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (0xA8)));
+        M2C_FIELD(var_r31, s32 *, 0x24) = (s32) (fn_80181504((s8 *) (arg0), (s32) (0xA8)));
+        fn_8017375C((s32) ((s32) (var_r31 + 0x28)), (s32) (M2C_FIELD(var_r31, s32 *, 0x1C) + 0x224), (s32) ((s32) (M2C_FIELD(var_r31, s8 **, 0x20) + 0x50)));
+        fn_801734E4((s32) ((s32) (var_r31 + 0x58)), (s32) ((s32) (var_r31 + 0x28)));
+        M2C_FIELD(var_r31, s8 **, 0x88) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (3)));
+        M2C_FIELD(var_r31, s32 *, 0x8C) = (s32) (fn_80181504((s8 *) (arg0), (s32) (3)));
+        M2C_FIELD(var_r31, s8 **, 0x90) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (0xA0)));
+        M2C_FIELD(var_r31, s8 **, 0x94) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (0xA1)));
+        M2C_FIELD(var_r31, s32 *, 0x98) = (s32) (fn_80181504((s8 *) (arg0), (s32) (0xA0)));
+        M2C_FIELD(var_r31, s32 *, 0x9C) = (s32) (fn_80181504((s8 *) (arg0), (s32) (0xA1)));
+        fn_8017375C((s32) ((s32) (var_r31 + 0xA0)), (s32) (M2C_FIELD(var_r31, s32 *, 0x8C) + 0x224), (s32) ((s32) (M2C_FIELD(var_r31, s8 **, 0x90) + 0x50)));
+        fn_801734E4((s32) ((s32) (var_r31 + 0x100)), (s32) ((s32) (var_r31 + 0xA0)));
+        M2C_FIELD(var_r31, s8 **, 0x160) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (3)));
+        M2C_FIELD(var_r31, s32 *, 0x164) = (s32) (fn_80181504((s8 *) (arg0), (s32) (3)));
+        M2C_FIELD(var_r31, s8 **, 0x168) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (0xA4)));
+        M2C_FIELD(var_r31, s8 **, 0x16C) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (0xA5)));
+        M2C_FIELD(var_r31, s32 *, 0x170) = (s32) (fn_80181504((s8 *) (arg0), (s32) (0xA4)));
+        M2C_FIELD(var_r31, s32 *, 0x174) = (s32) (fn_80181504((s8 *) (arg0), (s32) (0xA5)));
+        fn_8017375C((s32) ((s32) (var_r31 + 0x178)), (s32) (M2C_FIELD(var_r31, s32 *, 0x164) + 0x224), (s32) ((s32) (M2C_FIELD(var_r31, s8 **, 0x168) + 0x50)));
+        fn_801734E4((s32) ((s32) (var_r31 + 0x1D8)), (s32) ((s32) (var_r31 + 0x178)));
+        M2C_FIELD(var_r31, s8 **, 0x238) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (3)));
+        M2C_FIELD(var_r31, s32 *, 0x23C) = (s32) (fn_80181504((s8 *) (arg0), (s32) (3)));
+        M2C_FIELD(var_r31, s8 **, 0x240) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (0xA2)));
+        M2C_FIELD(var_r31, s8 **, 0x244) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (0xA3)));
+        M2C_FIELD(var_r31, s32 *, 0x248) = (s32) (fn_80181504((s8 *) (arg0), (s32) (0xA2)));
+        M2C_FIELD(var_r31, s32 *, 0x24C) = (s32) (fn_80181504((s8 *) (arg0), (s32) (0xA3)));
+        fn_8017375C((s32) ((s32) (var_r31 + 0x250)), (s32) (M2C_FIELD(var_r31, s32 *, 0x23C) + 0x224), (s32) ((s32) (M2C_FIELD(var_r31, s8 **, 0x240) + 0x50)));
+        fn_801734E4((s32) ((s32) (var_r31 + 0x2B0)), (s32) ((s32) (var_r31 + 0x250)));
+        M2C_FIELD(var_r31, s8 **, 0x310) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (3)));
+        M2C_FIELD(var_r31, s32 *, 0x314) = (s32) (fn_80181504((s8 *) (arg0), (s32) (3)));
+        M2C_FIELD(var_r31, s8 **, 0x318) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (0xA6)));
+        M2C_FIELD(var_r31, s8 **, 0x31C) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (0xA7)));
+        M2C_FIELD(var_r31, s32 *, 0x320) = (s32) (fn_80181504((s8 *) (arg0), (s32) (0xA6)));
+        M2C_FIELD(var_r31, s32 *, 0x324) = (s32) (fn_80181504((s8 *) (arg0), (s32) (0xA7)));
+        fn_8017375C((s32) ((s32) (var_r31 + 0x328)), (s32) (M2C_FIELD(var_r31, s32 *, 0x314) + 0x224), (s32) ((s32) (M2C_FIELD(var_r31, s8 **, 0x318) + 0x50)));
+        fn_801734E4((s32) ((s32) (var_r31 + 0x388)), (s32) ((s32) (var_r31 + 0x328)));
+        M2C_FIELD(var_r31, s8 **, 0x3E8) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (3)));
+        M2C_FIELD(var_r31, s32 *, 0x3EC) = (s32) (fn_80181504((s8 *) (arg0), (s32) (3)));
+        M2C_FIELD(var_r31, s8 **, 0x3F0) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (0x12)));
+        M2C_FIELD(var_r31, s8 **, 0x3F4) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (0x13)));
+        M2C_FIELD(var_r31, s32 *, 0x3F8) = (s32) (fn_80181504((s8 *) (arg0), (s32) (0x12)));
+        M2C_FIELD(var_r31, s32 *, 0x3FC) = (s32) (fn_80181504((s8 *) (arg0), (s32) (0x13)));
+        M2C_FIELD(var_r31, s8 **, 0x400) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (3)));
+        M2C_FIELD(var_r31, s32 *, 0x404) = (s32) (fn_80181504((s8 *) (arg0), (s32) (3)));
+        M2C_FIELD(var_r31, s8 **, 0x408) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (0xF)));
+        M2C_FIELD(var_r31, s8 **, 0x40C) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (0x10)));
+        M2C_FIELD(var_r31, s32 *, 0x410) = (s32) (fn_80181504((s8 *) (arg0), (s32) (0xF)));
+        M2C_FIELD(var_r31, s32 *, 0x414) = (s32) (fn_80181504((s8 *) (arg0), (s32) (0x10)));
+        fn_800F5B14((s8 *) (arg0), (s8 *) (var_r31), (s32) (6), (s32) (0));
+        return (s32) (0);
+    }
+    return (s32) (fn_801015A0((s32) ((s32) arg0), (s32) (arg1), (s32) ((s32) temp_r3)));
 }
 
 // asm_to_cpp: fn_801015A0

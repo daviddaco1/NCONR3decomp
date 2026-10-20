@@ -14,10 +14,10 @@ void __ct__Q34nw4r3lyt6LayoutFv(s8 *arg0);
 s32 __dt__Q34nw4r3lyt16ResourceAccessorFv(s32 arg0, s32 arg1);
 s8 * __dt__Q44nw4r2ut6detail12LinkListImplFv(s8 *arg0, s32 arg1);
 void __throw(s32 arg0, s32 arg1, s32 arg2);
-void _restgpr_28();
-void _restgpr_29();
-void _savegpr_28();
-void _savegpr_29();
+s32 _restgpr_28();
+s32 _restgpr_29();
+s32 _savegpr_28();
+s32 _savegpr_29();
 s32 dtor_80048CE8(s32 arg0, s16 arg1);
 void dtor_80136CFC(s32 arg0);
 void fn_80027AF8(void);
@@ -33,8 +33,8 @@ void fn_80170E84(s32 arg0, s8 *arg1);
 s8 * fn_80186808(s8 *arg0);
 s8 * fn_80186C78(s8 *arg0, s32 arg1, u32 arg2);
 u16 fn_8030C61C(s8 *arg0, u16 arg1);
-void fn_8030CAF0();
-void fn_8030CB00();
+s32 fn_8030CAF0();
+s32 fn_8030CB00();
 
 // asm_to_cpp: fn_80048A8C
 asm s32 fn_80048A8C(s32 arg0, s8 *arg1, s32 arg2, s32 arg3) {

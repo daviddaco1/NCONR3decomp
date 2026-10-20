@@ -76,16 +76,16 @@ s8 * Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode(s32 *arg0,
 s32 Insert__Q44nw4r2ut6detail12LinkListImplFQ54nw4r2ut6detail12LinkListImpl8IteratorPQ34nw4r2ut12LinkListNode(s32 *arg0, s8 *arg1, s32 arg2, s32 *arg3);
 s8 * __dt__Q44nw4r2ut6detail12LinkListImplFv(s8 *arg0, s32 arg1);
 void __throw(s32 arg0, s32 arg1, s32 arg2);
-void _restgpr_24();
-void _restgpr_25();
-void _restgpr_27();
-void _restgpr_28();
-void _restgpr_29();
-void _savegpr_24();
-void _savegpr_25();
-void _savegpr_27();
-void _savegpr_28();
-void _savegpr_29();
+s32 _restgpr_24();
+s32 _restgpr_25();
+s32 _restgpr_27();
+s32 _restgpr_28();
+s32 _restgpr_29();
+s32 _savegpr_24();
+s32 _savegpr_25();
+s32 _savegpr_27();
+s32 _savegpr_28();
+s32 _savegpr_29();
 s32 atoi(s32 arg0);
 s8 * dtor_80026A40(s8 *arg0, s16 arg1);
 s8 * dtor_80027B08(s8 *arg0, s16 arg1);
@@ -115,12 +115,12 @@ s32 fn_800278FC(s32 *arg0, s32 *arg1, s32 *arg2, s32 arg3);
 M2C_UNK * fn_80027ABC(M2C_UNK *arg0, s32 arg1, s32 arg2);
 void fn_80027AF8(void);
 s32 fn_80027AFC(s32 arg0, s32 arg1);
-M2C_UNK fn_80027B04(s32 arg0, s32 arg1);
+s32 fn_80027B04(s32 arg0, s32 arg1);
 void fn_80027B74(s32 arg0);
 void fn_80027B78(s32 arg0);
 s32 fn_80027B7C(s32 *arg0);
 s8 * fn_80027B84(s8 *arg0, s32 arg1);
-void fn_80027CAC();
+s32 fn_80027CAC();
 s32 fn_80027CCC(s32 arg0);
 void fn_80027CD8(s32 arg0, s32 arg1);
 s32 fn_80027CE0(s8 *arg0);
@@ -264,8 +264,8 @@ s32 fn_80029934(void);
 void fn_800299F4(s8 *arg0);
 void fn_801A9384(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7);
 s8 * fn_801D8B78(s32 arg0, s32 *arg1, s8 **arg2, s32 *arg3);
-void fn_8030CAF0();
-void fn_8030CB00();
+s32 fn_8030CAF0(void);
+s32 fn_8030CB00(void);
 
 // asm_to_cpp: fn_80024CF0
 asm s32 fn_80024CF0(M2C_UNK *arg0, s32 arg1, s32 *arg2, s32 *arg3, s32 arg4) {
@@ -3567,10 +3567,8 @@ s32 fn_80027AFC(s32 arg0, s32 arg1) {
     return (s32) (arg1);
 }
 
-// asm_to_cpp: fn_80027B04
-asm M2C_UNK fn_80027B04(s32 arg0, s32 arg1) {
-    nofralloc
-    b fn_8030CAF0
+s32 fn_80027B04(s32 arg0, s32 arg1) {
+    return (s32) (fn_8030CAF0());
 }
 
 // asm_to_cpp: dtor_80027B08
@@ -3704,7 +3702,7 @@ lbl_80027C94:
 }
 
 // asm_to_cpp: fn_80027CAC
-asm void fn_80027CAC() {
+asm s32 fn_80027CAC() {
     nofralloc
     cmpwi r3, 0x0
     beqlr

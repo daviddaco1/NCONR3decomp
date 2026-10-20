@@ -35,10 +35,10 @@ extern u8 lbl_803C1A40[];
 extern u8 lbl_803C22B0[];
 extern float lbl_804A0478;
 
-void _restgpr_28();
-void _restgpr_29();
-void _savegpr_28();
-void _savegpr_29();
+s32 _restgpr_28();
+s32 _restgpr_29();
+s32 _savegpr_28();
+s32 _savegpr_29();
 void fn_80018AF8(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018B00(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018B04(s32 arg0, s32 arg1, s32 arg2);
@@ -103,10 +103,10 @@ s32 fn_800EEFE0(s8 *arg0, s32 arg1, s8 *arg2);
 void fn_800F37F8(void);
 s32 fn_800F3800(s8 *arg0, s32 arg1, s8 *arg2);
 void fn_800F52B4(s32 arg0, s32 arg1);
-void fn_800F52BC();
+s32 fn_800F52BC();
 void fn_800F55B8(s8 *arg0);
-void fn_800F5628();
-void fn_800F59E0();
+s32 fn_800F5628();
+s32 fn_800F59E0();
 void fn_800F5B14(s8 *arg0, s8 *arg1, s32 arg2, s32 arg3);
 s8 * fn_800F5B78(s8 *arg0, s32 arg1, s32 arg2);
 void fn_800F5BC8(s8 *arg0);
@@ -146,7 +146,7 @@ asm void fn_800F52B4(s32 arg0, s32 arg1) {
 }
 
 // asm_to_cpp: fn_800F52BC
-asm void fn_800F52BC() {
+asm s32 fn_800F52BC() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -381,7 +381,7 @@ lbl_800F5610:
 }
 
 // asm_to_cpp: fn_800F5628
-asm void fn_800F5628() {
+asm s32 fn_800F5628() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -632,7 +632,7 @@ lbl_800F59C8:
 }
 
 // asm_to_cpp: fn_800F59E0
-asm void fn_800F59E0() {
+asm s32 fn_800F59E0() {
     nofralloc
     cmplwi r5, 0x31
     bgtlr

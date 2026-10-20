@@ -31,12 +31,12 @@ void Init__Q34nw4r3g3d3FogFv(s8 **arg0);
 void Init__Q34nw4r3g3d6CameraFv(s8 **arg0);
 s32 SelectLightObj__Q34nw4r3g3d8LightSetFUli(s8 *arg0, u32 arg1, s8 arg2);
 void SetCurrentCamera__Q34nw4r3g3d7ScnRootFi(s8 *arg0, s8 arg1);
-void _restgpr_25();
-void _restgpr_28();
-void _restgpr_29();
-void _savegpr_25();
-void _savegpr_28();
-void _savegpr_29();
+s32 _restgpr_25();
+s32 _restgpr_28();
+s32 _restgpr_29();
+s32 _savegpr_25();
+s32 _savegpr_28();
+s32 _savegpr_29();
 s32 fn_80028E40(s32 *arg0, s32 *arg1);
 void fn_80028EBC(s32 *arg0, s32 *arg1);
 s32 fn_80028EC8(s32 arg0);
@@ -120,7 +120,7 @@ s32 fn_80039EAC(s8 *arg0, s32 arg1);
 s32 fn_80039EC0(s8 *arg0);
 s32 fn_80039EC8(s8 *arg0);
 s8 * fn_80039ED0(s8 *arg0);
-s32 fn_80039EE8(M2C_UNK *arg0);
+s32 fn_80039EE8(s32 *arg0);
 u16 fn_80039F10(u16 *arg0);
 s32 fn_80039F18(s32 *arg0);
 s32 fn_80039F2C(s32 arg0);
@@ -1608,20 +1608,14 @@ s8 * fn_80039ED0(s8 *arg0) {
     return (s8 *) (M2C_FIELD((M2C_FIELD(arg0, s32 *, 0x1C) + (M2C_FIELD(arg0, u16 *, 0x20) * 0x10)), s8 **, 4));
 }
 
-// asm_to_cpp: fn_80039EE8
-asm s32 fn_80039EE8(M2C_UNK *arg0) {
-    nofralloc
-    li r4, 0x0
-    lwz r0, 0x0(r3)
-    cmpwi r0, 0x0
-    beq lbl_80039F08
-    lwz r0, 0x4(r3)
-    cmpwi r0, 0x0
-    beq lbl_80039F08
-    li r4, 0x1
-lbl_80039F08:
-    mr r3, r4
-    blr
+s32 fn_80039EE8(s32 *arg0) {
+    s32 var_r4;
+
+    var_r4 = (s32) (0);
+    if (((s32) M2C_FIELD(arg0, s32 *, 0) != 0) && ((s32) M2C_FIELD(arg0, s32 *, 4) != 0)) {
+        var_r4 = (s32) (1);
+    }
+    return (s32) (var_r4);
 }
 
 u16 fn_80039F10(u16 *arg0) {

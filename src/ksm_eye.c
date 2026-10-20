@@ -6,14 +6,14 @@ extern "C" {
 extern u8 lbl_80339958[];
 extern float lbl_804A0368;
 
-void _restgpr_24();
-void _restgpr_26();
-void _restgpr_28();
-void _restgpr_29();
-void _savegpr_24();
-void _savegpr_26();
-void _savegpr_28();
-void _savegpr_29();
+s32 _restgpr_24();
+s32 _restgpr_26();
+s32 _restgpr_28();
+s32 _restgpr_29();
+s32 _savegpr_24();
+s32 _savegpr_26();
+s32 _savegpr_28();
+s32 _savegpr_29();
 void fn_80018AF4(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018AF8(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018AFC(s32 arg0, s32 arg1, s32 arg2);
@@ -27,7 +27,7 @@ void fn_8001B8B8(s32 arg0, s32 arg1, s32 arg2);
 void fn_80020D20(M2C_UNK *arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3);
 void fn_800515D8(s32 arg0, s32 arg1);
 void fn_800515DC(s32 arg0, s32 arg1, s32 arg2);
-void fn_800EEFD8(void);
+void fn_800EEFD8(s32 arg0, s32 arg1);
 s32 fn_800EEFE0(s8 *arg0, s32 arg1, s8 *arg2);
 M2C_UNK fn_800EF7B4(s32 arg0, s32 arg1, s32 arg2);
 void fn_800EFBF8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6);
@@ -50,11 +50,8 @@ s32 fn_80181504(s8 *arg0, s32 arg1);
 void fn_80190874(s8 *arg0, s32 arg1);
 M2C_UNK memset(s32 arg0, s32 arg1, s32 arg2);
 
-// asm_to_cpp: fn_800EEFD8
-asm void fn_800EEFD8(void) {
-    nofralloc
-    li r5, 0x0
-    b fn_800EEFE0
+void fn_800EEFD8(s32 arg0, s32 arg1) {
+    fn_800EEFE0((s8 *) (arg0), (s32) (arg1), (s8 *) (NULL));
 }
 
 // asm_to_cpp: fn_800EEFE0

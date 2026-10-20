@@ -16,12 +16,12 @@ void InitLightShininess__Q34nw4r3g3d8LightObjFf(s32 *arg0, f32 farg0);
 void InitLightSpot__Q34nw4r3g3d8LightObjFf9_GXSpotFn(s32 *arg0, s32 arg1, s32 arg2);
 void InitSpecularDir__Q34nw4r3g3d8LightObjFfff(s32 *arg0, s32 arg1, s32 arg2, s32 arg3);
 s32 SelectAmbLightObj__Q34nw4r3g3d8LightSetFi(s8 *arg0, s8 arg1);
-void _restfpr_29();
-void _restgpr_27();
-void _restgpr_29();
-void _savefpr_29();
-void _savegpr_27();
-void _savegpr_29();
+s32 _restfpr_29();
+s32 _restgpr_27();
+s32 _restgpr_29();
+s32 _savefpr_29();
+s32 _savegpr_27();
+s32 _savegpr_29();
 s32 fn_8002ADF8(s8 *arg0);
 void fn_8002B044(s8 *arg0, s8 *arg1);
 void fn_80030E80(s32 *arg0, s32 *arg1);
@@ -36,7 +36,7 @@ s32 fn_8003F794(u32 arg0, s8 *arg1);
 s32 fn_8003F82C(s32 arg0, s32 arg1, s32 *arg2);
 s32 fn_8003F8A0(s32 arg0, s8 *arg1);
 s32 fn_8003F934(s32 *arg0, s8 *arg1);
-s32 fn_8003FA5C(s32 arg0, s32 arg1, s32 *arg2, M2C_UNK arg_sp0);
+s32 fn_8003FA5C(s32 arg0, s32 arg1, s32 *arg2);
 s32 fn_8003FADC(s32 arg0, s8 *arg1);
 s32 fn_8003FB78(s8 *arg0, s32 arg1, s32 arg2);
 s32 fn_8003FBDC(s8 *arg0, s32 arg2, s32 arg3, s32 arg4, f32 farg0, f32 farg1);
@@ -57,7 +57,7 @@ u32 fn_8003FE94(s32 *arg0);
 u32 fn_8003FEEC(s32 *arg0);
 void fn_801F476C(s32 arg0, f32 *arg1, f32 *arg2, f32 *arg3);
 void fn_801F47DC(s32 arg0, f32 *arg1, f32 *arg2, f32 *arg3);
-void fn_801F484C();
+s32 fn_801F484C();
 
 // asm_to_cpp: fn_8003F5C8
 asm s32 fn_8003F5C8(s32 arg0, s32 arg1) {
@@ -379,7 +379,7 @@ lbl_8003FA44:
     blr
 }
 
-s32 fn_8003FA5C(s32 arg0, s32 arg1, s32 *arg2, M2C_UNK arg_sp0) {
+s32 fn_8003FA5C(s32 arg0, s32 arg1, s32 *arg2) {
     M2C_UNK sp8;
     s32 temp_r3;
 
@@ -602,32 +602,14 @@ s32 fn_8003FE80(s32 *arg0) {
     return (s32) ((*arg0 & 4) != 0);
 }
 
-// asm_to_cpp: fn_8003FE94
-asm u32 fn_8003FE94(s32 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    li r31, 0x0
-    bl fn_8003FEEC
-    cmpwi r3, 0x0
-    bne lbl_8003FED0
-    mr r3, r30
-    bl fn_80039F18
-    cmpwi r3, 0x0
-    bne lbl_8003FED0
-    li r31, 0x1
-lbl_8003FED0:
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+u32 fn_8003FE94(s32 *arg0) {
+    u32 var_r31;
+
+    var_r31 = (u32) (0);
+    if ((fn_8003FEEC((s32 *) (arg0)) == 0) && (fn_80039F18((s32 *) (arg0)) == 0)) {
+        var_r31 = (u32) (1);
+    }
+    return (u32) (var_r31);
 }
 
 u32 fn_8003FEEC(s32 *arg0) {

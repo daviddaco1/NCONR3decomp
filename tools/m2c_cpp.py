@@ -42,6 +42,8 @@ def save(path, text):
 
 def fixup_cpp(c):
     c = re.sub(r'\bvoid \*', 's8 *', c)
+    # tipos C++ que m2c saca de nombres mangled (nw4r::g3d::Camera *): no estan declarados
+    c = re.sub(r'\((?:const )?(?:\w+::)+\w+ (\*+)\)', lambda m: f'(s8 {m.group(1)})', c)
     c = fix_ptr_arith(c)
     c = re.sub(r'(M2C_FIELD\([^,]+, )\w+ \*\*(, )', r'\1s8 **\2', c)
     c = fix_unset_args(c)
@@ -104,6 +106,19 @@ def close_paren(s, i):
     return -1
 
 
+def call_arities(s):
+    """{funcion: {cantidad de argumentos en cada llamada}} en el texto."""
+    out = {}
+    for m in CALL.finditer(s):
+        if m.group(1) in NOCALL:
+            continue
+        k = s.index('(', m.start())
+        j = close_paren(s, k)
+        if j > 0:
+            out.setdefault(m.group(1), set()).add(len(split_args(s[k + 1:j])) if s[k + 1:j].strip() else 0)
+    return out
+
+
 def cast(t, e):
     return f'({t}) ({e})' if is_scalar(t) and e else e
 
@@ -120,7 +135,7 @@ def cast_calls(s, protos):
             break
         name, args = m.group(1), split_args(s[k + 1:j])
         args = [cast_calls(a, protos) for a in args] if s[k + 1:j].strip() else []
-        if name in protos and name not in NOCALL:
+        if name in protos and name not in NOCALL and '...' not in protos[name][1]:
             ts = param_types(protos[name][1])
             if len(ts) == len(args):
                 args = [cast(t, a) for t, a in zip(ts, args)]
@@ -139,7 +154,8 @@ def cppify(body, protos, ps, ret):
         if m:
             types[m.group(2)] = m.group(1).strip()
     for m in re.finditer(r'^\s+([A-Za-z_][\w ]*?\s*\**)\s*(\w+);$', body, re.M):
-        types[m.group(2)] = m.group(1).strip()
+        if m.group(1).split()[0] not in ('return', 'goto', 'case', 'else', 'do'):
+            types[m.group(2)] = m.group(1).strip()
     lines = []
     for l in body.split('\n'):
         l = cast_calls(l, protos)
@@ -188,12 +204,27 @@ class TU:
                 continue
             end = body_end(out, out.index('{', m.start()))
             if m.group(2) in self.asm:
-                self.c[m.group(2)] = (m.group(1).strip(), m.group(3).strip() or 'void', out[m.end():end])
+                self.c[m.group(2)] = (m.group(1).strip(), self.norm_params(m.group(2), m.group(3), ctx),
+                                      out[m.end():end])
             pos = end
         self.data = {}
         for m in re.finditer(r'^(?:static )?(?:extern )?([^\n(=;]*?\b((?:lbl|jumptable)_\w+|__\w+)(?:\[\w*\])?);', out, re.M):
             self.data.setdefault(m.group(2), m.group(1).strip())
         self.ctx, self.peep = ctx, set()
+
+    @staticmethod
+    def norm_params(name, ps, ctx):
+        """Firma de una definicion de m2c compatible con las llamadas (generadas con la aridad del
+        contexto): sin `arg_spN` espurios y rellenada con parametros sin usar hasta esa aridad
+        (en C++ la aridad tiene que coincidir; un parametro sin usar no cambia el codigo)."""
+        own = [p for p in split_args(ps) if p and p != 'void' and 'arg_sp' not in p]
+        if name in ctx:
+            want = [p for p in split_args(ctx[name][1]) if p and p != 'void']
+            names = {re.search(r'(\w+)$', p).group(1) for p in own}
+            for p in want[len(own):]:
+                n = re.search(r'(\w+)$', p).group(1)
+                own.append(p if n not in names else p[:-len(n)] + n + '_pad')
+        return ', '.join(own) or 'void'
 
     def render(self):
         """Texto y {linea: ('c', fn) | ('sym', nombre)}."""
@@ -214,15 +245,28 @@ class TU:
                 continue
             add('extern ' + (self.data[n] if n in used and n in self.data else self.decl[n]) + ';', ('sym', n))
         lines.append('')
-        protos = {}
+        protos, ar = {}, call_arities(body_c)
         for n in sorted(funcs):
+            d = re.match(r'^(.*?)\b' + n + r'\((.*)\)$', self.decl.get(n, ''))
+            if d and '...' in d.group(2):  # variadica de libc: firma real
+                protos[n] = (d.group(1).strip(), d.group(2))
+                add(f'{protos[n][0]} {n}({protos[n][1]});', ('sym', n))
+                continue
             if n in self.c:
-                ret, ps, _ = self.c[n]
+                ret, ps, body = self.c[n]
             elif n in self.ctx:
                 ret, ps = self.ctx[n]
-            else:  # declaracion del asm (libc con firma real, o void f())
-                d = re.match(r'^(.*?)\b' + n + r'\((.*)\)$', self.decl.get(n, f'void {n}()'))
-                ret, ps = d.group(1).strip(), d.group(2)
+            else:
+                ret, ps = 's32', ''
+            # aridad: la que usan todas las llamadas de esta TU (en C++ tiene que coincidir)
+            if len(ar.get(n, ())) == 1:
+                k, cur = next(iter(ar[n])), [p for p in split_args(ps) if p and p != 'void']
+                if k > len(cur):
+                    cur += [f's32 arg{i}_pad' for i in range(len(cur), k)]
+                elif k < len(cur) and (n not in self.c or not any(
+                        re.search(r'\b' + re.search(r'(\w+)$', p).group(1) + r'\b', body) for p in cur[k:])):
+                    cur = cur[:k]
+                ps = ', '.join(cur) or 'void'
             protos[n] = (ret, ps)
             add(f'{ret} {n}({ps});', ('sym', n))
         lines.append('')

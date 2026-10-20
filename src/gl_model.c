@@ -19,24 +19,24 @@ extern float lbl_804A1020;
 s32 GXGetChanAmbColor__Q34nw4r3g3d10ResMatChanCF12_GXChannelIDP8_GXColor(s32 *arg0, s32 arg1, s8 *arg2);
 s32 GXGetChanMatColor__Q34nw4r3g3d10ResMatChanCF12_GXChannelIDP8_GXColor(s32 *arg0, s32 arg1, s8 *arg2);
 void PSMTXIdentity(s32 arg0);
-void _restgpr_17();
-void _restgpr_18();
-void _restgpr_21();
-void _restgpr_22();
-void _restgpr_25();
-void _restgpr_26();
-void _restgpr_27();
-void _restgpr_28();
-void _restgpr_29();
-void _savegpr_17();
-void _savegpr_18();
-void _savegpr_21();
-void _savegpr_22();
-void _savegpr_25();
-void _savegpr_26();
-void _savegpr_27();
-void _savegpr_28();
-void _savegpr_29();
+s32 _restgpr_17();
+s32 _restgpr_18();
+s32 _restgpr_21();
+s32 _restgpr_22();
+s32 _restgpr_25();
+s32 _restgpr_26();
+s32 _restgpr_27();
+s32 _restgpr_28();
+s32 _restgpr_29();
+s32 _savegpr_17();
+s32 _savegpr_18();
+s32 _savegpr_21();
+s32 _savegpr_22();
+s32 _savegpr_25();
+s32 _savegpr_26();
+s32 _savegpr_27();
+s32 _savegpr_28();
+s32 _savegpr_29();
 void fn_80018AD0(s8 *arg0, s8 *arg1);
 void fn_80019D5C(s8 *arg0);
 s8 * fn_80019D70(M2C_UNK **arg0);
@@ -68,7 +68,7 @@ void fn_801734E4(s32 arg0, s32 arg1);
 void fn_8017375C(s32 arg0, s32 arg1, s32 arg2);
 s32 * fn_8018149C(s8 *arg0, s32 arg1);
 s8 * fn_80182FE0(s8 *arg0, s32 arg1, s32 arg2, s32 arg3, s8 *arg4);
-void fn_80183158();
+s32 fn_80183158();
 s32 fn_80183170(s8 *arg0, s32 arg1);
 s32 fn_801831EC(s8 *arg0, s32 arg1, f32 farg0);
 s32 fn_8018331C(s32 *arg0);
@@ -92,7 +92,7 @@ void fn_80185194(s8 *arg0, f32 *arg1);
 void fn_801851D8(f32 *arg0, s8 *arg1, s32 arg2, f32 farg0);
 void fn_80185288(f32 *arg1, s32 arg2, f32 farg0);
 void fn_801852C4(void);
-void fn_801852C8();
+s32 fn_801852C8();
 void fn_801852E4(s8 *arg0, f32 farg0, f32 farg1, f32 farg2);
 void fn_801856BC(s8 *arg0, f32 farg0, f32 farg1, f32 farg2);
 void fn_80185A94(s8 *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2);
@@ -236,7 +236,7 @@ lbl_80183140:
 }
 
 // asm_to_cpp: fn_80183158
-asm void fn_80183158() {
+asm s32 fn_80183158() {
     nofralloc
     mr r4, r3
     cmpwi r3, 0x0
@@ -2658,7 +2658,7 @@ void fn_801852C4(void) {
 }
 
 // asm_to_cpp: fn_801852C8
-asm void fn_801852C8() {
+asm s32 fn_801852C8() {
     nofralloc
     lwz r4, 0xc(r3)
     lwz r0, 0x0(r4)

@@ -19,10 +19,10 @@ void SetPosture__Q34nw4r3g3d6CameraFRCQ44nw4r3g3d6Camera11PostureInfo(s8 **arg0,
 void SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl(s8 **arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 void SetViewport__Q34nw4r3g3d6CameraFffff(s8 **arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3);
 M2C_UNK __ct__Q34nw4r3g3d6CameraFPQ34nw4r3g3d10CameraData(s32 *arg0, s32 arg1);
-void _restgpr_28();
-void _restgpr_29();
-void _savegpr_28();
-void _savegpr_29();
+s32 _restgpr_28();
+s32 _restgpr_29();
+s32 _savegpr_28();
+s32 _savegpr_29();
 s32 fn_8002AF70(s32 arg0);
 void fn_80034E28(s32 arg0, u16 arg1, u16 arg2, u16 arg3, u16 arg4, u8 arg5, u8 arg6);
 s32 * fn_80038934(s8 *arg0, u32 arg1);

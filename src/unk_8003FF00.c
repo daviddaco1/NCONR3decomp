@@ -35,18 +35,18 @@ void GetViewport__Q34nw4r3g3d6CameraCFPfPfPfPfPfPf(s8 **arg0, f32 *arg1, f32 *ar
 void Invalidate__Q34nw4r3g3d8G3DStateFUl(s32 arg0);
 f32 SinFIdx__Q24nw4r4mathFf(f32 farg0, s32 arg1);
 s32 __cvt_fp2unsigned(f64 arg0);
-void _restgpr_23();
-void _restgpr_27();
-void _restgpr_29();
-void _savegpr_23();
-void _savegpr_27();
-void _savegpr_29();
+s32 _restgpr_23();
+s32 _restgpr_27();
+s32 _restgpr_29();
+s32 _savegpr_23();
+s32 _savegpr_27();
+s32 _savegpr_29();
 void fn_80016964(void);
-void fn_800169F4();
-void fn_80016A44();
+s32 fn_800169F4();
+s32 fn_80016A44();
 void fn_80016A94(s32 arg0);
 s32 fn_80016A98(s8 *arg0, s32 *arg1, s32 arg2);
-void fn_80016CAC();
+s32 fn_80016CAC();
 void fn_80018B00(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018B04(s32 arg0, s32 arg1, s32 arg2);
 s8 * fn_80018B1C(s32 arg0);
@@ -67,7 +67,7 @@ s32 fn_80040068(s32 arg0, s32 arg1);
 void fn_800401B8(s8 *arg0);
 f32 fn_80040740(s8 *arg0, f32 *arg1, s8 *arg2);
 void fn_80040B74(void);
-void fn_80040D08(s8 *arg0, f32 *arg1, M2C_UNK arg_sp0);
+void fn_80040D08(s8 *arg0, f32 *arg1);
 void fn_80040E60(s8 *arg0, f32 *arg1, s32 arg2);
 void fn_80041224(f32 *arg0, f32 *arg1, f32 *arg2, f32 farg0);
 f32 fn_80041264(s32 arg0, s32 arg1);
@@ -80,7 +80,7 @@ void fn_800412D0(s16 arg0, s16 arg1);
 s32 fn_8010E90C(u32 arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_8010E9A4(s32 arg0, u32 arg1);
 void fn_8017347C(s32 arg0, f32 *arg1);
-void fn_80173580();
+s32 fn_80173580();
 void fn_80173750(s32 arg0);
 s32 fn_80177280(s32 arg0, M2C_UNK *arg1, M2C_UNK **arg2);
 void fn_8017742C(void);
@@ -1074,7 +1074,7 @@ asm void fn_80040B74(void) {
     blr
 }
 
-void fn_80040D08(s8 *arg0, f32 *arg1, M2C_UNK arg_sp0) {
+void fn_80040D08(s8 *arg0, f32 *arg1) {
     s16 temp_r31;
 
     temp_r31 = (s16) ((s16) ((s16) M2C_FIELD(arg0, s16 *, 0x14) / 2));

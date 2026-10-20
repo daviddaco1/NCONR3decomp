@@ -25,8 +25,8 @@ s32 GetTexObjParam__Q34nw4r3g3d6ResTexCFPPvPUsPUsP9_GXTexFmtPfPfPUc(s8 **arg0, s
 void Init__Q34nw4r3g3d7ResFileFv(s32 *arg0);
 void Release__Q34nw4r3g3d7ResFileFv(s32 *arg0);
 void Terminate__Q34nw4r3g3d7ResFileFv(s32 *arg0);
-void _restgpr_29();
-void _savegpr_29();
+s32 _restgpr_29();
+s32 _savegpr_29();
 s32 fn_80016D48(s32 *arg0);
 s32 fn_80016E44(s32 arg0, s32 arg1);
 void fn_80035E80(s32 arg0);

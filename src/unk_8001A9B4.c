@@ -14,15 +14,15 @@ void GXClearVtxDesc(void);
 void GXLoadTexObj(s32 arg0, s32 arg1);
 M2C_UNK GXSetVtxAttrFmt(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 M2C_UNK GXSetVtxDesc(s32 arg0, s32 arg1);
-void _restgpr_22();
-void _restgpr_26();
-void _restgpr_29();
-void _savegpr_22();
-void _savegpr_26();
-void _savegpr_29();
+s32 _restgpr_22();
+s32 _restgpr_26();
+s32 _restgpr_29();
+s32 _savegpr_22();
+s32 _savegpr_26();
+s32 _savegpr_29();
 void fn_800163E4(s32 arg0, s32 arg1);
-void fn_800169F4();
-void fn_80016A44();
+s32 fn_800169F4();
+s32 fn_80016A44();
 void fn_80016A94(s32 arg0);
 s32 fn_80016A98(s8 *arg0, s32 *arg1, s32 arg2);
 s32 fn_80016B5C(s8 *arg0, s32 arg1);
@@ -47,7 +47,7 @@ void fn_8001B8B0(s32 arg0, s32 arg1);
 M2C_UNK fn_8001B8B4(s32 arg0, s32 arg1);
 void fn_8001B8B8(s32 arg0, s32 arg1, s32 arg2);
 M2C_UNK fn_8001B8BC(s32 arg0);
-s32 fn_8001B8C0(s32 arg0, s32 arg1, M2C_UNK arg_sp0);
+s32 fn_8001B8C0(s32 arg0, s32 arg1);
 f32 fn_8001B910(s32 arg0, s32 arg1);
 f32 fn_8001B930(s32 arg0, s32 arg1, s32 arg2);
 M2C_UNK fn_8001B954(s32 arg0);
@@ -62,7 +62,7 @@ s32 fn_8010E90C(u32 arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_8010E9A4(s32 arg0, u32 arg1);
 M2C_UNK fn_80170E2C(s32 arg0, s32 arg1, s32 arg2);
 void fn_80170E84(s32 arg0, s8 *arg1);
-void fn_80173580();
+s32 fn_80173580();
 s32 fn_80177280(s32 arg0, M2C_UNK *arg1, M2C_UNK **arg2);
 void fn_8017742C(void);
 void fn_8017776C(s32 arg0);
@@ -1116,10 +1116,8 @@ lbl_8001B754:
     blr
 }
 
-// asm_to_cpp: fn_8001B8B0
-asm void fn_8001B8B0(s32 arg0, s32 arg1) {
-    nofralloc
-    b fn_8001B8C0
+void fn_8001B8B0(s32 arg0, s32 arg1) {
+    fn_8001B8C0((s32) (arg0), (s32) (arg1));
 }
 
 // asm_to_cpp: fn_8001B8B4
@@ -1138,7 +1136,7 @@ asm M2C_UNK fn_8001B8BC(s32 arg0) {
     b fn_8001B954
 }
 
-s32 fn_8001B8C0(s32 arg0, s32 arg1, M2C_UNK arg_sp0) {
+s32 fn_8001B8C0(s32 arg0, s32 arg1) {
     s32 temp_r31;
 
     temp_r31 = (s32) (fn_80018B88());
@@ -1216,14 +1214,12 @@ lbl_8001B9B0:
     blr
 }
 
-// asm_to_cpp: fn_8001B9D4
-asm s32 fn_8001B9D4(s32 *arg0, s32 arg1) {
-    nofralloc
-    lwz r5, 0x0(r3)
-    add r0, r5, r4
-    stw r0, 0x0(r3)
-    mr r3, r5
-    blr
+s32 fn_8001B9D4(s32 *arg0, s32 arg1) {
+    s32 temp_r5;
+
+    temp_r5 = (s32) (*arg0);
+    *arg0 = temp_r5 + arg1;
+    return (s32) (temp_r5);
 }
 
 void fn_8001B9E8(void) {

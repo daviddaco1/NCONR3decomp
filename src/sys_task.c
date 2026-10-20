@@ -59,8 +59,8 @@ void GXSetNumChans(s32 arg0);
 void GXSetNumTexGens(s32 arg0);
 void GXSetProjection(s32 arg0, s32 arg1);
 void GXSetProjection__Q34nw4r3g3d6CameraCFv(s8 **arg0);
-void GXSetScissorBoxOffset__Q34nw4r3g3d6CameraCFv();
-void GXSetScissor__Q34nw4r3g3d6CameraCFv();
+s32 GXSetScissorBoxOffset__Q34nw4r3g3d6CameraCFv();
+s32 GXSetScissor__Q34nw4r3g3d6CameraCFv(s32 arg0_pad);
 M2C_UNK GXSetTexCoordGen2(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5);
 void GXSetViewport__Q34nw4r3g3d6CameraCFv(s8 **arg0);
 M2C_UNK GXSetVtxAttrFmt(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
@@ -115,22 +115,22 @@ void SetPosture__Q34nw4r3g3d6CameraFRCQ44nw4r3g3d6Camera11PostureInfo(s8 **arg0,
 void SetScissorBoxOffset__Q34nw4r3g3d6CameraFll(s8 **arg0, s32 arg1, s32 arg2);
 void SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl(s8 **arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 void SetViewport__Q34nw4r3g3d6CameraFffff(s8 **arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3);
-void __construct_array();
+s32 __construct_array();
 s32 __cvt_fp2unsigned(f64 arg0);
-void _restfpr_26();
-void _restfpr_28();
-void _restgpr_24();
-void _restgpr_25();
-void _restgpr_27();
-void _restgpr_28();
-void _restgpr_29();
-void _savefpr_26();
-void _savefpr_28();
-void _savegpr_24();
-void _savegpr_25();
-void _savegpr_27();
-void _savegpr_28();
-void _savegpr_29();
+s32 _restfpr_26();
+s32 _restfpr_28();
+s32 _restgpr_24();
+s32 _restgpr_25();
+s32 _restgpr_27();
+s32 _restgpr_28();
+s32 _restgpr_29();
+s32 _savefpr_26();
+s32 _savefpr_28();
+s32 _savegpr_24();
+s32 _savegpr_25();
+s32 _savegpr_27();
+s32 _savegpr_28();
+s32 _savegpr_29();
 void fn_80016D44(s32 arg0);
 s32 fn_80016E44(s32 arg0, s32 arg1);
 void fn_80018AF8(s32 arg0, s32 arg1, s32 arg2);
@@ -199,7 +199,7 @@ void fn_80178748(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_801787A8(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_80178808(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_80178860(s32 arg0, s32 arg1, s32 arg2);
-void fn_801788D0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0);
+void fn_801788D0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 void fn_80178930(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 s8 * fn_801789A8(s8 *arg0, s8 *arg1);
 void fn_80178A00(s8 *arg0, s8 *arg1);
@@ -243,8 +243,8 @@ s32 fn_801794E4(s32 arg0, s32 arg1);
 s32 fn_801794E8(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 s32 fn_801794EC(s32 arg0, s32 arg1, s32 arg2);
 s32 fn_801794F0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
-void fn_801794F4();
-void fn_80179524();
+s32 fn_801794F4();
+s32 fn_80179524();
 void fn_80179570(u8 *arg0);
 s32 fn_8017967C(u8 *arg0, s32 arg1);
 s32 fn_80179740(u8 *arg0, s32 arg1);
@@ -268,7 +268,7 @@ void fn_8017A0D8(M2C_UNK *arg0);
 void fn_8017A444(void);
 void fn_8017A4D8(M2C_UNK *arg0, s32 arg1);
 void fn_8017A510(s8 *arg0, f32 farg0, f32 farg1);
-void fn_8017A594();
+s32 fn_8017A594();
 void fn_8017A704(void);
 s32 fn_8017A848(s32 arg0);
 void fn_8017A940(void);
@@ -280,7 +280,7 @@ void fn_8017AD78(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_8017AD84(s16 arg0, s16 arg1);
 void fn_8017AD9C(s16 arg0, s16 arg1, s16 arg2);
 s32 * fn_8017ADBC(s32 arg0);
-void fn_8017ADE4();
+s32 fn_8017ADE4();
 void fn_8017AE0C(f32 *arg0, s32 *arg1);
 void fn_8017AE60(f32 *arg0, s32 *arg1);
 void fn_8017AF90(f32 *arg0, s32 *arg1);
@@ -297,14 +297,14 @@ void fn_8017B754(void);
 void fn_8017B790(void);
 void fn_8017B9BC(s32 *arg0);
 void fn_8017BA64(s32 *arg0);
-void fn_8017BC20();
+s32 fn_8017BC20();
 void fn_8017BC38(s32 *arg0);
 void fn_8017BF10(s32 *arg0);
 void fn_8017BF58(s32 arg0, s32 arg1, s32 arg2, f32 farg0, f32 farg1);
 void fn_8017C068(s32 *arg0);
 void fn_8017C22C(s32 arg0);
 void fn_8017C2CC(void);
-s32 fn_8017C348(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3, M2C_UNK arg_sp0);
+s32 fn_8017C348(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3);
 s32 fn_8017C3E0(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5, s32 arg7);
 void fn_8017C4E4(s32 arg0, s32 arg1);
 void fn_8017C50C(s32 arg0, s32 arg1);
@@ -546,7 +546,7 @@ lbl_801788B8:
     blr
 }
 
-void fn_801788D0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0) {
+void fn_801788D0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s8 *temp_r3;
 
     temp_r3 = (s8 *) (fn_80178558((s8 *) ((s8 *) arg0), (s32) (0x10013), (s32) (arg1)));
@@ -685,101 +685,45 @@ lbl_80178ABC:
     blr
 }
 
-// asm_to_cpp: fn_80178ACC
-asm void fn_80178ACC(s8 *arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    mr r3, r4
-    bl NANDGetUserData
-    mr r31, r3
-    lwz r0, 0x0(r3)
-    rlwinm r0, r0, 0, 29, 29
-    cmpwi r0, 0x0
-    beq lbl_80178B0C
-    li r4, -0x1
-    bl fn_80178C20
-    b lbl_80178C08
-lbl_80178B0C:
-    mr r4, r30
-    bl fn_80178A00
-    mr r3, r31
-    mr r4, r30
-    bl fn_801789A8
-    lwz r4, 0x1e0(r31)
-    lwz r0, 0x1d8(r31)
-    mulli r0, r0, 0x130
-    add r4, r4, r0
-    stw r3, 0x128(r4)
-    bl fn_8017830C
-    li r5, 0x0
-    cmpwi r3, 0x0
-    beq lbl_80178B64
-    lwz r4, 0x1e0(r31)
-    lwz r0, 0x1d8(r31)
-    mulli r0, r0, 0x130
-    add r4, r4, r0
-    lwz r0, 0x12c(r4)
-    and r0, r3, r0
-    cmpwi r0, 0x0
-    beq lbl_80178B68
-lbl_80178B64:
-    li r5, 0x1
-lbl_80178B68:
-    cmpwi r5, 0x0
-    beq lbl_80178B88
-    lwz r3, 0x1d8(r31)
-    addi r0, r3, 0x1
-    stw r0, 0x1d8(r31)
-    mr r3, r31
-    bl fn_80178C54
-    b lbl_80178C08
-lbl_80178B88:
-    lwz r3, 0x0(r31)
-    clrlwi r0, r3, 31
-    cmpwi r0, 0x0
-    beq lbl_80178BC4
-    clrrwi r0, r3, 1
-    stw r0, 0x0(r31)
-    addi r3, r31, 0x84
-    lis r4, fn_80178ACC@ha
-    addi r4, r4, fn_80178ACC@l
-    addi r5, r31, 0x110
-    bl fn_801793C4
-    lwz r0, 0x0(r31)
-    ori r0, r0, 0x4
-    stw r0, 0x0(r31)
-    b lbl_80178C08
-lbl_80178BC4:
-    rlwinm r0, r3, 0, 30, 30
-    cmpwi r0, 0x0
-    beq lbl_80178BFC
-    rlwinm r0, r3, 0, 31, 29
-    stw r0, 0x0(r31)
-    addi r3, r31, 0x84
-    lis r4, fn_80178ACC@ha
-    addi r4, r4, fn_80178ACC@l
-    addi r5, r31, 0x110
-    bl fn_801793CC
-    lwz r0, 0x0(r31)
-    ori r0, r0, 0x4
-    stw r0, 0x0(r31)
-    b lbl_80178C08
-lbl_80178BFC:
-    mr r3, r31
-    li r4, -0x1
-    bl fn_80178C20
-lbl_80178C08:
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_80178ACC(s8 *arg0, s32 arg1) {
+    s32 temp_r3_3;
+    s32 temp_r3_4;
+    s32 var_r5;
+    s8 *temp_r3;
+    s8 *temp_r3_2;
+
+    temp_r3 = (s8 *) (NANDGetUserData((s32 *) ((s32 *) arg1)));
+    if ((s32) (M2C_FIELD(temp_r3, s32 *, 0) & 4) != 0) {
+        fn_80178C20((s8 *) (temp_r3), (s32) (-1));
+        return;
+    }
+    fn_80178A00((s8 *) (temp_r3), (s8 *) (arg0));
+    temp_r3_2 = (s8 *) (fn_801789A8((s8 *) (temp_r3), (s8 *) (arg0)));
+    M2C_FIELD((M2C_FIELD(temp_r3, s32 *, 0x1E0) + (M2C_FIELD(temp_r3, s32 *, 0x1D8) * 0x130)), s8 **, 0x128) = (s8 *) (temp_r3_2);
+    temp_r3_3 = (s32) (fn_8017830C((s32) ((s32) temp_r3_2)));
+    var_r5 = (s32) (0);
+    if ((temp_r3_3 == 0) || ((s32) (temp_r3_3 & M2C_FIELD((M2C_FIELD(temp_r3, s32 *, 0x1E0) + (M2C_FIELD(temp_r3, s32 *, 0x1D8) * 0x130)), s32 *, 0x12C)) != 0)) {
+        var_r5 = (s32) (1);
+    }
+    if (var_r5 != 0) {
+        M2C_FIELD(temp_r3, s32 *, 0x1D8) = (s32) ((s32) (M2C_FIELD(temp_r3, s32 *, 0x1D8) + 1));
+        fn_80178C54((s8 *) (temp_r3));
+        return;
+    }
+    temp_r3_4 = (s32) (M2C_FIELD(temp_r3, s32 *, 0));
+    if ((s32) (temp_r3_4 & 1) != 0) {
+        M2C_FIELD(temp_r3, s32 *, 0) = (s32) ((s32) (temp_r3_4 & 0xFFFFFFFE));
+        fn_801793C4((s32) ((s32) (temp_r3 + 0x84)), (s32) ((s32) fn_80178ACC), (s32) ((s32) (temp_r3 + 0x110)));
+        M2C_FIELD(temp_r3, s32 *, 0) = (s32) ((s32) (M2C_FIELD(temp_r3, s32 *, 0) | 4));
+        return;
+    }
+    if ((s32) (temp_r3_4 & 2) != 0) {
+        M2C_FIELD(temp_r3, s32 *, 0) = (s32) ((s32) (temp_r3_4 & 0xFFFFFFFD));
+        fn_801793CC((s32) ((s32) (temp_r3 + 0x84)), (s32) ((s32) fn_80178ACC), (s32) ((s32) (temp_r3 + 0x110)));
+        M2C_FIELD(temp_r3, s32 *, 0) = (s32) ((s32) (M2C_FIELD(temp_r3, s32 *, 0) | 4));
+        return;
+    }
+    fn_80178C20((s8 *) (temp_r3), (s32) (-1));
 }
 
 // asm_to_cpp: fn_80178C20
@@ -1498,7 +1442,7 @@ s32 fn_801794F0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 }
 
 // asm_to_cpp: fn_801794F4
-asm void fn_801794F4() {
+asm s32 fn_801794F4() {
     nofralloc
     mr r4, r3
     cmpwi r3, 0x0
@@ -1516,7 +1460,7 @@ lbl_80179514:
 }
 
 // asm_to_cpp: fn_80179524
-asm void fn_80179524() {
+asm s32 fn_80179524() {
     nofralloc
     mr r5, r3
     cmpwi r4, 0x0
@@ -1849,27 +1793,14 @@ lbl_80179984:
     blr
 }
 
-// asm_to_cpp: fn_8017999C
-asm void fn_8017999C(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_80179DC4
-    bl fn_8017A018
-    cmpwi r3, 0x0
-    bne lbl_801799BC
-    bl fn_801799DC
-lbl_801799BC:
-    bl fn_8017A018
-    cmpwi r3, 0x0
-    beq lbl_801799CC
-    bl fn_80179AB0
-lbl_801799CC:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_8017999C(void) {
+    fn_80179DC4();
+    if (fn_8017A018() == 0) {
+        fn_801799DC();
+    }
+    if (fn_8017A018() != 0) {
+        fn_80179AB0();
+    }
 }
 
 // asm_to_cpp: fn_801799DC
@@ -2699,7 +2630,7 @@ asm void fn_8017A510(s8 *arg0, f32 farg0, f32 farg1) {
 }
 
 // asm_to_cpp: fn_8017A594
-asm void fn_8017A594() {
+asm s32 fn_8017A594() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -3303,7 +3234,7 @@ asm s32 * fn_8017ADBC(s32 arg0) {
 }
 
 // asm_to_cpp: fn_8017ADE4
-asm void fn_8017ADE4() {
+asm s32 fn_8017ADE4() {
     nofralloc
     mr r4, r3
     lwz r0, 0x0(r3)
@@ -4311,7 +4242,7 @@ lbl_8017BC00:
 }
 
 // asm_to_cpp: fn_8017BC20
-asm void fn_8017BC20() {
+asm s32 fn_8017BC20() {
     nofralloc
     lwz r12, 0x15c(r3)
     cmpwi r12, 0x0
@@ -4827,7 +4758,7 @@ asm void fn_8017C2CC(void) {
     blr
 }
 
-s32 fn_8017C348(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3, M2C_UNK arg_sp0) {
+s32 fn_8017C348(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
     s8 *spC;
     s32 sp8;
 
@@ -4840,76 +4771,19 @@ s32 fn_8017C348(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3, M2C_UNK ar
     return (s32) (1);
 }
 
-// asm_to_cpp: fn_8017C3E0
-asm s32 fn_8017C3E0(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5, s32 arg7) {
-    nofralloc
-    stwu r1, -0x60(r1)
-    mflr r0
-    stw r0, 0x64(r1)
-    addi r11, r1, 0x60
-    bl _savefpr_26
-    addi r11, r1, 0x30
-    bl _savegpr_29
-    mr r29, r3
-    fmr f26, f1
-    fmr f27, f2
-    fmr f28, f3
-    fmr f29, f4
-    fmr f30, f5
-    fmr f31, f6
-    bl fn_8017ADBC
-    lwz r0, 0x0(r3)
-    clrlwi r0, r0, 31
-    cmpwi r0, 0x0
-    bne lbl_8017C434
-    li r3, 0x0
-    b lbl_8017C4C4
-lbl_8017C434:
-    mr r3, r29
-    bl fn_8018CB4C
-    stw r3, 0x8(r1)
-    addi r3, r1, 0xc
-    addi r4, r1, 0x8
-    bl fn_8002AFB4
-    fmr f1, f29
-    bl __cvt_fp2unsigned
-    mr r29, r3
-    fmr f1, f28
-    bl __cvt_fp2unsigned
-    mr r30, r3
-    fmr f1, f27
-    bl __cvt_fp2unsigned
-    mr r31, r3
-    fmr f1, f26
-    bl __cvt_fp2unsigned
-    mr r4, r3
-    addi r3, r1, 0xc
-    mr r5, r31
-    mr r6, r30
-    mr r7, r29
-    bl SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl
-    addi r3, r1, 0xc
-    fneg f0, f30
-    fctiwz f0, f0
-    stfd f0, 0x10(r1)
-    lwz r4, 0x14(r1)
-    fneg f0, f31
-    fctiwz f0, f0
-    stfd f0, 0x18(r1)
-    lwz r5, 0x1c(r1)
-    bl SetScissorBoxOffset__Q34nw4r3g3d6CameraFll
-    addi r3, r1, 0xc
-    bl GXSetScissor__Q34nw4r3g3d6CameraCFv
-    li r3, 0x1
-lbl_8017C4C4:
-    addi r11, r1, 0x60
-    bl _restfpr_26
-    addi r11, r1, 0x30
-    bl _restgpr_29
-    lwz r0, 0x64(r1)
-    mtlr r0
-    addi r1, r1, 0x60
-    blr
+s32 fn_8017C3E0(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5, s32 arg7) {
+    s8 *spC;
+    s32 sp8;
+
+    if ((s32) (*fn_8017ADBC((s32) (arg0)) & 1) == 0) {
+        return (s32) (0);
+    }
+    sp8 = (s32) (fn_8018CB4C((s32) (arg0)));
+    fn_8002AFB4((s32) ((s32) &spC), (s32) ((s32) &sp8));
+    SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl((s8 **) (&spC), (s32) ((s32) (u32) farg0), (s32) ((s32) (u32) farg1), (s32) ((s32) (u32) farg2), (s32) ((s32) (u32) farg3));
+    SetScissorBoxOffset__Q34nw4r3g3d6CameraFll((s8 **) (&spC), (s32) ((s32) -farg4), (s32) ((s32) -farg5));
+    GXSetScissor__Q34nw4r3g3d6CameraCFv((s32) ((s8 *) &spC));
+    return (s32) (1);
 }
 
 // asm_to_cpp: fn_8017C4E4

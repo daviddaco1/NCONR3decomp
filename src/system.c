@@ -24,26 +24,26 @@ extern float lbl_8049D4F8;
 extern float lbl_8049ED48;
 extern float lbl_8049ED50;
 
-void _restgpr_18();
-void _restgpr_19();
-void _restgpr_22();
-void _restgpr_26();
-void _restgpr_27();
-void _restgpr_28();
-void _restgpr_29();
-void _savegpr_18();
-void _savegpr_19();
-void _savegpr_22();
-void _savegpr_26();
-void _savegpr_27();
-void _savegpr_28();
-void _savegpr_29();
+s32 _restgpr_18();
+s32 _restgpr_19();
+s32 _restgpr_22();
+s32 _restgpr_26();
+s32 _restgpr_27();
+s32 _restgpr_28();
+s32 _restgpr_29();
+s32 _savegpr_18();
+s32 _savegpr_19();
+s32 _savegpr_22();
+s32 _savegpr_26();
+s32 _savegpr_27();
+s32 _savegpr_28();
+s32 _savegpr_29();
 void fn_80019D5C(s8 *arg0);
-void fn_8005AD48();
+s32 fn_8005AD48();
 void fn_8005BC40(s32 arg0, s32 arg1, s32 arg2);
-void fn_8005BF60();
+s32 fn_8005BF60();
 void fn_8005C470(void);
-void fn_8005C47C();
+s32 fn_8005C47C();
 void fn_8005C748(void);
 void fn_8005C7A4(s8 *arg0, s32 arg1);
 void fn_8005C808(s8 *arg0, s32 arg1);
@@ -93,7 +93,7 @@ M2C_UNK memcpy(s32 arg0, s32 arg1, s32 arg2);
 M2C_UNK memset(s32 arg0, s32 arg1, s32 arg2);
 
 // asm_to_cpp: fn_8005AD48
-asm void fn_8005AD48() {
+asm s32 fn_8005AD48() {
     nofralloc
     stwu r1, -0x90(r1)
     mflr r0
@@ -1366,7 +1366,7 @@ lbl_8005BF1C:
 }
 
 // asm_to_cpp: fn_8005BF60
-asm void fn_8005BF60() {
+asm s32 fn_8005BF60() {
     nofralloc
     stwu r1, -0xe0(r1)
     mflr r0
@@ -1710,7 +1710,7 @@ asm void fn_8005C470(void) {
 }
 
 // asm_to_cpp: fn_8005C47C
-asm void fn_8005C47C() {
+asm s32 fn_8005C47C() {
     nofralloc
     stwu r1, -0xe0(r1)
     mflr r0

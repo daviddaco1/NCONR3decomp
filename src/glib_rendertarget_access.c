@@ -5,8 +5,8 @@ extern "C" {
 
 extern u8 lbl_80348070[];
 
-void _restgpr_25();
-void _savegpr_25();
+s32 _restgpr_25();
+s32 _savegpr_25();
 s32 fn_80035DD8(s32 arg0, s32 arg1, u16 arg2, u16 arg3, s32 arg4, s32 arg5, s32 arg6);
 s32 fn_80035E70(s8 *arg0);
 s32 fn_80036AD8(s8 *arg0, s32 arg1, s32 arg2, u16 arg3, u16 arg4, s32 arg5, s32 arg6, s32 arg7);

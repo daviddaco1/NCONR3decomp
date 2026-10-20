@@ -22,8 +22,8 @@ extern u8 lbl_80349468[];
 void C_QUATMtx(s32 arg0, s32 arg1);
 s8 * Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode(s32 *arg0, s8 *arg1);
 void PSMTXQuat(s32 arg0, s32 arg1);
-void _restgpr_29();
-void _savegpr_29();
+s32 _restgpr_29();
+s32 _savegpr_29();
 M2C_UNK fn_80018B90(s32 arg0);
 f32 fn_80018B94(s32 arg0, s32 arg1, s32 arg2);
 void fn_80028EBC(s32 *arg0, s32 *arg1);
@@ -33,7 +33,7 @@ void fn_8002AF5C(s32 arg0);
 s32 fn_8003D58C(s8 *arg0);
 void fn_8003D594(s32 arg0);
 void fn_8003D598(s32 arg0);
-void fn_80047C40(s32 arg0, s32 arg1, s32 arg2, s32 arg3, M2C_UNK arg_sp0);
+void fn_80047C40(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 s32 * fn_80047C8C(s32 *arg0, s32 arg1);
 s32 fn_80047CBC(s32 arg0);
 s32 fn_80047D0C(s8 *arg0, s8 *arg1);
@@ -54,7 +54,7 @@ s8 * fn_800484BC(s8 *arg0, s8 *arg1);
 s8 * fn_800484FC(s8 *arg0, s8 *arg1);
 void fn_801A9384(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7);
 
-void fn_80047C40(s32 arg0, s32 arg1, s32 arg2, s32 arg3, M2C_UNK arg_sp0) {
+void fn_80047C40(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_8002AF5C((s32) (arg0));
     fn_80018B94((s32) (arg0), (s32) (arg1), (s32) (arg2));
 }

@@ -31,10 +31,10 @@ s32 MTX34RotAxisFIdx__Q24nw4r4mathFPQ34nw4r4math5MTX34PCQ34nw4r4math4VEC3f(s32 a
 f32 MTX34RotXYZFIdx__Q24nw4r4mathFPQ34nw4r4math5MTX34fff(f32 farg2, s32 arg1, s32 arg2, s32 arg3);
 void SetViewportZRange__Q34nw4r3g3d6CameraFff(s8 **arg0, f32 farg0, f32 farg1);
 void SetViewport__Q34nw4r3g3d6CameraFffff(s8 **arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3);
-void _restgpr_27();
-void _restgpr_29();
-void _savegpr_27();
-void _savegpr_29();
+s32 _restgpr_27();
+s32 _restgpr_29();
+s32 _savegpr_27();
+s32 _savegpr_29();
 void fn_80018BB8(s32 arg0);
 f32 fn_8001B930(s32 arg0, s32 arg1, s32 arg2);
 void fn_8002AF44(f32 farg0, f32 farg1, f32 farg2, s32 arg3);
@@ -806,23 +806,14 @@ s32 fn_8002B9AC(s8 *arg0, s32 arg1) {
     return (s32) ((M2C_FIELD(arg0, s32 *, 0x14) & arg1) != 0);
 }
 
-// asm_to_cpp: fn_8002B9C0
-asm s32 fn_8002B9C0(s8 *arg0) {
-    nofralloc
-    li r4, 0x0
-    lwz r0, 0x8(r3)
-    cmpwi r0, 0x0
-    beq lbl_8002B9EC
-    lwz r0, 0xc(r3)
-    cmpwi r0, 0x0
-    beq lbl_8002B9EC
-    lwz r0, 0x10(r3)
-    cmpwi r0, 0x0
-    beq lbl_8002B9EC
-    li r4, 0x1
-lbl_8002B9EC:
-    mr r3, r4
-    blr
+s32 fn_8002B9C0(s8 *arg0) {
+    s32 var_r4;
+
+    var_r4 = (s32) (0);
+    if (((s32) M2C_FIELD(arg0, s32 *, 8) != 0) && ((s32) M2C_FIELD(arg0, s32 *, 0xC) != 0) && ((s32) M2C_FIELD(arg0, s32 *, 0x10) != 0)) {
+        var_r4 = (s32) (1);
+    }
+    return (s32) (var_r4);
 }
 
 void fn_8002B9F4(void) {

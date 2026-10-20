@@ -30,10 +30,10 @@ M2C_UNK GXSetVtxDesc(s32 arg0, s32 arg1);
 void GXSetZCompLoc(s32 arg0);
 void GXSetZMode(s32 arg0, s32 arg1, s32 arg2);
 void Invalidate__Q34nw4r3g3d8G3DStateFUl(s32 arg0);
-void _restgpr_27();
-void _savegpr_27();
-void fn_800169F4();
-void fn_80016A44();
+s32 _restgpr_27();
+s32 _savegpr_27();
+s32 fn_800169F4();
+s32 fn_80016A44();
 void fn_80016A94(s32 arg0);
 s32 fn_80016A98(s8 *arg0, s32 *arg1, s32 arg2);
 void fn_80018AF8(s32 arg0, s32 arg1, s32 arg2);
@@ -50,7 +50,7 @@ void fn_8001B978(f32 *arg0, f32 *arg1);
 void fn_8001F9C8(s32 arg0, s32 arg1, s32 arg2);
 void fn_80030E80(s32 *arg0, s32 *arg1);
 s8 * fn_80046BA0(s8 *arg0, s8 *arg1, s32 arg2, s32 arg3);
-void fn_80046CDC();
+s32 fn_80046CDC();
 s32 fn_80046CEC(s8 *arg0, s32 arg1);
 void fn_80046FEC(s8 *arg0);
 void fn_800470CC(s8 *arg0);
@@ -177,7 +177,7 @@ lbl_80046CC4:
 }
 
 // asm_to_cpp: fn_80046CDC
-asm void fn_80046CDC() {
+asm s32 fn_80046CDC() {
     nofralloc
     cmpwi r3, 0x0
     beqlr
