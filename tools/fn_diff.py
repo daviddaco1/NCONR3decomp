@@ -19,7 +19,10 @@ def norm(ins):
     ins = re.sub(r'\s+', ' ', ins.strip())
     ins = re.sub(r'(\bb\w*|\bbl) .*', r'\1', ins)  # destinos de salto/llamada no se comparan
     ins = re.sub(r'0x([0-9a-f]+)', lambda m: str(int(m.group(1), 16)), ins)
-    return re.sub(r'^subi (\w+),(\w+),(\d+)$', r'addi \1,\2,-\3', ins)
+    ins = re.sub(r'^sub(ic?\.?) (\w+),(\w+),(\d+)$', r'add\1 \2,\3,-\4', ins)  # subi/subic = addi/addic -N
+    # lis con inmediato > 0x7FFF: dtk lo muestra sin signo, objdump con signo
+    return re.sub(r'^(lis \w+,)(\d+)$', lambda m: m.group(1) + str(int(m.group(2)) - 65536)
+                  if int(m.group(2)) > 32767 else m.group(0), ins)
 
 
 def target(split, fn):

@@ -1529,28 +1529,15 @@ void fn_80137F38(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 void fn_80137F44(void) {
 }
 
-// asm_to_cpp: fn_80137F48
-asm void fn_80137F48(u16 arg0, u16 arg1) {
-    nofralloc
-    clrlwi r0, r3, 16
-    lis r3, 0xcc01
-    sth r0, -0x8000(r3)
-    clrlwi r0, r4, 16
-    sth r0, -0x8000(r3)
-    blr
+void fn_80137F48(u16 arg0, u16 arg1) {
+    *(volatile u16 *)0xCC008000 = arg0;
+    *(volatile u16 *)0xCC008000 = arg1;
 }
 
-// asm_to_cpp: fn_80137F60
-asm void fn_80137F60(s16 arg0, s16 arg1, s16 arg2) {
-    nofralloc
-    extsh r0, r3
-    lis r3, 0xcc01
-    sth r0, -0x8000(r3)
-    extsh r0, r4
-    sth r0, -0x8000(r3)
-    extsh r0, r5
-    sth r0, -0x8000(r3)
-    blr
+void fn_80137F60(s16 arg0, s16 arg1, s16 arg2) {
+    *(volatile s16 *)0xCC008000 = arg0;
+    *(volatile s16 *)0xCC008000 = arg1;
+    *(volatile s16 *)0xCC008000 = arg2;
 }
 
 void fn_80137F80(void) {

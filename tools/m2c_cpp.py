@@ -42,12 +42,18 @@ def save(path, text):
 
 def fixup_cpp(c):
     c = re.sub(r'\bvoid \*', 's8 *', c)
+    # registros de hardware (0xCC000000-0xCDFFFFFF: GX FIFO, VI, PI...) son volatile en el original
+    c = re.sub(r'\*\(((?:\w+ )*\w+) \*\)(0xC[CD][0-9A-Fa-f]{6})\b', r'*(volatile \1 *)\2', c)
     # tipos C++ que m2c saca de nombres mangled (nw4r::g3d::Camera *): no estan declarados
     c = re.sub(r'\((?:const )?(?:\w+::)+\w+ (\*+)\)', lambda m: f'(s8 {m.group(1)})', c)
     c = fix_ptr_arith(c)
     c = re.sub(r'(M2C_FIELD\([^,]+, )\w+ \*\*(, )', r'\1s8 **\2', c)
     c = fix_unset_args(c)
     return TERN.sub(lambda m: f'{m.group(1)}{m.group(2)} = {m.group(2)} ? {m.group(2)} : {m.group(3)};', c)
+
+
+SECTIONS = dict(re.findall(r'^(\w+) = (\.?\w+):', open('config/RNEPDA/symbols.txt').read(), re.M)) \
+    if os.path.exists('config/RNEPDA/symbols.txt') else {}
 
 
 def ctx_protos():
@@ -327,7 +333,10 @@ class TU:
             if n in funcs:
                 continue
             d = self.orig_data.get(n) or (self.data[n] if n in used and n in self.data else self.decl[n])
-            add('extern ' + d + ';', ('sym', n))
+            # un extern escalar <=8 bytes se asume small-data (r13/r2); si el simbolo no lo es, el
+            # original lo accede con lis/addi: forzar la seccion sin cambiar el tipo
+            far = SECTIONS.get(n) not in (None, '.sdata', '.sbss', '.sdata2', '.sbss2') and not d.endswith(']')
+            add(('__declspec(section ".data") ' if far else '') + 'extern ' + d + ';', ('sym', n))
         lines.append('')
         protos, ar = {}, call_arities(body_c)
         for n in sorted(funcs):

@@ -1404,15 +1404,9 @@ void fn_800412C0(f32 farg0, f32 farg1) {
     *(f32 *)0xCC008000 = farg1;
 }
 
-// asm_to_cpp: fn_800412D0
-asm void fn_800412D0(s16 arg0, s16 arg1) {
-    nofralloc
-    extsh r0, r3
-    lis r3, 0xcc01
-    sth r0, -0x8000(r3)
-    extsh r0, r4
-    sth r0, -0x8000(r3)
-    blr
+void fn_800412D0(s16 arg0, s16 arg1) {
+    *(volatile s16 *)0xCC008000 = arg0;
+    *(volatile s16 *)0xCC008000 = arg1;
 }
 
 } // extern "C"

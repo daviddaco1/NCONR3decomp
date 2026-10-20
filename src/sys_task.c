@@ -3191,28 +3191,15 @@ void fn_8017AD78(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     GXSetTexCoordGen2((s32) (arg0), (s32) (arg1), (s32) (arg2), (s32) (arg3), (s32) (0), (s32) (0x7D));
 }
 
-// asm_to_cpp: fn_8017AD84
-asm void fn_8017AD84(s16 arg0, s16 arg1) {
-    nofralloc
-    extsh r0, r3
-    lis r3, 0xcc01
-    sth r0, -0x8000(r3)
-    extsh r0, r4
-    sth r0, -0x8000(r3)
-    blr
+void fn_8017AD84(s16 arg0, s16 arg1) {
+    *(volatile s16 *)0xCC008000 = arg0;
+    *(volatile s16 *)0xCC008000 = arg1;
 }
 
-// asm_to_cpp: fn_8017AD9C
-asm void fn_8017AD9C(s16 arg0, s16 arg1, s16 arg2) {
-    nofralloc
-    extsh r0, r3
-    lis r3, 0xcc01
-    sth r0, -0x8000(r3)
-    extsh r0, r4
-    sth r0, -0x8000(r3)
-    extsh r0, r5
-    sth r0, -0x8000(r3)
-    blr
+void fn_8017AD9C(s16 arg0, s16 arg1, s16 arg2) {
+    *(volatile s16 *)0xCC008000 = arg0;
+    *(volatile s16 *)0xCC008000 = arg1;
+    *(volatile s16 *)0xCC008000 = arg2;
 }
 
 // asm_to_cpp: fn_8017ADBC

@@ -1280,19 +1280,11 @@ s32 fn_80019DAC(s8 *arg0, f32 *arg1) {
     return (s32) ((s32) arg0);
 }
 
-// asm_to_cpp: fn_80019DC8
-asm void fn_80019DC8(u8 arg0, u8 arg1, u8 arg2, u8 arg3, s32 arg4) {
-    nofralloc
-    clrlwi r0, r3, 24
-    lis r3, 0xcc01
-    stb r0, -0x8000(r3)
-    clrlwi r0, r4, 24
-    stb r0, -0x8000(r3)
-    clrlwi r0, r5, 24
-    stb r0, -0x8000(r3)
-    clrlwi r0, r6, 24
-    stb r0, -0x8000(r3)
-    blr
+void fn_80019DC8(u8 arg0, u8 arg1, u8 arg2, u8 arg3, s32 arg4) {
+    *(volatile u8 *)0xCC008000 = arg0;
+    *(volatile u8 *)0xCC008000 = arg1;
+    *(volatile u8 *)0xCC008000 = arg2;
+    *(volatile u8 *)0xCC008000 = arg3;
 }
 
 void fn_80019DF0(f32 farg0, f32 farg1, f32 farg2) {

@@ -3509,15 +3509,9 @@ void fn_8003D170(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     GXSetTexCoordGen2((s32) (arg0), (s32) (arg1), (s32) (arg2), (s32) (arg3), (s32) (0), (s32) (0x7D));
 }
 
-// asm_to_cpp: fn_8003D17C
-asm void fn_8003D17C(u8 arg0, u8 arg1) {
-    nofralloc
-    clrlwi r0, r3, 24
-    lis r3, 0xcc01
-    stb r0, -0x8000(r3)
-    clrlwi r0, r4, 24
-    stb r0, -0x8000(r3)
-    blr
+void fn_8003D17C(u8 arg0, u8 arg1) {
+    *(volatile u8 *)0xCC008000 = arg0;
+    *(volatile u8 *)0xCC008000 = arg1;
 }
 
 void fn_8003D194(f32 farg0, f32 farg1) {
