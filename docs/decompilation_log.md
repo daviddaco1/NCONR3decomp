@@ -2530,5 +2530,13 @@ el 100% en asm para fijar splits y nombres, y después reescribir a C en una pas
   return 0; }` (6 en `glib_anim.cpp`): m2c tipaba el retorno como entero y mwcc generaba la
   versión sin salto.
 - **C real: 12.16% → 12.79%** (421,884 bytes; 1861 funciones del juego en C++). `build.sha1` OK.
+- Contexto: "retorno usado" se detecta en el asm de los llamadores (tras `bl F`, `r3`/`f1` se lee
+  antes de escribirse); m2c sobre el archivo entero propagaba su propio `void`. `fix_unset_args`
+  también para `$f1..$f8` (floats que un wrapper pasa intactos).
+- `tools/apply_template.py <fn>|--all`: una función ya en C++ sirve de plantilla para las que
+  siguen en asm con la misma secuencia de instrucciones (inmediatos sustituidos); después
+  `m2c_cpp.py` sobre las TUs tocadas verifica. Flujo para ajustar a mano: arreglar una función en
+  `src/`, `apply_template.py <fn>`, `m2c_cpp.py <TUs>`.
+- **C real: 12.79% → 12.87%** (424,484 bytes; ~1960 funciones del juego en C++).
 - Pendiente: las llamadas virtuales necesitan clases C++ reales con `virtual` (en C emulado no
   sale el `r12`); los métodos de esas clases tendrán nombre mangled, no `fn_*`.

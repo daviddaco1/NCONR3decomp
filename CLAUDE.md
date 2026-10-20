@@ -84,7 +84,8 @@ dtk-template (`project.py`, `download_tool.py`, etc.): no tocar salvo necesidad 
   105 de la bitácora). Nombres de archivo = `__FILE__` del DOL (`rename_lang.py`). Todo dentro de
   `extern "C" {}` (los `fn_*` no tienen nombre mangled conocido). `m2c_cpp.py <split>|--game`
   regenera TUs del juego en C++ desde el asm (prototipos completos, casts, aridad por llamadas) y
-  deja asm lo que no matchea; `fn_diff.py <split> <fn> [c]` compara una función aislada contra el
+  deja asm lo que no matchea (conserva el C++ existente); `apply_template.py` propaga una función
+  a sus gemelas en asm; `m2c_triage.py` agrupa casi-matches; `fn_diff.py <split> <fn> [c]` compara una función aislada contra el
   asm para ajustarla a mano. No escribir game code en C.
 - m2c (asm → C automático): `m2c_context.py` (firmas de todo el binario + firmas reales de
   `libs/` → `build/m2c_ctx.h`, tipos de datos → `build/m2c_data.h`; `--protos` reescribe
@@ -125,7 +126,7 @@ dtk-template (`project.py`, `download_tool.py`, etc.): no tocar salvo necesidad 
 ## Estado (actualizar al cerrar una etapa)
 
 - **Código 100% matcheado** (3,299,164 bytes, 11,293 funciones) mezclando asm y C/C++; **C real
-  ≈12.8%** (game code en C++: 1861 funciones). Datos 0% (sin splits de datos).
+  ≈12.9%** (game code en C++: ~1960 funciones). Datos 0% (sin splits de datos).
 - `.text` 100% splitteado. TUs `unk_<addr>` = fronteras sin nombre real (los huecos grandes, como
   `dwc/unk_8022813C.c`, pueden contener varios archivos). Funciones del juego siguen como `fn_*`.
 - Siguiente: clases C++ con `virtual` para las ~1800 llamadas virtuales (en C++ con punteros a
