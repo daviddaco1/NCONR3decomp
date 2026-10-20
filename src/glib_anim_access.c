@@ -1623,27 +1623,13 @@ lbl_8002AAB8:
     blr
 }
 
-// asm_to_cpp: fn_8002AACC
-asm s32 fn_8002AACC(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lwz r3, lbl_8049D4A8
-    cmpwi r3, 0x0
-    beq lbl_8002AAF8
-    bl fn_80027CAC
-    li r0, 0x0
-    stw r0, lbl_8049D4A8
-    li r3, 0x1
-    b lbl_8002AAFC
-lbl_8002AAF8:
-    li r3, 0x0
-lbl_8002AAFC:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_8002AACC(void) {
+    if (lbl_8049D4A8 != 0) {
+        fn_80027CAC(lbl_8049D4A8);
+        lbl_8049D4A8 = 0;
+        return 1;
+    }
+    return 0;
 }
 
 // asm_to_cpp: fn_8002AB0C

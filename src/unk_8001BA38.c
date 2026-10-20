@@ -770,271 +770,89 @@ lbl_8001C29C:
     blr
 }
 
-// asm_to_cpp: fn_8001C31C
-asm void fn_8001C31C(s8 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    lwz r4, 0x0(r3)
-    rlwinm r0, r4, 0, 25, 25
-    cmpwi r0, 0x0
-    beq lbl_8001C34C
-    lwz r0, lbl_8049D6B0
-    cmpwi r0, 0x0
-    beq lbl_8001C6E0
-lbl_8001C34C:
-    rlwinm r0, r4, 0, 11, 11
-    cmpwi r0, 0x0
-    beq lbl_8001C370
-    lwz r3, 0x1c(r3)
-    cmpwi r3, 0x0
-    beq lbl_8001C370
-    bl fn_800609D8
-    cmpwi r3, 0x0
-    beq lbl_8001C6E0
-lbl_8001C370:
-    lwz r0, 0x0(r31)
-    rlwinm r0, r0, 0, 18, 18
-    cmpwi r0, 0x0
-    bne lbl_8001C394
-    li r3, 0x0
-    li r4, 0x1
-    bl fn_8005E7D4
-    cmpwi r3, 0x0
-    bne lbl_8001C6E0
-lbl_8001C394:
-    lwz r0, 0x8(r31)
-    cmpwi r0, 0x0
-    beq lbl_8001C6E0
-    lwz r0, 0x0(r31)
-    rlwinm r0, r0, 0, 7, 7
-    cmpwi r0, 0x0
-    beq lbl_8001C3C0
-    lha r0, 0x30(r31)
-    cmpwi r0, 0x4
-    bge lbl_8001C3CC
-    b lbl_8001C6E0
-lbl_8001C3C0:
-    lha r0, 0x30(r31)
-    cmpwi r0, 0x2
-    blt lbl_8001C6E0
-lbl_8001C3CC:
-    li r3, 0x0
-    bl fn_800169F4
-    lwz r3, 0x0(r31)
-    rlwinm r0, r3, 0, 25, 25
-    cmpwi r0, 0x0
-    beq lbl_8001C3F8
-    rlwinm r0, r3, 0, 5, 5
-    cmpwi r0, 0x0
-    beq lbl_8001C3F8
-    li r3, 0x1
-    bl fn_800169F4
-lbl_8001C3F8:
-    lwz r3, 0x0(r31)
-    li r4, 0x4
-    bl fn_800163E4
-    lwz r3, 0x0(r31)
-    rlwinm r4, r3, 0, 25, 25
-    cmpwi r4, 0x0
-    beq lbl_8001C508
-    rlwinm r0, r3, 0, 5, 5
-    cmpwi r0, 0x0
-    beq lbl_8001C508
-    lwz r3, 0x28(r31)
-    li r4, 0x0
-    bl GXLoadTexObj
-    lwz r0, 0x0(r31)
-    rlwinm r0, r0, 0, 2, 2
-    cmpwi r0, 0x0
-    bne lbl_8001C450
-    lwz r3, lbl_8049D6B0
-    addi r3, r3, 0x4
-    li r4, 0x1
-    bl GXLoadTexObj
-    b lbl_8001C468
-lbl_8001C450:
-    lis r3, 0x80
-    addi r3, r3, 0x1
-    bl fn_80122E1C
-    addi r3, r3, 0x4
-    li r4, 0x1
-    bl GXLoadTexObj
-lbl_8001C468:
-    bl GXClearVtxDesc
-    li r3, 0x9
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0xb
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0xd
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0xe
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0x0
-    li r4, 0x9
-    li r5, 0x1
-    li r6, 0x4
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    li r3, 0x0
-    li r4, 0xb
-    li r5, 0x1
-    li r6, 0x5
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    li r3, 0x0
-    li r4, 0xd
-    li r5, 0x1
-    li r6, 0x4
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    li r3, 0x0
-    li r4, 0xe
-    li r5, 0x1
-    li r6, 0x4
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    mr r3, r31
-    bl fn_8001C6F4
-    b lbl_8001C6AC
-lbl_8001C508:
-    cmpwi r4, 0x0
-    beq lbl_8001C5C4
-    rlwinm r0, r3, 0, 2, 2
-    cmpwi r0, 0x0
-    bne lbl_8001C530
-    lwz r3, lbl_8049D6B0
-    addi r3, r3, 0x4
-    li r4, 0x0
-    bl GXLoadTexObj
-    b lbl_8001C548
-lbl_8001C530:
-    lis r3, 0x80
-    addi r3, r3, 0x1
-    bl fn_80122E1C
-    addi r3, r3, 0x4
-    li r4, 0x0
-    bl GXLoadTexObj
-lbl_8001C548:
-    bl GXClearVtxDesc
-    li r3, 0x9
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0xb
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0xd
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0x0
-    li r4, 0x9
-    li r5, 0x1
-    li r6, 0x4
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    li r3, 0x0
-    li r4, 0xb
-    li r5, 0x1
-    li r6, 0x5
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    li r3, 0x0
-    li r4, 0xd
-    li r5, 0x1
-    li r6, 0x4
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    mr r3, r31
-    bl fn_8001C6F4
-    b lbl_8001C6AC
-lbl_8001C5C4:
-    rlwinm r0, r3, 0, 24, 24
-    cmpwi r0, 0x0
-    beq lbl_8001C658
-    lwz r3, 0x28(r31)
-    li r4, 0x0
-    bl GXLoadTexObj
-    bl GXClearVtxDesc
-    li r3, 0x9
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0xb
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0xd
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0x0
-    li r4, 0x9
-    li r5, 0x1
-    li r6, 0x4
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    li r3, 0x0
-    li r4, 0xb
-    li r5, 0x1
-    li r6, 0x5
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    li r3, 0x0
-    li r4, 0xd
-    li r5, 0x1
-    li r6, 0x4
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    mr r3, r31
-    bl fn_8001CF04
-    b lbl_8001C6AC
-lbl_8001C658:
-    bl GXClearVtxDesc
-    li r3, 0x9
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0xb
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0x0
-    li r4, 0x9
-    li r5, 0x1
-    li r6, 0x4
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    li r3, 0x0
-    li r4, 0xb
-    li r5, 0x1
-    li r6, 0x5
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    mr r3, r31
-    bl fn_8001D488
-lbl_8001C6AC:
-    li r3, 0x0
-    bl fn_80016A44
-    lwz r3, 0x0(r31)
-    rlwinm r0, r3, 0, 25, 25
-    cmpwi r0, 0x0
-    beq lbl_8001C6D8
-    rlwinm r0, r3, 0, 5, 5
-    cmpwi r0, 0x0
-    beq lbl_8001C6D8
-    li r3, 0x1
-    bl fn_80016A44
-lbl_8001C6D8:
-    li r3, 0x0
-    bl fn_80016A94
-lbl_8001C6E0:
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_8001C31C(s8 *arg0) {
+    s32 temp_r3_2;
+    s32 temp_r3_3;
+    s32 temp_r3_4;
+    s32 temp_r4;
+    s32 temp_r4_2;
+    s8 *temp_r3;
+
+    temp_r4 = M2C_FIELD(arg0, s32 *, 0);
+    if ((((s32) (temp_r4 & 0x40) == 0) || ((s32) lbl_8049D6B0 != 0)) && (((s32) (temp_r4 & 0x100000) == 0) || (temp_r3 = M2C_FIELD(arg0, s8 **, 0x1C), ((temp_r3 == NULL) != 0)) || (fn_800609D8(temp_r3) != 0)) && (((s32) (M2C_FIELD(arg0, s32 *, 0) & 0x2000) != 0) || (fn_8005E7D4(0, 1) == 0)) && ((s32) M2C_FIELD(arg0, s32 *, 8) != 0)) {
+        if ((s32) (M2C_FIELD(arg0, s32 *, 0) & 0x01000000) != 0) {
+            if ((s16) M2C_FIELD(arg0, s16 *, 0x30) < 4) {
+                return;
+            }
+            goto block_12;
+        }
+        if ((s16) M2C_FIELD(arg0, s16 *, 0x30) >= 2) {
+block_12:
+            fn_800169F4(0);
+            temp_r3_2 = M2C_FIELD(arg0, s32 *, 0);
+            if (((s32) (temp_r3_2 & 0x40) != 0) && ((s32) (temp_r3_2 & 0x04000000) != 0)) {
+                fn_800169F4(1);
+            }
+            fn_800163E4(M2C_FIELD(arg0, s32 *, 0), 4);
+            temp_r3_3 = M2C_FIELD(arg0, s32 *, 0);
+            temp_r4_2 = temp_r3_3 & 0x40;
+            if ((temp_r4_2 != 0) && ((s32) (temp_r3_3 & 0x04000000) != 0)) {
+                GXLoadTexObj(M2C_FIELD(arg0, s32 *, 0x28), 0);
+                if ((s32) (M2C_FIELD(arg0, s32 *, 0) & 0x20000000) == 0) {
+                    GXLoadTexObj(lbl_8049D6B0 + 4, 1);
+                } else {
+                    GXLoadTexObj((s8 *)fn_80122E1C(0x800001) + 4, 1);
+                }
+                GXClearVtxDesc();
+                GXSetVtxDesc(9, 1);
+                GXSetVtxDesc(0xB, 1);
+                GXSetVtxDesc(0xD, 1);
+                GXSetVtxDesc(0xE, 1);
+                GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+                GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
+                GXSetVtxAttrFmt(0, 0xD, 1, 4, 0);
+                GXSetVtxAttrFmt(0, 0xE, 1, 4, 0);
+                fn_8001C6F4(arg0);
+            } else if (temp_r4_2 != 0) {
+                if ((s32) (temp_r3_3 & 0x20000000) == 0) {
+                    GXLoadTexObj(lbl_8049D6B0 + 4, 0);
+                } else {
+                    GXLoadTexObj((s8 *)fn_80122E1C(0x800001) + 4, 0);
+                }
+                GXClearVtxDesc();
+                GXSetVtxDesc(9, 1);
+                GXSetVtxDesc(0xB, 1);
+                GXSetVtxDesc(0xD, 1);
+                GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+                GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
+                GXSetVtxAttrFmt(0, 0xD, 1, 4, 0);
+                fn_8001C6F4(arg0);
+            } else if ((s32) (temp_r3_3 & 0x80) != 0) {
+                GXLoadTexObj(M2C_FIELD(arg0, s32 *, 0x28), 0);
+                GXClearVtxDesc();
+                GXSetVtxDesc(9, 1);
+                GXSetVtxDesc(0xB, 1);
+                GXSetVtxDesc(0xD, 1);
+                GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+                GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
+                GXSetVtxAttrFmt(0, 0xD, 1, 4, 0);
+                fn_8001CF04(arg0);
+            } else {
+                GXClearVtxDesc();
+                GXSetVtxDesc(9, 1);
+                GXSetVtxDesc(0xB, 1);
+                GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+                GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
+                fn_8001D488(arg0);
+            }
+            fn_80016A44(0);
+            temp_r3_4 = M2C_FIELD(arg0, s32 *, 0);
+            if (((s32) (temp_r3_4 & 0x40) != 0) && ((s32) (temp_r3_4 & 0x04000000) != 0)) {
+                fn_80016A44(1);
+            }
+            fn_80016A94(0);
+        }
+    }
 }
 
 // asm_to_cpp: fn_8001C6F4

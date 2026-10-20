@@ -256,16 +256,6 @@ lbl_80048A4C:
     blr
 }
 
-// asm_to_cpp: fn_80048A64
-asm s8 *fn_80048A64(s32 arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_80038934
-    addi r3, r3, 0x4
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s8 *fn_80048A64(s32 arg0, s32 arg1) {
+    return (s8 *)fn_80038934((s8 *) arg0, (u32) arg1) + 4;
 }

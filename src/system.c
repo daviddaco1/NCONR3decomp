@@ -2591,44 +2591,15 @@ lbl_8005CE74:
     blr
 }
 
-// asm_to_cpp: fn_8005CEB8
-asm u32 fn_8005CEB8(void) {
-    nofralloc
-    lwz r3, lbl_8049D4F4
-    addi r0, r3, 0x1
-    stw r0, lbl_8049D4F4
-    lwz r4, lbl_8049D4F0
-    lis r3, 0x3
-    addi r0, r3, 0x43fd
-    mullw r3, r4, r0
-    addis r3, r3, 0x27
-    subi r0, r3, 0x613d
-    stw r0, lbl_8049D4F0
-    srwi r3, r0, 16
-    blr
+u32 fn_8005CEB8(void) {
+    lbl_8049D4F4 += 1;
+    lbl_8049D4F0 = (lbl_8049D4F0 * 0x343FD) + 0x269EC3;
+    return lbl_8049D4F0 >> 0x10U;
 }
 
-// asm_to_cpp: fn_8005CF00
-asm s32 fn_8005CF00(s32 arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    mr r31, r4
-    bl fn_8005CEB8
-    subf r0, r30, r31
-    mullw r0, r3, r0
-    srwi r0, r0, 16
-    add r3, r30, r0
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_8005CF00(s32 arg0, s32 arg1) {
+    u32 r = fn_8005CEB8();
+    return arg0 + ((r * (arg1 - arg0)) >> 16);
 }
 
 // asm_to_cpp: fn_8005CF48

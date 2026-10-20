@@ -8,7 +8,7 @@ acerque al codegen original. Lo usan tools/m2c_pass.py y tools/m2c_context.py.
   genera `beq A; b B`).
 - Prototipos sin parametros (`ret f();`): m2c a veces infiere aridades que no coinciden con las
   llamadas; en C un prototipo vacio acepta cualquiera."""
-import re
+import os, re
 
 DEF = re.compile(r'^([A-Za-z_][\w \*]*?)\b(\w+)\(([^;{)]*)\)\s*\{\s*$', re.M)
 PROTO = re.compile(r'^(\S[^\n(]*?\b\w+)\([^)\n]*\);(\s*/\* (?:extern|static) \*/)$', re.M)
@@ -86,9 +86,44 @@ def fix_ptr_arith(c):
         for n in names:
             body = re.sub(r'(?<![\w*.>])(?<!\*\()(?<!->)\b' + n + r'\b(?=\s*[-+]\s*(?![-+=]))',
                           '(s8 *)' + n, body)
+        body = fix_call_arith(body, ptr_returns(c))
         out.append(c[pos:m.start()] + head + body)
         pos = end
     out.append(c[pos:])
+    return ''.join(out)
+
+
+_PROTO_RET = None
+
+
+def ptr_returns(c):
+    """Funciones que devuelven puntero a algo mas grande que un byte (m2c_protos.h + prototipos
+    de la propia salida de m2c)."""
+    global _PROTO_RET
+    if _PROTO_RET is None:
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'include', 'm2c_protos.h')
+        _PROTO_RET = open(path).read() if os.path.exists(path) else ''
+    rx = r'^(\w+(?:\s+\w+)*?)\s*(\*+)\s*(\w+)\('
+    return {k.group(3) for k in re.finditer(rx, _PROTO_RET + '\n' + c, re.M)
+            if len(k.group(2)) > 1 or k.group(1) not in ('s8', 'u8', 'char', 'M2C_UNK8')}
+
+
+def fix_call_arith(body, funcs):
+    """`f(...) + n` con f devolviendo `T *` -> `(s8 *)f(...) + n`."""
+    out, pos = [], 0
+    for m in re.finditer(r'(?<![\w*])(\w+)\(', body):
+        if m.group(1) not in funcs or m.start() < pos:
+            continue
+        depth, j = 0, m.end() - 1
+        while j < len(body):
+            depth += {'(': 1, ')': -1}.get(body[j], 0)
+            if depth == 0:
+                break
+            j += 1
+        if re.match(r'\s*[-+]\s*(?![-+=])', body[j + 1:]) and not body[:m.start()].rstrip().endswith('*('):
+            out.append(body[pos:m.start()] + '(s8 *)')
+            pos = m.start()
+    out.append(body[pos:])
     return ''.join(out)
 
 

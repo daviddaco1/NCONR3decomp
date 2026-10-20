@@ -8,7 +8,7 @@ Uso (desde la raiz del repo, build completo hecho, M2C_DIR apuntando al clon de 
 build/m2c_ctx.h + build/m2c_data.h generados por tools/m2c_context.py):
   python tools/m2c_fill.py <split> [split ...]      ej: python tools/m2c_fill.py sys_task.cpp
   python tools/m2c_fill.py --all                    todos los mixtos del game code"""
-import json, os, re, subprocess, sys
+import json, os, re, subprocess, sys, time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from m2c_fix import fixup, body_end, DEF  # noqa: E402
@@ -53,6 +53,17 @@ def declared(text, name):
     return re.search(r'^[A-Za-z_][^\n]*\b' + re.escape(name) + r'\b[^\n]*;', text, re.M) is not None
 
 
+def save(path, text):
+    for i in range(20):  # en Windows el archivo puede estar bloqueado un instante (antivirus, indexador)
+        try:
+            with open(path, 'w', newline='\n', encoding='utf-8') as f:
+                f.write(text)
+            return
+        except OSError:
+            time.sleep(0.5)
+    raise OSError('no se pudo escribir ' + path)
+
+
 class Unit:
     def __init__(self, split, src, data):
         self.split, self.path = split, f'src/{src}'
@@ -63,6 +74,19 @@ class Unit:
             return
         defs, decls = split_defs(m2c(split, list(self.blocks)))
         self.c = {n: d for n, d in defs.items() if n in self.blocks}
+        # C ajustado a mano (p. ej. con tools/fn_diff.py): $M2C_HAND/<fn>.c reemplaza al de m2c
+        hand = os.environ.get('M2C_HAND', 'build/hand')
+        for n in self.blocks:
+            if os.path.exists(f'{hand}/{n}.c'):
+                text = open(f'{hand}/{n}.c').read()
+                hd, _ = split_defs(text)
+                if n in hd:
+                    self.c[n] = hd[n]
+                    decls += [l for l in text.split('\n') if re.match(r'^[A-Za-z_][^(]*\b\w+\(.*\);', l)]
+                    for l in re.findall(r'^extern [^(\n]*;$', text, re.M):
+                        v = re.search(r'(\w+)(?:\[\])?;$', l).group(1)
+                        if not declared(self.orig, v) and l not in self.decls:
+                            self.decls.append(l)
         body = '\n'.join(self.c.values())
         seen = set()
         for l in decls:  # prototipos que m2c pide y el fuente no tiene
@@ -71,7 +95,7 @@ class Unit:
                 seen.add(n.group(1))
                 self.decls.append(re.sub(r'\s*/\*.*\*/\s*$', '', l))
         for n in sorted(set(re.findall(r'\b((?:lbl|jumptable)_[0-9A-F]{8}\w*)', body))):
-            if not declared(self.orig, n) and n in data:
+            if not declared(self.orig, n) and n in data and not declared('\n'.join(self.decls), n):
                 self.decls.append(data[n])
 
     def render(self):
@@ -96,11 +120,11 @@ class Unit:
 
     def write(self):
         text, where = self.render()
-        open(self.path, 'w', newline='\n', encoding='utf-8').write(text)
+        save(self.path, text)
         return where
 
     def restore(self):
-        open(self.path, 'w', newline='\n', encoding='utf-8').write(self.orig)
+        save(self.path, self.orig)
 
 
 def compile_until_ok(u):
