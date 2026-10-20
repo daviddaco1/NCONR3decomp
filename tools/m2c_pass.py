@@ -28,7 +28,7 @@ def run_m2c(split):
     r = subprocess.run([sys.executable, os.path.join(M2C, 'm2c.py'), '-t', 'ppc-mwcc-c', '--valid-syntax', *ctx,
                         os.path.abspath(f'build/RNEPDA/asm/{base(split)}.s')],
                        capture_output=True, text=True, cwd=M2C)
-    return fixup(r.stdout) if r.returncode == 0 else None
+    return fixup(r.stdout) if r.stdout.strip() else None  # m2c sale con error si alguna funcion fallo
 
 
 def obj(split):
