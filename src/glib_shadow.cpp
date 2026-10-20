@@ -151,7 +151,7 @@ M2C_UNK fn_8003CB30(s32 *arg0);
 s32 fn_8003CB94(void);
 s32 fn_8003CBA0(s32 *arg0, u32 arg1);
 s32 * fn_8003CC50(s32 *arg0, s32 arg1);
-u32 fn_8003CCB4(s32 arg0);
+s32 fn_8003CCB4(s32 arg0);
 s32 fn_8003CCD8(s32 arg0);
 s32 * fn_8003CD0C(s32 *arg0, s32 arg1);
 void fn_8003CD70(s32 arg0);
@@ -163,12 +163,12 @@ s32 fn_8003CE50(s32 *arg0);
 s32 * fn_8003CE60(s32 *arg0, s32 arg1);
 void fn_8003CE90(s32 *arg0, s32 *arg1);
 void fn_8003CE9C(s32 *arg0, s32 arg1);
-s32 fn_8003CEA4(s32 *arg0, s32 arg1);
+s8 * fn_8003CEA4(s8 **arg0, s32 arg1);
 s32 * fn_8003CEC0(s32 *arg0, s32 arg1);
 void fn_8003CEF0(s32 *arg0, s32 arg1);
 s32 fn_8003CEF8(s32 *arg0);
 void fn_8003CF08(s32 *arg0, s32 arg1);
-s32 fn_8003CF10(s32 *arg0, s32 arg1);
+s8 * fn_8003CF10(s8 **arg0, s32 arg1);
 s32 * fn_8003CF2C(s32 *arg0, s32 arg1);
 void fn_8003CF5C(s32 *arg0, s32 *arg1);
 void fn_8003CF68(s32 *arg0, s32 arg1);
@@ -187,6 +187,7 @@ void fn_8003D17C(u8 arg0, u8 arg1);
 void fn_8003D194(f32 farg0, f32 farg1);
 void fn_8003D1A4(s32 *arg0);
 void fn_8003D62C(s32 arg0);
+s8 * fn_8003DAF0(s8 **arg0);
 void fn_801A9384(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7);
 s32 fn_801CEA04(u32 **arg0, u32 **arg1);
 void fn_801D2AF8(s32 **arg0, s32 arg1);
@@ -3198,18 +3199,8 @@ lbl_8003CC98:
     blr
 }
 
-// asm_to_cpp: fn_8003CCB4
-asm u32 fn_8003CCB4(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_80030EE0
-    lwz r3, 0x2c(r3)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_8003CCB4(s32 arg0) {
+    return (s32) (M2C_FIELD(fn_8003DAF0((s8 **) ((s8 **) arg0)), s32 *, 0x2c));
 }
 
 s32 fn_8003CCD8(s32 arg0) {
@@ -3330,17 +3321,12 @@ void fn_8003CE9C(s32 *arg0, s32 arg1) {
     *arg0 = arg1;
 }
 
-// asm_to_cpp: fn_8003CEA4
-asm s32 fn_8003CEA4(s32 *arg0, s32 arg1) {
-    nofralloc
-    lwz r0, 0x0(r3)
-    cmpwi r4, 0x0
-    beq lbl_8003CEB8
-    add r3, r0, r4
-    blr
-lbl_8003CEB8:
-    li r3, 0x0
-    blr
+s8 * fn_8003CEA4(s8 **arg0, s32 arg1) {
+    s8 *base = *arg0;
+    if (arg1 != 0) {
+        return base + arg1;
+    }
+    return 0;
 }
 
 s32 * fn_8003CEC0(s32 *arg0, s32 arg1) {
@@ -3360,17 +3346,12 @@ void fn_8003CF08(s32 *arg0, s32 arg1) {
     *arg0 = arg1;
 }
 
-// asm_to_cpp: fn_8003CF10
-asm s32 fn_8003CF10(s32 *arg0, s32 arg1) {
-    nofralloc
-    lwz r0, 0x0(r3)
-    cmpwi r4, 0x0
-    beq lbl_8003CF24
-    add r3, r0, r4
-    blr
-lbl_8003CF24:
-    li r3, 0x0
-    blr
+s8 * fn_8003CF10(s8 **arg0, s32 arg1) {
+    s8 *base = *arg0;
+    if (arg1 != 0) {
+        return base + arg1;
+    }
+    return 0;
 }
 
 s32 * fn_8003CF2C(s32 *arg0, s32 arg1) {

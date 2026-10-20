@@ -60,7 +60,7 @@ void fn_8001C6F4(s8 *arg0);
 void fn_8001CF04(s8 *arg0);
 void fn_8001D488(s8 *arg0);
 void fn_8001D9A4(s32 arg0, s32 arg1, s8 *arg2);
-M2C_UNK fn_8001D9AC(s32 arg0, s32 arg1);
+void fn_8001D9AC(s32 arg0);
 void fn_8001D9D0(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_8001D9D4(s32 arg0, s32 arg1);
 void fn_8001DA20(void);
@@ -69,6 +69,8 @@ void fn_8001DA50(f32 farg0, f32 farg1, s32 arg2);
 void fn_8001DA60(u8 arg0, u8 arg1, u8 arg2, u8 arg3);
 void fn_8001DA88(f32 farg0, f32 farg1, f32 farg2);
 f32 fn_8001DA9C(f32 farg0);
+s32 fn_80028FD4(s32 arg0);
+s32 fn_80029024(s32 *arg0);
 s32 fn_8005E7D4(s32 arg0, s32 arg1);
 s32 fn_800609D8(s8 *arg0);
 s32 fn_8010E90C(u32 arg0, s32 arg1, s32 arg2, s32 arg3);
@@ -2310,18 +2312,8 @@ void fn_8001D9A4(s32 arg0, s32 arg1, s8 *arg2) {
     fn_80019D38((s8 *) ((s8 *) arg0), (s8 *) ((s8 *) arg1), (s8 *) (M2C_FIELD(arg2, s8 **, 4)));
 }
 
-// asm_to_cpp: fn_8001D9AC
-asm M2C_UNK fn_8001D9AC(s32 arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_8001D9D4
-    bl fn_8001DA9C
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_8001D9AC(s32 arg0) {
+    fn_80028FD4((s32) (fn_80029024((s32 *) ((s32 *) arg0))));
 }
 
 void fn_8001D9D0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {

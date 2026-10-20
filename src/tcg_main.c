@@ -122,6 +122,7 @@ s32 fn_800361C0(s32 arg0);
 void fn_800361F0(s32 *arg0);
 s32 fn_800393B0(s32 arg0);
 s32 fn_80039424(s32 arg0);
+s8 * fn_8003DAF0(s8 **arg0);
 s32 fn_80044478(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_80044500(s32 arg0);
 void fn_80044540(s32 *arg0, s32 *arg1);
@@ -215,7 +216,7 @@ s32 fn_8012705C(s32 *arg0);
 s32 fn_80127064(s32 *arg0);
 s32 * fn_80127074(s32 *arg0, s32 arg1);
 void fn_801270A4(s32 *arg0, s32 *arg1);
-s32 fn_801270B0(s32 *arg0, s32 arg1);
+s8 * fn_801270B0(s8 **arg0, s32 arg1);
 void fn_801270CC(s32 *arg0, s32 arg1);
 M2C_UNK fn_801270D4(s32 *arg0);
 f32 * fn_80127110(f32 *arg0, M2C_UNK *arg1, f32 *arg2);
@@ -5270,18 +5271,8 @@ s32 fn_80126F20(void) {
     return (s32) ((s32) &lbl_8049C330);
 }
 
-// asm_to_cpp: fn_80126F28
-asm s32 fn_80126F28(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_80126EBC
-    lwz r3, 0x18(r3)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_80126F28(s32 arg0) {
+    return (s32) (M2C_FIELD(fn_8003DAF0((s8 **) ((s8 **) arg0)), s32 *, 0x18));
 }
 
 s8 * fn_80126F4C(s32 arg0) {
@@ -5383,17 +5374,12 @@ void fn_801270A4(s32 *arg0, s32 *arg1) {
     *arg0 = *arg1;
 }
 
-// asm_to_cpp: fn_801270B0
-asm s32 fn_801270B0(s32 *arg0, s32 arg1) {
-    nofralloc
-    lwz r0, 0x0(r3)
-    cmpwi r4, 0x0
-    beq lbl_801270C4
-    add r3, r0, r4
-    blr
-lbl_801270C4:
-    li r3, 0x0
-    blr
+s8 * fn_801270B0(s8 **arg0, s32 arg1) {
+    s8 *base = *arg0;
+    if (arg1 != 0) {
+        return base + arg1;
+    }
+    return 0;
 }
 
 void fn_801270CC(s32 *arg0, s32 arg1) {

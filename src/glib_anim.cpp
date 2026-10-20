@@ -1,54 +1,70 @@
 #include "types.h"
 #include "m2c_macros.h"
 
-struct M2C_VC_0 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual s32 f(s8 *);      };
-struct M2C_VC_1 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual M2C_UNK f(f32);      };
-struct M2C_VC_2 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(f32);      };
-struct M2C_VC_3 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual f32 f();      };
-struct M2C_VC_4 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f(f32);      };
-struct M2C_VC_5 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual f32 f();      };
-struct M2C_VC_6 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual f32 f();      };
-struct M2C_VC_7 { virtual s32 f(s32 *);      };
-struct M2C_VC_8 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual s32 f(s8 *);     };
-struct M2C_VC_9 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual M2C_UNK f(f32);     };
-struct M2C_VC_10 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(f32);     };
-struct M2C_VC_11 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual f32 f();     };
-struct M2C_VC_12 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f(f32);     };
-struct M2C_VC_13 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual f32 f();     };
-struct M2C_VC_14 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual f32 f();     };
-struct M2C_VC_15 { virtual s32 f(s32 *);     };
-struct M2C_VC_16 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual s32 f(s8 *);    };
-struct M2C_VC_17 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual M2C_UNK f(f32);    };
-struct M2C_VC_18 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(f32);    };
-struct M2C_VC_19 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual f32 f();    };
-struct M2C_VC_20 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f(f32);    };
-struct M2C_VC_21 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual f32 f();    };
-struct M2C_VC_22 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual f32 f();    };
-struct M2C_VC_23 { virtual s32 f(s32 *);    };
-struct M2C_VC_24 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual s32 f(s8 *);   };
-struct M2C_VC_25 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual M2C_UNK f(f32);   };
-struct M2C_VC_26 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(f32);   };
-struct M2C_VC_27 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual f32 f();   };
-struct M2C_VC_28 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f(f32);   };
-struct M2C_VC_29 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual f32 f();   };
-struct M2C_VC_30 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual f32 f();   };
-struct M2C_VC_31 { virtual s32 f(s32 *);   };
-struct M2C_VC_32 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual s32 f(s8 *);  };
-struct M2C_VC_33 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual M2C_UNK f(f32);  };
-struct M2C_VC_34 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(f32);  };
-struct M2C_VC_35 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual f32 f();  };
-struct M2C_VC_36 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f(f32);  };
-struct M2C_VC_37 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual f32 f();  };
-struct M2C_VC_38 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual f32 f();  };
-struct M2C_VC_39 { virtual s32 f(s32 *);  };
-struct M2C_VC_40 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual s32 f(s8 *); };
-struct M2C_VC_41 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual M2C_UNK f(f32); };
-struct M2C_VC_42 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(f32); };
-struct M2C_VC_43 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual f32 f(); };
-struct M2C_VC_44 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f(f32); };
-struct M2C_VC_45 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual f32 f(); };
-struct M2C_VC_46 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual f32 f(); };
-struct M2C_VC_47 { virtual s32 f(s32 *); };
+struct M2C_VC_0 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual s32 f(s8 *);        };
+struct M2C_VC_1 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual M2C_UNK f(f32);        };
+struct M2C_VC_2 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(f32);        };
+struct M2C_VC_3 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual f32 f();        };
+struct M2C_VC_4 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f(f32);        };
+struct M2C_VC_5 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual f32 f();        };
+struct M2C_VC_6 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual f32 f();        };
+struct M2C_VC_7 { virtual s32 f(s32 *);        };
+struct M2C_VC_8 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual s32 f(s8 *);       };
+struct M2C_VC_9 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual M2C_UNK f(f32);       };
+struct M2C_VC_10 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(f32);       };
+struct M2C_VC_11 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual f32 f();       };
+struct M2C_VC_12 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f(f32);       };
+struct M2C_VC_13 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual f32 f();       };
+struct M2C_VC_14 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual f32 f();       };
+struct M2C_VC_15 { virtual s32 f(s32 *);       };
+struct M2C_VC_16 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual s32 f(s8 *);      };
+struct M2C_VC_17 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual M2C_UNK f(f32);      };
+struct M2C_VC_18 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(f32);      };
+struct M2C_VC_19 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual f32 f();      };
+struct M2C_VC_20 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f(f32);      };
+struct M2C_VC_21 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual f32 f();      };
+struct M2C_VC_22 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual f32 f();      };
+struct M2C_VC_23 { virtual s32 f(s32 *);      };
+struct M2C_VC_24 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual s32 f(s8 *);     };
+struct M2C_VC_25 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual M2C_UNK f(f32);     };
+struct M2C_VC_26 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(f32);     };
+struct M2C_VC_27 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual f32 f();     };
+struct M2C_VC_28 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f(f32);     };
+struct M2C_VC_29 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual f32 f();     };
+struct M2C_VC_30 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual f32 f();     };
+struct M2C_VC_31 { virtual s32 f(s32 *);     };
+struct M2C_VC_32 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual s32 f(s8 *);    };
+struct M2C_VC_33 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual M2C_UNK f(f32);    };
+struct M2C_VC_34 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(f32);    };
+struct M2C_VC_35 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual f32 f();    };
+struct M2C_VC_36 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f(f32);    };
+struct M2C_VC_37 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual f32 f();    };
+struct M2C_VC_38 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual f32 f();    };
+struct M2C_VC_39 { virtual s32 f(s32 *);    };
+struct M2C_VC_40 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual s32 f(s8 *);   };
+struct M2C_VC_41 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual M2C_UNK f(f32);   };
+struct M2C_VC_42 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(f32);   };
+struct M2C_VC_43 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual f32 f();   };
+struct M2C_VC_44 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f(f32);   };
+struct M2C_VC_45 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual f32 f();   };
+struct M2C_VC_46 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual f32 f();   };
+struct M2C_VC_47 { virtual s32 f(s32 *);   };
+struct M2C_VC_48 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual s32 f(s8 *);  };
+struct M2C_VC_49 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual M2C_UNK f(f32);  };
+struct M2C_VC_50 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(f32);  };
+struct M2C_VC_51 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual f32 f();  };
+struct M2C_VC_52 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f(f32);  };
+struct M2C_VC_53 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual f32 f();  };
+struct M2C_VC_54 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual f32 f();  };
+struct M2C_VC_55 { virtual s32 f(s32 *);  };
+struct M2C_VC_56 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual s32 f(s8 *); };
+struct M2C_VC_57 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual M2C_UNK f(f32); };
+struct M2C_VC_58 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual M2C_UNK f(f32); };
+struct M2C_VC_59 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual f32 f(); };
+struct M2C_VC_60 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f(f32); };
+struct M2C_VC_61 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual f32 f(); };
+struct M2C_VC_62 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual f32 f(); };
+struct M2C_VC_63 { virtual s32 f(s32 *); };
 
 extern "C" {
 
@@ -140,6 +156,7 @@ s8 * dtor_80026A40(s8 *arg0, s16 arg1);
 s8 * dtor_80027B08(s8 *arg0, s16 arg1);
 s8 * dtor_80029584(s8 *arg0, s16 arg1);
 void dtor_80136CFC(s32 arg0);
+void fn_80016D88(s32 *arg0, s32 *arg1);
 s32 fn_80024CF0(M2C_UNK *arg0, s32 arg1, s32 *arg2, s32 *arg3, s32 arg4);
 s32 fn_80025060(M2C_UNK *arg0, s32 arg1, s32 *arg2, s32 *arg3);
 s32 fn_800253C8(M2C_UNK *arg0, s32 arg1, s32 *arg2, s32 *arg3, s32 arg4);
@@ -208,7 +225,7 @@ s32 fn_80028134(s32 *arg0);
 s8 * fn_80028144(s8 **arg0, s32 arg1);
 s32 fn_80028160(s32 *arg0);
 s32 fn_80028168(s32 *arg0);
-s32 fn_80028178(s32 *arg0, s32 arg1);
+s8 * fn_80028178(s8 **arg0, s32 arg1);
 s32 fn_80028194(s32 *arg0);
 s32 fn_8002819C(s32 *arg0);
 s8 ** fn_800281AC(s8 **arg0);
@@ -290,7 +307,7 @@ s32 * fn_80028FA8(s32 *arg0);
 void fn_80028FB0(s32 arg0);
 s32 fn_80028FD4(s32 arg0);
 s32 fn_80029024(s32 *arg0);
-s32 * fn_8002902C(s32 *arg0, s32 arg1);
+s32 fn_8002902C(s32 arg0, s32 arg1);
 s32 fn_8002905C(s32 arg0);
 s32 fn_80029090(s32 arg0);
 void fn_800290C4(s32 arg0, s32 arg1);
@@ -311,6 +328,8 @@ s32 fn_80029764(s8 *arg0, s8 *arg1);
 void fn_80029930(s32 arg0);
 s32 fn_80029934(void);
 void fn_800299F4(s8 *arg0);
+s32 * fn_80039CD0(s32 *arg0, s32 arg1);
+s32 fn_80043B10(s32 arg0);
 void fn_801A9384(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7);
 s8 * fn_801D8B78(s32 arg0, s32 *arg1, s8 **arg2, s32 *arg3);
 s32 fn_8030CAF0(void);
@@ -3723,33 +3742,14 @@ s32 fn_80027E7C(s32 arg0, u16 arg1) {
     return (s32) ((arg1 - 5) == 0);
 }
 
-// asm_to_cpp: fn_80027E90
-asm s8 * fn_80027E90(s8 *arg0, s16 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    mr r31, r4
-    cmpwi r3, 0x0
-    beq lbl_80027ED0
-    li r4, 0x0
-    bl fn_800294BC
-    extsh r0, r31
-    cmpwi r0, 0x0
-    ble lbl_80027ED0
-    mr r3, r30
-    bl fn_80027B74
-lbl_80027ED0:
-    mr r3, r30
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s8 * fn_80027E90(s8 *arg0, s16 arg1) {
+    if (arg0 != NULL) {
+        fn_80027EEC((s32) ((s32) arg0), (s16) (0));
+        if (arg1 > 0) {
+            dtor_80136CFC((s32) ((s32) arg0));
+        }
+    }
+    return (s8 *) (arg0);
 }
 
 s32 fn_80027EEC(s32 arg0, s16 arg1) {
@@ -3936,17 +3936,12 @@ s32 fn_80028168(s32 *arg0) {
     return (s32) (*arg0 != 0);
 }
 
-// asm_to_cpp: fn_80028178
-asm s32 fn_80028178(s32 *arg0, s32 arg1) {
-    nofralloc
-    lwz r0, 0x0(r3)
-    cmpwi r4, 0x0
-    beq lbl_8002818C
-    add r3, r0, r4
-    blr
-lbl_8002818C:
-    li r3, 0x0
-    blr
+s8 * fn_80028178(s8 **arg0, s32 arg1) {
+    s8 *base = *arg0;
+    if (arg1 != 0) {
+        return base + arg1;
+    }
+    return 0;
 }
 
 s32 fn_80028194(s32 *arg0) {
@@ -4824,12 +4819,25 @@ s32 fn_80028EF8(s32 **arg0, s32 *arg1) {
     return (s32) ((s32) arg0);
 }
 
-s32 fn_80028F00(s32 *arg0, s32 arg1) {
-    s32 sp8;
-
-    fn_8002902C((s32 *) (&sp8), (s32) ((s32) arg0));
-    fn_80028F40((s32 *) (arg0));
-    return (s32) (sp8);
+// asm_to_cpp: fn_80028F00
+asm s32 fn_80028F00(s32 *arg0, s32 arg1) {
+    nofralloc
+    stwu r1, -0x20(r1)
+    mflr r0
+    stw r0, 0x24(r1)
+    stw r31, 0x1c(r1)
+    mr r31, r3
+    addi r3, r1, 0x8
+    mr r4, r31
+    bl fn_8002902C
+    mr r3, r31
+    bl fn_80028F40
+    lwz r3, 0x8(r1)
+    lwz r31, 0x1c(r1)
+    lwz r0, 0x24(r1)
+    mtlr r0
+    addi r1, r1, 0x20
+    blr
 }
 
 s32 * fn_80028F40(s32 *arg0) {
@@ -4880,21 +4888,9 @@ s32 fn_80029024(s32 *arg0) {
     return (s32) (*arg0);
 }
 
-// asm_to_cpp: fn_8002902C
-asm s32 * fn_8002902C(s32 *arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    bl fn_80028EBC
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_8002902C(s32 arg0, s32 arg1) {
+    fn_80016D88((s32 *) ((s32 *) arg0), (s32 *) ((s32 *) arg1));
+    return (s32) (arg0);
 }
 
 // asm_to_cpp: fn_8002905C
@@ -5046,29 +5042,12 @@ void fn_8002922C(s8 *arg0) {
     M2C_FIELD(arg0, s8 **, 8) = (s8 *) (temp_r0);
 }
 
-// asm_to_cpp: fn_80029244
-asm s32 fn_80029244(s8 *arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r3
-    mr r3, r4
-    bl fn_8002916C
-    mr r4, r3
-    mr r3, r31
-    bl Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode
-    stw r3, 0x8(r1)
-    addi r3, r1, 0xc
-    addi r4, r1, 0x8
-    bl fn_80028E8C
-    lwz r3, 0x0(r3)
-    lwz r31, 0x1c(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+s32 fn_80029244(s8 *arg0, s32 arg1) {
+    s32 spC;
+    s8 *sp8;
+
+    sp8 = (s8 *) (Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode((s32 *) ((s32 *) arg0), (s8 *) (fn_80043B10((s32) (arg1)))));
+    return (s32) (*fn_80039CD0((s32 *) (&spC), (s32) ((s32) &sp8)));
 }
 
 s32 fn_80029294(s8 *arg0) {

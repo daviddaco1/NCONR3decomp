@@ -98,7 +98,7 @@ void fn_80018AFC(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018B00(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018B04(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018B08(s32 arg0, s32 arg1, s32 arg2);
-M2C_UNK fn_80018B0C(M2C_UNK *arg0, f32 farg0, f32 farg1, f32 farg2);
+s32 fn_80018B0C(s8 *arg0, f32 farg0, f32 farg1, f32 farg2);
 s8 * fn_80018B1C(s32 arg0);
 s32 fn_80018B24(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018B88(void);
@@ -2781,13 +2781,11 @@ void fn_80018B08(s32 arg0, s32 arg1, s32 arg2) {
     fn_80018BB8((s32) (arg0));
 }
 
-// asm_to_cpp: fn_80018B0C
-asm M2C_UNK fn_80018B0C(M2C_UNK *arg0, f32 farg0, f32 farg1, f32 farg2) {
-    nofralloc
-    stfs f1, 0x0(r3)
-    stfs f2, 0x4(r3)
-    stfs f3, 0x8(r3)
-    blr
+s32 fn_80018B0C(s8 *arg0, f32 farg0, f32 farg1, f32 farg2) {
+    M2C_FIELD(arg0, f32 *, 0) = farg0;
+    M2C_FIELD(arg0, f32 *, 4) = farg1;
+    M2C_FIELD(arg0, f32 *, 8) = farg2;
+    return (s32) ((s32) arg0);
 }
 
 s8 * fn_80018B1C(s32 arg0) {

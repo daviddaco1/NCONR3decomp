@@ -67,7 +67,7 @@ s32 fn_8003D57C(s8 *arg0, f32 farg0, f32 farg1);
 void fn_8003D588(void);
 s32 fn_8003D58C(s8 *arg0);
 void fn_8003D594(s32 arg0, s32 arg1);
-void fn_8003D598(s32 arg0);
+void fn_8003D598(s32 arg0, s32 arg1, s32 arg2);
 s32 fn_8003D59C(s32 arg0, s32 arg1);
 void fn_8003D5A4(s32 arg0, s32 arg1, s32 arg2);
 void fn_8003D62C(s32 arg0);
@@ -76,6 +76,7 @@ void fn_8003D9FC(s32 *arg0);
 s8 * fn_8003DAF0(s8 **arg0);
 s32 fn_8003DB44(s32 arg0);
 void fn_801A9384(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7);
+f32 fn_802019BC(void);
 void fn_802E430C(s32 arg0);
 void fn_802E43CC(s32 arg0, s32 arg1);
 void fn_802E48CC(u32 arg0, s32 arg1, s32 arg2, s32 arg3);
@@ -254,10 +255,8 @@ void fn_8003D594(s32 arg0, s32 arg1) {
     fn_8030CA68((s8 *) ((s8 *) arg0), (M2C_UNK *) (arg1));
 }
 
-// asm_to_cpp: fn_8003D598
-asm void fn_8003D598(s32 arg0) {
-    nofralloc
-    b fn_8003D588
+void fn_8003D598(s32 arg0, s32 arg1, s32 arg2) {
+    fn_802019BC();
 }
 
 s32 fn_8003D59C(s32 arg0, s32 arg1) {

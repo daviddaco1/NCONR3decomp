@@ -139,11 +139,8 @@ s32 fn_80181438(s8 *arg0);
 s32 * fn_8018149C(s8 *arg0, s32 arg1);
 M2C_UNK memset(s32 arg0, s32 arg1, s32 arg2);
 
-// asm_to_cpp: fn_800F52B4
-asm void fn_800F52B4(s32 arg0, s32 arg1) {
-    nofralloc
-    li r5, 0x0
-    b fn_800F52BC
+void fn_800F52B4(s32 arg0, s32 arg1) {
+    fn_80050550((s8 *) (arg0), (s32) (arg1), (s8 *) (NULL));
 }
 
 // asm_to_cpp: fn_800F52BC

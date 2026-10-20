@@ -221,7 +221,7 @@ M2C_UNK fn_80179390(s8 *arg0, s32 arg1, u8 arg2, s32 arg3, s32 arg4, s32 arg5, s
 s32 fn_801793C0(s32 arg0);
 s32 fn_801793C4(s32 arg0, s32 arg1, s32 arg2);
 M2C_UNK fn_801793C8(s32 arg0);
-M2C_UNK fn_801793CC(s32 arg0, s32 arg1, s32 arg2);
+void fn_801793CC(s32 arg0, s32 arg1, s32 arg2);
 s32 fn_801793D0(s32 arg0, s32 arg1, s32 arg2);
 s32 fn_801793F0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 s32 fn_80179410(s32 arg0, s32 arg1, s32 arg2);
@@ -332,6 +332,7 @@ void fn_8018E08C(void);
 f32 fn_801A3278(f64 farg0);
 f32 fn_801A32A0(f64 farg0, f64 farg1);
 f32 fn_801A3344(f64 farg0);
+f32 fn_802019BC(void);
 s32 fn_8028A9B8(s32 arg0, s32 *arg1);
 void fn_802E43CC(s32 arg0, s32 arg1);
 void fn_802E48CC(u32 arg0, s32 arg1, s32 arg2, s32 arg3);
@@ -686,45 +687,101 @@ lbl_80178ABC:
     blr
 }
 
-void fn_80178ACC(s8 *arg0, s32 arg1) {
-    s32 temp_r3_3;
-    s32 temp_r3_4;
-    s32 var_r5;
-    s8 *temp_r3;
-    s8 *temp_r3_2;
-
-    temp_r3 = (s8 *) (NANDGetUserData((s32 *) ((s32 *) arg1)));
-    if ((s32) (M2C_FIELD(temp_r3, s32 *, 0) & 4) != 0) {
-        fn_80178C20((s8 *) (temp_r3), (s32) (-1));
-        return;
-    }
-    fn_80178A00((s8 *) (temp_r3), (s8 *) (arg0));
-    temp_r3_2 = (s8 *) (fn_801789A8((s8 *) (temp_r3), (s8 *) (arg0)));
-    M2C_FIELD((M2C_FIELD(temp_r3, s32 *, 0x1E0) + (M2C_FIELD(temp_r3, s32 *, 0x1D8) * 0x130)), s8 **, 0x128) = (s8 *) (temp_r3_2);
-    temp_r3_3 = (s32) (fn_8017830C((s32) ((s32) temp_r3_2)));
-    var_r5 = (s32) (0);
-    if ((temp_r3_3 == 0) || ((s32) (temp_r3_3 & M2C_FIELD((M2C_FIELD(temp_r3, s32 *, 0x1E0) + (M2C_FIELD(temp_r3, s32 *, 0x1D8) * 0x130)), s32 *, 0x12C)) != 0)) {
-        var_r5 = (s32) (1);
-    }
-    if (var_r5 != 0) {
-        M2C_FIELD(temp_r3, s32 *, 0x1D8) = (s32) ((s32) (M2C_FIELD(temp_r3, s32 *, 0x1D8) + 1));
-        fn_80178C54((s8 *) (temp_r3));
-        return;
-    }
-    temp_r3_4 = (s32) (M2C_FIELD(temp_r3, s32 *, 0));
-    if ((s32) (temp_r3_4 & 1) != 0) {
-        M2C_FIELD(temp_r3, s32 *, 0) = (s32) ((s32) (temp_r3_4 & 0xFFFFFFFE));
-        fn_801793C4((s32) ((s32) (temp_r3 + 0x84)), (s32) ((s32) fn_80178ACC), (s32) ((s32) (temp_r3 + 0x110)));
-        M2C_FIELD(temp_r3, s32 *, 0) = (s32) ((s32) (M2C_FIELD(temp_r3, s32 *, 0) | 4));
-        return;
-    }
-    if ((s32) (temp_r3_4 & 2) != 0) {
-        M2C_FIELD(temp_r3, s32 *, 0) = (s32) ((s32) (temp_r3_4 & 0xFFFFFFFD));
-        fn_801793CC((s32) ((s32) (temp_r3 + 0x84)), (s32) ((s32) fn_80178ACC), (s32) ((s32) (temp_r3 + 0x110)));
-        M2C_FIELD(temp_r3, s32 *, 0) = (s32) ((s32) (M2C_FIELD(temp_r3, s32 *, 0) | 4));
-        return;
-    }
-    fn_80178C20((s8 *) (temp_r3), (s32) (-1));
+// asm_to_cpp: fn_80178ACC
+asm void fn_80178ACC(s8 *arg0, s32 arg1) {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    stw r0, 0x14(r1)
+    stw r31, 0xc(r1)
+    stw r30, 0x8(r1)
+    mr r30, r3
+    mr r3, r4
+    bl NANDGetUserData
+    mr r31, r3
+    lwz r0, 0x0(r3)
+    rlwinm r0, r0, 0, 29, 29
+    cmpwi r0, 0x0
+    beq lbl_80178B0C
+    li r4, -0x1
+    bl fn_80178C20
+    b lbl_80178C08
+lbl_80178B0C:
+    mr r4, r30
+    bl fn_80178A00
+    mr r3, r31
+    mr r4, r30
+    bl fn_801789A8
+    lwz r4, 0x1e0(r31)
+    lwz r0, 0x1d8(r31)
+    mulli r0, r0, 0x130
+    add r4, r4, r0
+    stw r3, 0x128(r4)
+    bl fn_8017830C
+    li r5, 0x0
+    cmpwi r3, 0x0
+    beq lbl_80178B64
+    lwz r4, 0x1e0(r31)
+    lwz r0, 0x1d8(r31)
+    mulli r0, r0, 0x130
+    add r4, r4, r0
+    lwz r0, 0x12c(r4)
+    and r0, r3, r0
+    cmpwi r0, 0x0
+    beq lbl_80178B68
+lbl_80178B64:
+    li r5, 0x1
+lbl_80178B68:
+    cmpwi r5, 0x0
+    beq lbl_80178B88
+    lwz r3, 0x1d8(r31)
+    addi r0, r3, 0x1
+    stw r0, 0x1d8(r31)
+    mr r3, r31
+    bl fn_80178C54
+    b lbl_80178C08
+lbl_80178B88:
+    lwz r3, 0x0(r31)
+    clrlwi r0, r3, 31
+    cmpwi r0, 0x0
+    beq lbl_80178BC4
+    clrrwi r0, r3, 1
+    stw r0, 0x0(r31)
+    addi r3, r31, 0x84
+    lis r4, fn_80178ACC@ha
+    addi r4, r4, fn_80178ACC@l
+    addi r5, r31, 0x110
+    bl fn_801793C4
+    lwz r0, 0x0(r31)
+    ori r0, r0, 0x4
+    stw r0, 0x0(r31)
+    b lbl_80178C08
+lbl_80178BC4:
+    rlwinm r0, r3, 0, 30, 30
+    cmpwi r0, 0x0
+    beq lbl_80178BFC
+    rlwinm r0, r3, 0, 31, 29
+    stw r0, 0x0(r31)
+    addi r3, r31, 0x84
+    lis r4, fn_80178ACC@ha
+    addi r4, r4, fn_80178ACC@l
+    addi r5, r31, 0x110
+    bl fn_801793CC
+    lwz r0, 0x0(r31)
+    ori r0, r0, 0x4
+    stw r0, 0x0(r31)
+    b lbl_80178C08
+lbl_80178BFC:
+    mr r3, r31
+    li r4, -0x1
+    bl fn_80178C20
+lbl_80178C08:
+    lwz r31, 0xc(r1)
+    lwz r30, 0x8(r1)
+    lwz r0, 0x14(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
 }
 
 // asm_to_cpp: fn_80178C20
@@ -1321,10 +1378,8 @@ asm M2C_UNK fn_801793C8(s32 arg0) {
     b NANDPrivateSafeOpenAsync
 }
 
-// asm_to_cpp: fn_801793CC
-asm M2C_UNK fn_801793CC(s32 arg0, s32 arg1, s32 arg2) {
-    nofralloc
-    b fn_80310908
+void fn_801793CC(s32 arg0, s32 arg1, s32 arg2) {
+    fn_802019BC();
 }
 
 s32 fn_801793D0(s32 arg0, s32 arg1, s32 arg2) {

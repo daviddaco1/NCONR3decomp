@@ -181,9 +181,11 @@ s32 fn_8002AFB4(s32 arg0, s32 arg1);
 s32 fn_8002B060(s32 arg0, s32 arg1);
 void fn_8002B9F4(void);
 void fn_80030E80(s32 *arg0, s32 *arg1);
+s32 fn_80033A0C(void);
 M2C_UNK fn_800341DC(s32 *arg0);
 void fn_800344B0(void);
 void fn_800344D4(void);
+void fn_80034AE0(s8 *arg0, M2C_UNK *arg1);
 M2C_UNK fn_800389F4(void);
 void fn_80038AB8(void);
 void fn_80038EB4(void);
@@ -270,7 +272,7 @@ void fn_801883F8(void);
 void fn_80188454(void);
 void fn_801884B0(u32 arg0, u32 arg1);
 void fn_80188524(u32 arg0, u32 arg1);
-void fn_80188598(s8 *arg0);
+void fn_80188598(s32 arg0);
 void fn_801885CC(u32 arg0, u32 arg1);
 void fn_801886CC(s8 *arg0);
 void fn_80188780(s8 *arg0);
@@ -380,7 +382,7 @@ s32 fn_8018B6AC(s32 arg0);
 s32 fn_8018B6B4(s32 arg0);
 s32 fn_8018B6BC(s32 arg0);
 M2C_UNK * fn_8018B6C4(M2C_UNK *arg0);
-void fn_8018B780(s32 arg0, s32 arg1);
+void fn_8018B780(s32 arg0, s32 arg1, s32 arg2);
 s32 fn_8018B784(s32 arg0, s32 arg1);
 void fn_8018B7B4(s32 arg0, s32 arg1);
 void fn_8018B7DC(s32 *arg0);
@@ -403,7 +405,7 @@ void fn_8018BB64(void);
 void fn_8018BD44(void);
 void fn_8018BDC8(void);
 void fn_8018BE8C(s32 *arg0, s32 arg1);
-void fn_8018BED4(void);
+void fn_8018BED4(s32 arg0, s32 arg1, s32 arg2);
 void fn_8018BED8(void);
 void fn_8018C004(void);
 void fn_8018C01C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
@@ -490,6 +492,7 @@ void fn_801CE9C4(s32 *arg0, s32 *arg1);
 void fn_801CE9D4(s8 **arg0, s8 **arg1);
 f32 fn_801CE9EC(s8 **arg0);
 s32 fn_801CE9F8(s32 *arg0);
+f32 fn_802019BC(void);
 f32 fn_80201A84(void);
 f32 fn_80201AA8(s32 arg0);
 s32 fn_802156E4();
@@ -2230,22 +2233,8 @@ lbl_80188580:
     blr
 }
 
-// asm_to_cpp: fn_80188598
-asm void fn_80188598(s8 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    bl fn_801AA55C
-    mr r4, r31
-    bl fn_80189E18
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_80188598(s32 arg0) {
+    fn_80034AE0((s8 *) (fn_80033A0C()), (s32 *) ((s32 *) arg0));
 }
 
 // asm_to_cpp: fn_801885CC
@@ -5754,10 +5743,8 @@ asm M2C_UNK * fn_8018B6C4(M2C_UNK *arg0) {
     blr
 }
 
-// asm_to_cpp: fn_8018B780
-asm void fn_8018B780(s32 arg0, s32 arg1) {
-    nofralloc
-    b fn_8018B784
+void fn_8018B780(s32 arg0, s32 arg1, s32 arg2) {
+    fn_802019BC();
 }
 
 s32 fn_8018B784(s32 arg0, s32 arg1) {
@@ -6151,10 +6138,8 @@ void fn_8018BE8C(s32 *arg0, s32 arg1) {
     *arg0 += temp_r3;
 }
 
-// asm_to_cpp: fn_8018BED4
-asm void fn_8018BED4(void) {
-    nofralloc
-    b fn_8018BDC8
+void fn_8018BED4(s32 arg0, s32 arg1, s32 arg2) {
+    fn_802019BC();
 }
 
 // asm_to_cpp: fn_8018BED8

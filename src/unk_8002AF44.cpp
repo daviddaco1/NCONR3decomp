@@ -41,14 +41,14 @@ f32 fn_8001B930(s32 arg0, s32 arg1, s32 arg2);
 void fn_8002AF44(f32 farg0, f32 farg1, f32 farg2, s32 arg3);
 void fn_8002AF5C(s32 arg0);
 s32 fn_8002AF60(s8 *arg0, f32 farg0, f32 farg1, f32 farg2);
-s32 fn_8002AF70(s32 arg0);
+s32 * fn_8002AF70(s32 *arg0);
 s32 fn_8002AFB4(s32 arg0, s32 arg1);
 void fn_8002AFE4(s32 *arg0, s32 *arg1);
 void fn_8002AFF0(s32 arg0, f32 farg4, f32 farg5, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
 void fn_8002B044(s8 *arg0, s8 *arg1);
 s32 fn_8002B060(s32 arg0, s32 arg1);
 void fn_8002B090(s8 *arg0, s8 *arg1);
-void fn_8002B0AC(s32 arg0, s32 arg1, s32 arg2);
+void fn_8002B0AC(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 s32 fn_8002B0F8(s32 arg0);
 void fn_8002B12C(f32 farg0);
 void fn_8002B13C(s8 *arg0, s32 arg1, s32 arg2, s32 arg3);
@@ -107,7 +107,7 @@ s32 fn_8002AF60(s8 *arg0, f32 farg0, f32 farg1, f32 farg2) {
 }
 
 // asm_to_cpp: fn_8002AF70
-asm s32 fn_8002AF70(s32 arg0) {
+asm s32 * fn_8002AF70(s32 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -181,7 +181,7 @@ void fn_8002B090(s8 *arg0, s8 *arg1) {
 }
 
 // asm_to_cpp: fn_8002B0AC
-asm void fn_8002B0AC(s32 arg0, s32 arg1, s32 arg2) {
+asm void fn_8002B0AC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0

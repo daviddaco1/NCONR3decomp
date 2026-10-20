@@ -31,9 +31,11 @@ void fn_80028EBC(s32 *arg0, s32 *arg1);
 s32 fn_8002AE08(s32 arg0);
 M2C_UNK fn_8002AE3C(s32 arg0);
 void fn_8002AF5C(s32 arg0);
+s32 * fn_80039CD0(s32 *arg0, s32 arg1);
 s32 fn_8003D58C(s8 *arg0);
 void fn_8003D594(s32 arg0);
 void fn_8003D598(s32 arg0);
+s32 fn_80043B10(s32 arg0);
 void fn_80047C40(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 s32 * fn_80047C8C(s32 *arg0, s32 arg1);
 s32 fn_80047CBC(s32 arg0);
@@ -563,29 +565,12 @@ lbl_80048454:
     blr
 }
 
-// asm_to_cpp: fn_8004846C
-asm s32 fn_8004846C(s8 *arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r3
-    mr r3, r4
-    bl fn_80047CBC
-    mr r4, r3
-    mr r3, r31
-    bl Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode
-    stw r3, 0x8(r1)
-    addi r3, r1, 0xc
-    addi r4, r1, 0x8
-    bl fn_80047C8C
-    lwz r3, 0x0(r3)
-    lwz r31, 0x1c(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+s32 fn_8004846C(s8 *arg0, s32 arg1) {
+    s32 spC;
+    s8 *sp8;
+
+    sp8 = (s8 *) (Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode((s32 *) ((s32 *) arg0), (s8 *) (fn_80043B10((s32) (arg1)))));
+    return (s32) (*fn_80039CD0((s32 *) (&spC), (s32) ((s32) &sp8)));
 }
 
 s8 * fn_800484BC(s8 *arg0, s8 *arg1) {

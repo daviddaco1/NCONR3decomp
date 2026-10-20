@@ -45,7 +45,7 @@ s32 fn_8001FB38(s8 *arg0, s32 arg1);
 void fn_8001FE98(s8 *arg0);
 void fn_8001FF08(s8 *arg0);
 void fn_80020024(s32 arg0);
-void fn_80020D1C(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
+void fn_80020D1C(s32 arg0, s32 arg1, s32 arg2);
 void fn_80020D20(M2C_UNK *arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3);
 void fn_80020D34(void);
 void fn_80020D38(f32 farg0, f32 farg1);
@@ -59,6 +59,7 @@ void fn_8017776C(s32 arg0);
 void fn_8017B004(M2C_UNK *arg0, s8 *arg1);
 void fn_8017B074(M2C_UNK *arg0, s8 *arg1);
 void fn_8017B144(s32 arg0, s8 *arg1, s32 arg2);
+f32 fn_802019BC(void);
 void fn_80201A20(s8 *arg0, s8 *arg1, s8 *arg2, f32 farg0);
 M2C_UNK memset(s32 arg0, s32 arg1, s32 arg2);
 
@@ -1218,10 +1219,8 @@ lbl_80020C80:
     blr
 }
 
-// asm_to_cpp: fn_80020D1C
-asm void fn_80020D1C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    nofralloc
-    b fn_80201A20
+void fn_80020D1C(s32 arg0, s32 arg1, s32 arg2) {
+    fn_802019BC();
 }
 
 // asm_to_cpp: fn_80020D20

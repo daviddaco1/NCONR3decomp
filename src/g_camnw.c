@@ -408,7 +408,7 @@ void fn_8008FDC0(s32 *arg0, s32 *arg1, s32 *arg2);
 void fn_800902B0(s32 *arg0, s32 *arg1, s32 *arg2);
 M2C_UNK fn_800907BC(void);
 void fn_80090884(s8 *arg0, s8 *arg1, s32 *arg2, f32 farg0);
-M2C_UNK fn_800908D0(s32 arg0, s32 arg1);
+void fn_800908D0(s32 arg0, s32 arg1, s32 arg2);
 s8 * fn_800908D4(s32 arg0, s32 arg1, s32 arg2);
 void fn_80090978(s32 *arg0, s8 *arg1);
 void fn_800909D8(void);
@@ -499,6 +499,7 @@ f32 fn_801A3344(f64 farg0);
 void fn_801A9384(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7);
 s32 fn_801D8270(s8 **arg0, s32 arg1);
 s32 fn_801D82F0(s8 **arg0, s32 arg1);
+f32 fn_802019BC(void);
 f32 fn_80201A84(void);
 f32 fn_80201AA8(s32 arg0);
 s32 labs(s32 arg0);
@@ -16096,10 +16097,8 @@ asm void fn_80090884(s8 *arg0, s8 *arg1, s32 *arg2, f32 farg0) {
     blr
 }
 
-// asm_to_cpp: fn_800908D0
-asm M2C_UNK fn_800908D0(s32 arg0, s32 arg1) {
-    nofralloc
-    b fn_8001D9D4
+void fn_800908D0(s32 arg0, s32 arg1, s32 arg2) {
+    fn_802019BC();
 }
 
 // asm_to_cpp: fn_800908D4

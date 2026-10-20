@@ -21,7 +21,7 @@ s32 fn_800543CC(s8 *arg0, s32 arg1, s8 *arg2);
 M2C_UNK fn_80054634(s32 arg0, s32 arg1, s32 arg2);
 void fn_800546D4(s32 arg0, s32 arg1);
 void fn_80054AD0(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
-void fn_80054ECC(f32 *arg0, M2C_UNK *arg1);
+void fn_80054ECC(s8 *arg0, s8 *arg1);
 void fn_800F5B14(s8 *arg0, s8 *arg1, s32 arg2, s32 arg3);
 s8 * fn_800F5B78(s8 *arg0, s32 arg1, s32 arg2);
 void fn_800F5C60(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
@@ -686,18 +686,11 @@ lbl_80054D90:
     blr
 }
 
-// asm_to_cpp: fn_80054ECC
-asm void fn_80054ECC(f32 *arg0, M2C_UNK *arg1) {
-    nofralloc
-    lfs f0, 0x0(r4)
-    stfs f0, 0x0(r3)
-    lfs f0, 0x4(r4)
-    stfs f0, 0x4(r3)
-    lfs f0, 0x8(r4)
-    stfs f0, 0x8(r3)
-    lfs f0, 0xc(r4)
-    stfs f0, 0xc(r3)
-    blr
+void fn_80054ECC(s8 *arg0, s8 *arg1) {
+    M2C_FIELD(arg0, f32 *, 0) = (f32) M2C_FIELD(arg1, f32 *, 0);
+    M2C_FIELD(arg0, f32 *, 4) = (f32) M2C_FIELD(arg1, f32 *, 4);
+    M2C_FIELD(arg0, f32 *, 8) = (f32) M2C_FIELD(arg1, f32 *, 8);
+    M2C_FIELD(arg0, f32 *, 0xC) = (f32) M2C_FIELD(arg1, f32 *, 0xC);
 }
 
 } // extern "C"
