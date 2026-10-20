@@ -1,15 +1,13 @@
 #include "types.h"
+#include "m2c_macros.h"
 
-// Translation unit: src/unk_8019359C.cpp
-// Total functions: 1
+extern "C" {
 
-// Forward declarations
-extern "C" void strlen();
 
-// ----------------------------------------------------------------------------
-// strlen
-// ----------------------------------------------------------------------------
-extern "C" asm void strlen() {
+void strlen(s32 arg0);
+
+// asm_to_cpp: strlen
+asm void strlen(s32 arg0) {
     nofralloc
     subi r4, r3, 0x1
     li r3, -0x1
@@ -21,3 +19,4 @@ lbl_801935A4:
     blr
 }
 
+} // extern "C"

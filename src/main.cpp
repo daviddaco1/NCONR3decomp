@@ -1,167 +1,161 @@
 #include "types.h"
+#include "m2c_macros.h"
 
-// Translation unit: src/main.cpp
-// Total functions: 2
+extern "C" {
 
-// Small Data symbols (@sda21)
-extern "C" float lbl_8049D4D0;
-extern "C" float lbl_8049D4D4;
-extern "C" float lbl_8049D4D8;
-extern "C" float lbl_8049D4DC;
+extern u8 jumptable_803498D8[];
+extern u8 jumptable_80349954[];
+extern u8 lbl_803497E0[];
+extern u8 lbl_803499DC[];
+extern u8 lbl_80390580[];
+extern u8 lbl_80395728[];
+extern u8 lbl_803BE400[];
+extern u8 lbl_803C1A40[];
+extern u8 lbl_803C22B0[];
+extern float lbl_8049D4D0;
+extern float lbl_8049D4D4;
+extern float lbl_8049D4D8;
+extern float lbl_8049D4DC;
 
-// Global data symbols (@ha/@l)
-extern "C" u8 jumptable_803498D8[];
-extern "C" u8 jumptable_80349954[];
-extern "C" u8 lbl_803497E0[];
-extern "C" u8 lbl_803499DC[];
-extern "C" u8 lbl_80390580[];
-extern "C" u8 lbl_80395728[];
-extern "C" u8 lbl_803BE400[];
-extern "C" u8 lbl_803C1A40[];
-extern "C" u8 lbl_803C22B0[];
+s32 DVDGetDriveStatus(void);
+void GXSetCopyClear(s8 *arg0, s32 arg1);
+s32 OSGetTick(void);
+M2C_UNK OSSetPowerCallback(s32 arg0);
+M2C_UNK OSSetResetCallback(s32 arg0);
+u8 SCGetLanguage(void);
+void _restgpr_14();
+void _savegpr_14();
+void fn_80048EF0(s8 *arg0, s8 arg1, s8 arg2, s8 arg3, s8 arg4);
+void fn_800557CC();
+void fn_800576D0(void);
+void fn_800576F8(void);
+void fn_8005772C(void);
+void fn_80057780(void);
+s32 * fn_80057794(void);
+void fn_8005791C(s32 arg0, s32 arg1, s32 arg2, s8 arg3);
+void fn_80057994(void);
+void fn_8005AD48();
+void fn_8005C7A4(s8 *arg0, s32 arg1);
+void fn_8005D0DC(void);
+void fn_8005D118(void);
+void fn_8005D274(void);
+void fn_80079334(void);
+void fn_800793CC(void);
+void fn_800795C4(void);
+void fn_8007F0C0(void);
+void fn_8007F144(void);
+s32 fn_80086518(s32 arg0);
+void fn_80086634(void);
+void fn_800868BC(void);
+s32 fn_8008AE14(void);
+void fn_8008B160();
+void fn_8008E6DC();
+void fn_8008E70C(void);
+void fn_800909D8(void);
+void fn_80092FFC(void);
+void fn_80094A4C(void);
+void fn_80096268(void);
+s32 fn_800962A8(void);
+void fn_80099C8C(void);
+void fn_8009A628(s32 arg0, s32 arg1);
+void fn_8009A83C(void);
+s32 fn_8009ADC8(s32 arg0, s32 arg1);
+void fn_800A0C6C(void);
+s32 fn_800A0F98(void);
+s32 fn_800A14C8(void);
+s32 fn_800A1584(void);
+void fn_800A1BF4(void);
+void fn_800A71CC(s8 *arg0, s32 arg1);
+void fn_800A7354(void);
+s32 fn_8010D378(void);
+void fn_8010D404(void);
+void fn_8010D458(void);
+void fn_80121DAC(s32 arg0);
+s32 fn_801230C8(s32 arg0, s32 arg1);
+void fn_801234C0(void);
+void fn_80123598(void);
+s8 * fn_80153D90(s32 arg0, s32 arg1, s32 arg2);
+void fn_80164500(s32 arg0);
+void fn_80164604(s32 arg0);
+s32 fn_80164750(s32 arg0);
+void fn_80165C70(void);
+s32 fn_80165D1C(s32 arg0);
+void fn_80166470(u32 arg0);
+M2C_UNK fn_80166A90(s32 arg0, s32 arg1, s32 arg2);
+s32 fn_80166B54(s32 arg0);
+void fn_80167134(s32 arg0);
+void fn_80167138(s32 arg0);
+void fn_8016713C(void);
+void fn_80167140(s32 arg0);
+s32 fn_80167320(s32 arg0, s32 arg1);
+void fn_801677BC(s32 arg0);
+s32 fn_80167820(void);
+void fn_80167E40(void);
+s32 fn_80167F00(u8 *arg0, s32 arg1);
+void fn_801681BC(void);
+void fn_801687E4(s32 arg0);
+void fn_80171428(s32 arg0);
+void fn_80171454(s32 arg0);
+void fn_801715A8(s32 arg0, s32 arg1, s32 arg2);
+void fn_80171B8C(void);
+void fn_80171C6C(void);
+void fn_80171D64(void);
+void fn_80171EBC(void);
+void fn_80171EF8(s32 arg0);
+void fn_80171F84(void);
+void fn_801722B4(void);
+void fn_801722B8(void);
+void fn_801722D0(void);
+void fn_801722E8(void);
+void fn_8017252C(void);
+void fn_8017403C(void);
+void fn_80174108(void);
+void fn_80174418(void);
+void fn_80176674(void);
+void fn_801766D4(void);
+void fn_801767F8(s8 arg0);
+void fn_80176908(void);
+void fn_8017691C(void);
+void fn_801769E0();
+void fn_801770CC(void);
+void fn_8017736C(void);
+void fn_801773E0(s32 arg0);
+void fn_8017743C(s32 arg0, s32 arg1);
+void fn_80178248(void);
+void fn_80179264(void);
+void fn_80179880(void);
+void fn_8017999C(void);
+void fn_80179FD4(void);
+s32 fn_8017A018(void);
+void fn_8017B388(void);
+f32 * fn_8017B3E4(s32 arg0);
+s8 * fn_8017B5E4(s32 arg0);
+void fn_8017B754(void);
+void fn_8017B790(void);
+void fn_8017C4E4(s32 arg0, s32 arg1);
+void fn_801810B8(void);
+void fn_80181EA8(void);
+void fn_801866D0(s32 arg0);
+void fn_80186734(void);
+void fn_80188598(s8 *arg0);
+void fn_801885CC(u32 arg0, u32 arg1);
+void fn_8018B950(void);
+void fn_8018C01C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
+void fn_8018CAF0(s32 arg0);
+void fn_8018CBAC(void);
+void fn_8018CBDC(void);
+void fn_8018CC00();
+void fn_8018CC1C(void);
+void fn_8018D180(void);
+void fn_8018D9B8(s32 arg0);
+void fn_801910F8(void);
+s32 fn_80321B4C(s8 *arg0);
+void main(void);
+M2C_UNK memset(s32 arg0, s32 arg1, s32 arg2);
+M2C_UNK sprintf(s8 *arg0, s32 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7);
 
-// Forward declarations
-extern "C" void DVDGetDriveStatus();
-extern "C" void GXSetCopyClear();
-extern "C" void OSGetTick();
-extern "C" void OSSetPowerCallback();
-extern "C" void OSSetResetCallback();
-extern "C" void SCGetLanguage();
-extern "C" void _restgpr_14();
-extern "C" void _savegpr_14();
-extern "C" void fn_80048EF0();
-extern "C" void fn_800557CC();
-extern "C" void fn_800576D0();
-extern "C" void fn_800576F8();
-extern "C" void fn_8005772C();
-extern "C" void fn_80057780();
-extern "C" void fn_80057794();
-extern "C" void fn_8005791C();
-extern "C" void fn_80057994();
-extern "C" void fn_8005AD48();
-extern "C" void fn_8005C7A4();
-extern "C" void fn_8005D0DC();
-extern "C" void fn_8005D118();
-extern "C" void fn_8005D274();
-extern "C" void fn_80079334();
-extern "C" void fn_800793CC();
-extern "C" void fn_800795C4();
-extern "C" void fn_8007F0C0();
-extern "C" void fn_8007F144();
-extern "C" void fn_80086518();
-extern "C" void fn_80086634();
-extern "C" void fn_800868BC();
-extern "C" void fn_8008AE14();
-extern "C" void fn_8008B160();
-extern "C" void fn_8008E6DC();
-extern "C" void fn_8008E70C();
-extern "C" void fn_800909D8();
-extern "C" void fn_80092FFC();
-extern "C" void fn_80094A4C();
-extern "C" void fn_80096268();
-extern "C" void fn_800962A8();
-extern "C" void fn_80099C8C();
-extern "C" void fn_8009A628();
-extern "C" void fn_8009A83C();
-extern "C" void fn_8009ADC8();
-extern "C" void fn_800A0C6C();
-extern "C" void fn_800A0F98();
-extern "C" void fn_800A14C8();
-extern "C" void fn_800A1584();
-extern "C" void fn_800A1BF4();
-extern "C" void fn_800A71CC();
-extern "C" void fn_800A7354();
-extern "C" void fn_8010D378();
-extern "C" void fn_8010D404();
-extern "C" void fn_8010D458();
-extern "C" void fn_80121DAC();
-extern "C" void fn_801230C8();
-extern "C" void fn_801234C0();
-extern "C" void fn_80123598();
-extern "C" void fn_80153D90();
-extern "C" void fn_80164500();
-extern "C" void fn_80164604();
-extern "C" void fn_80164750();
-extern "C" void fn_80165C70();
-extern "C" void fn_80165D1C();
-extern "C" void fn_80166470();
-extern "C" void fn_80166A90();
-extern "C" void fn_80166B54();
-extern "C" void fn_80167134();
-extern "C" void fn_80167138();
-extern "C" void fn_8016713C();
-extern "C" void fn_80167140();
-extern "C" void fn_80167320();
-extern "C" void fn_801677BC();
-extern "C" void fn_80167820();
-extern "C" void fn_80167E40();
-extern "C" void fn_80167F00();
-extern "C" void fn_801681BC();
-extern "C" void fn_801687E4();
-extern "C" void fn_80171428();
-extern "C" void fn_80171454();
-extern "C" void fn_801715A8();
-extern "C" void fn_80171B8C();
-extern "C" void fn_80171C6C();
-extern "C" void fn_80171D64();
-extern "C" void fn_80171EBC();
-extern "C" void fn_80171EF8();
-extern "C" void fn_80171F84();
-extern "C" void fn_801722B4();
-extern "C" void fn_801722B8();
-extern "C" void fn_801722D0();
-extern "C" void fn_801722E8();
-extern "C" void fn_8017252C();
-extern "C" void fn_8017403C();
-extern "C" void fn_80174108();
-extern "C" void fn_80174418();
-extern "C" void fn_80176674();
-extern "C" void fn_801766D4();
-extern "C" void fn_801767F8();
-extern "C" void fn_80176908();
-extern "C" void fn_8017691C();
-extern "C" void fn_801769E0();
-extern "C" void fn_801770CC();
-extern "C" void fn_8017736C();
-extern "C" void fn_801773E0();
-extern "C" void fn_8017743C();
-extern "C" void fn_80178248();
-extern "C" void fn_80179264();
-extern "C" void fn_80179880();
-extern "C" void fn_8017999C();
-extern "C" void fn_80179FD4();
-extern "C" void fn_8017A018();
-extern "C" void fn_8017B388();
-extern "C" void fn_8017B3E4();
-extern "C" void fn_8017B5E4();
-extern "C" void fn_8017B754();
-extern "C" void fn_8017B790();
-extern "C" void fn_8017C4E4();
-extern "C" void fn_801810B8();
-extern "C" void fn_80181EA8();
-extern "C" void fn_801866D0();
-extern "C" void fn_80186734();
-extern "C" void fn_80188598();
-extern "C" void fn_801885CC();
-extern "C" void fn_8018B950();
-extern "C" void fn_8018C01C();
-extern "C" void fn_8018CAF0();
-extern "C" void fn_8018CBAC();
-extern "C" void fn_8018CBDC();
-extern "C" void fn_8018CC00();
-extern "C" void fn_8018CC1C();
-extern "C" void fn_8018D180();
-extern "C" void fn_8018D9B8();
-extern "C" void fn_801910F8();
-extern "C" void fn_80321B4C();
-extern "C" void main();
-extern "C" void memset();
-extern "C" void sprintf();
-
-// ----------------------------------------------------------------------------
-// main
-// ----------------------------------------------------------------------------
-extern "C" asm void main() {
+// asm_to_cpp: main
+asm void main(void) {
     nofralloc
     stwu r1, -0xc0(r1)
     mflr r0
@@ -386,10 +380,8 @@ lbl_800557C4:
     b lbl_80055768
 }
 
-// ----------------------------------------------------------------------------
-// fn_800557CC
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_800557CC() {
+// asm_to_cpp: fn_800557CC
+asm void fn_800557CC() {
     nofralloc
     stwu r1, -0x1e0(r1)
     mflr r0
@@ -2580,3 +2572,4 @@ lbl_80057668:
     blr
 }
 
+} // extern "C"

@@ -1,64 +1,20 @@
 #include "types.h"
 #include "m2c_macros.h"
-#include "m2c_protos.h"
 
-M2C_UNK memset();           /* extern */
-extern M2C_UNK lbl_8034C384;
-extern M2C_UNK lbl_8034C3A0;
-extern M2C_UNK lbl_8034C3BC;
-extern M2C_UNK lbl_8034C3D8;
-extern M2C_UNK lbl_80395728;
+extern "C" {
 
-s32 fn_80094734();
-s32 fn_80094790();
-void fn_800947C0();
-f32 fn_800947FC();
-f32 fn_8009488C();
-f32 fn_800948EC();
-s32 fn_8009494C();
-s32 fn_8009498C();
-s32 fn_800949CC();
-s32 fn_80094A0C();
-void fn_80094A4C();
-
-// fn_80094734: definicion C reemplazada por asm (ver abajo)
-
-
-// fn_80094790: definicion C reemplazada por asm (ver abajo)
-
-
-void fn_800947C0(u32 arg0) {
-    fn_80094790(arg0, fn_80094734(arg0) + 1);
-}
-
-// fn_800947FC: definicion C reemplazada por asm (ver abajo)
-
-
-// fn_8009488C: definicion C reemplazada por asm (ver abajo)
-
-
-// fn_800948EC: definicion C reemplazada por asm (ver abajo)
-
-
-// fn_8009494C: definicion C reemplazada por asm (ver abajo)
-
-
-// fn_8009498C: definicion C reemplazada por asm (ver abajo)
-
-
-// fn_800949CC: definicion C reemplazada por asm (ver abajo)
-
-
-// fn_80094A0C: definicion C reemplazada por asm (ver abajo)
-
-
-void fn_80094A4C(void);
-
-// ---- Funciones aun sin C que matchee (asm generado) ----
+extern u8 lbl_8034C384[];
+extern u8 lbl_8034C3A0[];
+extern u8 lbl_8034C3BC[];
+extern u8 lbl_8034C3D8[];
+extern u8 lbl_80395728[];
 extern float lbl_8049F4F0;
 extern float lbl_8049F4F8;
+
+M2C_UNK fn_80094700(s32 arg0);
 s32 fn_80094734(u32 arg0);
 s32 fn_80094790(u32 arg0, s32 arg1);
+void fn_800947C0(u32 arg0);
 f32 fn_800947FC(s32 arg0);
 f32 fn_8009488C(void);
 f32 fn_800948EC(void);
@@ -66,7 +22,8 @@ s32 fn_8009494C(s32 arg0);
 s32 fn_8009498C(s32 arg0);
 s32 fn_800949CC(s32 arg0);
 s32 fn_80094A0C(s32 arg0);
-void fn_80094A4C();
+void fn_80094A4C(void);
+M2C_UNK memset(s32 arg0, s32 arg1, s32 arg2);
 
 // asm_to_cpp: fn_80094734
 asm s32 fn_80094734(u32 arg0) {
@@ -114,6 +71,10 @@ lbl_800947AC:
     stw r4, 0x20(r3)
     li r3, 0x1
     blr
+}
+
+void fn_800947C0(u32 arg0) {
+    fn_80094790((u32) (arg0), (s32) (fn_80094734((u32) (arg0)) + 1));
 }
 
 // asm_to_cpp: fn_800947FC
@@ -314,7 +275,7 @@ lbl_80094A38:
 }
 
 // asm_to_cpp: fn_80094A4C
-asm void fn_80094A4C() {
+asm void fn_80094A4C(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -344,3 +305,5 @@ lbl_80094A8C:
     addi r1, r1, 0x10
     blr
 }
+
+} // extern "C"

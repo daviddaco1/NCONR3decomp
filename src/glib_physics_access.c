@@ -1,47 +1,29 @@
 #include "types.h"
 #include "m2c_macros.h"
-#include "m2c_protos.h"
 
-extern M2C_UNK lbl_80349570;
-extern M2C_UNK lbl_803495A8;
-extern s32 lbl_8049D4C8;
+extern "C" {
 
-s32 fn_80048540();
-void fn_80048600();
-s32 fn_80048634();
-s32 fn_80048680();
-s32 fn_800486D4();
-void fn_80048720();
-s32 fn_80048754();
+extern u8 lbl_80349570[];
+extern u8 lbl_803495A8[];
+extern float lbl_8049D4C8;
 
-// fn_80048540: definicion C reemplazada por asm (ver abajo)
-
-
+s32 fn_80047D0C(s8 *arg0, s8 *arg1);
+s32 fn_80047D80(s8 *arg0, s8 *arg1);
+s32 fn_80047DF4(s8 *arg0, s32 *arg1, s8 *arg2);
+s32 fn_80047E74(s8 *arg0, s32 *arg1, s8 *arg2);
+s32 fn_80047F10(s32 *arg0, s32 arg1);
+s8 * fn_80047F24(s8 *arg0, s32 *arg1);
+s32 fn_80048540(void);
 void fn_80048600(s32 arg0);
-
-s32 fn_80048634(s32 *arg0, s32 arg1);
-
-s32 fn_80048680(s32 *arg0, s32 arg1);
-
-s32 fn_800486D4(s32 *arg0, s32 arg1);
-
+M2C_UNK fn_80048634(s32 *arg0, s32 arg1);
+M2C_UNK fn_80048680(s32 *arg0, s32 arg1);
+M2C_UNK fn_800486D4(s32 *arg0, s32 arg1);
 void fn_80048720(s32 arg0);
-
-s32 fn_80048754(s8 *arg0) {
-    return M2C_FIELD(arg0, s32 *, 0x18);
-}
-
-// ---- Funciones aun sin C que matchee (asm generado) ----
-s32 fn_80048540(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
-void fn_80048600();
-s32 fn_80048634();
-s32 fn_80048680();
-s32 fn_800486D4();
-void fn_80048720();
-extern void fn_801A9384();
+s32 fn_80048754(s8 *arg0);
+void fn_801A9384(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7);
 
 // asm_to_cpp: fn_80048540
-asm s32 fn_80048540(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
+asm s32 fn_80048540(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -97,7 +79,7 @@ lbl_800485E8:
 }
 
 // asm_to_cpp: fn_80048600
-asm void fn_80048600() {
+asm void fn_80048600(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -115,7 +97,7 @@ asm void fn_80048600() {
 }
 
 // asm_to_cpp: fn_80048634
-asm s32 fn_80048634() {
+asm M2C_UNK fn_80048634(s32 *arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -139,7 +121,7 @@ asm s32 fn_80048634() {
 }
 
 // asm_to_cpp: fn_80048680
-asm s32 fn_80048680() {
+asm M2C_UNK fn_80048680(s32 *arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -165,7 +147,7 @@ asm s32 fn_80048680() {
 }
 
 // asm_to_cpp: fn_800486D4
-asm s32 fn_800486D4() {
+asm M2C_UNK fn_800486D4(s32 *arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -189,7 +171,7 @@ asm s32 fn_800486D4() {
 }
 
 // asm_to_cpp: fn_80048720
-asm void fn_80048720() {
+asm void fn_80048720(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -205,3 +187,9 @@ asm void fn_80048720() {
     addi r1, r1, 0x10
     blr
 }
+
+s32 fn_80048754(s8 *arg0) {
+    return (s32) (M2C_FIELD(arg0, s32 *, 0x18));
+}
+
+} // extern "C"

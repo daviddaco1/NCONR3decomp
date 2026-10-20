@@ -1,25 +1,20 @@
 #include "types.h"
 #include "m2c_macros.h"
-#include "m2c_protos.h"
 
-extern M2C_UNK lbl_80348070;
+extern "C" {
 
-s32 fn_80035DD8();
-s32 fn_80035E70();
+extern u8 lbl_80348070[];
 
-
-s32 fn_80035E70(s8 *arg0) {
-    return M2C_FIELD(arg0, s32 *, 0x24) != 0;
-}
-
-// ---- Funciones aun sin C que matchee (asm generado) ----
-extern void _restgpr_25();
-extern void _savegpr_25();
-s32 fn_80035DD8();
-extern void fn_801A9384();
+void _restgpr_25();
+void _savegpr_25();
+s32 fn_80035DD8(s32 arg0, s32 arg1, u16 arg2, u16 arg3, s32 arg4, s32 arg5, s32 arg6);
+s32 fn_80035E70(s8 *arg0);
+s32 fn_80036AD8(s8 *arg0, s32 arg1, s32 arg2, u16 arg3, u16 arg4, s32 arg5, s32 arg6, s32 arg7);
+M2C_UNK fn_800389F4(void);
+void fn_801A9384(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7);
 
 // asm_to_cpp: fn_80035DD8
-asm s32 fn_80035DD8() {
+asm s32 fn_80035DD8(s32 arg0, s32 arg1, u16 arg2, u16 arg3, s32 arg4, s32 arg5, s32 arg6) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -61,3 +56,9 @@ lbl_80035E54:
     addi r1, r1, 0x30
     blr
 }
+
+s32 fn_80035E70(s8 *arg0) {
+    return (s32) (M2C_FIELD(arg0, s32 *, 0x24) != 0);
+}
+
+} // extern "C"

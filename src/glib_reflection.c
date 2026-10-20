@@ -1,49 +1,41 @@
 #include "types.h"
 #include "m2c_macros.h"
-#include "m2c_protos.h"
 
-extern M2C_UNK lbl_803495C0;
-extern f32 lbl_8049EB00;
+extern "C" {
 
-s32 fn_8004875C();
-s32 fn_80048908();
-s8 * fn_80048A64();
-void fn_80048A88();
-
-// fn_8004875C: definicion C reemplazada por asm (ver abajo)
-
-
-// fn_80048908: definicion C reemplazada por asm (ver abajo)
-
-
-// fn_80048A64: definicion C reemplazada por asm (ver abajo)
-
-
-void fn_80048A88(s32 arg0) {
-
-}
-
-// ---- Funciones aun sin C que matchee (asm generado) ----
+extern u8 lbl_803495C0[];
 extern float lbl_8049EAF8;
-extern void DCInvalidateRange();
-extern void LogMsg();
-extern void SetPerspective__Q34nw4r3g3d6CameraFffff();
-extern void SetPosition__Q34nw4r3g3d6CameraFRCQ34nw4r4math4VEC3();
-extern void SetPosture__Q34nw4r3g3d6CameraFRCQ44nw4r3g3d6Camera11PostureInfo();
-extern void SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl();
-extern void SetViewport__Q34nw4r3g3d6CameraFffff();
-extern void _restgpr_28();
-extern void _restgpr_29();
-extern void _savegpr_28();
-extern void _savegpr_29();
-extern void fn_80034E28();
-s32 fn_8004875C(s8 *arg0, s32 *arg1, M2C_UNK arg_sp0);
-s32 fn_80048908(s32 arg0, s32 arg1, M2C_UNK arg_sp0);
-s8 *fn_80048A64(s32 arg0, s32 arg1);
-extern void fn_801A9384();
+extern float lbl_8049EB00;
+
+void DCInvalidateRange(s32 arg0, s32 arg1);
+s32 GXGetTexObjData(s8 *arg0);
+s32 GXGetTexObjFmt(s8 *arg0);
+u16 GXGetTexObjHeight(s8 *arg0);
+u16 GXGetTexObjWidth(s8 *arg0);
+void LogMsg(s8 **arg0, s8 *arg1);
+void SetPerspective__Q34nw4r3g3d6CameraFffff(s8 **arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3);
+void SetPosition__Q34nw4r3g3d6CameraFRCQ34nw4r4math4VEC3(s8 **arg0, s8 *arg1);
+void SetPosture__Q34nw4r3g3d6CameraFRCQ44nw4r3g3d6Camera11PostureInfo(s8 **arg0, s8 *arg1);
+void SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl(s8 **arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
+void SetViewport__Q34nw4r3g3d6CameraFffff(s8 **arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3);
+M2C_UNK __ct__Q34nw4r3g3d6CameraFPQ34nw4r3g3d10CameraData(s32 *arg0, s32 arg1);
+void _restgpr_28();
+void _restgpr_29();
+void _savegpr_28();
+void _savegpr_29();
+s32 fn_8002AF70(s32 arg0);
+void fn_80034E28(s32 arg0, u16 arg1, u16 arg2, u16 arg3, u16 arg4, u8 arg5, u8 arg6);
+s32 * fn_80038934(s8 *arg0, u32 arg1);
+s32 fn_8003899C(s32 arg0, s32 arg1, s32 arg2);
+s32 fn_800389D8(s8 *arg0, s32 arg1);
+s32 fn_8004875C(s8 *arg0, s32 *arg1);
+s32 fn_80048908(s32 arg0, s32 arg1);
+s8 * fn_80048A64(s32 arg0, s32 arg1);
+void fn_80048A88(s32 arg0);
+void fn_801A9384(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7);
 
 // asm_to_cpp: fn_8004875C
-asm s32 fn_8004875C(s8 *arg0, s32 *arg1, M2C_UNK arg_sp0) {
+asm s32 fn_8004875C(s8 *arg0, s32 *arg1) {
     nofralloc
     stwu r1, -0x60(r1)
     mflr r0
@@ -157,7 +149,7 @@ lbl_800488F0:
 }
 
 // asm_to_cpp: fn_80048908
-asm s32 fn_80048908(s32 arg0, s32 arg1, M2C_UNK arg_sp0) {
+asm s32 fn_80048908(s32 arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -256,6 +248,11 @@ lbl_80048A4C:
     blr
 }
 
-s8 *fn_80048A64(s32 arg0, s32 arg1) {
-    return (s8 *)fn_80038934((s8 *) arg0, (u32) arg1) + 4;
+s8 * fn_80048A64(s32 arg0, s32 arg1) {
+    return (s8 *) ((s8 *)fn_80038934((s8 *) ((s8 *) arg0), (u32) ((u32) arg1)) + 4);
 }
+
+void fn_80048A88(s32 arg0) {
+}
+
+} // extern "C"

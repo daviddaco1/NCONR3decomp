@@ -1,191 +1,63 @@
 #include "types.h"
 #include "m2c_macros.h"
-#include "m2c_protos.h"
 
-M2C_UNK fn_801F484C();                 /* extern */
-extern f32 lbl_8049E978;
+extern "C" {
 
-s32 fn_8003F5C8();
-s32 fn_8003F638();
-s32 fn_8003F794();
-s32 fn_8003F82C();
-s32 fn_8003F8A0();
-s32 fn_8003F934();
-s32 fn_8003FA5C();
-s32 fn_8003FADC();
-s32 fn_8003FB78();
-s32 fn_8003FBDC();
-s32 fn_8003FC9C();
-s32 fn_8003FD48();
-s32 fn_8003FDC0();
-void fn_8003FDF0();
-void fn_8003FE00();
-void fn_8003FE10();
-void fn_8003FE20();
-void fn_8003FE30();
-void fn_8003FE40();
-s32 fn_8003FE50();
-s32 fn_8003FE58();
-s32 fn_8003FE6C();
-s32 fn_8003FE80();
-u32 fn_8003FE94();
-u32 fn_8003FEEC();
+extern float lbl_8049E978;
 
-// fn_8003F5C8: definicion C reemplazada por asm (ver abajo)
-
-
-// fn_8003F638: definicion C reemplazada por asm (ver abajo)
-
-
-s32 fn_8003F794(u32 arg0, s8 *arg1, M2C_UNK arg_sp0);
-
-s32 fn_8003F82C(s32 arg0, s32 arg1, s32 *arg2, M2C_UNK arg_sp0);
-
-s32 fn_8003F8A0(s32 arg0, s8 *arg1) {
-    M2C_UNK sp8;
-    s32 temp_r3;
-
-    GetLightSet__Q34nw4r3g3d7ScnRootFi((s32) &sp8, fn_8002ADF8(fn_800389F4()), arg0);
-    temp_r3 = GetAmbLightObj__Q34nw4r3g3d8LightSetFv(&sp8);
-    if ((temp_r3 != 0) && ((u32) M2C_FIELD(arg1, u32 *, 0) == 3U)) {
-        M2C_FIELD(temp_r3, u8 *, 0) = (u8) M2C_FIELD(arg1, u8 *, 0x28);
-        M2C_FIELD(temp_r3, u8 *, 1) = (u8) M2C_FIELD(arg1, u8 *, 0x29);
-        M2C_FIELD(temp_r3, u8 *, 2) = (u8) M2C_FIELD(arg1, u8 *, 0x2A);
-        M2C_FIELD(temp_r3, u8 *, 3) = (u8) M2C_FIELD(arg1, u8 *, 0x2B);
-        return 1;
-    }
-    return 0;
-}
-
-// fn_8003F934: definicion C reemplazada por asm (ver abajo)
-
-
-s32 fn_8003FA5C(s32 arg0, s32 arg1, s32 *arg2, M2C_UNK arg_sp0) {
-    M2C_UNK sp8;
-    s32 temp_r3;
-
-    GetLightSet__Q34nw4r3g3d7ScnRootFi((s32) &sp8, fn_8002ADF8(fn_800389F4()), arg0);
-    temp_r3 = GetLightObj__Q34nw4r3g3d8LightSetFUl(&sp8, (u32) arg1);
-    if (temp_r3 != 0) {
-        return fn_8003F934((s32 *) temp_r3, arg2);
-    }
-    *arg2 = 0xFFFF;
-    return 0;
-}
-
-s32 fn_8003FADC(s32 arg0, s8 *arg1) {
-    M2C_UNK sp8;
-    s32 temp_r3;
-
-    GetLightSet__Q34nw4r3g3d7ScnRootFi((s32) &sp8, fn_8002ADF8(fn_800389F4()), arg0);
-    temp_r3 = GetAmbLightObj__Q34nw4r3g3d8LightSetFv(&sp8);
-    if (temp_r3 != 0) {
-        M2C_FIELD(arg1, s32 *, 0) = 3;
-        M2C_FIELD(arg1, u8 *, 0x28) = (u8) M2C_FIELD(temp_r3, u8 *, 0);
-        M2C_FIELD(arg1, u8 *, 0x29) = (u8) M2C_FIELD(temp_r3, u8 *, 1);
-        M2C_FIELD(arg1, u8 *, 0x2A) = (u8) M2C_FIELD(temp_r3, u8 *, 2);
-        M2C_FIELD(arg1, u8 *, 0x2B) = (u8) M2C_FIELD(temp_r3, u8 *, 3);
-        return 1;
-    }
-    M2C_FIELD(arg1, s32 *, 0) = 0xFFFF;
-    return 0;
-}
-
-s32 fn_8003FB78(s8 *arg0, s32 arg1, s32 arg2) {
-    M2C_FIELD(arg0, s32 *, 0) = 0;
-    M2C_FIELD(arg0, s32 *, 4) = 1;
-    M2C_FIELD(arg0, s32 *, 8) = 1;
-    M2C_FIELD(arg0, s32 *, 0xC) = 0;
-    fn_80030E80(arg0 + 0x28, (s32 *) arg1);
-    fn_8002B044(arg0 + 0x10, (s8 *) arg2);
-    return 1;
-}
-
-
-
-
-// fn_8003FDC0: definicion C reemplazada por asm (ver abajo)
-
-
-void fn_8003FDF0(s32 *arg0) {
-    *arg0 |= 0x20;
-}
-
-void fn_8003FE00(s32 *arg0) {
-    *arg0 &= 0xFFFFFFDF;
-}
-
-void fn_8003FE10(s32 *arg0) {
-    *arg0 |= 0x10;
-}
-
-void fn_8003FE20(s32 *arg0) {
-    *arg0 &= 0xFFFFFFEF;
-}
-
-void fn_8003FE30(s32 *arg0) {
-    *arg0 &= 0xFFFFFFFB;
-}
-
-void fn_8003FE40(s32 *arg0) {
-    *arg0 |= 4;
-}
-
-s32 fn_8003FE50(s8 *arg0) {
-    return M2C_FIELD(arg0, s32 *, 8);
-}
-
-// fn_8003FE58: definicion C reemplazada por asm (ver abajo)
-
-
-// fn_8003FE6C: definicion C reemplazada por asm (ver abajo)
-
-
-// fn_8003FE80: definicion C reemplazada por asm (ver abajo)
-
-
-u32 fn_8003FE94(s32 *arg0) {
-    u32 var_r31;
-
-    var_r31 = 0;
-    if ((fn_8003FEEC(arg0) == 0) && (fn_80039F18(arg0) == 0)) {
-        var_r31 = 1;
-    }
-    return var_r31;
-}
-
-// fn_8003FEEC: definicion C reemplazada por asm (ver abajo)
-
-
-// ---- Funciones aun sin C que matchee (asm generado) ----
-extern void InitLightColor__Q34nw4r3g3d8LightObjF8_GXColor();
-extern void InitLightDir__Q34nw4r3g3d8LightObjFfff();
-extern void InitLightDistAttn__Q34nw4r3g3d8LightObjFff13_GXDistAttnFn();
-extern void InitLightPos__Q34nw4r3g3d8LightObjFfff();
-extern void InitLightShininess__Q34nw4r3g3d8LightObjFf();
-extern void InitLightSpot__Q34nw4r3g3d8LightObjFf9_GXSpotFn();
-extern void InitSpecularDir__Q34nw4r3g3d8LightObjFfff();
-extern void _restfpr_29();
-extern void _restgpr_27();
-extern void _restgpr_29();
-extern void _savefpr_29();
-extern void _savegpr_27();
-extern void _savegpr_29();
+s32 GetAmbLightObj__Q34nw4r3g3d8LightSetFv(s8 *arg0);
+s32 GetLightObj__Q34nw4r3g3d8LightSetFUl(s8 *arg0, u32 arg1);
+void GetLightSet__Q34nw4r3g3d7ScnRootFi(s32 arg0, s32 arg1, s32 arg2);
+void InitLightColor__Q34nw4r3g3d8LightObjF8_GXColor(s32 arg0, s8 *arg1, s32 arg2, s32 arg3, s32 arg4);
+void InitLightDir__Q34nw4r3g3d8LightObjFfff(s32 *arg0, s32 arg1, s32 arg2, s32 arg3);
+void InitLightDistAttn__Q34nw4r3g3d8LightObjFff13_GXDistAttnFn(s32 *arg0, s32 arg1, s32 arg2, s32 arg3);
+void InitLightPos__Q34nw4r3g3d8LightObjFfff(s32 *arg0, s32 arg1, s32 arg2, s32 arg3);
+void InitLightShininess__Q34nw4r3g3d8LightObjFf(s32 *arg0, f32 farg0);
+void InitLightSpot__Q34nw4r3g3d8LightObjFf9_GXSpotFn(s32 *arg0, s32 arg1, s32 arg2);
+void InitSpecularDir__Q34nw4r3g3d8LightObjFfff(s32 *arg0, s32 arg1, s32 arg2, s32 arg3);
+s32 SelectAmbLightObj__Q34nw4r3g3d8LightSetFi(s8 *arg0, s8 arg1);
+void _restfpr_29();
+void _restgpr_27();
+void _restgpr_29();
+void _savefpr_29();
+void _savegpr_27();
+void _savegpr_29();
+s32 fn_8002ADF8(s8 *arg0);
+void fn_8002B044(s8 *arg0, s8 *arg1);
+void fn_80030E80(s32 *arg0, s32 *arg1);
+M2C_UNK fn_800389F4(void);
+s32 fn_80039EE8(M2C_UNK *arg0);
+u16 fn_80039F10(u16 *arg0);
+s32 fn_80039F18(s32 *arg0);
+s32 fn_80039F2C(s32 arg0);
 s32 fn_8003F5C8(s32 arg0, s32 arg1);
-s32 fn_8003F638(s32 *arg0, s8 *arg1, s32 arg2, s32 arg3, s32 arg4);
-s32 fn_8003F794();
-s32 fn_8003F82C();
+s32 fn_8003F638(s32 *arg0, s8 *arg1);
+s32 fn_8003F794(u32 arg0, s8 *arg1);
+s32 fn_8003F82C(s32 arg0, s32 arg1, s32 *arg2);
+s32 fn_8003F8A0(s32 arg0, s8 *arg1);
 s32 fn_8003F934(s32 *arg0, s8 *arg1);
-s32 fn_8003FBDC();
-s32 fn_8003FC9C();
-s32 fn_8003FD48();
+s32 fn_8003FA5C(s32 arg0, s32 arg1, s32 *arg2, M2C_UNK arg_sp0);
+s32 fn_8003FADC(s32 arg0, s8 *arg1);
+s32 fn_8003FB78(s8 *arg0, s32 arg1, s32 arg2);
+s32 fn_8003FBDC(s8 *arg0, s32 arg2, s32 arg3, s32 arg4, f32 farg0, f32 farg1);
+s32 fn_8003FC9C(s8 *arg0, s32 arg2, s32 arg3, s32 arg4, s32 arg5, f32 farg0, f32 farg1, f32 farg2);
+s32 fn_8003FD48(s8 *arg0, s32 arg2, f32 farg0);
 s32 fn_8003FDC0(s32 *arg0, s32 arg1);
+void fn_8003FDF0(s32 *arg0);
+void fn_8003FE00(s32 *arg0);
+void fn_8003FE10(s32 *arg0);
+void fn_8003FE20(s32 *arg0);
+void fn_8003FE30(s32 *arg0);
+void fn_8003FE40(s32 *arg0);
+s32 fn_8003FE50(s8 *arg0);
 s32 fn_8003FE58(s32 *arg0);
 s32 fn_8003FE6C(s32 *arg0);
 s32 fn_8003FE80(s32 *arg0);
+u32 fn_8003FE94(s32 *arg0);
 u32 fn_8003FEEC(s32 *arg0);
-extern void fn_801F476C();
-extern void fn_801F47DC();
+void fn_801F476C(s32 arg0, f32 *arg1, f32 *arg2, f32 *arg3);
+void fn_801F47DC(s32 arg0, f32 *arg1, f32 *arg2, f32 *arg3);
+void fn_801F484C();
 
 // asm_to_cpp: fn_8003F5C8
 asm s32 fn_8003F5C8(s32 arg0, s32 arg1) {
@@ -223,7 +95,7 @@ lbl_8003F620:
 }
 
 // asm_to_cpp: fn_8003F638
-asm s32 fn_8003F638(s32 *arg0, s8 *arg1, s32 arg2, s32 arg3, s32 arg4) {
+asm s32 fn_8003F638(s32 *arg0, s8 *arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -326,7 +198,7 @@ lbl_8003F77C:
 }
 
 // asm_to_cpp: fn_8003F794
-asm s32 fn_8003F794() {
+asm s32 fn_8003F794(u32 arg0, s8 *arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -371,7 +243,7 @@ lbl_8003F814:
 }
 
 // asm_to_cpp: fn_8003F82C
-asm s32 fn_8003F82C() {
+asm s32 fn_8003F82C(s32 arg0, s32 arg1, s32 *arg2) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -404,6 +276,22 @@ lbl_8003F888:
     mtlr r0
     addi r1, r1, 0x20
     blr
+}
+
+s32 fn_8003F8A0(s32 arg0, s8 *arg1) {
+    M2C_UNK sp8;
+    s32 temp_r3;
+
+    GetLightSet__Q34nw4r3g3d7ScnRootFi((s32) ((s32) &sp8), (s32) (fn_8002ADF8((s8 *) (fn_800389F4()))), (s32) (arg0));
+    temp_r3 = (s32) (GetAmbLightObj__Q34nw4r3g3d8LightSetFv((s8 *) (&sp8)));
+    if ((temp_r3 != 0) && ((u32) M2C_FIELD(arg1, u32 *, 0) == 3U)) {
+        M2C_FIELD(temp_r3, u8 *, 0) = (u8) ((u8) M2C_FIELD(arg1, u8 *, 0x28));
+        M2C_FIELD(temp_r3, u8 *, 1) = (u8) ((u8) M2C_FIELD(arg1, u8 *, 0x29));
+        M2C_FIELD(temp_r3, u8 *, 2) = (u8) ((u8) M2C_FIELD(arg1, u8 *, 0x2A));
+        M2C_FIELD(temp_r3, u8 *, 3) = (u8) ((u8) M2C_FIELD(arg1, u8 *, 0x2B));
+        return (s32) (1);
+    }
+    return (s32) (0);
 }
 
 // asm_to_cpp: fn_8003F934
@@ -491,8 +379,49 @@ lbl_8003FA44:
     blr
 }
 
+s32 fn_8003FA5C(s32 arg0, s32 arg1, s32 *arg2, M2C_UNK arg_sp0) {
+    M2C_UNK sp8;
+    s32 temp_r3;
+
+    GetLightSet__Q34nw4r3g3d7ScnRootFi((s32) ((s32) &sp8), (s32) (fn_8002ADF8((s8 *) (fn_800389F4()))), (s32) (arg0));
+    temp_r3 = (s32) (GetLightObj__Q34nw4r3g3d8LightSetFUl((s8 *) (&sp8), (u32) ((u32) arg1)));
+    if (temp_r3 != 0) {
+        return (s32) (fn_8003F934((s32 *) ((s32 *) temp_r3), (s8 *) (arg2)));
+    }
+    *arg2 = 0xFFFF;
+    return (s32) (0);
+}
+
+s32 fn_8003FADC(s32 arg0, s8 *arg1) {
+    M2C_UNK sp8;
+    s32 temp_r3;
+
+    GetLightSet__Q34nw4r3g3d7ScnRootFi((s32) ((s32) &sp8), (s32) (fn_8002ADF8((s8 *) (fn_800389F4()))), (s32) (arg0));
+    temp_r3 = (s32) (GetAmbLightObj__Q34nw4r3g3d8LightSetFv((s8 *) (&sp8)));
+    if (temp_r3 != 0) {
+        M2C_FIELD(arg1, s32 *, 0) = (s32) (3);
+        M2C_FIELD(arg1, u8 *, 0x28) = (u8) ((u8) M2C_FIELD(temp_r3, u8 *, 0));
+        M2C_FIELD(arg1, u8 *, 0x29) = (u8) ((u8) M2C_FIELD(temp_r3, u8 *, 1));
+        M2C_FIELD(arg1, u8 *, 0x2A) = (u8) ((u8) M2C_FIELD(temp_r3, u8 *, 2));
+        M2C_FIELD(arg1, u8 *, 0x2B) = (u8) ((u8) M2C_FIELD(temp_r3, u8 *, 3));
+        return (s32) (1);
+    }
+    M2C_FIELD(arg1, s32 *, 0) = (s32) (0xFFFF);
+    return (s32) (0);
+}
+
+s32 fn_8003FB78(s8 *arg0, s32 arg1, s32 arg2) {
+    M2C_FIELD(arg0, s32 *, 0) = (s32) (0);
+    M2C_FIELD(arg0, s32 *, 4) = (s32) (1);
+    M2C_FIELD(arg0, s32 *, 8) = (s32) (1);
+    M2C_FIELD(arg0, s32 *, 0xC) = (s32) (0);
+    fn_80030E80((s32 *) (arg0 + 0x28), (s32 *) ((s32 *) arg1));
+    fn_8002B044((s8 *) (arg0 + 0x10), (s8 *) ((s8 *) arg2));
+    return (s32) (1);
+}
+
 // asm_to_cpp: fn_8003FBDC
-asm s32 fn_8003FBDC() {
+asm s32 fn_8003FBDC(s8 *arg0, s32 arg2, s32 arg3, s32 arg4, f32 farg0, f32 farg1) {
     nofralloc
     stwu r1, -0x40(r1)
     mflr r0
@@ -545,7 +474,7 @@ asm s32 fn_8003FBDC() {
 }
 
 // asm_to_cpp: fn_8003FC9C
-asm s32 fn_8003FC9C() {
+asm s32 fn_8003FC9C(s8 *arg0, s32 arg2, s32 arg3, s32 arg4, s32 arg5, f32 farg0, f32 farg1, f32 farg2) {
     nofralloc
     stwu r1, -0x40(r1)
     mflr r0
@@ -593,7 +522,7 @@ asm s32 fn_8003FC9C() {
 }
 
 // asm_to_cpp: fn_8003FD48
-asm s32 fn_8003FD48() {
+asm s32 fn_8003FD48(s8 *arg0, s32 arg2, f32 farg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -629,22 +558,80 @@ asm s32 fn_8003FD48() {
 
 s32 fn_8003FDC0(s32 *arg0, s32 arg1) {
     *arg0 = 3;
-    fn_80030E80((s8 *)arg0 + 0x28, arg1);
-    return 1;
+    fn_80030E80((s32 *) ((s8 *)arg0 + 0x28), (s32 *) (arg1));
+    return (s32) (1);
+}
+
+void fn_8003FDF0(s32 *arg0) {
+    *arg0 |= 0x20;
+}
+
+void fn_8003FE00(s32 *arg0) {
+    *arg0 &= 0xFFFFFFDF;
+}
+
+void fn_8003FE10(s32 *arg0) {
+    *arg0 |= 0x10;
+}
+
+void fn_8003FE20(s32 *arg0) {
+    *arg0 &= 0xFFFFFFEF;
+}
+
+void fn_8003FE30(s32 *arg0) {
+    *arg0 &= 0xFFFFFFFB;
+}
+
+void fn_8003FE40(s32 *arg0) {
+    *arg0 |= 4;
+}
+
+s32 fn_8003FE50(s8 *arg0) {
+    return (s32) (M2C_FIELD(arg0, s32 *, 8));
 }
 
 s32 fn_8003FE58(s32 *arg0) {
-    return (*arg0 & 0x20) == 0;
+    return (s32) ((*arg0 & 0x20) == 0);
 }
 
 s32 fn_8003FE6C(s32 *arg0) {
-    return (*arg0 & 0x10) == 0;
+    return (s32) ((*arg0 & 0x10) == 0);
 }
 
 s32 fn_8003FE80(s32 *arg0) {
-    return (*arg0 & 4) != 0;
+    return (s32) ((*arg0 & 4) != 0);
+}
+
+// asm_to_cpp: fn_8003FE94
+asm u32 fn_8003FE94(s32 *arg0) {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    stw r0, 0x14(r1)
+    stw r31, 0xc(r1)
+    stw r30, 0x8(r1)
+    mr r30, r3
+    li r31, 0x0
+    bl fn_8003FEEC
+    cmpwi r3, 0x0
+    bne lbl_8003FED0
+    mr r3, r30
+    bl fn_80039F18
+    cmpwi r3, 0x0
+    bne lbl_8003FED0
+    li r31, 0x1
+lbl_8003FED0:
+    mr r3, r31
+    lwz r31, 0xc(r1)
+    lwz r30, 0x8(r1)
+    lwz r0, 0x14(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
 }
 
 u32 fn_8003FEEC(s32 *arg0) {
-    return (*arg0 & 1) != 0;
+    return (u32) ((*arg0 & 1) != 0);
 }
+
+} // extern "C"
