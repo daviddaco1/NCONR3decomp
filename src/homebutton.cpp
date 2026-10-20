@@ -1,6 +1,8 @@
 #include "types.h"
 #include "m2c_macros.h"
 
+struct M2C_VC_0 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK); };
+
 extern "C" {
 
 extern u8 lbl_8033ADA0[];
@@ -6285,32 +6287,14 @@ asm void fn_801827C4(s8 *arg0) {
     blr
 }
 
-// asm_to_cpp: fn_8018280C
-asm void fn_8018280C(s8 *arg0) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    lwz r0, 0x114(r3)
-    stw r0, 0x8(r1)
-    addi r3, r1, 0x8
-    bl fn_8003452C
-    mr r31, r3
-    bl UpdateFrame__Q34nw4r3g3d12ScnMdlSimpleFv
-    mr r3, r31
-    li r4, 0x2
-    li r5, 0x0
-    li r6, 0x0
-    lwz r12, 0x0(r3)
-    lwz r12, 0xc(r12)
-    mtctr r12
-    bctrl
-    lwz r31, 0x1c(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+void fn_8018280C(s8 *arg0) {
+    s32 sp8;
+    s8 **temp_r3;
+
+    sp8 = (s32) (M2C_FIELD(arg0, s32 *, 0x114));
+    temp_r3 = (s8 **) (fn_8003452C((s32 *) (&sp8)));
+    UpdateFrame__Q34nw4r3g3d12ScnMdlSimpleFv((s8 *) (temp_r3));
+    ((M2C_VC_0 *)(temp_r3))->f((M2C_UNK) (2), (M2C_UNK) (0), (M2C_UNK) (0));
 }
 
 // asm_to_cpp: fn_80182868

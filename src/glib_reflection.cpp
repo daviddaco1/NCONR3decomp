@@ -1,6 +1,7 @@
 #include "types.h"
 #include "m2c_macros.h"
 
+
 extern "C" {
 
 extern u8 lbl_803495C0[];

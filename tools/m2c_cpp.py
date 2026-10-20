@@ -177,6 +177,45 @@ def cppify(body, protos, ps, ret):
     return '\n'.join(lines)
 
 
+def virtualize(body, vclasses):
+    """Llamada por vtable de m2c -> llamada virtual C++ (solo asi mwcc carga la vtable en r12):
+    `M2C_FIELD(*X, RET (**)(ARGS), OFF)(X, a...)` -> `((M2C_VC_n *)(X))->f(a...)`, con una clase
+    por (slot, firma) cuya entrada OFF es f (vtable de mwcc: 8 bytes de cabecera + 4 por slot)."""
+    out, i = [], 0
+    while True:
+        k = body.find('M2C_FIELD(*', i)
+        if k < 0:
+            break
+        j = close_paren(body, k + 9)
+        a = split_args(body[k + 10:j]) if j > 0 else []
+        m = re.fullmatch(r'(.+?) \(\*\*\)\((.*)\)', a[1]) if len(a) == 3 else None
+        if not m or j + 1 >= len(body) or body[j + 1] != '(' or not re.fullmatch(r'0x[0-9A-Fa-f]+|\d+', a[2]):
+            out.append(body[i:k + 11])
+            i = k + 11
+            continue
+        off = int(a[2], 0)
+        e = close_paren(body, j + 1)
+        args = split_args(body[j + 2:e]) if body[j + 2:e].strip() else []
+        this = a[0][1:].strip()
+        if off < 8 or off % 4 or not args or args[0].strip() != this:
+            out.append(body[i:k + 11])
+            i = k + 11
+            continue
+        ret = m.group(1).strip()
+        ps = [p for p in split_args(m.group(2)) if p][1:]
+        key = (off, ret, tuple(ps))
+        if key not in vclasses:
+            slots = ''.join(f' virtual void v{s}();' for s in range((off - 8) // 4))
+            params = ', '.join(ps)
+            vclasses[key] = (f'M2C_VC_{len(vclasses)}', f'{slots} virtual {ret} f({params});')
+        name = vclasses[key][0]
+        rest = [cast(t, x) for t, x in zip(ps, args[1:])] if len(ps) == len(args) - 1 else args[1:]
+        out.append(body[i:k] + f'(({name} *)({this}))->f({", ".join(rest)})')
+        i = e + 1
+    out.append(body[i:])
+    return ''.join(out)
+
+
 class TU:
     def __init__(self, split, src, ctx):
         self.split, self.src, self.path = split, src, f'src/{src}'
@@ -210,7 +249,10 @@ class TU:
         self.data = {}
         for m in re.finditer(r'^(?:static )?(?:extern )?([^\n(=;]*?\b((?:lbl|jumptable)_\w+|__\w+)(?:\[\w*\])?);', out, re.M):
             self.data.setdefault(m.group(2), m.group(1).strip())
-        self.ctx, self.peep = ctx, set()
+        self.ctx, self.peep, self.vclasses = ctx, set(), {}
+        for n, (ret, ps, body) in list(self.c.items()):
+            if re.search(r'lwz r12, 0x\w+\(r12\)', self.asm[n]):
+                self.c[n] = (ret, ps, virtualize(body, self.vclasses))
 
     @staticmethod
     def norm_params(name, ps, ctx):
@@ -230,7 +272,10 @@ class TU:
         """Texto y {linea: ('c', fn) | ('sym', nombre)}."""
         body_c = '\n'.join(b for _, _, b in self.c.values())
         used = set(re.findall(r'\b\w+\b', body_c))
-        lines, where = ['#include "types.h"', '#include "m2c_macros.h"', '', 'extern "C" {', ''], {}
+        lines, where = ['#include "types.h"', '#include "m2c_macros.h"', ''], {}
+        # clases solo para llamar virtuales (nunca se definen: la vtable es la del objeto)
+        lines += [f'struct {n} {{{d} }};' for n, d in self.vclasses.values()]
+        lines += ['', 'extern "C" {', '']
 
         def add(text, tag):
             for l in text.split('\n'):

@@ -1,6 +1,7 @@
 #include "types.h"
 #include "m2c_macros.h"
 
+
 extern "C" {
 
 extern f32 lbl_8049EBF8;
