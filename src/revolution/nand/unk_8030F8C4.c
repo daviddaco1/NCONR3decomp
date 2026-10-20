@@ -1,44 +1,30 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/nand/unk_8030F8C4.cpp
-// Total functions: 3
+void NANDSetUserData();
+s32 NANDGetUserData();
+s32 nandOpen_8030F8D4();
 
-// Global data symbols (@ha/@l)
-extern u8 nandOpenCallback_8030FBF0[];
+void NANDSetUserData(s32 *arg0, s32 arg1) {
+    *arg0 = arg1;
+}
 
-// Forward declarations
-extern void ISFS_Open();
-extern void ISFS_OpenAsync();
-extern void NANDGetUserData();
-extern void NANDSetUserData();
+s32 NANDGetUserData(s32 *arg0) {
+    return *arg0;
+}
+
+// nandOpen_8030F8D4: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void _restgpr_27();
 extern void _savegpr_27();
 extern void nandGenerateAbsPath();
-extern void nandIsPrivatePath();
-extern void nandOpen_8030F8D4();
+s32 nandOpen_8030F8D4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0);
 
-// ----------------------------------------------------------------------------
-// NANDSetUserData
-// ----------------------------------------------------------------------------
-asm void NANDSetUserData() {
-    nofralloc
-    stw r4, 0x0(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// NANDGetUserData
-// ----------------------------------------------------------------------------
-asm void NANDGetUserData() {
-    nofralloc
-    lwz r3, 0x0(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// nandOpen_8030F8D4
-// ----------------------------------------------------------------------------
-asm void nandOpen_8030F8D4() {
+// asm_to_cpp: nandOpen_8030F8D4
+asm s32 nandOpen_8030F8D4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x60(r1)
     mflr r0
@@ -117,4 +103,3 @@ lbl_8030F9D0:
     addi r1, r1, 0x60
     blr
 }
-

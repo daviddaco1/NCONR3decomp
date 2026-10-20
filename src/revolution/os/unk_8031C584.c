@@ -1,103 +1,276 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/os/unk_8031C584.cpp
-// Total functions: 38
+M2C_UNK OSSetAlarm();                      /* extern */
+u64 OSGetTime();                                    /* static */
+extern s32 DefaultThread_80465058;
+extern s32 IpcBufferHi_8049E348;
+extern s32 IpcBufferLo_8049D220;
+extern s32 Reschedule_8049E338;
+extern s32 RunQueueBits_8049E340;
+extern s32 RunQueueHint_8049E33C;
+extern M2C_UNK (*SwitchThreadCallback_8049D218)(s32 *, s32 *, s32 *);
+extern M2C_UNK __OSErrorTable;
+extern M2C_UNK _stack_addr;
+extern s32 _stack_end;
+extern M2C_UNK lbl_80381340;
+extern M2C_UNK lbl_80381370;
+extern u16 lbl_803813A0;
+extern M2C_UNK lbl_8038CDE0;
+extern M2C_UNK lbl_80465370;
+extern M2C_UNK lbl_80465470;
+extern s32 lbl_8049D1E8;
 
-// Small Data symbols (@sda21)
-extern float IpcBufferHi_8049E348;
-extern float IpcBufferLo_8049D220;
-extern float Reschedule_8049E338;
-extern float RunQueueBits_8049E340;
-extern float RunQueueHint_8049E33C;
-extern float SwitchThreadCallback_8049D218;
-extern float lbl_8049D1E8;
+void fn_8031C584();
+void __OSThreadInit();
+void OSInitThreadQueue();
+s32 fn_8031C81C();
+s32 fn_8031C828();
+s32 OSDisableScheduler();
+s32 OSEnableScheduler();
+void fn_8031C8CC();
+s32 fn_8031C934();
+s8 * fn_8031C970();
+void fn_8031CB24();
+s32 * SelectThread();
+void fn_8031CDB4();
+s32 fn_8031CDF0();
+void fn_8031D05C();
+void OSCancelThread();
+s32 fn_8031D320();
+s32 fn_8031D460();
+s32 fn_8031D6F8();
+void OSSleepThread();
+void fn_8031D978();
+void fn_8031DA6C();
+void fn_8031DAEC();
+s32 OSGetTick();
+s32 __OSGetSystemTime();
+s32 fn_8031DC18();
+void fn_8031DC70();
+void fn_8031DDE0();
+s32 fn_8031DFA8();
+u8 * fn_8031E248();
+u16 * fn_8031E358();
+u8 fn_8031E3C8();
+u16 fn_8031E440();
+s32 fn_8031E480();
+s32 fn_8031E488();
+void __OSInitIPCBuffer();
 
-// Global data symbols (@ha/@l)
-extern u8 DefaultThread_80465058[];
-extern u8 __OSErrorTable[];
-extern u8 _stack_addr[];
-extern u8 _stack_end[];
-extern u8 lbl_80381340[];
-extern u8 lbl_80381370[];
-extern u8 lbl_803813A0[];
-extern u8 lbl_8038CDE0[];
-extern u8 lbl_80465370[];
-extern u8 lbl_80465470[];
+void fn_8031C584(void) {
 
-// Forward declarations
+}
+
+void __OSThreadInit(void);
+
+void OSInitThreadQueue(s8 *arg0) {
+    M2C_FIELD(arg0, s32 *, 4) = 0;
+    M2C_FIELD(arg0, s32 *, 0) = 0;
+}
+
+s32 fn_8031C81C(void) {
+    return *(s32 *)0x800000E4;
+}
+
+s32 fn_8031C828(s8 *arg0) {
+    s32 var_r3;
+    u16 temp_r0;
+
+    temp_r0 = M2C_FIELD(arg0, u16 *, 0x2C8);
+    var_r3 = 1;
+    if ((temp_r0 != 8) && ((s32) temp_r0 != 0)) {
+        var_r3 = 0;
+    }
+    return var_r3 != 0;
+}
+
+s32 OSDisableScheduler(void) {
+    s32 temp_r31;
+    s32 temp_r3;
+
+    temp_r3 = OSDisableInterrupts();
+    temp_r31 = Reschedule_8049E338;
+    Reschedule_8049E338 = temp_r31 + 1;
+    OSRestoreInterrupts(temp_r3);
+    return temp_r31;
+}
+
+s32 OSEnableScheduler(void) {
+    s32 temp_r31;
+    s32 temp_r3;
+
+    temp_r3 = OSDisableInterrupts();
+    temp_r31 = Reschedule_8049E338;
+    Reschedule_8049E338 = temp_r31 - 1;
+    OSRestoreInterrupts(temp_r3);
+    return temp_r31;
+}
+
+void fn_8031C8CC(s32 *arg0) {
+    s8 *temp_r4;
+    s8 *temp_r5;
+    s8 *temp_r6;
+
+    temp_r5 = M2C_FIELD(arg0, s8 **, 0x2E0);
+    temp_r4 = M2C_FIELD(arg0, s8 **, 0x2DC);
+    temp_r6 = M2C_FIELD(arg0, s8 **, 0x2E4);
+    if (temp_r5 == NULL) {
+        M2C_FIELD(temp_r4, s8 **, 4) = temp_r6;
+    } else {
+        M2C_FIELD(temp_r5, s8 **, 0x2E4) = temp_r6;
+    }
+    if (temp_r6 == NULL) {
+        M2C_FIELD(temp_r4, s8 **, 0) = temp_r5;
+    } else {
+        M2C_FIELD(temp_r6, s8 **, 0x2E0) = temp_r5;
+    }
+    if ((s8 *) M2C_FIELD(temp_r4, s8 **, 0) == NULL) {
+        RunQueueBits_8049E340 &= ~(1 << (0x1F - M2C_FIELD(arg0, s32 *, 0x2D0)));
+    }
+    M2C_FIELD(arg0, s8 **, 0x2DC) = NULL;
+}
+
+// fn_8031C934: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_8031C970: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_8031CB24(s8 *arg0, s8 *arg1);
+
+s32 *SelectThread(s32 arg0);
+
+/*
+Decompilation failure in function __OSReschedule:
+
+Cannot find branch target SelectThread
+*/
+
+void fn_8031CDB4(void) {
+    s32 temp_r31;
+
+    temp_r31 = OSDisableInterrupts();
+    SelectThread(1);
+    OSRestoreInterrupts(temp_r31);
+}
+
+s32 fn_8031CDF0(s8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, M2C_UNK arg_sp0);
+
+// fn_8031D05C: definicion C reemplazada por asm (ver abajo)
+
+
+// OSCancelThread: definicion C reemplazada por asm (ver abajo)
+
+
+s32 fn_8031D320(s8 *arg0, s32 *arg1);
+
+// fn_8031D460: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_8031D6F8: definicion C reemplazada por asm (ver abajo)
+
+
+// OSSleepThread: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_8031D978: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_8031DA6C(s32 arg0);
+
+// fn_8031DAEC: definicion C reemplazada por asm (ver abajo)
+
+
+/*
+Decompilation failure in function OSGetTime:
+
+Cannot find branch target OSGetTime
+*/
+
+// OSGetTick: definicion C reemplazada por asm (ver abajo)
+
+
+// __OSGetSystemTime: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_8031DC18: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_8031DC70: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_8031DDE0: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_8031DFA8: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_8031E248: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_8031E358: definicion C reemplazada por asm (ver abajo)
+
+
+
+u16 fn_8031E440(u32 arg0);
+
+s32 fn_8031E480(void) {
+    return IpcBufferHi_8049E348;
+}
+
+s32 fn_8031E488(void) {
+    return IpcBufferLo_8049D220;
+}
+
+void __OSInitIPCBuffer(void) {
+    IpcBufferLo_8049D220 = *(s32 *)0x80003130;
+    IpcBufferHi_8049E348 = *(s32 *)0x80003134;
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void OSCancelAlarm();
-extern void OSCancelThread();
+void OSCancelThread(s32 *arg0);
 extern void OSClearContext();
 extern void OSCreateAlarm();
-extern void OSDisableInterrupts();
-extern void OSDisableScheduler();
-extern void OSEnableInterrupts();
-extern void OSEnableScheduler();
-extern void OSGetAlarmUserData();
-extern void OSGetCurrentContext();
-extern void OSGetStackPointer();
-extern void OSGetTick();
-extern void OSGetTime();
+s32 OSGetTick(void);
+u64 OSGetTime();
 extern void OSInitContext();
-extern void OSInitThreadQueue();
-extern void OSLoadContext();
-extern void OSRestoreInterrupts();
-extern void OSSaveContext();
-extern void OSSetAlarm();
 extern void OSSetCurrentContext();
-extern void OSSleepThread();
-extern void SelectThread();
+void OSSleepThread(s8 *arg0);
+s32 * SelectThread();
 extern void __OSCancelInternalAlarms();
-extern void __OSGetSystemTime();
-extern void __OSInitIPCBuffer();
-extern void __OSReschedule();
-extern void __OSThreadInit();
+s32 __OSGetSystemTime(void);
+extern int __OSReschedule();
+void __OSThreadInit();
 extern void __OSUnlockAllMutex();
-extern void __div2i();
-extern void __mod2i();
 extern void _restgpr_20();
 extern void _restgpr_26();
 extern void _savegpr_20();
 extern void _savegpr_26();
 extern void fn_8031474C();
-extern void fn_8031C584();
-extern void fn_8031C81C();
-extern void fn_8031C828();
-extern void fn_8031C8CC();
-extern void fn_8031C934();
-extern void fn_8031C970();
-extern void fn_8031CB24();
-extern void fn_8031CDB4();
-extern void fn_8031CDF0();
-extern void fn_8031D05C();
-extern void fn_8031D320();
-extern void fn_8031D460();
-extern void fn_8031D6F8();
-extern void fn_8031D978();
-extern void fn_8031DA6C();
-extern void fn_8031DAEC();
-extern void fn_8031DC18();
-extern void fn_8031DC70();
-extern void fn_8031DDE0();
-extern void fn_8031DFA8();
-extern void fn_8031E248();
-extern void fn_8031E358();
-extern void fn_8031E3C8();
-extern void fn_8031E440();
-extern void fn_8031E480();
-extern void fn_8031E488();
+s32 fn_8031C934(s8 *arg0);
+s8 *fn_8031C970(s8 *arg0, s32 arg1);
+void fn_8031CB24();
+s32 fn_8031CDF0();
+void fn_8031D05C(s32 arg0);
+s32 fn_8031D320();
+s32 fn_8031D460(s8 *arg0);
+s32 fn_8031D6F8(s32 *arg0);
+void fn_8031D978(s8 *arg0);
+void fn_8031DA6C();
+void fn_8031DAEC(s32 arg0, s32 arg1);
+s32 fn_8031DC18(s32 arg0, s32 arg1);
+void fn_8031DC70(s32 arg0, s8 *arg1);
+void fn_8031DDE0(s32 arg0, s32 arg1, s8 *arg2, M2C_UNK arg_sp0);
+s32 fn_8031DFA8(s8 *arg0, s32 arg1, M2C_UNK arg_sp0);
+u8 *fn_8031E248(u8 *arg0, u32 *arg1);
+u16 *fn_8031E358(u16 *arg0, s32 *arg1);
+u8 fn_8031E3C8();
+u16 fn_8031E440();
 
-// ----------------------------------------------------------------------------
-// fn_8031C584
-// ----------------------------------------------------------------------------
-asm void fn_8031C584() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// __OSThreadInit
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __OSThreadInit
 asm void __OSThreadInit() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -271,132 +444,8 @@ lbl_8031C7D0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// OSInitThreadQueue
-// ----------------------------------------------------------------------------
-asm void OSInitThreadQueue() {
-    nofralloc
-    li r0, 0x0
-    stw r0, 0x4(r3)
-    stw r0, 0x0(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8031C81C
-// ----------------------------------------------------------------------------
-asm void fn_8031C81C() {
-    nofralloc
-    lis r3, 0x8000
-    lwz r3, 0xe4(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8031C828
-// ----------------------------------------------------------------------------
-asm void fn_8031C828() {
-    nofralloc
-    lhz r0, 0x2c8(r3)
-    li r3, 0x1
-    cmplwi r0, 0x8
-    beq lbl_8031C844
-    cmpwi r0, 0x0
-    beq lbl_8031C844
-    li r3, 0x0
-lbl_8031C844:
-    neg r0, r3
-    or r0, r0, r3
-    srwi r3, r0, 31
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// OSDisableScheduler
-// ----------------------------------------------------------------------------
-asm void OSDisableScheduler() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    bl OSDisableInterrupts
-    lwz r31, Reschedule_8049E338
-    addi r0, r31, 0x1
-    stw r0, Reschedule_8049E338
-    bl OSRestoreInterrupts
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// OSEnableScheduler
-// ----------------------------------------------------------------------------
-asm void OSEnableScheduler() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    bl OSDisableInterrupts
-    lwz r31, Reschedule_8049E338
-    subi r0, r31, 0x1
-    stw r0, Reschedule_8049E338
-    bl OSRestoreInterrupts
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8031C8CC
-// ----------------------------------------------------------------------------
-asm void fn_8031C8CC() {
-    nofralloc
-    lwz r5, 0x2e0(r3)
-    lwz r4, 0x2dc(r3)
-    cmpwi r5, 0x0
-    lwz r6, 0x2e4(r3)
-    bne lbl_8031C8E8
-    stw r6, 0x4(r4)
-    b lbl_8031C8EC
-lbl_8031C8E8:
-    stw r6, 0x2e4(r5)
-lbl_8031C8EC:
-    cmpwi r6, 0x0
-    bne lbl_8031C8FC
-    stw r5, 0x0(r4)
-    b lbl_8031C900
-lbl_8031C8FC:
-    stw r5, 0x2e0(r6)
-lbl_8031C900:
-    lwz r0, 0x0(r4)
-    cmpwi r0, 0x0
-    bne lbl_8031C928
-    lwz r0, 0x2d0(r3)
-    li r4, 0x1
-    lwz r5, RunQueueBits_8049E340
-    subfic r0, r0, 0x1f
-    slw r0, r4, r0
-    andc r0, r5, r0
-    stw r0, RunQueueBits_8049E340
-lbl_8031C928:
-    li r0, 0x0
-    stw r0, 0x2dc(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8031C934
-// ----------------------------------------------------------------------------
-asm void fn_8031C934() {
+// asm_to_cpp: fn_8031C934
+asm s32 fn_8031C934(s8 *arg0) {
     nofralloc
     lwz r4, 0x2d4(r3)
     lwz r3, 0x2f4(r3)
@@ -418,10 +467,8 @@ lbl_8031C960:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031C970
-// ----------------------------------------------------------------------------
-asm void fn_8031C970() {
+// asm_to_cpp: fn_8031C970
+asm s8 *fn_8031C970(s8 *arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -554,9 +601,7 @@ lbl_8031CB0C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031CB24
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8031CB24
 asm void fn_8031CB24() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -583,10 +628,8 @@ lbl_8031CB60:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// SelectThread
-// ----------------------------------------------------------------------------
-asm void SelectThread() {
+// asm_to_cpp: SelectThread
+asm s32 * SelectThread() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -742,10 +785,8 @@ lbl_8031CD84:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __OSReschedule
-// ----------------------------------------------------------------------------
-asm void __OSReschedule() {
+// asm_to_cpp: __OSReschedule
+asm int __OSReschedule() {
     nofralloc
     lwz r0, RunQueueHint_8049E33C
     cmpwi r0, 0x0
@@ -755,32 +796,8 @@ asm void __OSReschedule() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031CDB4
-// ----------------------------------------------------------------------------
-asm void fn_8031CDB4() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    bl OSDisableInterrupts
-    mr r31, r3
-    li r3, 0x1
-    bl SelectThread
-    mr r3, r31
-    bl OSRestoreInterrupts
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8031CDF0
-// ----------------------------------------------------------------------------
-asm void fn_8031CDF0() {
+// asm_to_cpp: fn_8031CDF0
+asm s32 fn_8031CDF0() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -946,10 +963,8 @@ lbl_8031D044:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031D05C
-// ----------------------------------------------------------------------------
-asm void fn_8031D05C() {
+// asm_to_cpp: fn_8031D05C
+asm void fn_8031D05C(s32 arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1017,10 +1032,8 @@ lbl_8031D118:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// OSCancelThread
-// ----------------------------------------------------------------------------
-asm void OSCancelThread() {
+// asm_to_cpp: OSCancelThread
+asm void OSCancelThread(s32 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1166,10 +1179,8 @@ lbl_8031D308:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031D320
-// ----------------------------------------------------------------------------
-asm void fn_8031D320() {
+// asm_to_cpp: fn_8031D320
+asm s32 fn_8031D320() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1266,10 +1277,8 @@ lbl_8031D444:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031D460
-// ----------------------------------------------------------------------------
-asm void fn_8031D460() {
+// asm_to_cpp: fn_8031D460
+asm s32 fn_8031D460(s8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1468,10 +1477,8 @@ lbl_8031D6D0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031D6F8
-// ----------------------------------------------------------------------------
-asm void fn_8031D6F8() {
+// asm_to_cpp: fn_8031D6F8
+asm s32 fn_8031D6F8(s32 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1592,10 +1599,8 @@ lbl_8031D864:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// OSSleepThread
-// ----------------------------------------------------------------------------
-asm void OSSleepThread() {
+// asm_to_cpp: OSSleepThread
+asm void OSSleepThread(s8 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1667,10 +1672,8 @@ lbl_8031D958:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031D978
-// ----------------------------------------------------------------------------
-asm void fn_8031D978() {
+// asm_to_cpp: fn_8031D978
+asm void fn_8031D978(s8 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1742,9 +1745,7 @@ lbl_8031DA4C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031DA6C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8031DA6C
 asm void fn_8031DA6C() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1787,10 +1788,8 @@ lbl_8031DAD8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031DAEC
-// ----------------------------------------------------------------------------
-asm void fn_8031DAEC() {
+// asm_to_cpp: fn_8031DAEC
+asm void fn_8031DAEC(s32 arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x50(r1)
     mflr r0
@@ -1838,10 +1837,8 @@ lbl_8031DB74:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// OSGetTime
-// ----------------------------------------------------------------------------
-asm void OSGetTime() {
+// asm_to_cpp: OSGetTime
+asm u64 OSGetTime() {
     nofralloc
     mftb r3, 269
     mftb r4, 268
@@ -1851,19 +1848,15 @@ asm void OSGetTime() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// OSGetTick
-// ----------------------------------------------------------------------------
-asm void OSGetTick() {
+// asm_to_cpp: OSGetTick
+asm s32 OSGetTick(void) {
     nofralloc
     mftb r3, 268
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __OSGetSystemTime
-// ----------------------------------------------------------------------------
-asm void __OSGetSystemTime() {
+// asm_to_cpp: __OSGetSystemTime
+asm s32 __OSGetSystemTime(void) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1892,10 +1885,8 @@ asm void __OSGetSystemTime() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031DC18
-// ----------------------------------------------------------------------------
-asm void fn_8031DC18() {
+// asm_to_cpp: fn_8031DC18
+asm s32 fn_8031DC18(s32 arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1921,10 +1912,8 @@ asm void fn_8031DC18() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031DC70
-// ----------------------------------------------------------------------------
-asm void fn_8031DC70() {
+// asm_to_cpp: fn_8031DC70
+asm void fn_8031DC70(s32 arg0, s8 *arg1) {
     nofralloc
     lis r7, 0x9249
     lis r6, 0xb38d
@@ -2029,10 +2018,8 @@ lbl_8031DDB4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031DDE0
-// ----------------------------------------------------------------------------
-asm void fn_8031DDE0() {
+// asm_to_cpp: fn_8031DDE0
+asm void fn_8031DDE0(s32 arg0, s32 arg1, s8 *arg2, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -2152,10 +2139,8 @@ lbl_8031DF20:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031DFA8
-// ----------------------------------------------------------------------------
-asm void fn_8031DFA8() {
+// asm_to_cpp: fn_8031DFA8
+asm s32 fn_8031DFA8(s8 *arg0, s32 arg1, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x40(r1)
     mflr r0
@@ -2334,10 +2319,8 @@ lbl_8031E0C0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031E248
-// ----------------------------------------------------------------------------
-asm void fn_8031E248() {
+// asm_to_cpp: fn_8031E248
+asm u8 *fn_8031E248(u8 *arg0, u32 *arg1) {
     nofralloc
     lbz r6, 0x0(r3)
     cmpwi r6, 0x0
@@ -2422,10 +2405,8 @@ lbl_8031E350:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031E358
-// ----------------------------------------------------------------------------
-asm void fn_8031E358() {
+// asm_to_cpp: fn_8031E358
+asm u16 *fn_8031E358(u16 *arg0, s32 *arg1) {
     nofralloc
     lhz r5, 0x0(r3)
     cmpwi r5, 0x0
@@ -2463,10 +2444,8 @@ lbl_8031E3C0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031E3C8
-// ----------------------------------------------------------------------------
-asm void fn_8031E3C8() {
+// asm_to_cpp: fn_8031E3C8
+asm u8 fn_8031E3C8() {
     nofralloc
     cmplwi r3, 0xff
     ble lbl_8031E3D8
@@ -2506,10 +2485,8 @@ lbl_8031E438:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031E440
-// ----------------------------------------------------------------------------
-asm void fn_8031E440() {
+// asm_to_cpp: fn_8031E440
+asm u16 fn_8031E440() {
     nofralloc
     lis r0, 0x1
     cmplw r3, r0
@@ -2530,35 +2507,3 @@ lbl_8031E478:
     li r3, 0x0
     blr
 }
-
-// ----------------------------------------------------------------------------
-// fn_8031E480
-// ----------------------------------------------------------------------------
-asm void fn_8031E480() {
-    nofralloc
-    lwz r3, IpcBufferHi_8049E348
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8031E488
-// ----------------------------------------------------------------------------
-asm void fn_8031E488() {
-    nofralloc
-    lwz r3, IpcBufferLo_8049D220
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// __OSInitIPCBuffer
-// ----------------------------------------------------------------------------
-asm void __OSInitIPCBuffer() {
-    nofralloc
-    lis r3, 0x8000
-    lwz r0, 0x3130(r3)
-    stw r0, IpcBufferLo_8049D220
-    lwz r0, 0x3134(r3)
-    stw r0, IpcBufferHi_8049E348
-    blr
-}
-

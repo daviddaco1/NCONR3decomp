@@ -1,66 +1,80 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/gx/GXInit.cpp
-// Total functions: 5
+M2C_UNK GXSetBreakPtCallback();              /* extern */
+s32 OSGetTime();                                    /* extern */
+M2C_UNK fn_802E1654();                       /* extern */
+M2C_UNK fn_802E171C();                       /* extern */
+extern s32 FifoObj_80461460;
+extern M2C_UNK GXShutdownFuncInfo_8037AAF0;
+extern M2C_UNK GXTexRegionAddrTable_8037AA30;
+extern s8 *__GXData;
+extern s32 __GXVersion;
+extern s8 *__cpReg;
+extern s8 *__memReg;
+extern s32 __peReg;
+extern s32 __piReg;
+extern u32 lbl_8049E198;
+extern s32 lbl_8049E1A0;
+extern u32 lbl_8049E1A4;
+extern s32 lbl_8049E1A8;
 
-// Small Data symbols (@sda21)
-extern float __GXData;
-extern float __GXVersion;
-extern float __cpReg;
-extern float __memReg;
-extern float __peReg;
-extern float __piReg;
+s8 * __GXDefaultTexRegionCallback();
+s8 * __GXDefaultTlutRegionCallback();
+s32 __GXShutdown();
+void __GXInitRevisionBits();
+s32 * GXInit();
+
+// __GXDefaultTexRegionCallback: definicion C reemplazada por asm (ver abajo)
+
+
+s8 *__GXDefaultTlutRegionCallback(u32 arg0) {
+    if (arg0 >= 0x14U) {
+        return NULL;
+    }
+    return __GXData + (arg0 * 0x10) + 0x3D8;
+}
+
+// __GXShutdown: definicion C reemplazada por asm (ver abajo)
+
+
+// __GXInitRevisionBits: definicion C reemplazada por asm (ver abajo)
+
+
+s32 *GXInit(s32 arg0, s32 arg1, M2C_UNK arg_sp0);
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern float at_2811_804A2574;
 extern float at_2812_804A2578;
-extern float lbl_8049E198;
-extern float lbl_8049E1A0;
-extern float lbl_8049E1A4;
-extern float lbl_8049E1A8;
 extern float shutdownFuncRegistered_2355_8049E1AC;
-
-// Global data symbols (@ha/@l)
-extern u8 FifoObj_80461460[];
-extern u8 GXShutdownFuncInfo_8037AAF0[];
-extern u8 GXTexRegionAddrTable_8037AA30[];
-
-// Forward declarations
-extern void GXGetTexObjFmt();
-extern void GXGetTexObjMipMap();
-extern void GXInit();
+s32 * GXInit();
 extern void GXInitFifoBase();
 extern void GXInitTexCacheRegion();
 extern void GXInitTlutRegion();
-extern void GXSetBreakPtCallback();
 extern void GXSetCPUFifo();
 extern void GXSetGPFifo();
 extern void GXSetMisc();
-extern void OSGetTime();
 extern void OSRegisterShutdownFunction();
 extern void OSRegisterVersion();
-extern void PPCMfhid2();
 extern void PPCMthid2();
 extern void PPCMtwpar();
 extern void PPCSync();
-extern void __GXDefaultTexRegionCallback();
-extern void __GXDefaultTlutRegionCallback();
+s8 *__GXDefaultTexRegionCallback(s32 arg0, u32 arg1);
 extern void __GXFifoInit();
 extern void __GXFlushTextureState();
 extern void __GXInitGX();
-extern void __GXInitRevisionBits();
+void __GXInitRevisionBits(void);
 extern void __GXPEInit();
 extern void __GXSetIndirectMask();
 extern void __GXSetTmemConfig();
-extern void __GXShutdown();
+s32 __GXShutdown(s32 arg0);
 extern void _restgpr_26();
 extern void _savegpr_26();
 extern void fn_802E1138();
-extern void fn_802E1654();
-extern void fn_802E171C();
 
-// ----------------------------------------------------------------------------
-// __GXDefaultTexRegionCallback
-// ----------------------------------------------------------------------------
-asm void __GXDefaultTexRegionCallback() {
+// asm_to_cpp: __GXDefaultTexRegionCallback
+asm s8 *__GXDefaultTexRegionCallback(s32 arg0, u32 arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -132,27 +146,8 @@ lbl_802DE1A8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __GXDefaultTlutRegionCallback
-// ----------------------------------------------------------------------------
-asm void __GXDefaultTlutRegionCallback() {
-    nofralloc
-    cmplwi r3, 0x14
-    blt lbl_802DE1D4
-    li r3, 0x0
-    blr
-lbl_802DE1D4:
-    lwz r4, __GXData
-    slwi r0, r3, 4
-    add r3, r4, r0
-    addi r3, r3, 0x3d8
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// __GXShutdown
-// ----------------------------------------------------------------------------
-asm void __GXShutdown() {
+// asm_to_cpp: __GXShutdown
+asm s32 __GXShutdown(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -254,10 +249,8 @@ lbl_802DE340:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __GXInitRevisionBits
-// ----------------------------------------------------------------------------
-asm void __GXInitRevisionBits() {
+// asm_to_cpp: __GXInitRevisionBits
+asm void __GXInitRevisionBits(void) {
     nofralloc
     li r0, 0x2
     lwz r6, __GXData
@@ -338,10 +331,8 @@ lbl_802DE36C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GXInit
-// ----------------------------------------------------------------------------
-asm void GXInit() {
+// asm_to_cpp: GXInit
+asm s32 * GXInit() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -671,4 +662,3 @@ lbl_802DE8B8:
     addi r1, r1, 0x20
     blr
 }
-

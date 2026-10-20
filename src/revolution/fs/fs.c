@@ -1,67 +1,221 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/fs/fs.cpp
-// Total functions: 29
+M2C_UNK memcpy();           /* extern */
+extern s32 __devfs_8049E16C;
+extern s32 __fsFd_8049D050;
+extern s32 __fsInitialized_8049E168;
+extern s32 hId_8049E17C;
+extern s32 lbl_8049E170;
 
-// Small Data symbols (@sda21)
-extern float __devfs_8049E16C;
-extern float __fsFd_8049D050;
-extern float __fsInitialized_8049E168;
+s32 ISFS_OpenLib();
+s32 _isfsFuncCb();
+s32 fn_802DBB9C();
+s32 fn_802DBC70();
+s32 ISFS_CreateDir();
+s32 ISFS_CreateDirAsync();
+s32 ISFS_ReadDir();
+s32 ISFS_ReadDirAsync();
+s32 ISFS_GetAttr();
+s32 ISFS_GetAttrAsync();
+s32 ISFS_Delete();
+s32 ISFS_DeleteAsync();
+s32 ISFS_Rename();
+s32 ISFS_RenameAsync();
+s32 ISFS_GetUsage();
+s32 ISFS_GetUsageAsync();
+s32 ISFS_CreateFile();
+s32 ISFS_CreateFileAsync();
+s32 ISFS_Open();
+s32 ISFS_OpenAsync();
+s32 ISFS_Seek();
+s32 ISFS_SeekAsync();
+s32 ISFS_ReadAsync();
+s32 ISFS_WriteAsync();
+s32 ISFS_Close();
+s32 ISFS_CloseAsync();
+s32 ISFS_ShutdownAsync();
+
+s32 ISFS_OpenLib(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+s32 _isfsFuncCb(s32 arg0, s8 *arg1);
+
+// fn_802DBB9C: definicion C reemplazada por asm (ver abajo)
+
+
+s32 fn_802DBC70(s32 arg0, s32 arg1, s32 arg2) {
+    s32 temp_r3;
+
+    if (arg0 == 0) {
+        return -0x65;
+    }
+    temp_r3 = iosAllocAligned(hId_8049E17C, 0x140, 0x20);
+    if (temp_r3 == 0) {
+        return -0x76;
+    }
+    M2C_FIELD(temp_r3, s32 *, 0x100) = arg1;
+    M2C_FIELD(temp_r3, s32 *, 0x104) = arg2;
+    M2C_FIELD(temp_r3, s32 *, 0x108) = 1;
+    M2C_FIELD(temp_r3, s32 *, 0x10C) = arg0;
+    return IOS_IoctlAsync(__fsFd_8049D050, 2, NULL, 0, (u8 *) temp_r3, 0x1C, (s32) _isfsFuncCb, temp_r3);
+}
+
+
+
+s32 ISFS_ReadDir(s8 *arg0, s32 arg1, s32 *arg2, M2C_UNK arg_sp0);
+
+s32 ISFS_ReadDirAsync(s8 *arg0, s32 arg1, s32 *arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0);
+
+// ISFS_GetAttr: definicion C reemplazada por asm (ver abajo)
+
+
+// ISFS_GetAttrAsync: definicion C reemplazada por asm (ver abajo)
+
+
+// ISFS_Delete: definicion C reemplazada por asm (ver abajo)
+
+
+// ISFS_DeleteAsync: definicion C reemplazada por asm (ver abajo)
+
+
+// ISFS_Rename: definicion C reemplazada por asm (ver abajo)
+
+
+// ISFS_RenameAsync: definicion C reemplazada por asm (ver abajo)
+
+
+s32 ISFS_GetUsage(s8 *arg0, s32 *arg1, s32 *arg2, M2C_UNK arg_sp0);
+
+// ISFS_GetUsageAsync: definicion C reemplazada por asm (ver abajo)
+
+
+
+
+// ISFS_Open: definicion C reemplazada por asm (ver abajo)
+
+
+// ISFS_OpenAsync: definicion C reemplazada por asm (ver abajo)
+
+
+s32 ISFS_Seek(s32 arg0, s32 arg1, s32 arg2) {
+    return IOS_Seek(arg0, arg1, arg2);
+}
+
+s32 ISFS_SeekAsync(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0) {
+    s32 temp_r3;
+
+    temp_r3 = iosAllocAligned(hId_8049E17C, 0x140, 0x20);
+    if (temp_r3 == 0) {
+        return -0x76;
+    }
+    M2C_FIELD(temp_r3, s32 *, 0x100) = arg3;
+    M2C_FIELD(temp_r3, s32 *, 0x104) = arg4;
+    M2C_FIELD(temp_r3, s32 *, 0x108) = 0;
+    return IOS_SeekAsync(arg0, arg1, arg2, (s32) _isfsFuncCb, temp_r3);
+}
+
+/*
+Decompilation failure in function ISFS_Read:
+
+Cannot find branch target IOS_Read
+*/
+
+s32 ISFS_ReadAsync(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0) {
+    s32 temp_r3;
+
+    if ((arg1 == 0) || (arg1 & 0x1F)) {
+        return -0x65;
+    }
+    temp_r3 = iosAllocAligned(hId_8049E17C, 0x140, 0x20);
+    if (temp_r3 == 0) {
+        return -0x76;
+    }
+    M2C_FIELD(temp_r3, s32 *, 0x100) = arg3;
+    M2C_FIELD(temp_r3, s32 *, 0x104) = arg4;
+    M2C_FIELD(temp_r3, s32 *, 0x108) = 0;
+    return IOS_ReadAsync(arg0, (u8 *) arg1, arg2, (s32) _isfsFuncCb, temp_r3);
+}
+
+/*
+Decompilation failure in function ISFS_Write:
+
+Cannot find branch target IOS_Write
+*/
+
+s32 ISFS_WriteAsync(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0) {
+    s32 temp_r3;
+
+    if ((arg1 == 0) || (arg1 & 0x1F)) {
+        return -0x65;
+    }
+    temp_r3 = iosAllocAligned(hId_8049E17C, 0x140, 0x20);
+    if (temp_r3 == 0) {
+        return -0x76;
+    }
+    M2C_FIELD(temp_r3, s32 *, 0x100) = arg3;
+    M2C_FIELD(temp_r3, s32 *, 0x104) = arg4;
+    M2C_FIELD(temp_r3, s32 *, 0x108) = 0;
+    return IOS_WriteAsync(arg0, (u8 *) arg1, arg2, (s32) _isfsFuncCb, temp_r3);
+}
+
+s32 ISFS_Close(s32 arg0) {
+    return IOS_Close(arg0);
+}
+
+s32 ISFS_CloseAsync(s32 arg0, s32 arg1, s32 arg2) {
+    s32 temp_r3;
+
+    temp_r3 = iosAllocAligned(hId_8049E17C, 0x140, 0x20);
+    if (temp_r3 == 0) {
+        return -0x76;
+    }
+    M2C_FIELD(temp_r3, s32 *, 0x100) = arg1;
+    M2C_FIELD(temp_r3, s32 *, 0x104) = arg2;
+    M2C_FIELD(temp_r3, s32 *, 0x108) = 0;
+    return IOS_CloseAsync(arg0, (s32) _isfsFuncCb, temp_r3);
+}
+
+s32 ISFS_ShutdownAsync(s32 arg0, s32 arg1, s32 arg2) {
+    s32 temp_r3;
+
+    temp_r3 = iosAllocAligned(hId_8049E17C, 0x140, 0x20);
+    if ((s32) __fsFd_8049D050 < 0) {
+        return -0x65;
+    }
+    M2C_FIELD(temp_r3, s32 *, 0x100) = arg0;
+    M2C_FIELD(temp_r3, s32 *, 0x104) = arg1;
+    M2C_FIELD(temp_r3, s32 *, 0x108) = 0;
+    return IOS_IoctlAsync(__fsFd_8049D050, 0xD, NULL, 0, NULL, 0, (s32) _isfsFuncCb, temp_r3);
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern float at_1688_8049D058;
-extern float hId_8049E17C;
 extern float hi_689_8049E178;
-extern float lbl_8049E170;
 extern float lo_688_8049E174;
-
-// Global data symbols (@ha/@l)
 extern u8 at_1687_8037A7E0[];
-
-// Forward declarations
-extern void IOS_Close();
-extern void IOS_CloseAsync();
-extern void IOS_Ioctl();
-extern void IOS_IoctlAsync();
-extern void IOS_Ioctlv();
-extern void IOS_IoctlvAsync();
-extern void IOS_Open();
-extern void IOS_OpenAsync();
-extern void IOS_Read();
-extern void IOS_ReadAsync();
-extern void IOS_Seek();
-extern void IOS_SeekAsync();
-extern void IOS_Write();
-extern void IOS_WriteAsync();
-extern void IPCGetBufferHi();
-extern void IPCGetBufferLo();
 extern void IPCSetBufferLo();
-extern void ISFS_Close();
-extern void ISFS_CloseAsync();
-extern void ISFS_CreateDir();
-extern void ISFS_CreateDirAsync();
-extern void ISFS_CreateFile();
-extern void ISFS_CreateFileAsync();
-extern void ISFS_Delete();
-extern void ISFS_DeleteAsync();
-extern void ISFS_GetAttr();
-extern void ISFS_GetAttrAsync();
-extern void ISFS_GetUsage();
-extern void ISFS_GetUsageAsync();
-extern void ISFS_Open();
-extern void ISFS_OpenAsync();
-extern void ISFS_OpenLib();
-extern void ISFS_Read();
-extern void ISFS_ReadAsync();
-extern void ISFS_ReadDir();
-extern void ISFS_ReadDirAsync();
-extern void ISFS_Rename();
-extern void ISFS_RenameAsync();
-extern void ISFS_Seek();
-extern void ISFS_SeekAsync();
-extern void ISFS_ShutdownAsync();
-extern void ISFS_Write();
-extern void ISFS_WriteAsync();
+s32 ISFS_CreateDir();
+s32 ISFS_CreateDirAsync();
+s32 ISFS_CreateFile();
+s32 ISFS_CreateFileAsync();
+s32 ISFS_Delete(s32 *arg0);
+s32 ISFS_DeleteAsync(s32 *arg0, s32 arg1, s32 arg2, M2C_UNK arg_sp0);
+s32 ISFS_GetAttr(s32 *arg0, s32 *arg1, u16 *arg2, s32 *arg3, s32 *arg4, s32 *arg5, s32 *arg6, M2C_UNK arg_sp0);
+s32 ISFS_GetAttrAsync(s32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, M2C_UNK arg_sp0, s32 arg_sp8);
+s32 ISFS_GetUsage();
+s32 ISFS_GetUsageAsync(s8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0);
+s32 ISFS_Open(s32 *arg0, s32 arg1);
+s32 ISFS_OpenAsync(s32 *arg0, s32 arg1, s32 arg2, s32 arg3, M2C_UNK arg_sp0);
+s32 ISFS_OpenLib();
+extern int ISFS_Read();
+s32 ISFS_ReadDir();
+s32 ISFS_ReadDirAsync();
+s32 ISFS_Rename(s32 *arg0, s8 *arg1, M2C_UNK arg_sp0);
+s32 ISFS_RenameAsync(s32 *arg0, s8 *arg1, s32 arg2, s32 arg3, M2C_UNK arg_sp0);
+extern int ISFS_Write();
 extern void OSReport();
-extern void _isfsFuncCb();
+s32 _isfsFuncCb();
 extern void _restgpr_21();
 extern void _restgpr_23();
 extern void _restgpr_25();
@@ -72,19 +226,11 @@ extern void _savegpr_23();
 extern void _savegpr_25();
 extern void _savegpr_26();
 extern void _savegpr_27();
-extern void fn_802DBB9C();
-extern void fn_802DBC70();
-extern void iosAllocAligned();
-extern void iosCreateHeap();
-extern void iosFree();
-extern void memcpy();
+s32 fn_802DBB9C(s32 *arg0);
 extern void strcpy();
-extern void strnlen();
 
-// ----------------------------------------------------------------------------
-// ISFS_OpenLib
-// ----------------------------------------------------------------------------
-asm void ISFS_OpenLib() {
+// asm_to_cpp: ISFS_OpenLib
+asm s32 ISFS_OpenLib() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -168,10 +314,8 @@ lbl_802DBA00:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// _isfsFuncCb
-// ----------------------------------------------------------------------------
-asm void _isfsFuncCb() {
+// asm_to_cpp: _isfsFuncCb
+asm s32 _isfsFuncCb() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -280,10 +424,8 @@ lbl_802DBB80:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802DBB9C
-// ----------------------------------------------------------------------------
-asm void fn_802DBB9C() {
+// asm_to_cpp: fn_802DBB9C
+asm s32 fn_802DBB9C(s32 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -345,63 +487,8 @@ lbl_802DBC50:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802DBC70
-// ----------------------------------------------------------------------------
-asm void fn_802DBC70() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    cmpwi r3, 0x0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r5
-    stw r30, 0x18(r1)
-    mr r30, r4
-    stw r29, 0x14(r1)
-    mr r29, r3
-    bne lbl_802DBCA4
-    li r3, -0x65
-    b lbl_802DBD00
-lbl_802DBCA4:
-    lwz r3, hId_8049E17C
-    li r4, 0x140
-    li r5, 0x20
-    bl iosAllocAligned
-    cmpwi r3, 0x0
-    bne lbl_802DBCC4
-    li r3, -0x76
-    b lbl_802DBD00
-lbl_802DBCC4:
-    stw r30, 0x100(r3)
-    lis r9, _isfsFuncCb@ha
-    li r0, 0x1
-    mr r7, r3
-    stw r31, 0x104(r3)
-    mr r10, r3
-    addi r9, r9, _isfsFuncCb@l
-    li r4, 0x2
-    stw r0, 0x108(r3)
-    li r5, 0x0
-    li r6, 0x0
-    li r8, 0x1c
-    stw r29, 0x10c(r3)
-    lwz r3, __fsFd_8049D050
-    bl IOS_IoctlAsync
-lbl_802DBD00:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// ISFS_CreateDir
-// ----------------------------------------------------------------------------
-asm void ISFS_CreateDir() {
+// asm_to_cpp: ISFS_CreateDir
+asm s32 ISFS_CreateDir() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -471,10 +558,8 @@ lbl_802DBDF4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// ISFS_CreateDirAsync
-// ----------------------------------------------------------------------------
-asm void ISFS_CreateDirAsync() {
+// asm_to_cpp: ISFS_CreateDirAsync
+asm s32 ISFS_CreateDirAsync() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -543,10 +628,8 @@ lbl_802DBEEC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// ISFS_ReadDir
-// ----------------------------------------------------------------------------
-asm void ISFS_ReadDir() {
+// asm_to_cpp: ISFS_ReadDir
+asm s32 ISFS_ReadDir() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -642,10 +725,8 @@ lbl_802DC03C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// ISFS_ReadDirAsync
-// ----------------------------------------------------------------------------
-asm void ISFS_ReadDirAsync() {
+// asm_to_cpp: ISFS_ReadDirAsync
+asm s32 ISFS_ReadDirAsync() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -737,10 +818,8 @@ lbl_802DC188:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// ISFS_GetAttr
-// ----------------------------------------------------------------------------
-asm void ISFS_GetAttr() {
+// asm_to_cpp: ISFS_GetAttr
+asm s32 ISFS_GetAttr(s32 *arg0, s32 *arg1, u16 *arg2, s32 *arg3, s32 *arg4, s32 *arg5, s32 *arg6, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -835,10 +914,8 @@ lbl_802DC2DC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// ISFS_GetAttrAsync
-// ----------------------------------------------------------------------------
-asm void ISFS_GetAttrAsync() {
+// asm_to_cpp: ISFS_GetAttrAsync
+asm s32 ISFS_GetAttrAsync(s32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, M2C_UNK arg_sp0, s32 arg_sp8) {
     nofralloc
     stwu r1, -0x40(r1)
     mflr r0
@@ -923,10 +1000,8 @@ lbl_802DC414:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// ISFS_Delete
-// ----------------------------------------------------------------------------
-asm void ISFS_Delete() {
+// asm_to_cpp: ISFS_Delete
+asm s32 ISFS_Delete(s32 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -989,10 +1064,8 @@ lbl_802DC4E4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// ISFS_DeleteAsync
-// ----------------------------------------------------------------------------
-asm void ISFS_DeleteAsync() {
+// asm_to_cpp: ISFS_DeleteAsync
+asm s32 ISFS_DeleteAsync(s32 *arg0, s32 arg1, s32 arg2, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1052,10 +1125,8 @@ lbl_802DC5BC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// ISFS_Rename
-// ----------------------------------------------------------------------------
-asm void ISFS_Rename() {
+// asm_to_cpp: ISFS_Rename
+asm s32 ISFS_Rename(s32 *arg0, s8 *arg1, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1129,10 +1200,8 @@ lbl_802DC6BC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// ISFS_RenameAsync
-// ----------------------------------------------------------------------------
-asm void ISFS_RenameAsync() {
+// asm_to_cpp: ISFS_RenameAsync
+asm s32 ISFS_RenameAsync(s32 *arg0, s8 *arg1, s32 arg2, s32 arg3, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1205,10 +1274,8 @@ lbl_802DC7C4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// ISFS_GetUsage
-// ----------------------------------------------------------------------------
-asm void ISFS_GetUsage() {
+// asm_to_cpp: ISFS_GetUsage
+asm s32 ISFS_GetUsage() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1295,10 +1362,8 @@ lbl_802DC8F8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// ISFS_GetUsageAsync
-// ----------------------------------------------------------------------------
-asm void ISFS_GetUsageAsync() {
+// asm_to_cpp: ISFS_GetUsageAsync
+asm s32 ISFS_GetUsageAsync(s8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1379,10 +1444,8 @@ lbl_802DCA20:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// ISFS_CreateFile
-// ----------------------------------------------------------------------------
-asm void ISFS_CreateFile() {
+// asm_to_cpp: ISFS_CreateFile
+asm s32 ISFS_CreateFile() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1452,10 +1515,8 @@ lbl_802DCB10:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// ISFS_CreateFileAsync
-// ----------------------------------------------------------------------------
-asm void ISFS_CreateFileAsync() {
+// asm_to_cpp: ISFS_CreateFileAsync
+asm s32 ISFS_CreateFileAsync() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1524,10 +1585,8 @@ lbl_802DCC08:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// ISFS_Open
-// ----------------------------------------------------------------------------
-asm void ISFS_Open() {
+// asm_to_cpp: ISFS_Open
+asm s32 ISFS_Open(s32 *arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1586,10 +1645,8 @@ lbl_802DCCC4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// ISFS_OpenAsync
-// ----------------------------------------------------------------------------
-asm void ISFS_OpenAsync() {
+// asm_to_cpp: ISFS_OpenAsync
+asm s32 ISFS_OpenAsync(s32 *arg0, s32 arg1, s32 arg2, s32 arg3, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1643,62 +1700,8 @@ lbl_802DCD88:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// ISFS_Seek
-// ----------------------------------------------------------------------------
-asm void ISFS_Seek() {
-    nofralloc
-    b IOS_Seek
-}
-
-// ----------------------------------------------------------------------------
-// ISFS_SeekAsync
-// ----------------------------------------------------------------------------
-asm void ISFS_SeekAsync() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_27
-    mr r27, r3
-    lwz r3, hId_8049E17C
-    mr r28, r4
-    mr r29, r5
-    mr r30, r6
-    mr r31, r7
-    li r4, 0x140
-    li r5, 0x20
-    bl iosAllocAligned
-    cmpwi r3, 0x0
-    bne lbl_802DCDEC
-    li r3, -0x76
-    b lbl_802DCE18
-lbl_802DCDEC:
-    stw r30, 0x100(r3)
-    lis r6, _isfsFuncCb@ha
-    li r0, 0x0
-    mr r4, r28
-    stw r31, 0x104(r3)
-    mr r5, r29
-    mr r7, r3
-    addi r6, r6, _isfsFuncCb@l
-    stw r0, 0x108(r3)
-    mr r3, r27
-    bl IOS_SeekAsync
-lbl_802DCE18:
-    addi r11, r1, 0x20
-    bl _restgpr_27
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// ISFS_Read
-// ----------------------------------------------------------------------------
-asm void ISFS_Read() {
+// asm_to_cpp: ISFS_Read
+asm int ISFS_Read() {
     nofralloc
     cmpwi r4, 0x0
     beq lbl_802DCE40
@@ -1712,62 +1715,8 @@ lbl_802DCE48:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// ISFS_ReadAsync
-// ----------------------------------------------------------------------------
-asm void ISFS_ReadAsync() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_27
-    cmpwi r4, 0x0
-    mr r27, r3
-    mr r28, r4
-    mr r29, r5
-    mr r30, r6
-    mr r31, r7
-    beq lbl_802DCE88
-    clrlwi. r0, r4, 27
-    beq lbl_802DCE90
-lbl_802DCE88:
-    li r3, -0x65
-    b lbl_802DCEDC
-lbl_802DCE90:
-    lwz r3, hId_8049E17C
-    li r4, 0x140
-    li r5, 0x20
-    bl iosAllocAligned
-    cmpwi r3, 0x0
-    bne lbl_802DCEB0
-    li r3, -0x76
-    b lbl_802DCEDC
-lbl_802DCEB0:
-    stw r30, 0x100(r3)
-    lis r6, _isfsFuncCb@ha
-    li r0, 0x0
-    mr r4, r28
-    stw r31, 0x104(r3)
-    mr r5, r29
-    mr r7, r3
-    addi r6, r6, _isfsFuncCb@l
-    stw r0, 0x108(r3)
-    mr r3, r27
-    bl IOS_ReadAsync
-lbl_802DCEDC:
-    addi r11, r1, 0x20
-    bl _restgpr_27
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// ISFS_Write
-// ----------------------------------------------------------------------------
-asm void ISFS_Write() {
+// asm_to_cpp: ISFS_Write
+asm int ISFS_Write() {
     nofralloc
     cmpwi r4, 0x0
     beq lbl_802DCF04
@@ -1780,151 +1729,3 @@ lbl_802DCF0C:
     b IOS_Write
     blr
 }
-
-// ----------------------------------------------------------------------------
-// ISFS_WriteAsync
-// ----------------------------------------------------------------------------
-asm void ISFS_WriteAsync() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_27
-    cmpwi r4, 0x0
-    mr r27, r3
-    mr r28, r4
-    mr r29, r5
-    mr r30, r6
-    mr r31, r7
-    beq lbl_802DCF4C
-    clrlwi. r0, r4, 27
-    beq lbl_802DCF54
-lbl_802DCF4C:
-    li r3, -0x65
-    b lbl_802DCFA0
-lbl_802DCF54:
-    lwz r3, hId_8049E17C
-    li r4, 0x140
-    li r5, 0x20
-    bl iosAllocAligned
-    cmpwi r3, 0x0
-    bne lbl_802DCF74
-    li r3, -0x76
-    b lbl_802DCFA0
-lbl_802DCF74:
-    stw r30, 0x100(r3)
-    lis r6, _isfsFuncCb@ha
-    li r0, 0x0
-    mr r4, r28
-    stw r31, 0x104(r3)
-    mr r5, r29
-    mr r7, r3
-    addi r6, r6, _isfsFuncCb@l
-    stw r0, 0x108(r3)
-    mr r3, r27
-    bl IOS_WriteAsync
-lbl_802DCFA0:
-    addi r11, r1, 0x20
-    bl _restgpr_27
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// ISFS_Close
-// ----------------------------------------------------------------------------
-asm void ISFS_Close() {
-    nofralloc
-    b IOS_Close
-}
-
-// ----------------------------------------------------------------------------
-// ISFS_CloseAsync
-// ----------------------------------------------------------------------------
-asm void ISFS_CloseAsync() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r5
-    li r5, 0x20
-    stw r30, 0x18(r1)
-    mr r30, r4
-    li r4, 0x140
-    stw r29, 0x14(r1)
-    mr r29, r3
-    lwz r3, hId_8049E17C
-    bl iosAllocAligned
-    cmpwi r3, 0x0
-    bne lbl_802DD000
-    li r3, -0x76
-    b lbl_802DD024
-lbl_802DD000:
-    stw r30, 0x100(r3)
-    lis r4, _isfsFuncCb@ha
-    li r0, 0x0
-    mr r5, r3
-    stw r31, 0x104(r3)
-    addi r4, r4, _isfsFuncCb@l
-    stw r0, 0x108(r3)
-    mr r3, r29
-    bl IOS_CloseAsync
-lbl_802DD024:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// ISFS_ShutdownAsync
-// ----------------------------------------------------------------------------
-asm void ISFS_ShutdownAsync() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    li r5, 0x20
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r4
-    li r4, 0x140
-    stw r30, 0x8(r1)
-    mr r30, r3
-    lwz r3, hId_8049E17C
-    bl iosAllocAligned
-    lwz r0, __fsFd_8049D050
-    cmpwi r0, 0x0
-    bge lbl_802DD080
-    li r3, -0x65
-    b lbl_802DD0B8
-lbl_802DD080:
-    stw r30, 0x100(r3)
-    lis r9, _isfsFuncCb@ha
-    li r0, 0x0
-    mr r10, r3
-    stw r31, 0x104(r3)
-    addi r9, r9, _isfsFuncCb@l
-    li r4, 0xd
-    li r5, 0x0
-    stw r0, 0x108(r3)
-    li r6, 0x0
-    li r7, 0x0
-    li r8, 0x0
-    lwz r3, __fsFd_8049D050
-    bl IOS_IoctlAsync
-lbl_802DD0B8:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-

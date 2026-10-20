@@ -1,52 +1,41 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/unk_802B6F60.cpp
-// Total functions: 4
+M2C_UNK memset();            /* extern */
+extern s16 lbl_80453A50;
+extern s16 lbl_80456740;
 
-// Global data symbols (@ha/@l)
-extern u8 gap_btm_cback0[];
-extern u8 gap_btm_cback1[];
-extern u8 lbl_80453A50[];
-extern u8 lbl_80456740[];
+void fn_802B6F60();
+void fn_802B6F8C();
+s32 fn_802B6FD8();
+void fn_802B70B8();
 
-// Forward declarations
-extern void SDP_AddAttribute();
-extern void SDP_AddUuidSequence();
-extern void SDP_GetLocalDiRecord();
-extern void SDP_SetLocalDiRecord();
-extern void btm_discovery_db_init();
-extern void fn_802B1218();
-extern void fn_802B6F60();
-extern void fn_802B6F8C();
-extern void fn_802B6FD8();
-extern void fn_802B70B8();
-extern void gap_conn_init();
-extern void l2c_init();
-extern void memset();
-extern void sdp_init();
-
-// ----------------------------------------------------------------------------
-// fn_802B6F60
-// ----------------------------------------------------------------------------
-asm void fn_802B6F60() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_802B1218
-    bl l2c_init
-    bl sdp_init
-    bl btm_discovery_db_init
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_802B6F60(s32 arg0) {
+    fn_802B1218();
+    l2c_init();
+    sdp_init();
+    btm_discovery_db_init();
 }
 
-// ----------------------------------------------------------------------------
-// fn_802B6F8C
-// ----------------------------------------------------------------------------
-asm void fn_802B6F8C() {
+// fn_802B6F8C: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802B6FD8: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802B70B8: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+extern void SDP_AddUuidSequence();
+void fn_802B6F8C(void);
+s32 fn_802B6FD8(void);
+void fn_802B70B8(void);
+extern void gap_conn_init();
+
+// asm_to_cpp: fn_802B6F8C
+asm void fn_802B6F8C(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -69,10 +58,8 @@ asm void fn_802B6F8C() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802B6FD8
-// ----------------------------------------------------------------------------
-asm void fn_802B6FD8() {
+// asm_to_cpp: fn_802B6FD8
+asm s32 fn_802B6FD8(void) {
     nofralloc
     stwu r1, -0x120(r1)
     mflr r0
@@ -134,10 +121,8 @@ lbl_802B70A0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802B70B8
-// ----------------------------------------------------------------------------
-asm void fn_802B70B8() {
+// asm_to_cpp: fn_802B70B8
+asm void fn_802B70B8(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -164,4 +149,3 @@ asm void fn_802B70B8() {
     addi r1, r1, 0x10
     blr
 }
-

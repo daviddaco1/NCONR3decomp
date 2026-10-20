@@ -1,41 +1,58 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/axfx/unk_802A2164.cpp
-// Total functions: 6
+extern s32 lbl_80372650;
+extern M2C_UNK lbl_80372850;
+extern s32 lbl_8049CF40;
+extern s32 lbl_8049CF44;
+extern s32 lbl_8049D1D8;
 
-// Small Data symbols (@sda21)
-extern float lbl_8049CF40;
-extern float lbl_8049CF44;
-extern float lbl_8049D1D8;
+s32 * fn_802A2164();
+s8 * fn_802A2170();
+void fn_802A2184();
+void fn_802A2190();
+void fn_802A219C();
+void fn_802A21A8();
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_80372650[];
-extern u8 lbl_80372850[];
+// fn_802A2164: definicion C reemplazada por asm (ver abajo)
 
-// Forward declarations
-extern void OSAllocFromHeap();
-extern void OSFreeToHeap();
-extern void fn_802A2164();
-extern void fn_802A2170();
-extern void fn_802A2184();
-extern void fn_802A2190();
-extern void fn_802A219C();
-extern void fn_802A21A8();
 
-// ----------------------------------------------------------------------------
-// fn_802A2164
-// ----------------------------------------------------------------------------
-asm void fn_802A2164() {
+// fn_802A2170: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802A2184(s32 arg0) {
+    OSAllocFromHeap(lbl_8049D1D8, arg0);
+}
+
+void fn_802A2190(s32 arg0) {
+    OSFreeToHeap(lbl_8049D1D8, arg0);
+}
+
+void fn_802A219C(s32 arg0, s32 arg1) {
+    lbl_8049CF40 = arg0;
+    lbl_8049CF44 = arg1;
+}
+
+void fn_802A21A8(s32 *arg0, s32 *arg1) {
+    *arg0 = lbl_8049CF40;
+    *arg1 = lbl_8049CF44;
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+s32 *fn_802A2164(void);
+s8 *fn_802A2170(s32 arg0);
+
+// asm_to_cpp: fn_802A2164
+asm s32 *fn_802A2164(void) {
     nofralloc
     lis r3, lbl_80372650@ha
     addi r3, r3, lbl_80372650@l
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802A2170
-// ----------------------------------------------------------------------------
-asm void fn_802A2170() {
+// asm_to_cpp: fn_802A2170
+asm s8 *fn_802A2170(s32 arg0) {
     nofralloc
     lis r4, lbl_80372850@ha
     slwi r0, r3, 4
@@ -43,46 +60,3 @@ asm void fn_802A2170() {
     add r3, r4, r0
     blr
 }
-
-// ----------------------------------------------------------------------------
-// fn_802A2184
-// ----------------------------------------------------------------------------
-asm void fn_802A2184() {
-    nofralloc
-    mr r4, r3
-    lwz r3, lbl_8049D1D8
-    b OSAllocFromHeap
-}
-
-// ----------------------------------------------------------------------------
-// fn_802A2190
-// ----------------------------------------------------------------------------
-asm void fn_802A2190() {
-    nofralloc
-    mr r4, r3
-    lwz r3, lbl_8049D1D8
-    b OSFreeToHeap
-}
-
-// ----------------------------------------------------------------------------
-// fn_802A219C
-// ----------------------------------------------------------------------------
-asm void fn_802A219C() {
-    nofralloc
-    stw r3, lbl_8049CF40
-    stw r4, lbl_8049CF44
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802A21A8
-// ----------------------------------------------------------------------------
-asm void fn_802A21A8() {
-    nofralloc
-    lwz r0, lbl_8049CF40
-    stw r0, 0x0(r3)
-    lwz r0, lbl_8049CF44
-    stw r0, 0x0(r4)
-    blr
-}
-

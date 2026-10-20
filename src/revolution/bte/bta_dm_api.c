@@ -1,47 +1,98 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/bta_dm_api.cpp
-// Total functions: 11
+M2C_UNK memcpy();                    /* extern */
+M2C_UNK memset();        /* extern */
+extern M2C_UNK lbl_80341648;
+extern M2C_UNK lbl_80453C14;
+extern M2C_UNK lbl_804A2528;
+extern M2C_UNK lbl_804A2530;
 
-// Small Data symbols (@sda21)
-extern float lbl_804A2528;
-extern float lbl_804A2530;
+s32 BTA_EnableBluetooth();
+void BTA_DisableBluetooth();
+s32 BTA_DmIsDeviceUp();
+void BTA_DmSetDeviceName();
+void BTA_DmSetVisibility();
+void BTA_DmSearch();
+void BTA_DmSearchCancel();
+void BTA_DmPinReply();
+u8 BTA_DmAddDevice();
+u8 BTA_DmRemoveDevice();
+void BTA_DmSendHciReset();
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_80341648[];
-extern u8 lbl_80453C14[];
+// BTA_EnableBluetooth: definicion C reemplazada por asm (ver abajo)
 
-// Forward declarations
-extern void BTA_DisableBluetooth();
-extern void BTA_DmAddDevice();
-extern void BTA_DmIsDeviceUp();
-extern void BTA_DmPinReply();
-extern void BTA_DmRemoveDevice();
-extern void BTA_DmSearch();
-extern void BTA_DmSearchCancel();
-extern void BTA_DmSendHciReset();
-extern void BTA_DmSetDeviceName();
-extern void BTA_DmSetVisibility();
-extern void BTA_EnableBluetooth();
-extern void BTM_IsDeviceUp();
-extern void BTM_SecAddDevice();
-extern void BTM_SecDeleteDevice();
-extern void GKI_getbuf();
-extern void GKI_sched_lock();
-extern void GKI_sched_unlock();
+
+void BTA_DisableBluetooth(void) {
+    s16 *temp_r3;
+
+    temp_r3 = GKI_getbuf(8);
+    if (temp_r3 != NULL) {
+        *temp_r3 = 0x101;
+        bta_sys_sendmsg((s32) temp_r3);
+    }
+}
+
+// BTA_DmIsDeviceUp: definicion C reemplazada por asm (ver abajo)
+
+
+// BTA_DmSetDeviceName: definicion C reemplazada por asm (ver abajo)
+
+
+
+// BTA_DmSearch: definicion C reemplazada por asm (ver abajo)
+
+
+void BTA_DmSearchCancel(void) {
+    s16 *temp_r3;
+
+    temp_r3 = GKI_getbuf(8);
+    if (temp_r3 != NULL) {
+        *temp_r3 = 0x201;
+        bta_sys_sendmsg((s32) temp_r3);
+    }
+}
+
+
+// BTA_DmAddDevice: definicion C reemplazada por asm (ver abajo)
+
+
+u8 BTA_DmRemoveDevice(s32 arg0) {
+    s32 temp_r31;
+
+    GKI_sched_lock();
+    temp_r31 = BTM_SecDeleteDevice((s8 *) arg0);
+    GKI_sched_unlock();
+    return (u8) ((u8) temp_r31 == 0);
+}
+
+void BTA_DmSendHciReset(void) {
+    s16 *temp_r3;
+
+    temp_r3 = GKI_getbuf(8);
+    if (temp_r3 != NULL) {
+        *temp_r3 = 0x10C;
+        bta_sys_sendmsg((s32) temp_r3);
+    }
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+u8 BTA_DmAddDevice(s32 arg0, s32 arg1, s32 arg2, s32 arg3, M2C_UNK arg_sp0);
+s32 BTA_DmIsDeviceUp(void);
+void BTA_DmPinReply();
+void BTA_DmSearch(s32 arg0, s32 arg1, s32 arg2);
+void BTA_DmSetDeviceName(s32 arg0);
+void BTA_DmSetVisibility();
+s32 BTA_EnableBluetooth(s32 arg0);
 extern void _restgpr_27();
 extern void _savegpr_27();
 extern void bta_sys_register();
-extern void bta_sys_sendmsg();
 extern void fn_802A59E8();
-extern void memcpy();
-extern void memset();
 extern void strncpy();
 
-// ----------------------------------------------------------------------------
-// BTA_EnableBluetooth
-// ----------------------------------------------------------------------------
-asm void BTA_EnableBluetooth() {
+// asm_to_cpp: BTA_EnableBluetooth
+asm s32 BTA_EnableBluetooth(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -81,32 +132,8 @@ lbl_802A8528:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTA_DisableBluetooth
-// ----------------------------------------------------------------------------
-asm void BTA_DisableBluetooth() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    li r3, 0x8
-    stw r0, 0x14(r1)
-    bl GKI_getbuf
-    cmpwi r3, 0x0
-    beq lbl_802A8564
-    li r0, 0x101
-    sth r0, 0x0(r3)
-    bl bta_sys_sendmsg
-lbl_802A8564:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// BTA_DmIsDeviceUp
-// ----------------------------------------------------------------------------
-asm void BTA_DmIsDeviceUp() {
+// asm_to_cpp: BTA_DmIsDeviceUp
+asm s32 BTA_DmIsDeviceUp(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -124,10 +151,8 @@ asm void BTA_DmIsDeviceUp() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTA_DmSetDeviceName
-// ----------------------------------------------------------------------------
-asm void BTA_DmSetDeviceName() {
+// asm_to_cpp: BTA_DmSetDeviceName
+asm void BTA_DmSetDeviceName(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -157,9 +182,7 @@ lbl_802A85F8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTA_DmSetVisibility
-// ----------------------------------------------------------------------------
+// asm_to_cpp: BTA_DmSetVisibility
 asm void BTA_DmSetVisibility() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -187,10 +210,8 @@ lbl_802A8650:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTA_DmSearch
-// ----------------------------------------------------------------------------
-asm void BTA_DmSearch() {
+// asm_to_cpp: BTA_DmSearch
+asm void BTA_DmSearch(s32 arg0, s32 arg1, s32 arg2) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -228,31 +249,7 @@ lbl_802A86CC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTA_DmSearchCancel
-// ----------------------------------------------------------------------------
-asm void BTA_DmSearchCancel() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    li r3, 0x8
-    stw r0, 0x14(r1)
-    bl GKI_getbuf
-    cmpwi r3, 0x0
-    beq lbl_802A8714
-    li r0, 0x201
-    sth r0, 0x0(r3)
-    bl bta_sys_sendmsg
-lbl_802A8714:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// BTA_DmPinReply
-// ----------------------------------------------------------------------------
+// asm_to_cpp: BTA_DmPinReply
 asm void BTA_DmPinReply() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -294,10 +291,8 @@ lbl_802A8798:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTA_DmAddDevice
-// ----------------------------------------------------------------------------
-asm void BTA_DmAddDevice() {
+// asm_to_cpp: BTA_DmAddDevice
+asm u8 BTA_DmAddDevice(s32 arg0, s32 arg1, s32 arg2, s32 arg3, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -364,51 +359,3 @@ lbl_802A8854:
     addi r1, r1, 0x30
     blr
 }
-
-// ----------------------------------------------------------------------------
-// BTA_DmRemoveDevice
-// ----------------------------------------------------------------------------
-asm void BTA_DmRemoveDevice() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    bl GKI_sched_lock
-    mr r3, r31
-    bl BTM_SecDeleteDevice
-    mr r31, r3
-    bl GKI_sched_unlock
-    clrlwi r0, r31, 24
-    lwz r31, 0xc(r1)
-    cntlzw r0, r0
-    extrwi r3, r0, 8, 19
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// BTA_DmSendHciReset
-// ----------------------------------------------------------------------------
-asm void BTA_DmSendHciReset() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    li r3, 0x8
-    stw r0, 0x14(r1)
-    bl GKI_getbuf
-    cmpwi r3, 0x0
-    beq lbl_802A8910
-    li r0, 0x10c
-    sth r0, 0x0(r3)
-    bl bta_sys_sendmsg
-lbl_802A8910:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-

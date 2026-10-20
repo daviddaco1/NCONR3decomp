@@ -1,39 +1,47 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/gki/gki_time.cpp
-// Total functions: 5
+u64 OSGetTime();                                    /* extern */
+M2C_UNK OSSetPeriodicAlarm(s8 *, u64, u32, M2C_UNK, s32, void (*)()); /* extern */
+extern s32 lbl_8036E698;
+extern s32 lbl_8036E6B0;
+extern M2C_UNK lbl_8040FC00;
+extern s32 lbl_8049DE28;
+extern s8 lbl_8049DE4D;
 
-// Small Data symbols (@sda21)
-extern float lbl_8049DE28;
-extern float lbl_8049DE4D;
+s32 GKI_start_timer();
+void GKI_init_timer_list();
+s32 GKI_update_timer_list();
+s32 fn_80297C80();
+s32 GKI_add_to_timer_list();
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_8036E698[];
-extern u8 lbl_8036E6B0[];
-extern u8 lbl_8040FC00[];
 
-// Forward declarations
+void GKI_init_timer_list(void) {
+    GKI_start_timer(1, -1, 0, 1);
+}
+
+// GKI_update_timer_list: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_80297C80: definicion C reemplazada por asm (ver abajo)
+
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void BTA_DmSearchCancel();
-extern void BTM_SetAfhChannels();
-extern void GKI_add_to_timer_list();
-extern void GKI_init_timer_list();
-extern void GKI_start_timer();
-extern void GKI_update_timer_list();
+s32 GKI_add_to_timer_list();
+s32 GKI_start_timer();
+s32 GKI_update_timer_list(void);
 extern void OSCreateAlarm();
-extern void OSDisableInterrupts();
-extern void OSGetTime();
-extern void OSRestoreInterrupts();
-extern void OSSetPeriodicAlarm();
 extern void _restgpr_25();
 extern void _savegpr_25();
 extern void fn_80295A6C();
-extern void fn_80297C80();
+s32 fn_80297C80(void);
 extern void fn_8029ABCC();
 
-// ----------------------------------------------------------------------------
-// GKI_start_timer
-// ----------------------------------------------------------------------------
-asm void GKI_start_timer() {
+// asm_to_cpp: GKI_start_timer
+asm s32 GKI_start_timer() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -123,22 +131,8 @@ lbl_80297BC0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GKI_init_timer_list
-// ----------------------------------------------------------------------------
-asm void GKI_init_timer_list() {
-    nofralloc
-    li r3, 0x1
-    li r4, -0x1
-    li r5, 0x0
-    li r6, 0x1
-    b GKI_start_timer
-}
-
-// ----------------------------------------------------------------------------
-// GKI_update_timer_list
-// ----------------------------------------------------------------------------
-asm void GKI_update_timer_list() {
+// asm_to_cpp: GKI_update_timer_list
+asm s32 GKI_update_timer_list(void) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -181,10 +175,8 @@ lbl_80297C58:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80297C80
-// ----------------------------------------------------------------------------
-asm void fn_80297C80() {
+// asm_to_cpp: fn_80297C80
+asm s32 fn_80297C80(void) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -225,10 +217,8 @@ lbl_80297CE0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GKI_add_to_timer_list
-// ----------------------------------------------------------------------------
-asm void GKI_add_to_timer_list() {
+// asm_to_cpp: GKI_add_to_timer_list
+asm s32 GKI_add_to_timer_list() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -297,4 +287,3 @@ lbl_80297DD8:
     addi r1, r1, 0x20
     blr
 }
-

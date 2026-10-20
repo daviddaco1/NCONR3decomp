@@ -1,38 +1,88 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/gki_ppc.cpp
-// Total functions: 13
+M2C_UNK memset();             /* extern */
+extern u8 lbl_804276C0;
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_804276C0[];
+void GKI_init();
+void GKI_shutdown();
+void GKI_run();
+void GKI_sched_lock();
+void GKI_sched_unlock();
+void GKI_delay();
+s32 GKI_send_event();
+s32 GKI_get_taskid();
+void GKI_enable();
+void GKI_disable();
+void GKI_exception();
+s32 GKI_os_malloc();
+void GKI_os_free();
 
-// Forward declarations
-extern void GKI_delay();
-extern void GKI_disable();
-extern void GKI_enable();
-extern void GKI_exception();
-extern void GKI_get_taskid();
-extern void GKI_init();
-extern void GKI_os_free();
-extern void GKI_os_malloc();
-extern void GKI_run();
-extern void GKI_sched_lock();
-extern void GKI_sched_unlock();
-extern void GKI_send_event();
-extern void GKI_shutdown();
-extern void OSDisableInterrupts();
-extern void OSEnableInterrupts();
-extern void OSRestoreInterrupts();
-extern void fn_802943B8();
-extern void fn_80294408();
+// GKI_init: definicion C reemplazada por asm (ver abajo)
+
+
+// GKI_shutdown: definicion C reemplazada por asm (ver abajo)
+
+
+void GKI_run(s32 arg0) {
+
+}
+
+void GKI_sched_lock(void) {
+
+}
+
+void GKI_sched_unlock(void) {
+
+}
+
+void GKI_delay(s32 arg0) {
+
+}
+
+// GKI_send_event: definicion C reemplazada por asm (ver abajo)
+
+
+s32 GKI_get_taskid(void) {
+    return 2;
+}
+
+// GKI_enable: definicion C reemplazada por asm (ver abajo)
+
+
+// GKI_disable: definicion C reemplazada por asm (ver abajo)
+
+
+void GKI_exception(s32 arg0, s32 arg1) {
+
+}
+
+s32 GKI_os_malloc(s32 arg0) {
+    s32 var_r3;
+
+    var_r3 = fn_802943B8(arg0);
+    if (var_r3 == 0) {
+        var_r3 = 0;
+    }
+    return var_r3;
+}
+
+void GKI_os_free(s32 arg0) {
+    fn_80294408(arg0);
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+void GKI_disable(void);
+void GKI_enable(void);
+void GKI_init(void);
+s32 GKI_send_event(u32 arg0, s32 arg1);
+void GKI_shutdown(void);
 extern void gki_buffer_init();
 extern void gki_timers_init();
-extern void memset();
 
-// ----------------------------------------------------------------------------
-// GKI_init
-// ----------------------------------------------------------------------------
-asm void GKI_init() {
+// asm_to_cpp: GKI_init
+asm void GKI_init(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -72,10 +122,8 @@ asm void GKI_init() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GKI_shutdown
-// ----------------------------------------------------------------------------
-asm void GKI_shutdown() {
+// asm_to_cpp: GKI_shutdown
+asm void GKI_shutdown(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -123,42 +171,8 @@ lbl_802A3DDC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GKI_run
-// ----------------------------------------------------------------------------
-asm void GKI_run() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GKI_sched_lock
-// ----------------------------------------------------------------------------
-asm void GKI_sched_lock() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GKI_sched_unlock
-// ----------------------------------------------------------------------------
-asm void GKI_sched_unlock() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GKI_delay
-// ----------------------------------------------------------------------------
-asm void GKI_delay() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GKI_send_event
-// ----------------------------------------------------------------------------
-asm void GKI_send_event() {
+// asm_to_cpp: GKI_send_event
+asm s32 GKI_send_event(u32 arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -205,19 +219,8 @@ lbl_802A3E9C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GKI_get_taskid
-// ----------------------------------------------------------------------------
-asm void GKI_get_taskid() {
-    nofralloc
-    li r3, 0x2
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GKI_enable
-// ----------------------------------------------------------------------------
-asm void GKI_enable() {
+// asm_to_cpp: GKI_enable
+asm void GKI_enable(void) {
     nofralloc
     lis r5, lbl_804276C0@ha
     lbz r4, lbl_804276C0@l(r5)
@@ -230,10 +233,8 @@ asm void GKI_enable() {
     b OSRestoreInterrupts
 }
 
-// ----------------------------------------------------------------------------
-// GKI_disable
-// ----------------------------------------------------------------------------
-asm void GKI_disable() {
+// asm_to_cpp: GKI_disable
+asm void GKI_disable(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -253,39 +254,3 @@ asm void GKI_disable() {
     addi r1, r1, 0x10
     blr
 }
-
-// ----------------------------------------------------------------------------
-// GKI_exception
-// ----------------------------------------------------------------------------
-asm void GKI_exception() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GKI_os_malloc
-// ----------------------------------------------------------------------------
-asm void GKI_os_malloc() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_802943B8
-    cmpwi r3, 0x0
-    bne lbl_802A3F44
-    li r3, 0x0
-lbl_802A3F44:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GKI_os_free
-// ----------------------------------------------------------------------------
-asm void GKI_os_free() {
-    nofralloc
-    b fn_80294408
-}
-

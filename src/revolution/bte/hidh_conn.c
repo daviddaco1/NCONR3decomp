@@ -1,40 +1,80 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/hidh_conn.cpp
-// Total functions: 16
+M2C_UNK LogMsg_0();               /* extern */
+M2C_UNK LogMsg_1(); /* extern */
+M2C_UNK LogMsg_2(); /* extern */
+M2C_UNK btm_sec_mx_access_request(s8 *, M2C_UNK, M2C_UNK, M2C_UNK, s32, void (*)(s32, s8 *, s32), s8 *); /* extern */
+M2C_UNK memcpy();                        /* extern */
+extern M2C_UNK lbl_803418A0;
+extern M2C_UNK lbl_80375A68;
+extern M2C_UNK lbl_80375A88;
+extern M2C_UNK lbl_80375AAC;
+extern M2C_UNK lbl_80375BCC;
+extern M2C_UNK lbl_80375C84;
+extern M2C_UNK lbl_80375CB0;
+extern M2C_UNK lbl_80375D08;
+extern M2C_UNK lbl_80375D34;
+extern M2C_UNK lbl_80375D58;
+extern M2C_UNK lbl_80375D88;
+extern M2C_UNK lbl_80375DB0;
+extern M2C_UNK lbl_80375DE8;
+extern M2C_UNK lbl_80375E20;
+extern u8 lbl_80456C38;
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_803418A0[];
-extern u8 lbl_80375A68[];
-extern u8 lbl_80375A88[];
-extern u8 lbl_80375AAC[];
-extern u8 lbl_80375BCC[];
-extern u8 lbl_80375C84[];
-extern u8 lbl_80375CB0[];
-extern u8 lbl_80375D08[];
-extern u8 lbl_80375D34[];
-extern u8 lbl_80375D58[];
-extern u8 lbl_80375D88[];
-extern u8 lbl_80375DB0[];
-extern u8 lbl_80375DE8[];
-extern u8 lbl_80375E20[];
-extern u8 lbl_80456C38[];
+s32 hidh_conn_reg();
+s32 hidh_conn_disconnect();
+void hidh_sec_check_complete_term();
+void hidh_l2cif_connect_ind();
+void hidh_proc_repage_timeout();
+void hidh_sec_check_complete_orig();
+void hidh_l2cif_connect_cfm();
+void hidh_l2cif_config_ind();
+void hidh_l2cif_config_cfm();
+void hidh_l2cif_disconnect_ind();
+void hidh_l2cif_disconnect_cfm();
+void hidh_l2cif_cong_ind();
+void hidh_l2cif_data_ind();
+s32 hidh_conn_snd_data();
+s32 hidh_conn_initiate();
+void hidh_conn_dereg();
 
-// Forward declarations
+// hidh_conn_reg: definicion C reemplazada por asm (ver abajo)
+
+
+// hidh_conn_disconnect: definicion C reemplazada por asm (ver abajo)
+
+
+// hidh_sec_check_complete_term: definicion C reemplazada por asm (ver abajo)
+
+
+
+// hidh_proc_repage_timeout: definicion C reemplazada por asm (ver abajo)
+
+
+// hidh_sec_check_complete_orig: definicion C reemplazada por asm (ver abajo)
+
+
+
+
+
+
+
+
+void hidh_l2cif_data_ind(u32 arg0, s8 *arg1);
+
+
+// hidh_conn_initiate: definicion C reemplazada por asm (ver abajo)
+
+
+void hidh_conn_dereg(void) {
+    L2CA_Deregister(0x11U);
+    L2CA_Deregister(0x13U);
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void GKI_freebuf();
-extern void GKI_getpoolbuf();
-extern void L2CA_ConfigReq();
-extern void L2CA_ConfigRsp();
-extern void L2CA_ConnectReq();
-extern void L2CA_ConnectRsp();
-extern void L2CA_DataWrite();
-extern void L2CA_Deregister();
-extern void L2CA_DisconnectReq();
-extern void L2CA_DisconnectRsp();
-extern void L2CA_Register();
-extern void LogMsg_0();
-extern void LogMsg_1();
-extern void LogMsg_2();
 extern void _restgpr_17();
 extern void _restgpr_24();
 extern void _restgpr_26();
@@ -43,31 +83,24 @@ extern void _savegpr_17();
 extern void _savegpr_24();
 extern void _savegpr_26();
 extern void _savegpr_27();
-extern void btm_get_acl_disc_reason_code();
-extern void btm_sec_mx_access_request();
-extern void hidh_conn_dereg();
-extern void hidh_conn_disconnect();
-extern void hidh_conn_initiate();
-extern void hidh_conn_reg();
-extern void hidh_conn_snd_data();
-extern void hidh_l2cif_config_cfm();
-extern void hidh_l2cif_config_ind();
-extern void hidh_l2cif_cong_ind();
-extern void hidh_l2cif_connect_cfm();
-extern void hidh_l2cif_connect_ind();
-extern void hidh_l2cif_data_ind();
-extern void hidh_l2cif_disconnect_cfm();
-extern void hidh_l2cif_disconnect_ind();
-extern void hidh_proc_repage_timeout();
-extern void hidh_sec_check_complete_orig();
-extern void hidh_sec_check_complete_term();
-extern void memcmp();
-extern void memcpy();
+s32 hidh_conn_disconnect(s32 arg0);
+s32 hidh_conn_initiate(s32 arg0);
+s32 hidh_conn_reg(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+s32 hidh_conn_snd_data();
+void hidh_l2cif_config_cfm();
+void hidh_l2cif_config_ind();
+void hidh_l2cif_cong_ind();
+void hidh_l2cif_connect_cfm();
+void hidh_l2cif_connect_ind();
+void hidh_l2cif_data_ind();
+void hidh_l2cif_disconnect_cfm();
+void hidh_l2cif_disconnect_ind();
+void hidh_proc_repage_timeout(s8 *arg0);
+void hidh_sec_check_complete_orig(s32 arg0, s8 *arg1, s32 arg2, M2C_UNK arg_sp0);
+void hidh_sec_check_complete_term(s32 arg0, s8 *arg1, s32 arg2);
 
-// ----------------------------------------------------------------------------
-// hidh_conn_reg
-// ----------------------------------------------------------------------------
-asm void hidh_conn_reg() {
+// asm_to_cpp: hidh_conn_reg
+asm s32 hidh_conn_reg(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -162,10 +195,8 @@ lbl_802BBDB8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// hidh_conn_disconnect
-// ----------------------------------------------------------------------------
-asm void hidh_conn_disconnect() {
+// asm_to_cpp: hidh_conn_disconnect
+asm s32 hidh_conn_disconnect(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -215,10 +246,8 @@ lbl_802BBE5C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// hidh_sec_check_complete_term
-// ----------------------------------------------------------------------------
-asm void hidh_sec_check_complete_term() {
+// asm_to_cpp: hidh_sec_check_complete_term
+asm void hidh_sec_check_complete_term(s32 arg0, s8 *arg1, s32 arg2) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -304,9 +333,7 @@ lbl_802BBF8C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// hidh_l2cif_connect_ind
-// ----------------------------------------------------------------------------
+// asm_to_cpp: hidh_l2cif_connect_ind
 asm void hidh_l2cif_connect_ind() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -475,10 +502,8 @@ lbl_802BC1E4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// hidh_proc_repage_timeout
-// ----------------------------------------------------------------------------
-asm void hidh_proc_repage_timeout() {
+// asm_to_cpp: hidh_proc_repage_timeout
+asm void hidh_proc_repage_timeout(s8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -568,10 +593,8 @@ lbl_802BC2E0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// hidh_sec_check_complete_orig
-// ----------------------------------------------------------------------------
-asm void hidh_sec_check_complete_orig() {
+// asm_to_cpp: hidh_sec_check_complete_orig
+asm void hidh_sec_check_complete_orig(s32 arg0, s8 *arg1, s32 arg2, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -722,9 +745,7 @@ lbl_802BC544:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// hidh_l2cif_connect_cfm
-// ----------------------------------------------------------------------------
+// asm_to_cpp: hidh_l2cif_connect_cfm
 asm void hidh_l2cif_connect_cfm() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -960,9 +981,7 @@ lbl_802BC884:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// hidh_l2cif_config_ind
-// ----------------------------------------------------------------------------
+// asm_to_cpp: hidh_l2cif_config_ind
 asm void hidh_l2cif_config_ind() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1152,9 +1171,7 @@ lbl_802BCB2C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// hidh_l2cif_config_cfm
-// ----------------------------------------------------------------------------
+// asm_to_cpp: hidh_l2cif_config_cfm
 asm void hidh_l2cif_config_cfm() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1372,9 +1389,7 @@ lbl_802BCE40:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// hidh_l2cif_disconnect_ind
-// ----------------------------------------------------------------------------
+// asm_to_cpp: hidh_l2cif_disconnect_ind
 asm void hidh_l2cif_disconnect_ind() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1572,9 +1587,7 @@ lbl_802BD104:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// hidh_l2cif_disconnect_cfm
-// ----------------------------------------------------------------------------
+// asm_to_cpp: hidh_l2cif_disconnect_cfm
 asm void hidh_l2cif_disconnect_cfm() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1737,9 +1750,7 @@ lbl_802BD348:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// hidh_l2cif_cong_ind
-// ----------------------------------------------------------------------------
+// asm_to_cpp: hidh_l2cif_cong_ind
 asm void hidh_l2cif_cong_ind() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1881,9 +1892,7 @@ lbl_802BD544:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// hidh_l2cif_data_ind
-// ----------------------------------------------------------------------------
+// asm_to_cpp: hidh_l2cif_data_ind
 asm void hidh_l2cif_data_ind() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -2143,10 +2152,8 @@ lbl_802BD8D8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// hidh_conn_snd_data
-// ----------------------------------------------------------------------------
-asm void hidh_conn_snd_data() {
+// asm_to_cpp: hidh_conn_snd_data
+asm s32 hidh_conn_snd_data() {
     nofralloc
     stwu r1, -0x50(r1)
     mflr r0
@@ -2342,10 +2349,8 @@ lbl_802BDB78:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// hidh_conn_initiate
-// ----------------------------------------------------------------------------
-asm void hidh_conn_initiate() {
+// asm_to_cpp: hidh_conn_initiate
+asm s32 hidh_conn_initiate(s32 arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -2416,22 +2421,3 @@ lbl_802BDC70:
     addi r1, r1, 0x20
     blr
 }
-
-// ----------------------------------------------------------------------------
-// hidh_conn_dereg
-// ----------------------------------------------------------------------------
-asm void hidh_conn_dereg() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    li r3, 0x11
-    stw r0, 0x14(r1)
-    bl L2CA_Deregister
-    li r3, 0x13
-    bl L2CA_Deregister
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-

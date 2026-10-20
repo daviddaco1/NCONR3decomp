@@ -1,23 +1,31 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/btm_discovery.cpp
-// Total functions: 3
+M2C_UNK memset();           /* extern */
+extern M2C_UNK lbl_80453F78;
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_80453F78[];
+void btm_discovery_db_init();
+void btm_discovery_db_reset();
+void btm_discovery_timeout();
 
-// Forward declarations
-extern void SDP_InitDiscoveryDb();
-extern void btm_discovery_db_init();
-extern void btm_discovery_db_reset();
-extern void btm_discovery_timeout();
+// btm_discovery_db_init: definicion C reemplazada por asm (ver abajo)
+
+
+// btm_discovery_db_reset: definicion C reemplazada por asm (ver abajo)
+
+
+void btm_discovery_timeout(void) {
+
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+void btm_discovery_db_init(void);
+void btm_discovery_db_reset(void);
 extern void btu_stop_timer();
-extern void memset();
 
-// ----------------------------------------------------------------------------
-// btm_discovery_db_init
-// ----------------------------------------------------------------------------
-asm void btm_discovery_db_init() {
+// asm_to_cpp: btm_discovery_db_init
+asm void btm_discovery_db_init(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -51,10 +59,8 @@ asm void btm_discovery_db_init() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btm_discovery_db_reset
-// ----------------------------------------------------------------------------
-asm void btm_discovery_db_reset() {
+// asm_to_cpp: btm_discovery_db_reset
+asm void btm_discovery_db_reset(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -104,12 +110,3 @@ lbl_802AF714:
     addi r1, r1, 0x10
     blr
 }
-
-// ----------------------------------------------------------------------------
-// btm_discovery_timeout
-// ----------------------------------------------------------------------------
-asm void btm_discovery_timeout() {
-    nofralloc
-    blr
-}
-

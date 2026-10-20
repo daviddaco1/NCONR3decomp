@@ -1,30 +1,59 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/gki_time.cpp
-// Total functions: 8
+extern M2C_UNK lbl_804276C0;
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_804276C0[];
+void gki_timers_init();
+s32 GKI_get_tick_count();
+void fn_802A3840();
+void GKI_stop_timer();
+void fn_802A3A18();
+s32 fn_802A3A2C();
+void fn_802A3AB8();
+void GKI_remove_from_timer_list();
 
-// Forward declarations
+// gki_timers_init: definicion C reemplazada por asm (ver abajo)
+
+
+// GKI_get_tick_count: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802A3840: definicion C reemplazada por asm (ver abajo)
+
+
+// GKI_stop_timer: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802A3A18(s8 *arg0) {
+    M2C_FIELD(arg0, s32 *, 0) = 0;
+    M2C_FIELD(arg0, s32 *, 4) = 0;
+    M2C_FIELD(arg0, s32 *, 8) = 0;
+}
+
+// fn_802A3A2C: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802A3AB8(s8 *arg0, s32 *arg1);
+
+// GKI_remove_from_timer_list: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void GKI_disable();
 extern void GKI_enable();
-extern void GKI_get_taskid();
-extern void GKI_get_tick_count();
-extern void GKI_remove_from_timer_list();
-extern void GKI_stop_timer();
+s32 GKI_get_tick_count(void);
+void GKI_remove_from_timer_list(s8 *arg0, s8 *arg1);
+void GKI_stop_timer(s32 arg0);
 extern void _restgpr_27();
 extern void _savegpr_27();
-extern void fn_802A3840();
-extern void fn_802A3A18();
-extern void fn_802A3A2C();
-extern void fn_802A3AB8();
-extern void gki_timers_init();
+void fn_802A3840(s32 arg0, s32 arg1, s32 arg2, M2C_UNK arg_sp0);
+s32 fn_802A3A2C(s8 *arg0, s32 arg1);
+void fn_802A3AB8();
+void gki_timers_init(void);
 
-// ----------------------------------------------------------------------------
-// gki_timers_init
-// ----------------------------------------------------------------------------
-asm void gki_timers_init() {
+// asm_to_cpp: gki_timers_init
+asm void gki_timers_init(void) {
     nofralloc
     lis r3, lbl_804276C0@ha
     li r0, 0x0
@@ -75,10 +104,8 @@ asm void gki_timers_init() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GKI_get_tick_count
-// ----------------------------------------------------------------------------
-asm void GKI_get_tick_count() {
+// asm_to_cpp: GKI_get_tick_count
+asm s32 GKI_get_tick_count(void) {
     nofralloc
     lis r3, lbl_804276C0@ha
     addi r3, r3, lbl_804276C0@l
@@ -87,10 +114,8 @@ asm void GKI_get_tick_count() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802A3840
-// ----------------------------------------------------------------------------
-asm void fn_802A3840() {
+// asm_to_cpp: fn_802A3840
+asm void fn_802A3840(s32 arg0, s32 arg1, s32 arg2, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -186,10 +211,8 @@ lbl_802A3974:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GKI_stop_timer
-// ----------------------------------------------------------------------------
-asm void GKI_stop_timer() {
+// asm_to_cpp: GKI_stop_timer
+asm void GKI_stop_timer(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -230,22 +253,8 @@ lbl_802A3A04:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802A3A18
-// ----------------------------------------------------------------------------
-asm void fn_802A3A18() {
-    nofralloc
-    li r0, 0x0
-    stw r0, 0x0(r3)
-    stw r0, 0x4(r3)
-    stw r0, 0x8(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802A3A2C
-// ----------------------------------------------------------------------------
-asm void fn_802A3A2C() {
+// asm_to_cpp: fn_802A3A2C
+asm s32 fn_802A3A2C(s8 *arg0, s32 arg1) {
     nofralloc
     lwz r6, 0x0(r3)
     li r7, 0x0
@@ -292,9 +301,7 @@ lbl_802A3AB0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802A3AB8
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802A3AB8
 asm void fn_802A3AB8() {
     nofralloc
     lwz r5, 0xc(r4)
@@ -368,10 +375,8 @@ lbl_802A3B98:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GKI_remove_from_timer_list
-// ----------------------------------------------------------------------------
-asm void GKI_remove_from_timer_list() {
+// asm_to_cpp: GKI_remove_from_timer_list
+asm void GKI_remove_from_timer_list(s8 *arg0, s8 *arg1) {
     nofralloc
     cmpwi r4, 0x0
     beqlr
@@ -455,4 +460,3 @@ lbl_802A3CAC:
     stb r3, 0x16(r4)
     blr
 }
-

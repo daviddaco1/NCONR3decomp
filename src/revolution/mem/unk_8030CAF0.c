@@ -1,24 +1,61 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/mem/unk_8030CAF0.cpp
-// Total functions: 7
+extern M2C_UNK lbl_804A26F8;
 
-// Small Data symbols (@sda21)
-extern float lbl_804A26F8;
+/*
+Decompilation failure in function fn_8030CAF0:
 
-// Forward declarations
-extern void fn_8030CAF0();
-extern void fn_8030CB00();
-extern void fn_8030CB10();
-extern void fn_8030CB2C();
-extern void fn_8030CB44();
-extern void fn_8030CBB4();
-extern void fn_8030CC20();
+Unable to determine jump table for bctr instruction at unk_8030CAF0.s line 13.
 
-// ----------------------------------------------------------------------------
-// fn_8030CAF0
-// ----------------------------------------------------------------------------
-asm void fn_8030CAF0() {
+There must be a read of a variable before the instruction
+which has a name starting with with "jtbl"/"jpt_"/"lbl_"/"jumptable_".
+*/
+
+/*
+Decompilation failure in function fn_8030CB00:
+
+Unable to determine jump table for bctr instruction at unk_8030CAF0.s line 21.
+
+There must be a read of a variable before the instruction
+which has a name starting with with "jtbl"/"jpt_"/"lbl_"/"jumptable_".
+*/
+
+void fn_8030CB10();
+void fn_8030CB2C();
+void fn_8030CB44();
+void fn_8030CBB4();
+s32 fn_8030CC20();
+
+void fn_8030CB10(s8 *arg0, s32 arg1, s32 arg2) {
+    M2C_FIELD(arg0, s8 **, 0) = &lbl_804A26F8;
+    M2C_FIELD(arg0, s32 *, 4) = arg1;
+    M2C_FIELD(arg0, s32 *, 8) = arg2;
+    M2C_FIELD(arg0, s32 *, 0xC) = 0;
+}
+
+
+void fn_8030CB44(s8 *arg0, s32 arg1);
+
+void fn_8030CBB4(s8 *arg0, s32 arg1);
+
+s32 fn_8030CC20(s8 *arg0, s32 arg1) {
+    if (arg1 == 0) {
+        return M2C_FIELD(arg0, s32 *, 0);
+    }
+    return M2C_FIELD((arg1 + M2C_FIELD(arg0, u16 *, 0xA)), s32 *, 4);
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+extern int fn_8030CAF0();
+extern int fn_8030CB00();
+void fn_8030CB2C();
+void fn_8030CB44();
+void fn_8030CBB4();
+
+// asm_to_cpp: fn_8030CAF0
+asm int fn_8030CAF0() {
     nofralloc
     lwz r5, 0x0(r3)
     lwz r12, 0x0(r5)
@@ -26,10 +63,8 @@ asm void fn_8030CAF0() {
     bctr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8030CB00
-// ----------------------------------------------------------------------------
-asm void fn_8030CB00() {
+// asm_to_cpp: fn_8030CB00
+asm int fn_8030CB00() {
     nofralloc
     lwz r5, 0x0(r3)
     lwz r12, 0x4(r5)
@@ -37,23 +72,7 @@ asm void fn_8030CB00() {
     bctr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8030CB10
-// ----------------------------------------------------------------------------
-asm void fn_8030CB10() {
-    nofralloc
-    la r6, lbl_804A26F8
-    li r0, 0x0
-    stw r6, 0x0(r3)
-    stw r4, 0x4(r3)
-    stw r5, 0x8(r3)
-    stw r0, 0xc(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8030CB2C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8030CB2C
 asm void fn_8030CB2C() {
     nofralloc
     li r0, 0x0
@@ -64,9 +83,7 @@ asm void fn_8030CB2C() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8030CB44
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8030CB44
 asm void fn_8030CB44() {
     nofralloc
     lwz r0, 0x0(r3)
@@ -100,9 +117,7 @@ lbl_8030CB7C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8030CBB4
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8030CBB4
 asm void fn_8030CBB4() {
     nofralloc
     lhz r5, 0xa(r3)
@@ -137,20 +152,3 @@ lbl_8030CC04:
     sth r0, 0x8(r3)
     blr
 }
-
-// ----------------------------------------------------------------------------
-// fn_8030CC20
-// ----------------------------------------------------------------------------
-asm void fn_8030CC20() {
-    nofralloc
-    cmpwi r4, 0x0
-    bne lbl_8030CC30
-    lwz r3, 0x0(r3)
-    blr
-lbl_8030CC30:
-    lhz r0, 0xa(r3)
-    add r3, r4, r0
-    lwz r3, 0x4(r3)
-    blr
-}
-

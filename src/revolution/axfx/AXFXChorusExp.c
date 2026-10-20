@@ -1,56 +1,64 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/axfx/AXFXChorusExp.cpp
-// Total functions: 7
+M2C_UNK memset();                       /* extern */
+extern s32 (*lbl_8049CF40)(s32);
+extern M2C_UNK (*lbl_8049CF44)();
+extern f32 lbl_804A24D8;
+extern f32 lbl_804A24DC;
+extern f32 lbl_804A24E8;
+extern f32 lbl_804A24EC;
+extern f32 lbl_804A24F0;
+extern f32 lbl_804A24F4;
+extern f32 lbl_804A24F8;
+extern f32 lbl_804A24FC;
+extern f32 lbl_804A2500;
+extern f32 lbl_804A2504;
 
-// Small Data symbols (@sda21)
-extern float lbl_8049CF40;
-extern float lbl_8049CF44;
-extern float lbl_804A24D8;
-extern float lbl_804A24DC;
+s32 AXFXChorusExpGetMemSize();
+s32 AXFXChorusExpInit();
+s32 AXFXChorusExpSettingsUpdate();
+void AXFXChorusExpShutdown();
+void AXFXChorusExpCallback();
+s32 fn_802A1E68();
+void __CalcLFO();
+
+s32 AXFXChorusExpGetMemSize(s32 arg0) {
+    return 0x9600;
+}
+
+// AXFXChorusExpInit: definicion C reemplazada por asm (ver abajo)
+
+
+// AXFXChorusExpSettingsUpdate: definicion C reemplazada por asm (ver abajo)
+
+
+// AXFXChorusExpShutdown: definicion C reemplazada por asm (ver abajo)
+
+
+void AXFXChorusExpCallback(s8 *arg0, s32 *arg1);
+
+// fn_802A1E68: definicion C reemplazada por asm (ver abajo)
+
+
+void __CalcLFO(s32 *arg0, s8 *arg1);
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern float lbl_804A24E0;
-extern float lbl_804A24E8;
-extern float lbl_804A24EC;
-extern float lbl_804A24F0;
-extern float lbl_804A24F4;
-extern float lbl_804A24F8;
-extern float lbl_804A24FC;
-extern float lbl_804A2500;
-extern float lbl_804A2504;
-
-// Forward declarations
-extern void AXFXChorusExpCallback();
-extern void AXFXChorusExpGetMemSize();
-extern void AXFXChorusExpInit();
-extern void AXFXChorusExpSettingsUpdate();
-extern void AXFXChorusExpShutdown();
-extern void OSDisableInterrupts();
-extern void OSRestoreInterrupts();
-extern void __CalcLFO();
-extern void __cvt_fp2unsigned();
+void AXFXChorusExpCallback();
+s32 AXFXChorusExpInit(s32 *arg0, M2C_UNK arg_sp0);
+s32 AXFXChorusExpSettingsUpdate(s32 *arg0, M2C_UNK arg_sp0);
+void AXFXChorusExpShutdown(s32 *arg0);
+void __CalcLFO();
 extern void _restgpr_25();
 extern void _restgpr_27();
 extern void _savegpr_25();
 extern void _savegpr_27();
-extern void fn_802A1E68();
-extern void fn_802A2164();
-extern void fn_802A2170();
-extern void memset();
+s32 fn_802A1E68(s32 *arg0);
 
-// ----------------------------------------------------------------------------
-// AXFXChorusExpGetMemSize
-// ----------------------------------------------------------------------------
-asm void AXFXChorusExpGetMemSize() {
-    nofralloc
-    lis r3, 0x1
-    subi r3, r3, 0x6a00
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// AXFXChorusExpInit
-// ----------------------------------------------------------------------------
-asm void AXFXChorusExpInit() {
+// asm_to_cpp: AXFXChorusExpInit
+asm s32 AXFXChorusExpInit(s32 *arg0, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -220,10 +228,8 @@ lbl_802A18B0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// AXFXChorusExpSettingsUpdate
-// ----------------------------------------------------------------------------
-asm void AXFXChorusExpSettingsUpdate() {
+// asm_to_cpp: AXFXChorusExpSettingsUpdate
+asm s32 AXFXChorusExpSettingsUpdate(s32 *arg0, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -345,10 +351,8 @@ lbl_802A1A60:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// AXFXChorusExpShutdown
-// ----------------------------------------------------------------------------
-asm void AXFXChorusExpShutdown() {
+// asm_to_cpp: AXFXChorusExpShutdown
+asm void AXFXChorusExpShutdown(s32 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -390,9 +394,7 @@ lbl_802A1ACC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// AXFXChorusExpCallback
-// ----------------------------------------------------------------------------
+// asm_to_cpp: AXFXChorusExpCallback
 asm void AXFXChorusExpCallback() {
     nofralloc
     stwu r1, -0x200(r1)
@@ -630,10 +632,8 @@ lbl_802A1E48:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802A1E68
-// ----------------------------------------------------------------------------
-asm void fn_802A1E68() {
+// asm_to_cpp: fn_802A1E68
+asm s32 fn_802A1E68(s32 *arg0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -777,9 +777,7 @@ lbl_802A204C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __CalcLFO
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __CalcLFO
 asm void __CalcLFO() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -853,4 +851,3 @@ lbl_802A214C:
     addi r1, r1, 0x10
     blr
 }
-

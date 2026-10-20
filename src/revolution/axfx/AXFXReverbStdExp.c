@@ -1,54 +1,89 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/axfx/AXFXReverbStdExp.cpp
-// Total functions: 10
+M2C_UNK memset();                       /* extern */
+extern M2C_UNK lbl_803725C0;
+extern M2C_UNK lbl_803725E0;
+extern s32 (*lbl_8049CF40)(s32);
+extern M2C_UNK (*lbl_8049CF44)();
+extern f32 lbl_804A2498;
+extern f32 lbl_804A249C;
+extern f32 lbl_804A24A0;
+extern f32 lbl_804A24A4;
+extern f32 lbl_804A24B0;
+extern f32 lbl_804A24B4;
+extern f32 lbl_804A24B8;
+extern f32 lbl_804A24C8;
 
-// Small Data symbols (@sda21)
-extern float lbl_8049CF40;
-extern float lbl_8049CF44;
-extern float lbl_804A2498;
-extern float lbl_804A249C;
-extern float lbl_804A24A0;
-extern float lbl_804A24A4;
+s32 AXFXReverbStdExpGetMemSize();
+s32 AXFXReverbStdExpInit();
+s32 AXFXReverbStdExpSettings();
+s32 AXFXReverbStdExpSettingsUpdate();
+void AXFXReverbStdExpShutdown();
+void AXFXReverbStdExpCallback();
+s32 __AllocDelayLine();
+void __BzeroDelayLines();
+void __FreeDelayLine();
+s32 __InitParams();
+
+// AXFXReverbStdExpGetMemSize: definicion C reemplazada por asm (ver abajo)
+
+
+// AXFXReverbStdExpInit: definicion C reemplazada por asm (ver abajo)
+
+
+// AXFXReverbStdExpSettings: definicion C reemplazada por asm (ver abajo)
+
+
+// AXFXReverbStdExpSettingsUpdate: definicion C reemplazada por asm (ver abajo)
+
+
+void AXFXReverbStdExpShutdown(s8 *arg0) {
+    s32 temp_r31;
+
+    temp_r31 = OSDisableInterrupts();
+    M2C_FIELD(arg0, s32 *, 0xB0) = (s32) (M2C_FIELD(arg0, s32 *, 0xB0) | 1);
+    __FreeDelayLine(arg0);
+    OSRestoreInterrupts(temp_r31);
+}
+
+void AXFXReverbStdExpCallback(s8 *arg0, s8 *arg1, M2C_UNK arg_sp0);
+
+// __AllocDelayLine: definicion C reemplazada por asm (ver abajo)
+
+
+// __BzeroDelayLines: definicion C reemplazada por asm (ver abajo)
+
+
+// __FreeDelayLine: definicion C reemplazada por asm (ver abajo)
+
+
+// __InitParams: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern float lbl_804A24A8;
-extern float lbl_804A24B0;
-extern float lbl_804A24B4;
-extern float lbl_804A24B8;
 extern float lbl_804A24C0;
-extern float lbl_804A24C8;
 extern float lbl_804A24D0;
-
-// Global data symbols (@ha/@l)
-extern u8 lbl_803725C0[];
-extern u8 lbl_803725E0[];
-
-// Forward declarations
-extern void AXFXReverbStdExpCallback();
-extern void AXFXReverbStdExpGetMemSize();
-extern void AXFXReverbStdExpInit();
-extern void AXFXReverbStdExpSettings();
-extern void AXFXReverbStdExpSettingsUpdate();
-extern void AXFXReverbStdExpShutdown();
-extern void OSDisableInterrupts();
-extern void OSRestoreInterrupts();
-extern void __AllocDelayLine();
-extern void __BzeroDelayLines();
-extern void __FreeDelayLine();
-extern void __InitParams();
-extern void __cvt_fp2unsigned();
+void AXFXReverbStdExpCallback();
+s32 AXFXReverbStdExpGetMemSize(s8 *arg0);
+s32 AXFXReverbStdExpInit(s8 *arg0);
+s32 AXFXReverbStdExpSettings(s8 *arg0);
+s32 AXFXReverbStdExpSettingsUpdate(s8 *arg0);
+s32 __AllocDelayLine(s8 *arg0, s32 arg1, M2C_UNK arg_sp0);
+void __BzeroDelayLines(s8 *arg0, M2C_UNK arg_sp0);
+void __FreeDelayLine(s8 *arg0, M2C_UNK arg_sp0);
+s32 __InitParams(s8 *arg0);
 extern void _restgpr_24();
 extern void _restgpr_25();
 extern void _restgpr_26();
 extern void _savegpr_24();
 extern void _savegpr_25();
 extern void _savegpr_26();
-extern void log10();
-extern void memset();
 
-// ----------------------------------------------------------------------------
-// AXFXReverbStdExpGetMemSize
-// ----------------------------------------------------------------------------
-asm void AXFXReverbStdExpGetMemSize() {
+// asm_to_cpp: AXFXReverbStdExpGetMemSize
+asm s32 AXFXReverbStdExpGetMemSize(s8 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     lis r4, lbl_803725C0@ha
@@ -76,10 +111,8 @@ asm void AXFXReverbStdExpGetMemSize() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// AXFXReverbStdExpInit
-// ----------------------------------------------------------------------------
-asm void AXFXReverbStdExpInit() {
+// asm_to_cpp: AXFXReverbStdExpInit
+asm s32 AXFXReverbStdExpInit(s8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -182,10 +215,8 @@ lbl_802A0B24:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// AXFXReverbStdExpSettings
-// ----------------------------------------------------------------------------
-asm void AXFXReverbStdExpSettings() {
+// asm_to_cpp: AXFXReverbStdExpSettings
+asm s32 AXFXReverbStdExpSettings(s8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -243,10 +274,8 @@ lbl_802A0BF4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// AXFXReverbStdExpSettingsUpdate
-// ----------------------------------------------------------------------------
-asm void AXFXReverbStdExpSettingsUpdate() {
+// asm_to_cpp: AXFXReverbStdExpSettingsUpdate
+asm s32 AXFXReverbStdExpSettingsUpdate(s8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -297,37 +326,7 @@ lbl_802A0CA8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// AXFXReverbStdExpShutdown
-// ----------------------------------------------------------------------------
-asm void AXFXReverbStdExpShutdown() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    bl OSDisableInterrupts
-    lwz r0, 0xb0(r30)
-    mr r31, r3
-    mr r3, r30
-    ori r0, r0, 0x1
-    stw r0, 0xb0(r30)
-    bl __FreeDelayLine
-    mr r3, r31
-    bl OSRestoreInterrupts
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// AXFXReverbStdExpCallback
-// ----------------------------------------------------------------------------
+// asm_to_cpp: AXFXReverbStdExpCallback
 asm void AXFXReverbStdExpCallback() {
     nofralloc
     stwu r1, -0x60(r1)
@@ -568,10 +567,8 @@ lbl_802A106C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __AllocDelayLine
-// ----------------------------------------------------------------------------
-asm void __AllocDelayLine() {
+// asm_to_cpp: __AllocDelayLine
+asm s32 __AllocDelayLine(s8 *arg0, s32 arg1, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -665,10 +662,8 @@ lbl_802A11B0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __BzeroDelayLines
-// ----------------------------------------------------------------------------
-asm void __BzeroDelayLines() {
+// asm_to_cpp: __BzeroDelayLines
+asm void __BzeroDelayLines(s8 *arg0, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -743,10 +738,8 @@ lbl_802A1288:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __FreeDelayLine
-// ----------------------------------------------------------------------------
-asm void __FreeDelayLine() {
+// asm_to_cpp: __FreeDelayLine
+asm void __FreeDelayLine(s8 *arg0, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -817,10 +810,8 @@ lbl_802A137C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __InitParams
-// ----------------------------------------------------------------------------
-asm void __InitParams() {
+// asm_to_cpp: __InitParams
+asm s32 __InitParams(s8 *arg0) {
     nofralloc
     stwu r1, -0x60(r1)
     mflr r0
@@ -1016,4 +1007,3 @@ lbl_802A1634:
     addi r1, r1, 0x60
     blr
 }
-

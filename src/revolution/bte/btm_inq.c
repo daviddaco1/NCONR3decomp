@@ -1,52 +1,139 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/btm_inq.cpp
-// Total functions: 25
+M2C_UNK LogMsg_0();               /* extern */
+M2C_UNK LogMsg_1();               /* extern */
+M2C_UNK LogMsg_2();       /* extern */
+M2C_UNK LogMsg_3(); /* extern */
+M2C_UNK LogMsg_4(); /* extern */
+M2C_UNK LogMsg_6(); /* extern */
+M2C_UNK memcpy();                /* extern */
+M2C_UNK memset();           /* extern */
+extern M2C_UNK lbl_80374550;
+extern M2C_UNK lbl_803745AC;
+extern M2C_UNK lbl_80374600;
+extern M2C_UNK lbl_8037461C;
+extern M2C_UNK lbl_80374654;
+extern M2C_UNK lbl_80374694;
+extern M2C_UNK lbl_803746B4;
+extern M2C_UNK lbl_803746E8;
+extern M2C_UNK lbl_80374724;
+extern M2C_UNK lbl_80453F78;
+extern u8 lbl_804A2540;
+extern u8 lbl_804A2544;
 
-// Small Data symbols (@sda21)
-extern float lbl_804A2540;
-extern float lbl_804A2544;
+s32 BTM_SetDiscoverability();
+s32 BTM_SetInquiryScanType();
+s32 BTM_SetPageScanType();
+s32 BTM_SetInquiryMode();
+s32 BTM_SetConnectability();
+u8 BTM_IsInquiryActive();
+s32 BTM_CancelInquiry();
+u8 BTM_StartInquiry();
+s32 BTM_ReadRemoteDeviceName();
+s32 BTM_CancelRemoteDeviceName();
+s8 * BTM_InqDbRead();
+s8 * BTM_InqDbFirst();
+s8 * BTM_InqDbNext();
+s32 BTM_ClearInqDb();
+void btm_inq_db_reset();
+void btm_inq_db_init();
+u8 btm_inq_find_bdaddr();
+s8 * btm_inq_db_new();
+u8 btm_set_inq_event_filter();
+void btm_event_filter_complete();
+void btm_process_inq_results();
+void btm_process_inq_complete();
+s32 btm_initiate_rem_name();
+void btm_process_remote_name();
+void btm_inq_rmt_name_failed();
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_80374550[];
-extern u8 lbl_803745AC[];
-extern u8 lbl_80374600[];
-extern u8 lbl_8037461C[];
-extern u8 lbl_80374654[];
-extern u8 lbl_80374694[];
-extern u8 lbl_803746B4[];
-extern u8 lbl_803746E8[];
-extern u8 lbl_80374724[];
-extern u8 lbl_80453F78[];
 
-// Forward declarations
-extern void BTM_CancelInquiry();
-extern void BTM_CancelRemoteDeviceName();
-extern void BTM_ClearInqDb();
-extern void BTM_InqDbFirst();
-extern void BTM_InqDbNext();
-extern void BTM_InqDbRead();
-extern void BTM_IsDeviceUp();
-extern void BTM_IsInquiryActive();
-extern void BTM_ReadDeviceClass();
-extern void BTM_ReadRemoteDeviceName();
-extern void BTM_SetConnectability();
-extern void BTM_SetDeviceClass();
-extern void BTM_SetDiscoverability();
-extern void BTM_SetInquiryMode();
-extern void BTM_SetInquiryScanType();
-extern void BTM_SetPageScanType();
-extern void BTM_StartInquiry();
+// BTM_SetInquiryScanType: definicion C reemplazada por asm (ver abajo)
+
+
+// BTM_SetPageScanType: definicion C reemplazada por asm (ver abajo)
+
+
+// BTM_SetInquiryMode: definicion C reemplazada por asm (ver abajo)
+
+
+
+// BTM_IsInquiryActive: definicion C reemplazada por asm (ver abajo)
+
+
+// BTM_CancelInquiry: definicion C reemplazada por asm (ver abajo)
+
+
+// BTM_StartInquiry: definicion C reemplazada por asm (ver abajo)
+
+
+// BTM_ReadRemoteDeviceName: definicion C reemplazada por asm (ver abajo)
+
+
+// BTM_CancelRemoteDeviceName: definicion C reemplazada por asm (ver abajo)
+
+
+// BTM_InqDbRead: definicion C reemplazada por asm (ver abajo)
+
+
+// BTM_InqDbFirst: definicion C reemplazada por asm (ver abajo)
+
+
+s8 *BTM_InqDbNext(s32 arg0);
+
+// BTM_ClearInqDb: definicion C reemplazada por asm (ver abajo)
+
+
+// btm_inq_db_reset: definicion C reemplazada por asm (ver abajo)
+
+
+void btm_inq_db_init(s32 arg0) {
+
+}
+
+// btm_inq_find_bdaddr: definicion C reemplazada por asm (ver abajo)
+
+
+// btm_inq_db_new: definicion C reemplazada por asm (ver abajo)
+
+
+// btm_set_inq_event_filter: definicion C reemplazada por asm (ver abajo)
+
+
+void btm_event_filter_complete(u8 *arg0);
+
+void btm_process_inq_results(u8 *arg0, s32 arg1, M2C_UNK arg_sp0);
+
+// btm_process_inq_complete: definicion C reemplazada por asm (ver abajo)
+
+
+// btm_initiate_rem_name: definicion C reemplazada por asm (ver abajo)
+
+
+
+void btm_inq_rmt_name_failed(void) {
+    btm_process_remote_name(0, NULL, 0U, 0x1F);
+    btm_sec_rmt_name_request_complete(0, NULL, 0x1F);
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+s32 BTM_CancelInquiry(void);
+s32 BTM_CancelRemoteDeviceName(void);
+s32 BTM_ClearInqDb(u8 *arg0, M2C_UNK arg_sp0);
+s8 *BTM_InqDbFirst(void);
+s8 * BTM_InqDbNext();
+s8 *BTM_InqDbRead(u8 *arg0);
+u8 BTM_IsInquiryActive(void);
+s32 BTM_ReadRemoteDeviceName(u8 *arg0, s32 arg1, M2C_UNK arg_sp0);
+s32 BTM_SetConnectability();
+s32 BTM_SetDiscoverability();
+s32 BTM_SetInquiryMode(s32 arg0);
+s32 BTM_SetInquiryScanType(s32 arg0);
+s32 BTM_SetPageScanType(s32 arg0);
+u8 BTM_StartInquiry(s8 *arg0, s32 arg1, s32 arg2, s32 arg3);
 extern void GKI_freebuf();
-extern void GKI_get_tick_count();
-extern void GKI_getbuf();
-extern void GKI_getpoolbuf();
-extern void LogMsg_0();
-extern void LogMsg_1();
-extern void LogMsg_2();
-extern void LogMsg_3();
-extern void LogMsg_4();
-extern void LogMsg_6();
 extern void _restgpr_16();
 extern void _restgpr_23();
 extern void _restgpr_26();
@@ -55,23 +142,15 @@ extern void _savegpr_16();
 extern void _savegpr_23();
 extern void _savegpr_26();
 extern void _savegpr_27();
-extern void btm_event_filter_complete();
-extern void btm_initiate_rem_name();
-extern void btm_inq_db_init();
-extern void btm_inq_db_new();
-extern void btm_inq_db_reset();
-extern void btm_inq_find_bdaddr();
-extern void btm_inq_rmt_name_failed();
-extern void btm_process_inq_complete();
-extern void btm_process_inq_results();
-extern void btm_process_remote_name();
-extern void btm_sec_rmt_name_request_complete();
-extern void btm_set_inq_event_filter();
-extern void btsnd_hcic_inq_cancel();
-extern void btsnd_hcic_inquiry();
-extern void btsnd_hcic_per_inq_mode();
-extern void btsnd_hcic_rmt_name_req();
-extern void btsnd_hcic_rmt_name_req_cancel();
+void btm_event_filter_complete();
+s32 btm_initiate_rem_name(u8 *arg0, s8 *arg1, u32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0);
+s8 *btm_inq_db_new(u8 *arg0);
+void btm_inq_db_reset(M2C_UNK arg_sp0);
+u8 btm_inq_find_bdaddr(u8 *arg0, M2C_UNK arg_sp0);
+void btm_process_inq_complete(s32 arg0);
+void btm_process_inq_results();
+void btm_process_remote_name();
+u8 btm_set_inq_event_filter(s32 arg0, u8 *arg1, M2C_UNK arg_sp0);
 extern void btsnd_hcic_set_event_filter();
 extern void btsnd_hcic_write_cur_iac_lap();
 extern void btsnd_hcic_write_inqscan_cfg();
@@ -82,14 +161,9 @@ extern void btsnd_hcic_write_pagescan_type();
 extern void btsnd_hcic_write_scan_enable();
 extern void btu_start_timer();
 extern void btu_stop_timer();
-extern void memcmp();
-extern void memcpy();
-extern void memset();
 
-// ----------------------------------------------------------------------------
-// BTM_SetDiscoverability
-// ----------------------------------------------------------------------------
-asm void BTM_SetDiscoverability() {
+// asm_to_cpp: BTM_SetDiscoverability
+asm s32 BTM_SetDiscoverability() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -274,10 +348,8 @@ lbl_802AF9EC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTM_SetInquiryScanType
-// ----------------------------------------------------------------------------
-asm void BTM_SetInquiryScanType() {
+// asm_to_cpp: BTM_SetInquiryScanType
+asm s32 BTM_SetInquiryScanType(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -331,10 +403,8 @@ lbl_802AFA9C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTM_SetPageScanType
-// ----------------------------------------------------------------------------
-asm void BTM_SetPageScanType() {
+// asm_to_cpp: BTM_SetPageScanType
+asm s32 BTM_SetPageScanType(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -388,10 +458,8 @@ lbl_802AFB4C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTM_SetInquiryMode
-// ----------------------------------------------------------------------------
-asm void BTM_SetInquiryMode() {
+// asm_to_cpp: BTM_SetInquiryMode
+asm s32 BTM_SetInquiryMode(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -439,10 +507,8 @@ lbl_802AFBE8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTM_SetConnectability
-// ----------------------------------------------------------------------------
-asm void BTM_SetConnectability() {
+// asm_to_cpp: BTM_SetConnectability
+asm s32 BTM_SetConnectability() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -559,10 +625,8 @@ lbl_802AFD6C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTM_IsInquiryActive
-// ----------------------------------------------------------------------------
-asm void BTM_IsInquiryActive() {
+// asm_to_cpp: BTM_IsInquiryActive
+asm u8 BTM_IsInquiryActive(void) {
     nofralloc
     lis r3, lbl_80453F78@ha
     addi r3, r3, lbl_80453F78@l
@@ -570,10 +634,8 @@ asm void BTM_IsInquiryActive() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTM_CancelInquiry
-// ----------------------------------------------------------------------------
-asm void BTM_CancelInquiry() {
+// asm_to_cpp: BTM_CancelInquiry
+asm s32 BTM_CancelInquiry(void) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -650,10 +712,8 @@ lbl_802AFE80:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTM_StartInquiry
-// ----------------------------------------------------------------------------
-asm void BTM_StartInquiry() {
+// asm_to_cpp: BTM_StartInquiry
+asm u8 BTM_StartInquiry(s8 *arg0, s32 arg1, s32 arg2, s32 arg3) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -776,10 +836,8 @@ lbl_802B0030:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTM_ReadRemoteDeviceName
-// ----------------------------------------------------------------------------
-asm void BTM_ReadRemoteDeviceName() {
+// asm_to_cpp: BTM_ReadRemoteDeviceName
+asm s32 BTM_ReadRemoteDeviceName(u8 *arg0, s32 arg1, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -846,10 +904,8 @@ lbl_802B0108:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTM_CancelRemoteDeviceName
-// ----------------------------------------------------------------------------
-asm void BTM_CancelRemoteDeviceName() {
+// asm_to_cpp: BTM_CancelRemoteDeviceName
+asm s32 BTM_CancelRemoteDeviceName(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -886,10 +942,8 @@ lbl_802B019C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTM_InqDbRead
-// ----------------------------------------------------------------------------
-asm void BTM_InqDbRead() {
+// asm_to_cpp: BTM_InqDbRead
+asm s8 *BTM_InqDbRead(u8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -945,10 +999,8 @@ lbl_802B0254:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTM_InqDbFirst
-// ----------------------------------------------------------------------------
-asm void BTM_InqDbFirst() {
+// asm_to_cpp: BTM_InqDbFirst
+asm s8 *BTM_InqDbFirst(void) {
     nofralloc
     lis r3, lbl_80453F78@ha
     li r0, 0x2
@@ -1005,10 +1057,8 @@ lbl_802B0314:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTM_InqDbNext
-// ----------------------------------------------------------------------------
-asm void BTM_InqDbNext() {
+// asm_to_cpp: BTM_InqDbNext
+asm s8 * BTM_InqDbNext() {
     nofralloc
     cmpwi r3, 0x0
     beq lbl_802B03AC
@@ -1102,10 +1152,8 @@ lbl_802B0450:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTM_ClearInqDb
-// ----------------------------------------------------------------------------
-asm void BTM_ClearInqDb() {
+// asm_to_cpp: BTM_ClearInqDb
+asm s32 BTM_ClearInqDb(u8 *arg0, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1167,10 +1215,8 @@ lbl_802B051C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btm_inq_db_reset
-// ----------------------------------------------------------------------------
-asm void btm_inq_db_reset() {
+// asm_to_cpp: btm_inq_db_reset
+asm void btm_inq_db_reset(M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x120(r1)
     mflr r0
@@ -1282,18 +1328,8 @@ lbl_802B0698:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btm_inq_db_init
-// ----------------------------------------------------------------------------
-asm void btm_inq_db_init() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// btm_inq_find_bdaddr
-// ----------------------------------------------------------------------------
-asm void btm_inq_find_bdaddr() {
+// asm_to_cpp: btm_inq_find_bdaddr
+asm u8 btm_inq_find_bdaddr(u8 *arg0, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1359,10 +1395,8 @@ lbl_802B0794:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btm_inq_db_new
-// ----------------------------------------------------------------------------
-asm void btm_inq_db_new() {
+// asm_to_cpp: btm_inq_db_new
+asm s8 *btm_inq_db_new(u8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1436,10 +1470,8 @@ lbl_802B0894:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btm_set_inq_event_filter
-// ----------------------------------------------------------------------------
-asm void btm_set_inq_event_filter() {
+// asm_to_cpp: btm_set_inq_event_filter
+asm u8 btm_set_inq_event_filter(s32 arg0, u8 *arg1, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1508,9 +1540,7 @@ lbl_802B097C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btm_event_filter_complete
-// ----------------------------------------------------------------------------
+// asm_to_cpp: btm_event_filter_complete
 asm void btm_event_filter_complete() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1665,9 +1695,7 @@ lbl_802B0B98:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btm_process_inq_results
-// ----------------------------------------------------------------------------
+// asm_to_cpp: btm_process_inq_results
 asm void btm_process_inq_results() {
     nofralloc
     stwu r1, -0x60(r1)
@@ -1846,10 +1874,8 @@ lbl_802B0E14:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btm_process_inq_complete
-// ----------------------------------------------------------------------------
-asm void btm_process_inq_complete() {
+// asm_to_cpp: btm_process_inq_complete
+asm void btm_process_inq_complete(s32 arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1922,10 +1948,8 @@ lbl_802B0F10:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btm_initiate_rem_name
-// ----------------------------------------------------------------------------
-asm void btm_initiate_rem_name() {
+// asm_to_cpp: btm_initiate_rem_name
+asm s32 btm_initiate_rem_name(u8 *arg0, s8 *arg1, u32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -2025,9 +2049,7 @@ lbl_802B1068:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btm_process_remote_name
-// ----------------------------------------------------------------------------
+// asm_to_cpp: btm_process_remote_name
 asm void btm_process_remote_name() {
     nofralloc
     stwu r1, -0x120(r1)
@@ -2124,27 +2146,3 @@ lbl_802B11C0:
     addi r1, r1, 0x120
     blr
 }
-
-// ----------------------------------------------------------------------------
-// btm_inq_rmt_name_failed
-// ----------------------------------------------------------------------------
-asm void btm_inq_rmt_name_failed() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    li r3, 0x0
-    li r4, 0x0
-    stw r0, 0x14(r1)
-    li r5, 0x0
-    li r6, 0x1f
-    bl btm_process_remote_name
-    li r3, 0x0
-    li r4, 0x0
-    li r5, 0x1f
-    bl btm_sec_rmt_name_request_complete
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-

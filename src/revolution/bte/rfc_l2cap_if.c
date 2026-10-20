@@ -1,46 +1,62 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/rfc_l2cap_if.cpp
-// Total functions: 10
+M2C_UNK LogMsg_1();          /* extern */
+M2C_UNK LogMsg_2();             /* extern */
+M2C_UNK rfc_mx_sm_execute();     /* extern */
+M2C_UNK rfc_port_sm_execute();        /* extern */
+extern M2C_UNK lbl_803778E8;
+extern M2C_UNK lbl_80457828;
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_803778E8[];
-extern u8 lbl_80457828[];
+void rfcomm_l2cap_if_init();
+void RFCOMM_ConnectInd();
+void RFCOMM_ConnectCnf();
+void RFCOMM_ConfigInd();
+void RFCOMM_ConfigCnf();
+void RFCOMM_QoSViolationInd();
+void RFCOMM_DisconnectInd();
+void RFCOMM_BufDataInd();
+void RFCOMM_CongestionStatusInd();
+void rfc_save_lcid_mcb();
 
-// Forward declarations
+// rfcomm_l2cap_if_init: definicion C reemplazada por asm (ver abajo)
+
+
+
+
+
+
+void RFCOMM_QoSViolationInd(void) {
+
+}
+
+
+
+
+// rfc_save_lcid_mcb: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void GKI_freebuf();
-extern void L2CA_ConnectRsp();
-extern void L2CA_DisconnectRsp();
-extern void L2CA_Register();
-extern void LogMsg_1();
-extern void LogMsg_2();
-extern void RFCOMM_BufDataInd();
-extern void RFCOMM_ConfigCnf();
-extern void RFCOMM_ConfigInd();
-extern void RFCOMM_CongestionStatusInd();
-extern void RFCOMM_ConnectCnf();
-extern void RFCOMM_ConnectInd();
-extern void RFCOMM_DisconnectInd();
-extern void RFCOMM_QoSViolationInd();
+void RFCOMM_BufDataInd();
+void RFCOMM_ConfigCnf();
+void RFCOMM_ConfigInd();
+void RFCOMM_CongestionStatusInd();
+void RFCOMM_ConnectCnf();
+void RFCOMM_ConnectInd();
+void RFCOMM_DisconnectInd();
 extern void _restgpr_27();
 extern void _savegpr_27();
-extern void port_find_dlci_port();
-extern void port_find_mcb_dlci_port();
-extern void rfc_alloc_multiplexer_channel();
 extern void rfc_inc_credit();
-extern void rfc_mx_sm_execute();
-extern void rfc_parse_data();
-extern void rfc_port_sm_execute();
 extern void rfc_process_l2cap_congestion();
 extern void rfc_process_mx_message();
-extern void rfc_save_lcid_mcb();
+void rfc_save_lcid_mcb(s32 arg0, s32 arg1);
 extern void rfc_send_dm();
-extern void rfcomm_l2cap_if_init();
+void rfcomm_l2cap_if_init(s32 arg0, s32 arg1);
 
-// ----------------------------------------------------------------------------
-// rfcomm_l2cap_if_init
-// ----------------------------------------------------------------------------
-asm void rfcomm_l2cap_if_init() {
+// asm_to_cpp: rfcomm_l2cap_if_init
+asm void rfcomm_l2cap_if_init(s32 arg0, s32 arg1) {
     nofralloc
     lis r3, RFCOMM_ConnectInd@ha
     lis r4, lbl_80457828@ha
@@ -75,9 +91,7 @@ asm void rfcomm_l2cap_if_init() {
     b L2CA_Register
 }
 
-// ----------------------------------------------------------------------------
-// RFCOMM_ConnectInd
-// ----------------------------------------------------------------------------
+// asm_to_cpp: RFCOMM_ConnectInd
 asm void RFCOMM_ConnectInd() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -119,9 +133,7 @@ lbl_802C58F4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// RFCOMM_ConnectCnf
-// ----------------------------------------------------------------------------
+// asm_to_cpp: RFCOMM_ConnectCnf
 asm void RFCOMM_ConnectCnf() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -197,9 +209,7 @@ lbl_802C59F8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// RFCOMM_ConfigInd
-// ----------------------------------------------------------------------------
+// asm_to_cpp: RFCOMM_ConfigInd
 asm void RFCOMM_ConfigInd() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -276,9 +286,7 @@ lbl_802C5AFC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// RFCOMM_ConfigCnf
-// ----------------------------------------------------------------------------
+// asm_to_cpp: RFCOMM_ConfigCnf
 asm void RFCOMM_ConfigCnf() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -355,17 +363,7 @@ lbl_802C5C04:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// RFCOMM_QoSViolationInd
-// ----------------------------------------------------------------------------
-asm void RFCOMM_QoSViolationInd() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// RFCOMM_DisconnectInd
-// ----------------------------------------------------------------------------
+// asm_to_cpp: RFCOMM_DisconnectInd
 asm void RFCOMM_DisconnectInd() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -450,9 +448,7 @@ lbl_802C5D28:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// RFCOMM_BufDataInd
-// ----------------------------------------------------------------------------
+// asm_to_cpp: RFCOMM_BufDataInd
 asm void RFCOMM_BufDataInd() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -645,9 +641,7 @@ lbl_802C5FD0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// RFCOMM_CongestionStatusInd
-// ----------------------------------------------------------------------------
+// asm_to_cpp: RFCOMM_CongestionStatusInd
 asm void RFCOMM_CongestionStatusInd() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -736,10 +730,8 @@ lbl_802C60FC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// rfc_save_lcid_mcb
-// ----------------------------------------------------------------------------
-asm void rfc_save_lcid_mcb() {
+// asm_to_cpp: rfc_save_lcid_mcb
+asm void rfc_save_lcid_mcb(s32 arg0, s32 arg1) {
     nofralloc
     subi r0, r4, 0x40
     lis r4, lbl_80457828@ha
@@ -749,4 +741,3 @@ asm void rfc_save_lcid_mcb() {
     stw r3, 0x3c(r4)
     blr
 }
-

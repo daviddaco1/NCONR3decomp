@@ -1,9 +1,57 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/gap_utils.cpp
-// Total functions: 6
+M2C_UNK btm_cback();                    /* static */
 
-// Global data symbols (@ha/@l)
+/*
+Decompilation failure in function btm_cback:
+
+Found bctr instruction at gap_utils.s line 89, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+void gap_btm_cback0();
+void gap_btm_cback1();
+
+void gap_btm_cback0(s32 arg0) {
+    btm_cback(0, arg0);
+}
+
+void gap_btm_cback1(s32 arg0) {
+    btm_cback(1, arg0);
+}
+
+/*
+Decompilation failure in function gap_find_addr_name_cb:
+
+Found bctr instruction at gap_utils.s line 263, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+/*
+Decompilation failure in function gap_find_addr_inq_cb:
+
+Found bctr instruction at gap_utils.s line 386, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+/*
+Decompilation failure in function gap_convert_btm_status:
+
+Found bctr instruction at gap_utils.s line 436, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern u8 jumptable_803756DC[];
 extern u8 jumptable_80375808[];
 extern u8 jumptable_8037582C[];
@@ -15,28 +63,17 @@ extern u8 lbl_80375788[];
 extern u8 lbl_803757CC[];
 extern u8 lbl_80375850[];
 extern u8 lbl_80456740[];
-
-// Forward declarations
-extern void BTM_InqDbFirst();
-extern void BTM_InqDbNext();
-extern void BTM_ReadRemoteDeviceName();
 extern void LogMsg_0();
 extern void LogMsg_1();
 extern void LogMsg_2();
-extern void btm_cback();
-extern void gap_btm_cback0();
-extern void gap_btm_cback1();
-extern void gap_convert_btm_status();
-extern void gap_find_addr_inq_cb();
-extern void gap_find_addr_name_cb();
+M2C_UNK btm_cback();
+extern int gap_convert_btm_status();
+extern int gap_find_addr_inq_cb();
+extern int gap_find_addr_name_cb();
 extern void memcpy();
-extern void strlen();
-extern void strncmp();
 
-// ----------------------------------------------------------------------------
-// btm_cback
-// ----------------------------------------------------------------------------
-asm void btm_cback() {
+// asm_to_cpp: btm_cback
+asm M2C_UNK btm_cback() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -168,30 +205,8 @@ lbl_802B7E14:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// gap_btm_cback0
-// ----------------------------------------------------------------------------
-asm void gap_btm_cback0() {
-    nofralloc
-    mr r4, r3
-    li r3, 0x0
-    b btm_cback
-}
-
-// ----------------------------------------------------------------------------
-// gap_btm_cback1
-// ----------------------------------------------------------------------------
-asm void gap_btm_cback1() {
-    nofralloc
-    mr r4, r3
-    li r3, 0x1
-    b btm_cback
-}
-
-// ----------------------------------------------------------------------------
-// gap_find_addr_name_cb
-// ----------------------------------------------------------------------------
-asm void gap_find_addr_name_cb() {
+// asm_to_cpp: gap_find_addr_name_cb
+asm int gap_find_addr_name_cb() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -341,10 +356,8 @@ lbl_802B8040:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// gap_find_addr_inq_cb
-// ----------------------------------------------------------------------------
-asm void gap_find_addr_inq_cb() {
+// asm_to_cpp: gap_find_addr_inq_cb
+asm int gap_find_addr_inq_cb() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -467,10 +480,8 @@ lbl_802B81F4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// gap_convert_btm_status
-// ----------------------------------------------------------------------------
-asm void gap_convert_btm_status() {
+// asm_to_cpp: gap_convert_btm_status
+asm int gap_convert_btm_status() {
     nofralloc
     cmplwi r3, 0x8
     bgt lbl_802B8268
@@ -498,4 +509,3 @@ lbl_802B8268:
     li r3, 0x114
     blr
 }
-

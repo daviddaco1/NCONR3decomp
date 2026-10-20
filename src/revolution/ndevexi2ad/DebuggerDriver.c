@@ -1,45 +1,83 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/ndevexi2ad/DebuggerDriver.cpp
-// Total functions: 9
+M2C_UNK __DBIntrHandler();                          /* static */
+M2C_UNK __DBMtrHandler();                           /* static */
+extern u8 lbl_8049C428;
+extern s32 lbl_8049D938;
+extern M2C_UNK (*lbl_8049D93C)();
+extern s8 lbl_8049D940;
+extern u32 lbl_8049D944;
+extern s32 lbl_8049D948;
 
-// Small Data symbols (@sda21)
-extern float lbl_8049C428;
-extern float lbl_8049D938;
-extern float lbl_8049D93C;
-extern float lbl_8049D940;
-extern float lbl_8049D944;
-extern float lbl_8049D948;
+/*
+Decompilation failure in function __DBMtrHandler:
 
-// Global data symbols (@ha/@l)
+Unable to determine jump table for bctr instruction at DebuggerDriver.s line 17.
 
-// Forward declarations
-extern void DBClose();
-extern void DBInitComm();
-extern void DBInitInterrupts();
-extern void DBOpen();
-extern void DBQueryData();
-extern void DBRead();
-extern void DBWrite();
-extern void OSDisableInterrupts();
-extern void OSRestoreInterrupts();
+There must be a read of a variable before the instruction
+which has a name starting with with "jtbl"/"jpt_"/"lbl_"/"jumptable_".
+*/
+
+/*
+Decompilation failure in function __DBIntrHandler:
+
+Unable to determine jump table for bctr instruction at DebuggerDriver.s line 30.
+
+There must be a read of a variable before the instruction
+which has a name starting with with "jtbl"/"jpt_"/"lbl_"/"jumptable_".
+*/
+
+void DBInitComm();
+void DBInitInterrupts();
+s32 DBQueryData();
+s32 DBRead();
+s32 DBWrite();
+void DBOpen();
+void DBClose();
+
+// DBInitComm: definicion C reemplazada por asm (ver abajo)
+
+
+void DBInitInterrupts(void) {
+    __OSMaskInterrupts(0x18000);
+    __OSMaskInterrupts(0x40);
+    lbl_8049D93C = __DBMtrHandler;
+    __OSSetInterruptHandler(0x19, (s32) __DBIntrHandler);
+    __OSUnmaskInterrupts(0x40);
+}
+
+// DBQueryData: definicion C reemplazada por asm (ver abajo)
+
+
+// DBRead: definicion C reemplazada por asm (ver abajo)
+
+
+// DBWrite: definicion C reemplazada por asm (ver abajo)
+
+
+void DBOpen(void) {
+
+}
+
+void DBClose(void) {
+
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+void DBInitComm(s8 **arg0, s32 arg1);
+s32 DBQueryData(void);
+s32 DBRead(s32 arg0, s32 arg1);
+s32 DBWrite(s32 arg0, s32 arg1, M2C_UNK arg_sp0);
 extern void __DBEXIInit();
-extern void __DBEXIReadRam();
-extern void __DBEXIReadReg();
-extern void __DBEXIWriteRam();
-extern void __DBEXIWriteReg();
-extern void __DBIntrHandler();
-extern void __DBMtrHandler();
-extern void __OSMaskInterrupts();
-extern void __OSSetInterruptHandler();
-extern void __OSUnmaskInterrupts();
+M2C_UNK __DBIntrHandler();
+M2C_UNK __DBMtrHandler();
 extern void _restgpr_27();
 extern void _savegpr_27();
 
-// ----------------------------------------------------------------------------
-// __DBMtrHandler
-// ----------------------------------------------------------------------------
-asm void __DBMtrHandler() {
+// asm_to_cpp: __DBMtrHandler
+asm M2C_UNK __DBMtrHandler() {
     nofralloc
     lwz r12, lbl_8049D938
     li r0, 0x1
@@ -52,10 +90,8 @@ asm void __DBMtrHandler() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __DBIntrHandler
-// ----------------------------------------------------------------------------
-asm void __DBIntrHandler() {
+// asm_to_cpp: __DBIntrHandler
+asm M2C_UNK __DBIntrHandler() {
     nofralloc
     li r0, 0x1000
     lis r5, 0xcc00
@@ -68,10 +104,8 @@ asm void __DBIntrHandler() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DBInitComm
-// ----------------------------------------------------------------------------
-asm void DBInitComm() {
+// asm_to_cpp: DBInitComm
+asm void DBInitComm(s8 **arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -98,38 +132,8 @@ asm void DBInitComm() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DBInitInterrupts
-// ----------------------------------------------------------------------------
-asm void DBInitInterrupts() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    lis r3, 0x2
-    stw r0, 0x14(r1)
-    addi r3, r3, -0x8000
-    bl __OSMaskInterrupts
-    li r3, 0x40
-    bl __OSMaskInterrupts
-    lis r3, __DBMtrHandler@ha
-    lis r4, __DBIntrHandler@ha
-    addi r3, r3, __DBMtrHandler@l
-    stw r3, lbl_8049D93C
-    addi r4, r4, __DBIntrHandler@l
-    li r3, 0x19
-    bl __OSSetInterruptHandler
-    li r3, 0x40
-    bl __OSUnmaskInterrupts
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// DBQueryData
-// ----------------------------------------------------------------------------
-asm void DBQueryData() {
+// asm_to_cpp: DBQueryData
+asm s32 DBQueryData(void) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -176,10 +180,8 @@ lbl_801A8708:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DBRead
-// ----------------------------------------------------------------------------
-asm void DBRead() {
+// asm_to_cpp: DBRead
+asm s32 DBRead(s32 arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -215,10 +217,8 @@ asm void DBRead() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DBWrite
-// ----------------------------------------------------------------------------
-asm void DBWrite() {
+// asm_to_cpp: DBWrite
+asm s32 DBWrite(s32 arg0, s32 arg1, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -294,20 +294,3 @@ lbl_801A8870:
     addi r1, r1, 0x30
     blr
 }
-
-// ----------------------------------------------------------------------------
-// DBOpen
-// ----------------------------------------------------------------------------
-asm void DBOpen() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// DBClose
-// ----------------------------------------------------------------------------
-asm void DBClose() {
-    nofralloc
-    blr
-}
-

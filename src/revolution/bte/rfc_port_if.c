@@ -1,36 +1,93 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/rfc_port_if.cpp
-// Total functions: 12
+M2C_UNK rfc_mx_sm_execute();          /* extern */
+M2C_UNK rfc_port_sm_execute();        /* extern */
 
-// Forward declarations
+void RFCOMM_StartRsp();
+void RFCOMM_DlcEstablishReq();
+void RFCOMM_DlcEstablishRsp();
+void RFCOMM_ParNegReq();
+void RFCOMM_PortNegReq();
+void RFCOMM_ControlReq();
+void RFCOMM_FlowReq();
+void RFCOMM_LineStatusReq();
+void RFCOMM_DlcReleaseReq();
+void RFCOMM_DataReq();
+
+
+// RFCOMM_DlcEstablishReq: definicion C reemplazada por asm (ver abajo)
+
+
+
+// RFCOMM_ParNegReq: definicion C reemplazada por asm (ver abajo)
+
+
+/*
+Decompilation failure in function RFCOMM_ParNegRsp:
+
+Cannot find branch target rfc_send_pn
+*/
+
+void RFCOMM_PortNegReq(s8 *arg0, s32 arg1, s32 arg2) {
+    s8 *temp_r31;
+    s8 *temp_r3;
+
+    temp_r3 = port_find_mcb_dlci_port((s32) arg0, (u32) arg1);
+    temp_r31 = temp_r3;
+    if ((u8) M2C_FIELD(arg0, u8 *, 0x6C) != 5) {
+        PORT_PortNegCnf((s32) arg0, arg1, 0, 1);
+        return;
+    }
+    if (arg2 == 0) {
+        M2C_FIELD(temp_r3, u8 *, 0x69) = (u8) (M2C_FIELD(temp_r3, u8 *, 0x69) | 2);
+    } else {
+        M2C_FIELD(temp_r3, u8 *, 0x69) = (u8) (M2C_FIELD(temp_r3, u8 *, 0x69) | 4);
+    }
+    rfc_send_rpn(arg0, arg1, 1, (s8 *) arg2, 0x3F7FU);
+    rfc_port_timer_start((s32) temp_r31, 0x3CU);
+}
+
+/*
+Decompilation failure in function RFCOMM_PortNegRsp:
+
+Cannot find branch target rfc_send_rpn
+*/
+
+// RFCOMM_ControlReq: definicion C reemplazada por asm (ver abajo)
+
+
+// RFCOMM_FlowReq: definicion C reemplazada por asm (ver abajo)
+
+
+// RFCOMM_LineStatusReq: definicion C reemplazada por asm (ver abajo)
+
+
+// RFCOMM_DlcReleaseReq: definicion C reemplazada por asm (ver abajo)
+
+
+// RFCOMM_DataReq: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void PORT_DlcEstablishCnf();
 extern void PORT_DlcReleaseInd();
-extern void PORT_PortNegCnf();
-extern void RFCOMM_ControlReq();
-extern void RFCOMM_DataReq();
-extern void RFCOMM_DlcEstablishReq();
-extern void RFCOMM_DlcEstablishRsp();
-extern void RFCOMM_DlcReleaseReq();
-extern void RFCOMM_FlowReq();
-extern void RFCOMM_LineStatusReq();
-extern void RFCOMM_ParNegReq();
-extern void RFCOMM_ParNegRsp();
-extern void RFCOMM_PortNegReq();
-extern void RFCOMM_PortNegRsp();
-extern void RFCOMM_StartRsp();
-extern void port_find_mcb_dlci_port();
-extern void rfc_mx_sm_execute();
-extern void rfc_port_sm_execute();
-extern void rfc_port_timer_start();
+void RFCOMM_ControlReq(s32 arg0, s32 arg1, s8 *arg2);
+void RFCOMM_DataReq(s32 arg0, s32 arg1, u16 *arg2);
+void RFCOMM_DlcEstablishReq(s8 *arg0, s32 arg1, s32 arg2);
+void RFCOMM_DlcEstablishRsp();
+void RFCOMM_DlcReleaseReq(s32 arg0, s32 arg1);
+void RFCOMM_FlowReq(s32 arg0, s32 arg1, s32 arg2);
+void RFCOMM_LineStatusReq(s32 arg0, s32 arg1, s32 arg2);
+void RFCOMM_ParNegReq(s8 *arg0, s32 arg1, s32 arg2);
+extern int RFCOMM_ParNegRsp();
+extern int RFCOMM_PortNegRsp();
+void RFCOMM_StartRsp();
 extern void rfc_send_msc();
-extern void rfc_send_pn();
 extern void rfc_send_rls();
-extern void rfc_send_rpn();
 
-// ----------------------------------------------------------------------------
-// RFCOMM_StartRsp
-// ----------------------------------------------------------------------------
+// asm_to_cpp: RFCOMM_StartRsp
 asm void RFCOMM_StartRsp() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -46,10 +103,8 @@ asm void RFCOMM_StartRsp() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// RFCOMM_DlcEstablishReq
-// ----------------------------------------------------------------------------
-asm void RFCOMM_DlcEstablishReq() {
+// asm_to_cpp: RFCOMM_DlcEstablishReq
+asm void RFCOMM_DlcEstablishReq(s8 *arg0, s32 arg1, s32 arg2) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -81,9 +136,7 @@ lbl_802C7F98:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// RFCOMM_DlcEstablishRsp
-// ----------------------------------------------------------------------------
+// asm_to_cpp: RFCOMM_DlcEstablishRsp
 asm void RFCOMM_DlcEstablishRsp() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -118,10 +171,8 @@ lbl_802C8008:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// RFCOMM_ParNegReq
-// ----------------------------------------------------------------------------
-asm void RFCOMM_ParNegReq() {
+// asm_to_cpp: RFCOMM_ParNegReq
+asm void RFCOMM_ParNegReq(s8 *arg0, s32 arg1, s32 arg2) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -187,10 +238,8 @@ lbl_802C80E0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// RFCOMM_ParNegRsp
-// ----------------------------------------------------------------------------
-asm void RFCOMM_ParNegRsp() {
+// asm_to_cpp: RFCOMM_ParNegRsp
+asm int RFCOMM_ParNegRsp() {
     nofralloc
     lbz r0, 0x6c(r3)
     mr r9, r6
@@ -204,68 +253,8 @@ asm void RFCOMM_ParNegRsp() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// RFCOMM_PortNegReq
-// ----------------------------------------------------------------------------
-asm void RFCOMM_PortNegReq() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    stw r30, 0x18(r1)
-    mr r30, r5
-    stw r29, 0x14(r1)
-    mr r29, r4
-    stw r28, 0x10(r1)
-    mr r28, r3
-    bl port_find_mcb_dlci_port
-    lbz r0, 0x6c(r28)
-    mr r31, r3
-    cmplwi r0, 0x5
-    beq lbl_802C817C
-    mr r3, r28
-    mr r4, r29
-    li r5, 0x0
-    li r6, 0x1
-    bl PORT_PortNegCnf
-    b lbl_802C81C4
-lbl_802C817C:
-    cmpwi r30, 0x0
-    bne lbl_802C8194
-    lbz r0, 0x69(r3)
-    ori r0, r0, 0x2
-    stb r0, 0x69(r3)
-    b lbl_802C81A0
-lbl_802C8194:
-    lbz r0, 0x69(r3)
-    ori r0, r0, 0x4
-    stb r0, 0x69(r3)
-lbl_802C81A0:
-    mr r3, r28
-    mr r4, r29
-    mr r6, r30
-    li r5, 0x1
-    li r7, 0x3f7f
-    bl rfc_send_rpn
-    mr r3, r31
-    li r4, 0x3c
-    bl rfc_port_timer_start
-lbl_802C81C4:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r28, 0x10(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// RFCOMM_PortNegRsp
-// ----------------------------------------------------------------------------
-asm void RFCOMM_PortNegRsp() {
+// asm_to_cpp: RFCOMM_PortNegRsp
+asm int RFCOMM_PortNegRsp() {
     nofralloc
     lbz r0, 0x6c(r3)
     mr r7, r6
@@ -277,10 +266,8 @@ asm void RFCOMM_PortNegRsp() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// RFCOMM_ControlReq
-// ----------------------------------------------------------------------------
-asm void RFCOMM_ControlReq() {
+// asm_to_cpp: RFCOMM_ControlReq
+asm void RFCOMM_ControlReq(s32 arg0, s32 arg1, s8 *arg2) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -327,10 +314,8 @@ lbl_802C8288:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// RFCOMM_FlowReq
-// ----------------------------------------------------------------------------
-asm void RFCOMM_FlowReq() {
+// asm_to_cpp: RFCOMM_FlowReq
+asm void RFCOMM_FlowReq(s32 arg0, s32 arg1, s32 arg2) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -377,10 +362,8 @@ lbl_802C832C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// RFCOMM_LineStatusReq
-// ----------------------------------------------------------------------------
-asm void RFCOMM_LineStatusReq() {
+// asm_to_cpp: RFCOMM_LineStatusReq
+asm void RFCOMM_LineStatusReq(s32 arg0, s32 arg1, s32 arg2) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -424,10 +407,8 @@ lbl_802C83C4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// RFCOMM_DlcReleaseReq
-// ----------------------------------------------------------------------------
-asm void RFCOMM_DlcReleaseReq() {
+// asm_to_cpp: RFCOMM_DlcReleaseReq
+asm void RFCOMM_DlcReleaseReq(s32 arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -442,10 +423,8 @@ asm void RFCOMM_DlcReleaseReq() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// RFCOMM_DataReq
-// ----------------------------------------------------------------------------
-asm void RFCOMM_DataReq() {
+// asm_to_cpp: RFCOMM_DataReq
+asm void RFCOMM_DataReq(s32 arg0, s32 arg1, u16 *arg2) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -462,4 +441,3 @@ asm void RFCOMM_DataReq() {
     addi r1, r1, 0x10
     blr
 }
-

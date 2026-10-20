@@ -1,73 +1,153 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/wpad/WPADHIDParser.cpp
-// Total functions: 25
+M2C_UNK fn_8028E678(s8 *, s32, u8, void (*)(s32, s32)); /* extern */
+f64 memcpy();       /* extern */
+M2C_UNK memset();           /* extern */
+M2C_UNK __wpadGetExtType();                 /* static */
+extern M2C_UNK lbl_80341548;
+extern M2C_UNK lbl_8036C5A0;
+extern M2C_UNK lbl_8036C620;
+extern M2C_UNK lbl_8036CA1C;
+extern M2C_UNK lbl_8036CA30;
+extern M2C_UNK lbl_8040C450;
+extern M2C_UNK lbl_8040FB80;
+extern s32 lbl_8040FBD0;
+extern M2C_UNK lbl_8049DE00;
+extern M2C_UNK lbl_8049DE04;
+extern M2C_UNK lbl_8049DE08;
+extern M2C_UNK lbl_8049DE0C;
+extern M2C_UNK lbl_8049DE10;
+extern M2C_UNK lbl_8049DE14;
+extern u16 lbl_804A23B0;
+extern u16 lbl_804A23B2;
+extern u16 lbl_804A23B4;
+extern u16 lbl_804A23B6;
+extern u16 lbl_804A23B8;
+extern u16 lbl_804A23BA;
+extern u16 lbl_804A23BC;
+extern u16 lbl_804A23BE;
+extern f32 lbl_804A23C0;
+extern f32 lbl_804A23C4;
+extern f32 lbl_804A23C8;
+extern f32 lbl_804A23CC;
+extern f64 lbl_804A23D0;
+extern f32 lbl_804A23D8;
+extern f32 lbl_804A23DC;
+extern f64 lbl_804A23E0;
+extern f32 lbl_804A23E8;
+extern f32 lbl_804A23EC;
+extern f32 lbl_804A23F0;
+extern f32 lbl_804A2400;
 
-// Small Data symbols (@sda21)
+void __wpadAbortInitExtension();
+void __wpadGetDevConfig();
+void fn_8028FAA4();
+void __wpadGetGameInfo();
+s32 WPADiHIDParser();
+void __a1_20_status_report();
+void __a1_21_user_data();
+void __a1_22_ack();
+void fn_80290E90();
+void __parse_dpdex_data();
+void __parse_cl_data();
+void __parse_vs_data();
+void __a1_30_data_type();
+void __a1_31_data_type();
+void fn_80291D80();
+void __a1_33_data_type();
+void fn_802921E0();
+void fn_802923C8();
+void __a1_36_data_type();
+void fn_80292880();
+void __a1_3d_data_type();
+void fn_80292D7C();
+void fn_80292F38();
+void __a1_unused_report();
+
+void __wpadAbortInitExtension(s32 arg0, s32 arg1, M2C_UNK arg_sp0);
+
+void __wpadGetDevConfig(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+void fn_8028FAA4(s32 arg0, s32 arg1, M2C_UNK arg_sp0);
+
+/*
+Decompilation failure in function __wpadGetExtType:
+
+Found bctr instruction at WPADHIDParser.s line 1240, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+void __wpadGetGameInfo(s32 arg0, s32 arg1, s32 arg2);
+
+s32 WPADiHIDParser(s32 arg0, u8 *arg1, M2C_UNK arg_sp0);
+
+void __a1_20_status_report(s32 arg0, s8 *arg1, s32 *arg2, M2C_UNK arg_sp0);
+
+void __a1_21_user_data(s32 arg0, s8 *arg1, s32 *arg2, M2C_UNK arg_sp0);
+
+void __a1_22_ack(s32 arg0, s8 *arg1, s32 *arg2, M2C_UNK arg_sp0);
+
+
+
+void __parse_cl_data(s32 arg0, u16 **arg1, s32 arg2, s8 *arg3, u32 arg4);
+
+// __parse_vs_data: definicion C reemplazada por asm (ver abajo)
+
+
+void __a1_30_data_type(s32 arg0, s8 *arg1, s8 *arg2);
+
+void __a1_31_data_type(s32 arg0, s8 *arg1, s8 *arg2);
+
+void fn_80291D80(s32 arg0, s8 *arg1, u16 *arg2);
+
+void __a1_33_data_type(s32 arg0, s8 *arg1, s8 *arg2);
+
+void fn_802921E0(s32 arg0, s8 *arg1, s8 *arg2);
+
+void fn_802923C8(s32 arg0, s8 *arg1, u16 *arg2, M2C_UNK arg_sp0);
+
+void __a1_36_data_type(s32 arg0, s8 *arg1, s8 *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+void fn_80292880(s32 arg0, s8 *arg1, u16 *arg2, M2C_UNK arg_sp0);
+
+void __a1_3d_data_type(s32 arg0, s32 arg1, u16 *arg2);
+
+void fn_80292D7C(s32 arg0, s8 *arg1, s8 *arg2, M2C_UNK arg_sp0);
+
+void fn_80292F38(s32 arg0, s8 *arg1, s8 *arg2, M2C_UNK arg_sp0);
+
+void __a1_unused_report(void) {
+
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern float __OSInIPL;
-extern float lbl_8049DE00;
-extern float lbl_8049DE04;
-extern float lbl_8049DE08;
-extern float lbl_8049DE0C;
-extern float lbl_8049DE10;
-extern float lbl_8049DE14;
-extern float lbl_804A23B0;
-extern float lbl_804A23B2;
-extern float lbl_804A23B4;
-extern float lbl_804A23B6;
-extern float lbl_804A23B8;
-extern float lbl_804A23BA;
-extern float lbl_804A23BC;
-extern float lbl_804A23BE;
-extern float lbl_804A23C0;
-extern float lbl_804A23C4;
-extern float lbl_804A23C8;
-extern float lbl_804A23CC;
-extern float lbl_804A23D0;
-extern float lbl_804A23D8;
-extern float lbl_804A23DC;
-extern float lbl_804A23E0;
-extern float lbl_804A23E8;
-extern float lbl_804A23EC;
-extern float lbl_804A23F0;
 extern float lbl_804A23F8;
-extern float lbl_804A2400;
 extern float lbl_804A2408;
-
-// Global data symbols (@ha/@l)
 extern u8 jumptable_8036C9D8[];
-extern u8 lbl_80341548[];
-extern u8 lbl_8036C5A0[];
-extern u8 lbl_8036C620[];
-extern u8 lbl_8036CA1C[];
-extern u8 lbl_8036CA30[];
-extern u8 lbl_8040C450[];
-extern u8 lbl_8040FB80[];
-extern u8 lbl_8040FBD0[];
-
-// Forward declarations
-extern void OSDisableInterrupts();
-extern void OSRestoreInterrupts();
 extern void WPADiCreateKey();
 extern void WPADiCreateKeyFor3rd();
 extern void WPADiDecode();
-extern void WPADiHIDParser();
-extern void __a1_20_status_report();
-extern void __a1_21_user_data();
-extern void __a1_22_ack();
-extern void __a1_30_data_type();
-extern void __a1_31_data_type();
-extern void __a1_33_data_type();
-extern void __a1_36_data_type();
-extern void __a1_3d_data_type();
-extern void __a1_unused_report();
-extern void __parse_cl_data();
-extern void __parse_dpdex_data();
-extern void __parse_vs_data();
-extern void __wpadAbortInitExtension();
-extern void __wpadGetDevConfig();
-extern void __wpadGetExtType();
-extern void __wpadGetGameInfo();
+s32 WPADiHIDParser();
+void __a1_20_status_report();
+void __a1_21_user_data();
+void __a1_22_ack();
+void __a1_30_data_type();
+void __a1_31_data_type();
+void __a1_33_data_type();
+void __a1_36_data_type();
+void __a1_3d_data_type();
+void __parse_cl_data();
+void __parse_dpdex_data();
+void __parse_vs_data(s32 arg0, s8 **arg1, s32 arg2, u16 **arg3, s32 arg4);
+void __wpadAbortInitExtension();
+void __wpadGetDevConfig();
+M2C_UNK __wpadGetExtType();
+void __wpadGetGameInfo();
 extern void _restgpr_15();
 extern void _restgpr_20();
 extern void _restgpr_22();
@@ -80,38 +160,20 @@ extern void _savegpr_22();
 extern void _savegpr_24();
 extern void _savegpr_26();
 extern void _savegpr_27();
-extern void atan();
-extern void cos();
-extern void fn_802876E0();
-extern void fn_802876E8();
-extern void fn_802876F0();
-extern void fn_802876F8();
 extern void fn_8028B4DC();
 extern void fn_8028B5FC();
-extern void fn_8028E678();
-extern void fn_8028E8E0();
-extern void fn_8028EA94();
-extern void fn_8028EC4C();
 extern void fn_8028EDF8();
-extern void fn_8028FAA4();
-extern void fn_80290E90();
-extern void fn_80291D80();
-extern void fn_802921E0();
-extern void fn_802923C8();
-extern void fn_80292880();
-extern void fn_80292D7C();
-extern void fn_80292F38();
+void fn_8028FAA4();
+void fn_80290E90();
+void fn_80291D80();
+void fn_802921E0();
+void fn_802923C8();
+void fn_80292880();
+void fn_80292D7C();
+void fn_80292F38();
 extern void fn_80294360();
-extern void fn_802943B0();
-extern void memcmp();
-extern void memcpy();
-extern void memset();
-extern void sin();
-extern void tan();
 
-// ----------------------------------------------------------------------------
-// __wpadAbortInitExtension
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __wpadAbortInitExtension
 asm void __wpadAbortInitExtension() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -208,9 +270,7 @@ lbl_8028EFA4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __wpadGetDevConfig
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __wpadGetDevConfig
 asm void __wpadGetDevConfig() {
     nofralloc
     stwu r1, -0x110(r1)
@@ -947,9 +1007,7 @@ lbl_8028FA6C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8028FAA4
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8028FAA4
 asm void fn_8028FAA4() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1313,10 +1371,8 @@ lbl_8028FFCC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __wpadGetExtType
-// ----------------------------------------------------------------------------
-asm void __wpadGetExtType() {
+// asm_to_cpp: __wpadGetExtType
+asm M2C_UNK __wpadGetExtType() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1614,9 +1670,7 @@ lbl_80290404:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __wpadGetGameInfo
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __wpadGetGameInfo
 asm void __wpadGetGameInfo() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1730,10 +1784,8 @@ lbl_802905A8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// WPADiHIDParser
-// ----------------------------------------------------------------------------
-asm void WPADiHIDParser() {
+// asm_to_cpp: WPADiHIDParser
+asm s32 WPADiHIDParser() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1816,9 +1868,7 @@ lbl_802906CC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __a1_20_status_report
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __a1_20_status_report
 asm void __a1_20_status_report() {
     nofralloc
     stwu r1, -0x40(r1)
@@ -2044,9 +2094,7 @@ lbl_80290A10:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __a1_21_user_data
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __a1_21_user_data
 asm void __a1_21_user_data() {
     nofralloc
     stwu r1, -0x40(r1)
@@ -2269,9 +2317,7 @@ lbl_80290D30:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __a1_22_ack
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __a1_22_ack
 asm void __a1_22_ack() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -2360,9 +2406,7 @@ lbl_80290E70:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80290E90
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80290E90
 asm void fn_80290E90() {
     nofralloc
     stwu r1, -0xa0(r1)
@@ -2677,9 +2721,7 @@ lbl_802912E0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __parse_dpdex_data
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __parse_dpdex_data
 asm void __parse_dpdex_data() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -2844,9 +2886,7 @@ lbl_80291584:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __parse_cl_data
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __parse_cl_data
 asm void __parse_cl_data() {
     nofralloc
     lis r8, lbl_8040C450@ha
@@ -3186,10 +3226,8 @@ lbl_80291A2C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __parse_vs_data
-// ----------------------------------------------------------------------------
-asm void __parse_vs_data() {
+// asm_to_cpp: __parse_vs_data
+asm void __parse_vs_data(s32 arg0, s8 **arg1, s32 arg2, u16 **arg3, s32 arg4) {
     nofralloc
     lbz r0, 0x0(r6)
     cmplwi cr1, r7, 0x15
@@ -3305,9 +3343,7 @@ lbl_80291BDC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __a1_30_data_type
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __a1_30_data_type
 asm void __a1_30_data_type() {
     nofralloc
     lbz r6, 0x2(r4)
@@ -3337,9 +3373,7 @@ lbl_80291C6C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __a1_31_data_type
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __a1_31_data_type
 asm void __a1_31_data_type() {
     nofralloc
     lbz r6, 0x2(r4)
@@ -3411,9 +3445,7 @@ lbl_80291CC8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80291D80
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80291D80
 asm void fn_80291D80() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -3627,9 +3659,7 @@ lbl_80292074:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __a1_33_data_type
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __a1_33_data_type
 asm void __a1_33_data_type() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -3719,9 +3749,7 @@ lbl_802920FC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802921E0
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802921E0
 asm void fn_802921E0() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -3857,9 +3885,7 @@ lbl_802923A8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802923C8
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802923C8
 asm void fn_802923C8() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -4111,9 +4137,7 @@ lbl_8029275C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __a1_36_data_type
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __a1_36_data_type
 asm void __a1_36_data_type() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -4186,9 +4210,7 @@ lbl_80292860:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80292880
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80292880
 asm void fn_80292880() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -4455,9 +4477,7 @@ lbl_80292C50:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __a1_3d_data_type
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __a1_3d_data_type
 asm void __a1_3d_data_type() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -4535,9 +4555,7 @@ lbl_80292D5C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80292D7C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80292D7C
 asm void fn_80292D7C() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -4658,9 +4676,7 @@ lbl_80292F1C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80292F38
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80292F38
 asm void fn_80292F38() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -4779,12 +4795,3 @@ lbl_802930D4:
     addi r1, r1, 0x30
     blr
 }
-
-// ----------------------------------------------------------------------------
-// __a1_unused_report
-// ----------------------------------------------------------------------------
-asm void __a1_unused_report() {
-    nofralloc
-    blr
-}
-

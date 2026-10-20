@@ -1,26 +1,50 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/hbm/synmix.cpp
-// Total functions: 5
+extern M2C_UNK lbl_8037ECD8;
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_8037ECD8[];
+void __HBMSYNSetupVolume();
+void __HBMSYNSetupPan();
+s32 __HBMSYNGetVoiceInput();
+s32 __HBMSYNGetVoiceFader();
+void __HBMSYNUpdateMix();
 
-// Forward declarations
-extern void __HBMSYNGetVoiceFader();
-extern void __HBMSYNGetVoiceInput();
-extern void __HBMSYNSetupPan();
-extern void __HBMSYNSetupVolume();
-extern void __HBMSYNUpdateMix();
-extern void fn_80302BD0();
-extern void fn_80302C08();
-extern void fn_80302C40();
-extern void fn_80302CC0();
+// __HBMSYNSetupVolume: definicion C reemplazada por asm (ver abajo)
 
-// ----------------------------------------------------------------------------
-// __HBMSYNSetupVolume
-// ----------------------------------------------------------------------------
-asm void __HBMSYNSetupVolume() {
+
+void __HBMSYNSetupPan(s8 *arg0) {
+    M2C_FIELD(arg0, u8 *, 0xF) = (u8) M2C_FIELD((M2C_FIELD(arg0, s32 *, 8) + M2C_FIELD(arg0, u8 *, 0xC)), u8 *, 0xEC);
+}
+
+s32 __HBMSYNGetVoiceInput(s8 *arg0) {
+    return (s32) (M2C_FIELD(arg0, s32 *, 0x2C) + M2C_FIELD(arg0, s32 *, 0x34)) >> 0x10;
+}
+
+s32 __HBMSYNGetVoiceFader(s8 *arg0) {
+    s8 *temp_r4;
+
+    temp_r4 = M2C_FIELD(arg0, s8 **, 8);
+    return (s32) (M2C_FIELD(temp_r4, s32 *, 0x68) + M2C_FIELD((temp_r4 + (M2C_FIELD(arg0, u8 *, 0xC) * 4)), s32 *, 0x6C)) >> 0x10;
+}
+
+void __HBMSYNUpdateMix(s8 *arg0) {
+    s32 temp_r5_2;
+    s8 *temp_r5;
+
+    fn_80302BD0(M2C_FIELD(arg0, s8 **, 4), (s32) (M2C_FIELD(arg0, s32 *, 0x2C) + M2C_FIELD(arg0, s32 *, 0x34)) >> 0x10);
+    fn_80302C08(M2C_FIELD(arg0, s8 **, 4), (s32) M2C_FIELD((M2C_FIELD(arg0, s8 **, 8) + (M2C_FIELD(arg0, u8 *, 0xC) * 4)), s32 *, 0xAC) >> 0x10);
+    temp_r5 = M2C_FIELD(arg0, s8 **, 8);
+    temp_r5_2 = M2C_FIELD(temp_r5, s32 *, 0x68);
+    fn_80302CC0(M2C_FIELD(arg0, s8 **, 4), (s32) (temp_r5_2 + M2C_FIELD((temp_r5 + (M2C_FIELD(arg0, u8 *, 0xC) * 4)), s32 *, 0x6C)) >> 0x10, temp_r5_2);
+    fn_80302C40(M2C_FIELD(arg0, s8 **, 4), (s32) M2C_FIELD((M2C_FIELD(arg0, s8 **, 8) + M2C_FIELD(arg0, u8 *, 0xC)), u8 *, 0xEC));
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+void __HBMSYNSetupVolume(s8 *arg0);
+
+// asm_to_cpp: __HBMSYNSetupVolume
+asm void __HBMSYNSetupVolume(s8 *arg0) {
     nofralloc
     lbz r0, 0xe(r3)
     lis r4, lbl_8037ECD8@ha
@@ -33,92 +57,3 @@ asm void __HBMSYNSetupVolume() {
     stw r0, 0x2c(r3)
     blr
 }
-
-// ----------------------------------------------------------------------------
-// __HBMSYNSetupPan
-// ----------------------------------------------------------------------------
-asm void __HBMSYNSetupPan() {
-    nofralloc
-    lwz r4, 0x8(r3)
-    lbz r0, 0xc(r3)
-    add r4, r4, r0
-    lbz r0, 0xec(r4)
-    stb r0, 0xf(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// __HBMSYNGetVoiceInput
-// ----------------------------------------------------------------------------
-asm void __HBMSYNGetVoiceInput() {
-    nofralloc
-    lwz r4, 0x2c(r3)
-    lwz r0, 0x34(r3)
-    add r0, r4, r0
-    srawi r3, r0, 16
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// __HBMSYNGetVoiceFader
-// ----------------------------------------------------------------------------
-asm void __HBMSYNGetVoiceFader() {
-    nofralloc
-    lbz r0, 0xc(r3)
-    lwz r4, 0x8(r3)
-    slwi r0, r0, 2
-    add r3, r4, r0
-    lwz r4, 0x68(r4)
-    lwz r0, 0x6c(r3)
-    add r0, r4, r0
-    srawi r3, r0, 16
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// __HBMSYNUpdateMix
-// ----------------------------------------------------------------------------
-asm void __HBMSYNUpdateMix() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    lwz r4, 0x2c(r31)
-    lwz r0, 0x34(r31)
-    lwz r3, 0x4(r3)
-    add r0, r4, r0
-    srawi r4, r0, 16
-    bl fn_80302BD0
-    lbz r0, 0xc(r31)
-    lwz r4, 0x8(r31)
-    slwi r0, r0, 2
-    lwz r3, 0x4(r31)
-    add r4, r4, r0
-    lwz r0, 0xac(r4)
-    srawi r4, r0, 16
-    bl fn_80302C08
-    lbz r0, 0xc(r31)
-    lwz r5, 0x8(r31)
-    slwi r0, r0, 2
-    lwz r3, 0x4(r31)
-    add r4, r5, r0
-    lwz r5, 0x68(r5)
-    lwz r0, 0x6c(r4)
-    add r0, r5, r0
-    srawi r4, r0, 16
-    bl fn_80302CC0
-    lwz r4, 0x8(r31)
-    lbz r0, 0xc(r31)
-    lwz r3, 0x4(r31)
-    add r4, r4, r0
-    lbz r4, 0xec(r4)
-    bl fn_80302C40
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-

@@ -1,27 +1,71 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/btm_sco.cpp
-// Total functions: 15
+M2C_UNK LogMsg_0();               /* extern */
+M2C_UNK LogMsg_1();             /* extern */
+M2C_UNK LogMsg_2();      /* extern */
+M2C_UNK LogMsg_6(); /* extern */
+M2C_UNK memcpy();         /* extern */
+extern M2C_UNK lbl_80341880;
+extern M2C_UNK lbl_803747A0;
+extern M2C_UNK lbl_8037482C;
+extern M2C_UNK lbl_8037487C;
+extern M2C_UNK lbl_803748CC;
+extern M2C_UNK lbl_80374A64;
+extern M2C_UNK lbl_80453F78;
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_80341880[];
-extern u8 lbl_803747A0[];
-extern u8 lbl_8037482C[];
-extern u8 lbl_8037487C[];
-extern u8 lbl_803748CC[];
-extern u8 lbl_80374A64[];
-extern u8 lbl_80453F78[];
+void btm_sco_init();
+void btm_esco_conn_rsp();
+void btm_sco_chk_pend_unpark();
+void btm_sco_conn_req();
+void btm_sco_connected();
+s32 BTM_RemoveSco();
+void btm_remove_sco_links();
+void btm_sco_removed();
+void btm_sco_acl_removed();
+void btm_route_sco_data();
+s32 BTM_ChangeEScoLinkParms();
+void btm_esco_proc_conn_chg();
+s32 btm_is_sco_active();
+s32 btm_num_sco_links_active();
+s32 btm_is_sco_active_by_bdaddr();
 
-// Forward declarations
-extern void BTM_ChangeEScoLinkParms();
-extern void BTM_GetHCIConnHandle();
-extern void BTM_RemoveSco();
-extern void GKI_freebuf();
-extern void GKI_getpoolbuf();
-extern void LogMsg_0();
-extern void LogMsg_1();
-extern void LogMsg_2();
-extern void LogMsg_6();
+// btm_sco_init: definicion C reemplazada por asm (ver abajo)
+
+
+
+// btm_sco_chk_pend_unpark: definicion C reemplazada por asm (ver abajo)
+
+
+
+
+
+// btm_remove_sco_links: definicion C reemplazada por asm (ver abajo)
+
+
+
+// btm_sco_acl_removed: definicion C reemplazada por asm (ver abajo)
+
+
+void btm_route_sco_data(s32 arg0) {
+    GKI_freebuf(arg0);
+}
+
+
+
+// btm_is_sco_active: definicion C reemplazada por asm (ver abajo)
+
+
+// btm_num_sco_links_active: definicion C reemplazada por asm (ver abajo)
+
+
+// btm_is_sco_active_by_bdaddr: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+s32 BTM_ChangeEScoLinkParms();
+s32 BTM_RemoveSco();
 extern void _restgpr_20();
 extern void _restgpr_24();
 extern void _restgpr_26();
@@ -31,34 +75,25 @@ extern void _savegpr_24();
 extern void _savegpr_26();
 extern void _savegpr_27();
 extern void btm_chg_all_acl_pkt_types();
-extern void btm_esco_conn_rsp();
-extern void btm_esco_proc_conn_chg();
-extern void btm_is_sco_active();
-extern void btm_is_sco_active_by_bdaddr();
-extern void btm_num_sco_links_active();
-extern void btm_remove_sco_links();
-extern void btm_route_sco_data();
-extern void btm_sco_acl_removed();
-extern void btm_sco_chk_pend_unpark();
-extern void btm_sco_conn_req();
-extern void btm_sco_connected();
-extern void btm_sco_init();
-extern void btm_sco_removed();
+void btm_esco_conn_rsp();
+void btm_esco_proc_conn_chg();
+s32 btm_is_sco_active(u32 arg0);
+s32 btm_is_sco_active_by_bdaddr(s8 *arg0);
+s32 btm_num_sco_links_active(void);
+void btm_remove_sco_links(s8 *arg0);
+void btm_sco_acl_removed(s8 *arg0);
+void btm_sco_chk_pend_unpark(s32 arg0, u32 arg1, s32 arg2, M2C_UNK arg_sp0);
+void btm_sco_conn_req();
+void btm_sco_connected();
+void btm_sco_init(void);
+void btm_sco_removed();
 extern void btsnd_hcic_accept_conn();
 extern void btsnd_hcic_accept_esco_conn();
-extern void btsnd_hcic_add_SCO_conn();
-extern void btsnd_hcic_change_conn_type();
-extern void btsnd_hcic_disconnect();
 extern void btsnd_hcic_reject_conn();
 extern void btsnd_hcic_reject_esco_conn();
-extern void btsnd_hcic_setup_esco_conn();
-extern void memcmp();
-extern void memcpy();
 
-// ----------------------------------------------------------------------------
-// btm_sco_init
-// ----------------------------------------------------------------------------
-asm void btm_sco_init() {
+// asm_to_cpp: btm_sco_init
+asm void btm_sco_init(void) {
     nofralloc
     lis r3, lbl_80341880@ha
     lwzu r6, lbl_80341880@l(r3)
@@ -79,9 +114,7 @@ asm void btm_sco_init() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btm_esco_conn_rsp
-// ----------------------------------------------------------------------------
+// asm_to_cpp: btm_esco_conn_rsp
 asm void btm_esco_conn_rsp() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -215,10 +248,8 @@ lbl_802B2110:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btm_sco_chk_pend_unpark
-// ----------------------------------------------------------------------------
-asm void btm_sco_chk_pend_unpark() {
+// asm_to_cpp: btm_sco_chk_pend_unpark
+asm void btm_sco_chk_pend_unpark(s32 arg0, u32 arg1, s32 arg2, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x40(r1)
     mflr r0
@@ -330,9 +361,7 @@ lbl_802B228C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btm_sco_conn_req
-// ----------------------------------------------------------------------------
+// asm_to_cpp: btm_sco_conn_req
 asm void btm_sco_conn_req() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -468,9 +497,7 @@ lbl_802B247C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btm_sco_connected
-// ----------------------------------------------------------------------------
+// asm_to_cpp: btm_sco_connected
 asm void btm_sco_connected() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -588,10 +615,8 @@ lbl_802B261C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTM_RemoveSco
-// ----------------------------------------------------------------------------
-asm void BTM_RemoveSco() {
+// asm_to_cpp: BTM_RemoveSco
+asm s32 BTM_RemoveSco() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -647,10 +672,8 @@ lbl_802B26D4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btm_remove_sco_links
-// ----------------------------------------------------------------------------
-asm void btm_remove_sco_links() {
+// asm_to_cpp: btm_remove_sco_links
+asm void btm_remove_sco_links(s8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -689,9 +712,7 @@ lbl_802B2744:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btm_sco_removed
-// ----------------------------------------------------------------------------
+// asm_to_cpp: btm_sco_removed
 asm void btm_sco_removed() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -775,10 +796,8 @@ lbl_802B2870:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btm_sco_acl_removed
-// ----------------------------------------------------------------------------
-asm void btm_sco_acl_removed() {
+// asm_to_cpp: btm_sco_acl_removed
+asm void btm_sco_acl_removed(s8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -830,18 +849,8 @@ lbl_802B2908:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btm_route_sco_data
-// ----------------------------------------------------------------------------
-asm void btm_route_sco_data() {
-    nofralloc
-    b GKI_freebuf
-}
-
-// ----------------------------------------------------------------------------
-// BTM_ChangeEScoLinkParms
-// ----------------------------------------------------------------------------
-asm void BTM_ChangeEScoLinkParms() {
+// asm_to_cpp: BTM_ChangeEScoLinkParms
+asm s32 BTM_ChangeEScoLinkParms() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -962,9 +971,7 @@ lbl_802B2ACC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btm_esco_proc_conn_chg
-// ----------------------------------------------------------------------------
+// asm_to_cpp: btm_esco_proc_conn_chg
 asm void btm_esco_proc_conn_chg() {
     nofralloc
     stwu r1, -0x40(r1)
@@ -1038,10 +1045,8 @@ lbl_802B2BD0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btm_is_sco_active
-// ----------------------------------------------------------------------------
-asm void btm_is_sco_active() {
+// asm_to_cpp: btm_is_sco_active
+asm s32 btm_is_sco_active(u32 arg0) {
     nofralloc
     lis r4, lbl_80453F78@ha
     addi r4, r4, lbl_80453F78@l
@@ -1076,10 +1081,8 @@ lbl_802B2C50:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btm_num_sco_links_active
-// ----------------------------------------------------------------------------
-asm void btm_num_sco_links_active() {
+// asm_to_cpp: btm_num_sco_links_active
+asm s32 btm_num_sco_links_active(void) {
     nofralloc
     lis r4, lbl_80453F78@ha
     li r3, 0x0
@@ -1111,10 +1114,8 @@ lbl_802B2C9C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btm_is_sco_active_by_bdaddr
-// ----------------------------------------------------------------------------
-asm void btm_is_sco_active_by_bdaddr() {
+// asm_to_cpp: btm_is_sco_active_by_bdaddr
+asm s32 btm_is_sco_active_by_bdaddr(s8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1154,4 +1155,3 @@ lbl_802B2D24:
     addi r1, r1, 0x20
     blr
 }
-

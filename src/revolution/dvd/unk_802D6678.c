@@ -1,51 +1,68 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/dvd/unk_802D6678.cpp
-// Total functions: 7
+extern s32 CheckBuffer_804611C0;
+extern void (*FatalFunc_8049E108)();
+extern M2C_UNK __DVDDeviceErrorMessage;
+extern M2C_UNK lbl_803419D8;
+extern M2C_UNK lbl_803419F4;
+extern M2C_UNK lbl_8049D018;
+extern u8 lbl_804A2560;
+extern u8 lbl_804A2561;
+extern u8 lbl_804A2562;
+extern u8 lbl_804A2563;
+extern s32 lowDone_8049D020;
+extern s32 lowIntType_8049E110;
 
-// Small Data symbols (@sda21)
-extern float FatalFunc_8049E108;
+s32 fn_802D6678();
+void __DVDShowFatalMessage();
+s32 DVDSetAutoFatalMessaging();
+s32 fn_802D68B8();
+void lowCallback();
+s32 __DVDCheckDevice();
+
+// fn_802D6678: definicion C reemplazada por asm (ver abajo)
+
+
+// __DVDShowFatalMessage: definicion C reemplazada por asm (ver abajo)
+
+
+// DVDSetAutoFatalMessaging: definicion C reemplazada por asm (ver abajo)
+
+
+s32 fn_802D68B8(void) {
+    return FatalFunc_8049E108 != NULL;
+}
+
+/*
+Decompilation failure in function fn_802D68CC:
+
+Unable to determine jump table for bctr instruction at unk_802D6678.s line 195.
+
+There must be a read of a variable before the instruction
+which has a name starting with with "jtbl"/"jpt_"/"lbl_"/"jumptable_".
+*/
+
+void lowCallback(s32 arg0) {
+    lowIntType_8049E110 = arg0;
+    lowDone_8049D020 = 1;
+}
+
+s32 __DVDCheckDevice(void);
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern float at_834_8049D024;
-extern float lbl_8049D018;
-extern float lbl_804A2560;
-extern float lbl_804A2561;
-extern float lbl_804A2562;
-extern float lbl_804A2563;
-extern float lowDone_8049D020;
-extern float lowIntType_8049E110;
-
-// Global data symbols (@ha/@l)
-extern u8 CheckBuffer_804611C0[];
-extern u8 __DVDDeviceErrorMessage[];
-extern u8 lbl_803419D8[];
-extern u8 lbl_803419F4[];
-
-// Forward declarations
-extern void DVDLowGetImmBufferReg();
-extern void DVDLowReportKey();
-extern void DVDLowRequestError();
-extern void DVDLowUnencryptedRead();
-extern void DVDSetAutoFatalMessaging();
-extern void OSDisableInterrupts();
+s32 DVDSetAutoFatalMessaging(s32 arg0, s32 arg1, s32 arg2);
 extern void OSFatal();
-extern void OSGetPhysicalMem2Size();
-extern void OSRestoreInterrupts();
-extern void OSSetFontEncode();
-extern void SCGetLanguage();
-extern void __DVDCheckDevice();
-extern void __DVDShowFatalMessage();
+s32 __DVDCheckDevice();
+void __DVDShowFatalMessage(void);
 extern void __OSGetIOSRev();
-extern void fn_802D6678();
-extern void fn_802D68B8();
-extern void fn_802D68CC();
-extern void fn_803249E8();
-extern void lowCallback();
-extern void strncmp();
+s32 fn_802D6678(s8 *arg0, s8 *arg1);
+extern int fn_802D68CC();
 
-// ----------------------------------------------------------------------------
-// fn_802D6678
-// ----------------------------------------------------------------------------
-asm void fn_802D6678() {
+// asm_to_cpp: fn_802D6678
+asm s32 fn_802D6678(s8 *arg0, s8 *arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -115,10 +132,8 @@ lbl_802D6750:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __DVDShowFatalMessage
-// ----------------------------------------------------------------------------
-asm void __DVDShowFatalMessage() {
+// asm_to_cpp: __DVDShowFatalMessage
+asm void __DVDShowFatalMessage(void) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -192,10 +207,8 @@ lbl_802D682C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDSetAutoFatalMessaging
-// ----------------------------------------------------------------------------
-asm void DVDSetAutoFatalMessaging() {
+// asm_to_cpp: DVDSetAutoFatalMessaging
+asm s32 DVDSetAutoFatalMessaging(s32 arg0, s32 arg1, s32 arg2) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -223,22 +236,8 @@ lbl_802D6898:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802D68B8
-// ----------------------------------------------------------------------------
-asm void fn_802D68B8() {
-    nofralloc
-    lwz r3, FatalFunc_8049E108
-    neg r0, r3
-    or r0, r0, r3
-    srwi r3, r0, 31
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802D68CC
-// ----------------------------------------------------------------------------
-asm void fn_802D68CC() {
+// asm_to_cpp: fn_802D68CC
+asm int fn_802D68CC() {
     nofralloc
     lwz r12, FatalFunc_8049E108
     cmpwi r12, 0x0
@@ -248,21 +247,8 @@ asm void fn_802D68CC() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// lowCallback
-// ----------------------------------------------------------------------------
-asm void lowCallback() {
-    nofralloc
-    li r0, 0x1
-    stw r3, lowIntType_8049E110
-    stw r0, lowDone_8049D020
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// __DVDCheckDevice
-// ----------------------------------------------------------------------------
-asm void __DVDCheckDevice() {
+// asm_to_cpp: __DVDCheckDevice
+asm s32 __DVDCheckDevice() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -449,4 +435,3 @@ lbl_802D6B64:
     addi r1, r1, 0x30
     blr
 }
-

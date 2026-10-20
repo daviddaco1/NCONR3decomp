@@ -1,89 +1,187 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/l2c_utils.cpp
-// Total functions: 33
+M2C_UNK LogMsg_0();               /* extern */
+M2C_UNK LogMsg_1();    /* extern */
+M2C_UNK memcpy();                  /* extern */
+M2C_UNK memset();             /* extern */
+extern M2C_UNK lbl_80377388;
+extern M2C_UNK lbl_803773A4;
+extern M2C_UNK lbl_803773C4;
+extern M2C_UNK lbl_803773E4;
+extern M2C_UNK lbl_80377404;
+extern M2C_UNK lbl_80377448;
+extern M2C_UNK lbl_80453A50;
+extern M2C_UNK lbl_80453F78;
+extern u8 lbl_80457040;
+extern M2C_UNK lbl_8049CFC8;
+extern M2C_UNK lbl_8049CFD0;
 
-// Small Data symbols (@sda21)
-extern float lbl_8049CFC8;
-extern float lbl_8049CFD0;
+u8 * l2cu_allocate_lcb();
+void l2cu_release_lcb();
+u8 * l2cu_find_lcb_by_bd_addr();
+u8 * l2cu_find_lcb_by_handle();
+u8 l2cu_get_conn_role();
+s8 * l2cu_build_header();
+void l2cu_send_peer_cmd_reject();
+void l2cu_send_peer_connect_req();
+void l2cu_send_peer_connect_rsp();
+void l2cu_reject_connection();
+void l2cu_send_peer_config_req();
+void l2cu_send_peer_config_rsp();
+void l2cu_send_peer_config_rej();
+void l2cu_send_peer_disc_req();
+void l2cu_send_peer_disc_rsp();
+void l2cu_send_peer_echo_req();
+void l2cu_send_peer_echo_rsp();
+void l2cu_send_peer_info_rsp();
+s8 * l2cu_allocate_ccb();
+void l2cu_release_ccb();
+s8 * l2cu_find_ccb_by_cid();
+u8 * l2cu_allocate_rcb();
+void l2cu_release_rcb();
+u8 * l2cu_find_rcb_by_psm();
+void l2cu_process_peer_cfg_req();
+void l2cu_process_peer_cfg_rsp();
+void l2cu_process_our_cfg_req();
+void l2cu_process_our_cfg_rsp();
+void l2cu_device_reset();
+s32 l2cu_create_conn();
+s32 l2cu_create_conn_after_switch();
+u8 * l2cu_find_lcb_by_state();
+s32 l2cu_lcb_disconnecting();
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_80377388[];
-extern u8 lbl_803773A4[];
-extern u8 lbl_803773C4[];
-extern u8 lbl_803773E4[];
-extern u8 lbl_80377404[];
-extern u8 lbl_80377448[];
-extern u8 lbl_80453A50[];
-extern u8 lbl_80453F78[];
-extern u8 lbl_80457040[];
+// l2cu_allocate_lcb: definicion C reemplazada por asm (ver abajo)
 
-// Forward declarations
-extern void BTM_InqDbRead();
-extern void BTM_ReadLocalFeatures();
-extern void BTM_SwitchRole();
-extern void GKI_dequeue();
+
+// l2cu_release_lcb: definicion C reemplazada por asm (ver abajo)
+
+
+// l2cu_find_lcb_by_bd_addr: definicion C reemplazada por asm (ver abajo)
+
+
+// l2cu_find_lcb_by_handle: definicion C reemplazada por asm (ver abajo)
+
+
+// l2cu_get_conn_role: definicion C reemplazada por asm (ver abajo)
+
+
+
+
+// l2cu_send_peer_connect_req: definicion C reemplazada por asm (ver abajo)
+
+
+
+
+// l2cu_send_peer_config_req: definicion C reemplazada por asm (ver abajo)
+
+
+// l2cu_send_peer_config_rsp: definicion C reemplazada por asm (ver abajo)
+
+
+// l2cu_send_peer_config_rej: definicion C reemplazada por asm (ver abajo)
+
+
+// l2cu_send_peer_disc_req: definicion C reemplazada por asm (ver abajo)
+
+
+
+
+
+
+// l2cu_allocate_ccb: definicion C reemplazada por asm (ver abajo)
+
+
+void l2cu_release_ccb(s8 *arg0);
+
+// l2cu_find_ccb_by_cid: definicion C reemplazada por asm (ver abajo)
+
+
+
+void l2cu_release_rcb(s8 *arg0) {
+    M2C_FIELD(arg0, s8 *, 0) = 0;
+    M2C_FIELD(arg0, s16 *, 2) = 0;
+}
+
+// l2cu_find_rcb_by_psm: definicion C reemplazada por asm (ver abajo)
+
+
+// l2cu_process_peer_cfg_req: definicion C reemplazada por asm (ver abajo)
+
+
+// l2cu_process_peer_cfg_rsp: definicion C reemplazada por asm (ver abajo)
+
+
+// l2cu_process_our_cfg_req: definicion C reemplazada por asm (ver abajo)
+
+
+// l2cu_process_our_cfg_rsp: definicion C reemplazada por asm (ver abajo)
+
+
+// l2cu_device_reset: definicion C reemplazada por asm (ver abajo)
+
+
+// l2cu_create_conn: definicion C reemplazada por asm (ver abajo)
+
+
+s32 l2cu_create_conn_after_switch(s8 *arg0);
+
+// l2cu_find_lcb_by_state: definicion C reemplazada por asm (ver abajo)
+
+
+// l2cu_lcb_disconnecting: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void GKI_enqueue();
 extern void GKI_freebuf();
-extern void GKI_getpoolbuf();
-extern void LogMsg_0();
-extern void LogMsg_1();
 extern void _restgpr_24();
 extern void _restgpr_27();
 extern void _savegpr_24();
 extern void _savegpr_27();
 extern void btm_acl_removed();
-extern void btm_is_sco_active_by_bdaddr();
 extern void btm_remove_sco_links();
-extern void btm_sec_disconnect();
-extern void btsnd_hcic_create_conn();
 extern void btsnd_hcic_write_auto_flush_tout();
 extern void btu_start_timer();
 extern void btu_stop_timer();
 extern void l2c_link_adjust_allocation();
 extern void l2c_link_check_send_pkts();
-extern void l2c_link_hci_disc_comp();
-extern void l2cu_allocate_ccb();
-extern void l2cu_allocate_lcb();
-extern void l2cu_allocate_rcb();
-extern void l2cu_build_header();
-extern void l2cu_create_conn();
-extern void l2cu_create_conn_after_switch();
-extern void l2cu_device_reset();
-extern void l2cu_find_ccb_by_cid();
-extern void l2cu_find_lcb_by_bd_addr();
-extern void l2cu_find_lcb_by_handle();
-extern void l2cu_find_lcb_by_state();
-extern void l2cu_find_rcb_by_psm();
-extern void l2cu_get_conn_role();
-extern void l2cu_lcb_disconnecting();
-extern void l2cu_process_our_cfg_req();
-extern void l2cu_process_our_cfg_rsp();
-extern void l2cu_process_peer_cfg_req();
-extern void l2cu_process_peer_cfg_rsp();
-extern void l2cu_reject_connection();
-extern void l2cu_release_ccb();
-extern void l2cu_release_lcb();
-extern void l2cu_release_rcb();
-extern void l2cu_send_peer_cmd_reject();
-extern void l2cu_send_peer_config_rej();
-extern void l2cu_send_peer_config_req();
-extern void l2cu_send_peer_config_rsp();
-extern void l2cu_send_peer_connect_req();
-extern void l2cu_send_peer_connect_rsp();
-extern void l2cu_send_peer_disc_req();
-extern void l2cu_send_peer_disc_rsp();
-extern void l2cu_send_peer_echo_req();
-extern void l2cu_send_peer_echo_rsp();
-extern void l2cu_send_peer_info_rsp();
-extern void memcmp();
-extern void memcpy();
-extern void memset();
+s8 *l2cu_allocate_ccb(s8 *arg0);
+u8 *l2cu_allocate_lcb(s8 *arg0);
+u8 * l2cu_allocate_rcb();
+s8 * l2cu_build_header();
+s32 l2cu_create_conn(s8 *arg0, M2C_UNK arg_sp0);
+s32 l2cu_create_conn_after_switch();
+void l2cu_device_reset(void);
+s8 *l2cu_find_ccb_by_cid(s32 arg0, u32 arg1);
+u8 *l2cu_find_lcb_by_bd_addr(s32 arg0);
+u8 *l2cu_find_lcb_by_handle(u32 arg0);
+u8 *l2cu_find_lcb_by_state(s32 arg0);
+u8 *l2cu_find_rcb_by_psm(u32 arg0);
+u8 l2cu_get_conn_role(void);
+s32 l2cu_lcb_disconnecting(void);
+void l2cu_process_our_cfg_req(s8 *arg0, s8 *arg1);
+void l2cu_process_our_cfg_rsp(s8 *arg0, s8 *arg1);
+void l2cu_process_peer_cfg_req(s8 *arg0, s8 *arg1);
+void l2cu_process_peer_cfg_rsp(s8 *arg0, s8 *arg1);
+void l2cu_reject_connection();
+void l2cu_release_ccb();
+void l2cu_release_lcb(s8 *arg0, s32 arg1, s32 arg2);
+void l2cu_send_peer_cmd_reject();
+void l2cu_send_peer_config_rej(s8 *arg0, s8 *arg1, s32 arg2, s32 arg3, M2C_UNK arg_sp0);
+void l2cu_send_peer_config_req(s8 *arg0, s8 *arg1);
+void l2cu_send_peer_config_rsp(s8 *arg0, s8 *arg1);
+void l2cu_send_peer_connect_req(s8 *arg0);
+void l2cu_send_peer_connect_rsp();
+void l2cu_send_peer_disc_req(s8 *arg0);
+void l2cu_send_peer_disc_rsp();
+void l2cu_send_peer_echo_req();
+void l2cu_send_peer_echo_rsp();
+void l2cu_send_peer_info_rsp();
 
-// ----------------------------------------------------------------------------
-// l2cu_allocate_lcb
-// ----------------------------------------------------------------------------
-asm void l2cu_allocate_lcb() {
+// asm_to_cpp: l2cu_allocate_lcb
+asm u8 *l2cu_allocate_lcb(s8 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -143,10 +241,8 @@ lbl_802C1FD8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_release_lcb
-// ----------------------------------------------------------------------------
-asm void l2cu_release_lcb() {
+// asm_to_cpp: l2cu_release_lcb
+asm void l2cu_release_lcb(s8 *arg0, s32 arg1, s32 arg2) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -221,10 +317,8 @@ lbl_802C20D8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_find_lcb_by_bd_addr
-// ----------------------------------------------------------------------------
-asm void l2cu_find_lcb_by_bd_addr() {
+// asm_to_cpp: l2cu_find_lcb_by_bd_addr
+asm u8 *l2cu_find_lcb_by_bd_addr(s32 arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -265,10 +359,8 @@ lbl_802C215C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_find_lcb_by_handle
-// ----------------------------------------------------------------------------
-asm void l2cu_find_lcb_by_handle() {
+// asm_to_cpp: l2cu_find_lcb_by_handle
+asm u8 *l2cu_find_lcb_by_handle(u32 arg0) {
     nofralloc
     lis r4, lbl_80457040@ha
     addi r4, r4, lbl_80457040@l
@@ -312,10 +404,8 @@ lbl_802C2200:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_get_conn_role
-// ----------------------------------------------------------------------------
-asm void l2cu_get_conn_role() {
+// asm_to_cpp: l2cu_get_conn_role
+asm u8 l2cu_get_conn_role(void) {
     nofralloc
     lis r3, lbl_80457040@ha
     addi r3, r3, lbl_80457040@l
@@ -323,10 +413,8 @@ asm void l2cu_get_conn_role() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_build_header
-// ----------------------------------------------------------------------------
-asm void l2cu_build_header() {
+// asm_to_cpp: l2cu_build_header
+asm s8 * l2cu_build_header() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -381,9 +469,7 @@ lbl_802C22BC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_send_peer_cmd_reject
-// ----------------------------------------------------------------------------
+// asm_to_cpp: l2cu_send_peer_cmd_reject
 asm void l2cu_send_peer_cmd_reject() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -457,10 +543,8 @@ lbl_802C23C0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_send_peer_connect_req
-// ----------------------------------------------------------------------------
-asm void l2cu_send_peer_connect_req() {
+// asm_to_cpp: l2cu_send_peer_connect_req
+asm void l2cu_send_peer_connect_req(s8 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -515,9 +599,7 @@ lbl_802C2488:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_send_peer_connect_rsp
-// ----------------------------------------------------------------------------
+// asm_to_cpp: l2cu_send_peer_connect_rsp
 asm void l2cu_send_peer_connect_rsp() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -578,9 +660,7 @@ lbl_802C2558:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_reject_connection
-// ----------------------------------------------------------------------------
+// asm_to_cpp: l2cu_reject_connection
 asm void l2cu_reject_connection() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -635,10 +715,8 @@ lbl_802C2618:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_send_peer_config_req
-// ----------------------------------------------------------------------------
-asm void l2cu_send_peer_config_req() {
+// asm_to_cpp: l2cu_send_peer_config_req
+asm void l2cu_send_peer_config_req(s8 *arg0, s8 *arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -842,10 +920,8 @@ lbl_802C2914:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_send_peer_config_rsp
-// ----------------------------------------------------------------------------
-asm void l2cu_send_peer_config_rsp() {
+// asm_to_cpp: l2cu_send_peer_config_rsp
+asm void l2cu_send_peer_config_rsp(s8 *arg0, s8 *arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1049,10 +1125,8 @@ lbl_802C2C0C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_send_peer_config_rej
-// ----------------------------------------------------------------------------
-asm void l2cu_send_peer_config_rej() {
+// asm_to_cpp: l2cu_send_peer_config_rej
+asm void l2cu_send_peer_config_rej(s8 *arg0, s8 *arg1, s32 arg2, s32 arg3, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1173,10 +1247,8 @@ lbl_802C2DC0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_send_peer_disc_req
-// ----------------------------------------------------------------------------
-asm void l2cu_send_peer_disc_req() {
+// asm_to_cpp: l2cu_send_peer_disc_req
+asm void l2cu_send_peer_disc_req(s8 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1235,9 +1307,7 @@ lbl_802C2E98:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_send_peer_disc_rsp
-// ----------------------------------------------------------------------------
+// asm_to_cpp: l2cu_send_peer_disc_rsp
 asm void l2cu_send_peer_disc_rsp() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1292,9 +1362,7 @@ lbl_802C2F50:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_send_peer_echo_req
-// ----------------------------------------------------------------------------
+// asm_to_cpp: l2cu_send_peer_echo_req
 asm void l2cu_send_peer_echo_req() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1398,9 +1466,7 @@ lbl_802C30C0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_send_peer_echo_rsp
-// ----------------------------------------------------------------------------
+// asm_to_cpp: l2cu_send_peer_echo_rsp
 asm void l2cu_send_peer_echo_rsp() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1518,9 +1584,7 @@ lbl_802C325C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_send_peer_info_rsp
-// ----------------------------------------------------------------------------
+// asm_to_cpp: l2cu_send_peer_info_rsp
 asm void l2cu_send_peer_info_rsp() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1568,10 +1632,8 @@ lbl_802C3304:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_allocate_ccb
-// ----------------------------------------------------------------------------
-asm void l2cu_allocate_ccb() {
+// asm_to_cpp: l2cu_allocate_ccb
+asm s8 *l2cu_allocate_ccb(s8 *arg0) {
     nofralloc
     lis r7, lbl_80457040@ha
     addi r7, r7, lbl_80457040@l
@@ -1645,9 +1707,7 @@ lbl_802C33BC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_release_ccb
-// ----------------------------------------------------------------------------
+// asm_to_cpp: l2cu_release_ccb
 asm void l2cu_release_ccb() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1768,10 +1828,8 @@ lbl_802C35B4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_find_ccb_by_cid
-// ----------------------------------------------------------------------------
-asm void l2cu_find_ccb_by_cid() {
+// asm_to_cpp: l2cu_find_ccb_by_cid
+asm s8 *l2cu_find_ccb_by_cid(s32 arg0, u32 arg1) {
     nofralloc
     cmplwi r4, 0x40
     li r5, 0x0
@@ -1800,10 +1858,8 @@ lbl_802C3620:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_allocate_rcb
-// ----------------------------------------------------------------------------
-asm void l2cu_allocate_rcb() {
+// asm_to_cpp: l2cu_allocate_rcb
+asm u8 * l2cu_allocate_rcb() {
     nofralloc
     lis r4, lbl_80457040@ha
     li r0, 0x8
@@ -1828,21 +1884,8 @@ lbl_802C3660:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_release_rcb
-// ----------------------------------------------------------------------------
-asm void l2cu_release_rcb() {
-    nofralloc
-    li r0, 0x0
-    stb r0, 0x0(r3)
-    sth r0, 0x2(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// l2cu_find_rcb_by_psm
-// ----------------------------------------------------------------------------
-asm void l2cu_find_rcb_by_psm() {
+// asm_to_cpp: l2cu_find_rcb_by_psm
+asm u8 *l2cu_find_rcb_by_psm(u32 arg0) {
     nofralloc
     lis r4, lbl_80457040@ha
     li r0, 0x2
@@ -1897,10 +1940,8 @@ lbl_802C3728:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_process_peer_cfg_req
-// ----------------------------------------------------------------------------
-asm void l2cu_process_peer_cfg_req() {
+// asm_to_cpp: l2cu_process_peer_cfg_req
+asm void l2cu_process_peer_cfg_req(s8 *arg0, s8 *arg1) {
     nofralloc
     lbz r0, 0x2(r4)
     li r6, 0x1
@@ -1996,10 +2037,8 @@ lbl_802C3878:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_process_peer_cfg_rsp
-// ----------------------------------------------------------------------------
-asm void l2cu_process_peer_cfg_rsp() {
+// asm_to_cpp: l2cu_process_peer_cfg_rsp
+asm void l2cu_process_peer_cfg_rsp(s8 *arg0, s8 *arg1) {
     nofralloc
     lbz r0, 0x6(r4)
     cmpwi r0, 0x0
@@ -2019,10 +2058,8 @@ asm void l2cu_process_peer_cfg_rsp() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_process_our_cfg_req
-// ----------------------------------------------------------------------------
-asm void l2cu_process_our_cfg_req() {
+// asm_to_cpp: l2cu_process_our_cfg_req
+asm void l2cu_process_our_cfg_req(s8 *arg0, s8 *arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -2097,10 +2134,8 @@ lbl_802C39BC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_process_our_cfg_rsp
-// ----------------------------------------------------------------------------
-asm void l2cu_process_our_cfg_rsp() {
+// asm_to_cpp: l2cu_process_our_cfg_rsp
+asm void l2cu_process_our_cfg_rsp(s8 *arg0, s8 *arg1) {
     nofralloc
     lbz r0, 0x6(r4)
     cmpwi r0, 0x0
@@ -2120,10 +2155,8 @@ asm void l2cu_process_our_cfg_rsp() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_device_reset
-// ----------------------------------------------------------------------------
-asm void l2cu_device_reset() {
+// asm_to_cpp: l2cu_device_reset
+asm void l2cu_device_reset(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -2156,10 +2189,8 @@ lbl_802C3A58:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_create_conn
-// ----------------------------------------------------------------------------
-asm void l2cu_create_conn() {
+// asm_to_cpp: l2cu_create_conn
+asm s32 l2cu_create_conn(s8 *arg0, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -2238,10 +2269,8 @@ lbl_802C3B80:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_create_conn_after_switch
-// ----------------------------------------------------------------------------
-asm void l2cu_create_conn_after_switch() {
+// asm_to_cpp: l2cu_create_conn_after_switch
+asm s32 l2cu_create_conn_after_switch() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -2302,10 +2331,8 @@ lbl_802C3C50:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_find_lcb_by_state
-// ----------------------------------------------------------------------------
-asm void l2cu_find_lcb_by_state() {
+// asm_to_cpp: l2cu_find_lcb_by_state
+asm u8 *l2cu_find_lcb_by_state(s32 arg0) {
     nofralloc
     lis r4, lbl_80457040@ha
     addi r4, r4, lbl_80457040@l
@@ -2349,10 +2376,8 @@ lbl_802C3CF0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cu_lcb_disconnecting
-// ----------------------------------------------------------------------------
-asm void l2cu_lcb_disconnecting() {
+// asm_to_cpp: l2cu_lcb_disconnecting
+asm s32 l2cu_lcb_disconnecting(void) {
     nofralloc
     lis r4, lbl_80457040@ha
     li r0, 0x2
@@ -2420,4 +2445,3 @@ lbl_802C3DD0:
     bdnz lbl_802C3D14
     blr
 }
-

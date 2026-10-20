@@ -1,81 +1,112 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/nand/NANDOpenClose.cpp
-// Total functions: 19
+u8 *ISFS_Read();                       /* extern */
+u8 *ISFS_Write();                           /* extern */
+extern M2C_UNK lbl_8037F570;
+extern s32 lbl_8037F57C;
+extern M2C_UNK lbl_8037F588;
+extern s32 lbl_8049D158;
+extern s32 lbl_8049D160;
+extern s32 lbl_8049E258;
 
-// Small Data symbols (@sda21)
-extern float lbl_8049D158;
-extern float lbl_8049D160;
-extern float lbl_8049E258;
+s32 NANDOpen();
+s32 NANDPrivateOpen();
+s32 NANDOpenAsync();
+s32 NANDPrivateOpenAsync();
+void nandOpenCallback_8030FBF0();
+s32 NANDClose();
+s32 NANDCloseAsync();
+void NANDSimpleSafeOpen();
+s32 nandSafeOpen();
+void NANDPrivateSafeOpenAsync();
+s32 nandSafeClose();
+void fn_803102EC();
+s32 fn_80310318();
+void fn_80310480();
+void fn_80310870();
+void fn_80310908();
+s32 fn_80310910();
+void fn_80310A0C();
+void nandReadCloseCallback();
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_8037F570[];
-extern u8 lbl_8037F57C[];
-extern u8 lbl_8037F588[];
-extern u8 nandCloseCallback[];
+s32 NANDOpen(s32 arg0, s8 *arg1, s32 arg2);
 
-// Forward declarations
-extern void ISFS_Close();
-extern void ISFS_CloseAsync();
-extern void ISFS_CreateDir();
-extern void ISFS_CreateDirAsync();
-extern void ISFS_CreateFile();
-extern void ISFS_CreateFileAsync();
-extern void ISFS_Delete();
-extern void ISFS_DeleteAsync();
-extern void ISFS_GetAttr();
-extern void ISFS_GetAttrAsync();
-extern void ISFS_Open();
-extern void ISFS_OpenAsync();
-extern void ISFS_Read();
-extern void ISFS_ReadAsync();
-extern void ISFS_Rename();
-extern void ISFS_RenameAsync();
-extern void ISFS_Seek();
-extern void ISFS_SeekAsync();
-extern void ISFS_Write();
-extern void ISFS_WriteAsync();
-extern void NANDClose();
-extern void NANDCloseAsync();
-extern void NANDOpen();
-extern void NANDOpenAsync();
-extern void NANDPrivateOpen();
-extern void NANDPrivateOpenAsync();
-extern void NANDPrivateSafeOpenAsync();
-extern void NANDSimpleSafeOpen();
-extern void OSDisableInterrupts();
+s32 NANDPrivateOpen(s32 arg0, s8 *arg1, s32 arg2, s32 arg3, s32 arg4);
+
+s32 NANDOpenAsync(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s8 *arg4, M2C_UNK arg_sp0);
+
+s32 NANDPrivateOpenAsync(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s8 *arg4, M2C_UNK arg_sp0);
+
+void nandOpenCallback_8030FBF0(s32 arg0, s8 *arg1);
+
+s32 NANDClose(s8 *arg0);
+
+s32 NANDCloseAsync(s8 *arg0, s32 arg1, s8 *arg2);
+
+// NANDSimpleSafeOpen: definicion C reemplazada por asm (ver abajo)
+
+
+
+void NANDPrivateSafeOpenAsync(s32 arg0) {
+    nandSafeClose(arg0, 0);
+}
+
+s32 nandSafeClose(s8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+// fn_803102EC: definicion C reemplazada por asm (ver abajo)
+
+
+
+// fn_80310480: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_80310870(s32 arg0, s8 *arg1);
+
+void fn_80310908(s32 arg0, s32 arg1, s32 arg2) {
+    fn_80310910(arg0, arg1, arg2, 0);
+}
+
+s32 fn_80310910(s8 *arg0, s32 arg1, s8 *arg2, s32 arg3);
+
+// fn_80310A0C: definicion C reemplazada por asm (ver abajo)
+
+
+// nandReadCloseCallback: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+s32 NANDClose();
+s32 NANDCloseAsync();
+s32 NANDOpen();
+s32 NANDOpenAsync();
+s32 NANDPrivateOpen();
+s32 NANDPrivateOpenAsync();
+void NANDSimpleSafeOpen(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 extern void OSReport();
-extern void OSRestoreInterrupts();
 extern void _restgpr_23();
 extern void _restgpr_25();
 extern void _restgpr_27();
 extern void _savegpr_23();
 extern void _savegpr_25();
 extern void _savegpr_27();
-extern void fn_803102EC();
-extern void fn_80310318();
-extern void fn_80310480();
-extern void fn_80310870();
-extern void fn_80310908();
-extern void fn_80310910();
-extern void fn_80310A0C();
-extern void nandConvertErrorCode();
+void fn_803102EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6);
+s32 fn_80310318();
+void fn_80310480(s32 arg0, s8 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+void fn_80310870();
+s32 fn_80310910();
+void fn_80310A0C(s32 arg0, s8 *arg1);
 extern void nandGenerateAbsPath();
 extern void nandGetParentDirectory();
 extern void nandGetRelativeName();
-extern void nandIsInitialized();
-extern void nandIsPrivatePath();
-extern void nandOpenCallback_8030FBF0();
-extern void nandOpen_8030F8D4();
-extern void nandReadCloseCallback();
-extern void nandSafeClose();
-extern void nandSafeOpen();
-extern void sprintf();
+void nandOpenCallback_8030FBF0();
+void nandReadCloseCallback(s32 arg0, s8 *arg1);
+s32 nandSafeClose();
+s32 nandSafeOpen();
 
-// ----------------------------------------------------------------------------
-// NANDOpen
-// ----------------------------------------------------------------------------
-asm void NANDOpen() {
+// asm_to_cpp: NANDOpen
+asm s32 NANDOpen() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -117,10 +148,8 @@ lbl_8030FA58:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// NANDPrivateOpen
-// ----------------------------------------------------------------------------
-asm void NANDPrivateOpen() {
+// asm_to_cpp: NANDPrivateOpen
+asm s32 NANDPrivateOpen() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -162,10 +191,8 @@ lbl_8030FAE4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// NANDOpenAsync
-// ----------------------------------------------------------------------------
-asm void NANDOpenAsync() {
+// asm_to_cpp: NANDOpenAsync
+asm s32 NANDOpenAsync() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -201,10 +228,8 @@ lbl_8030FB60:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// NANDPrivateOpenAsync
-// ----------------------------------------------------------------------------
-asm void NANDPrivateOpenAsync() {
+// asm_to_cpp: NANDPrivateOpenAsync
+asm s32 NANDPrivateOpenAsync() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -240,9 +265,7 @@ lbl_8030FBD8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// nandOpenCallback_8030FBF0
-// ----------------------------------------------------------------------------
+// asm_to_cpp: nandOpenCallback_8030FBF0
 asm void nandOpenCallback_8030FBF0() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -279,10 +302,8 @@ lbl_8030FC54:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// NANDClose
-// ----------------------------------------------------------------------------
-asm void NANDClose() {
+// asm_to_cpp: NANDClose
+asm s32 NANDClose() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -317,10 +338,8 @@ lbl_8030FCC0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// NANDCloseAsync
-// ----------------------------------------------------------------------------
-asm void NANDCloseAsync() {
+// asm_to_cpp: NANDCloseAsync
+asm s32 NANDCloseAsync() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -361,20 +380,16 @@ lbl_8030FD40:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// NANDSimpleSafeOpen
-// ----------------------------------------------------------------------------
-asm void NANDSimpleSafeOpen() {
+// asm_to_cpp: NANDSimpleSafeOpen
+asm void NANDSimpleSafeOpen(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     nofralloc
     li r8, 0x0
     li r9, 0x0
     b nandSafeOpen
 }
 
-// ----------------------------------------------------------------------------
-// nandSafeOpen
-// ----------------------------------------------------------------------------
-asm void nandSafeOpen() {
+// asm_to_cpp: nandSafeOpen
+asm s32 nandSafeOpen() {
     nofralloc
     stwu r1, -0x90(r1)
     mflr r0
@@ -640,19 +655,8 @@ lbl_803100F8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// NANDPrivateSafeOpenAsync
-// ----------------------------------------------------------------------------
-asm void NANDPrivateSafeOpenAsync() {
-    nofralloc
-    li r4, 0x0
-    b nandSafeClose
-}
-
-// ----------------------------------------------------------------------------
-// nandSafeClose
-// ----------------------------------------------------------------------------
-asm void nandSafeClose() {
+// asm_to_cpp: nandSafeClose
+asm s32 nandSafeClose() {
     nofralloc
     stwu r1, -0x60(r1)
     mflr r0
@@ -787,10 +791,8 @@ lbl_803102D0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_803102EC
-// ----------------------------------------------------------------------------
-asm void fn_803102EC() {
+// asm_to_cpp: fn_803102EC
+asm void fn_803102EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -805,10 +807,8 @@ asm void fn_803102EC() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80310318
-// ----------------------------------------------------------------------------
-asm void fn_80310318() {
+// asm_to_cpp: fn_80310318
+asm s32 fn_80310318() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -911,10 +911,8 @@ lbl_80310468:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80310480
-// ----------------------------------------------------------------------------
-asm void fn_80310480() {
+// asm_to_cpp: fn_80310480
+asm void fn_80310480(s32 arg0, s8 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
     nofralloc
     stwu r1, -0x70(r1)
     mflr r0
@@ -1194,9 +1192,7 @@ lbl_80310858:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80310870
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80310870
 asm void fn_80310870() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1243,19 +1239,8 @@ lbl_803108F4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80310908
-// ----------------------------------------------------------------------------
-asm void fn_80310908() {
-    nofralloc
-    li r6, 0x0
-    b fn_80310910
-}
-
-// ----------------------------------------------------------------------------
-// fn_80310910
-// ----------------------------------------------------------------------------
-asm void fn_80310910() {
+// asm_to_cpp: fn_80310910
+asm s32 fn_80310910() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1330,10 +1315,8 @@ lbl_803109EC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80310A0C
-// ----------------------------------------------------------------------------
-asm void fn_80310A0C() {
+// asm_to_cpp: fn_80310A0C
+asm void fn_80310A0C(s32 arg0, s8 *arg1) {
     nofralloc
     stwu r1, -0x50(r1)
     mflr r0
@@ -1460,10 +1443,8 @@ lbl_80310BBC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// nandReadCloseCallback
-// ----------------------------------------------------------------------------
-asm void nandReadCloseCallback() {
+// asm_to_cpp: nandReadCloseCallback
+asm void nandReadCloseCallback(s32 arg0, s8 *arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1490,4 +1471,3 @@ lbl_80310C04:
     addi r1, r1, 0x10
     blr
 }
-

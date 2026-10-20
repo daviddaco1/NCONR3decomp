@@ -1,64 +1,78 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/l2c_api.cpp
-// Total functions: 13
+M2C_UNK LogMsg_0();                  /* extern */
+M2C_UNK LogMsg_1();          /* extern */
+M2C_UNK LogMsg_2();     /* extern */
+M2C_UNK LogMsg_3();                  /* extern */
+M2C_UNK LogMsg_6(); /* extern */
+M2C_UNK l2c_csm_execute();            /* extern */
+extern M2C_UNK lbl_80375E50;
+extern M2C_UNK lbl_80375EF8;
+extern M2C_UNK lbl_80375F2C;
+extern M2C_UNK lbl_803761A8;
+extern M2C_UNK lbl_803761C8;
+extern M2C_UNK lbl_803761F4;
+extern M2C_UNK lbl_80376220;
+extern M2C_UNK lbl_8037624C;
+extern M2C_UNK lbl_80376270;
+extern M2C_UNK lbl_8037629C;
+extern M2C_UNK lbl_803762C0;
+extern M2C_UNK lbl_80376420;
+extern u8 lbl_80457040;
+extern M2C_UNK lbl_804A2558;
 
-// Small Data symbols (@sda21)
-extern float lbl_804A2558;
+s32 L2CA_Register();
+void L2CA_Deregister();
+u16 L2CA_ConnectReq();
+s32 L2CA_ConnectRsp();
+s32 L2CA_ConfigReq();
+s32 L2CA_ConfigRsp();
+s32 L2CA_DisconnectReq();
+s32 L2CA_DisconnectRsp();
+s32 L2CA_DataWrite();
+s32 L2CA_SetIdleTimeout();
+s32 L2CA_SetIdleTimeoutByBdAddr();
+u8 L2CA_SetTraceLevel();
+void L2CA_RegisterCompression();
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_80375E50[];
-extern u8 lbl_80375EF8[];
-extern u8 lbl_80375F2C[];
-extern u8 lbl_803761A8[];
-extern u8 lbl_803761C8[];
-extern u8 lbl_803761F4[];
-extern u8 lbl_80376220[];
-extern u8 lbl_8037624C[];
-extern u8 lbl_80376270[];
-extern u8 lbl_8037629C[];
-extern u8 lbl_803762C0[];
-extern u8 lbl_80376420[];
-extern u8 lbl_80457040[];
 
-// Forward declarations
-extern void BTM_IsDeviceUp();
+
+
+
+
+
+
+
+
+
+
+
+void L2CA_RegisterCompression(s32 arg0, s32 arg1) {
+
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void GKI_freebuf();
-extern void L2CA_ConfigReq();
-extern void L2CA_ConfigRsp();
-extern void L2CA_ConnectReq();
-extern void L2CA_ConnectRsp();
-extern void L2CA_DataWrite();
-extern void L2CA_Deregister();
-extern void L2CA_DisconnectReq();
-extern void L2CA_DisconnectRsp();
-extern void L2CA_Register();
-extern void L2CA_RegisterCompression();
-extern void L2CA_SetIdleTimeout();
-extern void L2CA_SetIdleTimeoutByBdAddr();
-extern void L2CA_SetTraceLevel();
-extern void LogMsg_0();
-extern void LogMsg_1();
-extern void LogMsg_2();
-extern void LogMsg_3();
-extern void LogMsg_6();
+s32 L2CA_ConfigReq();
+s32 L2CA_ConfigRsp();
+u16 L2CA_ConnectReq();
+s32 L2CA_ConnectRsp();
+s32 L2CA_DataWrite();
+void L2CA_Deregister();
+s32 L2CA_DisconnectReq();
+s32 L2CA_DisconnectRsp();
+s32 L2CA_Register();
+s32 L2CA_SetIdleTimeout();
+s32 L2CA_SetIdleTimeoutByBdAddr();
+u8 L2CA_SetTraceLevel();
 extern void _restgpr_26();
 extern void _savegpr_26();
-extern void l2c_csm_execute();
-extern void l2cu_allocate_ccb();
-extern void l2cu_allocate_lcb();
-extern void l2cu_allocate_rcb();
-extern void l2cu_create_conn();
-extern void l2cu_find_ccb_by_cid();
-extern void l2cu_find_lcb_by_bd_addr();
-extern void l2cu_find_rcb_by_psm();
 extern void l2cu_release_rcb();
-extern void memcmp();
 
-// ----------------------------------------------------------------------------
-// L2CA_Register
-// ----------------------------------------------------------------------------
-asm void L2CA_Register() {
+// asm_to_cpp: L2CA_Register
+asm s32 L2CA_Register() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -174,9 +188,7 @@ lbl_802BDE38:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// L2CA_Deregister
-// ----------------------------------------------------------------------------
+// asm_to_cpp: L2CA_Deregister
 asm void L2CA_Deregister() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -220,10 +232,8 @@ lbl_802BDED0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// L2CA_ConnectReq
-// ----------------------------------------------------------------------------
-asm void L2CA_ConnectReq() {
+// asm_to_cpp: L2CA_ConnectReq
+asm u16 L2CA_ConnectReq() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -384,10 +394,8 @@ lbl_802BE0F8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// L2CA_ConnectRsp
-// ----------------------------------------------------------------------------
-asm void L2CA_ConnectRsp() {
+// asm_to_cpp: L2CA_ConnectRsp
+asm s32 L2CA_ConnectRsp() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -503,10 +511,8 @@ lbl_802BE290:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// L2CA_ConfigReq
-// ----------------------------------------------------------------------------
-asm void L2CA_ConfigReq() {
+// asm_to_cpp: L2CA_ConfigReq
+asm s32 L2CA_ConfigReq() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -560,10 +566,8 @@ lbl_802BE348:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// L2CA_ConfigRsp
-// ----------------------------------------------------------------------------
-asm void L2CA_ConfigRsp() {
+// asm_to_cpp: L2CA_ConfigRsp
+asm s32 L2CA_ConfigRsp() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -625,10 +629,8 @@ lbl_802BE418:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// L2CA_DisconnectReq
-// ----------------------------------------------------------------------------
-asm void L2CA_DisconnectReq() {
+// asm_to_cpp: L2CA_DisconnectReq
+asm s32 L2CA_DisconnectReq() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -677,10 +679,8 @@ lbl_802BE4C0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// L2CA_DisconnectRsp
-// ----------------------------------------------------------------------------
-asm void L2CA_DisconnectRsp() {
+// asm_to_cpp: L2CA_DisconnectRsp
+asm s32 L2CA_DisconnectRsp() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -729,10 +729,8 @@ lbl_802BE564:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// L2CA_DataWrite
-// ----------------------------------------------------------------------------
-asm void L2CA_DataWrite() {
+// asm_to_cpp: L2CA_DataWrite
+asm s32 L2CA_DataWrite() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -815,10 +813,8 @@ lbl_802BE67C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// L2CA_SetIdleTimeout
-// ----------------------------------------------------------------------------
-asm void L2CA_SetIdleTimeout() {
+// asm_to_cpp: L2CA_SetIdleTimeout
+asm s32 L2CA_SetIdleTimeout() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -878,10 +874,8 @@ lbl_802BE74C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// L2CA_SetIdleTimeoutByBdAddr
-// ----------------------------------------------------------------------------
-asm void L2CA_SetIdleTimeoutByBdAddr() {
+// asm_to_cpp: L2CA_SetIdleTimeoutByBdAddr
+asm s32 L2CA_SetIdleTimeoutByBdAddr() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -956,10 +950,8 @@ lbl_802BE84C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// L2CA_SetTraceLevel
-// ----------------------------------------------------------------------------
-asm void L2CA_SetTraceLevel() {
+// asm_to_cpp: L2CA_SetTraceLevel
+asm u8 L2CA_SetTraceLevel() {
     nofralloc
     cmplwi r3, 0xff
     beq lbl_802BE874
@@ -970,12 +962,3 @@ lbl_802BE874:
     lbz r3, lbl_80457040@l(r3)
     blr
 }
-
-// ----------------------------------------------------------------------------
-// L2CA_RegisterCompression
-// ----------------------------------------------------------------------------
-asm void L2CA_RegisterCompression() {
-    nofralloc
-    blr
-}
-

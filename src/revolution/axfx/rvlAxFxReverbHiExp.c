@@ -1,53 +1,88 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/axfx/rvlAxFxReverbHiExp.cpp
-// Total functions: 10
+M2C_UNK memset();                       /* extern */
+extern M2C_UNK lbl_80372420;
+extern M2C_UNK lbl_803724E0;
+extern s32 (*lbl_8049CF40)(s32);
+extern M2C_UNK (*lbl_8049CF44)();
+extern f32 lbl_804A2440;
+extern f32 lbl_804A2444;
+extern f32 lbl_804A2448;
+extern f32 lbl_804A244C;
+extern f32 lbl_804A2450;
+extern f32 lbl_804A2460;
+extern f32 lbl_804A2470;
 
-// Small Data symbols (@sda21)
-extern float lbl_8049CF40;
-extern float lbl_8049CF44;
-extern float lbl_804A2440;
-extern float lbl_804A2444;
-extern float lbl_804A2448;
-extern float lbl_804A244C;
-extern float lbl_804A2450;
+s32 AXFXReverbHiExpGetMemSize();
+s32 AXFXReverbHiExpInit();
+s32 AXFXReverbHiExpSettings();
+s32 AXFXReverbHiExpSettingsUpdate();
+void AXFXReverbHiExpShutdown();
+void AXFXReverbHiExpCallback();
+s32 AXFXReverbHiExp__AllocDelayLine();
+void AXFXReverbHiExp__BzeroDelayLines();
+void AXFXReverbHiExp__FreeDelayLine();
+s32 AXFXReverbHiExp__InitParams();
+
+// AXFXReverbHiExpGetMemSize: definicion C reemplazada por asm (ver abajo)
+
+
+// AXFXReverbHiExpInit: definicion C reemplazada por asm (ver abajo)
+
+
+// AXFXReverbHiExpSettings: definicion C reemplazada por asm (ver abajo)
+
+
+// AXFXReverbHiExpSettingsUpdate: definicion C reemplazada por asm (ver abajo)
+
+
+void AXFXReverbHiExpShutdown(s8 *arg0) {
+    s32 temp_r31;
+
+    temp_r31 = OSDisableInterrupts();
+    M2C_FIELD(arg0, s32 *, 0x10C) = (s32) (M2C_FIELD(arg0, s32 *, 0x10C) | 1);
+    AXFXReverbHiExp__FreeDelayLine(arg0);
+    OSRestoreInterrupts(temp_r31);
+}
+
+void AXFXReverbHiExpCallback(s32 *arg0, s8 *arg1, M2C_UNK arg_sp0);
+
+// AXFXReverbHiExp__AllocDelayLine: definicion C reemplazada por asm (ver abajo)
+
+
+// AXFXReverbHiExp__BzeroDelayLines: definicion C reemplazada por asm (ver abajo)
+
+
+// AXFXReverbHiExp__FreeDelayLine: definicion C reemplazada por asm (ver abajo)
+
+
+// AXFXReverbHiExp__InitParams: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern float lbl_804A2458;
-extern float lbl_804A2460;
 extern float lbl_804A2468;
-extern float lbl_804A2470;
 extern float lbl_804A2478;
-
-// Global data symbols (@ha/@l)
-extern u8 lbl_80372420[];
-extern u8 lbl_803724E0[];
-
-// Forward declarations
-extern void AXFXReverbHiExpCallback();
-extern void AXFXReverbHiExpGetMemSize();
-extern void AXFXReverbHiExpInit();
-extern void AXFXReverbHiExpSettings();
-extern void AXFXReverbHiExpSettingsUpdate();
-extern void AXFXReverbHiExpShutdown();
-extern void AXFXReverbHiExp__AllocDelayLine();
-extern void AXFXReverbHiExp__BzeroDelayLines();
-extern void AXFXReverbHiExp__FreeDelayLine();
-extern void AXFXReverbHiExp__InitParams();
-extern void OSDisableInterrupts();
-extern void OSRestoreInterrupts();
-extern void __cvt_fp2unsigned();
+void AXFXReverbHiExpCallback();
+s32 AXFXReverbHiExpGetMemSize(s8 *arg0);
+s32 AXFXReverbHiExpInit(s8 *arg0);
+s32 AXFXReverbHiExpSettings(s8 *arg0);
+s32 AXFXReverbHiExpSettingsUpdate(s8 *arg0);
+s32 AXFXReverbHiExp__AllocDelayLine(s8 *arg0, s32 arg1, M2C_UNK arg_sp0);
+void AXFXReverbHiExp__BzeroDelayLines(s8 *arg0, M2C_UNK arg_sp0);
+void AXFXReverbHiExp__FreeDelayLine(s8 *arg0, M2C_UNK arg_sp0);
+s32 AXFXReverbHiExp__InitParams(s8 *arg0);
 extern void _restgpr_23();
 extern void _restgpr_24();
 extern void _restgpr_25();
 extern void _savegpr_23();
 extern void _savegpr_24();
 extern void _savegpr_25();
-extern void log10();
-extern void memset();
 
-// ----------------------------------------------------------------------------
-// AXFXReverbHiExpGetMemSize
-// ----------------------------------------------------------------------------
-asm void AXFXReverbHiExpGetMemSize() {
+// asm_to_cpp: AXFXReverbHiExpGetMemSize
+asm s32 AXFXReverbHiExpGetMemSize(s8 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     lis r4, lbl_80372420@ha
@@ -85,10 +120,8 @@ asm void AXFXReverbHiExpGetMemSize() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// AXFXReverbHiExpInit
-// ----------------------------------------------------------------------------
-asm void AXFXReverbHiExpInit() {
+// asm_to_cpp: AXFXReverbHiExpInit
+asm s32 AXFXReverbHiExpInit(s8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -199,10 +232,8 @@ lbl_8029F0FC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// AXFXReverbHiExpSettings
-// ----------------------------------------------------------------------------
-asm void AXFXReverbHiExpSettings() {
+// asm_to_cpp: AXFXReverbHiExpSettings
+asm s32 AXFXReverbHiExpSettings(s8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -260,10 +291,8 @@ lbl_8029F1CC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// AXFXReverbHiExpSettingsUpdate
-// ----------------------------------------------------------------------------
-asm void AXFXReverbHiExpSettingsUpdate() {
+// asm_to_cpp: AXFXReverbHiExpSettingsUpdate
+asm s32 AXFXReverbHiExpSettingsUpdate(s8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -314,37 +343,7 @@ lbl_8029F280:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// AXFXReverbHiExpShutdown
-// ----------------------------------------------------------------------------
-asm void AXFXReverbHiExpShutdown() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    bl OSDisableInterrupts
-    lwz r0, 0x10c(r30)
-    mr r31, r3
-    mr r3, r30
-    ori r0, r0, 0x1
-    stw r0, 0x10c(r30)
-    bl AXFXReverbHiExp__FreeDelayLine
-    mr r3, r31
-    bl OSRestoreInterrupts
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// AXFXReverbHiExpCallback
-// ----------------------------------------------------------------------------
+// asm_to_cpp: AXFXReverbHiExpCallback
 asm void AXFXReverbHiExpCallback() {
     nofralloc
     stwu r1, -0x70(r1)
@@ -697,10 +696,8 @@ lbl_8029F7F4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// AXFXReverbHiExp__AllocDelayLine
-// ----------------------------------------------------------------------------
-asm void AXFXReverbHiExp__AllocDelayLine() {
+// asm_to_cpp: AXFXReverbHiExp__AllocDelayLine
+asm s32 AXFXReverbHiExp__AllocDelayLine(s8 *arg0, s32 arg1, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -807,10 +804,8 @@ lbl_8029F968:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// AXFXReverbHiExp__BzeroDelayLines
-// ----------------------------------------------------------------------------
-asm void AXFXReverbHiExp__BzeroDelayLines() {
+// asm_to_cpp: AXFXReverbHiExp__BzeroDelayLines
+asm void AXFXReverbHiExp__BzeroDelayLines(s8 *arg0, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -895,10 +890,8 @@ lbl_8029FA74:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// AXFXReverbHiExp__FreeDelayLine
-// ----------------------------------------------------------------------------
-asm void AXFXReverbHiExp__FreeDelayLine() {
+// asm_to_cpp: AXFXReverbHiExp__FreeDelayLine
+asm void AXFXReverbHiExp__FreeDelayLine(s8 *arg0, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -979,10 +972,8 @@ lbl_8029FB88:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// AXFXReverbHiExp__InitParams
-// ----------------------------------------------------------------------------
-asm void AXFXReverbHiExp__InitParams() {
+// asm_to_cpp: AXFXReverbHiExp__InitParams
+asm s32 AXFXReverbHiExp__InitParams(s8 *arg0) {
     nofralloc
     stwu r1, -0x60(r1)
     mflr r0
@@ -1208,4 +1199,3 @@ lbl_8029FEAC:
     addi r1, r1, 0x60
     blr
 }
-

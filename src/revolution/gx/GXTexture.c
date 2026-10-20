@@ -1,101 +1,321 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/gx/GXTexture.cpp
-// Total functions: 52
+M2C_UNK GXInitTexObj();                             /* static */
+extern s8 *__GXData;
+extern M2C_UNK lbl_8037B0E0;
+extern M2C_UNK lbl_8049D078;
+extern M2C_UNK lbl_8049D080;
+extern M2C_UNK lbl_8049D088;
+extern M2C_UNK lbl_8049D090;
+extern M2C_UNK lbl_8049D098;
+extern M2C_UNK lbl_8049D0A0;
+extern M2C_UNK lbl_8049D0A8;
+extern M2C_UNK lbl_8049D0B0;
+extern M2C_UNK lbl_8049D0B8;
+extern f32 lbl_804A25E0;
+extern f32 lbl_804A25F0;
+extern f32 lbl_804A25F4;
+extern f32 lbl_804A25F8;
+extern f32 lbl_804A25FC;
+extern f32 lbl_804A2600;
+extern f32 lbl_804A2604;
+extern f32 lbl_804A2608;
+extern f32 lbl_804A260C;
+extern f32 lbl_804A2618;
 
-// Small Data symbols (@sda21)
-extern float __GXData;
-extern float lbl_8049D078;
-extern float lbl_8049D080;
-extern float lbl_8049D088;
-extern float lbl_8049D090;
-extern float lbl_8049D098;
-extern float lbl_8049D0A0;
-extern float lbl_8049D0A8;
-extern float lbl_8049D0B0;
-extern float lbl_8049D0B8;
-extern float lbl_804A25E0;
+/*
+Decompilation failure in function GXGetTexBufferSize:
+
+Found bctr instruction at GXTexture.s line 17, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+/*
+Decompilation failure in function __GetImageTileCount:
+
+Found bctr instruction at GXTexture.s line 105, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+/*
+Decompilation failure in function GXInitTexObj:
+
+Found bctr instruction at GXTexture.s line 242, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+void GXInitTexObjCI();
+void GXInitTexObjLOD();
+void GXInitTexObjWrapMode();
+void GXInitTexObjTlut();
+void GXInitTexObjFilter();
+void GXInitTexObjUserData();
+s32 GXGetTexObjUserData();
+s32 GXGetTexObjData();
+u16 GXGetTexObjWidth();
+u16 GXGetTexObjHeight();
+s32 GXGetTexObjFmt();
+s32 GXGetTexObjWrapS();
+s32 GXGetTexObjWrapT();
+s32 GXGetTexObjMipMap();
+void GXGetTexObjLODAll();
+s32 GXGetTexObjTlut();
+void GXLoadTexObjPreLoaded();
+void GXLoadTexObj();
+void GXInitTlutObj();
+void GXLoadTlut();
+void GXInitTexCacheRegion();
+void GXInitTlutRegion();
+void GXInvalidateTexAll();
+s32 GXSetTexRegionCallback();
+s32 GXSetTlutRegionCallback();
+void __SetSURegs();
+void __GXSetSUTexRegs();
+void __GXSetTmemConfig();
+void fn_802E3F80();
+void fn_802E3FE8();
+void fn_802E413C();
+void fn_802E4240();
+void fn_802E430C();
+void fn_802E432C();
+void fn_802E4374();
+void __GXSetIndirectMask();
+void __GXFlushTextureState();
+void fn_802E43CC();
+void fn_802E4460();
+void fn_802E44A0();
+void fn_802E44E0();
+void fn_802E4538();
+void fn_802E4590();
+void GXSetTexCoordCylWrap();
+void fn_802E4654();
+void fn_802E46B0();
+void fn_802E4700();
+void fn_802E4750();
+void GXSetTexCoordScaleManually();
+
+void GXInitTexObjCI(s8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg_sp8) {
+    GXInitTexObj();
+    M2C_FIELD(arg0, s32 *, 0x18) = arg_sp8;
+    M2C_FIELD(arg0, u8 *, 0x1F) = (u8) (M2C_FIELD(arg0, u8 *, 0x1F) & 0xFFFFFFFD);
+}
+
+
+// GXInitTexObjWrapMode: definicion C reemplazada por asm (ver abajo)
+
+
+void GXInitTexObjTlut(s8 *arg0, s32 arg1) {
+    M2C_FIELD(arg0, s32 *, 0x18) = arg1;
+}
+
+// GXInitTexObjFilter: definicion C reemplazada por asm (ver abajo)
+
+
+void GXInitTexObjUserData(s8 *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    M2C_FIELD(arg0, s32 *, 0x10) = arg1;
+}
+
+s32 GXGetTexObjUserData(s8 *arg0) {
+    return M2C_FIELD(arg0, s32 *, 0x10);
+}
+
+s32 GXGetTexObjData(s8 *arg0) {
+    return (M2C_FIELD(arg0, s32 *, 0xC) << 5) & 0x1FFFFFE0;
+}
+
+u16 GXGetTexObjWidth(s8 *arg0) {
+    return (u16) ((M2C_FIELD(arg0, s32 *, 8) & 0x3FF) + 1);
+}
+
+u16 GXGetTexObjHeight(s8 *arg0) {
+    return (u16) ((((u32) M2C_FIELD(arg0, u32 *, 8) >> 0xAU) & 0x3FF) + 1);
+}
+
+s32 GXGetTexObjFmt(s8 *arg0) {
+    return M2C_FIELD(arg0, s32 *, 0x14);
+}
+
+s32 GXGetTexObjWrapS(s32 *arg0) {
+    return *arg0 & 3;
+}
+
+s32 GXGetTexObjWrapT(u32 *arg0) {
+    return ((u32) *arg0 >> 2U) & 3;
+}
+
+s32 GXGetTexObjMipMap(s8 *arg0) {
+    return M2C_FIELD(arg0, u8 *, 0x1F) & 1;
+}
+
+// GXGetTexObjLODAll: definicion C reemplazada por asm (ver abajo)
+
+
+s32 GXGetTexObjTlut(s8 *arg0) {
+    return M2C_FIELD(arg0, s32 *, 0x18);
+}
+
+// GXLoadTexObjPreLoaded: definicion C reemplazada por asm (ver abajo)
+
+
+// GXLoadTexObj: definicion C reemplazada por asm (ver abajo)
+
+
+
+// GXLoadTlut: definicion C reemplazada por asm (ver abajo)
+
+
+
+// GXInitTlutRegion: definicion C reemplazada por asm (ver abajo)
+
+
+// GXInvalidateTexAll: definicion C reemplazada por asm (ver abajo)
+
+
+s32 GXSetTexRegionCallback(s32 arg0) {
+    s32 temp_r3;
+
+    temp_r3 = M2C_FIELD(__GXData, s32 *, 0x518);
+    M2C_FIELD(__GXData, s32 *, 0x518) = arg0;
+    return temp_r3;
+}
+
+s32 GXSetTlutRegionCallback(s32 arg0) {
+    s32 temp_r3;
+
+    temp_r3 = M2C_FIELD(__GXData, s32 *, 0x51C);
+    M2C_FIELD(__GXData, s32 *, 0x51C) = arg0;
+    return temp_r3;
+}
+
+// __SetSURegs: definicion C reemplazada por asm (ver abajo)
+
+
+void __GXSetSUTexRegs(M2C_UNK arg_sp0);
+
+// __GXSetTmemConfig: definicion C reemplazada por asm (ver abajo)
+
+
+
+// fn_802E3FE8: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E413C: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E4240: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E430C: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E432C: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802E4374(void) {
+
+}
+
+// __GXSetIndirectMask: definicion C reemplazada por asm (ver abajo)
+
+
+// __GXFlushTextureState: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E43CC: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E4460: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E44A0: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E44E0: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E4538: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E4590: definicion C reemplazada por asm (ver abajo)
+
+
+// GXSetTexCoordCylWrap: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E4654: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E46B0: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E4700: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E4750: definicion C reemplazada por asm (ver abajo)
+
+
+// GXSetTexCoordScaleManually: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern float lbl_804A25E8;
-extern float lbl_804A25F0;
-extern float lbl_804A25F4;
-extern float lbl_804A25F8;
-extern float lbl_804A25FC;
-extern float lbl_804A2600;
-extern float lbl_804A2604;
-extern float lbl_804A2608;
-extern float lbl_804A260C;
 extern float lbl_804A2610;
-extern float lbl_804A2618;
-
-// Global data symbols (@ha/@l)
 extern u8 jumptable_8037AEB8[];
 extern u8 jumptable_8037AFAC[];
 extern u8 jumptable_8037B0A0[];
-extern u8 lbl_8037B0E0[];
-
-// Forward declarations
-extern void GXGetTexBufferSize();
-extern void GXGetTexObjData();
-extern void GXGetTexObjFmt();
-extern void GXGetTexObjHeight();
-extern void GXGetTexObjLODAll();
-extern void GXGetTexObjMipMap();
-extern void GXGetTexObjTlut();
-extern void GXGetTexObjUserData();
-extern void GXGetTexObjWidth();
-extern void GXGetTexObjWrapS();
-extern void GXGetTexObjWrapT();
-extern void GXInitTexCacheRegion();
-extern void GXInitTexObj();
-extern void GXInitTexObjCI();
-extern void GXInitTexObjFilter();
-extern void GXInitTexObjLOD();
-extern void GXInitTexObjTlut();
-extern void GXInitTexObjUserData();
-extern void GXInitTexObjWrapMode();
-extern void GXInitTlutObj();
-extern void GXInitTlutRegion();
-extern void GXInvalidateTexAll();
-extern void GXLoadTexObj();
-extern void GXLoadTexObjPreLoaded();
-extern void GXLoadTlut();
-extern void GXSetTexCoordCylWrap();
-extern void GXSetTexCoordScaleManually();
-extern void GXSetTexRegionCallback();
-extern void GXSetTlutRegionCallback();
-extern void __GXFlushTextureState();
-extern void __GXSetIndirectMask();
-extern void __GXSetSUTexRegs();
-extern void __GXSetTmemConfig();
-extern void __GetImageTileCount();
-extern void __SetSURegs();
+extern int GXGetTexBufferSize();
+void GXGetTexObjLODAll(s8 *arg0, s32 *arg1, s32 *arg2, f32 *arg3, f32 *arg4, f32 *arg5, s8 *arg6, u8 *arg7, s32 *arg_sp8);
+void GXInitTexCacheRegion();
+M2C_UNK GXInitTexObj();
+void GXInitTexObjFilter(s32 *arg0, s32 arg1, s32 arg2);
+void GXInitTexObjLOD();
+void GXInitTexObjWrapMode(s32 *arg0, s32 arg1, s32 arg2);
+void GXInitTlutObj();
+void GXInitTlutRegion(s32 *arg0, s32 arg1, s32 arg2);
+void GXInvalidateTexAll(void);
+void GXLoadTexObj(s8 *arg0, s32 arg1);
+void GXLoadTexObjPreLoaded(s8 *arg0, s8 *arg1, s32 arg2);
+void GXLoadTlut(s8 *arg0, s32 arg1);
+void GXSetTexCoordCylWrap(s32 arg0, s8 *arg1, s32 arg2);
+void GXSetTexCoordScaleManually(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
+void __GXFlushTextureState(void);
+void __GXSetIndirectMask(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+void __GXSetSUTexRegs();
+void __GXSetTmemConfig(s32 arg0);
+extern int __GetImageTileCount();
+void __SetSURegs(u32 arg0, s32 arg1);
 extern void _restgpr_23();
 extern void _restgpr_24();
 extern void _savegpr_23();
 extern void _savegpr_24();
-extern void fn_802E3F80();
-extern void fn_802E3FE8();
-extern void fn_802E413C();
-extern void fn_802E4240();
-extern void fn_802E430C();
-extern void fn_802E432C();
-extern void fn_802E4374();
-extern void fn_802E43CC();
-extern void fn_802E4460();
-extern void fn_802E44A0();
-extern void fn_802E44E0();
-extern void fn_802E4538();
-extern void fn_802E4590();
-extern void fn_802E4654();
-extern void fn_802E46B0();
-extern void fn_802E4700();
-extern void fn_802E4750();
+void fn_802E3F80();
+void fn_802E3FE8(s32 arg0, s8 *arg1, s32 arg2);
+void fn_802E413C(s32 arg0, s32 arg1, s32 arg2);
+void fn_802E4240(s32 arg0, s32 arg1, s32 arg2);
+void fn_802E430C(s32 arg0);
+void fn_802E432C(s32 arg0);
+void fn_802E43CC(s32 arg0, s32 arg1);
+void fn_802E4460(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
+void fn_802E44A0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
+void fn_802E44E0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5);
+void fn_802E4538(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5);
+void fn_802E4590(s32 arg0, u32 *arg1);
+void fn_802E4654(s32 arg0, u32 *arg1);
+void fn_802E46B0(s32 arg0, s32 arg1);
+void fn_802E4700(s32 arg0, s32 arg1);
+void fn_802E4750(s32 arg0, s32 arg1, s32 arg2);
 extern void memset();
 
-// ----------------------------------------------------------------------------
-// GXGetTexBufferSize
-// ----------------------------------------------------------------------------
-asm void GXGetTexBufferSize() {
+// asm_to_cpp: GXGetTexBufferSize
+asm int GXGetTexBufferSize() {
     nofralloc
     cmplwi r5, 0x3c
     bgt lbl_802E2FE4
@@ -183,10 +403,8 @@ lbl_802E30BC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __GetImageTileCount
-// ----------------------------------------------------------------------------
-asm void __GetImageTileCount() {
+// asm_to_cpp: __GetImageTileCount
+asm int __GetImageTileCount() {
     nofralloc
     cmplwi r3, 0x3c
     bgt lbl_802E3108
@@ -244,10 +462,8 @@ lbl_802E316C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GXInitTexObj
-// ----------------------------------------------------------------------------
-asm void GXInitTexObj() {
+// asm_to_cpp: GXInitTexObj
+asm M2C_UNK GXInitTexObj() {
     nofralloc
     stwu r1, -0x40(r1)
     mflr r0
@@ -390,34 +606,7 @@ lbl_802E333C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GXInitTexObjCI
-// ----------------------------------------------------------------------------
-asm void GXInitTexObjCI() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    lwz r31, 0x18(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    bl GXInitTexObj
-    lbz r0, 0x1f(r30)
-    stw r31, 0x18(r30)
-    rlwinm r0, r0, 0, 31, 29
-    stb r0, 0x1f(r30)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GXInitTexObjLOD
-// ----------------------------------------------------------------------------
+// asm_to_cpp: GXInitTexObjLOD
 asm void GXInitTexObjLOD() {
     nofralloc
     lfs f0, lbl_804A25F0
@@ -493,10 +682,8 @@ lbl_802E34B0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GXInitTexObjWrapMode
-// ----------------------------------------------------------------------------
-asm void GXInitTexObjWrapMode() {
+// asm_to_cpp: GXInitTexObjWrapMode
+asm void GXInitTexObjWrapMode(s32 *arg0, s32 arg1, s32 arg2) {
     nofralloc
     lwz r0, 0x0(r3)
     rlwimi r0, r4, 0, 30, 31
@@ -505,19 +692,8 @@ asm void GXInitTexObjWrapMode() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GXInitTexObjTlut
-// ----------------------------------------------------------------------------
-asm void GXInitTexObjTlut() {
-    nofralloc
-    stw r4, 0x18(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GXInitTexObjFilter
-// ----------------------------------------------------------------------------
-asm void GXInitTexObjFilter() {
+// asm_to_cpp: GXInitTexObjFilter
+asm void GXInitTexObjFilter(s32 *arg0, s32 arg1, s32 arg2) {
     nofralloc
     subi r0, r5, 0x1
     lwz r6, 0x0(r3)
@@ -531,101 +707,8 @@ asm void GXInitTexObjFilter() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GXInitTexObjUserData
-// ----------------------------------------------------------------------------
-asm void GXInitTexObjUserData() {
-    nofralloc
-    stw r4, 0x10(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GXGetTexObjUserData
-// ----------------------------------------------------------------------------
-asm void GXGetTexObjUserData() {
-    nofralloc
-    lwz r3, 0x10(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GXGetTexObjData
-// ----------------------------------------------------------------------------
-asm void GXGetTexObjData() {
-    nofralloc
-    lwz r0, 0xc(r3)
-    clrlslwi r3, r0, 8, 5
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GXGetTexObjWidth
-// ----------------------------------------------------------------------------
-asm void GXGetTexObjWidth() {
-    nofralloc
-    lwz r0, 0x8(r3)
-    clrlwi r3, r0, 22
-    addi r0, r3, 0x1
-    clrlwi r3, r0, 16
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GXGetTexObjHeight
-// ----------------------------------------------------------------------------
-asm void GXGetTexObjHeight() {
-    nofralloc
-    lwz r0, 0x8(r3)
-    extrwi r3, r0, 10, 12
-    addi r0, r3, 0x1
-    clrlwi r3, r0, 16
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GXGetTexObjFmt
-// ----------------------------------------------------------------------------
-asm void GXGetTexObjFmt() {
-    nofralloc
-    lwz r3, 0x14(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GXGetTexObjWrapS
-// ----------------------------------------------------------------------------
-asm void GXGetTexObjWrapS() {
-    nofralloc
-    lwz r0, 0x0(r3)
-    clrlwi r3, r0, 30
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GXGetTexObjWrapT
-// ----------------------------------------------------------------------------
-asm void GXGetTexObjWrapT() {
-    nofralloc
-    lwz r0, 0x0(r3)
-    extrwi r3, r0, 2, 28
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GXGetTexObjMipMap
-// ----------------------------------------------------------------------------
-asm void GXGetTexObjMipMap() {
-    nofralloc
-    lbz r0, 0x1f(r3)
-    clrlwi r3, r0, 31
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GXGetTexObjLODAll
-// ----------------------------------------------------------------------------
-asm void GXGetTexObjLODAll() {
+// asm_to_cpp: GXGetTexObjLODAll
+asm void GXGetTexObjLODAll(s8 *arg0, s32 *arg1, s32 *arg2, f32 *arg3, f32 *arg4, f32 *arg5, s8 *arg6, u8 *arg7, s32 *arg_sp8) {
     nofralloc
     stwu r1, -0x30(r1)
     lwz r0, 0x4(r3)
@@ -686,19 +769,8 @@ asm void GXGetTexObjLODAll() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GXGetTexObjTlut
-// ----------------------------------------------------------------------------
-asm void GXGetTexObjTlut() {
-    nofralloc
-    lwz r3, 0x18(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GXLoadTexObjPreLoaded
-// ----------------------------------------------------------------------------
-asm void GXLoadTexObjPreLoaded() {
+// asm_to_cpp: GXLoadTexObjPreLoaded
+asm void GXLoadTexObjPreLoaded(s8 *arg0, s8 *arg1, s32 arg2) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -792,10 +864,8 @@ lbl_802E3790:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GXLoadTexObj
-// ----------------------------------------------------------------------------
-asm void GXLoadTexObj() {
+// asm_to_cpp: GXLoadTexObj
+asm void GXLoadTexObj(s8 *arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -820,9 +890,7 @@ asm void GXLoadTexObj() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GXInitTlutObj
-// ----------------------------------------------------------------------------
+// asm_to_cpp: GXInitTlutObj
 asm void GXInitTlutObj() {
     nofralloc
     lwz r7, 0x4(r3)
@@ -837,10 +905,8 @@ asm void GXInitTlutObj() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GXLoadTlut
-// ----------------------------------------------------------------------------
-asm void GXLoadTlut() {
+// asm_to_cpp: GXLoadTlut
+asm void GXLoadTlut(s8 *arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -881,9 +947,7 @@ asm void GXLoadTlut() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GXInitTexCacheRegion
-// ----------------------------------------------------------------------------
+// asm_to_cpp: GXInitTexCacheRegion
 asm void GXInitTexCacheRegion() {
     nofralloc
     cmpwi r6, 0x1
@@ -944,10 +1008,8 @@ lbl_802E3980:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GXInitTlutRegion
-// ----------------------------------------------------------------------------
-asm void GXInitTlutRegion() {
+// asm_to_cpp: GXInitTlutRegion
+asm void GXInitTlutRegion(s32 *arg0, s32 arg1, s32 arg2) {
     nofralloc
     subis r0, r4, 0x8
     li r4, 0x0
@@ -959,10 +1021,8 @@ asm void GXInitTlutRegion() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GXInvalidateTexAll
-// ----------------------------------------------------------------------------
-asm void GXInvalidateTexAll() {
+// asm_to_cpp: GXInvalidateTexAll
+asm void GXInvalidateTexAll(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -984,34 +1044,8 @@ asm void GXInvalidateTexAll() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GXSetTexRegionCallback
-// ----------------------------------------------------------------------------
-asm void GXSetTexRegionCallback() {
-    nofralloc
-    lwz r4, __GXData
-    mr r0, r3
-    lwz r3, 0x518(r4)
-    stw r0, 0x518(r4)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GXSetTlutRegionCallback
-// ----------------------------------------------------------------------------
-asm void GXSetTlutRegionCallback() {
-    nofralloc
-    lwz r4, __GXData
-    mr r0, r3
-    lwz r3, 0x51c(r4)
-    stw r0, 0x51c(r4)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// __SetSURegs
-// ----------------------------------------------------------------------------
-asm void __SetSURegs() {
+// asm_to_cpp: __SetSURegs
+asm void __SetSURegs(u32 arg0, s32 arg1) {
     nofralloc
     lwz r11, __GXData
     slwi r6, r4, 2
@@ -1051,9 +1085,7 @@ asm void __SetSURegs() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __GXSetSUTexRegs
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __GXSetSUTexRegs
 asm void __GXSetSUTexRegs() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -1163,10 +1195,8 @@ lbl_802E3C14:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __GXSetTmemConfig
-// ----------------------------------------------------------------------------
-asm void __GXSetTmemConfig() {
+// asm_to_cpp: __GXSetTmemConfig
+asm void __GXSetTmemConfig(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     cmpwi r3, 0x1
@@ -1387,9 +1417,7 @@ lbl_802E3F70:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E3F80
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802E3F80
 asm void fn_802E3F80() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1420,10 +1448,8 @@ asm void fn_802E3F80() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E3FE8
-// ----------------------------------------------------------------------------
-asm void fn_802E3FE8() {
+// asm_to_cpp: fn_802E3FE8
+asm void fn_802E3FE8(s32 arg0, s8 *arg1, s32 arg2) {
     nofralloc
     cmpwi r3, 0x8
     stwu r1, -0x40(r1)
@@ -1518,10 +1544,8 @@ lbl_802E4038:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E413C
-// ----------------------------------------------------------------------------
-asm void fn_802E413C() {
+// asm_to_cpp: fn_802E413C
+asm void fn_802E413C(s32 arg0, s32 arg1, s32 arg2) {
     nofralloc
     cmpwi r3, 0x2
     beq lbl_802E41CC
@@ -1596,10 +1620,8 @@ lbl_802E4230:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E4240
-// ----------------------------------------------------------------------------
-asm void fn_802E4240() {
+// asm_to_cpp: fn_802E4240
+asm void fn_802E4240(s32 arg0, s32 arg1, s32 arg2) {
     nofralloc
     cmpwi r5, 0xff
     bne lbl_802E424C
@@ -1662,10 +1684,8 @@ lbl_802E42DC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E430C
-// ----------------------------------------------------------------------------
-asm void fn_802E430C() {
+// asm_to_cpp: fn_802E430C
+asm void fn_802E430C(s32 arg0) {
     nofralloc
     lwz r4, __GXData
     lwz r0, 0x254(r4)
@@ -1677,10 +1697,8 @@ asm void fn_802E430C() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E432C
-// ----------------------------------------------------------------------------
-asm void fn_802E432C() {
+// asm_to_cpp: fn_802E432C
+asm void fn_802E432C(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1702,18 +1720,8 @@ asm void fn_802E432C() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E4374
-// ----------------------------------------------------------------------------
-asm void fn_802E4374() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// __GXSetIndirectMask
-// ----------------------------------------------------------------------------
-asm void __GXSetIndirectMask() {
+// asm_to_cpp: __GXSetIndirectMask
+asm void __GXSetIndirectMask(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
     nofralloc
     lwz r7, __GXData
     lis r4, 0xcc01
@@ -1729,10 +1737,8 @@ asm void __GXSetIndirectMask() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __GXFlushTextureState
-// ----------------------------------------------------------------------------
-asm void __GXFlushTextureState() {
+// asm_to_cpp: __GXFlushTextureState
+asm void __GXFlushTextureState(void) {
     nofralloc
     lis r4, 0xcc01
     li r0, 0x61
@@ -1745,10 +1751,8 @@ asm void __GXFlushTextureState() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E43CC
-// ----------------------------------------------------------------------------
-asm void fn_802E43CC() {
+// asm_to_cpp: fn_802E43CC
+asm void fn_802E43CC(s32 arg0, s32 arg1) {
     nofralloc
     cmpwi r3, 0x0
     lis r5, lbl_8037B0E0@ha
@@ -1791,10 +1795,8 @@ lbl_802E4408:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E4460
-// ----------------------------------------------------------------------------
-asm void fn_802E4460() {
+// asm_to_cpp: fn_802E4460
+asm void fn_802E4460(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     nofralloc
     lwz r11, __GXData
     slwi r0, r3, 2
@@ -1814,10 +1816,8 @@ asm void fn_802E4460() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E44A0
-// ----------------------------------------------------------------------------
-asm void fn_802E44A0() {
+// asm_to_cpp: fn_802E44A0
+asm void fn_802E44A0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     nofralloc
     lwz r11, __GXData
     slwi r0, r3, 2
@@ -1837,10 +1837,8 @@ asm void fn_802E44A0() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E44E0
-// ----------------------------------------------------------------------------
-asm void fn_802E44E0() {
+// asm_to_cpp: fn_802E44E0
+asm void fn_802E44E0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     nofralloc
     lwz r10, __GXData
     slwi r0, r3, 2
@@ -1868,10 +1866,8 @@ lbl_802E4510:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E4538
-// ----------------------------------------------------------------------------
-asm void fn_802E4538() {
+// asm_to_cpp: fn_802E4538
+asm void fn_802E4538(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     nofralloc
     lwz r10, __GXData
     slwi r0, r3, 2
@@ -1899,10 +1895,8 @@ lbl_802E4568:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E4590
-// ----------------------------------------------------------------------------
-asm void fn_802E4590() {
+// asm_to_cpp: fn_802E4590
+asm void fn_802E4590(s32 arg0, u32 *arg1) {
     nofralloc
     slwi r3, r3, 1
     lwz r8, 0x0(r4)
@@ -1930,10 +1924,8 @@ asm void fn_802E4590() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GXSetTexCoordCylWrap
-// ----------------------------------------------------------------------------
-asm void GXSetTexCoordCylWrap() {
+// asm_to_cpp: GXSetTexCoordCylWrap
+asm void GXSetTexCoordCylWrap(s32 arg0, s8 *arg1, s32 arg2) {
     nofralloc
     slwi r3, r3, 1
     lwz r8, 0x0(r4)
@@ -1962,10 +1954,8 @@ asm void GXSetTexCoordCylWrap() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E4654
-// ----------------------------------------------------------------------------
-asm void fn_802E4654() {
+// asm_to_cpp: fn_802E4654
+asm void fn_802E4654(s32 arg0, u32 *arg1) {
     nofralloc
     slwi r6, r3, 1
     lwz r9, 0x0(r4)
@@ -1992,10 +1982,8 @@ asm void fn_802E4654() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E46B0
-// ----------------------------------------------------------------------------
-asm void fn_802E46B0() {
+// asm_to_cpp: fn_802E46B0
+asm void fn_802E46B0(s32 arg0, s32 arg1) {
     nofralloc
     clrlwi. r0, r3, 31
     lwz r5, __GXData
@@ -2021,10 +2009,8 @@ lbl_802E46E0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E4700
-// ----------------------------------------------------------------------------
-asm void fn_802E4700() {
+// asm_to_cpp: fn_802E4700
+asm void fn_802E4700(s32 arg0, s32 arg1) {
     nofralloc
     clrlwi. r0, r3, 31
     lwz r5, __GXData
@@ -2050,10 +2036,8 @@ lbl_802E4730:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E4750
-// ----------------------------------------------------------------------------
-asm void fn_802E4750() {
+// asm_to_cpp: fn_802E4750
+asm void fn_802E4750(s32 arg0, s32 arg1, s32 arg2) {
     nofralloc
     lwz r9, __GXData
     slwi r0, r3, 2
@@ -2072,10 +2056,8 @@ asm void fn_802E4750() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GXSetTexCoordScaleManually
-// ----------------------------------------------------------------------------
-asm void GXSetTexCoordScaleManually() {
+// asm_to_cpp: GXSetTexCoordScaleManually
+asm void GXSetTexCoordScaleManually(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     nofralloc
     stwu r1, -0x10(r1)
     slwi r11, r3, 3
@@ -2109,4 +2091,3 @@ asm void GXSetTexCoordScaleManually() {
     addi r1, r1, 0x10
     blr
 }
-

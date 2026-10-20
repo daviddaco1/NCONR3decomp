@@ -1,24 +1,43 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/vf/pf_cp932.cpp
-// Total functions: 5
+u16 VFiPFCODE_CP932_OEM2Unicode();                  /* static */
 
-// Global data symbols (@ha/@l)
+/*
+Decompilation failure in function VFiPFCODE_CP932_OEM2Unicode:
+
+Cannot find branch target fn_80338648
+*/
+
+/*
+Decompilation failure in function VFiPFCODE_CP932_Unicode2OEM:
+
+Cannot find branch target fn_80338648
+*/
+
+s16 VFiPFCODE_CP932_OEMCharWidth();
+s32 VFiPFCODE_CP932_isOEMMBchar();
+s32 VFiPFCODE_CP932_isUnicodeMBchar();
+
+// VFiPFCODE_CP932_OEMCharWidth: definicion C reemplazada por asm (ver abajo)
+
+
+
+s32 VFiPFCODE_CP932_isUnicodeMBchar(void) {
+    return 2;
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern u8 lbl_80342308[];
-
-// Forward declarations
-extern void VFiPFCODE_CP932_OEM2Unicode();
-extern void VFiPFCODE_CP932_OEMCharWidth();
-extern void VFiPFCODE_CP932_Unicode2OEM();
-extern void VFiPFCODE_CP932_isOEMMBchar();
-extern void VFiPFCODE_CP932_isUnicodeMBchar();
-extern void fn_80338648();
+u16 VFiPFCODE_CP932_OEM2Unicode();
+s16 VFiPFCODE_CP932_OEMCharWidth(void);
+extern int VFiPFCODE_CP932_Unicode2OEM();
+s32 VFiPFCODE_CP932_isOEMMBchar();
 extern void fn_80338654();
 
-// ----------------------------------------------------------------------------
-// VFiPFCODE_CP932_OEM2Unicode
-// ----------------------------------------------------------------------------
-asm void VFiPFCODE_CP932_OEM2Unicode() {
+// asm_to_cpp: VFiPFCODE_CP932_OEM2Unicode
+asm u16 VFiPFCODE_CP932_OEM2Unicode() {
     nofralloc
     lbz r5, 0x0(r3)
     lbz r3, 0x1(r3)
@@ -148,10 +167,8 @@ lbl_80338ACC:
     b fn_80338648
 }
 
-// ----------------------------------------------------------------------------
-// VFiPFCODE_CP932_Unicode2OEM
-// ----------------------------------------------------------------------------
-asm void VFiPFCODE_CP932_Unicode2OEM() {
+// asm_to_cpp: VFiPFCODE_CP932_Unicode2OEM
+asm int VFiPFCODE_CP932_Unicode2OEM() {
     nofralloc
     lhz r0, 0x0(r3)
     clrlwi r5, r0, 24
@@ -323,10 +340,8 @@ lbl_80338D28:
     b fn_80338648
 }
 
-// ----------------------------------------------------------------------------
-// VFiPFCODE_CP932_OEMCharWidth
-// ----------------------------------------------------------------------------
-asm void VFiPFCODE_CP932_OEMCharWidth() {
+// asm_to_cpp: VFiPFCODE_CP932_OEMCharWidth
+asm s16 VFiPFCODE_CP932_OEMCharWidth(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -343,10 +358,8 @@ asm void VFiPFCODE_CP932_OEMCharWidth() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// VFiPFCODE_CP932_isOEMMBchar
-// ----------------------------------------------------------------------------
-asm void VFiPFCODE_CP932_isOEMMBchar() {
+// asm_to_cpp: VFiPFCODE_CP932_isOEMMBchar
+asm s32 VFiPFCODE_CP932_isOEMMBchar() {
     nofralloc
     cmpwi r4, 0x2
     clrlwi r0, r3, 24
@@ -387,13 +400,3 @@ lbl_80338DE8:
     li r3, 0x0
     blr
 }
-
-// ----------------------------------------------------------------------------
-// VFiPFCODE_CP932_isUnicodeMBchar
-// ----------------------------------------------------------------------------
-asm void VFiPFCODE_CP932_isUnicodeMBchar() {
-    nofralloc
-    li r3, 0x2
-    blr
-}
-

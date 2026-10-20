@@ -1,40 +1,72 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/hbm/unk_80304F20.cpp
-// Total functions: 10
+extern M2C_UNK lbl_80341F58;
+extern M2C_UNK lbl_8037F458;
+extern s32 *lbl_80463040;
+extern s32 lbl_80463044;
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_80341F58[];
-extern u8 lbl_8037F458[];
-extern u8 lbl_80463040[];
-extern u8 lbl_80463044[];
+void fn_80304F20();
+void fn_80305204();
+void fn_80305320();
+void fn_803053AC();
+void fn_803053D4();
+void fn_80305558();
+void fn_803055E8();
+void fn_80305680();
+s32 fn_803057B8();
+void fn_803057C0();
 
-// Forward declarations
+void fn_80304F20(s32 arg0, s32 *arg1);
+
+// fn_80305204: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_80305320: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_803053AC: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_803053D4: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_80305558: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_803055E8: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_80305680: definicion C reemplazada por asm (ver abajo)
+
+
+s32 fn_803057B8(s8 *arg0) {
+    return M2C_FIELD(arg0, s32 *, 4);
+}
+
+void fn_803057C0(s32 arg0, s32 arg1) {
+    HBMSYNSetMasterVolume(arg0 + 0x14, arg1);
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void HBMSYNInitSynth();
 extern void HBMSYNMidiInput();
 extern void HBMSYNQuitSynth();
-extern void HBMSYNSetMasterVolume();
-extern void OSDisableInterrupts();
-extern void OSRestoreInterrupts();
-extern void __cvt_fp2unsigned();
 extern void _restgpr_25();
 extern void _restgpr_26();
 extern void _savegpr_25();
 extern void _savegpr_26();
-extern void fn_80304F20();
-extern void fn_80305204();
-extern void fn_80305320();
-extern void fn_803053AC();
-extern void fn_803053D4();
-extern void fn_80305558();
-extern void fn_803055E8();
-extern void fn_80305680();
-extern void fn_803057B8();
-extern void fn_803057C0();
+void fn_80304F20();
+void fn_80305204(s8 *arg0, s8 *arg1, s32 arg2);
+void fn_80305320(s32 *arg0, s8 *arg1);
+void fn_803053AC(void);
+void fn_803053D4(void);
+void fn_80305558(s32 *arg0, s8 *arg1, s32 arg2, s32 arg3, s32 arg4);
+void fn_803055E8(u32 arg0, M2C_UNK arg_sp0);
+void fn_80305680(s32 *arg0, s32 arg1, M2C_UNK arg_sp0);
 
-// ----------------------------------------------------------------------------
-// fn_80304F20
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80304F20
 asm void fn_80304F20() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -244,10 +276,8 @@ lbl_803051F0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80305204
-// ----------------------------------------------------------------------------
-asm void fn_80305204() {
+// asm_to_cpp: fn_80305204
+asm void fn_80305204(s8 *arg0, s8 *arg1, s32 arg2) {
     nofralloc
     stwu r1, -0x70(r1)
     mflr r0
@@ -326,10 +356,8 @@ lbl_803052E0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80305320
-// ----------------------------------------------------------------------------
-asm void fn_80305320() {
+// asm_to_cpp: fn_80305320
+asm void fn_80305320(s32 *arg0, s8 *arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -371,10 +399,8 @@ lbl_80305390:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_803053AC
-// ----------------------------------------------------------------------------
-asm void fn_803053AC() {
+// asm_to_cpp: fn_803053AC
+asm void fn_803053AC(void) {
     nofralloc
     lis r5, lbl_80463044@ha
     lwz r0, lbl_80463044@l(r5)
@@ -388,10 +414,8 @@ asm void fn_803053AC() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_803053D4
-// ----------------------------------------------------------------------------
-asm void fn_803053D4() {
+// asm_to_cpp: fn_803053D4
+asm void fn_803053D4(void) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -506,10 +530,8 @@ lbl_80305538:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80305558
-// ----------------------------------------------------------------------------
-asm void fn_80305558() {
+// asm_to_cpp: fn_80305558
+asm void fn_80305558(s32 *arg0, s8 *arg1, s32 arg2, s32 arg3, s32 arg4) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -551,10 +573,8 @@ lbl_803055C0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_803055E8
-// ----------------------------------------------------------------------------
-asm void fn_803055E8() {
+// asm_to_cpp: fn_803055E8
+asm void fn_803055E8(u32 arg0, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -601,10 +621,8 @@ lbl_80305650:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80305680
-// ----------------------------------------------------------------------------
-asm void fn_80305680() {
+// asm_to_cpp: fn_80305680
+asm void fn_80305680(s32 *arg0, s32 arg1, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -694,22 +712,3 @@ lbl_8030579C:
     addi r1, r1, 0x30
     blr
 }
-
-// ----------------------------------------------------------------------------
-// fn_803057B8
-// ----------------------------------------------------------------------------
-asm void fn_803057B8() {
-    nofralloc
-    lwz r3, 0x4(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_803057C0
-// ----------------------------------------------------------------------------
-asm void fn_803057C0() {
-    nofralloc
-    addi r3, r3, 0x14
-    b HBMSYNSetMasterVolume
-}
-

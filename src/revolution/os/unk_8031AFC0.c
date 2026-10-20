@@ -1,110 +1,141 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/os/unk_8031AFC0.cpp
-// Total functions: 17
+M2C_UNK __OSBootDol();      /* extern */
+M2C_UNK __OSWriteExpiredFlagIfSet();                /* extern */
+M2C_UNK memset();             /* extern */
+extern s8 *ShutdownFunctionQueue_8049E330;
+extern s32 __OSInNandBoot;
+extern s32 __OSInReboot;
+extern M2C_UNK __OSRebootParams;
+extern M2C_UNK lbl_803810C4;
+extern M2C_UNK lbl_80381154;
+extern s32 lbl_8049E2D8;
+extern s32 lbl_8049E320;
+extern s32 lbl_8049E324;
+extern s32 lbl_8049E328;
+extern s32 lbl_8049E32C;
 
-// Small Data symbols (@sda21)
-extern float ShutdownFunctionQueue_8049E330;
-extern float __OSInNandBoot;
-extern float __OSInReboot;
+void fn_8031AFC0();
+void fn_8031AFC4();
+void fn_8031AFC8();
+void fn_8031B034();
+void OSRegisterShutdownFunction();
+s32 fn_8031B0D0();
+void __OSShutdownDevices();
+s32 fn_8031B310();
+void fn_8031B37C();
+void fn_8031B498();
+void __OSReturnToMenu();
+void OSReturnToMenu();
+void fn_8031B834();
+void fn_8031B930();
+void fn_8031B9D4();
+u32 OSGetResetCode();
+
+void fn_8031AFC0(s32 arg0) {
+    OSInitThreadQueue((s8 *) arg0);
+}
+
+void fn_8031AFC4(s32 arg0) {
+    fn_8031D978((s8 *) arg0);
+}
+
+// fn_8031AFC8: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_8031B034(s32 *arg0, s32 *arg1) {
+    *arg0 = lbl_8049E320;
+    *arg1 = lbl_8049E324;
+}
+
+// OSRegisterShutdownFunction: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_8031B0D0: definicion C reemplazada por asm (ver abajo)
+
+
+void __OSShutdownDevices(s32 arg0, M2C_UNK arg_sp0);
+
+s32 fn_8031B310(u32 arg0) {
+    s32 sp8;
+
+    if (__DVDGetCoverStatus() != 2U) {
+        return 3;
+    }
+    if ((arg0 == 1) && (__OSGetRTCFlags(&sp8) != 0) && (sp8 == 0)) {
+        return 1;
+    }
+    return 2;
+}
+
+void fn_8031B37C(void);
+
+void fn_8031B498(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+
+void OSReturnToMenu(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+void fn_8031B834(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+/*
+Decompilation failure in function fn_8031B874:
+
+Found bctr instruction at unk_8031AFC0.s line 689, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+void fn_8031B930(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+void fn_8031B9D4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+// OSGetResetCode: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern float lbl_8049D210;
-extern float lbl_8049E2D8;
-extern float lbl_8049E320;
-extern float lbl_8049E324;
-extern float lbl_8049E328;
-extern float lbl_8049E32C;
-
-// Global data symbols (@ha/@l)
-extern u8 __OSRebootParams[];
 extern u8 at_2083_803810B8[];
 extern u8 at_2131_80381124[];
 extern u8 jumptable_803812A4[];
-extern u8 lbl_803810C4[];
-extern u8 lbl_80381154[];
-
-// Forward declarations
-extern void ESP_DiGetTicketView();
-extern void ESP_InitLib();
 extern void LCDisable();
-extern void OSAllocFromMEM1ArenaLo();
 extern void OSCancelThread();
-extern void OSDisableInterrupts();
-extern void OSDisableScheduler();
-extern void OSEnableScheduler();
-extern void OSGetResetCode();
-extern void OSInitThreadQueue();
+u32 OSGetResetCode(void);
 extern void OSPanic();
-extern void OSPlayTimeIsLimited();
-extern void OSRegisterShutdownFunction();
+void OSRegisterShutdownFunction(s8 *arg0);
 extern void OSReport();
-extern void OSReturnToMenu();
+void OSReturnToMenu();
 extern void OSSetArenaHi();
 extern void OSSetArenaLo();
-extern void SCCheckStatus();
 extern void SCGetIdleMode();
 extern void SCInit();
-extern void __DVDGetCoverStatus();
 extern void __DVDPrepareReset();
-extern void __OSBootDol();
-extern void __OSClearRTCFlags();
 extern void __OSGetIOSRev();
-extern void __OSGetPlayTime();
-extern void __OSGetRTCFlags();
 extern void __OSHotReset();
-extern void __OSInitSTM();
 extern void __OSLaunchMenu();
-extern void __OSReadStateFlags();
-extern void __OSReturnToMenu();
-extern void __OSShutdownDevices();
+void __OSReturnToMenu();
+void __OSShutdownDevices();
 extern void __OSShutdownToSBY();
 extern void __OSStopAudioSystem();
 extern void __OSStopPlayRecord();
-extern void __OSSyncSram();
-extern void __OSUnRegisterStateEvent();
-extern void __OSWriteExpiredFlagIfSet();
-extern void __OSWriteStateFlags();
-extern void __PADDisableRecalibration();
 extern void __VISetRGBModeImm();
 extern void _restgpr_27();
 extern void _savegpr_27();
-extern void fn_80313F50();
-extern void fn_8031AFC0();
-extern void fn_8031AFC4();
-extern void fn_8031AFC8();
-extern void fn_8031B034();
-extern void fn_8031B0D0();
-extern void fn_8031B310();
-extern void fn_8031B37C();
-extern void fn_8031B498();
-extern void fn_8031B834();
-extern void fn_8031B874();
-extern void fn_8031B930();
-extern void fn_8031B9D4();
-extern void fn_8031D978();
+void fn_8031AFC8(s32 arg0, s32 arg1);
+s32 fn_8031B0D0(s32 arg0, s32 arg1);
+void fn_8031B37C();
+void fn_8031B498();
+void fn_8031B834();
+extern int fn_8031B874();
+void fn_8031B930();
+void fn_8031B9D4();
 extern void fn_80320460();
 extern void fn_80320BC0();
-extern void memset();
 
-// ----------------------------------------------------------------------------
-// fn_8031AFC0
-// ----------------------------------------------------------------------------
-asm void fn_8031AFC0() {
-    nofralloc
-    b OSInitThreadQueue
-}
-
-// ----------------------------------------------------------------------------
-// fn_8031AFC4
-// ----------------------------------------------------------------------------
-asm void fn_8031AFC4() {
-    nofralloc
-    b fn_8031D978
-}
-
-// ----------------------------------------------------------------------------
-// fn_8031AFC8
-// ----------------------------------------------------------------------------
-asm void fn_8031AFC8() {
+// asm_to_cpp: fn_8031AFC8
+asm void fn_8031AFC8(s32 arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -135,22 +166,8 @@ asm void fn_8031AFC8() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031B034
-// ----------------------------------------------------------------------------
-asm void fn_8031B034() {
-    nofralloc
-    lwz r0, lbl_8049E320
-    stw r0, 0x0(r3)
-    lwz r0, lbl_8049E324
-    stw r0, 0x0(r4)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// OSRegisterShutdownFunction
-// ----------------------------------------------------------------------------
-asm void OSRegisterShutdownFunction() {
+// asm_to_cpp: OSRegisterShutdownFunction
+asm void OSRegisterShutdownFunction(s8 *arg0) {
     nofralloc
     lwz r5, ShutdownFunctionQueue_8049E330
     b lbl_8031B054
@@ -195,10 +212,8 @@ lbl_8031B0C8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031B0D0
-// ----------------------------------------------------------------------------
-asm void fn_8031B0D0() {
+// asm_to_cpp: fn_8031B0D0
+asm s32 fn_8031B0D0(s32 arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -250,9 +265,7 @@ lbl_8031B148:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __OSShutdownDevices
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __OSShutdownDevices
 asm void __OSShutdownDevices() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -376,46 +389,7 @@ lbl_8031B2F0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031B310
-// ----------------------------------------------------------------------------
-asm void fn_8031B310() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r3
-    bl __DVDGetCoverStatus
-    cmplwi r3, 0x2
-    beq lbl_8031B338
-    li r3, 0x3
-    b lbl_8031B368
-lbl_8031B338:
-    cmplwi r31, 0x1
-    bne lbl_8031B364
-    addi r3, r1, 0x8
-    bl __OSGetRTCFlags
-    cmpwi r3, 0x0
-    beq lbl_8031B364
-    lwz r0, 0x8(r1)
-    cmpwi r0, 0x0
-    bne lbl_8031B364
-    li r3, 0x1
-    b lbl_8031B368
-lbl_8031B364:
-    li r3, 0x2
-lbl_8031B368:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8031B37C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8031B37C
 asm void fn_8031B37C() {
     nofralloc
     stwu r1, -0x40(r1)
@@ -499,9 +473,7 @@ lbl_8031B484:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031B498
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8031B498
 asm void fn_8031B498() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -563,9 +535,7 @@ lbl_8031B534:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __OSReturnToMenu
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __OSReturnToMenu
 asm void __OSReturnToMenu() {
     nofralloc
     stwu r1, -0x90(r1)
@@ -744,9 +714,7 @@ lbl_8031B7C0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// OSReturnToMenu
-// ----------------------------------------------------------------------------
+// asm_to_cpp: OSReturnToMenu
 asm void OSReturnToMenu() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -767,9 +735,7 @@ asm void OSReturnToMenu() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031B834
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8031B834
 asm void fn_8031B834() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -790,10 +756,8 @@ asm void fn_8031B834() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031B874
-// ----------------------------------------------------------------------------
-asm void fn_8031B874() {
+// asm_to_cpp: fn_8031B874
+asm int fn_8031B874() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -846,9 +810,7 @@ lbl_8031B908:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031B930
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8031B930
 asm void fn_8031B930() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -896,9 +858,7 @@ lbl_8031B994:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031B9D4
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8031B9D4
 asm void fn_8031B9D4() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -927,10 +887,8 @@ lbl_8031B9FC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// OSGetResetCode
-// ----------------------------------------------------------------------------
-asm void OSGetResetCode() {
+// asm_to_cpp: OSGetResetCode
+asm u32 OSGetResetCode(void) {
     nofralloc
     lis r3, __OSRebootParams@ha
     lwz r0, __OSRebootParams@l(r3)
@@ -946,4 +904,3 @@ lbl_8031BA4C:
     srwi r3, r0, 3
     blr
 }
-

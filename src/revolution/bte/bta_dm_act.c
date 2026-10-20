@@ -1,79 +1,327 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/bta_dm_act.cpp
-// Total functions: 56
+M2C_UNK BTM_ReadLocalDeviceAddr(M2C_UNK (*)());     /* extern */
+M2C_UNK LogMsg_0();               /* extern */
+M2C_UNK LogMsg_1();           /* extern */
+M2C_UNK LogMsg_3();   /* extern */
+M2C_UNK memcpy();                /* extern */
+M2C_UNK memset();            /* extern */
+void bta_dm_disable_conn_down_timer_cback();        /* static */
+M2C_UNK bta_dm_local_addr_cback();                  /* static */
+void bta_dm_service_search_remname_cback(); /* static */
+extern s32 lbl_80341578;
+extern M2C_UNK lbl_80341618;
+extern M2C_UNK lbl_80341648;
+extern M2C_UNK lbl_803416A8;
+extern M2C_UNK lbl_80373278;
+extern M2C_UNK lbl_80373298;
+extern M2C_UNK lbl_803732B8;
+extern M2C_UNK lbl_803732F8;
+extern M2C_UNK lbl_8037330C;
+extern M2C_UNK lbl_8037333C;
+extern M2C_UNK lbl_80373378;
+extern M2C_UNK lbl_80453AD8;
+extern s32 lbl_80453B68;
+extern s32 lbl_80453B98;
+extern M2C_UNK lbl_80453C14;
+extern s32 lbl_80453D18;
+extern M2C_UNK lbl_80453F78;
+extern s8 *lbl_8049CF58;
+extern s8 *lbl_8049CF5C;
+extern u8 lbl_8049E000;
+extern u16 lbl_804A2520;
+extern u16 lbl_804A2522;
+extern M2C_UNK lbl_804A2558;
 
-// Small Data symbols (@sda21)
-extern float lbl_8049CF58;
-extern float lbl_8049CF5C;
-extern float lbl_8049E000;
-extern float lbl_804A2520;
-extern float lbl_804A2522;
-extern float lbl_804A2558;
+void bta_dm_enable();
+void bta_dm_disable();
+void bta_dm_disable_timer_cback();
+void bta_dm_set_dev_name();
+void bta_dm_set_visibility();
+void bta_dm_bond();
+void bta_dm_pin_reply();
+void bta_dm_auth_reply();
+void bta_dm_search_start();
+void bta_dm_search_cancel();
+void bta_dm_discover();
+void bta_dm_inq_cmpl();
+void bta_dm_rmt_name();
+void bta_dm_disc_rmt_name();
+void bta_dm_sdp_result();
+void bta_dm_disc_result();
+void bta_dm_search_result();
+void bta_dm_search_timer_cback();
+void bta_dm_free_sdp_db();
+void bta_dm_queue_search();
+void bta_dm_queue_disc();
+void bta_dm_search_clear_queue();
+void bta_dm_search_cancel_cmpl();
+void bta_dm_search_cancel_transac_cmpl();
+void bta_dm_find_services();
+void bta_dm_discover_next_device();
+void bta_dm_sdp_callback();
+void bta_dm_inq_results_cb();
+void bta_dm_inq_cmpl_cb();
+void bta_dm_service_search_remname_cback();
+void bta_dm_remname_cback();
+void bta_dm_disc_remname_cback();
+void bta_dm_cancel_rmt_name();
+s32 bta_dm_authorize_cback();
+void bta_dm_pinname_cback();
+s32 bta_dm_pin_cback();
+s32 bta_dm_link_key_request_cback();
+s32 bta_dm_new_link_key_cback();
+s32 bta_dm_authentication_complete_cback();
+void bta_dm_signal_strength_timer_cback();
+void bta_dm_acl_change_cback();
+void bta_dm_acl_change();
+void bta_dm_rssi_cback();
+void bta_dm_link_quality_cback();
+s32 bta_dm_l2cap_server_compress_cback();
+void bta_dm_compress_cback();
+void bta_dm_rm_cback();
+void bta_dm_keep_acl();
+void bta_dm_reset_complete();
+void bta_dm_send_hci_reset();
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_80341578[];
-extern u8 lbl_80341618[];
-extern u8 lbl_80341648[];
-extern u8 lbl_803416A8[];
-extern u8 lbl_80373278[];
-extern u8 lbl_80373298[];
-extern u8 lbl_803732B8[];
-extern u8 lbl_803732F8[];
-extern u8 lbl_8037330C[];
-extern u8 lbl_8037333C[];
-extern u8 lbl_80373378[];
-extern u8 lbl_80453AD8[];
-extern u8 lbl_80453B68[];
-extern u8 lbl_80453B98[];
-extern u8 lbl_80453C14[];
-extern u8 lbl_80453D18[];
-extern u8 lbl_80453F78[];
+// bta_dm_enable: definicion C reemplazada por asm (ver abajo)
 
-// Forward declarations
-extern void BTM_AclRegisterForChanges();
-extern void BTM_CancelInquiry();
-extern void BTM_CancelRemoteDeviceName();
-extern void BTM_ClearInqDb();
+
+// bta_dm_disable: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_dm_disable_timer_cback: definicion C reemplazada por asm (ver abajo)
+
+
+void bta_dm_set_dev_name(s32 arg0) {
+    BTM_SetLocalDeviceName(arg0 + 8);
+}
+
+void bta_dm_set_visibility(s8 *arg0) {
+    BTM_SetDiscoverability((s16) M2C_FIELD(arg0, u8 *, 8), 0, 0);
+    BTM_SetConnectability((s16) M2C_FIELD(arg0, u8 *, 9), 0, 0);
+}
+
+void bta_dm_bond(s8 *arg0) {
+    s32 sp8;
+    s32 *temp_r3;
+
+    temp_r3 = btm_read_trusted_mask((s32) (arg0 + 8));
+    if (temp_r3 != NULL) {
+        memcpy(&sp8, temp_r3, (s32 *)8);
+    } else {
+        memset(&sp8, 0, 8);
+    }
+    BTM_SecBond(arg0 + 8, M2C_FIELD(arg0, u8 *, 0xE), arg0 + 0xF, &sp8);
+}
+
+void bta_dm_pin_reply(s8 *arg0) {
+    s32 sp8;
+    s32 *temp_r3;
+
+    temp_r3 = btm_read_trusted_mask((s32) (arg0 + 8));
+    if (temp_r3 != NULL) {
+        memcpy(&sp8, temp_r3, (s32 *)8);
+    } else {
+        memset(&sp8, 0, 8);
+    }
+    if ((s32) M2C_FIELD(arg0, u8 *, 0xE) != 0) {
+        BTM_PINCodeReply(arg0 + 8, 0, M2C_FIELD(arg0, u8 *, 0xF), arg0 + 0x10, &sp8);
+        return;
+    }
+    BTM_PINCodeReply(arg0 + 8, 0xB, 0U, NULL, &sp8);
+}
+
+// bta_dm_auth_reply: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_dm_search_start: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_dm_search_cancel: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_dm_discover: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_dm_inq_cmpl: definicion C reemplazada por asm (ver abajo)
+
+
+void bta_dm_rmt_name(s32 arg0, M2C_UNK arg_sp0);
+
+// bta_dm_disc_rmt_name: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_dm_sdp_result: definicion C reemplazada por asm (ver abajo)
+
+
+/*
+Decompilation failure in function bta_dm_search_cmpl:
+
+Found bctr instruction at bta_dm_act.s line 961, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+// bta_dm_disc_result: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_dm_search_result: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_dm_search_timer_cback: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_dm_free_sdp_db: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_dm_queue_search: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_dm_queue_disc: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_dm_search_clear_queue: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_dm_search_cancel_cmpl: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_dm_search_cancel_transac_cmpl: definicion C reemplazada por asm (ver abajo)
+
+
+/*
+Decompilation failure in function bta_dm_search_cancel_notify:
+
+Found bctr instruction at bta_dm_act.s line 1199, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+// bta_dm_find_services: definicion C reemplazada por asm (ver abajo)
+
+
+void bta_dm_discover_next_device(void);
+
+
+void bta_dm_inq_results_cb(s8 *arg0);
+
+void bta_dm_inq_cmpl_cb(s8 *arg0) {
+    s8 *temp_r3;
+
+    temp_r3 = GKI_getbuf(0x110);
+    if (temp_r3 != NULL) {
+        M2C_FIELD(temp_r3, s16 *, 0) = 0x203;
+        M2C_FIELD(temp_r3, u8 *, 8) = (u8) M2C_FIELD(arg0, u8 *, 1);
+        bta_sys_sendmsg((s32) temp_r3);
+    }
+}
+
+// bta_dm_service_search_remname_cback: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_dm_remname_cback: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_dm_disc_remname_cback: definicion C reemplazada por asm (ver abajo)
+
+
+void bta_dm_cancel_rmt_name(void) {
+    BTM_CancelRemoteDeviceName();
+}
+
+// bta_dm_authorize_cback: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_dm_pinname_cback: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_dm_pin_cback: definicion C reemplazada por asm (ver abajo)
+
+
+s32 bta_dm_link_key_request_cback(void) {
+    return 0xB;
+}
+
+// bta_dm_new_link_key_cback: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_dm_authentication_complete_cback: definicion C reemplazada por asm (ver abajo)
+
+
+/*
+Decompilation failure in function bta_dm_local_addr_cback:
+
+Found bctr instruction at bta_dm_act.s line 1870, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+/*
+Decompilation failure in function bta_dm_signal_strength:
+
+Cannot find branch target bta_dm_signal_strength_timer_cback
+*/
+
+// bta_dm_signal_strength_timer_cback: definicion C reemplazada por asm (ver abajo)
+
+
+
+void bta_dm_acl_change(s8 *arg0);
+
+/*
+Decompilation failure in function bta_dm_disable_conn_down_timer_cback:
+
+Found bctr instruction at bta_dm_act.s line 2186, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+// bta_dm_rssi_cback: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_dm_link_quality_cback: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_dm_l2cap_server_compress_cback: definicion C reemplazada por asm (ver abajo)
+
+
+
+// bta_dm_rm_cback: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_dm_keep_acl: definicion C reemplazada por asm (ver abajo)
+
+
+/*
+Decompilation failure in function bta_dm_immediate_disable:
+
+Found bctr instruction at bta_dm_act.s line 2605, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+void bta_dm_reset_complete(void) {
+
+}
+
+// bta_dm_send_hci_reset: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void BTM_DeviceAuthorized();
-extern void BTM_GetNumAclLinks();
-extern void BTM_InqDbFirst();
-extern void BTM_InqDbNext();
-extern void BTM_InqDbRead();
-extern void BTM_IsAclConnectionUp();
-extern void BTM_IsInquiryActive();
-extern void BTM_PINCodeReply();
-extern void BTM_ReadLinkQuality();
-extern void BTM_ReadLocalDeviceAddr();
-extern void BTM_ReadRSSI();
-extern void BTM_ReadRemoteDeviceName();
-extern void BTM_SecAddRmtNameNotifyCallback();
-extern void BTM_SecBond();
-extern void BTM_SecDeleteRmtNameNotifyCallback();
-extern void BTM_SecReadDevName();
-extern void BTM_SecRegister();
 extern void BTM_SendHciReset();
-extern void BTM_SetConnectability();
 extern void BTM_SetDefaultLinkPolicy();
 extern void BTM_SetDefaultLinkSuperTout();
-extern void BTM_SetDeviceClass();
-extern void BTM_SetDiscoverability();
-extern void BTM_SetLocalDeviceName();
-extern void BTM_StartInquiry();
-extern void BTM_WritePageTimeout();
 extern void GKI_freebuf();
-extern void GKI_getbuf();
-extern void GKI_getpoolbuf();
 extern void L2CA_RegisterCompression();
-extern void L2CA_SetIdleTimeout();
-extern void L2CA_SetIdleTimeoutByBdAddr();
-extern void LogMsg_0();
-extern void LogMsg_1();
-extern void LogMsg_3();
-extern void SDP_FindAttributeInRec();
-extern void SDP_FindServiceInDb();
-extern void SDP_InitDiscoveryDb();
-extern void SDP_ServiceSearchAttributeRequest();
 extern void _restgpr_23();
 extern void _restgpr_25();
 extern void _restgpr_26();
@@ -82,86 +330,67 @@ extern void _savegpr_23();
 extern void _savegpr_25();
 extern void _savegpr_26();
 extern void _savegpr_27();
-extern void bta_dm_acl_change();
-extern void bta_dm_acl_change_cback();
-extern void bta_dm_auth_reply();
-extern void bta_dm_authentication_complete_cback();
-extern void bta_dm_authorize_cback();
-extern void bta_dm_bond();
-extern void bta_dm_cancel_rmt_name();
-extern void bta_dm_compress_cback();
-extern void bta_dm_disable();
-extern void bta_dm_disable_conn_down_timer_cback();
+void bta_dm_acl_change();
+void bta_dm_acl_change_cback();
+void bta_dm_auth_reply(s8 *arg0);
+s32 bta_dm_authentication_complete_cback(s8 *arg0, s32 arg1, s32 *arg2, s32 arg3);
+s32 bta_dm_authorize_cback(s8 *arg0, s32 arg2, u32 arg4);
+void bta_dm_compress_cback();
+void bta_dm_disable(void);
+void bta_dm_disable_conn_down_timer_cback();
 extern void bta_dm_disable_pm();
-extern void bta_dm_disable_timer_cback();
-extern void bta_dm_disc_remname_cback();
-extern void bta_dm_disc_result();
-extern void bta_dm_disc_rmt_name();
-extern void bta_dm_discover();
-extern void bta_dm_discover_next_device();
-extern void bta_dm_enable();
-extern void bta_dm_find_services();
-extern void bta_dm_free_sdp_db();
-extern void bta_dm_immediate_disable();
+void bta_dm_disable_timer_cback(void);
+void bta_dm_disc_remname_cback(s8 *arg0);
+void bta_dm_disc_result(s32 arg0);
+void bta_dm_disc_rmt_name(s8 *arg0);
+void bta_dm_discover(s8 *arg0);
+void bta_dm_discover_next_device();
+void bta_dm_enable(s8 *arg0);
+void bta_dm_find_services(s8 *arg0, M2C_UNK arg_sp0);
+void bta_dm_free_sdp_db(void);
+extern int bta_dm_immediate_disable();
 extern void bta_dm_init_pm();
-extern void bta_dm_inq_cmpl();
-extern void bta_dm_inq_cmpl_cb();
-extern void bta_dm_inq_results_cb();
-extern void bta_dm_keep_acl();
-extern void bta_dm_l2cap_server_compress_cback();
-extern void bta_dm_link_key_request_cback();
-extern void bta_dm_link_quality_cback();
-extern void bta_dm_local_addr_cback();
-extern void bta_dm_new_link_key_cback();
-extern void bta_dm_pin_cback();
-extern void bta_dm_pin_reply();
-extern void bta_dm_pinname_cback();
-extern void bta_dm_queue_disc();
-extern void bta_dm_queue_search();
-extern void bta_dm_remname_cback();
-extern void bta_dm_reset_complete();
-extern void bta_dm_rm_cback();
-extern void bta_dm_rmt_name();
-extern void bta_dm_rssi_cback();
-extern void bta_dm_sdp_callback();
-extern void bta_dm_sdp_result();
-extern void bta_dm_search_cancel();
-extern void bta_dm_search_cancel_cmpl();
-extern void bta_dm_search_cancel_notify();
-extern void bta_dm_search_cancel_transac_cmpl();
-extern void bta_dm_search_clear_queue();
-extern void bta_dm_search_cmpl();
-extern void bta_dm_search_result();
-extern void bta_dm_search_start();
-extern void bta_dm_search_timer_cback();
-extern void bta_dm_send_hci_reset();
-extern void bta_dm_service_search_remname_cback();
-extern void bta_dm_set_dev_name();
-extern void bta_dm_set_visibility();
-extern void bta_dm_signal_strength();
-extern void bta_dm_signal_strength_timer_cback();
+void bta_dm_inq_cmpl(s8 *arg0, M2C_UNK arg_sp0);
+void bta_dm_inq_results_cb();
+void bta_dm_keep_acl(s8 *arg0);
+s32 bta_dm_l2cap_server_compress_cback(s8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, M2C_UNK arg_sp0, s32 arg_sp8);
+void bta_dm_link_quality_cback(s8 *arg0);
+M2C_UNK bta_dm_local_addr_cback();
+s32 bta_dm_new_link_key_cback(s8 *arg0, s32 arg1, s32 *arg2, s32 *arg3);
+s32 bta_dm_pin_cback(u8 *arg0, s8 *arg1, u8 *arg2);
+void bta_dm_pinname_cback(s8 *arg0);
+void bta_dm_queue_disc(s32 *arg0);
+void bta_dm_queue_search(s32 *arg0);
+void bta_dm_remname_cback(s8 *arg0);
+void bta_dm_rm_cback(s32 arg0, u32 arg1, u32 arg2, s8 *arg3, M2C_UNK arg_sp0);
+void bta_dm_rmt_name();
+void bta_dm_rssi_cback(s8 *arg0);
+void bta_dm_sdp_callback();
+void bta_dm_sdp_result(s8 *arg0);
+void bta_dm_search_cancel(void);
+void bta_dm_search_cancel_cmpl(void);
+extern int bta_dm_search_cancel_notify();
+void bta_dm_search_cancel_transac_cmpl(void);
+void bta_dm_search_clear_queue(void);
+extern int bta_dm_search_cmpl();
+void bta_dm_search_result(s8 *arg0);
+void bta_dm_search_start(s8 *arg0);
+void bta_dm_search_timer_cback(void);
+void bta_dm_send_hci_reset(void);
+void bta_dm_service_search_remname_cback(s32 arg2);
+extern int bta_dm_signal_strength();
+void bta_dm_signal_strength_timer_cback(void);
 extern void bta_sys_compress_register();
 extern void bta_sys_disable();
 extern void bta_sys_rm_register();
-extern void bta_sys_sendmsg();
 extern void bta_sys_start_timer();
 extern void bta_sys_stop_timer();
-extern void btm_get_acl_disc_reason_code();
-extern void btm_read_trusted_mask();
-extern void btm_remove_acl();
 extern void btsnd_hcic_write_scan_enable();
-extern void fn_8029ABC4();
 extern void fn_802A59E8();
-extern void fn_802A5A1C();
-extern void fn_802B6FD8();
-extern void memcpy();
-extern void memset();
 extern void strncpy();
 
-// ----------------------------------------------------------------------------
-// bta_dm_enable
-// ----------------------------------------------------------------------------
-asm void bta_dm_enable() {
+// asm_to_cpp: bta_dm_enable
+asm void bta_dm_enable(s8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -233,10 +462,8 @@ asm void bta_dm_enable() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_disable
-// ----------------------------------------------------------------------------
-asm void bta_dm_disable() {
+// asm_to_cpp: bta_dm_disable
+asm void bta_dm_disable(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -286,10 +513,8 @@ lbl_802A6328:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_disable_timer_cback
-// ----------------------------------------------------------------------------
-asm void bta_dm_disable_timer_cback() {
+// asm_to_cpp: bta_dm_disable_timer_cback
+asm void bta_dm_disable_timer_cback(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -345,131 +570,8 @@ lbl_802A63DC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_set_dev_name
-// ----------------------------------------------------------------------------
-asm void bta_dm_set_dev_name() {
-    nofralloc
-    addi r3, r3, 0x8
-    b BTM_SetLocalDeviceName
-}
-
-// ----------------------------------------------------------------------------
-// bta_dm_set_visibility
-// ----------------------------------------------------------------------------
-asm void bta_dm_set_visibility() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    li r4, 0x0
-    li r5, 0x0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    lbz r3, 0x8(r3)
-    bl BTM_SetDiscoverability
-    lbz r3, 0x9(r31)
-    li r4, 0x0
-    li r5, 0x0
-    bl BTM_SetConnectability
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// bta_dm_bond
-// ----------------------------------------------------------------------------
-asm void bta_dm_bond() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r3
-    addi r3, r3, 0x8
-    bl btm_read_trusted_mask
-    cmpwi r3, 0x0
-    beq lbl_802A647C
-    mr r4, r3
-    addi r3, r1, 0x8
-    li r5, 0x8
-    bl memcpy
-    b lbl_802A648C
-lbl_802A647C:
-    addi r3, r1, 0x8
-    li r4, 0x0
-    li r5, 0x8
-    bl memset
-lbl_802A648C:
-    lbz r4, 0xe(r31)
-    addi r3, r31, 0x8
-    addi r5, r31, 0xf
-    addi r6, r1, 0x8
-    bl BTM_SecBond
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// bta_dm_pin_reply
-// ----------------------------------------------------------------------------
-asm void bta_dm_pin_reply() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r3
-    addi r3, r3, 0x8
-    bl btm_read_trusted_mask
-    cmpwi r3, 0x0
-    beq lbl_802A64EC
-    mr r4, r3
-    addi r3, r1, 0x8
-    li r5, 0x8
-    bl memcpy
-    b lbl_802A64FC
-lbl_802A64EC:
-    addi r3, r1, 0x8
-    li r4, 0x0
-    li r5, 0x8
-    bl memset
-lbl_802A64FC:
-    lbz r0, 0xe(r31)
-    cmpwi r0, 0x0
-    beq lbl_802A6524
-    lbz r5, 0xf(r31)
-    addi r3, r31, 0x8
-    addi r6, r31, 0x10
-    addi r7, r1, 0x8
-    li r4, 0x0
-    bl BTM_PINCodeReply
-    b lbl_802A653C
-lbl_802A6524:
-    addi r3, r31, 0x8
-    addi r7, r1, 0x8
-    li r4, 0xb
-    li r5, 0x0
-    li r6, 0x0
-    bl BTM_PINCodeReply
-lbl_802A653C:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// bta_dm_auth_reply
-// ----------------------------------------------------------------------------
-asm void bta_dm_auth_reply() {
+// asm_to_cpp: bta_dm_auth_reply
+asm void bta_dm_auth_reply(s8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -531,10 +633,8 @@ lbl_802A6610:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_search_start
-// ----------------------------------------------------------------------------
-asm void bta_dm_search_start() {
+// asm_to_cpp: bta_dm_search_start
+asm void bta_dm_search_start(s8 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -562,10 +662,8 @@ asm void bta_dm_search_start() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_search_cancel
-// ----------------------------------------------------------------------------
-asm void bta_dm_search_cancel() {
+// asm_to_cpp: bta_dm_search_cancel
+asm void bta_dm_search_cancel(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -604,10 +702,8 @@ lbl_802A66F8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_discover
-// ----------------------------------------------------------------------------
-asm void bta_dm_discover() {
+// asm_to_cpp: bta_dm_discover
+asm void bta_dm_discover(s8 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -683,10 +779,8 @@ lbl_802A6804:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_inq_cmpl
-// ----------------------------------------------------------------------------
-asm void bta_dm_inq_cmpl() {
+// asm_to_cpp: bta_dm_inq_cmpl
+asm void bta_dm_inq_cmpl(s8 *arg0, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x230(r1)
     mflr r0
@@ -838,9 +932,7 @@ lbl_802A6A08:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_rmt_name
-// ----------------------------------------------------------------------------
+// asm_to_cpp: bta_dm_rmt_name
 asm void bta_dm_rmt_name() {
     nofralloc
     stwu r1, -0x130(r1)
@@ -943,10 +1035,8 @@ lbl_802A6B7C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_disc_rmt_name
-// ----------------------------------------------------------------------------
-asm void bta_dm_disc_rmt_name() {
+// asm_to_cpp: bta_dm_disc_rmt_name
+asm void bta_dm_disc_rmt_name(s8 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -976,10 +1066,8 @@ lbl_802A6BDC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_sdp_result
-// ----------------------------------------------------------------------------
-asm void bta_dm_sdp_result() {
+// asm_to_cpp: bta_dm_sdp_result
+asm void bta_dm_sdp_result(s8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1149,10 +1237,8 @@ lbl_802A6E5C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_search_cmpl
-// ----------------------------------------------------------------------------
-asm void bta_dm_search_cmpl() {
+// asm_to_cpp: bta_dm_search_cmpl
+asm int bta_dm_search_cmpl() {
     nofralloc
     lis r4, lbl_80453B98@ha
     li r3, 0x3
@@ -1162,10 +1248,8 @@ asm void bta_dm_search_cmpl() {
     bctr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_disc_result
-// ----------------------------------------------------------------------------
-asm void bta_dm_disc_result() {
+// asm_to_cpp: bta_dm_disc_result
+asm void bta_dm_disc_result(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1190,10 +1274,8 @@ lbl_802A6ED0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_search_result
-// ----------------------------------------------------------------------------
-asm void bta_dm_search_result() {
+// asm_to_cpp: bta_dm_search_result
+asm void bta_dm_search_result(s8 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1234,10 +1316,8 @@ lbl_802A6F58:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_search_timer_cback
-// ----------------------------------------------------------------------------
-asm void bta_dm_search_timer_cback() {
+// asm_to_cpp: bta_dm_search_timer_cback
+asm void bta_dm_search_timer_cback(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1261,10 +1341,8 @@ lbl_802A6F90:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_free_sdp_db
-// ----------------------------------------------------------------------------
-asm void bta_dm_free_sdp_db() {
+// asm_to_cpp: bta_dm_free_sdp_db
+asm void bta_dm_free_sdp_db(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1286,10 +1364,8 @@ lbl_802A6FE4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_queue_search
-// ----------------------------------------------------------------------------
-asm void bta_dm_queue_search() {
+// asm_to_cpp: bta_dm_queue_search
+asm void bta_dm_queue_search(s32 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1311,10 +1387,8 @@ asm void bta_dm_queue_search() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_queue_disc
-// ----------------------------------------------------------------------------
-asm void bta_dm_queue_disc() {
+// asm_to_cpp: bta_dm_queue_disc
+asm void bta_dm_queue_disc(s32 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1336,10 +1410,8 @@ asm void bta_dm_queue_disc() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_search_clear_queue
-// ----------------------------------------------------------------------------
-asm void bta_dm_search_clear_queue() {
+// asm_to_cpp: bta_dm_search_clear_queue
+asm void bta_dm_search_clear_queue(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1361,10 +1433,8 @@ lbl_802A70B8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_search_cancel_cmpl
-// ----------------------------------------------------------------------------
-asm void bta_dm_search_cancel_cmpl() {
+// asm_to_cpp: bta_dm_search_cancel_cmpl
+asm void bta_dm_search_cancel_cmpl(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1386,10 +1456,8 @@ lbl_802A70FC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_search_cancel_transac_cmpl
-// ----------------------------------------------------------------------------
-asm void bta_dm_search_cancel_transac_cmpl() {
+// asm_to_cpp: bta_dm_search_cancel_transac_cmpl
+asm void bta_dm_search_cancel_transac_cmpl(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1417,10 +1485,8 @@ lbl_802A7140:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_search_cancel_notify
-// ----------------------------------------------------------------------------
-asm void bta_dm_search_cancel_notify() {
+// asm_to_cpp: bta_dm_search_cancel_notify
+asm int bta_dm_search_cancel_notify() {
     nofralloc
     lis r4, lbl_80453B98@ha
     li r3, 0x4
@@ -1430,10 +1496,8 @@ asm void bta_dm_search_cancel_notify() {
     bctr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_find_services
-// ----------------------------------------------------------------------------
-asm void bta_dm_find_services() {
+// asm_to_cpp: bta_dm_find_services
+asm void bta_dm_find_services(s8 *arg0, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x50(r1)
     mflr r0
@@ -1548,9 +1612,7 @@ lbl_802A730C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_discover_next_device
-// ----------------------------------------------------------------------------
+// asm_to_cpp: bta_dm_discover_next_device
 asm void bta_dm_discover_next_device() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1615,9 +1677,7 @@ lbl_802A73EC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_sdp_callback
-// ----------------------------------------------------------------------------
+// asm_to_cpp: bta_dm_sdp_callback
 asm void bta_dm_sdp_callback() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1641,9 +1701,7 @@ lbl_802A7438:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_inq_results_cb
-// ----------------------------------------------------------------------------
+// asm_to_cpp: bta_dm_inq_results_cb
 asm void bta_dm_inq_results_cb() {
     nofralloc
     stwu r1, -0x120(r1)
@@ -1686,37 +1744,8 @@ lbl_802A74C8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_inq_cmpl_cb
-// ----------------------------------------------------------------------------
-asm void bta_dm_inq_cmpl_cb() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    li r3, 0x110
-    bl GKI_getbuf
-    cmpwi r3, 0x0
-    beq lbl_802A7514
-    li r0, 0x203
-    sth r0, 0x0(r3)
-    lbz r0, 0x1(r31)
-    stb r0, 0x8(r3)
-    bl bta_sys_sendmsg
-lbl_802A7514:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// bta_dm_service_search_remname_cback
-// ----------------------------------------------------------------------------
-asm void bta_dm_service_search_remname_cback() {
+// asm_to_cpp: bta_dm_service_search_remname_cback
+asm void bta_dm_service_search_remname_cback(s32 arg2) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1736,10 +1765,8 @@ asm void bta_dm_service_search_remname_cback() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_remname_cback
-// ----------------------------------------------------------------------------
-asm void bta_dm_remname_cback() {
+// asm_to_cpp: bta_dm_remname_cback
+asm void bta_dm_remname_cback(s8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1779,10 +1806,8 @@ lbl_802A75D8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_disc_remname_cback
-// ----------------------------------------------------------------------------
-asm void bta_dm_disc_remname_cback() {
+// asm_to_cpp: bta_dm_disc_remname_cback
+asm void bta_dm_disc_remname_cback(s8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1821,18 +1846,8 @@ lbl_802A7660:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_cancel_rmt_name
-// ----------------------------------------------------------------------------
-asm void bta_dm_cancel_rmt_name() {
-    nofralloc
-    b BTM_CancelRemoteDeviceName
-}
-
-// ----------------------------------------------------------------------------
-// bta_dm_authorize_cback
-// ----------------------------------------------------------------------------
-asm void bta_dm_authorize_cback() {
+// asm_to_cpp: bta_dm_authorize_cback
+asm s32 bta_dm_authorize_cback(s8 *arg0, s32 arg2, u32 arg4) {
     nofralloc
     stwu r1, -0x130(r1)
     mflr r0
@@ -1891,10 +1906,8 @@ lbl_802A772C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_pinname_cback
-// ----------------------------------------------------------------------------
-asm void bta_dm_pinname_cback() {
+// asm_to_cpp: bta_dm_pinname_cback
+asm void bta_dm_pinname_cback(s8 *arg0) {
     nofralloc
     stwu r1, -0x120(r1)
     mflr r0
@@ -1949,10 +1962,8 @@ lbl_802A77D4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_pin_cback
-// ----------------------------------------------------------------------------
-asm void bta_dm_pin_cback() {
+// asm_to_cpp: bta_dm_pin_cback
+asm s32 bta_dm_pin_cback(u8 *arg0, s8 *arg1, u8 *arg2) {
     nofralloc
     stwu r1, -0x130(r1)
     mflr r0
@@ -2036,19 +2047,8 @@ lbl_802A7918:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_link_key_request_cback
-// ----------------------------------------------------------------------------
-asm void bta_dm_link_key_request_cback() {
-    nofralloc
-    li r3, 0xb
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// bta_dm_new_link_key_cback
-// ----------------------------------------------------------------------------
-asm void bta_dm_new_link_key_cback() {
+// asm_to_cpp: bta_dm_new_link_key_cback
+asm s32 bta_dm_new_link_key_cback(s8 *arg0, s32 arg1, s32 *arg2, s32 *arg3) {
     nofralloc
     stwu r1, -0x120(r1)
     mflr r0
@@ -2092,10 +2092,8 @@ lbl_802A79C0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_authentication_complete_cback
-// ----------------------------------------------------------------------------
-asm void bta_dm_authentication_complete_cback() {
+// asm_to_cpp: bta_dm_authentication_complete_cback
+asm s32 bta_dm_authentication_complete_cback(s8 *arg0, s32 arg1, s32 *arg2, s32 arg3) {
     nofralloc
     stwu r1, -0x120(r1)
     mflr r0
@@ -2133,10 +2131,8 @@ lbl_802A7A48:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_local_addr_cback
-// ----------------------------------------------------------------------------
-asm void bta_dm_local_addr_cback() {
+// asm_to_cpp: bta_dm_local_addr_cback
+asm M2C_UNK bta_dm_local_addr_cback() {
     nofralloc
     lis r4, lbl_80453C14@ha
     addi r4, r4, lbl_80453C14@l
@@ -2150,10 +2146,8 @@ asm void bta_dm_local_addr_cback() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_signal_strength
-// ----------------------------------------------------------------------------
-asm void bta_dm_signal_strength() {
+// asm_to_cpp: bta_dm_signal_strength
+asm int bta_dm_signal_strength() {
     nofralloc
     lbz r0, 0xc(r3)
     cmpwi r0, 0x0
@@ -2173,10 +2167,8 @@ lbl_802A7AB4:
     b bta_sys_stop_timer
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_signal_strength_timer_cback
-// ----------------------------------------------------------------------------
-asm void bta_dm_signal_strength_timer_cback() {
+// asm_to_cpp: bta_dm_signal_strength_timer_cback
+asm void bta_dm_signal_strength_timer_cback(void) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -2248,9 +2240,7 @@ lbl_802A7B9C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_acl_change_cback
-// ----------------------------------------------------------------------------
+// asm_to_cpp: bta_dm_acl_change_cback
 asm void bta_dm_acl_change_cback() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -2284,9 +2274,7 @@ lbl_802A7C0C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_acl_change
-// ----------------------------------------------------------------------------
+// asm_to_cpp: bta_dm_acl_change
 asm void bta_dm_acl_change() {
     nofralloc
     stwu r1, -0x130(r1)
@@ -2466,9 +2454,7 @@ lbl_802A7E8C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_disable_conn_down_timer_cback
-// ----------------------------------------------------------------------------
+// asm_to_cpp: bta_dm_disable_conn_down_timer_cback
 asm void bta_dm_disable_conn_down_timer_cback() {
     nofralloc
     lis r5, lbl_80453C14@ha
@@ -2480,10 +2466,8 @@ asm void bta_dm_disable_conn_down_timer_cback() {
     bctr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_rssi_cback
-// ----------------------------------------------------------------------------
-asm void bta_dm_rssi_cback() {
+// asm_to_cpp: bta_dm_rssi_cback
+asm void bta_dm_rssi_cback(s8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -2515,10 +2499,8 @@ lbl_802A7F1C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_link_quality_cback
-// ----------------------------------------------------------------------------
-asm void bta_dm_link_quality_cback() {
+// asm_to_cpp: bta_dm_link_quality_cback
+asm void bta_dm_link_quality_cback(s8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -2550,10 +2532,8 @@ lbl_802A7F88:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_l2cap_server_compress_cback
-// ----------------------------------------------------------------------------
-asm void bta_dm_l2cap_server_compress_cback() {
+// asm_to_cpp: bta_dm_l2cap_server_compress_cback
+asm s32 bta_dm_l2cap_server_compress_cback(s8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, M2C_UNK arg_sp0, s32 arg_sp8) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -2618,9 +2598,7 @@ lbl_802A8064:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_compress_cback
-// ----------------------------------------------------------------------------
+// asm_to_cpp: bta_dm_compress_cback
 asm void bta_dm_compress_cback() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -2783,10 +2761,8 @@ lbl_802A829C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_rm_cback
-// ----------------------------------------------------------------------------
-asm void bta_dm_rm_cback() {
+// asm_to_cpp: bta_dm_rm_cback
+asm void bta_dm_rm_cback(s32 arg0, u32 arg1, u32 arg2, s8 *arg3, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -2864,10 +2840,8 @@ lbl_802A83A8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_keep_acl
-// ----------------------------------------------------------------------------
-asm void bta_dm_keep_acl() {
+// asm_to_cpp: bta_dm_keep_acl
+asm void bta_dm_keep_acl(s8 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -2906,10 +2880,8 @@ lbl_802A8430:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_immediate_disable
-// ----------------------------------------------------------------------------
-asm void bta_dm_immediate_disable() {
+// asm_to_cpp: bta_dm_immediate_disable
+asm int bta_dm_immediate_disable() {
     nofralloc
     lis r5, lbl_80453C14@ha
     li r3, 0x1
@@ -2920,18 +2892,8 @@ asm void bta_dm_immediate_disable() {
     bctr
 }
 
-// ----------------------------------------------------------------------------
-// bta_dm_reset_complete
-// ----------------------------------------------------------------------------
-asm void bta_dm_reset_complete() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// bta_dm_send_hci_reset
-// ----------------------------------------------------------------------------
-asm void bta_dm_send_hci_reset() {
+// asm_to_cpp: bta_dm_send_hci_reset
+asm void bta_dm_send_hci_reset(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -2955,4 +2917,3 @@ lbl_802A8498:
     addi r1, r1, 0x10
     blr
 }
-

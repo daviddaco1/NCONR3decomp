@@ -1,24 +1,58 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/bte_hcisu.cpp
-// Total functions: 4
+extern s8 *lbl_8049DFE8;
+extern s32 lbl_8049DFEC;
 
-// Small Data symbols (@sda21)
-extern float lbl_8049DFE8;
-extern float lbl_8049DFEC;
+/*
+Decompilation failure in function bte_hcisu_send:
 
-// Forward declarations
+Unable to determine jump table for bctr instruction at bte_hcisu.s line 16.
+
+There must be a read of a variable before the instruction
+which has a name starting with with "jtbl"/"jpt_"/"lbl_"/"jumptable_".
+*/
+
+void bte_hcisu_task();
+void bta_ci_hci_msg_handler();
+
+void bte_hcisu_task(s32 arg0, s32 arg1) {
+    M2C_UNK (*temp_r12)(M2C_UNK, M2C_UNK, M2C_UNK);
+    M2C_UNK (*temp_r12_2)(s32);
+
+    if ((s8 *) lbl_8049DFE8 != NULL) {
+        temp_r12 = M2C_FIELD(lbl_8049DFE8, M2C_UNK (**)(M2C_UNK, M2C_UNK, M2C_UNK), 0);
+        if (temp_r12 != NULL) {
+            temp_r12(2, 1, 0x800);
+        }
+        temp_r12_2 = M2C_FIELD(lbl_8049DFE8, M2C_UNK (**)(s32), 4);
+        if (temp_r12_2 != NULL) {
+            temp_r12_2(lbl_8049DFEC);
+        }
+    }
+}
+
+/*
+Decompilation failure in function bte_hcisu_close:
+
+Unable to determine jump table for bctr instruction at bte_hcisu.s line 61.
+
+There must be a read of a variable before the instruction
+which has a name starting with with "jtbl"/"jpt_"/"lbl_"/"jumptable_".
+*/
+
+void bta_ci_hci_msg_handler(s32 arg0) {
+    GKI_send_msg(2U, 0U, arg0);
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void GKI_freebuf();
-extern void GKI_send_msg();
-extern void bta_ci_hci_msg_handler();
-extern void bte_hcisu_close();
-extern void bte_hcisu_send();
-extern void bte_hcisu_task();
+extern int bte_hcisu_close();
+extern int bte_hcisu_send();
 
-// ----------------------------------------------------------------------------
-// bte_hcisu_send
-// ----------------------------------------------------------------------------
-asm void bte_hcisu_send() {
+// asm_to_cpp: bte_hcisu_send
+asm int bte_hcisu_send() {
     nofralloc
     sth r4, 0x0(r3)
     lwz r4, lbl_8049DFE8
@@ -31,44 +65,8 @@ lbl_802A5214:
     b GKI_freebuf
 }
 
-// ----------------------------------------------------------------------------
-// bte_hcisu_task
-// ----------------------------------------------------------------------------
-asm void bte_hcisu_task() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lwz r3, lbl_8049DFE8
-    cmpwi r3, 0x0
-    beq lbl_802A526C
-    lwz r12, 0x0(r3)
-    cmpwi r12, 0x0
-    beq lbl_802A5250
-    li r3, 0x2
-    li r4, 0x1
-    li r5, 0x800
-    mtctr r12
-    bctrl
-lbl_802A5250:
-    lwz r3, lbl_8049DFE8
-    lwz r12, 0x4(r3)
-    cmpwi r12, 0x0
-    beq lbl_802A526C
-    lwz r3, lbl_8049DFEC
-    mtctr r12
-    bctrl
-lbl_802A526C:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// bte_hcisu_close
-// ----------------------------------------------------------------------------
-asm void bte_hcisu_close() {
+// asm_to_cpp: bte_hcisu_close
+asm int bte_hcisu_close() {
     nofralloc
     lwz r3, lbl_8049DFE8
     cmpwi r3, 0x0
@@ -80,15 +78,3 @@ asm void bte_hcisu_close() {
     bctr
     blr
 }
-
-// ----------------------------------------------------------------------------
-// bta_ci_hci_msg_handler
-// ----------------------------------------------------------------------------
-asm void bta_ci_hci_msg_handler() {
-    nofralloc
-    mr r5, r3
-    li r3, 0x2
-    li r4, 0x0
-    b GKI_send_msg
-}
-

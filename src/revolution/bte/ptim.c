@@ -1,25 +1,34 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/ptim.cpp
-// Total functions: 4
+void ptim_init();
+void ptim_timer_update();
+void ptim_start_timer();
+void ptim_stop_timer();
 
-// Forward declarations
-extern void GKI_getbuf();
-extern void GKI_remove_from_timer_list();
-extern void GKI_stop_timer();
+
+// ptim_timer_update: definicion C reemplazada por asm (ver abajo)
+
+
+
+void ptim_stop_timer(s8 *arg0, s32 arg1, s32 arg2) {
+    GKI_remove_from_timer_list(arg0, (s8 *) arg1);
+    if ((s32) M2C_FIELD(arg0, s32 *, 0) == 0) {
+        GKI_stop_timer((s32) M2C_FIELD(arg0, u8 *, 0x10));
+    }
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void bta_sys_sendmsg();
 extern void fn_802A3840();
 extern void fn_802A3A18();
-extern void fn_802A3A2C();
 extern void fn_802A3AB8();
-extern void ptim_init();
-extern void ptim_start_timer();
-extern void ptim_stop_timer();
-extern void ptim_timer_update();
+void ptim_init();
+void ptim_start_timer();
+void ptim_timer_update(s8 *arg0);
 
-// ----------------------------------------------------------------------------
-// ptim_init
-// ----------------------------------------------------------------------------
+// asm_to_cpp: ptim_init
 asm void ptim_init() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -43,10 +52,8 @@ asm void ptim_init() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// ptim_timer_update
-// ----------------------------------------------------------------------------
-asm void ptim_timer_update() {
+// asm_to_cpp: ptim_timer_update
+asm void ptim_timer_update(s8 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -100,9 +107,7 @@ lbl_802A603C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// ptim_start_timer
-// ----------------------------------------------------------------------------
+// asm_to_cpp: ptim_start_timer
 asm void ptim_start_timer() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -147,28 +152,3 @@ lbl_802A60B4:
     addi r1, r1, 0x20
     blr
 }
-
-// ----------------------------------------------------------------------------
-// ptim_stop_timer
-// ----------------------------------------------------------------------------
-asm void ptim_stop_timer() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    bl GKI_remove_from_timer_list
-    lwz r0, 0x0(r31)
-    cmpwi r0, 0x0
-    bne lbl_802A6120
-    lbz r3, 0x10(r31)
-    bl GKI_stop_timer
-lbl_802A6120:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-

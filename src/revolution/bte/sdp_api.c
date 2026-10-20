@@ -1,41 +1,70 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/sdp_api.cpp
-// Total functions: 9
+M2C_UNK LogMsg_4(); /* extern */
+M2C_UNK memset();               /* extern */
+extern M2C_UNK lbl_80378170;
+extern M2C_UNK lbl_80457C40;
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_80378170[];
-extern u8 lbl_80457C40[];
+s32 SDP_InitDiscoveryDb();
+s32 SDP_ServiceSearchRequest();
+s32 SDP_ServiceSearchAttributeRequest();
+s8 * SDP_FindAttributeInRec();
+s8 * SDP_FindServiceInDb();
+s8 * SDP_FindServiceUUIDInDb();
+s32 SDP_SetLocalDiRecord();
+s32 SDP_GetLocalDiRecord();
+u8 SDP_SetTraceLevel();
 
-// Forward declarations
-extern void LogMsg_4();
-extern void SDP_AddAttribute();
-extern void SDP_AddServiceClassIdList();
-extern void SDP_CreateRecord();
-extern void SDP_DeleteRecord();
-extern void SDP_FindAttributeInRec();
-extern void SDP_FindServiceInDb();
-extern void SDP_FindServiceUUIDInDb();
-extern void SDP_GetLocalDiRecord();
-extern void SDP_InitDiscoveryDb();
-extern void SDP_ServiceSearchAttributeRequest();
-extern void SDP_ServiceSearchRequest();
-extern void SDP_SetLocalDiRecord();
-extern void SDP_SetTraceLevel();
+
+s32 SDP_ServiceSearchRequest(s32 arg0, s32 arg1, s32 arg2) {
+    s8 *temp_r3;
+
+    temp_r3 = sdp_conn_originate(arg0);
+    if (temp_r3 == NULL) {
+        return 0;
+    }
+    M2C_FIELD(temp_r3, s8 *, 0x474) = 0;
+    M2C_FIELD(temp_r3, s32 *, 0x410) = arg1;
+    M2C_FIELD(temp_r3, s32 *, 0x414) = arg2;
+    return 1;
+}
+
+// SDP_ServiceSearchAttributeRequest: definicion C reemplazada por asm (ver abajo)
+
+
+// SDP_FindAttributeInRec: definicion C reemplazada por asm (ver abajo)
+
+
+// SDP_FindServiceInDb: definicion C reemplazada por asm (ver abajo)
+
+
+// SDP_FindServiceUUIDInDb: definicion C reemplazada por asm (ver abajo)
+
+
+// SDP_SetLocalDiRecord: definicion C reemplazada por asm (ver abajo)
+
+
+// SDP_GetLocalDiRecord: definicion C reemplazada por asm (ver abajo)
+
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+s8 *SDP_FindAttributeInRec(s8 **arg0, u32 arg1);
+s8 *SDP_FindServiceInDb(s8 *arg0, u32 arg1, s8 *arg2);
+s8 *SDP_FindServiceUUIDInDb(s8 *arg0, s32 arg1, s8 *arg2);
+s32 SDP_GetLocalDiRecord(s8 *arg0, s32 *arg1);
+s32 SDP_InitDiscoveryDb();
+s32 SDP_ServiceSearchAttributeRequest(s32 arg0, s32 arg1, s32 arg2);
+s32 SDP_SetLocalDiRecord(s8 *arg0, s32 *arg1);
+u8 SDP_SetTraceLevel();
 extern void _restgpr_26();
 extern void _savegpr_26();
-extern void memset();
-extern void sdp_conn_originate();
-extern void sdp_db_find_attr_in_rec();
-extern void sdp_db_find_record();
-extern void sdpu_compare_uuid_with_attr();
 extern void sdpu_sort_attr_list();
-extern void strlen();
 
-// ----------------------------------------------------------------------------
-// SDP_InitDiscoveryDb
-// ----------------------------------------------------------------------------
-asm void SDP_InitDiscoveryDb() {
+// asm_to_cpp: SDP_InitDiscoveryDb
+asm s32 SDP_InitDiscoveryDb() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -273,42 +302,8 @@ lbl_802CA5D0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// SDP_ServiceSearchRequest
-// ----------------------------------------------------------------------------
-asm void SDP_ServiceSearchRequest() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r5
-    stw r30, 0x8(r1)
-    mr r30, r4
-    bl sdp_conn_originate
-    cmpwi r3, 0x0
-    bne lbl_802CA618
-    li r3, 0x0
-    b lbl_802CA62C
-lbl_802CA618:
-    li r0, 0x0
-    stb r0, 0x474(r3)
-    stw r30, 0x410(r3)
-    stw r31, 0x414(r3)
-    li r3, 0x1
-lbl_802CA62C:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// SDP_ServiceSearchAttributeRequest
-// ----------------------------------------------------------------------------
-asm void SDP_ServiceSearchAttributeRequest() {
+// asm_to_cpp: SDP_ServiceSearchAttributeRequest
+asm s32 SDP_ServiceSearchAttributeRequest(s32 arg0, s32 arg1, s32 arg2) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -339,10 +334,8 @@ lbl_802CA690:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// SDP_FindAttributeInRec
-// ----------------------------------------------------------------------------
-asm void SDP_FindAttributeInRec() {
+// asm_to_cpp: SDP_FindAttributeInRec
+asm s8 *SDP_FindAttributeInRec(s8 **arg0, u32 arg1) {
     nofralloc
     lwz r3, 0x0(r3)
     b lbl_802CA6C0
@@ -358,10 +351,8 @@ lbl_802CA6C0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// SDP_FindServiceInDb
-// ----------------------------------------------------------------------------
-asm void SDP_FindServiceInDb() {
+// asm_to_cpp: SDP_FindServiceInDb
+asm s8 *SDP_FindServiceInDb(s8 *arg0, u32 arg1, s8 *arg2) {
     nofralloc
     cmpwi r5, 0x0
     bne lbl_802CA6E0
@@ -427,10 +418,8 @@ lbl_802CA78C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// SDP_FindServiceUUIDInDb
-// ----------------------------------------------------------------------------
-asm void SDP_FindServiceUUIDInDb() {
+// asm_to_cpp: SDP_FindServiceUUIDInDb
+asm s8 *SDP_FindServiceUUIDInDb(s8 *arg0, s32 arg1, s8 *arg2) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -512,10 +501,8 @@ lbl_802CA888:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// SDP_SetLocalDiRecord
-// ----------------------------------------------------------------------------
-asm void SDP_SetLocalDiRecord() {
+// asm_to_cpp: SDP_SetLocalDiRecord
+asm s32 SDP_SetLocalDiRecord(s8 *arg0, s32 *arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -754,10 +741,8 @@ lbl_802CABE4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// SDP_GetLocalDiRecord
-// ----------------------------------------------------------------------------
-asm void SDP_GetLocalDiRecord() {
+// asm_to_cpp: SDP_GetLocalDiRecord
+asm s32 SDP_GetLocalDiRecord(s8 *arg0, s32 *arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1087,10 +1072,8 @@ lbl_802CB090:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// SDP_SetTraceLevel
-// ----------------------------------------------------------------------------
-asm void SDP_SetTraceLevel() {
+// asm_to_cpp: SDP_SetTraceLevel
+asm u8 SDP_SetTraceLevel() {
     nofralloc
     cmplwi r3, 0xff
     beq lbl_802CB0C8
@@ -1103,4 +1086,3 @@ lbl_802CB0C8:
     lbz r3, 0x4630(r3)
     blr
 }
-

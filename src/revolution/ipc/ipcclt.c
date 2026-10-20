@@ -1,60 +1,153 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/ipc/ipcclt.cpp
-// Total functions: 21
+extern s32 __mailboxAck_8049D0C0;
+extern M2C_UNK __responses_80463060;
+extern s32 hid_8049D0C4;
+extern s32 lbl_8049E200;
+extern s8 *lbl_8049E204;
+extern u32 lbl_8049E208;
 
-// Small Data symbols (@sda21)
-extern float __mailboxAck_8049D0C0;
-extern float hid_8049D0C4;
+s32 strnlen();
+void IpcReplyHandler();
+void IPCInterruptHandler();
+s32 IPCCltInit();
+s32 IPCCltReInit();
+s32 __ios_Ipc2();
+s32 IOS_OpenAsync();
+s32 IOS_Open();
+s32 IOS_CloseAsync();
+s32 IOS_Close();
+s32 IOS_ReadAsync();
+s32 IOS_Read();
+s32 IOS_WriteAsync();
+s32 IOS_Write();
+s32 IOS_SeekAsync();
+s32 IOS_Seek();
+s32 IOS_IoctlAsync();
+s32 IOS_Ioctl();
+s32 __ios_Ioctlv();
+s32 IOS_IoctlvAsync();
+s32 IOS_Ioctlv();
+
+// strnlen: definicion C reemplazada por asm (ver abajo)
+
+
+void IpcReplyHandler(s32 arg0, s32 *arg1);
+
+// IPCInterruptHandler: definicion C reemplazada por asm (ver abajo)
+
+
+s32 IPCCltInit(void);
+
+// IPCCltReInit: definicion C reemplazada por asm (ver abajo)
+
+
+// __ios_Ipc2: definicion C reemplazada por asm (ver abajo)
+
+
+// IOS_OpenAsync: definicion C reemplazada por asm (ver abajo)
+
+
+// IOS_Open: definicion C reemplazada por asm (ver abajo)
+
+
+s32 IOS_CloseAsync(s32 arg0, s32 arg1, s32 arg2) {
+    s32 sp8;
+    s32 temp_r3;
+    s32 var_r31;
+
+    var_r31 = 0;
+    if (&sp8 == NULL) {
+        var_r31 = -4;
+    } else {
+        temp_r3 = iosAllocAligned(hid_8049D0C4, 0x40, 0x20);
+        sp8 = temp_r3;
+        if (temp_r3 == 0) {
+            var_r31 = -0x16;
+        } else {
+            M2C_FIELD(temp_r3, s32 *, 0x20) = arg1;
+            M2C_FIELD(sp8, s32 *, 0x24) = arg2;
+            M2C_FIELD(sp8, s32 *, 0x28) = 0;
+            M2C_FIELD(temp_r3, s32 *, 0) = 2;
+            M2C_FIELD(temp_r3, s32 *, 8) = arg0;
+        }
+    }
+    if (var_r31 == 0) {
+        var_r31 = __ios_Ipc2((u8 *) sp8, arg1);
+    }
+    return var_r31;
+}
+
+// IOS_Close: definicion C reemplazada por asm (ver abajo)
+
+
+// IOS_ReadAsync: definicion C reemplazada por asm (ver abajo)
+
+
+// IOS_Read: definicion C reemplazada por asm (ver abajo)
+
+
+// IOS_WriteAsync: definicion C reemplazada por asm (ver abajo)
+
+
+// IOS_Write: definicion C reemplazada por asm (ver abajo)
+
+
+// IOS_SeekAsync: definicion C reemplazada por asm (ver abajo)
+
+
+// IOS_Seek: definicion C reemplazada por asm (ver abajo)
+
+
+// IOS_IoctlAsync: definicion C reemplazada por asm (ver abajo)
+
+
+// IOS_Ioctl: definicion C reemplazada por asm (ver abajo)
+
+
+// __ios_Ioctlv: definicion C reemplazada por asm (ver abajo)
+
+
+s32 IOS_IoctlvAsync(s32 arg0, s32 arg1, u32 arg2, u32 arg3, u8 *arg4, s32 arg5, s32 arg6, M2C_UNK arg_sp0);
+
+s32 IOS_Ioctlv(s32 arg0, s32 arg1, u32 arg2, u32 arg3, u8 *arg4, M2C_UNK arg_sp0);
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern float initialized_654_8049E20C;
-extern float lbl_8049E200;
-extern float lbl_8049E204;
-extern float lbl_8049E208;
-
-// Global data symbols (@ha/@l)
-extern u8 __responses_80463060[];
-
-// Forward declarations
 extern void DCFlushRange();
 extern void DCInvalidateRange();
-extern void IOS_Close();
-extern void IOS_CloseAsync();
-extern void IOS_Ioctl();
-extern void IOS_IoctlAsync();
-extern void IOS_Ioctlv();
-extern void IOS_IoctlvAsync();
-extern void IOS_Open();
-extern void IOS_OpenAsync();
-extern void IOS_Read();
-extern void IOS_ReadAsync();
-extern void IOS_Seek();
-extern void IOS_SeekAsync();
-extern void IOS_Write();
-extern void IOS_WriteAsync();
-extern void IPCCltInit();
-extern void IPCCltReInit();
-extern void IPCGetBufferHi();
-extern void IPCGetBufferLo();
+s32 IOS_Close(s32 arg0);
+s32 IOS_Ioctl(s32 arg0, s32 arg1, u8 *arg2, s32 arg3, u8 *arg4, s32 arg5, M2C_UNK arg_sp0);
+s32 IOS_IoctlAsync(s32 arg0, s32 arg1, u8 *arg2, s32 arg3, u8 *arg4, s32 arg5, s32 arg6, s32 arg7, M2C_UNK arg_sp0);
+s32 IOS_Ioctlv();
+s32 IOS_IoctlvAsync();
+s32 IOS_Open(u8 *arg0, s32 arg1);
+s32 IOS_OpenAsync(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, M2C_UNK arg_sp0);
+s32 IOS_Read(s32 arg0, u8 *arg1, s32 arg2);
+s32 IOS_ReadAsync(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0);
+s32 IOS_Seek(s32 arg0, s32 arg1, s32 arg2);
+s32 IOS_SeekAsync(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0);
+s32 IOS_Write(s32 arg0, u8 *arg1, s32 arg2);
+s32 IOS_WriteAsync(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0);
+s32 IPCCltInit();
+s32 IPCCltReInit(void);
 extern void IPCInit();
-extern void IPCInterruptHandler();
-extern void IPCReadReg();
+void IPCInterruptHandler(s32 *arg0, s32 arg1);
 extern void IPCSetBufferLo();
 extern void IPCWriteReg();
 extern void IPCiProfAck();
 extern void IPCiProfInit();
 extern void IPCiProfQueueReq();
 extern void IPCiProfReply();
-extern void IpcReplyHandler();
+void IpcReplyHandler();
 extern void OSClearContext();
-extern void OSDisableInterrupts();
 extern void OSInitThreadQueue();
-extern void OSRestoreInterrupts();
 extern void OSSetCurrentContext();
 extern void OSSleepThread();
-extern void __OSSetInterruptHandler();
-extern void __OSUnmaskInterrupts();
-extern void __ios_Ioctlv();
-extern void __ios_Ipc2();
+s32 __ios_Ioctlv(u8 *arg0, s32 arg1, u32 arg2, u32 arg3, u8 *arg4, M2C_UNK arg_sp0);
+s32 __ios_Ipc2(u8 *arg0, s32 arg1);
 extern void _restgpr_23();
 extern void _restgpr_24();
 extern void _restgpr_25();
@@ -66,15 +159,10 @@ extern void _savegpr_25();
 extern void _savegpr_26();
 extern void _savegpr_27();
 extern void fn_8031D978();
-extern void iosAllocAligned();
-extern void iosCreateHeap();
-extern void iosFree();
-extern void strnlen();
+s32 strnlen(u8 *arg0, s32 arg1);
 
-// ----------------------------------------------------------------------------
-// strnlen
-// ----------------------------------------------------------------------------
-asm void strnlen() {
+// asm_to_cpp: strnlen
+asm s32 strnlen(u8 *arg0, s32 arg1) {
     nofralloc
     mr r5, r3
     b lbl_803058A0
@@ -92,9 +180,7 @@ lbl_803058B8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IpcReplyHandler
-// ----------------------------------------------------------------------------
+// asm_to_cpp: IpcReplyHandler
 asm void IpcReplyHandler() {
     nofralloc
     stwu r1, -0x2e0(r1)
@@ -267,10 +353,8 @@ lbl_80305AF8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IPCInterruptHandler
-// ----------------------------------------------------------------------------
-asm void IPCInterruptHandler() {
+// asm_to_cpp: IPCInterruptHandler
+asm void IPCInterruptHandler(s32 *arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -388,10 +472,8 @@ lbl_80305CAC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IPCCltInit
-// ----------------------------------------------------------------------------
-asm void IPCCltInit() {
+// asm_to_cpp: IPCCltInit
+asm s32 IPCCltInit() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -442,10 +524,8 @@ lbl_80305D58:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IPCCltReInit
-// ----------------------------------------------------------------------------
-asm void IPCCltReInit() {
+// asm_to_cpp: IPCCltReInit
+asm s32 IPCCltReInit(void) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -480,10 +560,8 @@ lbl_80305DCC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __ios_Ipc2
-// ----------------------------------------------------------------------------
-asm void __ios_Ipc2() {
+// asm_to_cpp: __ios_Ipc2
+asm s32 __ios_Ipc2(u8 *arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -645,10 +723,8 @@ lbl_80306008:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IOS_OpenAsync
-// ----------------------------------------------------------------------------
-asm void IOS_OpenAsync() {
+// asm_to_cpp: IOS_OpenAsync
+asm s32 IOS_OpenAsync(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -731,10 +807,8 @@ lbl_80306128:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IOS_Open
-// ----------------------------------------------------------------------------
-asm void IOS_Open() {
+// asm_to_cpp: IOS_Open
+asm s32 IOS_Open(u8 *arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -819,69 +893,8 @@ lbl_80306240:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IOS_CloseAsync
-// ----------------------------------------------------------------------------
-asm void IOS_CloseAsync() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addic. r0, r1, 0x8
-    stw r31, 0x1c(r1)
-    li r31, 0x0
-    stw r30, 0x18(r1)
-    mr r30, r5
-    stw r29, 0x14(r1)
-    mr r29, r4
-    stw r28, 0x10(r1)
-    mr r28, r3
-    bne lbl_803062A0
-    li r31, -0x4
-    b lbl_803062E8
-lbl_803062A0:
-    lwz r3, hid_8049D0C4
-    li r4, 0x40
-    li r5, 0x20
-    bl iosAllocAligned
-    cmpwi r3, 0x0
-    stw r3, 0x8(r1)
-    bne lbl_803062C4
-    li r31, -0x16
-    b lbl_803062E8
-lbl_803062C4:
-    stw r29, 0x20(r3)
-    li r5, 0x0
-    li r0, 0x2
-    lwz r4, 0x8(r1)
-    stw r30, 0x24(r4)
-    lwz r4, 0x8(r1)
-    stw r5, 0x28(r4)
-    stw r0, 0x0(r3)
-    stw r28, 0x8(r3)
-lbl_803062E8:
-    cmpwi r31, 0x0
-    bne lbl_80306300
-    lwz r3, 0x8(r1)
-    mr r4, r29
-    bl __ios_Ipc2
-    mr r31, r3
-lbl_80306300:
-    mr r3, r31
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r28, 0x10(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// IOS_Close
-// ----------------------------------------------------------------------------
-asm void IOS_Close() {
+// asm_to_cpp: IOS_Close
+asm s32 IOS_Close(s32 arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -931,10 +944,8 @@ lbl_803063B0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IOS_ReadAsync
-// ----------------------------------------------------------------------------
-asm void IOS_ReadAsync() {
+// asm_to_cpp: IOS_ReadAsync
+asm s32 IOS_ReadAsync(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1010,10 +1021,8 @@ lbl_803064B0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IOS_Read
-// ----------------------------------------------------------------------------
-asm void IOS_Read() {
+// asm_to_cpp: IOS_Read
+asm s32 IOS_Read(s32 arg0, u8 *arg1, s32 arg2) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1091,10 +1100,8 @@ lbl_803065B0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IOS_WriteAsync
-// ----------------------------------------------------------------------------
-asm void IOS_WriteAsync() {
+// asm_to_cpp: IOS_WriteAsync
+asm s32 IOS_WriteAsync(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1170,10 +1177,8 @@ lbl_803066B8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IOS_Write
-// ----------------------------------------------------------------------------
-asm void IOS_Write() {
+// asm_to_cpp: IOS_Write
+asm s32 IOS_Write(s32 arg0, u8 *arg1, s32 arg2) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1251,10 +1256,8 @@ lbl_803067B8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IOS_SeekAsync
-// ----------------------------------------------------------------------------
-asm void IOS_SeekAsync() {
+// asm_to_cpp: IOS_SeekAsync
+asm s32 IOS_SeekAsync(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1320,10 +1323,8 @@ lbl_803068A0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IOS_Seek
-// ----------------------------------------------------------------------------
-asm void IOS_Seek() {
+// asm_to_cpp: IOS_Seek
+asm s32 IOS_Seek(s32 arg0, s32 arg1, s32 arg2) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1391,10 +1392,8 @@ lbl_80306980:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IOS_IoctlAsync
-// ----------------------------------------------------------------------------
-asm void IOS_IoctlAsync() {
+// asm_to_cpp: IOS_IoctlAsync
+asm s32 IOS_IoctlAsync(s32 arg0, s32 arg1, u8 *arg2, s32 arg3, u8 *arg4, s32 arg5, s32 arg6, s32 arg7, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x40(r1)
     mflr r0
@@ -1486,10 +1485,8 @@ lbl_80306AC0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IOS_Ioctl
-// ----------------------------------------------------------------------------
-asm void IOS_Ioctl() {
+// asm_to_cpp: IOS_Ioctl
+asm s32 IOS_Ioctl(s32 arg0, s32 arg1, u8 *arg2, s32 arg3, u8 *arg4, s32 arg5, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1579,10 +1576,8 @@ lbl_80306BF0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __ios_Ioctlv
-// ----------------------------------------------------------------------------
-asm void __ios_Ioctlv() {
+// asm_to_cpp: __ios_Ioctlv
+asm s32 __ios_Ioctlv(u8 *arg0, s32 arg1, u32 arg2, u32 arg3, u8 *arg4, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1677,10 +1672,8 @@ lbl_80306D2C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IOS_IoctlvAsync
-// ----------------------------------------------------------------------------
-asm void IOS_IoctlvAsync() {
+// asm_to_cpp: IOS_IoctlvAsync
+asm s32 IOS_IoctlvAsync() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1745,10 +1738,8 @@ lbl_80306E10:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IOS_Ioctlv
-// ----------------------------------------------------------------------------
-asm void IOS_Ioctlv() {
+// asm_to_cpp: IOS_Ioctlv
+asm s32 IOS_Ioctlv() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1810,4 +1801,3 @@ lbl_80306EEC:
     addi r1, r1, 0x30
     blr
 }
-

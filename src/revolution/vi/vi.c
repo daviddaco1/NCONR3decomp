@@ -1,125 +1,271 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/vi/vi.cpp
-// Total functions: 30
+s32 _restgpr_26();                           /* extern */
+s8 *_savegpr_26();                                /* extern */
+s8 *getTiming();                          /* static */
+extern M2C_UNK lbl_8036B630;
+extern M2C_UNK lbl_8040BD60;
+extern M2C_UNK lbl_8040BDD8;
+extern s32 lbl_8040BE50;
+extern s32 lbl_8040BEA8;
+extern s32 lbl_8049CE94;
+extern M2C_UNK lbl_8049CEA8;
+extern s32 lbl_8049DCA8;
+extern s32 lbl_8049DCC8;
+extern s32 lbl_8049DCD4;
+extern s16 lbl_8049DCE4;
+extern s16 lbl_8049DCE6;
+extern s32 lbl_8049DCE8;
+extern s32 lbl_8049DCF0;
+extern s32 lbl_8049DCF4;
+extern s32 lbl_8049DCF8;
+extern s32 lbl_8049DD00;
+extern s32 lbl_8049DD04;
+extern s32 lbl_8049DD08;
+extern u32 lbl_8049DD10;
+extern s32 lbl_8049DD1C;
+extern s32 lbl_8049DD24;
+extern s8 *lbl_8049DD2C;
+extern s32 lbl_8049DD30;
+extern s32 lbl_8049DD34;
+extern s32 lbl_8049DD38;
+extern M2C_UNK lbl_8049DD40;
+extern s32 lbl_8049DD4C;
+extern s32 lbl_8049DD58;
+extern s32 lbl_8049DD5C;
+extern s32 lbl_8049DD60;
+extern u32 lbl_8049DD64;
 
-// Small Data symbols (@sda21)
+s32 OnShutdown();
+s32 fn_80281E00();
+s32 fn_80281EAC();
+s32 VISetPreRetraceCallback();
+s32 VISetPostRetraceCallback();
+void __VIInit();
+void VIWaitForRetrace();
+void setFbbRegs();
+void setHorizontalRegs();
+void setVerticalRegs();
+void fn_802836CC();
+void VIConfigurePan();
+void VIFlush();
+void VISetNextFrameBuffer();
+void VISetBlack();
+u32 VIGetRetraceCount();
+s32 VIGetNextField();
+u32 VIGetCurrentLine();
+s32 VIGetScanMode();
+s32 VIGetDTVStatus();
+void __VIDisplayPositionToXY();
+s32 VIGetDimmingCount();
+s32 VIEnableDimming();
+s32 VIResetDimmingCount();
+s32 __VIResetRFIdle();
+
+
+s32 fn_80281E00(s8 *arg0);
+
+// fn_80281EAC: definicion C reemplazada por asm (ver abajo)
+
+
+/*
+Decompilation failure in function __VIRetraceHandler:
+
+Found bctr instruction at vi.s line 526, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+s32 VISetPreRetraceCallback(s32 arg0) {
+    s32 temp_r31;
+    s32 temp_r3;
+
+    temp_r31 = lbl_8049DD38;
+    temp_r3 = OSDisableInterrupts();
+    lbl_8049DD38 = arg0;
+    OSRestoreInterrupts(temp_r3);
+    return temp_r31;
+}
+
+s32 VISetPostRetraceCallback(s32 arg0) {
+    s32 temp_r31;
+    s32 temp_r3;
+
+    temp_r31 = lbl_8049DD34;
+    temp_r3 = OSDisableInterrupts();
+    lbl_8049DD34 = arg0;
+    OSRestoreInterrupts(temp_r3);
+    return temp_r31;
+}
+
+/*
+Decompilation failure in function getTiming:
+
+Found bctr instruction at vi.s line 935, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+// __VIInit: definicion C reemplazada por asm (ver abajo)
+
+
+/*
+Decompilation failure in function VIInit:
+
+Found bctr instruction at vi.s line 1445, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+// VIWaitForRetrace: definicion C reemplazada por asm (ver abajo)
+
+
+// setFbbRegs: definicion C reemplazada por asm (ver abajo)
+
+
+
+
+// fn_802836CC: definicion C reemplazada por asm (ver abajo)
+
+
+
+// VIFlush: definicion C reemplazada por asm (ver abajo)
+
+
+// VISetNextFrameBuffer: definicion C reemplazada por asm (ver abajo)
+
+
+// VISetBlack: definicion C reemplazada por asm (ver abajo)
+
+
+u32 VIGetRetraceCount(void) {
+    return lbl_8049DD64;
+}
+
+// VIGetNextField: definicion C reemplazada por asm (ver abajo)
+
+
+// VIGetCurrentLine: definicion C reemplazada por asm (ver abajo)
+
+
+/*
+Decompilation failure in function VIGetTvFormat:
+
+Unable to determine jump table for bctr instruction at vi.s line 2839.
+
+There must be a read of a variable before the instruction
+which has a name starting with with "jtbl"/"jpt_"/"lbl_"/"jumptable_".
+*/
+
+// VIGetScanMode: definicion C reemplazada por asm (ver abajo)
+
+
+// VIGetDTVStatus: definicion C reemplazada por asm (ver abajo)
+
+
+// __VIDisplayPositionToXY: definicion C reemplazada por asm (ver abajo)
+
+
+// VIGetDimmingCount: definicion C reemplazada por asm (ver abajo)
+
+
+s32 VIEnableDimming(s32 arg0) {
+    s32 temp_r31;
+    s32 var_r30;
+
+    var_r30 = arg0;
+    temp_r31 = lbl_8049DD58;
+    if ((arg0 == 1) && (SCGetScreenSaverMode() == 0)) {
+        var_r30 = 0;
+    }
+    lbl_8049DD58 = var_r30;
+    return temp_r31;
+}
+
+/*
+Decompilation failure in function VISetTimeToDimming:
+
+Found bctr instruction at vi.s line 3121, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+// VIResetDimmingCount: definicion C reemplazada por asm (ver abajo)
+
+
+// __VIResetRFIdle: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern float CurrTvMode_8049DD28;
 extern float lbl_8049CE90;
-extern float lbl_8049CE94;
 extern float lbl_8049CE98;
 extern float lbl_8049CE9C;
 extern float lbl_8049CEA0;
 extern float lbl_8049CEA4;
-extern float lbl_8049CEA8;
-extern float lbl_8049DCA8;
 extern float lbl_8049DCB8;
 extern float lbl_8049DCBC;
 extern float lbl_8049DCC0;
 extern float lbl_8049DCC4;
-extern float lbl_8049DCC8;
 extern float lbl_8049DCCC;
 extern float lbl_8049DCD0;
-extern float lbl_8049DCD4;
 extern float lbl_8049DCD8;
 extern float lbl_8049DCDC;
 extern float lbl_8049DCE0;
-extern float lbl_8049DCE4;
-extern float lbl_8049DCE6;
-extern float lbl_8049DCE8;
-extern float lbl_8049DCF0;
-extern float lbl_8049DCF4;
-extern float lbl_8049DCF8;
-extern float lbl_8049DD00;
-extern float lbl_8049DD04;
-extern float lbl_8049DD08;
 extern float lbl_8049DD0C;
-extern float lbl_8049DD10;
 extern float lbl_8049DD14;
 extern float lbl_8049DD18;
-extern float lbl_8049DD1C;
 extern float lbl_8049DD20;
-extern float lbl_8049DD24;
-extern float lbl_8049DD2C;
-extern float lbl_8049DD30;
-extern float lbl_8049DD34;
-extern float lbl_8049DD38;
-extern float lbl_8049DD40;
 extern float lbl_8049DD48;
-extern float lbl_8049DD4C;
 extern float lbl_8049DD50;
 extern float lbl_8049DD54;
-extern float lbl_8049DD58;
-extern float lbl_8049DD5C;
-extern float lbl_8049DD60;
-extern float lbl_8049DD64;
 extern float lbl_8049DD70;
-
-// Global data symbols (@ha/@l)
 extern u8 at_4022_8036BB40[];
 extern u8 jumptable_8036B918[];
 extern u8 jumptable_8036B93C[];
 extern u8 jumptable_8036B9C8[];
 extern u8 jumptable_8036BB64[];
-extern u8 lbl_8036B630[];
 extern u8 lbl_8036B678[];
 extern u8 lbl_8036B81C[];
 extern u8 lbl_8036B908[];
-extern u8 lbl_8040BD60[];
-extern u8 lbl_8040BDD8[];
-extern u8 lbl_8040BE50[];
-extern u8 lbl_8040BEA8[];
 extern u8 lbl_80460ED0[];
-
-// Forward declarations
 extern void OSClearContext();
-extern void OSDisableInterrupts();
 extern void OSInitThreadQueue();
 extern void OSPanic();
 extern void OSRegisterShutdownFunction();
 extern void OSRegisterVersion();
 extern void OSReport();
-extern void OSRestoreInterrupts();
 extern void OSSetCurrentContext();
 extern void OSSleepThread();
-extern void OnShutdown();
-extern void SBAllocServer();
-extern void SBIsNullServer();
+s32 OnShutdown();
 extern void SBServerFree();
-extern void SBServerGetNext();
-extern void SBServerGetPublicInetAddress();
-extern void SBServerGetPublicQueryPortNBO();
 extern void SBServerSetFlags();
-extern void SCGetDisplayOffsetH();
-extern void SCGetScreenSaverMode();
-extern void VIConfigurePan();
-extern void VIEnableDimming();
-extern void VIFlush();
-extern void VIGetCurrentLine();
-extern void VIGetDTVStatus();
-extern void VIGetDimmingCount();
-extern void VIGetNextField();
-extern void VIGetRetraceCount();
-extern void VIGetScanMode();
-extern void VIGetTvFormat();
-extern void VIInit();
-extern void VIResetDimmingCount();
-extern void VISetBlack();
-extern void VISetNextFrameBuffer();
-extern void VISetPostRetraceCallback();
-extern void VISetPreRetraceCallback();
+void VIConfigurePan();
+void VIFlush(M2C_UNK arg_sp0);
+u32 VIGetCurrentLine(void);
+s32 VIGetDTVStatus(void);
+s32 VIGetDimmingCount(void);
+s32 VIGetNextField(void);
+s32 VIGetScanMode(s32 arg0);
+extern int VIGetTvFormat();
+extern int VIInit();
+s32 VIResetDimmingCount(void);
+void VISetBlack(s32 arg0);
+void VISetNextFrameBuffer(s32 arg0);
 extern void VISetRGBModeImm();
-extern void VISetTimeToDimming();
-extern void VIWaitForRetrace();
+extern int VISetTimeToDimming();
+void VIWaitForRetrace(void);
 extern void __DVDRestartMotor();
-extern void __DVDStopMotorAsync();
-extern void __OSSetInterruptHandler();
-extern void __OSSetVIForceDimming();
-extern void __OSUnmaskInterrupts();
-extern void __VIDisplayPositionToXY();
-extern void __VIInit();
-extern void __VIResetRFIdle();
-extern void __VIRetraceHandler();
+void __VIDisplayPositionToXY(s32 arg0, s32 arg1, s16 *arg2, s16 *arg3);
+void __VIInit(u32 arg0);
+s32 __VIResetRFIdle(void);
+extern int __VIRetraceHandler();
 extern void __VISetCGMS();
 extern void __VISetClosedCaption();
 extern void __VISetFilter4EURGB60();
@@ -131,38 +277,26 @@ extern void __VISetRGBOverDrive();
 extern void __VISetTrapFilter();
 extern void __VISetWSS();
 extern void __VISetYUVSEL();
-extern void __shl2i();
 extern void _restgpr_24();
 extern void _restgpr_25();
-extern void _restgpr_26();
 extern void _restgpr_27();
 extern void _savegpr_24();
 extern void _savegpr_25();
-extern void _savegpr_26();
 extern void _savegpr_27();
-extern void closesocket();
-extern void fn_80253658();
-extern void fn_80253660();
 extern void fn_80253690();
-extern void fn_80255E4C();
-extern void fn_802565F0();
-extern void fn_802817E4();
-extern void fn_80281E00();
-extern void fn_80281EAC();
-extern void fn_802836CC();
+s32 fn_80281E00();
+s32 fn_80281EAC(s32 arg0, s32 arg1, M2C_UNK arg_sp0);
+void fn_802836CC(s8 *arg0, M2C_UNK arg_sp0);
 extern void fn_802864A0();
 extern void fn_8031D978();
 extern void fn_803260C4();
-extern void getTiming();
-extern void recvfrom();
-extern void setFbbRegs();
-extern void setHorizontalRegs();
-extern void setVerticalRegs();
+s8 * getTiming();
+void setFbbRegs(s32 *arg0, u32 *arg1, u32 *arg2, u32 *arg3, u32 *arg4);
+void setHorizontalRegs();
+void setVerticalRegs();
 
-// ----------------------------------------------------------------------------
-// OnShutdown
-// ----------------------------------------------------------------------------
-asm void OnShutdown() {
+// asm_to_cpp: OnShutdown
+asm s32 OnShutdown() {
     nofralloc
     clrlwi r11, r1, 27
     mr r12, r1
@@ -277,10 +411,8 @@ lbl_80281DE4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80281E00
-// ----------------------------------------------------------------------------
-asm void fn_80281E00() {
+// asm_to_cpp: fn_80281E00
+asm s32 fn_80281E00() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -334,10 +466,8 @@ lbl_80281E94:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80281EAC
-// ----------------------------------------------------------------------------
-asm void fn_80281EAC() {
+// asm_to_cpp: fn_80281EAC
+asm s32 fn_80281EAC(s32 arg0, s32 arg1, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -454,10 +584,8 @@ lbl_8028202C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __VIRetraceHandler
-// ----------------------------------------------------------------------------
-asm void __VIRetraceHandler() {
+// asm_to_cpp: __VIRetraceHandler
+asm int __VIRetraceHandler() {
     nofralloc
     stwu r1, -0x2f0(r1)
     mflr r0
@@ -1047,58 +1175,8 @@ lbl_8028283C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// VISetPreRetraceCallback
-// ----------------------------------------------------------------------------
-asm void VISetPreRetraceCallback() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    lwz r31, lbl_8049DD38
-    bl OSDisableInterrupts
-    stw r30, lbl_8049DD38
-    bl OSRestoreInterrupts
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// VISetPostRetraceCallback
-// ----------------------------------------------------------------------------
-asm void VISetPostRetraceCallback() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    lwz r31, lbl_8049DD34
-    bl OSDisableInterrupts
-    stw r30, lbl_8049DD34
-    bl OSRestoreInterrupts
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// getTiming
-// ----------------------------------------------------------------------------
-asm void getTiming() {
+// asm_to_cpp: getTiming
+asm s8 * getTiming() {
     nofralloc
     cmplwi r3, 0x22
     bgt lbl_802829EC
@@ -1173,10 +1251,8 @@ lbl_802829EC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __VIInit
-// ----------------------------------------------------------------------------
-asm void __VIInit() {
+// asm_to_cpp: __VIInit
+asm void __VIInit(u32 arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1319,10 +1395,8 @@ lbl_80282BEC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// VIInit
-// ----------------------------------------------------------------------------
-asm void VIInit() {
+// asm_to_cpp: VIInit
+asm int VIInit() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1678,10 +1752,8 @@ lbl_80283134:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// VIWaitForRetrace
-// ----------------------------------------------------------------------------
-asm void VIWaitForRetrace() {
+// asm_to_cpp: VIWaitForRetrace
+asm void VIWaitForRetrace(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1707,10 +1779,8 @@ lbl_8028316C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// setFbbRegs
-// ----------------------------------------------------------------------------
-asm void setFbbRegs() {
+// asm_to_cpp: setFbbRegs
+asm void setFbbRegs(s32 *arg0, u32 *arg1, u32 *arg2, u32 *arg3, u32 *arg4) {
     nofralloc
     stwu r1, -0x10(r1)
     stw r31, 0xc(r1)
@@ -1899,9 +1969,7 @@ lbl_8028344C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// setHorizontalRegs
-// ----------------------------------------------------------------------------
+// asm_to_cpp: setHorizontalRegs
 asm void setHorizontalRegs() {
     nofralloc
     lwz r0, lbl_8049DCF0
@@ -1964,9 +2032,7 @@ lbl_802834E4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// setVerticalRegs
-// ----------------------------------------------------------------------------
+// asm_to_cpp: setVerticalRegs
 asm void setVerticalRegs() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -2077,10 +2143,8 @@ lbl_80283630:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802836CC
-// ----------------------------------------------------------------------------
-asm void fn_802836CC() {
+// asm_to_cpp: fn_802836CC
+asm void fn_802836CC(s8 *arg0, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -2554,9 +2618,7 @@ lbl_80283D5C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// VIConfigurePan
-// ----------------------------------------------------------------------------
+// asm_to_cpp: VIConfigurePan
 asm void VIConfigurePan() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -2786,10 +2848,8 @@ lbl_802840B0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// VIFlush
-// ----------------------------------------------------------------------------
-asm void VIFlush() {
+// asm_to_cpp: VIFlush
+asm void VIFlush(M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -2866,10 +2926,8 @@ lbl_802841D0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// VISetNextFrameBuffer
-// ----------------------------------------------------------------------------
-asm void VISetNextFrameBuffer() {
+// asm_to_cpp: VISetNextFrameBuffer
+asm void VISetNextFrameBuffer(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -2900,10 +2958,8 @@ asm void VISetNextFrameBuffer() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// VISetBlack
-// ----------------------------------------------------------------------------
-asm void VISetBlack() {
+// asm_to_cpp: VISetBlack
+asm void VISetBlack(s32 arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -2937,19 +2993,8 @@ asm void VISetBlack() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// VIGetRetraceCount
-// ----------------------------------------------------------------------------
-asm void VIGetRetraceCount() {
-    nofralloc
-    lwz r3, lbl_8049DD64
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// VIGetNextField
-// ----------------------------------------------------------------------------
-asm void VIGetNextField() {
+// asm_to_cpp: VIGetNextField
+asm s32 VIGetNextField(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -2993,10 +3038,8 @@ lbl_80284324:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// VIGetCurrentLine
-// ----------------------------------------------------------------------------
-asm void VIGetCurrentLine() {
+// asm_to_cpp: VIGetCurrentLine
+asm u32 VIGetCurrentLine(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -3038,10 +3081,8 @@ lbl_80284414:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// VIGetTvFormat
-// ----------------------------------------------------------------------------
-asm void VIGetTvFormat() {
+// asm_to_cpp: VIGetTvFormat
+asm int VIGetTvFormat() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -3070,10 +3111,8 @@ lbl_80284474:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// VIGetScanMode
-// ----------------------------------------------------------------------------
-asm void VIGetScanMode() {
+// asm_to_cpp: VIGetScanMode
+asm s32 VIGetScanMode(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -3103,10 +3142,8 @@ lbl_802844D4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// VIGetDTVStatus
-// ----------------------------------------------------------------------------
-asm void VIGetDTVStatus() {
+// asm_to_cpp: VIGetDTVStatus
+asm s32 VIGetDTVStatus(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -3125,10 +3162,8 @@ asm void VIGetDTVStatus() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __VIDisplayPositionToXY
-// ----------------------------------------------------------------------------
-asm void __VIDisplayPositionToXY() {
+// asm_to_cpp: __VIDisplayPositionToXY
+asm void __VIDisplayPositionToXY(s32 arg0, s32 arg1, s16 *arg2, s16 *arg3) {
     nofralloc
     lwz r7, lbl_8049DD2C
     subi r9, r4, 0x1
@@ -3289,10 +3324,8 @@ lbl_80284754:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// VIGetDimmingCount
-// ----------------------------------------------------------------------------
-asm void VIGetDimmingCount() {
+// asm_to_cpp: VIGetDimmingCount
+asm s32 VIGetDimmingCount(void) {
     nofralloc
     lwz r0, lbl_8049DCD4
     lwz r5, lbl_8049DCC8
@@ -3306,39 +3339,8 @@ asm void VIGetDimmingCount() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// VIEnableDimming
-// ----------------------------------------------------------------------------
-asm void VIEnableDimming() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    cmpwi r3, 0x1
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    lwz r31, lbl_8049DD58
-    bne lbl_802847BC
-    bl SCGetScreenSaverMode
-    clrlwi. r0, r3, 24
-    bne lbl_802847BC
-    li r30, 0x0
-lbl_802847BC:
-    stw r30, lbl_8049DD58
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// VISetTimeToDimming
-// ----------------------------------------------------------------------------
-asm void VISetTimeToDimming() {
+// asm_to_cpp: VISetTimeToDimming
+asm int VISetTimeToDimming() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -3417,10 +3419,8 @@ lbl_802848C4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// VIResetDimmingCount
-// ----------------------------------------------------------------------------
-asm void VIResetDimmingCount() {
+// asm_to_cpp: VIResetDimmingCount
+asm s32 VIResetDimmingCount(void) {
     nofralloc
     li r0, 0x0
     lis r3, lbl_8040BEA8@ha
@@ -3429,14 +3429,11 @@ asm void VIResetDimmingCount() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __VIResetRFIdle
-// ----------------------------------------------------------------------------
-asm void __VIResetRFIdle() {
+// asm_to_cpp: __VIResetRFIdle
+asm s32 __VIResetRFIdle(void) {
     nofralloc
     li r0, 0x0
     li r3, 0x1
     stw r0, lbl_8049DD4C
     blr
 }
-

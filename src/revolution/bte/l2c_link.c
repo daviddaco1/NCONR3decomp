@@ -1,86 +1,128 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/l2c_link.cpp
-// Total functions: 17
+M2C_UNK LogMsg_0();               /* extern */
+M2C_UNK LogMsg_1();          /* extern */
+M2C_UNK LogMsg_2();           /* extern */
+M2C_UNK LogMsg_6(); /* extern */
+M2C_UNK bte_hcisu_send(); /* extern */
+M2C_UNK l2c_csm_execute();        /* extern */
+M2C_UNK memcpy();            /* extern */
+extern M2C_UNK lbl_80376E18;
+extern M2C_UNK lbl_80376E38;
+extern M2C_UNK lbl_80376E60;
+extern M2C_UNK lbl_80376E88;
+extern M2C_UNK lbl_80376EBC;
+extern M2C_UNK lbl_80376EE4;
+extern M2C_UNK lbl_80376FC8;
+extern M2C_UNK lbl_80377010;
+extern M2C_UNK lbl_80377030;
+extern M2C_UNK lbl_80377050;
+extern M2C_UNK lbl_80453A50;
+extern M2C_UNK lbl_80453F78;
+extern u8 lbl_80457040;
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_80376E18[];
-extern u8 lbl_80376E38[];
-extern u8 lbl_80376E60[];
-extern u8 lbl_80376E88[];
-extern u8 lbl_80376EBC[];
-extern u8 lbl_80376EE4[];
-extern u8 lbl_80376FC8[];
-extern u8 lbl_80377010[];
-extern u8 lbl_80377030[];
-extern u8 lbl_80377050[];
-extern u8 lbl_80453A50[];
-extern u8 lbl_80453F78[];
-extern u8 lbl_80457040[];
+void l2c_link_hci_conn_req();
+s32 l2c_link_hci_conn_comp();
+void l2c_link_sec_comp();
+s32 l2c_link_hci_disc_comp();
+s32 l2c_link_hci_qos_violation();
+void l2c_link_timeout();
+u8 l2c_link_send_to_lower();
+void l2c_link_check_send_pkts();
+void l2c_link_adjust_allocation();
+void l2c_link_process_num_completed_pkts();
+void l2c_link_processs_num_bufs();
+s8 * l2cap_link_chk_pkt_start();
+s32 l2cap_link_chk_pkt_end();
+void l2c_link_role_changed();
+void l2c_link_role_change_failed();
+void l2c_link_segments_xmitted();
+void l2c_pin_code_request();
 
-// Forward declarations
-extern void BTM_ReadPowerMode();
-extern void BTM_SetPowerMode();
-extern void GKI_dequeue();
+// l2c_link_hci_conn_req: definicion C reemplazada por asm (ver abajo)
+
+
+
+
+
+// l2c_link_hci_qos_violation: definicion C reemplazada por asm (ver abajo)
+
+
+// l2c_link_timeout: definicion C reemplazada por asm (ver abajo)
+
+
+// l2c_link_send_to_lower: definicion C reemplazada por asm (ver abajo)
+
+
+// l2c_link_check_send_pkts: definicion C reemplazada por asm (ver abajo)
+
+
+// l2c_link_adjust_allocation: definicion C reemplazada por asm (ver abajo)
+
+
+void l2c_link_process_num_completed_pkts(u8 *arg0, M2C_UNK arg_sp0);
+
+
+// l2cap_link_chk_pkt_start: definicion C reemplazada por asm (ver abajo)
+
+
+// l2cap_link_chk_pkt_end: definicion C reemplazada por asm (ver abajo)
+
+
+
+// l2c_link_role_change_failed: definicion C reemplazada por asm (ver abajo)
+
+
+void l2c_link_segments_xmitted(s8 *arg0);
+
+void l2c_pin_code_request(s32 arg0) {
+    u8 *temp_r3;
+
+    temp_r3 = l2cu_find_lcb_by_bd_addr(arg0);
+    if ((temp_r3 != NULL) && ((s32) M2C_FIELD(temp_r3, s32 *, 8) == 0)) {
+        btu_start_timer(temp_r3 + 0x10, 2, 0x78);
+    }
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void GKI_enqueue();
 extern void GKI_enqueue_head();
 extern void GKI_freebuf();
-extern void GKI_getpoolbuf();
-extern void LogMsg_0();
-extern void LogMsg_1();
-extern void LogMsg_2();
-extern void LogMsg_6();
 extern void _restgpr_23();
 extern void _restgpr_24();
 extern void _restgpr_26();
 extern void _savegpr_23();
 extern void _savegpr_24();
 extern void _savegpr_26();
-extern void bte_hcisu_send();
 extern void btm_acl_created();
-extern void btm_find_dev();
 extern void btm_sco_acl_removed();
-extern void btm_sec_disconnect();
-extern void btm_sec_is_bonding();
 extern void btsnd_hcic_accept_conn();
 extern void btsnd_hcic_reject_conn();
-extern void btu_start_timer();
 extern void btu_stop_timer();
-extern void l2c_csm_execute();
-extern void l2c_link_adjust_allocation();
-extern void l2c_link_check_send_pkts();
-extern void l2c_link_hci_conn_comp();
-extern void l2c_link_hci_conn_req();
-extern void l2c_link_hci_disc_comp();
-extern void l2c_link_hci_qos_violation();
-extern void l2c_link_process_num_completed_pkts();
-extern void l2c_link_processs_num_bufs();
-extern void l2c_link_role_change_failed();
-extern void l2c_link_role_changed();
-extern void l2c_link_sec_comp();
-extern void l2c_link_segments_xmitted();
-extern void l2c_link_send_to_lower();
-extern void l2c_link_timeout();
-extern void l2c_pin_code_request();
+void l2c_link_adjust_allocation(s32 arg0, s32 arg1, s32 arg2, M2C_UNK arg_sp0);
+void l2c_link_check_send_pkts(s8 *arg0, s32 arg1, s8 *arg2, M2C_UNK arg_sp0);
+s32 l2c_link_hci_conn_comp();
+void l2c_link_hci_conn_req(u8 *arg0);
+s32 l2c_link_hci_disc_comp();
+s32 l2c_link_hci_qos_violation(s32 arg0);
+void l2c_link_process_num_completed_pkts();
+void l2c_link_processs_num_bufs();
+void l2c_link_role_change_failed(void);
+void l2c_link_role_changed();
+void l2c_link_sec_comp();
+void l2c_link_segments_xmitted();
+u8 l2c_link_send_to_lower(s8 *arg0, s8 *arg1);
+void l2c_link_timeout(s8 *arg0);
 extern void l2c_process_held_packets();
-extern void l2cap_link_chk_pkt_end();
-extern void l2cap_link_chk_pkt_start();
-extern void l2cu_allocate_lcb();
-extern void l2cu_create_conn();
-extern void l2cu_create_conn_after_switch();
-extern void l2cu_find_lcb_by_bd_addr();
-extern void l2cu_find_lcb_by_handle();
-extern void l2cu_find_lcb_by_state();
-extern void l2cu_get_conn_role();
-extern void l2cu_lcb_disconnecting();
+s32 l2cap_link_chk_pkt_end(void);
+s8 *l2cap_link_chk_pkt_start(s8 *arg0, M2C_UNK arg_sp0);
 extern void l2cu_release_lcb();
 extern void l2cu_send_peer_echo_req();
-extern void memcpy();
 
-// ----------------------------------------------------------------------------
-// l2c_link_hci_conn_req
-// ----------------------------------------------------------------------------
-asm void l2c_link_hci_conn_req() {
+// asm_to_cpp: l2c_link_hci_conn_req
+asm void l2c_link_hci_conn_req(u8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -176,10 +218,8 @@ lbl_802BFE98:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2c_link_hci_conn_comp
-// ----------------------------------------------------------------------------
-asm void l2c_link_hci_conn_comp() {
+// asm_to_cpp: l2c_link_hci_conn_comp
+asm s32 l2c_link_hci_conn_comp() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -341,9 +381,7 @@ lbl_802C00CC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2c_link_sec_comp
-// ----------------------------------------------------------------------------
+// asm_to_cpp: l2c_link_sec_comp
 asm void l2c_link_sec_comp() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -397,10 +435,8 @@ lbl_802C0188:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2c_link_hci_disc_comp
-// ----------------------------------------------------------------------------
-asm void l2c_link_hci_disc_comp() {
+// asm_to_cpp: l2c_link_hci_disc_comp
+asm s32 l2c_link_hci_disc_comp() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -457,10 +493,8 @@ lbl_802C023C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2c_link_hci_qos_violation
-// ----------------------------------------------------------------------------
-asm void l2c_link_hci_qos_violation() {
+// asm_to_cpp: l2c_link_hci_qos_violation
+asm s32 l2c_link_hci_qos_violation(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -497,10 +531,8 @@ lbl_802C02B8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2c_link_timeout
-// ----------------------------------------------------------------------------
-asm void l2c_link_timeout() {
+// asm_to_cpp: l2c_link_timeout
+asm void l2c_link_timeout(s8 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -610,10 +642,8 @@ lbl_802C0428:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2c_link_send_to_lower
-// ----------------------------------------------------------------------------
-asm void l2c_link_send_to_lower() {
+// asm_to_cpp: l2c_link_send_to_lower
+asm u8 l2c_link_send_to_lower(s8 *arg0, s8 *arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -687,10 +717,8 @@ lbl_802C0534:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2c_link_check_send_pkts
-// ----------------------------------------------------------------------------
-asm void l2c_link_check_send_pkts() {
+// asm_to_cpp: l2c_link_check_send_pkts
+asm void l2c_link_check_send_pkts(s8 *arg0, s32 arg1, s8 *arg2, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -891,10 +919,8 @@ lbl_802C07FC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2c_link_adjust_allocation
-// ----------------------------------------------------------------------------
-asm void l2c_link_adjust_allocation() {
+// asm_to_cpp: l2c_link_adjust_allocation
+asm void l2c_link_adjust_allocation(s32 arg0, s32 arg1, s32 arg2, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1010,9 +1036,7 @@ lbl_802C0994:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2c_link_process_num_completed_pkts
-// ----------------------------------------------------------------------------
+// asm_to_cpp: l2c_link_process_num_completed_pkts
 asm void l2c_link_process_num_completed_pkts() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1080,9 +1104,7 @@ lbl_802C0A6C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2c_link_processs_num_bufs
-// ----------------------------------------------------------------------------
+// asm_to_cpp: l2c_link_processs_num_bufs
 asm void l2c_link_processs_num_bufs() {
     nofralloc
     lis r4, lbl_80457040@ha
@@ -1092,10 +1114,8 @@ asm void l2c_link_processs_num_bufs() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cap_link_chk_pkt_start
-// ----------------------------------------------------------------------------
-asm void l2cap_link_chk_pkt_start() {
+// asm_to_cpp: l2cap_link_chk_pkt_start
+asm s8 *l2cap_link_chk_pkt_start(s8 *arg0, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1226,10 +1246,8 @@ lbl_802C0C5C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2cap_link_chk_pkt_end
-// ----------------------------------------------------------------------------
-asm void l2cap_link_chk_pkt_end() {
+// asm_to_cpp: l2cap_link_chk_pkt_end
+asm s32 l2cap_link_chk_pkt_end(void) {
     nofralloc
     lis r3, lbl_80457040@ha
     addi r3, r3, lbl_80457040@l
@@ -1263,9 +1281,7 @@ lbl_802C0CD0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2c_link_role_changed
-// ----------------------------------------------------------------------------
+// asm_to_cpp: l2c_link_role_changed
 asm void l2c_link_role_changed() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1305,10 +1321,8 @@ lbl_802C0D38:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2c_link_role_change_failed
-// ----------------------------------------------------------------------------
-asm void l2c_link_role_change_failed() {
+// asm_to_cpp: l2c_link_role_change_failed
+asm void l2c_link_role_change_failed(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1341,9 +1355,7 @@ lbl_802C0DA4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// l2c_link_segments_xmitted
-// ----------------------------------------------------------------------------
+// asm_to_cpp: l2c_link_segments_xmitted
 asm void l2c_link_segments_xmitted() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1406,29 +1418,3 @@ lbl_802C0E8C:
     addi r1, r1, 0x20
     blr
 }
-
-// ----------------------------------------------------------------------------
-// l2c_pin_code_request
-// ----------------------------------------------------------------------------
-asm void l2c_pin_code_request() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl l2cu_find_lcb_by_bd_addr
-    cmpwi r3, 0x0
-    beq lbl_802C0EDC
-    lwz r0, 0x8(r3)
-    cmpwi r0, 0x0
-    bne lbl_802C0EDC
-    li r4, 0x2
-    li r5, 0x78
-    addi r3, r3, 0x10
-    bl btu_start_timer
-lbl_802C0EDC:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-

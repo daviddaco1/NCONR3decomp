@@ -1,17 +1,22 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/os/unk_80315F0C.cpp
-// Total functions: 2
+void OSReport();
+void fn_80315F98();
 
-// Forward declarations
-extern void OSReport();
-extern void fn_80315F98();
-extern void vprintf();
+// OSReport: definicion C reemplazada por asm (ver abajo)
 
-// ----------------------------------------------------------------------------
-// OSReport
-// ----------------------------------------------------------------------------
-asm void OSReport() {
+
+void fn_80315F98(s32 arg0, s32 arg1, s32 arg2) {
+    vprintf((s32 *) arg0, (s32 *) arg1, arg2);
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+void OSReport(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7, M2C_UNK arg_sp8);
+
+// asm_to_cpp: OSReport
+asm void OSReport(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7, M2C_UNK arg_sp8) {
     nofralloc
     stwu r1, -0x80(r1)
     mflr r0
@@ -50,12 +55,3 @@ lbl_80315F40:
     addi r1, r1, 0x80
     blr
 }
-
-// ----------------------------------------------------------------------------
-// fn_80315F98
-// ----------------------------------------------------------------------------
-asm void fn_80315F98() {
-    nofralloc
-    b vprintf
-}
-

@@ -1,60 +1,103 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/gx/GXFifo.cpp
-// Total functions: 13
+M2C_UNK memset();        /* extern */
+extern s8 *__GXData;
+extern s8 *__cpReg;
+extern s8 *__piReg;
+extern M2C_UNK lbl_8037AB00;
+extern M2C_UNK lbl_8037AB18;
+extern M2C_UNK lbl_80461AE0;
+extern M2C_UNK lbl_80461B04;
+extern u8 lbl_8049E1B0;
+extern u8 lbl_8049E1B1;
+extern s32 lbl_8049E1B4;
+extern s32 lbl_8049E1B8;
+extern M2C_UNK (*lbl_8049E1BC)();
+extern s32 lbl_8049E1C0;
+extern s32 *lbl_8049E1C4;
+extern u8 lbl_8049E1C8;
 
-// Small Data symbols (@sda21)
-extern float __GXData;
-extern float __cpReg;
-extern float __piReg;
-extern float lbl_8049E1B0;
-extern float lbl_8049E1B1;
-extern float lbl_8049E1B4;
-extern float lbl_8049E1B8;
-extern float lbl_8049E1BC;
-extern float lbl_8049E1C0;
-extern float lbl_8049E1C4;
-extern float lbl_8049E1C8;
+void GXCPInterruptHandler();
+void GXInitFifoBase();
+u8 CPGPLinkCheck();
+void GXSetCPUFifo();
+void GXSetGPFifo();
+void __GXSaveFifo();
+u8 __GXIsGPFifoReady();
+s32 GXGetCPUFifo();
+s32 GXGetFifoCount();
+u8 GXGetFifoWrap();
+void __GXFifoInit();
+void __GXCleanGPFifo();
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_8037AB00[];
-extern u8 lbl_8037AB18[];
-extern u8 lbl_80461AE0[];
-extern u8 lbl_80461B04[];
+// GXCPInterruptHandler: definicion C reemplazada por asm (ver abajo)
 
-// Forward declarations
-extern void CPGPLinkCheck();
-extern void GXCPInterruptHandler();
-extern void GXGetCPUFifo();
-extern void GXGetFifoCount();
-extern void GXGetFifoWrap();
-extern void GXInitFifoBase();
-extern void GXSetBreakPtCallback();
-extern void GXSetCPUFifo();
-extern void GXSetGPFifo();
+
+// GXInitFifoBase: definicion C reemplazada por asm (ver abajo)
+
+
+// CPGPLinkCheck: definicion C reemplazada por asm (ver abajo)
+
+
+void GXSetCPUFifo(s8 *arg0, M2C_UNK arg_sp0);
+
+void GXSetGPFifo(s8 *arg0, M2C_UNK arg_sp0);
+
+// __GXSaveFifo: definicion C reemplazada por asm (ver abajo)
+
+
+u8 __GXIsGPFifoReady(void) {
+    return lbl_8049E1B1;
+}
+
+// GXGetCPUFifo: definicion C reemplazada por asm (ver abajo)
+
+
+s32 GXGetFifoCount(s8 *arg0) {
+    return M2C_FIELD(arg0, s32 *, 0x1C);
+}
+
+u8 GXGetFifoWrap(s8 *arg0) {
+    return M2C_FIELD(arg0, u8 *, 0x20);
+}
+
+M2C_UNK (*GXSetBreakPtCallback(M2C_UNK (*arg0)()))() {
+    M2C_UNK (*temp_r31)();
+    s32 temp_r3;
+
+    temp_r31 = lbl_8049E1BC;
+    temp_r3 = OSDisableInterrupts();
+    lbl_8049E1BC = arg0;
+    OSRestoreInterrupts(temp_r3);
+    return temp_r31;
+}
+
+void __GXFifoInit(s32 arg0, s32 arg1, s32 arg2);
+
+// __GXCleanGPFifo: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+u8 CPGPLinkCheck(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+void GXCPInterruptHandler(s32 arg0, s32 *arg1);
+s32 GXGetCPUFifo(s8 *arg0);
+void GXInitFifoBase(s8 *arg0, s32 arg1, u32 arg2);
+void GXSetCPUFifo();
+void GXSetGPFifo();
 extern void OSClearContext();
-extern void OSDisableInterrupts();
 extern void OSReport();
-extern void OSRestoreInterrupts();
 extern void OSSetCurrentContext();
 extern void PPCSync();
-extern void __GXCleanGPFifo();
-extern void __GXFifoInit();
-extern void __GXIsGPFifoReady();
-extern void __GXSaveFifo();
-extern void __OSSetInterruptHandler();
-extern void __OSUnmaskInterrupts();
+void __GXCleanGPFifo(void);
+void __GXFifoInit();
+void __GXSaveFifo(void);
 extern void _restgpr_27();
 extern void _savegpr_27();
-extern void fn_8031C81C();
-extern void fn_8031D460();
-extern void fn_8031D6F8();
-extern void memset();
 
-// ----------------------------------------------------------------------------
-// GXCPInterruptHandler
-// ----------------------------------------------------------------------------
-asm void GXCPInterruptHandler() {
+// asm_to_cpp: GXCPInterruptHandler
+asm void GXCPInterruptHandler(s32 arg0, s32 *arg1) {
     nofralloc
     stwu r1, -0x2e0(r1)
     mflr r0
@@ -149,10 +192,8 @@ lbl_802DF3E4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GXInitFifoBase
-// ----------------------------------------------------------------------------
-asm void GXInitFifoBase() {
+// asm_to_cpp: GXInitFifoBase
+asm void GXInitFifoBase(s8 *arg0, s32 arg1, u32 arg2) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -192,10 +233,8 @@ lbl_802DF468:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// CPGPLinkCheck
-// ----------------------------------------------------------------------------
-asm void CPGPLinkCheck() {
+// asm_to_cpp: CPGPLinkCheck
+asm u8 CPGPLinkCheck(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -271,9 +310,7 @@ lbl_802DF570:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GXSetCPUFifo
-// ----------------------------------------------------------------------------
+// asm_to_cpp: GXSetCPUFifo
 asm void GXSetCPUFifo() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -403,9 +440,7 @@ lbl_802DF748:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GXSetGPFifo
-// ----------------------------------------------------------------------------
+// asm_to_cpp: GXSetGPFifo
 asm void GXSetGPFifo() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -578,10 +613,8 @@ lbl_802DF9D8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __GXSaveFifo
-// ----------------------------------------------------------------------------
-asm void __GXSaveFifo() {
+// asm_to_cpp: __GXSaveFifo
+asm void __GXSaveFifo(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -653,19 +686,8 @@ lbl_802DFADC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __GXIsGPFifoReady
-// ----------------------------------------------------------------------------
-asm void __GXIsGPFifoReady() {
-    nofralloc
-    lbz r3, lbl_8049E1B1
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GXGetCPUFifo
-// ----------------------------------------------------------------------------
-asm void GXGetCPUFifo() {
+// asm_to_cpp: GXGetCPUFifo
+asm s32 GXGetCPUFifo(s8 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -707,51 +729,7 @@ lbl_802DFB74:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GXGetFifoCount
-// ----------------------------------------------------------------------------
-asm void GXGetFifoCount() {
-    nofralloc
-    lwz r3, 0x1c(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GXGetFifoWrap
-// ----------------------------------------------------------------------------
-asm void GXGetFifoWrap() {
-    nofralloc
-    lbz r3, 0x20(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GXSetBreakPtCallback
-// ----------------------------------------------------------------------------
-asm void GXSetBreakPtCallback() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    lwz r31, lbl_8049E1BC
-    bl OSDisableInterrupts
-    stw r30, lbl_8049E1BC
-    bl OSRestoreInterrupts
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// __GXFifoInit
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __GXFifoInit
 asm void __GXFifoInit() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -787,10 +765,8 @@ asm void __GXFifoInit() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __GXCleanGPFifo
-// ----------------------------------------------------------------------------
-asm void __GXCleanGPFifo() {
+// asm_to_cpp: __GXCleanGPFifo
+asm void __GXCleanGPFifo(void) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -899,4 +875,3 @@ lbl_802DFDD8:
     addi r1, r1, 0x20
     blr
 }
-

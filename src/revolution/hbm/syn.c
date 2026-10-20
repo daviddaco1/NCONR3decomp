@@ -1,24 +1,42 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/hbm/syn.cpp
-// Total functions: 6
+extern M2C_UNK *lbl_80462B70;
+extern s32 lbl_80462B74;
+extern s32 lbl_80463038;
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_80462B70[];
-extern u8 lbl_80462B74[];
-extern u8 lbl_80463038[];
+void HBMSYNInit();
+void HBMSYNRunAudioFrame();
+void HBMSYNInitSynth();
+void HBMSYNQuitSynth();
+void HBMSYNMidiInput();
+void HBMSYNSetMasterVolume();
 
-// Forward declarations
+// HBMSYNInit: definicion C reemplazada por asm (ver abajo)
+
+
+void HBMSYNRunAudioFrame(void);
+
+// HBMSYNInitSynth: definicion C reemplazada por asm (ver abajo)
+
+
+void HBMSYNQuitSynth(s8 *arg0, M2C_UNK arg_sp0);
+
+// HBMSYNMidiInput: definicion C reemplazada por asm (ver abajo)
+
+
+void HBMSYNSetMasterVolume(s8 *arg0, s32 arg1) {
+    M2C_FIELD(arg0, s32 *, 0x68) = (s32) (arg1 << 0x10);
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void AXFreeVoice();
-extern void AXIsInit();
-extern void HBMSYNInit();
-extern void HBMSYNInitSynth();
-extern void HBMSYNMidiInput();
-extern void HBMSYNQuitSynth();
-extern void HBMSYNRunAudioFrame();
-extern void HBMSYNSetMasterVolume();
-extern void OSDisableInterrupts();
-extern void OSRestoreInterrupts();
+void HBMSYNInit(void);
+void HBMSYNInitSynth(s32 *arg0, s8 *arg1, s32 arg2, s32 arg3);
+void HBMSYNMidiInput(s8 *arg0, s8 *arg1);
+void HBMSYNQuitSynth();
+void HBMSYNRunAudioFrame();
 extern void __HBMSYNResetAllControllers();
 extern void __HBMSYNRunInputBufferEvents();
 extern void __HBMSYNServiceVoice();
@@ -28,10 +46,8 @@ extern void fn_80302BA4();
 extern void fn_80303884();
 extern void fn_803038B0();
 
-// ----------------------------------------------------------------------------
-// HBMSYNInit
-// ----------------------------------------------------------------------------
-asm void HBMSYNInit() {
+// asm_to_cpp: HBMSYNInit
+asm void HBMSYNInit(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -90,9 +106,7 @@ lbl_80303A00:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// HBMSYNRunAudioFrame
-// ----------------------------------------------------------------------------
+// asm_to_cpp: HBMSYNRunAudioFrame
 asm void HBMSYNRunAudioFrame() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -128,10 +142,8 @@ lbl_80303A6C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// HBMSYNInitSynth
-// ----------------------------------------------------------------------------
-asm void HBMSYNInitSynth() {
+// asm_to_cpp: HBMSYNInitSynth
+asm void HBMSYNInitSynth(s32 *arg0, s8 *arg1, s32 arg2, s32 arg3) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -237,9 +249,7 @@ lbl_80303BE4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// HBMSYNQuitSynth
-// ----------------------------------------------------------------------------
+// asm_to_cpp: HBMSYNQuitSynth
 asm void HBMSYNQuitSynth() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -289,10 +299,8 @@ lbl_80303C88:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// HBMSYNMidiInput
-// ----------------------------------------------------------------------------
-asm void HBMSYNMidiInput() {
+// asm_to_cpp: HBMSYNMidiInput
+asm void HBMSYNMidiInput(s8 *arg0, s8 *arg1) {
     nofralloc
     lbz r0, 0x0(r4)
     lwz r5, 0x3fc(r3)
@@ -315,14 +323,3 @@ asm void HBMSYNMidiInput() {
     stw r0, 0x400(r3)
     blr
 }
-
-// ----------------------------------------------------------------------------
-// HBMSYNSetMasterVolume
-// ----------------------------------------------------------------------------
-asm void HBMSYNSetMasterVolume() {
-    nofralloc
-    slwi r0, r4, 16
-    stw r0, 0x68(r3)
-    blr
-}
-

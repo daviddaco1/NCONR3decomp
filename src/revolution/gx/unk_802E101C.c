@@ -1,34 +1,49 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/gx/unk_802E101C.cpp
-// Total functions: 5
+u64 OSGetTime();                                 /* extern */
+extern s8 *__GXData;
+extern s8 *__memReg;
 
-// Small Data symbols (@sda21)
-extern float __GXData;
-extern float __memReg;
+void GXSetMisc();
+void fn_802E10A8();
+void fn_802E1104();
+void fn_802E1138();
+void fn_802E129C();
 
-// Forward declarations
-extern void GXSetMisc();
-extern void OSGetTime();
-extern void PPCMfwpar();
-extern void PPCMtwpar();
+
+// fn_802E10A8: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802E1104(void) {
+    do {
+
+    } while (PPCMfwpar() & 1);
+    PPCMtwpar(0x0C008000);
+}
+
+// fn_802E1138: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E129C: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+void GXSetMisc();
 extern void PPCSync();
 extern void __GXCleanGPFifo();
 extern void __GXInitRevisionBits();
-extern void __GXIsGPFifoReady();
 extern void _restgpr_26();
 extern void _restgpr_27();
 extern void _savegpr_26();
 extern void _savegpr_27();
-extern void fn_802E10A8();
-extern void fn_802E1104();
-extern void fn_802E1138();
-extern void fn_802E129C();
+void fn_802E10A8(s32 arg0, s32 arg1);
+void fn_802E1138(s32 arg0, s32 arg1, s32 arg2, M2C_UNK arg_sp0);
+void fn_802E129C(M2C_UNK arg_sp0);
 extern void fn_802E1844();
 
-// ----------------------------------------------------------------------------
-// GXSetMisc
-// ----------------------------------------------------------------------------
+// asm_to_cpp: GXSetMisc
 asm void GXSetMisc() {
     nofralloc
     cmpwi r3, 0x2
@@ -72,10 +87,8 @@ lbl_802E1090:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E10A8
-// ----------------------------------------------------------------------------
-asm void fn_802E10A8() {
+// asm_to_cpp: fn_802E10A8
+asm void fn_802E10A8(s32 arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -103,31 +116,8 @@ lbl_802E10C8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E1104
-// ----------------------------------------------------------------------------
-asm void fn_802E1104() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-lbl_802E1110:
-    bl PPCMfwpar
-    clrlwi. r0, r3, 31
-    bne lbl_802E1110
-    lis r3, 0xc01
-    addi r3, r3, -0x8000
-    bl PPCMtwpar
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E1138
-// ----------------------------------------------------------------------------
-asm void fn_802E1138() {
+// asm_to_cpp: fn_802E1138
+asm void fn_802E1138(s32 arg0, s32 arg1, s32 arg2, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -227,10 +217,8 @@ lbl_802E1260:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E129C
-// ----------------------------------------------------------------------------
-asm void fn_802E129C() {
+// asm_to_cpp: fn_802E129C
+asm void fn_802E129C(M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -351,4 +339,3 @@ lbl_802E1438:
     addi r1, r1, 0x20
     blr
 }
-

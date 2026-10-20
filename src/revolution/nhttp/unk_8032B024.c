@@ -1,6 +1,6 @@
 #include "types.h"
 
-// Translation unit: src/revolution/usb/unk_8032B024.cpp
+// Translation unit: src/revolution/nhttp/unk_8032B024.cpp
 // Total functions: 171
 
 // Small Data symbols (@sda21)
@@ -76,7 +76,6 @@ extern u8 lbl_8046F3C0[];
 extern u8 lbl_8046F400[];
 
 // Forward declarations
-extern void fn_803337D4();
 extern void IOS_Close();
 extern void IOS_Ioctlv();
 extern void IOS_Open();
@@ -97,7 +96,6 @@ extern void OSReport();
 extern void OSRestoreInterrupts();
 extern void OSSendMessage();
 extern void OSUnlockMutex();
-extern void fn_80333A74();
 extern void _restgpr_16();
 extern void _restgpr_19();
 extern void _restgpr_21();
@@ -265,6 +263,7 @@ extern void fn_80333560();
 extern void fn_80333688();
 extern void fn_803336E8();
 extern void fn_80333758();
+extern void fn_803337D4();
 extern void fn_803338E4();
 extern void fn_80333914();
 extern void fn_80333944();
@@ -275,6 +274,7 @@ extern void fn_803339C4();
 extern void fn_803339CC();
 extern void fn_80333A10();
 extern void fn_80333A54();
+extern void fn_80333A74();
 extern void fn_80333B5C();
 extern void fn_80333C74();
 extern void fn_80333D8C();

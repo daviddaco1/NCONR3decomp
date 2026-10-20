@@ -1,85 +1,179 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/dvd/dvd_broadway.cpp
-// Total functions: 32
+extern s32 DiFD;
+extern s32 diCommand_8049E134;
+extern u8 diRegValCache_80461260;
+extern M2C_UNK dvdContexts_804611E0;
+extern s32 freeCommandBuf_8049E11C;
+extern s32 freeDvdContext_8049E120;
+extern M2C_UNK lbl_803798F0;
+extern s32 lbl_80461280;
+extern u8 lbl_804612A0;
+extern s32 lbl_80461360;
+extern s32 lbl_80461380;
+extern M2C_UNK lbl_8049D030;
+extern s8 lbl_8049E119;
+extern u8 lbl_8049E124;
+extern u8 lbl_8049E125;
+extern s32 lbl_8049E12C;
+extern s32 lbl_8049E130;
+extern u8 lbl_8049E138;
+extern s8 requestInProgress_8049E118;
+extern s32 spinUpValue_8049E128;
 
-// Small Data symbols (@sda21)
-extern float DiFD;
-extern float diCommand_8049E134;
-extern float freeCommandBuf_8049E11C;
-extern float freeDvdContext_8049E120;
-extern float lbl_8049D030;
-extern float lbl_8049E119;
-extern float lbl_8049E124;
-extern float lbl_8049E125;
-extern float lbl_8049E12C;
-extern float lbl_8049E130;
-extern float lbl_8049E138;
-extern float requestInProgress_8049E118;
-extern float spinUpValue_8049E128;
+s32 doTransactionCallback();
+s32 doPrepareCoverRegisterCallback();
+s32 DVDLowFinalize();
+s32 DVDLowInit();
+s32 DVDLowReadDiskID();
+s32 DVDLowOpenPartition();
+s32 DVDLowOpenPartitionWithTmdAndTicketView();
+s32 fn_802D75F8();
+s32 DVDLowGetNoDiscOpenPartitionParams();
+s32 fn_802D7A9C();
+s32 DVDLowUnencryptedRead();
+s32 DVDLowStopMotor();
+s32 DVDLowClosePartition();
+s32 DVDLowRequestError();
+s32 DVDLowSetSpinupFlag();
+s32 DVDLowReset();
+s32 DVDLowAudioBufferConfig();
+s32 DVDLowReportKey();
+s32 DVDLowSetMaximumRotation();
+s32 DVDLowRead();
+s32 DVDLowSeek();
+s32 DVDLowGetCoverRegister();
+s32 DVDLowGetStatusRegister();
+s32 DVDLowGetControlRegister();
+s32 fn_802D8B7C();
+s32 DVDLowPrepareStatusRegister();
+s32 DVDLowPrepareCoverRegister();
+s32 DVDLowGetImmBufferReg();
+s32 DVDLowUnmaskStatusInterrupts();
+s32 DVDLowMaskCoverInterrupt();
+s32 DVDLowClearCoverInterrupt();
+s32 __DVDLowTestAlarm();
 
-// Global data symbols (@ha/@l)
+s32 doTransactionCallback(s32 arg0, s8 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+s32 doPrepareCoverRegisterCallback(s32 arg0, s8 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+// DVDLowFinalize: definicion C reemplazada por asm (ver abajo)
+
+
+s32 DVDLowInit(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+s32 DVDLowReadDiskID(s32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+s32 DVDLowOpenPartition(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+s32 DVDLowOpenPartitionWithTmdAndTicketView(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, M2C_UNK arg_sp0);
+
+s32 fn_802D75F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+s32 DVDLowGetNoDiscOpenPartitionParams(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, M2C_UNK arg_sp0, s32 arg_sp8);
+
+s32 fn_802D7A9C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+s32 DVDLowUnencryptedRead(s32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+s32 DVDLowStopMotor(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+s32 DVDLowClosePartition(s32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+s32 DVDLowRequestError(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+s32 DVDLowSetSpinupFlag(s32 arg0) {
+    spinUpValue_8049E128 = arg0;
+    return 1;
+}
+
+s32 DVDLowReset(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+s32 DVDLowAudioBufferConfig(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+s32 DVDLowReportKey(s32 *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+s32 DVDLowSetMaximumRotation(u32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+s32 DVDLowRead(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+s32 DVDLowSeek(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+// DVDLowGetCoverRegister: definicion C reemplazada por asm (ver abajo)
+
+
+// DVDLowGetStatusRegister: definicion C reemplazada por asm (ver abajo)
+
+
+// DVDLowGetControlRegister: definicion C reemplazada por asm (ver abajo)
+
+
+s32 fn_802D8B7C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+s32 DVDLowPrepareStatusRegister(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+s32 DVDLowPrepareCoverRegister(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+// DVDLowGetImmBufferReg: definicion C reemplazada por asm (ver abajo)
+
+
+s32 DVDLowUnmaskStatusInterrupts(void) {
+    return 1;
+}
+
+s32 DVDLowMaskCoverInterrupt(void) {
+    return 1;
+}
+
+s32 DVDLowClearCoverInterrupt(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+s32 __DVDLowTestAlarm(void) {
+    return 0;
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern u8 at_3872_80379890[];
-extern u8 diRegValCache_80461260[];
-extern u8 dvdContexts_804611E0[];
-extern u8 lbl_803798F0[];
-extern u8 lbl_80461280[];
-extern u8 lbl_804612A0[];
-extern u8 lbl_80461360[];
-extern u8 lbl_80461380[];
-
-// Forward declarations
-extern void DVDLowAudioBufferConfig();
-extern void DVDLowClearCoverInterrupt();
-extern void DVDLowClosePartition();
-extern void DVDLowFinalize();
-extern void DVDLowGetControlRegister();
-extern void DVDLowGetCoverRegister();
-extern void DVDLowGetImmBufferReg();
-extern void DVDLowGetNoDiscOpenPartitionParams();
-extern void DVDLowGetStatusRegister();
-extern void DVDLowInit();
-extern void DVDLowMaskCoverInterrupt();
-extern void DVDLowOpenPartition();
-extern void DVDLowOpenPartitionWithTmdAndTicketView();
-extern void DVDLowPrepareCoverRegister();
-extern void DVDLowPrepareStatusRegister();
-extern void DVDLowRead();
-extern void DVDLowReadDiskID();
-extern void DVDLowReportKey();
-extern void DVDLowRequestError();
-extern void DVDLowReset();
-extern void DVDLowSeek();
-extern void DVDLowSetMaximumRotation();
-extern void DVDLowSetSpinupFlag();
-extern void DVDLowStopMotor();
-extern void DVDLowUnencryptedRead();
-extern void DVDLowUnmaskStatusInterrupts();
-extern void IOS_Close();
-extern void IOS_IoctlAsync();
-extern void IOS_IoctlvAsync();
-extern void IOS_Open();
-extern void IPCCltInit();
-extern void IPCGetBufferHi();
-extern void IPCGetBufferLo();
+s32 DVDLowAudioBufferConfig();
+s32 DVDLowClearCoverInterrupt();
+s32 DVDLowClosePartition();
+s32 DVDLowFinalize(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+s32 DVDLowGetControlRegister(void);
+s32 DVDLowGetCoverRegister(void);
+s32 DVDLowGetImmBufferReg(void);
+s32 DVDLowGetNoDiscOpenPartitionParams();
+s32 DVDLowGetStatusRegister(void);
+s32 DVDLowInit();
+s32 DVDLowOpenPartition();
+s32 DVDLowOpenPartitionWithTmdAndTicketView();
+s32 DVDLowPrepareCoverRegister();
+s32 DVDLowPrepareStatusRegister();
+s32 DVDLowRead();
+s32 DVDLowReadDiskID();
+s32 DVDLowReportKey();
+s32 DVDLowRequestError();
+s32 DVDLowReset();
+s32 DVDLowSeek();
+s32 DVDLowSetMaximumRotation();
+s32 DVDLowStopMotor();
+s32 DVDLowUnencryptedRead();
 extern void IPCSetBufferLo();
 extern void OSReport();
-extern void __DVDLowTestAlarm();
 extern void _restgpr_24();
 extern void _restgpr_27();
 extern void _savegpr_24();
 extern void _savegpr_27();
-extern void doPrepareCoverRegisterCallback();
-extern void doTransactionCallback();
-extern void fn_802D75F8();
-extern void fn_802D7A9C();
-extern void fn_802D8B7C();
+s32 doPrepareCoverRegisterCallback();
+s32 doTransactionCallback();
+s32 fn_802D75F8();
+s32 fn_802D7A9C();
+s32 fn_802D8B7C();
 extern void strncpy();
 
-// ----------------------------------------------------------------------------
-// doTransactionCallback
-// ----------------------------------------------------------------------------
-asm void doTransactionCallback() {
+// asm_to_cpp: doTransactionCallback
+asm s32 doTransactionCallback() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -133,10 +227,8 @@ lbl_802D6C14:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// doPrepareCoverRegisterCallback
-// ----------------------------------------------------------------------------
-asm void doPrepareCoverRegisterCallback() {
+// asm_to_cpp: doPrepareCoverRegisterCallback
+asm s32 doPrepareCoverRegisterCallback() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -190,10 +282,8 @@ lbl_802D6CD0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowFinalize
-// ----------------------------------------------------------------------------
-asm void DVDLowFinalize() {
+// asm_to_cpp: DVDLowFinalize
+asm s32 DVDLowFinalize(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -219,10 +309,8 @@ lbl_802D6D30:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowInit
-// ----------------------------------------------------------------------------
-asm void DVDLowInit() {
+// asm_to_cpp: DVDLowInit
+asm s32 DVDLowInit() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -396,10 +484,8 @@ lbl_802D6F8C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowReadDiskID
-// ----------------------------------------------------------------------------
-asm void DVDLowReadDiskID() {
+// asm_to_cpp: DVDLowReadDiskID
+asm s32 DVDLowReadDiskID() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -510,10 +596,8 @@ lbl_802D7110:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowOpenPartition
-// ----------------------------------------------------------------------------
-asm void DVDLowOpenPartition() {
+// asm_to_cpp: DVDLowOpenPartition
+asm s32 DVDLowOpenPartition() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -686,10 +770,8 @@ lbl_802D7374:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowOpenPartitionWithTmdAndTicketView
-// ----------------------------------------------------------------------------
-asm void DVDLowOpenPartitionWithTmdAndTicketView() {
+// asm_to_cpp: DVDLowOpenPartitionWithTmdAndTicketView
+asm s32 DVDLowOpenPartitionWithTmdAndTicketView() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -861,10 +943,8 @@ lbl_802D75E0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802D75F8
-// ----------------------------------------------------------------------------
-asm void fn_802D75F8() {
+// asm_to_cpp: fn_802D75F8
+asm s32 fn_802D75F8() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1011,10 +1091,8 @@ lbl_802D77EC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowGetNoDiscOpenPartitionParams
-// ----------------------------------------------------------------------------
-asm void DVDLowGetNoDiscOpenPartitionParams() {
+// asm_to_cpp: DVDLowGetNoDiscOpenPartitionParams
+asm s32 DVDLowGetNoDiscOpenPartitionParams() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1196,10 +1274,8 @@ lbl_802D7A84:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802D7A9C
-// ----------------------------------------------------------------------------
-asm void fn_802D7A9C() {
+// asm_to_cpp: fn_802D7A9C
+asm s32 fn_802D7A9C() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1300,10 +1376,8 @@ lbl_802D7BE8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowUnencryptedRead
-// ----------------------------------------------------------------------------
-asm void DVDLowUnencryptedRead() {
+// asm_to_cpp: DVDLowUnencryptedRead
+asm s32 DVDLowUnencryptedRead() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1416,10 +1490,8 @@ lbl_802D7D7C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowStopMotor
-// ----------------------------------------------------------------------------
-asm void DVDLowStopMotor() {
+// asm_to_cpp: DVDLowStopMotor
+asm s32 DVDLowStopMotor() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1532,10 +1604,8 @@ lbl_802D7F10:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowClosePartition
-// ----------------------------------------------------------------------------
-asm void DVDLowClosePartition() {
+// asm_to_cpp: DVDLowClosePartition
+asm s32 DVDLowClosePartition() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1637,10 +1707,8 @@ lbl_802D8078:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowRequestError
-// ----------------------------------------------------------------------------
-asm void DVDLowRequestError() {
+// asm_to_cpp: DVDLowRequestError
+asm s32 DVDLowRequestError() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1742,20 +1810,8 @@ lbl_802D81E0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowSetSpinupFlag
-// ----------------------------------------------------------------------------
-asm void DVDLowSetSpinupFlag() {
-    nofralloc
-    stw r3, spinUpValue_8049E128
-    li r3, 0x1
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// DVDLowReset
-// ----------------------------------------------------------------------------
-asm void DVDLowReset() {
+// asm_to_cpp: DVDLowReset
+asm s32 DVDLowReset() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1862,10 +1918,8 @@ lbl_802D8368:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowAudioBufferConfig
-// ----------------------------------------------------------------------------
-asm void DVDLowAudioBufferConfig() {
+// asm_to_cpp: DVDLowAudioBufferConfig
+asm s32 DVDLowAudioBufferConfig() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1978,10 +2032,8 @@ lbl_802D84FC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowReportKey
-// ----------------------------------------------------------------------------
-asm void DVDLowReportKey() {
+// asm_to_cpp: DVDLowReportKey
+asm s32 DVDLowReportKey() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -2094,10 +2146,8 @@ lbl_802D8690:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowSetMaximumRotation
-// ----------------------------------------------------------------------------
-asm void DVDLowSetMaximumRotation() {
+// asm_to_cpp: DVDLowSetMaximumRotation
+asm s32 DVDLowSetMaximumRotation() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -2205,10 +2255,8 @@ lbl_802D8810:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowRead
-// ----------------------------------------------------------------------------
-asm void DVDLowRead() {
+// asm_to_cpp: DVDLowRead
+asm s32 DVDLowRead() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -2329,10 +2377,8 @@ lbl_802D89C0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowSeek
-// ----------------------------------------------------------------------------
-asm void DVDLowSeek() {
+// asm_to_cpp: DVDLowSeek
+asm s32 DVDLowSeek() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -2439,10 +2485,8 @@ lbl_802D8B3C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowGetCoverRegister
-// ----------------------------------------------------------------------------
-asm void DVDLowGetCoverRegister() {
+// asm_to_cpp: DVDLowGetCoverRegister
+asm s32 DVDLowGetCoverRegister(void) {
     nofralloc
     lis r3, diRegValCache_80461260@ha
     addi r3, r3, diRegValCache_80461260@l
@@ -2450,30 +2494,24 @@ asm void DVDLowGetCoverRegister() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowGetStatusRegister
-// ----------------------------------------------------------------------------
-asm void DVDLowGetStatusRegister() {
+// asm_to_cpp: DVDLowGetStatusRegister
+asm s32 DVDLowGetStatusRegister(void) {
     nofralloc
     lis r3, lbl_80461360@ha
     lwz r3, lbl_80461360@l(r3)
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowGetControlRegister
-// ----------------------------------------------------------------------------
-asm void DVDLowGetControlRegister() {
+// asm_to_cpp: DVDLowGetControlRegister
+asm s32 DVDLowGetControlRegister(void) {
     nofralloc
     lis r3, lbl_80461380@ha
     lwz r3, lbl_80461380@l(r3)
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802D8B7C
-// ----------------------------------------------------------------------------
-asm void fn_802D8B7C() {
+// asm_to_cpp: fn_802D8B7C
+asm s32 fn_802D8B7C() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -2575,10 +2613,8 @@ lbl_802D8CCC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowPrepareStatusRegister
-// ----------------------------------------------------------------------------
-asm void DVDLowPrepareStatusRegister() {
+// asm_to_cpp: DVDLowPrepareStatusRegister
+asm s32 DVDLowPrepareStatusRegister() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -2680,10 +2716,8 @@ lbl_802D8E34:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowPrepareCoverRegister
-// ----------------------------------------------------------------------------
-asm void DVDLowPrepareCoverRegister() {
+// asm_to_cpp: DVDLowPrepareCoverRegister
+asm s32 DVDLowPrepareCoverRegister() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -2785,38 +2819,16 @@ lbl_802D8F9C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowGetImmBufferReg
-// ----------------------------------------------------------------------------
-asm void DVDLowGetImmBufferReg() {
+// asm_to_cpp: DVDLowGetImmBufferReg
+asm s32 DVDLowGetImmBufferReg(void) {
     nofralloc
     lis r3, diRegValCache_80461260@ha
     lwz r3, diRegValCache_80461260@l(r3)
     blr
 }
 
-// ----------------------------------------------------------------------------
-// DVDLowUnmaskStatusInterrupts
-// ----------------------------------------------------------------------------
-asm void DVDLowUnmaskStatusInterrupts() {
-    nofralloc
-    li r3, 0x1
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// DVDLowMaskCoverInterrupt
-// ----------------------------------------------------------------------------
-asm void DVDLowMaskCoverInterrupt() {
-    nofralloc
-    li r3, 0x1
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// DVDLowClearCoverInterrupt
-// ----------------------------------------------------------------------------
-asm void DVDLowClearCoverInterrupt() {
+// asm_to_cpp: DVDLowClearCoverInterrupt
+asm s32 DVDLowClearCoverInterrupt() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -2916,13 +2928,3 @@ lbl_802D911C:
     addi r1, r1, 0x10
     blr
 }
-
-// ----------------------------------------------------------------------------
-// __DVDLowTestAlarm
-// ----------------------------------------------------------------------------
-asm void __DVDLowTestAlarm() {
-    nofralloc
-    li r3, 0x0
-    blr
-}
-

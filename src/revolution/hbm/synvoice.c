@@ -1,27 +1,33 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/hbm/synvoice.cpp
-// Total functions: 3
+extern s32 lbl_80462B74;
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_80462B74[];
+void __HBMSYNClearVoiceReferences();
+void __HBMSYNSetVoiceToRelease();
+void __HBMSYNServiceVoice();
 
-// Forward declarations
+void __HBMSYNClearVoiceReferences(s8 *arg0);
+
+void __HBMSYNSetVoiceToRelease(s8 *arg0) {
+    M2C_FIELD(arg0, s32 *, 0x30) = 3;
+}
+
+void __HBMSYNServiceVoice(s32 arg0);
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void AXFreeVoice();
-extern void __HBMSYNClearVoiceReferences();
-extern void __HBMSYNServiceVoice();
-extern void __HBMSYNSetVoiceToRelease();
+void __HBMSYNClearVoiceReferences();
+void __HBMSYNServiceVoice();
 extern void __HBMSYNUpdateMix();
 extern void __HBMSYNUpdateSrc();
 extern void fn_80302BA4();
-extern void fn_80303848();
 extern void fn_8030385C();
 extern void fn_80303884();
 extern void fn_80304470();
 
-// ----------------------------------------------------------------------------
-// __HBMSYNClearVoiceReferences
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __HBMSYNClearVoiceReferences
 asm void __HBMSYNClearVoiceReferences() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -68,19 +74,7 @@ lbl_80304DF4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __HBMSYNSetVoiceToRelease
-// ----------------------------------------------------------------------------
-asm void __HBMSYNSetVoiceToRelease() {
-    nofralloc
-    li r0, 0x3
-    stw r0, 0x30(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// __HBMSYNServiceVoice
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __HBMSYNServiceVoice
 asm void __HBMSYNServiceVoice() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -148,4 +142,3 @@ lbl_80304F08:
     addi r1, r1, 0x10
     blr
 }
-

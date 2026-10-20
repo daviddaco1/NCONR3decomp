@@ -1,46 +1,41 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/gd/GDBase.cpp
-// Total functions: 4
+extern s8 *lbl_8049E180;
 
-// Small Data symbols (@sda21)
-extern float lbl_8049E180;
+void GDInitGDLObj();
+void GDFlushCurrToMem();
+void GDPadCurr32();
+
+void GDInitGDLObj(s8 *arg0, s32 arg1, s32 arg2) {
+    M2C_FIELD(arg0, s32 *, 0) = arg1;
+    M2C_FIELD(arg0, s32 *, 8) = arg1;
+    M2C_FIELD(arg0, s32 *, 0xC) = (s32) (arg1 + arg2);
+    M2C_FIELD(arg0, s32 *, 4) = arg2;
+}
+
+void GDFlushCurrToMem(void) {
+    DCFlushRange(M2C_FIELD(lbl_8049E180, s32 *, 0), M2C_FIELD(lbl_8049E180, u32 *, 4));
+}
+
+void GDPadCurr32(void);
+
+/*
+Decompilation failure in function GDOverflowed:
+
+Unable to determine jump table for bctr instruction at GDBase.s line 109.
+
+There must be a read of a variable before the instruction
+which has a name starting with with "jtbl"/"jpt_"/"lbl_"/"jumptable_".
+*/
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern float lbl_8049E184;
+extern int GDOverflowed();
+void GDPadCurr32();
 
-// Forward declarations
-extern void DCFlushRange();
-extern void GDFlushCurrToMem();
-extern void GDInitGDLObj();
-extern void GDOverflowed();
-extern void GDPadCurr32();
-
-// ----------------------------------------------------------------------------
-// GDInitGDLObj
-// ----------------------------------------------------------------------------
-asm void GDInitGDLObj() {
-    nofralloc
-    add r0, r4, r5
-    stw r4, 0x0(r3)
-    stw r4, 0x8(r3)
-    stw r0, 0xc(r3)
-    stw r5, 0x4(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GDFlushCurrToMem
-// ----------------------------------------------------------------------------
-asm void GDFlushCurrToMem() {
-    nofralloc
-    lwz r4, lbl_8049E180
-    lwz r3, 0x0(r4)
-    lwz r4, 0x4(r4)
-    b DCFlushRange
-}
-
-// ----------------------------------------------------------------------------
-// GDPadCurr32
-// ----------------------------------------------------------------------------
+// asm_to_cpp: GDPadCurr32
 asm void GDPadCurr32() {
     nofralloc
     lwz r3, lbl_8049E180
@@ -118,10 +113,8 @@ lbl_802DD1F4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GDOverflowed
-// ----------------------------------------------------------------------------
-asm void GDOverflowed() {
+// asm_to_cpp: GDOverflowed
+asm int GDOverflowed() {
     nofralloc
     lwz r12, lbl_8049E184
     cmpwi r12, 0x0
@@ -130,4 +123,3 @@ asm void GDOverflowed() {
     bctr
     blr
 }
-

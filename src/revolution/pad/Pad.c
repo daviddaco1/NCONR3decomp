@@ -1,85 +1,169 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/pad/Pad.cpp
-// Total functions: 17
+s32 OSGetTime();                                    /* extern */
+M2C_UNK SIGetTypeAsync(s32, void (*)(s32, s32));    /* extern */
+M2C_UNK memcpy();             /* extern */
+M2C_UNK memset();      /* extern */
+extern s32 __PADSpec;
+extern M2C_UNK lbl_8038D848;
+extern u32 lbl_80465D70;
+extern M2C_UNK lbl_80465DA0;
+extern M2C_UNK lbl_80465DB0;
+extern s32 lbl_8049D240;
+extern s32 lbl_8049D244;
+extern s32 lbl_8049D248;
+extern s32 lbl_8049D24C;
+extern u32 lbl_8049D250;
+extern void (*lbl_8049D254)(s32, s8 *, s8 *);
+extern s32 lbl_8049D258;
+extern s32 lbl_8049D25C;
+extern s32 lbl_8049E3B8;
+extern M2C_UNK (*lbl_8049E3BC)();
+extern s32 lbl_8049E3C4;
+extern s32 lbl_8049E3C8;
+extern s32 lbl_8049E3CC;
+extern s32 lbl_8049E3D0;
+extern s32 lbl_8049E3D4;
+extern s32 lbl_8049E3D8;
+extern s32 lbl_8049E3DC;
+extern s32 lbl_8049E3E0;
+extern s32 lbl_8049E414;
 
-// Small Data symbols (@sda21)
-extern float __PADSpec;
-extern float lbl_8049D240;
-extern float lbl_8049D244;
-extern float lbl_8049D248;
-extern float lbl_8049D24C;
-extern float lbl_8049D250;
-extern float lbl_8049D254;
-extern float lbl_8049D258;
-extern float lbl_8049D25C;
-extern float lbl_8049E3B8;
-extern float lbl_8049E3BC;
-extern float lbl_8049E3C4;
-extern float lbl_8049E3C8;
-extern float lbl_8049E3CC;
-extern float lbl_8049E3D0;
-extern float lbl_8049E3D4;
-extern float lbl_8049E3D8;
-extern float lbl_8049E3DC;
-extern float lbl_8049E3E0;
-extern float lbl_8049E414;
+void UpdateOrigin();
+void PADOriginCallback();
+void PADOriginUpdateCallback();
+void PADProbeCallback();
+void PADTypeAndStatusCallback();
+void PADReceiveCheckCallback();
+s32 PADReset();
+s32 PADRecalibrate();
+s32 PADInit();
+s32 fn_80321B4C();
+void PADControlMotor();
+void SPEC0_MakeStatus();
+void SPEC1_MakeStatus();
+void fn_803222F0();
+s32 fn_803226FC();
+void SamplingHandler();
+s32 __PADDisableRecalibration();
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_8038D848[];
-extern u8 lbl_80465D70[];
-extern u8 lbl_80465DA0[];
-extern u8 lbl_80465DB0[];
+// UpdateOrigin: definicion C reemplazada por asm (ver abajo)
 
-// Forward declarations
+
+// PADOriginCallback: definicion C reemplazada por asm (ver abajo)
+
+
+void PADOriginUpdateCallback(s32 arg0, s32 arg1) {
+    s32 temp_r31;
+    s32 temp_r9;
+    u32 temp_r30;
+
+    temp_r30 = 0x80000000U >> arg0;
+    if (lbl_8049E3DC & temp_r30) {
+        if (!(arg1 & 0xF)) {
+            UpdateOrigin(arg0);
+        }
+        if (arg1 & 8) {
+            temp_r31 = OSDisableInterrupts();
+            SIDisablePolling((s32) temp_r30);
+            temp_r9 = ~(temp_r30 | temp_r30);
+            lbl_8049E3DC &= temp_r9;
+            lbl_8049E3D0 &= temp_r9;
+            lbl_8049E3CC &= temp_r9;
+            lbl_8049E3C8 &= temp_r9;
+            lbl_8049E3C4 &= temp_r9;
+            OSSetWirelessID(arg0, 0U);
+            OSRestoreInterrupts(temp_r31);
+        }
+    }
+}
+
+// PADProbeCallback: definicion C reemplazada por asm (ver abajo)
+
+
+// PADTypeAndStatusCallback: definicion C reemplazada por asm (ver abajo)
+
+
+// PADReceiveCheckCallback: definicion C reemplazada por asm (ver abajo)
+
+
+// PADReset: definicion C reemplazada por asm (ver abajo)
+
+
+// PADRecalibrate: definicion C reemplazada por asm (ver abajo)
+
+
+// PADInit: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_80321B4C: definicion C reemplazada por asm (ver abajo)
+
+
+void PADControlMotor(s32 arg0, u32 arg1) {
+    s32 temp_r31;
+    u32 var_r30;
+
+    var_r30 = arg1;
+    temp_r31 = OSDisableInterrupts();
+    if ((lbl_8049E3DC & (0x80000000U >> arg0)) && !(SIGetType(arg0) & 0x20000000)) {
+        if (((u32) lbl_8049D250 < 2U) && (var_r30 == 2)) {
+            var_r30 = 0;
+        }
+        if (*(u8 *)0x800030E3 & 0x20) {
+            var_r30 = 0;
+        }
+        SISetCommand(arg0, lbl_8049D24C | 0x400000 | (var_r30 & 3));
+        SITransferCommands();
+    }
+    OSRestoreInterrupts(temp_r31);
+}
+
+// SPEC0_MakeStatus: definicion C reemplazada por asm (ver abajo)
+
+
+// SPEC1_MakeStatus: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_803222F0: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_803226FC: definicion C reemplazada por asm (ver abajo)
+
+
+// SamplingHandler: definicion C reemplazada por asm (ver abajo)
+
+
+// __PADDisableRecalibration: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void OSClearContext();
-extern void OSDisableInterrupts();
-extern void OSGetTime();
 extern void OSRegisterShutdownFunction();
 extern void OSRegisterVersion();
-extern void OSRestoreInterrupts();
 extern void OSSetCurrentContext();
-extern void OSSetWirelessID();
-extern void PADControlMotor();
-extern void PADInit();
-extern void PADOriginCallback();
-extern void PADOriginUpdateCallback();
-extern void PADProbeCallback();
-extern void PADRecalibrate();
-extern void PADReceiveCheckCallback();
-extern void PADReset();
-extern void PADTypeAndStatusCallback();
-extern void SIBusy();
-extern void SIDisablePolling();
-extern void SIEnablePolling();
-extern void SIGetResponse();
-extern void SIGetStatus();
-extern void SIGetType();
-extern void SIGetTypeAsync();
-extern void SIIsChanBusy();
-extern void SISetCommand();
-extern void SITransfer();
-extern void SITransferCommands();
-extern void SIUnregisterPollingHandler();
-extern void SPEC0_MakeStatus();
-extern void SPEC1_MakeStatus();
-extern void SamplingHandler();
-extern void UpdateOrigin();
-extern void __PADDisableRecalibration();
-extern void __VIResetSIIdle();
+s32 PADInit(void);
+void PADOriginCallback(s32 arg0, s32 arg1);
+void PADProbeCallback(s32 arg0, s32 arg1);
+s32 PADRecalibrate(s32 arg0);
+void PADReceiveCheckCallback(s32 arg0, s32 arg1);
+s32 PADReset(s32 arg0);
+void PADTypeAndStatusCallback(s32 arg0, s32 arg1);
+void SPEC0_MakeStatus(s32 arg0, s8 *arg1, s8 *arg2);
+void SPEC1_MakeStatus(s32 arg0, s8 *arg1, s8 *arg2);
+void SamplingHandler(s32 arg0, s32 *arg1);
+void UpdateOrigin(s32 arg0);
+s32 __PADDisableRecalibration(s32 arg0);
 extern void _restgpr_16();
 extern void _savegpr_16();
-extern void fn_80321B4C();
-extern void fn_803222F0();
-extern void fn_803226FC();
+s32 fn_80321B4C(s8 *arg0, M2C_UNK arg_sp0);
+void fn_803222F0(s32 arg0, s8 *arg1, u32 *arg2);
+s32 fn_803226FC(s32 arg0);
 extern void fn_803260C4();
-extern void memcpy();
-extern void memset();
 
-// ----------------------------------------------------------------------------
-// UpdateOrigin
-// ----------------------------------------------------------------------------
-asm void UpdateOrigin() {
+// asm_to_cpp: UpdateOrigin
+asm void UpdateOrigin(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -196,10 +280,8 @@ lbl_80321110:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// PADOriginCallback
-// ----------------------------------------------------------------------------
-asm void PADOriginCallback() {
+// asm_to_cpp: PADOriginCallback
+asm void PADOriginCallback(s32 arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -253,69 +335,8 @@ lbl_803211D0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// PADOriginUpdateCallback
-// ----------------------------------------------------------------------------
-asm void PADOriginUpdateCallback() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    lis r5, 0x8000
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r4
-    stw r30, 0x18(r1)
-    srw r30, r5, r3
-    stw r29, 0x14(r1)
-    mr r29, r3
-    lwz r0, lbl_8049E3DC
-    and. r0, r0, r30
-    beq lbl_80321290
-    clrlwi. r0, r4, 28
-    bne lbl_80321224
-    bl UpdateOrigin
-lbl_80321224:
-    rlwinm. r0, r31, 0, 28, 28
-    beq lbl_80321290
-    bl OSDisableInterrupts
-    mr r31, r3
-    mr r3, r30
-    bl SIDisablePolling
-    lwz r4, lbl_8049E3DC
-    nor r9, r30, r30
-    lwz r0, lbl_8049E3D0
-    mr r3, r29
-    and r8, r4, r9
-    lwz r5, lbl_8049E3CC
-    and r7, r0, r9
-    lwz r0, lbl_8049E3C4
-    and r6, r5, r9
-    lwz r4, lbl_8049E3C8
-    and r0, r0, r9
-    stw r8, lbl_8049E3DC
-    and r5, r4, r9
-    li r4, 0x0
-    stw r7, lbl_8049E3D0
-    stw r6, lbl_8049E3CC
-    stw r5, lbl_8049E3C8
-    stw r0, lbl_8049E3C4
-    bl OSSetWirelessID
-    mr r3, r31
-    bl OSRestoreInterrupts
-lbl_80321290:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// PADProbeCallback
-// ----------------------------------------------------------------------------
-asm void PADProbeCallback() {
+// asm_to_cpp: PADProbeCallback
+asm void PADProbeCallback(s32 arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -374,10 +395,8 @@ lbl_80321368:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// PADTypeAndStatusCallback
-// ----------------------------------------------------------------------------
-asm void PADTypeAndStatusCallback() {
+// asm_to_cpp: PADTypeAndStatusCallback
+asm void PADTypeAndStatusCallback(s32 arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -591,10 +610,8 @@ lbl_80321680:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// PADReceiveCheckCallback
-// ----------------------------------------------------------------------------
-asm void PADReceiveCheckCallback() {
+// asm_to_cpp: PADReceiveCheckCallback
+asm void PADReceiveCheckCallback(s32 arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -679,10 +696,8 @@ lbl_803217C0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// PADReset
-// ----------------------------------------------------------------------------
-asm void PADReset() {
+// asm_to_cpp: PADReset
+asm s32 PADReset(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -754,10 +769,8 @@ lbl_803218C0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// PADRecalibrate
-// ----------------------------------------------------------------------------
-asm void PADRecalibrate() {
+// asm_to_cpp: PADRecalibrate
+asm s32 PADRecalibrate(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -830,10 +843,8 @@ lbl_803219CC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// PADInit
-// ----------------------------------------------------------------------------
-asm void PADInit() {
+// asm_to_cpp: PADInit
+asm s32 PADInit(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -933,10 +944,8 @@ lbl_80321B3C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80321B4C
-// ----------------------------------------------------------------------------
-asm void fn_80321B4C() {
+// asm_to_cpp: fn_80321B4C
+asm s32 fn_80321B4C(s8 *arg0, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x50(r1)
     mflr r0
@@ -1260,66 +1269,8 @@ lbl_80321FC8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// PADControlMotor
-// ----------------------------------------------------------------------------
-asm void PADControlMotor() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    stw r30, 0x18(r1)
-    mr r30, r4
-    stw r29, 0x14(r1)
-    mr r29, r3
-    bl OSDisableInterrupts
-    lis r0, 0x8000
-    lwz r4, lbl_8049E3DC
-    srw r0, r0, r29
-    mr r31, r3
-    and. r0, r4, r0
-    beq lbl_8032209C
-    mr r3, r29
-    bl SIGetType
-    rlwinm. r0, r3, 0, 2, 2
-    bne lbl_8032209C
-    lwz r0, lbl_8049D250
-    cmplwi r0, 0x2
-    bge lbl_8032206C
-    cmplwi r30, 0x2
-    bne lbl_8032206C
-    li r30, 0x0
-lbl_8032206C:
-    lis r3, 0x8000
-    lbz r0, 0x30e3(r3)
-    rlwinm. r0, r0, 0, 26, 26
-    beq lbl_80322080
-    li r30, 0x0
-lbl_80322080:
-    lwz r4, lbl_8049D24C
-    clrlwi r0, r30, 30
-    mr r3, r29
-    oris r4, r4, 0x40
-    or r4, r4, r0
-    bl SISetCommand
-    bl SITransferCommands
-lbl_8032209C:
-    mr r3, r31
-    bl OSRestoreInterrupts
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// SPEC0_MakeStatus
-// ----------------------------------------------------------------------------
-asm void SPEC0_MakeStatus() {
+// asm_to_cpp: SPEC0_MakeStatus
+asm void SPEC0_MakeStatus(s32 arg0, s8 *arg1, s8 *arg2) {
     nofralloc
     li r0, 0x0
     sth r0, 0x0(r4)
@@ -1395,10 +1346,8 @@ lbl_803221A4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// SPEC1_MakeStatus
-// ----------------------------------------------------------------------------
-asm void SPEC1_MakeStatus() {
+// asm_to_cpp: SPEC1_MakeStatus
+asm void SPEC1_MakeStatus(s32 arg0, s8 *arg1, s8 *arg2) {
     nofralloc
     li r0, 0x0
     sth r0, 0x0(r4)
@@ -1474,10 +1423,8 @@ lbl_803222BC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_803222F0
-// ----------------------------------------------------------------------------
-asm void fn_803222F0() {
+// asm_to_cpp: fn_803222F0
+asm void fn_803222F0(s32 arg0, s8 *arg1, u32 *arg2) {
     nofralloc
     lwz r0, 0x0(r5)
     extrwi r0, r0, 14, 2
@@ -1760,10 +1707,8 @@ lbl_803226F0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_803226FC
-// ----------------------------------------------------------------------------
-asm void fn_803226FC() {
+// asm_to_cpp: fn_803226FC
+asm s32 fn_803226FC(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1823,10 +1768,8 @@ lbl_803227B0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// SamplingHandler
-// ----------------------------------------------------------------------------
-asm void SamplingHandler() {
+// asm_to_cpp: SamplingHandler
+asm void SamplingHandler(s32 arg0, s32 *arg1) {
     nofralloc
     stwu r1, -0x2e0(r1)
     mflr r0
@@ -1855,10 +1798,8 @@ lbl_80322810:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __PADDisableRecalibration
-// ----------------------------------------------------------------------------
-asm void __PADDisableRecalibration() {
+// asm_to_cpp: __PADDisableRecalibration
+asm s32 __PADDisableRecalibration(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1885,4 +1826,3 @@ lbl_80322864:
     addi r1, r1, 0x10
     blr
 }
-

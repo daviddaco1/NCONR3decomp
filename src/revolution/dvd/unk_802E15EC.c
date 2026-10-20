@@ -1,40 +1,82 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/dvd/unk_802E15EC.cpp
-// Total functions: 9
+extern s16 *__peReg;
+extern M2C_UNK lbl_8049E1D0;
+extern s8 lbl_8049E1D8;
+extern M2C_UNK (*lbl_8049E1DC)();
+extern M2C_UNK (*lbl_8049E1E0)(u16);
 
-// Small Data symbols (@sda21)
-extern float __peReg;
-extern float lbl_8049E1D0;
-extern float lbl_8049E1D8;
-extern float lbl_8049E1DC;
-extern float lbl_8049E1E0;
+void fn_802E15EC();
+void fn_802E1604();
+void fn_802E1618();
+void fn_802E1634();
+void fn_802E1698();
+void fn_802E1760();
+void __GXPEInit();
 
-// Global data symbols (@ha/@l)
+// fn_802E15EC: definicion C reemplazada por asm (ver abajo)
 
-// Forward declarations
+
+// fn_802E1604: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E1618: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802E1634(s32 arg0, s32 arg1, s32 *arg2);
+
+M2C_UNK (*fn_802E1654(M2C_UNK (*arg0)(u16)))(u16) {
+    M2C_UNK (*temp_r31)(u16);
+    s32 temp_r3;
+
+    temp_r31 = lbl_8049E1E0;
+    temp_r3 = OSDisableInterrupts();
+    lbl_8049E1E0 = arg0;
+    OSRestoreInterrupts(temp_r3);
+    return temp_r31;
+}
+
+// fn_802E1698: definicion C reemplazada por asm (ver abajo)
+
+
+M2C_UNK (*fn_802E171C(M2C_UNK (*arg0)()))() {
+    M2C_UNK (*temp_r31)();
+    s32 temp_r3;
+
+    temp_r31 = lbl_8049E1DC;
+    temp_r3 = OSDisableInterrupts();
+    lbl_8049E1DC = arg0;
+    OSRestoreInterrupts(temp_r3);
+    return temp_r31;
+}
+
+// fn_802E1760: definicion C reemplazada por asm (ver abajo)
+
+
+void __GXPEInit(void) {
+    __OSSetInterruptHandler(0x12, (s32) fn_802E1698);
+    __OSSetInterruptHandler(0x13, (s32) fn_802E1760);
+    OSInitThreadQueue(&lbl_8049E1D0);
+    __OSUnmaskInterrupts(0x2000);
+    __OSUnmaskInterrupts(0x1000);
+    M2C_FIELD(__peReg, u16 *, 0xA) = (u16) (M2C_FIELD(__peReg, u16 *, 0xA) | 0xF);
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void OSClearContext();
-extern void OSDisableInterrupts();
-extern void OSInitThreadQueue();
-extern void OSRestoreInterrupts();
 extern void OSSetCurrentContext();
-extern void __GXPEInit();
-extern void __OSSetInterruptHandler();
-extern void __OSUnmaskInterrupts();
-extern void fn_802E15EC();
-extern void fn_802E1604();
-extern void fn_802E1618();
-extern void fn_802E1634();
-extern void fn_802E1654();
-extern void fn_802E1698();
-extern void fn_802E171C();
-extern void fn_802E1760();
+void fn_802E15EC(s32 arg0, s32 arg1);
+void fn_802E1604(s32 arg0);
+void fn_802E1618(s32 arg0, s32 arg1, s32 arg2);
+void fn_802E1634();
+void fn_802E1698(s32 arg0, s32 *arg1);
+void fn_802E1760(s32 arg0, s32 *arg1);
 extern void fn_8031D978();
 
-// ----------------------------------------------------------------------------
-// fn_802E15EC
-// ----------------------------------------------------------------------------
-asm void fn_802E15EC() {
+// asm_to_cpp: fn_802E15EC
+asm void fn_802E15EC(s32 arg0, s32 arg1) {
     nofralloc
     lwz r5, __peReg
     li r0, 0x0
@@ -44,10 +86,8 @@ asm void fn_802E15EC() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E1604
-// ----------------------------------------------------------------------------
-asm void fn_802E1604() {
+// asm_to_cpp: fn_802E1604
+asm void fn_802E1604(s32 arg0) {
     nofralloc
     lwz r4, __peReg
     lhz r0, 0x2(r4)
@@ -56,10 +96,8 @@ asm void fn_802E1604() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E1618
-// ----------------------------------------------------------------------------
-asm void fn_802E1618() {
+// asm_to_cpp: fn_802E1618
+asm void fn_802E1618(s32 arg0, s32 arg1, s32 arg2) {
     nofralloc
     lwz r6, __peReg
     li r0, 0x0
@@ -70,9 +108,7 @@ asm void fn_802E1618() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E1634
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802E1634
 asm void fn_802E1634() {
     nofralloc
     li r0, 0x1
@@ -85,34 +121,8 @@ asm void fn_802E1634() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E1654
-// ----------------------------------------------------------------------------
-asm void fn_802E1654() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    lwz r31, lbl_8049E1E0
-    bl OSDisableInterrupts
-    stw r30, lbl_8049E1E0
-    bl OSRestoreInterrupts
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E1698
-// ----------------------------------------------------------------------------
-asm void fn_802E1698() {
+// asm_to_cpp: fn_802E1698
+asm void fn_802E1698(s32 arg0, s32 *arg1) {
     nofralloc
     stwu r1, -0x2e0(r1)
     mflr r0
@@ -150,34 +160,8 @@ lbl_802E16F4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E171C
-// ----------------------------------------------------------------------------
-asm void fn_802E171C() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    lwz r31, lbl_8049E1DC
-    bl OSDisableInterrupts
-    stw r30, lbl_8049E1DC
-    bl OSRestoreInterrupts
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E1760
-// ----------------------------------------------------------------------------
-asm void fn_802E1760() {
+// asm_to_cpp: fn_802E1760
+asm void fn_802E1760(s32 arg0, s32 *arg1) {
     nofralloc
     stwu r1, -0x2e0(r1)
     mflr r0
@@ -213,36 +197,3 @@ lbl_802E17C4:
     addi r1, r1, 0x2e0
     blr
 }
-
-// ----------------------------------------------------------------------------
-// __GXPEInit
-// ----------------------------------------------------------------------------
-asm void __GXPEInit() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    lis r4, fn_802E1698@ha
-    li r3, 0x12
-    stw r0, 0x14(r1)
-    addi r4, r4, fn_802E1698@l
-    bl __OSSetInterruptHandler
-    lis r4, fn_802E1760@ha
-    li r3, 0x13
-    addi r4, r4, fn_802E1760@l
-    bl __OSSetInterruptHandler
-    la r3, lbl_8049E1D0
-    bl OSInitThreadQueue
-    li r3, 0x2000
-    bl __OSUnmaskInterrupts
-    li r3, 0x1000
-    bl __OSUnmaskInterrupts
-    lwz r3, __peReg
-    lhz r0, 0xa(r3)
-    ori r0, r0, 0xf
-    sth r0, 0xa(r3)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-

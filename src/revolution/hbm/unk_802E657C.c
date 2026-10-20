@@ -1,81 +1,811 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/hbm/unk_802E657C.cpp
-// Total functions: 158
+M2C_UNK AXGetAuxACallback();          /* extern */
+M2C_UNK AXRegisterAuxACallback(void (*)(), s8 *); /* extern */
+s32 AXRegisterCallback(void (*)(), void (*)());     /* extern */
+M2C_UNK GXSetVtxAttrFmt(); /* extern */
+M2C_UNK GXSetVtxDesc();             /* extern */
+u64 OSGetTime();                                    /* extern */
+M2C_UNK OSSetAlarm(s8 *, void (*)(), M2C_UNK, s32, void (*)()); /* extern */
+M2C_UNK OSSetPeriodicAlarm(s8 *, s32, u64, u32, M2C_UNK, s32, void (*)(), M2C_UNK); /* extern */
+s32 fn_8028AD00(s32, s8 *, void (*)(s32, s32));   /* extern */
+M2C_UNK fn_8028B73C(s32, void (*)(s32, s32), void (*)(s32, s32), M2C_UNK); /* extern */
+M2C_UNK **fn_8030CAF0();             /* extern */
+M2C_UNK fn_8030CB00();               /* extern */
+M2C_UNK memset();                       /* extern */
+M2C_UNK fn_802E8600();                           /* static */
+M2C_UNK fn_802EB568();               /* static */
+M2C_UNK fn_802EEC48();                   /* static */
+M2C_UNK fn_802EFA78();                           /* static */
+M2C_UNK fn_802F0538();                           /* static */
+extern f32 lbl_80341A38;
+extern f32 lbl_80341A48;
+extern f32 lbl_80341A4C;
+extern f32 lbl_80341A50;
+extern f32 lbl_80341A54;
+extern M2C_UNK lbl_80341A58;
+extern M2C_UNK lbl_80341A6C;
+extern M2C_UNK lbl_80341A90;
+extern M2C_UNK lbl_80341A98;
+extern M2C_UNK lbl_80341AF8;
+extern f32 lbl_80341D74;
+extern f32 lbl_80341D88;
+extern f32 lbl_80341DC0;
+extern f32 lbl_80341DF0;
+extern f32 lbl_80341DF4;
+extern f32 lbl_80341E08;
+extern f32 lbl_80341E0C;
+extern M2C_UNK lbl_8037B2D8;
+extern s32 lbl_8037B380;
+extern s32 lbl_8037B420;
+extern M2C_UNK lbl_8037B490;
+extern M2C_UNK lbl_8037B548;
+extern M2C_UNK lbl_8037B858;
+extern s32 lbl_8037B910;
+extern s32 lbl_8037B914;
+extern M2C_UNK lbl_8037B918;
+extern s32 lbl_8037B970;
+extern u8 *lbl_8037B9B0;
+extern u8 *lbl_8037C2B0;
+extern s32 lbl_8037C408;
+extern M2C_UNK lbl_8037C540;
+extern s32 lbl_8037C608;
+extern s32 lbl_80462228;
+extern M2C_UNK lbl_80462230;
+extern M2C_UNK lbl_804622F8;
+extern M2C_UNK lbl_804623B8;
+extern s8 *lbl_804623C8;
+extern s8 *lbl_804623D0;
+extern M2C_UNK lbl_804623D8;
+extern s32 lbl_804623E8;
+extern M2C_UNK lbl_804623F0;
+extern M2C_UNK lbl_80462408;
+extern s32 lbl_80462438;
+extern s32 lbl_80462440;
+extern M2C_UNK lbl_80462448;
+extern M2C_UNK lbl_80462450;
+extern M2C_UNK lbl_80462458;
 
-// Global data symbols (@ha/@l)
-extern u8 AXFXReverbHiCallback[];
+void fn_802E657C();
+s32 fn_802E6740();
+s32 fn_802E6948();
+u8 fn_802E6950();
+void fn_802E695C();
+void fn_802E6980();
+s32 fn_802E6984();
+void fn_802E698C();
+void fn_802E6998();
+void fn_802E699C();
+s32 ** fn_802E69A0();
+void fn_802E6A5C();
+void fn_802E6AC4();
+void fn_802E6AF0();
+void fn_802E6BB4();
+void fn_802E6BBC();
+s32 fn_802E6C5C();
+s32 fn_802E6C88();
+u8 fn_802E6E2C();
+void fn_802E6E34();
+void fn_802E6E64();
+void fn_802E6ECC();
+void fn_802E6ED0();
+void fn_802E6F38();
+void fn_802E6F3C();
+void fn_802E6FB4();
+s32 ** fn_802E6FBC();
+s32 fn_802E7110();
+s32 fn_802E7150();
+void fn_802E71CC();
+void fn_802E745C();
+s32 * fn_802E7464();
+void fn_802E7488();
+s32 fn_802E75A4();
+void fn_802E761C();
+s32 fn_802E76EC();
+s32 fn_802E7818();
+void fn_802E7820();
+s32 fn_802E79C0();
+s32 fn_802E7AC0();
+s32 fn_802E7ACC();
+void fn_802E7BA8();
+void fn_802E7BAC();
+s32 fn_802E7BB0();
+void fn_802E7BB8();
+void fn_802E7BC0();
+s32 fn_802E7BC4();
+void fn_802E7BF8();
+s32 fn_802E7C00();
+void fn_802E7C08();
+void fn_802E7C10();
+void fn_802E7D24();
+void fn_802E7E34();
+s8 * fn_802E7EA0();
+void fn_802E7F5C();
+void fn_802E8000();
+void fn_802E8074();
+void fn_802E81F8();
+void fn_802E820C();
+void fn_802E8228();
+void fn_802E8238();
+void fn_802E823C();
+void fn_802E8244();
+s32 fn_802E82E0();
+void fn_802E8340();
+void fn_802E8350();
+void fn_802E8588();
+s32 fn_802E8598();
+void fn_802E859C();
+s32 fn_802E8630();
+void fn_802E86B4();
+u8 fn_802E86D8();
+void fn_802E86FC();
+void fn_802E871C();
+void fn_802E8984();
+s8 * fn_802E89B0();
+s32 ** fn_802E8A6C();
+void fn_802E8B10();
+void fn_802E8BE4();
+void fn_802E8C38();
+void fn_802E8C68();
+void fn_802E8D48();
+void fn_802E8D78();
+void fn_802E8E5C();
+void fn_802E8EE8();
+s32 fn_802E8F80();
+s32 fn_802E8F9C();
+s32 fn_802E8FCC();
+s8 * fn_802E8FE8();
+void fn_802E91A4();
+s32 fn_802E9208();
+void fn_802E9460();
+void fn_802E95A4();
+void fn_802E9798();
+void fn_802E979C();
+void fn_802E997C();
+void fn_802E9A9C();
+s32 fn_802E9AA0();
+void fn_802E9AB0();
+void fn_802E9AC0();
+void fn_802E9BE8();
+void fn_802E9C18();
+void fn_802E9C54();
+s32 fn_802E9C78();
+void fn_802E9C9C();
+void fn_802E9CD0();
+void fn_802E9CF4();
+void fn_802E9D48();
+void fn_802E9D6C();
+s8 * fn_802E9F24();
+s32 ** fn_802EA030();
+void fn_802EA09C();
+s8 * fn_802EA0E8();
+void fn_802EA0F4();
+void fn_802EA954();
+void fn_802EAAAC();
+void fn_802EAB30();
+void fn_802EAFD0();
+void fn_802EB1D0();
+void fn_802EB300();
+void fn_802ED238();
+void fn_802ED438();
+void fn_802ED590();
+void fn_802ED674();
+void fn_802ED698();
+void fn_802ED79C();
+void fn_802EE0E8();
+void fn_802EE980();
+void fn_802F1774();
+s32 fn_802F19D4();
+s32 fn_802F1A84();
+void fn_802F1AA0();
+void fn_802F1BC4();
+void fn_802F1C84();
+void fn_802F1E7C();
+u16 fn_802F1ECC();
+f32 fn_802F1FBC();
+u16 fn_802F2180();
+s32 fn_802F218C();
+s32 ** fn_802F21C4();
+void fn_802F2250();
+void fn_802F2398();
+void fn_802F2498();
+void fn_802F2554();
+void fn_802F2744();
+s8 * fn_802F2A34();
+
+
+
+s32 fn_802E6948(void) {
+    return 1;
+}
+
+u8 fn_802E6950(s32 arg0, s32 arg1) {
+    return M2C_FIELD((arg0 + arg1), u8 *, 4);
+}
+
+void fn_802E695C(void) {
+
+}
+
+/*
+Decompilation failure in function fn_802E6960:
+
+Unable to determine jump table for bctr instruction at unk_802E657C.s line 289.
+
+There must be a read of a variable before the instruction
+which has a name starting with with "jtbl"/"jpt_"/"lbl_"/"jumptable_".
+*/
+
+void fn_802E6980(void) {
+
+}
+
+s32 fn_802E6984(s8 *arg0) {
+    return M2C_FIELD(arg0, s32 *, 0x20);
+}
+
+
+void fn_802E6998(void) {
+
+}
+
+void fn_802E699C(void) {
+
+}
+
+// fn_802E69A0: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E6A5C: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802E6AC4(s8 *arg0) {
+    M2C_FIELD(arg0, s8 *, 0x18) = 0;
+    M2C_FIELD(arg0, s8 *, 4) = 0;
+    M2C_FIELD(arg0, s8 *, 5) = 0;
+    M2C_FIELD(arg0, s8 *, 6) = 0;
+    M2C_FIELD(arg0, s8 *, 7) = 0;
+    M2C_FIELD(arg0, s8 *, 8) = 0;
+    M2C_FIELD(arg0, s8 *, 9) = 0;
+    M2C_FIELD(arg0, s8 *, 0xA) = 0;
+    M2C_FIELD(arg0, s8 *, 0xB) = 0;
+}
+
+// fn_802E6AF0: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802E6BB4(s8 *arg0, s32 arg1) {
+    M2C_FIELD(arg0, s32 *, 0x28) = arg1;
+}
+
+// fn_802E6BBC: definicion C reemplazada por asm (ver abajo)
+
+
+
+
+u8 fn_802E6E2C(s8 *arg0) {
+    return M2C_FIELD(arg0, u8 *, 0x24);
+}
+
+void fn_802E6E34(s8 *arg0, s32 arg1, s8 *arg2) {
+    if (arg1 & M2C_FIELD(arg0, s32 *, 0x1C)) {
+        M2C_FIELD(arg0, f32 *, 0xC) = (f32) M2C_FIELD(arg2, f32 *, 0);
+        M2C_FIELD(arg0, f32 *, 0x10) = (f32) M2C_FIELD(arg2, f32 *, 4);
+        M2C_FIELD(arg0, f32 *, 0x14) = (f32) M2C_FIELD(arg2, f32 *, 8);
+        M2C_FIELD(arg0, s8 *, 0x18) = 1;
+    }
+}
+
+// fn_802E6E64: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802E6ECC(void) {
+
+}
+
+// fn_802E6ED0: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802E6F38(void) {
+
+}
+
+// fn_802E6F3C: definicion C reemplazada por asm (ver abajo)
+
+
+
+s32 **fn_802E6FBC(s32 **arg0, s32 arg1);
+
+s32 fn_802E7110(s32 arg0, s32 arg1) {
+    if ((arg0 != 0) && (arg1 > 0)) {
+        dtor_80136CFC(arg0);
+    }
+    return arg0;
+}
+
+s32 fn_802E7150(s32 arg0, s32 arg1) {
+    if ((arg0 != 0) && (arg1 > 0)) {
+        dtor_80136CFC(arg0);
+    }
+    return arg0;
+}
+
+/*
+Decompilation failure in function fn_802E7190:
+
+Found bctr instruction at unk_802E657C.s line 956, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+/*
+Decompilation failure in function fn_802E71B4:
+
+Unable to determine jump table for bctr instruction at unk_802E657C.s line 966.
+
+There must be a read of a variable before the instruction
+which has a name starting with with "jtbl"/"jpt_"/"lbl_"/"jumptable_".
+*/
+
+void fn_802E71CC(s8 *arg0, s8 *arg1, M2C_UNK arg_sp0);
+
+void fn_802E745C(s8 *arg0, s32 arg1) {
+    M2C_FIELD(arg0, s32 *, 0x2C) = arg1;
+}
+
+// fn_802E7464: definicion C reemplazada por asm (ver abajo)
+
+
+/*
+Decompilation failure in function fn_802E7470:
+
+Unable to determine jump table for bctr instruction at unk_802E657C.s line 1178.
+
+There must be a read of a variable before the instruction
+which has a name starting with with "jtbl"/"jpt_"/"lbl_"/"jumptable_".
+*/
+
+void fn_802E7488(s8 *arg0, s8 *arg1, M2C_UNK arg_sp0);
+
+s32 fn_802E75A4(s8 *arg0, u32 arg1);
+
+void fn_802E761C(s8 *arg0, s32 arg1, M2C_UNK arg_sp0);
+
+
+s32 fn_802E7818(s8 *arg0) {
+    return M2C_FIELD(arg0, s32 *, 0x24);
+}
+
+// fn_802E7820: definicion C reemplazada por asm (ver abajo)
+
+
+s32 fn_802E79C0(s8 *arg0);
+
+s32 fn_802E7AC0(s8 *arg0) {
+    return M2C_FIELD(arg0, u8 *, 0xCF) & 1;
+}
+
+s32 fn_802E7ACC(s8 *arg0) {
+    return M2C_FIELD(arg0, s32 *, 0xC);
+}
+
+/*
+Decompilation failure in function fn_802E7AD4:
+
+Cannot find branch target fn_802E79C0
+*/
+
+void fn_802E7BA8(void) {
+
+}
+
+void fn_802E7BAC(void) {
+
+}
+
+s32 fn_802E7BB0(void) {
+    return 0;
+}
+
+void fn_802E7BB8(s8 *arg0, s32 arg1) {
+    M2C_FIELD(arg0, s32 *, 0x1C) = arg1;
+}
+
+void fn_802E7BC0(void) {
+
+}
+
+s32 fn_802E7BC4(s8 *arg0) {
+    return M2C_FIELD(arg0, s32 *, 0x2C);
+}
+
+/*
+Decompilation failure in function fn_802E7BCC:
+
+Unable to determine jump table for bctr instruction at unk_802E657C.s line 1769.
+
+There must be a read of a variable before the instruction
+which has a name starting with with "jtbl"/"jpt_"/"lbl_"/"jumptable_".
+*/
+
+void fn_802E7BF8(s8 *arg0, s32 arg1) {
+    M2C_FIELD(arg0, s32 *, 4) = arg1;
+}
+
+s32 fn_802E7C00(void) {
+    return 0;
+}
+
+void fn_802E7C08(s8 *arg0, s32 arg1) {
+    M2C_FIELD(arg0, s32 *, 0x24) = arg1;
+}
+
+void fn_802E7C10(s32 arg0, s32 arg1);
+
+void fn_802E7D24(s32 arg0, s32 arg1);
+
+void fn_802E7E34(s32 arg0);
+
+s8 *fn_802E7EA0(s8 *arg0, s32 arg1, s32 arg2);
+
+// fn_802E7F5C: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802E8000(s8 *arg0);
+
+// fn_802E8074: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802E81F8(s32 *arg0) {
+    M2C_FIELD(arg0, s32 *, 0x10) = 0;
+    M2C_FIELD(arg0, s32 *, 0x14) = 0;
+    M2C_FIELD(arg0, s32 *, 0x18) = 0;
+}
+
+// fn_802E820C: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802E8228(s32 *arg0) {
+    fn_802E8E5C(M2C_FIELD(arg0, s8 **, 0x20), M2C_FIELD(arg0, s32 *, 0));
+}
+
+void fn_802E8238(s32 arg0) {
+
+}
+
+
+// fn_802E8244: definicion C reemplazada por asm (ver abajo)
+
+
+s32 fn_802E82E0(s8 *arg0, s32 arg1) {
+    if (fn_802E8F80(M2C_FIELD(arg0, s32 *, 0x20), M2C_FIELD(arg0, s32 *, 0)) == 0) {
+        return 0;
+    }
+    return fn_802E8F9C(M2C_FIELD(arg0, s32 *, 0x20), M2C_FIELD(arg0, s32 *, 0), arg1);
+}
+
+void fn_802E8340(s32 *arg0) {
+    M2C_FIELD(arg0, s8 *, 0x42) = 0;
+    M2C_FIELD(arg0, s8 *, 0x43) = 0;
+}
+
+void fn_802E8350(s8 *arg0, M2C_UNK arg_sp0);
+
+void fn_802E8588(s32 *arg0) {
+    fn_802E8FCC(M2C_FIELD(arg0, s32 *, 0x20), M2C_FIELD(arg0, s32 *, 0));
+}
+
+s32 fn_802E8598(s32 arg0) {
+    return arg0;
+}
+
+// fn_802E859C: definicion C reemplazada por asm (ver abajo)
+
+
+/*
+Decompilation failure in function fn_802E8600:
+
+Cannot find branch target fn_8028AF20
+*/
+
+s32 fn_802E8630(s32 *arg0, s8 *arg1) {
+    s32 temp_r0;
+
+    temp_r0 = M2C_FIELD(arg0, s32 *, 0);
+    if (temp_r0 >= 4) {
+        return -2;
+    }
+    if ((fn_802E8F80(M2C_FIELD(arg0, s32 *, 0x20), temp_r0) != 0) || ((s32) M2C_FIELD(arg0, u8 *, 0x1C) != 0)) {
+        return -2;
+    }
+    return fn_8028AD00(M2C_FIELD(arg0, s32 *, 0), arg1, fn_802E86B4);
+}
+
+// fn_802E86B4: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E86D8: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E86FC: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E871C: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802E8984(s8 *arg0) {
+    M2C_FIELD(arg0, s32 *, 0x50) = 0;
+    M2C_FIELD(arg0, s32 *, 0x58) = -1;
+    M2C_FIELD(arg0, s32 *, 0xB8) = 0;
+    M2C_FIELD(arg0, s32 *, 0xC0) = -1;
+    M2C_FIELD(arg0, s32 *, 0x120) = 0;
+    M2C_FIELD(arg0, s32 *, 0x128) = -1;
+    M2C_FIELD(arg0, s32 *, 0x188) = 0;
+    M2C_FIELD(arg0, s32 *, 0x190) = -1;
+}
+
+// fn_802E89B0: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E8A6C: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E8B10: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E8BE4: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802E8C38(s32 arg0);
+
+// fn_802E8C68: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802E8D48(s32 arg0);
+
+// fn_802E8D78: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802E8E5C(s8 *arg0, s32 arg1);
+
+
+s32 fn_802E8F80(s32 arg0, s32 arg1) {
+    return M2C_FIELD((arg0 + (arg1 * 0x68)), s32 *, 0x50) != 0;
+}
+
+s32 fn_802E8F9C(s32 arg0, s32 arg1, s32 arg2);
+
+s32 fn_802E8FCC(s32 arg0, s32 arg1) {
+    return M2C_FIELD((arg0 + (arg1 * 0x68)), u8 *, 0x62) != 0;
+}
+
+// fn_802E8FE8: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E91A4: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E9208: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E9460: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E95A4: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802E9798(void) {
+
+}
+
+// fn_802E979C: definicion C reemplazada por asm (ver abajo)
+
+
+
+void fn_802E9A9C(s32 arg0) {
+    fn_80302248((u32) arg0);
+}
+
+s32 fn_802E9AA0(s32 arg0);
+
+// fn_802E9AB0: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E9AC0: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E9BE8: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E9C18: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802E9C54(void) {
+    fn_802ED438(fn_802EA0E8());
+}
+
+s32 fn_802E9C78(void) {
+    return fn_802F1A84(fn_802EA0E8());
+}
+
+void fn_802E9C9C(s8 *arg0) {
+    fn_802F1AA0(fn_802EA0E8(), (s32) arg0);
+}
+
+void fn_802E9CD0(void) {
+    fn_802F1C84(fn_802EA0E8());
+}
+
+void fn_802E9CF4(s32 arg0, s8 *arg1, u32 arg2) {
+    fn_802EA0E8();
+    fn_802E95A4(arg0, arg1, arg2);
+}
+
+void fn_802E9D48(void) {
+    fn_802F1E7C(fn_802EA0E8());
+}
+
+// fn_802E9D6C: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802E9F24: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802EA030: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802EA09C(s8 *arg0);
+
+// fn_802EA0E8: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802EA0F4(s8 *arg0);
+
+void fn_802EA954(s8 *arg0, M2C_UNK arg_sp0);
+
+// fn_802EAAAC: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802EAB30(s8 *arg0);
+
+// fn_802EAFD0: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802EB1D0: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802EB300: definicion C reemplazada por asm (ver abajo)
+
+
+/*
+Decompilation failure in function fn_802EB568:
+
+Found bctr instruction at unk_802E657C.s line 6142, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+// fn_802ED238: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802ED438(s8 *arg0, s32 arg1);
+
+void fn_802ED590(s32 arg0);
+
+void fn_802ED674(s32 arg0) {
+    OSGetAlarmUserData(arg0);
+    fn_802E8600();
+}
+
+void fn_802ED698(s32 arg0);
+
+/*
+Decompilation failure in function fn_802ED764:
+
+Found bctr instruction at unk_802E657C.s line 8432, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+void fn_802ED79C(s8 *arg0, s8 *arg1);
+
+void fn_802EE0E8(s8 *arg0, s32 arg1);
+
+// fn_802EE980: definicion C reemplazada por asm (ver abajo)
+
+
+/*
+Decompilation failure in function fn_802EEC48:
+
+Found bctr instruction at unk_802E657C.s line 9988, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+/*
+Decompilation failure in function fn_802EFA78:
+
+Found bctr instruction at unk_802E657C.s line 11021, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+/*
+Decompilation failure in function fn_802F0538:
+
+Found bctr instruction at unk_802E657C.s line 11911, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+// fn_802F1774: definicion C reemplazada por asm (ver abajo)
+
+
+s32 fn_802F19D4(s8 *arg0, s32 arg1, M2C_UNK arg_sp0);
+
+s32 fn_802F1A84(s8 *arg0) {
+    if ((s32) M2C_FIELD(arg0, s32 *, 0x14) != 0x12) {
+        return -1;
+    }
+    return M2C_FIELD(arg0, s32 *, 0xB8);
+}
+
+// fn_802F1AA0: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802F1BC4: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802F1C84: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802F1E7C(s8 *arg0);
+
+
+
+u16 fn_802F2180(s8 *arg0) {
+    return M2C_FIELD(M2C_FIELD(arg0, s8 **, 0xC), u16 *, 8);
+}
+
+// fn_802F218C: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802F21C4: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802F2250(s8 *arg0, s8 *arg1, s8 **arg2, M2C_UNK arg_sp0);
+
+void fn_802F2398(s8 *arg0, s8 **arg1, s32 arg2, M2C_UNK arg_sp0);
+
+void fn_802F2498(s8 *arg0, s32 arg1);
+
+void fn_802F2554(s8 *arg0, s32 arg1, s8 *arg2);
+
+void fn_802F2744(s8 *arg0, s32 arg1, s8 *arg2);
+
+// fn_802F2A34: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern u8 jumptable_8037C478[];
 extern u8 jumptable_8037C4C8[];
 extern u8 jumptable_8037C4F0[];
 extern u8 jumptable_8037C518[];
-extern u8 lbl_80341A38[];
-extern u8 lbl_80341A48[];
-extern u8 lbl_80341A4C[];
-extern u8 lbl_80341A50[];
-extern u8 lbl_80341A54[];
-extern u8 lbl_80341A58[];
-extern u8 lbl_80341A6C[];
-extern u8 lbl_80341A90[];
-extern u8 lbl_80341A98[];
-extern u8 lbl_80341AF8[];
-extern u8 lbl_80341D74[];
-extern u8 lbl_80341D88[];
 extern u8 lbl_80341DA0[];
-extern u8 lbl_80341DC0[];
-extern u8 lbl_80341DF0[];
-extern u8 lbl_80341DF4[];
-extern u8 lbl_80341E08[];
-extern u8 lbl_80341E0C[];
-extern u8 lbl_8037B2D8[];
-extern u8 lbl_8037B380[];
-extern u8 lbl_8037B420[];
-extern u8 lbl_8037B490[];
-extern u8 lbl_8037B548[];
-extern u8 lbl_8037B858[];
-extern u8 lbl_8037B910[];
-extern u8 lbl_8037B914[];
-extern u8 lbl_8037B918[];
-extern u8 lbl_8037B970[];
-extern u8 lbl_8037B9B0[];
-extern u8 lbl_8037C2B0[];
 extern u8 lbl_8037C2FC[];
-extern u8 lbl_8037C408[];
-extern u8 lbl_8037C540[];
-extern u8 lbl_8037C608[];
-extern u8 lbl_80462228[];
-extern u8 lbl_80462230[];
-extern u8 lbl_804622F8[];
-extern u8 lbl_804623B8[];
-extern u8 lbl_804623C8[];
-extern u8 lbl_804623D0[];
-extern u8 lbl_804623D8[];
-extern u8 lbl_804623E8[];
-extern u8 lbl_804623F0[];
-extern u8 lbl_80462408[];
-extern u8 lbl_80462438[];
-extern u8 lbl_80462440[];
-extern u8 lbl_80462448[];
-extern u8 lbl_80462450[];
-extern u8 lbl_80462458[];
-
-// Forward declarations
 extern void AIInit();
-extern void ARCGetLength();
-extern void ARCGetStartOffset();
-extern void ARCInitHandle();
 extern void AXFXReverbHiInit();
-extern void AXFXReverbHiShutdown();
-extern void AXGetAuxACallback();
 extern void AXInit();
-extern void AXRegisterAuxACallback();
-extern void AXRegisterCallback();
 extern void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink();
-extern void Attach__Q36nw4hbm3lyt19ArcResourceAccessorFPvPCc();
-extern void EqualsMaterialName__Q36nw4hbm3lyt6detailFPCcPCc();
-extern void GXBegin();
 extern void GXClearVtxDesc();
-extern void GXLoadPosMtxImm();
 extern void GXSetAlphaUpdate();
 extern void GXSetBlendMode();
 extern void GXSetChanCtrl();
@@ -86,41 +816,22 @@ extern void GXSetLineWidth();
 extern void GXSetNumChans();
 extern void GXSetNumTexGens();
 extern void GXSetTexCoordScaleManually();
-extern void GXSetVtxAttrFmt();
-extern void GXSetVtxDesc();
 extern void GXSetZMode();
-extern void fn_8029AD3C();
 extern void GetLayoutRect__Q36nw4hbm3lyt6LayoutCFv();
 extern void HBMSYNInit();
 extern void HBMSYNRunAudioFrame();
 extern void List_Append__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv();
-extern void List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv();
-extern void List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs();
 extern void List_Init__Q26nw4hbm2utFPQ36nw4hbm2ut4ListUs();
 extern void List_Remove__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv();
-extern void MEMCreateExpHeapEx();
 extern void OSCancelAlarm();
 extern void OSCreateAlarm();
-extern void OSDisableInterrupts();
-extern void OSGetAlarmUserData();
-extern void OSGetTime();
 extern void OSInitMessageQueue();
 extern void OSInitMutex();
-extern void OSReceiveMessage();
 extern void OSRegisterVersion();
-extern void OSRestoreInterrupts();
-extern void OSSendMessage();
-extern void OSSetAlarm();
 extern void OSSetAlarmUserData();
-extern void OSSetPeriodicAlarm();
-extern void PSMTXIdentity();
-extern void PSMTXInverse();
 extern void PSMTXTrans();
-extern void SCGetSoundMode();
-extern void fn_802E7BB0();
 extern void VIFlush();
 extern void VISetBlack();
-extern void __ct__Q210homebutton18GroupAnmControllerFv();
 extern void _restgpr_14();
 extern void _restgpr_20();
 extern void _restgpr_21();
@@ -138,35 +849,12 @@ extern void _savegpr_25();
 extern void _savegpr_26();
 extern void _savegpr_27();
 extern void do_calc__Q210homebutton18GroupAnmControllerFv();
-extern void dtor_80136CFC();
-extern void fn_80136C54();
-extern void fn_802873F8();
-extern void fn_802896A0();
-extern void fn_802896A4();
 extern void fn_802896A8();
-extern void fn_802896B8();
 extern void fn_8028A8F8();
-extern void fn_8028A9B8();
-extern void fn_8028AACC();
-extern void fn_8028AB54();
-extern void fn_8028AD00();
-extern void fn_8028AF20();
 extern void fn_8028AFEC();
-extern void fn_8028B020();
 extern void fn_8028B23C();
-extern void fn_8028B6F8();
-extern void fn_8028B73C();
-extern void fn_8028CD58();
 extern void fn_8028CD8C();
-extern void fn_8028CF14();
-extern void fn_8028CF98();
 extern void fn_8028EE58();
-extern void fn_8029B248();
-extern void fn_8029B4EC();
-extern void fn_8029B968();
-extern void fn_8029D3B0();
-extern void fn_8029D3B8();
-extern void fn_8029D3C0();
 extern void fn_8029D3E0();
 extern void fn_8029D3E8();
 extern void fn_8029D3F0();
@@ -185,202 +873,133 @@ extern void fn_802E48CC();
 extern void fn_802E4A28();
 extern void fn_802E62C8();
 extern void fn_802E6300();
-extern void fn_802E657C();
-extern void fn_802E6740();
-extern void fn_802E6948();
-extern void fn_802E6950();
-extern void fn_802E695C();
-extern void fn_802E6960();
-extern void fn_802E6980();
-extern void fn_802E6984();
-extern void fn_802E698C();
-extern void fn_802E6998();
-extern void fn_802E699C();
-extern void fn_802E69A0();
-extern void fn_802E6A5C();
-extern void fn_802E6AC4();
-extern void fn_802E6AF0();
-extern void fn_802E6BB4();
-extern void fn_802E6BBC();
-extern void fn_802E6C5C();
-extern void fn_802E6C88();
-extern void fn_802E6E2C();
-extern void fn_802E6E34();
-extern void fn_802E6E64();
-extern void fn_802E6ECC();
-extern void fn_802E6ED0();
-extern void fn_802E6F38();
-extern void fn_802E6F3C();
-extern void fn_802E6FB4();
-extern void fn_802E6FBC();
-extern void fn_802E7110();
-extern void fn_802E7150();
-extern void fn_802E7190();
-extern void fn_802E71B4();
-extern void fn_802E71CC();
-extern void fn_802E745C();
-extern void fn_802E7464();
-extern void fn_802E7470();
-extern void fn_802E7488();
-extern void fn_802E75A4();
-extern void fn_802E761C();
-extern void fn_802E76EC();
-extern void fn_802E7818();
-extern void fn_802E7820();
-extern void fn_802E79C0();
-extern void fn_802E7AC0();
-extern void fn_802E7ACC();
-extern void fn_802E7AD4();
-extern void fn_802E7BA8();
-extern void fn_802E7BAC();
-extern void fn_802E7BB8();
-extern void fn_802E7BC0();
-extern void fn_802E7BC4();
-extern void fn_802E7BCC();
-extern void fn_802E7BF8();
-extern void fn_802E7C00();
-extern void fn_802E7C08();
-extern void fn_802E7C10();
-extern void fn_802E7D24();
-extern void fn_802E7E34();
-extern void fn_802E7EA0();
-extern void fn_802E7F5C();
-extern void fn_802E8000();
-extern void fn_802E8074();
-extern void fn_802E81F8();
-extern void fn_802E820C();
-extern void fn_802E8228();
-extern void fn_802E8238();
-extern void fn_802E823C();
-extern void fn_802E8244();
-extern void fn_802E82E0();
-extern void fn_802E8340();
-extern void fn_802E8350();
-extern void fn_802E8588();
-extern void fn_802E8598();
-extern void fn_802E859C();
-extern void fn_802E8600();
-extern void fn_802E8630();
-extern void fn_802E86B4();
-extern void fn_802E86D8();
-extern void fn_802E86FC();
-extern void fn_802E871C();
-extern void fn_802E8984();
-extern void fn_802E89B0();
-extern void fn_802E8A6C();
-extern void fn_802E8B10();
-extern void fn_802E8BE4();
-extern void fn_802E8C38();
-extern void fn_802E8C68();
-extern void fn_802E8D48();
-extern void fn_802E8D78();
-extern void fn_802E8E5C();
-extern void fn_802E8EE8();
-extern void fn_802E8F80();
-extern void fn_802E8F9C();
-extern void fn_802E8FCC();
-extern void fn_802E8FE8();
-extern void fn_802E91A4();
-extern void fn_802E9208();
-extern void fn_802E9460();
-extern void fn_802E95A4();
-extern void fn_802E9798();
-extern void fn_802E979C();
-extern void fn_802E997C();
-extern void fn_802E9A9C();
-extern void fn_802E9AA0();
-extern void fn_802E9AB0();
-extern void fn_802E9AC0();
-extern void fn_802E9BE8();
-extern void fn_802E9C18();
-extern void fn_802E9C54();
-extern void fn_802E9C78();
-extern void fn_802E9C9C();
-extern void fn_802E9CD0();
-extern void fn_802E9CF4();
-extern void fn_802E9D48();
-extern void fn_802E9D6C();
-extern void fn_802E9F24();
-extern void fn_802EA030();
-extern void fn_802EA09C();
-extern void fn_802EA0E8();
-extern void fn_802EA0F4();
-extern void fn_802EA954();
-extern void fn_802EAAAC();
-extern void fn_802EAB30();
-extern void fn_802EAFD0();
-extern void fn_802EB1D0();
-extern void fn_802EB300();
-extern void fn_802EB568();
-extern void fn_802ED238();
-extern void fn_802ED438();
-extern void fn_802ED590();
-extern void fn_802ED674();
-extern void fn_802ED698();
-extern void fn_802ED764();
-extern void fn_802ED79C();
-extern void fn_802EE0E8();
-extern void fn_802EE980();
-extern void fn_802EEC48();
-extern void fn_802EFA78();
-extern void fn_802F0538();
-extern void fn_802F1774();
-extern void fn_802F19D4();
-extern void fn_802F1A84();
-extern void fn_802F1AA0();
-extern void fn_802F1BC4();
-extern void fn_802F1C84();
-extern void fn_802F1E7C();
-extern void fn_802F1ECC();
-extern void fn_802F1FBC();
-extern void fn_802F2180();
-extern void fn_802F218C();
-extern void fn_802F21C4();
-extern void fn_802F2250();
-extern void fn_802F2398();
-extern void fn_802F2498();
-extern void fn_802F2554();
-extern void fn_802F2744();
-extern void fn_802F2A34();
-extern void fn_802F2C8C();
-extern void fn_802F3D6C();
-extern void fn_802F40D8();
-extern void fn_802F42F4();
-extern void fn_802F6B9C();
-extern void fn_802F6BD0();
+void fn_802E657C();
+s32 fn_802E6740();
+extern int fn_802E6960();
+void fn_802E698C();
+s32 **fn_802E69A0(s32 **arg0, s32 arg1);
+void fn_802E6A5C(s8 *arg0);
+void fn_802E6AF0(s8 *arg0, s8 **arg1);
+void fn_802E6BBC(s8 *arg0, u32 arg1);
+s32 fn_802E6C5C();
+s32 fn_802E6C88();
+void fn_802E6E64(s8 *arg0);
+void fn_802E6ED0(s8 *arg0);
+void fn_802E6F3C(s8 *arg0, s32 arg1);
+void fn_802E6FB4();
+s32 ** fn_802E6FBC();
+extern int fn_802E7190();
+extern int fn_802E71B4();
+void fn_802E71CC();
+s32 *fn_802E7464(void);
+extern int fn_802E7470();
+void fn_802E7488();
+s32 fn_802E75A4();
+void fn_802E761C();
+s32 fn_802E76EC();
+void fn_802E7820(s8 *arg0);
+s32 fn_802E79C0();
+extern int fn_802E7AD4();
+extern int fn_802E7BCC();
+void fn_802E7C10();
+void fn_802E7D24();
+void fn_802E7E34();
+s8 * fn_802E7EA0();
+void fn_802E7F5C(s32 *arg0);
+void fn_802E8000();
+void fn_802E8074(s32 *arg0, s8 *arg1, s32 arg2);
+void fn_802E820C(s32 *arg0);
+void fn_802E823C();
+void fn_802E8244(s32 *arg0, s32 arg1, s32 arg4);
+void fn_802E8350();
+void fn_802E859C(s32 *arg0);
+M2C_UNK fn_802E8600();
+void fn_802E86B4(s32 arg0, s32 arg1);
+u8 fn_802E86D8(s32 *arg0);
+void fn_802E86FC(s32 *arg0);
+void fn_802E871C(M2C_UNK arg_sp0);
+s8 *fn_802E89B0(s8 *arg0, s32 arg1, M2C_UNK arg_sp0);
+s32 **fn_802E8A6C(s32 **arg0, s32 arg1);
+void fn_802E8B10(s8 *arg0, M2C_UNK arg_sp0);
+void fn_802E8BE4(s32 **arg0);
+void fn_802E8C38();
+void fn_802E8C68(s32 arg0, s32 arg1);
+void fn_802E8D48();
+void fn_802E8D78(s32 arg0, s32 arg1);
+void fn_802E8E5C();
+void fn_802E8EE8();
+s32 fn_802E8F9C();
+s8 *fn_802E8FE8(s32 arg0);
+void fn_802E91A4(void);
+s32 fn_802E9208(M2C_UNK arg_sp0);
+void fn_802E9460(s32 arg0);
+void fn_802E95A4(s32 arg0, s8 *arg1, u32 arg2);
+void fn_802E979C(M2C_UNK arg_sp0);
+void fn_802E997C();
+s32 fn_802E9AA0();
+void fn_802E9AB0(s32 **arg0);
+void fn_802E9AC0(s8 *arg0, s32 arg1);
+void fn_802E9BE8(void);
+void fn_802E9C18(s8 *arg0);
+void fn_802E9D6C(s32 arg0, s32 arg1);
+s8 *fn_802E9F24(s8 *arg0, s32 arg1);
+s32 **fn_802EA030(s32 **arg0, s32 arg1);
+void fn_802EA09C();
+s8 *fn_802EA0E8(void);
+void fn_802EA0F4();
+void fn_802EA954();
+void fn_802EAAAC(s8 *arg0);
+void fn_802EAB30();
+void fn_802EAFD0(s8 *arg0, s32 arg1, s32 arg2);
+void fn_802EB1D0(s8 *arg0, s32 arg1, s32 arg2, s32 arg3);
+void fn_802EB300(s8 *arg0, s32 *arg1, M2C_UNK arg_sp0);
+M2C_UNK fn_802EB568();
+void fn_802ED238(s8 *arg0, s32 arg1, M2C_UNK arg_sp0);
+void fn_802ED438();
+void fn_802ED590();
+void fn_802ED698();
+extern int fn_802ED764();
+void fn_802ED79C();
+void fn_802EE0E8();
+void fn_802EE980(s8 *arg0);
+M2C_UNK fn_802EEC48();
+M2C_UNK fn_802EFA78();
+M2C_UNK fn_802F0538();
+void fn_802F1774(s8 *arg0, M2C_UNK arg_sp0);
+s32 fn_802F19D4();
+void fn_802F1AA0(s8 *arg0, s32 arg1);
+void fn_802F1BC4(s8 *arg0, s32 arg1, s32 arg2, s8 *arg3);
+void fn_802F1C84(s8 *arg0);
+void fn_802F1E7C();
+u16 fn_802F1ECC();
+f32 fn_802F1FBC();
+s32 fn_802F218C(s8 *arg0);
+s32 **fn_802F21C4(s32 **arg0, s32 arg1);
+void fn_802F2250();
+void fn_802F2398();
+void fn_802F2498();
+void fn_802F2554();
+void fn_802F2744();
+s8 *fn_802F2A34(s8 *arg0, u32 arg1);
 extern void fn_802F6E0C();
 extern void fn_802F6EE4();
 extern void fn_802F809C();
 extern void fn_802F84E0();
-extern void fn_802F96E0();
-extern void fn_802FD350();
-extern void fn_802FF21C();
 extern void fn_80302048();
-extern void fn_80302248();
 extern void fn_80302CF8();
 extern void fn_803053AC();
 extern void fn_803053D4();
 extern void fn_80305558();
 extern void fn_803055E8();
 extern void fn_80305680();
-extern void fn_803057B8();
 extern void fn_803057C0();
-extern void fn_8030CAF0();
-extern void fn_8030CB00();
 extern void fn_8030CB10();
-extern void fn_8030D7E0();
-extern void fn_8031CDF0();
-extern void fn_8031D460();
 extern void log();
-extern void memset();
 extern void strcat();
-extern void strcmp();
 extern void strcpy();
 extern void strncpy();
 
-// ----------------------------------------------------------------------------
-// fn_802E657C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802E657C
 asm void fn_802E657C() {
     nofralloc
     stwu r1, -0x90(r1)
@@ -498,10 +1117,8 @@ asm void fn_802E657C() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E6740
-// ----------------------------------------------------------------------------
-asm void fn_802E6740() {
+// asm_to_cpp: fn_802E6740
+asm s32 fn_802E6740() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -639,37 +1256,8 @@ lbl_802E691C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E6948
-// ----------------------------------------------------------------------------
-asm void fn_802E6948() {
-    nofralloc
-    li r3, 0x1
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E6950
-// ----------------------------------------------------------------------------
-asm void fn_802E6950() {
-    nofralloc
-    add r3, r3, r4
-    lbz r3, 0x4(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E695C
-// ----------------------------------------------------------------------------
-asm void fn_802E695C() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E6960
-// ----------------------------------------------------------------------------
-asm void fn_802E6960() {
+// asm_to_cpp: fn_802E6960
+asm int fn_802E6960() {
     nofralloc
     lwz r3, 0x4(r3)
     cmpwi r3, 0x0
@@ -681,26 +1269,7 @@ asm void fn_802E6960() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E6980
-// ----------------------------------------------------------------------------
-asm void fn_802E6980() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E6984
-// ----------------------------------------------------------------------------
-asm void fn_802E6984() {
-    nofralloc
-    lwz r3, 0x20(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E698C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802E698C
 asm void fn_802E698C() {
     nofralloc
     add r3, r3, r4
@@ -708,26 +1277,8 @@ asm void fn_802E698C() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E6998
-// ----------------------------------------------------------------------------
-asm void fn_802E6998() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E699C
-// ----------------------------------------------------------------------------
-asm void fn_802E699C() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E69A0
-// ----------------------------------------------------------------------------
-asm void fn_802E69A0() {
+// asm_to_cpp: fn_802E69A0
+asm s32 **fn_802E69A0(s32 **arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -783,10 +1334,8 @@ lbl_802E6A3C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E6A5C
-// ----------------------------------------------------------------------------
-asm void fn_802E6A5C() {
+// asm_to_cpp: fn_802E6A5C
+asm void fn_802E6A5C(s8 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -818,28 +1367,8 @@ lbl_802E6AA0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E6AC4
-// ----------------------------------------------------------------------------
-asm void fn_802E6AC4() {
-    nofralloc
-    li r0, 0x0
-    stb r0, 0x18(r3)
-    stb r0, 0x4(r3)
-    stb r0, 0x5(r3)
-    stb r0, 0x6(r3)
-    stb r0, 0x7(r3)
-    stb r0, 0x8(r3)
-    stb r0, 0x9(r3)
-    stb r0, 0xa(r3)
-    stb r0, 0xb(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E6AF0
-// ----------------------------------------------------------------------------
-asm void fn_802E6AF0() {
+// asm_to_cpp: fn_802E6AF0
+asm void fn_802E6AF0(s8 *arg0, s8 **arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -896,19 +1425,8 @@ lbl_802E6B98:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E6BB4
-// ----------------------------------------------------------------------------
-asm void fn_802E6BB4() {
-    nofralloc
-    stw r4, 0x28(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E6BBC
-// ----------------------------------------------------------------------------
-asm void fn_802E6BBC() {
+// asm_to_cpp: fn_802E6BBC
+asm void fn_802E6BBC(s8 *arg0, u32 arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -957,10 +1475,8 @@ lbl_802E6C40:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E6C5C
-// ----------------------------------------------------------------------------
-asm void fn_802E6C5C() {
+// asm_to_cpp: fn_802E6C5C
+asm s32 fn_802E6C5C() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -975,10 +1491,8 @@ asm void fn_802E6C5C() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E6C88
-// ----------------------------------------------------------------------------
-asm void fn_802E6C88() {
+// asm_to_cpp: fn_802E6C88
+asm s32 fn_802E6C88() {
     nofralloc
     stwu r1, -0x60(r1)
     mflr r0
@@ -1093,38 +1607,8 @@ lbl_802E6E08:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E6E2C
-// ----------------------------------------------------------------------------
-asm void fn_802E6E2C() {
-    nofralloc
-    lbz r3, 0x24(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E6E34
-// ----------------------------------------------------------------------------
-asm void fn_802E6E34() {
-    nofralloc
-    lwz r0, 0x1c(r3)
-    and. r0, r4, r0
-    beqlr
-    lfs f0, 0x0(r5)
-    li r0, 0x1
-    stfs f0, 0xc(r3)
-    lfs f0, 0x4(r5)
-    stfs f0, 0x10(r3)
-    lfs f0, 0x8(r5)
-    stfs f0, 0x14(r3)
-    stb r0, 0x18(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E6E64
-// ----------------------------------------------------------------------------
-asm void fn_802E6E64() {
+// asm_to_cpp: fn_802E6E64
+asm void fn_802E6E64(s8 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1156,18 +1640,8 @@ lbl_802E6EA8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E6ECC
-// ----------------------------------------------------------------------------
-asm void fn_802E6ECC() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E6ED0
-// ----------------------------------------------------------------------------
-asm void fn_802E6ED0() {
+// asm_to_cpp: fn_802E6ED0
+asm void fn_802E6ED0(s8 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1199,18 +1673,8 @@ lbl_802E6F14:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E6F38
-// ----------------------------------------------------------------------------
-asm void fn_802E6F38() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E6F3C
-// ----------------------------------------------------------------------------
-asm void fn_802E6F3C() {
+// asm_to_cpp: fn_802E6F3C
+asm void fn_802E6F3C(s8 *arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1246,19 +1710,15 @@ lbl_802E6F8C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E6FB4
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802E6FB4
 asm void fn_802E6FB4() {
     nofralloc
     stb r4, 0x24(r3)
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E6FBC
-// ----------------------------------------------------------------------------
-asm void fn_802E6FBC() {
+// asm_to_cpp: fn_802E6FBC
+asm s32 ** fn_802E6FBC() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1358,58 +1818,8 @@ lbl_802E70F0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E7110
-// ----------------------------------------------------------------------------
-asm void fn_802E7110() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    cmpwi r3, 0x0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    beq lbl_802E7138
-    cmpwi r4, 0x0
-    ble lbl_802E7138
-    bl dtor_80136CFC
-lbl_802E7138:
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E7150
-// ----------------------------------------------------------------------------
-asm void fn_802E7150() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    cmpwi r3, 0x0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    beq lbl_802E7178
-    cmpwi r4, 0x0
-    ble lbl_802E7178
-    bl dtor_80136CFC
-lbl_802E7178:
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E7190
-// ----------------------------------------------------------------------------
-asm void fn_802E7190() {
+// asm_to_cpp: fn_802E7190
+asm int fn_802E7190() {
     nofralloc
     li r0, 0x0
     lis r5, lbl_80462228@ha
@@ -1422,10 +1832,8 @@ asm void fn_802E7190() {
     bctr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E71B4
-// ----------------------------------------------------------------------------
-asm void fn_802E71B4() {
+// asm_to_cpp: fn_802E71B4
+asm int fn_802E71B4() {
     nofralloc
     lwz r12, 0x0(r3)
     lwz r4, 0x10(r4)
@@ -1435,9 +1843,7 @@ asm void fn_802E71B4() {
     bctr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E71CC
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802E71CC
 asm void fn_802E71CC() {
     nofralloc
     stwu r1, -0x40(r1)
@@ -1627,29 +2033,16 @@ lbl_802E743C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E745C
-// ----------------------------------------------------------------------------
-asm void fn_802E745C() {
-    nofralloc
-    stw r4, 0x2c(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E7464
-// ----------------------------------------------------------------------------
-asm void fn_802E7464() {
+// asm_to_cpp: fn_802E7464
+asm s32 *fn_802E7464(void) {
     nofralloc
     lis r3, lbl_80462440@ha
     addi r3, r3, lbl_80462440@l
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E7470
-// ----------------------------------------------------------------------------
-asm void fn_802E7470() {
+// asm_to_cpp: fn_802E7470
+asm int fn_802E7470() {
     nofralloc
     lwz r12, 0x0(r3)
     lwz r4, 0x10(r4)
@@ -1659,9 +2052,7 @@ asm void fn_802E7470() {
     bctr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E7488
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802E7488
 asm void fn_802E7488() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1745,10 +2136,8 @@ lbl_802E7584:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E75A4
-// ----------------------------------------------------------------------------
-asm void fn_802E75A4() {
+// asm_to_cpp: fn_802E75A4
+asm s32 fn_802E75A4() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1786,9 +2175,7 @@ lbl_802E7600:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E761C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802E761C
 asm void fn_802E761C() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1854,10 +2241,8 @@ lbl_802E76C8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E76EC
-// ----------------------------------------------------------------------------
-asm void fn_802E76EC() {
+// asm_to_cpp: fn_802E76EC
+asm s32 fn_802E76EC() {
     nofralloc
     stwu r1, -0x90(r1)
     mflr r0
@@ -1940,19 +2325,8 @@ lbl_802E77F0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E7818
-// ----------------------------------------------------------------------------
-asm void fn_802E7818() {
-    nofralloc
-    lwz r3, 0x24(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E7820
-// ----------------------------------------------------------------------------
-asm void fn_802E7820() {
+// asm_to_cpp: fn_802E7820
+asm void fn_802E7820(s8 *arg0) {
     nofralloc
     stwu r1, -0x40(r1)
     mflr r0
@@ -2062,10 +2436,8 @@ lbl_802E7998:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E79C0
-// ----------------------------------------------------------------------------
-asm void fn_802E79C0() {
+// asm_to_cpp: fn_802E79C0
+asm s32 fn_802E79C0() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -2144,29 +2516,8 @@ lbl_802E7AAC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E7AC0
-// ----------------------------------------------------------------------------
-asm void fn_802E7AC0() {
-    nofralloc
-    lbz r0, 0xcf(r3)
-    clrlwi r3, r0, 31
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E7ACC
-// ----------------------------------------------------------------------------
-asm void fn_802E7ACC() {
-    nofralloc
-    lwz r3, 0xc(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E7AD4
-// ----------------------------------------------------------------------------
-asm void fn_802E7AD4() {
+// asm_to_cpp: fn_802E7AD4
+asm int fn_802E7AD4() {
     nofralloc
     lwz r3, 0x2c(r3)
     lbz r0, 0xcf(r3)
@@ -2233,61 +2584,8 @@ lbl_802E7BA0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E7BA8
-// ----------------------------------------------------------------------------
-asm void fn_802E7BA8() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E7BAC
-// ----------------------------------------------------------------------------
-asm void fn_802E7BAC() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E7BB0
-// ----------------------------------------------------------------------------
-asm void fn_802E7BB0() {
-    nofralloc
-    li r3, 0x0
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E7BB8
-// ----------------------------------------------------------------------------
-asm void fn_802E7BB8() {
-    nofralloc
-    stw r4, 0x1c(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E7BC0
-// ----------------------------------------------------------------------------
-asm void fn_802E7BC0() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E7BC4
-// ----------------------------------------------------------------------------
-asm void fn_802E7BC4() {
-    nofralloc
-    lwz r3, 0x2c(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E7BCC
-// ----------------------------------------------------------------------------
-asm void fn_802E7BCC() {
+// asm_to_cpp: fn_802E7BCC
+asm int fn_802E7BCC() {
     nofralloc
     cmpwi r4, 0x0
     stw r4, 0x4(r3)
@@ -2302,36 +2600,7 @@ asm void fn_802E7BCC() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E7BF8
-// ----------------------------------------------------------------------------
-asm void fn_802E7BF8() {
-    nofralloc
-    stw r4, 0x4(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E7C00
-// ----------------------------------------------------------------------------
-asm void fn_802E7C00() {
-    nofralloc
-    li r3, 0x0
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E7C08
-// ----------------------------------------------------------------------------
-asm void fn_802E7C08() {
-    nofralloc
-    stw r4, 0x24(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E7C10
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802E7C10
 asm void fn_802E7C10() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -2410,9 +2679,7 @@ lbl_802E7D04:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E7D24
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802E7D24
 asm void fn_802E7D24() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -2488,9 +2755,7 @@ lbl_802E7E14:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E7E34
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802E7E34
 asm void fn_802E7E34() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -2523,10 +2788,8 @@ lbl_802E7E80:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E7EA0
-// ----------------------------------------------------------------------------
-asm void fn_802E7EA0() {
+// asm_to_cpp: fn_802E7EA0
+asm s8 * fn_802E7EA0() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -2578,10 +2841,8 @@ lbl_802E7F38:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E7F5C
-// ----------------------------------------------------------------------------
-asm void fn_802E7F5C() {
+// asm_to_cpp: fn_802E7F5C
+asm void fn_802E7F5C(s32 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -2629,9 +2890,7 @@ lbl_802E7FE8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E8000
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802E8000
 asm void fn_802E8000() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -2665,10 +2924,8 @@ asm void fn_802E8000() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E8074
-// ----------------------------------------------------------------------------
-asm void fn_802E8074() {
+// asm_to_cpp: fn_802E8074
+asm void fn_802E8074(s32 *arg0, s8 *arg1, s32 arg2) {
     nofralloc
     lwz r6, 0x0(r4)
     cmpwi r6, 0x0
@@ -2782,22 +3039,8 @@ lbl_802E81E0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E81F8
-// ----------------------------------------------------------------------------
-asm void fn_802E81F8() {
-    nofralloc
-    li r0, 0x0
-    stw r0, 0x10(r3)
-    stw r0, 0x14(r3)
-    stw r0, 0x18(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E820C
-// ----------------------------------------------------------------------------
-asm void fn_802E820C() {
+// asm_to_cpp: fn_802E820C
+asm void fn_802E820C(s32 *arg0) {
     nofralloc
     lis r5, lbl_80341A4C@ha
     lis r4, lbl_80341A50@ha
@@ -2808,38 +3051,15 @@ asm void fn_802E820C() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E8228
-// ----------------------------------------------------------------------------
-asm void fn_802E8228() {
-    nofralloc
-    mr r4, r3
-    lwz r3, 0x20(r3)
-    lwz r4, 0x0(r4)
-    b fn_802E8E5C
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E8238
-// ----------------------------------------------------------------------------
-asm void fn_802E8238() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E823C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802E823C
 asm void fn_802E823C() {
     nofralloc
     stfs f1, 0x4(r3)
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E8244
-// ----------------------------------------------------------------------------
-asm void fn_802E8244() {
+// asm_to_cpp: fn_802E8244
+asm void fn_802E8244(s32 *arg0, s32 arg1, s32 arg4) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -2884,53 +3104,7 @@ lbl_802E82CC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E82E0
-// ----------------------------------------------------------------------------
-asm void fn_802E82E0() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r4
-    stw r30, 0x8(r1)
-    mr r30, r3
-    lwz r3, 0x20(r3)
-    lwz r4, 0x0(r30)
-    bl fn_802E8F80
-    cmpwi r3, 0x0
-    bne lbl_802E8318
-    li r3, 0x0
-    b lbl_802E8328
-lbl_802E8318:
-    lwz r3, 0x20(r30)
-    mr r5, r31
-    lwz r4, 0x0(r30)
-    bl fn_802E8F9C
-lbl_802E8328:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E8340
-// ----------------------------------------------------------------------------
-asm void fn_802E8340() {
-    nofralloc
-    li r0, 0x0
-    stb r0, 0x42(r3)
-    stb r0, 0x43(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E8350
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802E8350
 asm void fn_802E8350() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -3081,29 +3255,8 @@ lbl_802E8570:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E8588
-// ----------------------------------------------------------------------------
-asm void fn_802E8588() {
-    nofralloc
-    mr r4, r3
-    lwz r3, 0x20(r3)
-    lwz r4, 0x0(r4)
-    b fn_802E8FCC
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E8598
-// ----------------------------------------------------------------------------
-asm void fn_802E8598() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E859C
-// ----------------------------------------------------------------------------
-asm void fn_802E859C() {
+// asm_to_cpp: fn_802E859C
+asm void fn_802E859C(s32 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -3133,10 +3286,8 @@ lbl_802E85EC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E8600
-// ----------------------------------------------------------------------------
-asm void fn_802E8600() {
+// asm_to_cpp: fn_802E8600
+asm M2C_UNK fn_802E8600() {
     nofralloc
     lwz r5, 0x0(r3)
     cmpwi r5, 0x4
@@ -3152,54 +3303,8 @@ asm void fn_802E8600() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E8630
-// ----------------------------------------------------------------------------
-asm void fn_802E8630() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r4
-    stw r30, 0x8(r1)
-    mr r30, r3
-    lwz r0, 0x0(r3)
-    cmpwi r0, 0x4
-    blt lbl_802E8660
-    li r3, -0x2
-    b lbl_802E869C
-lbl_802E8660:
-    lwz r3, 0x20(r3)
-    mr r4, r0
-    bl fn_802E8F80
-    cmpwi r3, 0x0
-    bne lbl_802E8680
-    lbz r0, 0x1c(r30)
-    cmpwi r0, 0x0
-    beq lbl_802E8688
-lbl_802E8680:
-    li r3, -0x2
-    b lbl_802E869C
-lbl_802E8688:
-    lis r5, fn_802E86B4@ha
-    lwz r3, 0x0(r30)
-    mr r4, r31
-    addi r5, r5, fn_802E86B4@l
-    bl fn_8028AD00
-lbl_802E869C:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E86B4
-// ----------------------------------------------------------------------------
-asm void fn_802E86B4() {
+// asm_to_cpp: fn_802E86B4
+asm void fn_802E86B4(s32 arg0, s32 arg1) {
     nofralloc
     cmpwi r4, 0x0
     bnelr
@@ -3212,10 +3317,8 @@ asm void fn_802E86B4() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E86D8
-// ----------------------------------------------------------------------------
-asm void fn_802E86D8() {
+// asm_to_cpp: fn_802E86D8
+asm u8 fn_802E86D8(s32 *arg0) {
     nofralloc
     lwz r0, 0x0(r3)
     cmpwi r0, 0x4
@@ -3229,10 +3332,8 @@ lbl_802E86EC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E86FC
-// ----------------------------------------------------------------------------
-asm void fn_802E86FC() {
+// asm_to_cpp: fn_802E86FC
+asm void fn_802E86FC(s32 *arg0) {
     nofralloc
     lwz r4, 0x0(r3)
     cmpwi r4, 0x4
@@ -3244,10 +3345,8 @@ asm void fn_802E86FC() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E871C
-// ----------------------------------------------------------------------------
-asm void fn_802E871C() {
+// asm_to_cpp: fn_802E871C
+asm void fn_802E871C(M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x90(r1)
     mflr r0
@@ -3419,28 +3518,8 @@ lbl_802E896C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E8984
-// ----------------------------------------------------------------------------
-asm void fn_802E8984() {
-    nofralloc
-    li r4, 0x0
-    li r0, -0x1
-    stw r4, 0x50(r3)
-    stw r0, 0x58(r3)
-    stw r4, 0xb8(r3)
-    stw r0, 0xc0(r3)
-    stw r4, 0x120(r3)
-    stw r0, 0x128(r3)
-    stw r4, 0x188(r3)
-    stw r0, 0x190(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E89B0
-// ----------------------------------------------------------------------------
-asm void fn_802E89B0() {
+// asm_to_cpp: fn_802E89B0
+asm s8 *fn_802E89B0(s8 *arg0, s32 arg1, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -3494,10 +3573,8 @@ lbl_802E8A28:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E8A6C
-// ----------------------------------------------------------------------------
-asm void fn_802E8A6C() {
+// asm_to_cpp: fn_802E8A6C
+asm s32 **fn_802E8A6C(s32 **arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -3544,10 +3621,8 @@ lbl_802E8AEC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E8B10
-// ----------------------------------------------------------------------------
-asm void fn_802E8B10() {
+// asm_to_cpp: fn_802E8B10
+asm void fn_802E8B10(s8 *arg0, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -3606,10 +3681,8 @@ lbl_802E8BCC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E8BE4
-// ----------------------------------------------------------------------------
-asm void fn_802E8BE4() {
+// asm_to_cpp: fn_802E8BE4
+asm void fn_802E8BE4(s32 **arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -3635,9 +3708,7 @@ lbl_802E8C08:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E8C38
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802E8C38
 asm void fn_802E8C38() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -3654,10 +3725,8 @@ asm void fn_802E8C38() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E8C68
-// ----------------------------------------------------------------------------
-asm void fn_802E8C68() {
+// asm_to_cpp: fn_802E8C68
+asm void fn_802E8C68(s32 arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -3721,9 +3790,7 @@ lbl_802E8D34:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E8D48
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802E8D48
 asm void fn_802E8D48() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -3740,10 +3807,8 @@ asm void fn_802E8D48() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E8D78
-// ----------------------------------------------------------------------------
-asm void fn_802E8D78() {
+// asm_to_cpp: fn_802E8D78
+asm void fn_802E8D78(s32 arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -3809,9 +3874,7 @@ lbl_802E8E48:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E8E5C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802E8E5C
 asm void fn_802E8E5C() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -3852,9 +3915,7 @@ lbl_802E8ED0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E8EE8
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802E8EE8
 asm void fn_802E8EE8() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -3898,24 +3959,8 @@ lbl_802E8F68:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E8F80
-// ----------------------------------------------------------------------------
-asm void fn_802E8F80() {
-    nofralloc
-    mulli r0, r4, 0x68
-    add r3, r3, r0
-    lwz r3, 0x50(r3)
-    neg r0, r3
-    or r0, r0, r3
-    srwi r3, r0, 31
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E8F9C
-// ----------------------------------------------------------------------------
-asm void fn_802E8F9C() {
+// asm_to_cpp: fn_802E8F9C
+asm s32 fn_802E8F9C() {
     nofralloc
     mulli r0, r4, 0x68
     add r3, r3, r0
@@ -3932,24 +3977,8 @@ lbl_802E8FC4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E8FCC
-// ----------------------------------------------------------------------------
-asm void fn_802E8FCC() {
-    nofralloc
-    mulli r0, r4, 0x68
-    add r3, r3, r0
-    lbz r3, 0x62(r3)
-    neg r0, r3
-    or r0, r0, r3
-    srwi r3, r0, 31
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E8FE8
-// ----------------------------------------------------------------------------
-asm void fn_802E8FE8() {
+// asm_to_cpp: fn_802E8FE8
+asm s8 *fn_802E8FE8(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -4084,10 +4113,8 @@ lbl_802E9188:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E91A4
-// ----------------------------------------------------------------------------
-asm void fn_802E91A4() {
+// asm_to_cpp: fn_802E91A4
+asm void fn_802E91A4(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -4117,10 +4144,8 @@ lbl_802E91F4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E9208
-// ----------------------------------------------------------------------------
-asm void fn_802E9208() {
+// asm_to_cpp: fn_802E9208
+asm s32 fn_802E9208(M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -4298,10 +4323,8 @@ lbl_802E943C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E9460
-// ----------------------------------------------------------------------------
-asm void fn_802E9460() {
+// asm_to_cpp: fn_802E9460
+asm void fn_802E9460(s32 arg0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -4394,10 +4417,8 @@ lbl_802E9588:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E95A4
-// ----------------------------------------------------------------------------
-asm void fn_802E95A4() {
+// asm_to_cpp: fn_802E95A4
+asm void fn_802E95A4(s32 arg0, s8 *arg1, u32 arg2) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -4528,18 +4549,8 @@ lbl_802E977C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E9798
-// ----------------------------------------------------------------------------
-asm void fn_802E9798() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E979C
-// ----------------------------------------------------------------------------
-asm void fn_802E979C() {
+// asm_to_cpp: fn_802E979C
+asm void fn_802E979C(M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -4684,9 +4695,7 @@ lbl_802E9964:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E997C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802E997C
 asm void fn_802E997C() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -4772,18 +4781,8 @@ lbl_802E9A7C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E9A9C
-// ----------------------------------------------------------------------------
-asm void fn_802E9A9C() {
-    nofralloc
-    b fn_80302248
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E9AA0
-// ----------------------------------------------------------------------------
-asm void fn_802E9AA0() {
+// asm_to_cpp: fn_802E9AA0
+asm s32 fn_802E9AA0() {
     nofralloc
     lis r5, lbl_8037B914@ha
     mr r4, r3
@@ -4791,10 +4790,8 @@ asm void fn_802E9AA0() {
     b fn_8030CAF0
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E9AB0
-// ----------------------------------------------------------------------------
-asm void fn_802E9AB0() {
+// asm_to_cpp: fn_802E9AB0
+asm void fn_802E9AB0(s32 **arg0) {
     nofralloc
     lis r5, lbl_8037B914@ha
     mr r4, r3
@@ -4802,10 +4799,8 @@ asm void fn_802E9AB0() {
     b fn_8030CB00
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E9AC0
-// ----------------------------------------------------------------------------
-asm void fn_802E9AC0() {
+// asm_to_cpp: fn_802E9AC0
+asm void fn_802E9AC0(s8 *arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -4893,10 +4888,8 @@ lbl_802E9BC0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E9BE8
-// ----------------------------------------------------------------------------
-asm void fn_802E9BE8() {
+// asm_to_cpp: fn_802E9BE8
+asm void fn_802E9BE8(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -4912,10 +4905,8 @@ asm void fn_802E9BE8() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E9C18
-// ----------------------------------------------------------------------------
-asm void fn_802E9C18() {
+// asm_to_cpp: fn_802E9C18
+asm void fn_802E9C18(s8 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -4934,122 +4925,8 @@ asm void fn_802E9C18() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E9C54
-// ----------------------------------------------------------------------------
-asm void fn_802E9C54() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_802EA0E8
-    bl fn_802ED438
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E9C78
-// ----------------------------------------------------------------------------
-asm void fn_802E9C78() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_802EA0E8
-    bl fn_802F1A84
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E9C9C
-// ----------------------------------------------------------------------------
-asm void fn_802E9C9C() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    bl fn_802EA0E8
-    mr r4, r31
-    bl fn_802F1AA0
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E9CD0
-// ----------------------------------------------------------------------------
-asm void fn_802E9CD0() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_802EA0E8
-    bl fn_802F1C84
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E9CF4
-// ----------------------------------------------------------------------------
-asm void fn_802E9CF4() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r5
-    stw r30, 0x18(r1)
-    mr r30, r4
-    stw r29, 0x14(r1)
-    mr r29, r3
-    bl fn_802EA0E8
-    mr r3, r29
-    mr r4, r30
-    mr r5, r31
-    bl fn_802E95A4
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E9D48
-// ----------------------------------------------------------------------------
-asm void fn_802E9D48() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_802EA0E8
-    bl fn_802F1E7C
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E9D6C
-// ----------------------------------------------------------------------------
-asm void fn_802E9D6C() {
+// asm_to_cpp: fn_802E9D6C
+asm void fn_802E9D6C(s32 arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x40(r1)
     mflr r0
@@ -5163,10 +5040,8 @@ asm void fn_802E9D6C() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E9F24
-// ----------------------------------------------------------------------------
-asm void fn_802E9F24() {
+// asm_to_cpp: fn_802E9F24
+asm s8 *fn_802E9F24(s8 *arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -5238,10 +5113,8 @@ lbl_802E9FD0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802EA030
-// ----------------------------------------------------------------------------
-asm void fn_802EA030() {
+// asm_to_cpp: fn_802EA030
+asm s32 **fn_802EA030(s32 **arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -5274,9 +5147,7 @@ lbl_802EA080:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802EA09C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802EA09C
 asm void fn_802EA09C() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -5302,19 +5173,15 @@ lbl_802EA0D4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802EA0E8
-// ----------------------------------------------------------------------------
-asm void fn_802EA0E8() {
+// asm_to_cpp: fn_802EA0E8
+asm s8 *fn_802EA0E8(void) {
     nofralloc
     lis r3, lbl_804623E8@ha
     lwz r3, lbl_804623E8@l(r3)
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802EA0F4
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802EA0F4
 asm void fn_802EA0F4() {
     nofralloc
     stwu r1, -0xd0(r1)
@@ -5902,9 +5769,7 @@ lbl_802EA904:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802EA954
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802EA954
 asm void fn_802EA954() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -6007,10 +5872,8 @@ lbl_802EAA84:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802EAAAC
-// ----------------------------------------------------------------------------
-asm void fn_802EAAAC() {
+// asm_to_cpp: fn_802EAAAC
+asm void fn_802EAAAC(s8 *arg0) {
     nofralloc
     lwz r4, 0x4(r3)
     li r8, 0x0
@@ -6051,9 +5914,7 @@ lbl_802EAB20:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802EAB30
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802EAB30
 asm void fn_802EAB30() {
     nofralloc
     stwu r1, -0x80(r1)
@@ -6363,10 +6224,8 @@ lbl_802EAFA8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802EAFD0
-// ----------------------------------------------------------------------------
-asm void fn_802EAFD0() {
+// asm_to_cpp: fn_802EAFD0
+asm void fn_802EAFD0(s8 *arg0, s32 arg1, s32 arg2) {
     nofralloc
     stwu r1, -0x60(r1)
     mflr r0
@@ -6510,10 +6369,8 @@ lbl_802EB19C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802EB1D0
-// ----------------------------------------------------------------------------
-asm void fn_802EB1D0() {
+// asm_to_cpp: fn_802EB1D0
+asm void fn_802EB1D0(s8 *arg0, s32 arg1, s32 arg2, s32 arg3) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -6595,10 +6452,8 @@ lbl_802EB2D4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802EB300
-// ----------------------------------------------------------------------------
-asm void fn_802EB300() {
+// asm_to_cpp: fn_802EB300
+asm void fn_802EB300(s8 *arg0, s32 *arg1, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x40(r1)
     mflr r0
@@ -6771,10 +6626,8 @@ lbl_802EB4FC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802EB568
-// ----------------------------------------------------------------------------
-asm void fn_802EB568() {
+// asm_to_cpp: fn_802EB568
+asm M2C_UNK fn_802EB568() {
     nofralloc
     stwu r1, -0x70(r1)
     mflr r0
@@ -8796,10 +8649,8 @@ lbl_802ED210:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802ED238
-// ----------------------------------------------------------------------------
-asm void fn_802ED238() {
+// asm_to_cpp: fn_802ED238
+asm void fn_802ED238(s8 *arg0, s32 arg1, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -8945,9 +8796,7 @@ lbl_802ED410:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802ED438
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802ED438
 asm void fn_802ED438() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -9042,9 +8891,7 @@ lbl_802ED508:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802ED590
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802ED590
 asm void fn_802ED590() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -9109,25 +8956,7 @@ lbl_802ED654:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802ED674
-// ----------------------------------------------------------------------------
-asm void fn_802ED674() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl OSGetAlarmUserData
-    bl fn_802E8600
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802ED698
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802ED698
 asm void fn_802ED698() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -9186,10 +9015,8 @@ lbl_802ED748:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802ED764
-// ----------------------------------------------------------------------------
-asm void fn_802ED764() {
+// asm_to_cpp: fn_802ED764
+asm int fn_802ED764() {
     nofralloc
     cmpwi r3, 0x1
     bne lbl_802ED77C
@@ -9208,9 +9035,7 @@ lbl_802ED77C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802ED79C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802ED79C
 asm void fn_802ED79C() {
     nofralloc
     stwu r1, -0x100(r1)
@@ -9863,9 +9688,7 @@ lbl_802EE0A8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802EE0E8
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802EE0E8
 asm void fn_802EE0E8() {
     nofralloc
     stwu r1, -0x50(r1)
@@ -10472,10 +10295,8 @@ lbl_802EE950:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802EE980
-// ----------------------------------------------------------------------------
-asm void fn_802EE980() {
+// asm_to_cpp: fn_802EE980
+asm void fn_802EE980(s8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -10675,10 +10496,8 @@ lbl_802EEC2C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802EEC48
-// ----------------------------------------------------------------------------
-asm void fn_802EEC48() {
+// asm_to_cpp: fn_802EEC48
+asm M2C_UNK fn_802EEC48() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -11711,10 +11530,8 @@ lbl_802EFA60:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802EFA78
-// ----------------------------------------------------------------------------
-asm void fn_802EFA78() {
+// asm_to_cpp: fn_802EFA78
+asm M2C_UNK fn_802EFA78() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -12493,10 +12310,8 @@ lbl_802F051C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802F0538
-// ----------------------------------------------------------------------------
-asm void fn_802F0538() {
+// asm_to_cpp: fn_802F0538
+asm M2C_UNK fn_802F0538() {
     nofralloc
     stwu r1, -0x60(r1)
     mflr r0
@@ -13791,10 +13606,8 @@ lbl_802F174C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802F1774
-// ----------------------------------------------------------------------------
-asm void fn_802F1774() {
+// asm_to_cpp: fn_802F1774
+asm void fn_802F1774(s8 *arg0, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -13968,10 +13781,8 @@ lbl_802F19BC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802F19D4
-// ----------------------------------------------------------------------------
-asm void fn_802F19D4() {
+// asm_to_cpp: fn_802F19D4
+asm s32 fn_802F19D4() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -14026,25 +13837,8 @@ lbl_802F1A68:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802F1A84
-// ----------------------------------------------------------------------------
-asm void fn_802F1A84() {
-    nofralloc
-    lwz r0, 0x14(r3)
-    cmpwi r0, 0x12
-    beq lbl_802F1A98
-    li r3, -0x1
-    blr
-lbl_802F1A98:
-    lwz r3, 0xb8(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802F1AA0
-// ----------------------------------------------------------------------------
-asm void fn_802F1AA0() {
+// asm_to_cpp: fn_802F1AA0
+asm void fn_802F1AA0(s8 *arg0, s32 arg1) {
     nofralloc
     neg r5, r4
     stwu r1, -0x20(r1)
@@ -14123,10 +13917,8 @@ lbl_802F1BBC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802F1BC4
-// ----------------------------------------------------------------------------
-asm void fn_802F1BC4() {
+// asm_to_cpp: fn_802F1BC4
+asm void fn_802F1BC4(s8 *arg0, s32 arg1, s32 arg2, s8 *arg3) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -14183,10 +13975,8 @@ lbl_802F1C68:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802F1C84
-// ----------------------------------------------------------------------------
-asm void fn_802F1C84() {
+// asm_to_cpp: fn_802F1C84
+asm void fn_802F1C84(s8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -14328,9 +14118,7 @@ lbl_802F1E60:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802F1E7C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802F1E7C
 asm void fn_802F1E7C() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -14356,10 +14144,8 @@ lbl_802F1E9C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802F1ECC
-// ----------------------------------------------------------------------------
-asm void fn_802F1ECC() {
+// asm_to_cpp: fn_802F1ECC
+asm u16 fn_802F1ECC() {
     nofralloc
     cmplwi r4, 0x1
     beq lbl_802F1EE4
@@ -14432,10 +14218,8 @@ lbl_802F1FAC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802F1FBC
-// ----------------------------------------------------------------------------
-asm void fn_802F1FBC() {
+// asm_to_cpp: fn_802F1FBC
+asm f32 fn_802F1FBC() {
     nofralloc
     stwu r1, -0x20(r1)
     stfd f31, 0x10(r1)
@@ -14563,20 +14347,8 @@ lbl_802F2170:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802F2180
-// ----------------------------------------------------------------------------
-asm void fn_802F2180() {
-    nofralloc
-    lwz r3, 0xc(r3)
-    lhz r3, 0x8(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802F218C
-// ----------------------------------------------------------------------------
-asm void fn_802F218C() {
+// asm_to_cpp: fn_802F218C
+asm s32 fn_802F218C(s8 *arg0) {
     nofralloc
     lis r4, lbl_80341E08@ha
     li r0, 0x0
@@ -14594,10 +14366,8 @@ asm void fn_802F218C() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802F21C4
-// ----------------------------------------------------------------------------
-asm void fn_802F21C4() {
+// asm_to_cpp: fn_802F21C4
+asm s32 **fn_802F21C4(s32 **arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -14639,9 +14409,7 @@ lbl_802F2234:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802F2250
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802F2250
 asm void fn_802F2250() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -14735,9 +14503,7 @@ lbl_802F2380:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802F2398
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802F2398
 asm void fn_802F2398() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -14810,9 +14576,7 @@ lbl_802F246C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802F2498
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802F2498
 asm void fn_802F2498() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -14867,9 +14631,7 @@ lbl_802F2520:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802F2554
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802F2554
 asm void fn_802F2554() {
     nofralloc
     stwu r1, -0x60(r1)
@@ -15011,9 +14773,7 @@ lbl_802F2710:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802F2744
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802F2744
 asm void fn_802F2744() {
     nofralloc
     stwu r1, -0x70(r1)
@@ -15227,10 +14987,8 @@ lbl_802F29F8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802F2A34
-// ----------------------------------------------------------------------------
-asm void fn_802F2A34() {
+// asm_to_cpp: fn_802F2A34
+asm s8 *fn_802F2A34(s8 *arg0, u32 arg1) {
     nofralloc
     lwz r5, 0x4(r3)
     addi r0, r3, 0x4
@@ -15249,4 +15007,3 @@ lbl_802F2A58:
     li r3, 0x0
     blr
 }
-

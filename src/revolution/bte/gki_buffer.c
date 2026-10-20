@@ -1,48 +1,121 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/gki_buffer.cpp
-// Total functions: 17
+extern M2C_UNK lbl_80373088;
+extern M2C_UNK lbl_803730A0;
+extern M2C_UNK lbl_80373138;
+extern M2C_UNK lbl_80373154;
+extern M2C_UNK lbl_80373174;
+extern M2C_UNK lbl_804276C0;
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_80373088[];
-extern u8 lbl_803730A0[];
-extern u8 lbl_80373138[];
-extern u8 lbl_80373154[];
-extern u8 lbl_80373174[];
-extern u8 lbl_804276C0[];
+void gki_init_free_queue();
+void gki_buffer_init();
+s32 GKI_init_q();
+s8 * GKI_getbuf();
+s8 * GKI_getpoolbuf();
+void GKI_freebuf();
+u16 GKI_get_buf_size();
+void GKI_send_msg();
+s8 * GKI_read_mbox();
+void GKI_enqueue();
+void GKI_enqueue_head();
+s8 * GKI_dequeue();
+s8 * GKI_remove_from_queue();
+s32 GKI_getfirst();
+s32 GKI_getnext();
+u8 GKI_queue_is_empty();
+u8 GKI_create_pool();
 
-// Forward declarations
-extern void GKI_create_pool();
-extern void GKI_dequeue();
-extern void GKI_disable();
-extern void GKI_enable();
-extern void GKI_enqueue();
-extern void GKI_enqueue_head();
+
+// gki_buffer_init: definicion C reemplazada por asm (ver abajo)
+
+
+s32 GKI_init_q(s8 *arg0) {
+    M2C_FIELD(arg0, s32 *, 4) = 0;
+    M2C_FIELD(arg0, s32 *, 0) = 0;
+    M2C_FIELD(arg0, s16 *, 8) = 0;
+    return (s32) arg0;
+}
+
+// GKI_getbuf: definicion C reemplazada por asm (ver abajo)
+
+
+// GKI_getpoolbuf: definicion C reemplazada por asm (ver abajo)
+
+
+void GKI_freebuf(s32 arg0);
+
+// GKI_get_buf_size: definicion C reemplazada por asm (ver abajo)
+
+
+
+s8 *GKI_read_mbox(u32 arg0);
+
+// GKI_enqueue: definicion C reemplazada por asm (ver abajo)
+
+
+void GKI_enqueue_head(s8 *arg0, s32 arg1);
+
+s8 *GKI_dequeue(s8 *arg0) {
+    s32 temp_r3;
+    s8 *temp_r31;
+
+    GKI_disable();
+    if ((arg0 == NULL) || ((s32) M2C_FIELD(arg0, u16 *, 8) == 0)) {
+        GKI_enable();
+        return NULL;
+    }
+    temp_r31 = M2C_FIELD(arg0, s8 **, 0);
+    temp_r3 = M2C_FIELD(temp_r31, s32 *, -8);
+    if (temp_r3 != 0) {
+        M2C_FIELD(arg0, s8 **, 0) = (s8 *) (temp_r3 + 8);
+    } else {
+        M2C_FIELD(arg0, s8 **, 0) = NULL;
+        M2C_FIELD(arg0, s32 *, 4) = 0;
+    }
+    M2C_FIELD(arg0, u16 *, 8) = (u16) (M2C_FIELD(arg0, u16 *, 8) - 1);
+    M2C_FIELD(temp_r31, s32 *, -8) = 0;
+    M2C_FIELD(temp_r31, s8 *, -2) = 1;
+    GKI_enable();
+    return temp_r31;
+}
+
+s8 *GKI_remove_from_queue(s8 *arg0, s8 *arg1);
+
+s32 GKI_getfirst(s32 *arg0) {
+    return *arg0;
+}
+
+// GKI_getnext: definicion C reemplazada por asm (ver abajo)
+
+
+u8 GKI_queue_is_empty(s8 *arg0) {
+    return (u8) (M2C_FIELD(arg0, u16 *, 8) == 0);
+}
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+u8 GKI_create_pool();
+void GKI_enqueue(s8 *arg0, s8 *arg1);
+void GKI_enqueue_head();
 extern void GKI_exception();
-extern void GKI_freebuf();
-extern void GKI_get_buf_size();
-extern void GKI_get_taskid();
-extern void GKI_getbuf();
-extern void GKI_getfirst();
-extern void GKI_getnext();
-extern void GKI_getpoolbuf();
-extern void GKI_init_q();
-extern void GKI_os_malloc();
-extern void GKI_queue_is_empty();
-extern void GKI_read_mbox();
-extern void GKI_remove_from_queue();
-extern void GKI_send_event();
-extern void GKI_send_msg();
+void GKI_freebuf();
+u16 GKI_get_buf_size(s32 arg0);
+s8 *GKI_getbuf(s32 arg0);
+s32 GKI_getnext(s8 *arg0);
+s8 *GKI_getpoolbuf(u32 arg0);
+s8 * GKI_read_mbox();
+s8 * GKI_remove_from_queue();
+void GKI_send_msg();
 extern void _restgpr_18();
 extern void _restgpr_27();
 extern void _savegpr_18();
 extern void _savegpr_27();
-extern void gki_buffer_init();
-extern void gki_init_free_queue();
+void gki_buffer_init(void);
+void gki_init_free_queue();
 
-// ----------------------------------------------------------------------------
-// gki_init_free_queue
-// ----------------------------------------------------------------------------
+// asm_to_cpp: gki_init_free_queue
 asm void gki_init_free_queue() {
     nofralloc
     stwu r1, -0x40(r1)
@@ -187,10 +260,8 @@ lbl_802A2520:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// gki_buffer_init
-// ----------------------------------------------------------------------------
-asm void gki_buffer_init() {
+// asm_to_cpp: gki_buffer_init
+asm void gki_buffer_init(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -367,22 +438,8 @@ lbl_802A264C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GKI_init_q
-// ----------------------------------------------------------------------------
-asm void GKI_init_q() {
-    nofralloc
-    li r0, 0x0
-    stw r0, 0x4(r3)
-    stw r0, 0x0(r3)
-    sth r0, 0x8(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GKI_getbuf
-// ----------------------------------------------------------------------------
-asm void GKI_getbuf() {
+// asm_to_cpp: GKI_getbuf
+asm s8 *GKI_getbuf(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -501,10 +558,8 @@ lbl_802A2994:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GKI_getpoolbuf
-// ----------------------------------------------------------------------------
-asm void GKI_getpoolbuf() {
+// asm_to_cpp: GKI_getpoolbuf
+asm s8 *GKI_getpoolbuf(u32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -571,9 +626,7 @@ lbl_802A2A7C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GKI_freebuf
-// ----------------------------------------------------------------------------
+// asm_to_cpp: GKI_freebuf
 asm void GKI_freebuf() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -683,10 +736,8 @@ lbl_802A2BF0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GKI_get_buf_size
-// ----------------------------------------------------------------------------
-asm void GKI_get_buf_size() {
+// asm_to_cpp: GKI_get_buf_size
+asm u16 GKI_get_buf_size(s32 arg0) {
     nofralloc
     subi r3, r3, 0x8
     clrlwi. r0, r3, 31
@@ -709,9 +760,7 @@ lbl_802A2C40:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GKI_send_msg
-// ----------------------------------------------------------------------------
+// asm_to_cpp: GKI_send_msg
 asm void GKI_send_msg() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -839,10 +888,8 @@ lbl_802A2DE4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GKI_read_mbox
-// ----------------------------------------------------------------------------
-asm void GKI_read_mbox() {
+// asm_to_cpp: GKI_read_mbox
+asm s8 * GKI_read_mbox() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -894,10 +941,8 @@ lbl_802A2E98:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GKI_enqueue
-// ----------------------------------------------------------------------------
-asm void GKI_enqueue() {
+// asm_to_cpp: GKI_enqueue
+asm void GKI_enqueue(s8 *arg0, s8 *arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -990,9 +1035,7 @@ lbl_802A2FD4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GKI_enqueue_head
-// ----------------------------------------------------------------------------
+// asm_to_cpp: GKI_enqueue_head
 asm void GKI_enqueue_head() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1087,62 +1130,8 @@ lbl_802A3114:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GKI_dequeue
-// ----------------------------------------------------------------------------
-asm void GKI_dequeue() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    bl GKI_disable
-    cmpwi r30, 0x0
-    beq lbl_802A3160
-    lhz r0, 0x8(r30)
-    cmpwi r0, 0x0
-    bne lbl_802A316C
-lbl_802A3160:
-    bl GKI_enable
-    li r3, 0x0
-    b lbl_802A31B8
-lbl_802A316C:
-    lwz r31, 0x0(r30)
-    lwz r3, -0x8(r31)
-    cmpwi r3, 0x0
-    beq lbl_802A3188
-    addi r0, r3, 0x8
-    stw r0, 0x0(r30)
-    b lbl_802A3194
-lbl_802A3188:
-    li r0, 0x0
-    stw r0, 0x0(r30)
-    stw r0, 0x4(r30)
-lbl_802A3194:
-    lhz r4, 0x8(r30)
-    li r3, 0x0
-    li r0, 0x1
-    subi r4, r4, 0x1
-    sth r4, 0x8(r30)
-    stw r3, -0x8(r31)
-    stb r0, -0x2(r31)
-    bl GKI_enable
-    mr r3, r31
-lbl_802A31B8:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GKI_remove_from_queue
-// ----------------------------------------------------------------------------
-asm void GKI_remove_from_queue() {
+// asm_to_cpp: GKI_remove_from_queue
+asm s8 * GKI_remove_from_queue() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1201,19 +1190,8 @@ lbl_802A327C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GKI_getfirst
-// ----------------------------------------------------------------------------
-asm void GKI_getfirst() {
-    nofralloc
-    lwz r3, 0x0(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GKI_getnext
-// ----------------------------------------------------------------------------
-asm void GKI_getnext() {
+// asm_to_cpp: GKI_getnext
+asm s32 GKI_getnext(s8 *arg0) {
     nofralloc
     lwz r3, -0x8(r3)
     cmpwi r3, 0x0
@@ -1225,21 +1203,8 @@ lbl_802A32B0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GKI_queue_is_empty
-// ----------------------------------------------------------------------------
-asm void GKI_queue_is_empty() {
-    nofralloc
-    lhz r0, 0x8(r3)
-    cntlzw r0, r0
-    extrwi r3, r0, 8, 19
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// GKI_create_pool
-// ----------------------------------------------------------------------------
-asm void GKI_create_pool() {
+// asm_to_cpp: GKI_create_pool
+asm u8 GKI_create_pool() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1472,4 +1437,3 @@ lbl_802A35F8:
     addi r1, r1, 0x20
     blr
 }
-

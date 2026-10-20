@@ -1,93 +1,171 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/bta_hh_act.cpp
-// Total functions: 18
+u8 HID_HostOpenDev();                             /* extern */
+M2C_UNK LogMsg_0();               /* extern */
+M2C_UNK LogMsg_1();           /* extern */
+M2C_UNK LogMsg_3(); /* extern */
+M2C_UNK bta_sys_busy();          /* extern */
+M2C_UNK bta_sys_idle();          /* extern */
+M2C_UNK bta_sys_sco_close();     /* extern */
+M2C_UNK fn_8029AB68();   /* extern */
+M2C_UNK memset();             /* extern */
+M2C_UNK bta_hh_cback();                             /* static */
+extern M2C_UNK lbl_80373408;
+extern M2C_UNK lbl_80373460;
+extern M2C_UNK lbl_80373490;
+extern M2C_UNK lbl_803734E0;
+extern M2C_UNK lbl_80373500;
+extern M2C_UNK lbl_8037354C;
+extern M2C_UNK lbl_80373760;
+extern M2C_UNK lbl_80373770;
+extern M2C_UNK lbl_8037378C;
+extern s8 lbl_80453D48;
+extern M2C_UNK lbl_80456C38;
+extern M2C_UNK lbl_80457040;
+extern s8 *lbl_8049CF78;
+extern M2C_UNK lbl_8049CFA0;
+extern u8 lbl_8049E000;
 
-// Small Data symbols (@sda21)
-extern float lbl_8049CF78;
-extern float lbl_8049CFA0;
-extern float lbl_8049E000;
+void bta_hh_api_enable();
+void bta_hh_api_disable();
+void bta_hh_disc_cmpl();
+void bta_hh_sdp_cback();
+void bta_hh_start_sdp();
+void bta_hh_sdp_cmpl();
+void bta_hh_api_disc_act();
+void bta_hh_open_cmpl_act();
+void bta_hh_open_act();
+void bta_hh_data_act();
+void bta_hh_close_act();
+void bta_hh_maint_dev_act();
+void bta_hh_get_acl_q_info();
+void bta_hh_write_dev_act();
 
-// Global data symbols (@ha/@l)
+// bta_hh_api_enable: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_hh_api_disable: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_hh_disc_cmpl: definicion C reemplazada por asm (ver abajo)
+
+
+
+// bta_hh_start_sdp: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_hh_sdp_cmpl: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_hh_api_disc_act: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_hh_open_cmpl_act: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_hh_open_act: definicion C reemplazada por asm (ver abajo)
+
+
+void bta_hh_data_act(s8 *arg0, s8 *arg1) {
+    s8 *sp8;
+    s8 *temp_r5;
+
+    temp_r5 = M2C_FIELD(arg1, s8 **, 0xC);
+    sp8 = temp_r5;
+    fn_8029AB68((u8) M2C_FIELD(arg1, u16 *, 6), temp_r5 + M2C_FIELD(temp_r5, u16 *, 4) + 8, M2C_FIELD(temp_r5, u16 *, 2), M2C_FIELD(arg0, u8 *, 0x1B), M2C_FIELD(arg0, u8 *, 0x13), M2C_FIELD(arg0, u8 *, 0x15));
+    fn_802A6134((s32 *) &sp8);
+}
+
+/*
+Decompilation failure in function bta_hh_handsk_act:
+
+Found bctr instruction at bta_hh_act.s line 779, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+/*
+Decompilation failure in function bta_hh_ctrl_dat_act:
+
+Found bctr instruction at bta_hh_act.s line 989, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+void bta_hh_close_act(s8 *arg0, s8 *arg1);
+
+/*
+Decompilation failure in function bta_hh_get_dscp_act:
+
+Found bctr instruction at bta_hh_act.s line 1188, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+// bta_hh_maint_dev_act: definicion C reemplazada por asm (ver abajo)
+
+
+// bta_hh_get_acl_q_info: definicion C reemplazada por asm (ver abajo)
+
+
+void bta_hh_write_dev_act(s8 *arg0, s8 *arg1);
+
+/*
+Decompilation failure in function bta_hh_cback:
+
+Found bctr instruction at bta_hh_act.s line 1555, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern u8 jumptable_80373660[];
 extern u8 jumptable_80373688[];
 extern u8 jumptable_8037370C[];
 extern u8 jumptable_80373734[];
 extern u8 jumptable_803738B8[];
 extern u8 jumptable_803738DC[];
-extern u8 lbl_80373408[];
-extern u8 lbl_80373460[];
-extern u8 lbl_80373490[];
-extern u8 lbl_803734E0[];
-extern u8 lbl_80373500[];
-extern u8 lbl_8037354C[];
-extern u8 lbl_80373760[];
-extern u8 lbl_80373770[];
-extern u8 lbl_8037378C[];
-extern u8 lbl_80453D48[];
-extern u8 lbl_80456C38[];
-extern u8 lbl_80457040[];
-
-// Forward declarations
-extern void GKI_getbuf();
-extern void HID_HostAddDev();
-extern void HID_HostCloseDev();
-extern void HID_HostDeregister();
-extern void HID_HostGetSDPRecord();
 extern void HID_HostInit();
-extern void HID_HostOpenDev();
-extern void HID_HostRegister();
-extern void HID_HostRemoveDev();
-extern void HID_HostSetSecurityLevel();
-extern void HID_HostWriteDev();
-extern void LogMsg_0();
-extern void LogMsg_1();
 extern void LogMsg_2();
-extern void LogMsg_3();
 extern void _restgpr_27();
 extern void _savegpr_27();
 extern void bta_hh_add_device_to_list();
-extern void bta_hh_api_disable();
-extern void bta_hh_api_disc_act();
-extern void bta_hh_api_enable();
-extern void bta_hh_cback();
+void bta_hh_api_disable(void);
+void bta_hh_api_disc_act(s8 *arg0, s8 *arg1);
+void bta_hh_api_enable(s8 *arg0);
+M2C_UNK bta_hh_cback();
 extern void bta_hh_clean_up_kdev();
-extern void bta_hh_close_act();
-extern void bta_hh_ctrl_dat_act();
-extern void bta_hh_data_act();
-extern void bta_hh_disc_cmpl();
-extern void bta_hh_get_acl_q_info();
-extern void bta_hh_get_dscp_act();
-extern void bta_hh_handsk_act();
-extern void bta_hh_maint_dev_act();
-extern void bta_hh_open_act();
-extern void bta_hh_open_cmpl_act();
-extern void bta_hh_sdp_cback();
-extern void bta_hh_sdp_cmpl();
+void bta_hh_close_act();
+extern int bta_hh_ctrl_dat_act();
+void bta_hh_disc_cmpl(void);
+void bta_hh_get_acl_q_info(M2C_UNK arg_sp0);
+extern int bta_hh_get_dscp_act();
+extern int bta_hh_handsk_act();
+void bta_hh_maint_dev_act(s8 *arg0, s8 *arg1);
+void bta_hh_open_act(s8 *arg0, u8 *arg1);
+void bta_hh_open_cmpl_act(s8 *arg0, s8 *arg1);
+void bta_hh_sdp_cback();
+void bta_hh_sdp_cmpl(s8 *arg0, u8 *arg1);
 extern void bta_hh_sm_execute();
-extern void bta_hh_start_sdp();
-extern void bta_hh_tod_spt();
+void bta_hh_start_sdp(s8 *arg0, s8 *arg1);
 extern void bta_hh_trace_dev_db();
-extern void bta_hh_write_dev_act();
-extern void bta_sys_busy();
+void bta_hh_write_dev_act();
 extern void bta_sys_conn_close();
 extern void bta_sys_conn_open();
-extern void bta_sys_idle();
-extern void bta_sys_sco_close();
 extern void bta_sys_sendmsg();
-extern void fn_8029AB68();
 extern void fn_8029ABA4();
 extern void fn_8029ABB4();
 extern void fn_802A59E8();
-extern void fn_802A6134();
-extern void l2cu_find_ccb_by_cid();
 extern void memcpy();
-extern void memset();
 
-// ----------------------------------------------------------------------------
-// bta_hh_api_enable
-// ----------------------------------------------------------------------------
-asm void bta_hh_api_enable() {
+// asm_to_cpp: bta_hh_api_enable
+asm void bta_hh_api_enable(s8 *arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -186,10 +264,8 @@ lbl_802A95D8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_hh_api_disable
-// ----------------------------------------------------------------------------
-asm void bta_hh_api_disable() {
+// asm_to_cpp: bta_hh_api_disable
+asm void bta_hh_api_disable(void) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -264,10 +340,8 @@ lbl_802A96FC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_hh_disc_cmpl
-// ----------------------------------------------------------------------------
-asm void bta_hh_disc_cmpl() {
+// asm_to_cpp: bta_hh_disc_cmpl
+asm void bta_hh_disc_cmpl(void) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -314,9 +388,7 @@ lbl_802A9750:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_hh_sdp_cback
-// ----------------------------------------------------------------------------
+// asm_to_cpp: bta_hh_sdp_cback
 asm void bta_hh_sdp_cback() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -403,10 +475,8 @@ lbl_802A98B0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_hh_start_sdp
-// ----------------------------------------------------------------------------
-asm void bta_hh_start_sdp() {
+// asm_to_cpp: bta_hh_start_sdp
+asm void bta_hh_start_sdp(s8 *arg0, s8 *arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -517,10 +587,8 @@ lbl_802A9A64:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_hh_sdp_cmpl
-// ----------------------------------------------------------------------------
-asm void bta_hh_sdp_cmpl() {
+// asm_to_cpp: bta_hh_sdp_cmpl
+asm void bta_hh_sdp_cmpl(s8 *arg0, u8 *arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -622,10 +690,8 @@ lbl_802A9BCC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_hh_api_disc_act
-// ----------------------------------------------------------------------------
-asm void bta_hh_api_disc_act() {
+// asm_to_cpp: bta_hh_api_disc_act
+asm void bta_hh_api_disc_act(s8 *arg0, s8 *arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -658,10 +724,8 @@ lbl_802A9C40:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_hh_open_cmpl_act
-// ----------------------------------------------------------------------------
-asm void bta_hh_open_cmpl_act() {
+// asm_to_cpp: bta_hh_open_cmpl_act
+asm void bta_hh_open_cmpl_act(s8 *arg0, s8 *arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -744,10 +808,8 @@ lbl_802A9D54:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_hh_open_act
-// ----------------------------------------------------------------------------
-asm void bta_hh_open_act() {
+// asm_to_cpp: bta_hh_open_act
+asm void bta_hh_open_act(s8 *arg0, u8 *arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -802,39 +864,8 @@ lbl_802A9E18:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_hh_data_act
-// ----------------------------------------------------------------------------
-asm void bta_hh_data_act() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    mr r8, r3
-    stw r0, 0x14(r1)
-    lwz r5, 0xc(r4)
-    stw r5, 0x8(r1)
-    lhz r0, 0x4(r5)
-    lhz r3, 0x6(r4)
-    add r4, r5, r0
-    lhz r5, 0x2(r5)
-    lbz r6, 0x1b(r8)
-    clrlwi r3, r3, 24
-    lbz r7, 0x13(r8)
-    addi r4, r4, 0x8
-    lbz r8, 0x15(r8)
-    bl fn_8029AB68
-    addi r3, r1, 0x8
-    bl fn_802A6134
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// bta_hh_handsk_act
-// ----------------------------------------------------------------------------
-asm void bta_hh_handsk_act() {
+// asm_to_cpp: bta_hh_handsk_act
+asm int bta_hh_handsk_act() {
     nofralloc
     stwu r1, -0x40(r1)
     mflr r0
@@ -1008,10 +1039,8 @@ lbl_802AA0C4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_hh_ctrl_dat_act
-// ----------------------------------------------------------------------------
-asm void bta_hh_ctrl_dat_act() {
+// asm_to_cpp: bta_hh_ctrl_dat_act
+asm int bta_hh_ctrl_dat_act() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1151,9 +1180,7 @@ lbl_802AA280:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_hh_close_act
-// ----------------------------------------------------------------------------
+// asm_to_cpp: bta_hh_close_act
 asm void bta_hh_close_act() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1295,10 +1322,8 @@ lbl_802AA4D0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_hh_get_dscp_act
-// ----------------------------------------------------------------------------
-asm void bta_hh_get_dscp_act() {
+// asm_to_cpp: bta_hh_get_dscp_act
+asm int bta_hh_get_dscp_act() {
     nofralloc
     lis r5, lbl_80453D48@ha
     mr r4, r3
@@ -1309,10 +1334,8 @@ asm void bta_hh_get_dscp_act() {
     bctr
 }
 
-// ----------------------------------------------------------------------------
-// bta_hh_maint_dev_act
-// ----------------------------------------------------------------------------
-asm void bta_hh_maint_dev_act() {
+// asm_to_cpp: bta_hh_maint_dev_act
+asm void bta_hh_maint_dev_act(s8 *arg0, s8 *arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1411,10 +1434,8 @@ lbl_802AA634:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_hh_get_acl_q_info
-// ----------------------------------------------------------------------------
-asm void bta_hh_get_acl_q_info() {
+// asm_to_cpp: bta_hh_get_acl_q_info
+asm void bta_hh_get_acl_q_info(M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x40(r1)
     mflr r0
@@ -1492,9 +1513,7 @@ lbl_802AA724:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_hh_write_dev_act
-// ----------------------------------------------------------------------------
+// asm_to_cpp: bta_hh_write_dev_act
 asm void bta_hh_write_dev_act() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1623,10 +1642,8 @@ lbl_802AA930:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// bta_hh_cback
-// ----------------------------------------------------------------------------
-asm void bta_hh_cback() {
+// asm_to_cpp: bta_hh_cback
+asm M2C_UNK bta_hh_cback() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1809,4 +1826,3 @@ lbl_802AABC4:
     addi r1, r1, 0x20
     blr
 }
-

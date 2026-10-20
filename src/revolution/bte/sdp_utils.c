@@ -1,48 +1,104 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/sdp_utils.cpp
-// Total functions: 13
+M2C_UNK LogMsg_0();               /* extern */
+M2C_UNK LogMsg_2();          /* extern */
+M2C_UNK memcpy();            /* extern */
+M2C_UNK memset();           /* extern */
+extern s32 lbl_803419C8;
+extern M2C_UNK lbl_8037879C;
+extern M2C_UNK lbl_803787D4;
+extern M2C_UNK lbl_80457C40;
 
-// Global data symbols (@ha/@l)
+s8 * sdpu_find_ccb_by_cid();
+s8 * sdpu_allocate_ccb();
+void sdpu_release_ccb();
+s8 * sdpu_build_attrib_seq();
+void sdpu_build_n_send_error();
+s8 * sdpu_extract_attr_seq();
+s32 sdpu_is_base_uuid();
+u8 sdpu_compare_uuid_arrays();
+u8 sdpu_compare_uuid_with_attr();
+void sdpu_sort_attr_list();
+
+// sdpu_find_ccb_by_cid: definicion C reemplazada por asm (ver abajo)
+
+
+// sdpu_allocate_ccb: definicion C reemplazada por asm (ver abajo)
+
+
+void sdpu_release_ccb(s8 *arg0) {
+    btu_stop_timer(arg0 + 8);
+    *arg0 = 0;
+}
+
+// sdpu_build_attrib_seq: definicion C reemplazada por asm (ver abajo)
+
+
+/*
+Decompilation failure in function sdpu_build_attrib_entry:
+
+Found bctr instruction at sdp_utils.s line 284, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+
+/*
+Decompilation failure in function sdpu_extract_uid_seq:
+
+Found bctr instruction at sdp_utils.s line 442, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+// sdpu_extract_attr_seq: definicion C reemplazada por asm (ver abajo)
+
+
+/*
+Decompilation failure in function sdpu_get_len_from_type:
+
+Found bctr instruction at sdp_utils.s line 841, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+s32 sdpu_is_base_uuid(s32 arg0);
+
+// sdpu_compare_uuid_arrays: definicion C reemplazada por asm (ver abajo)
+
+
+// sdpu_compare_uuid_with_attr: definicion C reemplazada por asm (ver abajo)
+
+
+void sdpu_sort_attr_list(u32 arg0, s32 arg1);
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern u8 jumptable_80378758[];
 extern u8 jumptable_803787F0[];
 extern u8 jumptable_80378810[];
 extern u8 jumptable_80378830[];
-extern u8 lbl_803419C8[];
-extern u8 lbl_8037879C[];
-extern u8 lbl_803787D4[];
-extern u8 lbl_80457C40[];
-
-// Forward declarations
-extern void GKI_getpoolbuf();
-extern void L2CA_DataWrite();
-extern void LogMsg_0();
-extern void LogMsg_2();
 extern void _restgpr_24();
 extern void _savegpr_24();
-extern void btu_stop_timer();
-extern void memcmp();
-extern void memcpy();
-extern void memset();
-extern void sdpu_allocate_ccb();
-extern void sdpu_build_attrib_entry();
-extern void sdpu_build_attrib_seq();
-extern void sdpu_build_n_send_error();
-extern void sdpu_compare_uuid_arrays();
-extern void sdpu_compare_uuid_with_attr();
-extern void sdpu_extract_attr_seq();
-extern void sdpu_extract_uid_seq();
-extern void sdpu_find_ccb_by_cid();
-extern void sdpu_get_len_from_type();
-extern void sdpu_is_base_uuid();
-extern void sdpu_release_ccb();
-extern void sdpu_sort_attr_list();
-extern void strlen();
+s8 *sdpu_allocate_ccb(void);
+extern int sdpu_build_attrib_entry();
+s8 *sdpu_build_attrib_seq(s8 *arg0, u16 *arg1, s32 arg2);
+void sdpu_build_n_send_error();
+u8 sdpu_compare_uuid_arrays(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3);
+u8 sdpu_compare_uuid_with_attr(s8 *arg0, s8 *arg1);
+s8 *sdpu_extract_attr_seq(s8 *arg0, u32 arg1, u16 *arg2);
+extern int sdpu_extract_uid_seq();
+s8 *sdpu_find_ccb_by_cid(u32 arg0);
+extern int sdpu_get_len_from_type();
+s32 sdpu_is_base_uuid();
+void sdpu_sort_attr_list();
 
-// ----------------------------------------------------------------------------
-// sdpu_find_ccb_by_cid
-// ----------------------------------------------------------------------------
-asm void sdpu_find_ccb_by_cid() {
+// asm_to_cpp: sdpu_find_ccb_by_cid
+asm s8 *sdpu_find_ccb_by_cid(u32 arg0) {
     nofralloc
     lis r4, lbl_80457C40@ha
     addi r4, r4, lbl_80457C40@l
@@ -86,10 +142,8 @@ lbl_802CE920:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// sdpu_allocate_ccb
-// ----------------------------------------------------------------------------
-asm void sdpu_allocate_ccb() {
+// asm_to_cpp: sdpu_allocate_ccb
+asm s8 *sdpu_allocate_ccb(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -125,31 +179,8 @@ lbl_802CE988:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// sdpu_release_ccb
-// ----------------------------------------------------------------------------
-asm void sdpu_release_ccb() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    addi r3, r3, 0x8
-    bl btu_stop_timer
-    li r0, 0x0
-    stb r0, 0x0(r31)
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// sdpu_build_attrib_seq
-// ----------------------------------------------------------------------------
-asm void sdpu_build_attrib_seq() {
+// asm_to_cpp: sdpu_build_attrib_seq
+asm s8 *sdpu_build_attrib_seq(s8 *arg0, u16 *arg1, s32 arg2) {
     nofralloc
     cmpwi r4, 0x0
     beq lbl_802CE9EC
@@ -278,10 +309,8 @@ lbl_802CEB9C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// sdpu_build_attrib_entry
-// ----------------------------------------------------------------------------
-asm void sdpu_build_attrib_entry() {
+// asm_to_cpp: sdpu_build_attrib_entry
+asm int sdpu_build_attrib_entry() {
     nofralloc
     li r0, 0x9
     stb r0, 0x0(r3)
@@ -379,9 +408,7 @@ lbl_802CECE4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// sdpu_build_n_send_error
-// ----------------------------------------------------------------------------
+// asm_to_cpp: sdpu_build_n_send_error
 asm void sdpu_build_n_send_error() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -471,10 +498,8 @@ lbl_802CEE1C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// sdpu_extract_uid_seq
-// ----------------------------------------------------------------------------
-asm void sdpu_extract_uid_seq() {
+// asm_to_cpp: sdpu_extract_uid_seq
+asm int sdpu_extract_uid_seq() {
     nofralloc
     li r0, 0x0
     addi r8, r3, 0x1
@@ -708,10 +733,8 @@ lbl_802CF17C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// sdpu_extract_attr_seq
-// ----------------------------------------------------------------------------
-asm void sdpu_extract_attr_seq() {
+// asm_to_cpp: sdpu_extract_attr_seq
+asm s8 *sdpu_extract_attr_seq(s8 *arg0, u32 arg1, u16 *arg2) {
     nofralloc
     li r0, 0x0
     sth r0, 0x0(r5)
@@ -885,10 +908,8 @@ lbl_802CF3C4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// sdpu_get_len_from_type
-// ----------------------------------------------------------------------------
-asm void sdpu_get_len_from_type() {
+// asm_to_cpp: sdpu_get_len_from_type
+asm int sdpu_get_len_from_type() {
     nofralloc
     clrlwi r0, r4, 29
     mr r8, r3
@@ -945,10 +966,8 @@ lbl_802CF49C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// sdpu_is_base_uuid
-// ----------------------------------------------------------------------------
-asm void sdpu_is_base_uuid() {
+// asm_to_cpp: sdpu_is_base_uuid
+asm s32 sdpu_is_base_uuid() {
     nofralloc
     lis r5, lbl_803419C8@ha
     li r0, 0x2
@@ -1015,10 +1034,8 @@ lbl_802CF574:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// sdpu_compare_uuid_arrays
-// ----------------------------------------------------------------------------
-asm void sdpu_compare_uuid_arrays() {
+// asm_to_cpp: sdpu_compare_uuid_arrays
+asm u8 sdpu_compare_uuid_arrays(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     nofralloc
     stwu r1, -0x40(r1)
     mflr r0
@@ -1194,10 +1211,8 @@ lbl_802CF7D8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// sdpu_compare_uuid_with_attr
-// ----------------------------------------------------------------------------
-asm void sdpu_compare_uuid_with_attr() {
+// asm_to_cpp: sdpu_compare_uuid_with_attr
+asm u8 sdpu_compare_uuid_with_attr(s8 *arg0, s8 *arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1241,9 +1256,7 @@ lbl_802CF878:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// sdpu_sort_attr_list
-// ----------------------------------------------------------------------------
+// asm_to_cpp: sdpu_sort_attr_list
 asm void sdpu_sort_attr_list() {
     nofralloc
     cmplwi r3, 0x1
@@ -1270,4 +1283,3 @@ lbl_802CF8C8:
     blt lbl_802CF8A0
     blr
 }
-

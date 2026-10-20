@@ -1,28 +1,53 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/gx/unk_802E5A8C.cpp
-// Total functions: 5
+extern s8 *__cpReg;
+extern f32 lbl_80341A30;
 
-// Small Data symbols (@sda21)
+/*
+Decompilation failure in function fn_802E5A8C:
+
+Found bctr instruction at unk_802E5A8C.s line 360, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+void fn_802E62B8();
+void fn_802E62C8();
+void fn_802E6300();
+void fn_802E6320();
+
+void fn_802E62B8(void) {
+    M2C_FIELD(__cpReg, s16 *, 4) = 4;
+}
+
+
+void fn_802E6300(s8 *arg0) {
+    f32 var_f0;
+
+    if ((s32) M2C_FIELD(arg0, s32 *, 0x18) == 1) {
+        var_f0 = M2C_FIELD(arg0, f32 *, 4);
+    } else {
+        var_f0 = M2C_FIELD(arg0, f32 *, 8);
+    }
+    M2C_FIELD(arg0, f32 *, 0xC) = var_f0;
+}
+
+// fn_802E6320: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern float __GXData;
-extern float __cpReg;
-
-// Global data symbols (@ha/@l)
 extern u8 jumptable_8037B178[];
 extern u8 jumptable_8037B1D4[];
-extern u8 lbl_80341A30[];
+extern int fn_802E5A8C();
+void fn_802E62C8();
+void fn_802E6320(s8 *arg0);
 
-// Forward declarations
-extern void fn_802E5A8C();
-extern void fn_802E62B8();
-extern void fn_802E62C8();
-extern void fn_802E6300();
-extern void fn_802E6320();
-
-// ----------------------------------------------------------------------------
-// fn_802E5A8C
-// ----------------------------------------------------------------------------
-asm void fn_802E5A8C() {
+// asm_to_cpp: fn_802E5A8C
+asm int fn_802E5A8C() {
     nofralloc
     lwz r5, __GXData
     lwz r0, 0x5ec(r5)
@@ -561,20 +586,7 @@ lbl_802E62AC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E62B8
-// ----------------------------------------------------------------------------
-asm void fn_802E62B8() {
-    nofralloc
-    lwz r3, __cpReg
-    li r0, 0x4
-    sth r0, 0x4(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E62C8
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802E62C8
 asm void fn_802E62C8() {
     nofralloc
     li r0, 0x0
@@ -595,27 +607,8 @@ lbl_802E62F8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802E6300
-// ----------------------------------------------------------------------------
-asm void fn_802E6300() {
-    nofralloc
-    lwz r0, 0x18(r3)
-    cmpwi r0, 0x1
-    bne lbl_802E6314
-    lfs f0, 0x4(r3)
-    b lbl_802E6318
-lbl_802E6314:
-    lfs f0, 0x8(r3)
-lbl_802E6318:
-    stfs f0, 0xc(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802E6320
-// ----------------------------------------------------------------------------
-asm void fn_802E6320() {
+// asm_to_cpp: fn_802E6320
+asm void fn_802E6320(s8 *arg0) {
     nofralloc
     lwz r0, 0x14(r3)
     cmpwi r0, 0x1
@@ -708,4 +701,3 @@ lbl_802E6440:
     stb r0, 0x1c(r3)
     blr
 }
-

@@ -1,91 +1,167 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/nand/NANDCore.cpp
-// Total functions: 28
+M2C_UNK NANDLoggingAddMessageAsync(); /* extern */
+u64 OSGetTime();                                 /* extern */
+M2C_UNK memset();          /* extern */
+extern s32 __NANDVersion;
+extern M2C_UNK lbl_8037F650;
+extern M2C_UNK lbl_8037F65C;
+extern u8 lbl_8049D16C;
+extern u8 lbl_8049D174;
+extern u8 lbl_8049D178;
+extern s32 lbl_8049D17C;
+extern s32 lbl_8049D180;
+extern M2C_UNK lbl_8049D188;
+extern M2C_UNK lbl_8049D18C;
+extern u8 s_currentDir_8037F600;
+extern u8 s_homeDir_804648E0;
+extern s32 s_libState_8049E260;
 
-// Small Data symbols (@sda21)
-extern float __NANDVersion;
+void nandRemoveTailToken();
+void nandGetHeadToken();
+void nandGetRelativeName();
+void nandConvertPath();
+s32 nandIsPrivatePath();
+s32 nandIsUnderPrivatePath();
+s32 nandIsInitialized();
+void nandReportErrorCode();
+u8 * nandConvertErrorCode();
+void nandGenerateAbsPath();
+void nandGetParentDirectory();
+u8 * NANDInit();
+s32 nandOnShutdown();
+void nandShutdownCallback();
+s32 nandChangeDir();
+u8 * NANDChangeDir();
+u8 * NANDChangeDirAsync();
+void fn_80311898();
+s32 nandChangeDirCallback();
+s32 NANDGetHomeDir();
+void nandCallback();
+s32 nandGetType();
+u8 * NANDGetType();
+u8 * fn_80311D38();
+u8 * NANDPrivateGetTypeAsync();
+void nandGetTypeCallback();
+u8 * nandGetHomeDir();
+void NANDInitBanner();
+
+// nandRemoveTailToken: definicion C reemplazada por asm (ver abajo)
+
+
+// nandGetHeadToken: definicion C reemplazada por asm (ver abajo)
+
+
+void nandGetRelativeName(u8 *arg0, u8 *arg1);
+
+void nandConvertPath(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+// nandIsPrivatePath: definicion C reemplazada por asm (ver abajo)
+
+
+// nandIsUnderPrivatePath: definicion C reemplazada por asm (ver abajo)
+
+
+s32 nandIsInitialized(void) {
+    return (s_libState_8049E260 - 2) == 0;
+}
+
+void nandReportErrorCode(s32 arg0) {
+
+}
+
+u8 *nandConvertErrorCode(u8 *arg0, s8 *arg_sp0, M2C_UNK arg_sp40, M2C_UNK arg_spC0, M2C_UNK arg_sp13C, u8 *arg_sp140);
+
+void nandGenerateAbsPath(u8 *arg0, u8 *arg1);
+
+// nandGetParentDirectory: definicion C reemplazada por asm (ver abajo)
+
+
+u8 *NANDInit(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+// nandOnShutdown: definicion C reemplazada por asm (ver abajo)
+
+
+void nandShutdownCallback(s32 arg0, s32 *arg1) {
+    *arg1 = 1;
+}
+
+s32 nandChangeDir(u8 *arg0, s8 *arg1, s32 arg2, s32 arg3);
+
+u8 *NANDChangeDir(s32 arg0);
+
+u8 *NANDChangeDirAsync(s32 arg0, s32 arg1, u8 *arg2);
+
+void fn_80311898(u8 *arg0, s8 *arg1);
+
+// nandChangeDirCallback: definicion C reemplazada por asm (ver abajo)
+
+
+// NANDGetHomeDir: definicion C reemplazada por asm (ver abajo)
+
+
+void nandCallback(s32 arg0, s8 *arg1);
+
+s32 nandGetType(u8 *arg0, s8 *arg1, s8 *arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0);
+
+u8 *NANDGetType(s32 arg0, s32 arg1);
+
+u8 *fn_80311D38(s32 arg0, s32 arg1, s32 arg2, u8 *arg3);
+
+u8 *NANDPrivateGetTypeAsync(s32 arg0, s32 arg1, s32 arg2, u8 *arg3);
+
+void nandGetTypeCallback(u8 *arg0, s8 *arg1);
+
+// nandGetHomeDir: definicion C reemplazada por asm (ver abajo)
+
+
+// NANDInitBanner: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern float at_3775_8049D170;
-extern float lbl_8049D16C;
-extern float lbl_8049D174;
-extern float lbl_8049D178;
-extern float lbl_8049D17C;
-extern float lbl_8049D180;
-extern float lbl_8049D188;
-extern float lbl_8049D18C;
-extern float s_libState_8049E260;
-
-// Global data symbols (@ha/@l)
 extern u8 at_2834_8037F5A0[];
 extern u8 at_3094_80341F90[];
-extern u8 lbl_8037F650[];
-extern u8 lbl_8037F65C[];
-extern u8 s_currentDir_8037F600[];
-extern u8 s_homeDir_804648E0[];
-
-// Forward declarations
-extern void ESP_CloseLib();
-extern void ESP_GetDataDir();
-extern void ESP_GetTitleId();
-extern void ESP_InitLib();
-extern void ISFS_OpenLib();
-extern void ISFS_ReadDir();
-extern void ISFS_ReadDirAsync();
-extern void ISFS_ShutdownAsync();
-extern void NANDChangeDir();
-extern void NANDChangeDirAsync();
-extern void NANDGetHomeDir();
-extern void NANDGetType();
-extern void NANDInit();
-extern void NANDInitBanner();
-extern void NANDLoggingAddMessageAsync();
-extern void NANDPrivateGetTypeAsync();
-extern void OSDisableInterrupts();
-extern void OSGetTime();
+u8 * NANDChangeDir();
+u8 * NANDChangeDirAsync();
+s32 NANDGetHomeDir(s32 arg0);
+u8 * NANDGetType();
+u8 * NANDInit();
+void NANDInitBanner(s8 *arg0, s32 arg1, s32 *arg2, s32 *arg3);
+u8 * NANDPrivateGetTypeAsync();
 extern void OSRegisterShutdownFunction();
 extern void OSRegisterVersion();
 extern void OSReport();
-extern void OSRestoreInterrupts();
-extern void __div2i();
 extern void _restgpr_26();
 extern void _restgpr_27();
 extern void _savegpr_26();
 extern void _savegpr_27();
-extern void fn_80311898();
-extern void fn_80311D38();
-extern void memset();
-extern void nandCallback();
-extern void nandChangeDir();
-extern void nandChangeDirCallback();
-extern void nandConvertErrorCode();
-extern void nandConvertPath();
-extern void nandGenerateAbsPath();
-extern void nandGetHeadToken();
-extern void nandGetHomeDir();
-extern void nandGetParentDirectory();
-extern void nandGetRelativeName();
-extern void nandGetType();
-extern void nandGetTypeCallback();
-extern void nandIsInitialized();
-extern void nandIsPrivatePath();
-extern void nandIsUnderPrivatePath();
-extern void nandOnShutdown();
-extern void nandRemoveTailToken();
-extern void nandReportErrorCode();
-extern void nandShutdownCallback();
-extern void sprintf();
-extern void strcmp();
+void fn_80311898();
+u8 * fn_80311D38();
+void nandCallback();
+s32 nandChangeDir();
+s32 nandChangeDirCallback(u8 *arg0);
+u8 * nandConvertErrorCode();
+void nandConvertPath();
+void nandGenerateAbsPath();
+void nandGetHeadToken(u8 *arg0, u8 *arg1, u8 *arg2, M2C_UNK arg_sp0);
+u8 *nandGetHomeDir(void);
+void nandGetParentDirectory(u8 *arg0, u8 *arg1);
+void nandGetRelativeName();
+s32 nandGetType();
+void nandGetTypeCallback();
+s32 nandIsPrivatePath(s32 arg0);
+s32 nandIsUnderPrivatePath(s8 *arg0);
+s32 nandOnShutdown(s32 arg0, u32 arg1, M2C_UNK arg_sp0);
+void nandRemoveTailToken(u8 *arg0, u8 *arg1);
 extern void strcpy();
-extern void strlen();
-extern void strncmp();
 extern void strncpy();
-extern void wcscmp();
 extern void wcsncpy();
 
-// ----------------------------------------------------------------------------
-// nandRemoveTailToken
-// ----------------------------------------------------------------------------
-asm void nandRemoveTailToken() {
+// asm_to_cpp: nandRemoveTailToken
+asm void nandRemoveTailToken(u8 *arg0, u8 *arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -147,10 +223,8 @@ lbl_80310D40:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// nandGetHeadToken
-// ----------------------------------------------------------------------------
-asm void nandGetHeadToken() {
+// asm_to_cpp: nandGetHeadToken
+asm void nandGetHeadToken(u8 *arg0, u8 *arg1, u8 *arg2, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -213,9 +287,7 @@ lbl_80310E18:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// nandGetRelativeName
-// ----------------------------------------------------------------------------
+// asm_to_cpp: nandGetRelativeName
 asm void nandGetRelativeName() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -262,9 +334,7 @@ lbl_80310EB0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// nandConvertPath
-// ----------------------------------------------------------------------------
+// asm_to_cpp: nandConvertPath
 asm void nandConvertPath() {
     nofralloc
     stwu r1, -0x220(r1)
@@ -355,10 +425,8 @@ lbl_80310FE8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// nandIsPrivatePath
-// ----------------------------------------------------------------------------
-asm void nandIsPrivatePath() {
+// asm_to_cpp: nandIsPrivatePath
+asm s32 nandIsPrivatePath(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -375,10 +443,8 @@ asm void nandIsPrivatePath() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// nandIsUnderPrivatePath
-// ----------------------------------------------------------------------------
-asm void nandIsUnderPrivatePath() {
+// asm_to_cpp: nandIsUnderPrivatePath
+asm s32 nandIsUnderPrivatePath(s8 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -406,30 +472,8 @@ lbl_8031107C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// nandIsInitialized
-// ----------------------------------------------------------------------------
-asm void nandIsInitialized() {
-    nofralloc
-    lwz r3, s_libState_8049E260
-    subi r0, r3, 0x2
-    cntlzw r0, r0
-    srwi r3, r0, 5
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// nandReportErrorCode
-// ----------------------------------------------------------------------------
-asm void nandReportErrorCode() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// nandConvertErrorCode
-// ----------------------------------------------------------------------------
-asm void nandConvertErrorCode() {
+// asm_to_cpp: nandConvertErrorCode
+asm u8 * nandConvertErrorCode() {
     nofralloc
     clrlwi r11, r1, 26
     mr r12, r1
@@ -528,9 +572,7 @@ lbl_803111E8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// nandGenerateAbsPath
-// ----------------------------------------------------------------------------
+// asm_to_cpp: nandGenerateAbsPath
 asm void nandGenerateAbsPath() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -590,10 +632,8 @@ lbl_803112B8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// nandGetParentDirectory
-// ----------------------------------------------------------------------------
-asm void nandGetParentDirectory() {
+// asm_to_cpp: nandGetParentDirectory
+asm void nandGetParentDirectory(u8 *arg0, u8 *arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -642,10 +682,8 @@ lbl_80311358:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// NANDInit
-// ----------------------------------------------------------------------------
-asm void NANDInit() {
+// asm_to_cpp: NANDInit
+asm u8 * NANDInit() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -732,10 +770,8 @@ lbl_80311488:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// nandOnShutdown
-// ----------------------------------------------------------------------------
-asm void nandOnShutdown() {
+// asm_to_cpp: nandOnShutdown
+asm s32 nandOnShutdown(s32 arg0, u32 arg1, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -795,20 +831,8 @@ lbl_80311554:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// nandShutdownCallback
-// ----------------------------------------------------------------------------
-asm void nandShutdownCallback() {
-    nofralloc
-    li r0, 0x1
-    stw r0, 0x0(r4)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// nandChangeDir
-// ----------------------------------------------------------------------------
-asm void nandChangeDir() {
+// asm_to_cpp: nandChangeDir
+asm s32 nandChangeDir() {
     nofralloc
     stwu r1, -0x60(r1)
     mflr r0
@@ -996,10 +1020,8 @@ lbl_803117F0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// NANDChangeDir
-// ----------------------------------------------------------------------------
-asm void NANDChangeDir() {
+// asm_to_cpp: NANDChangeDir
+asm u8 * NANDChangeDir() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1022,10 +1044,8 @@ lbl_80311840:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// NANDChangeDirAsync
-// ----------------------------------------------------------------------------
-asm void NANDChangeDirAsync() {
+// asm_to_cpp: NANDChangeDirAsync
+asm u8 * NANDChangeDirAsync() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1049,9 +1069,7 @@ lbl_80311888:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80311898
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80311898
 asm void fn_80311898() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1088,10 +1106,8 @@ lbl_803118E0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// nandChangeDirCallback
-// ----------------------------------------------------------------------------
-asm void nandChangeDirCallback() {
+// asm_to_cpp: nandChangeDirCallback
+asm s32 nandChangeDirCallback(u8 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1130,10 +1146,8 @@ lbl_80311978:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// NANDGetHomeDir
-// ----------------------------------------------------------------------------
-asm void NANDGetHomeDir() {
+// asm_to_cpp: NANDGetHomeDir
+asm s32 NANDGetHomeDir(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1162,9 +1176,7 @@ lbl_803119D4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// nandCallback
-// ----------------------------------------------------------------------------
+// asm_to_cpp: nandCallback
 asm void nandCallback() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1184,10 +1196,8 @@ asm void nandCallback() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// nandGetType
-// ----------------------------------------------------------------------------
-asm void nandGetType() {
+// asm_to_cpp: nandGetType
+asm s32 nandGetType() {
     nofralloc
     stwu r1, -0x70(r1)
     mflr r0
@@ -1393,10 +1403,8 @@ lbl_80311CDC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// NANDGetType
-// ----------------------------------------------------------------------------
-asm void NANDGetType() {
+// asm_to_cpp: NANDGetType
+asm u8 * NANDGetType() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1419,10 +1427,8 @@ lbl_80311D28:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80311D38
-// ----------------------------------------------------------------------------
-asm void fn_80311D38() {
+// asm_to_cpp: fn_80311D38
+asm u8 * fn_80311D38() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1446,10 +1452,8 @@ lbl_80311D70:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// NANDPrivateGetTypeAsync
-// ----------------------------------------------------------------------------
-asm void NANDPrivateGetTypeAsync() {
+// asm_to_cpp: NANDPrivateGetTypeAsync
+asm u8 * NANDPrivateGetTypeAsync() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1473,9 +1477,7 @@ lbl_80311DB8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// nandGetTypeCallback
-// ----------------------------------------------------------------------------
+// asm_to_cpp: nandGetTypeCallback
 asm void nandGetTypeCallback() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1513,20 +1515,16 @@ lbl_80311E18:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// nandGetHomeDir
-// ----------------------------------------------------------------------------
-asm void nandGetHomeDir() {
+// asm_to_cpp: nandGetHomeDir
+asm u8 *nandGetHomeDir(void) {
     nofralloc
     lis r3, s_homeDir_804648E0@ha
     addi r3, r3, s_homeDir_804648E0@l
     blr
 }
 
-// ----------------------------------------------------------------------------
-// NANDInitBanner
-// ----------------------------------------------------------------------------
-asm void NANDInitBanner() {
+// asm_to_cpp: NANDInitBanner
+asm void NANDInitBanner(s8 *arg0, s32 arg1, s32 *arg2, s32 *arg3) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1588,4 +1586,3 @@ lbl_80311F08:
     addi r1, r1, 0x20
     blr
 }
-

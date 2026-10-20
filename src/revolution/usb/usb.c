@@ -1,45 +1,73 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/usb/usb.cpp
-// Total functions: 14
+f64 memset();                  /* extern */
+extern M2C_UNK lbl_8038DC40;
+extern s32 lbl_8049D3A8;
+extern u8 lbl_8049D3AC;
+extern M2C_UNK lbl_8049D3B0;
+extern s32 lbl_8049E548;
+extern s32 lbl_8049E54C;
+extern u8 lbl_8049E550;
 
-// Small Data symbols (@sda21)
-extern float lbl_8049D3A8;
-extern float lbl_8049D3AC;
-extern float lbl_8049D3B0;
-extern float lbl_8049E548;
-extern float lbl_8049E54C;
-extern float lbl_8049E550;
+void USB_LOG();
+void USB_ERR();
+s32 IUSB_OpenLib();
+s32 IUSB_CloseLib();
+s32 fn_80329D84();
+s32 IUSB_OpenDeviceIds();
+s32 IUSB_CloseDeviceAsync();
+s32 __LongBlkMsgInt();
+s32 __IntrBlkMsgInt();
+void IUSB_ReadIntrMsgAsync();
+void IUSB_ReadBlkMsgAsync();
+void IUSB_WriteBlkMsgAsync();
+s32 __CtrlMsgInt();
+void IUSB_WriteCtrlMsgAsync();
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_8038DC40[];
+// USB_LOG: definicion C reemplazada por asm (ver abajo)
 
-// Forward declarations
+
+// USB_ERR: definicion C reemplazada por asm (ver abajo)
+
+
+s32 IUSB_OpenLib(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+s32 IUSB_CloseLib(s32 arg0) {
+    return 0;
+}
+
+s32 fn_80329D84(s32 arg0, s8 *arg1, M2C_UNK arg_sp0);
+
+s32 IUSB_OpenDeviceIds(s32 arg0, s32 arg1, s32 arg2, s32 *arg3, M2C_UNK arg_sp0);
+
+s32 IUSB_CloseDeviceAsync(s32 arg0, s32 arg1, s32 arg2, M2C_UNK arg_sp0);
+
+
+
+
+
+
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void DCFlushRange();
 extern void DCInvalidateRange();
-extern void IOS_CloseAsync();
-extern void IOS_Ioctlv();
-extern void IOS_IoctlvAsync();
-extern void IOS_Open();
-extern void IPCGetBufferHi();
-extern void IPCGetBufferLo();
 extern void IPCSetBufferLo();
-extern void IUSB_CloseDeviceAsync();
-extern void IUSB_CloseLib();
-extern void IUSB_OpenDeviceIds();
-extern void IUSB_OpenLib();
-extern void IUSB_ReadBlkMsgAsync();
-extern void IUSB_ReadIntrMsgAsync();
-extern void IUSB_WriteBlkMsgAsync();
-extern void IUSB_WriteCtrlMsgAsync();
-extern void OSDisableInterrupts();
+s32 IUSB_CloseDeviceAsync();
+s32 IUSB_OpenDeviceIds();
+s32 IUSB_OpenLib();
+void IUSB_ReadBlkMsgAsync();
+void IUSB_ReadIntrMsgAsync();
+void IUSB_WriteBlkMsgAsync();
+void IUSB_WriteCtrlMsgAsync();
 extern void OSReport();
-extern void OSRestoreInterrupts();
-extern void USB_ERR();
-extern void USB_LOG();
-extern void __CtrlMsgInt();
-extern void __IntrBlkMsgInt();
-extern void __LongBlkMsgInt();
+void USB_ERR(s8 *arg0, s32 arg1, s8 *arg2, s8 *arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7, M2C_UNK arg_sp8);
+void USB_LOG(s32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7, M2C_UNK arg_sp8);
+s32 __CtrlMsgInt();
+s32 __IntrBlkMsgInt();
+s32 __LongBlkMsgInt();
 extern void _restgpr_14();
 extern void _restgpr_20();
 extern void _restgpr_21();
@@ -52,18 +80,10 @@ extern void _savegpr_21();
 extern void _savegpr_23();
 extern void _savegpr_26();
 extern void _savegpr_27();
-extern void fn_80329D84();
-extern void iosAllocAligned();
-extern void iosCreateHeap();
-extern void iosFree();
-extern void memset();
-extern void snprintf();
-extern void vprintf();
+s32 fn_80329D84();
 
-// ----------------------------------------------------------------------------
-// USB_LOG
-// ----------------------------------------------------------------------------
-asm void USB_LOG() {
+// asm_to_cpp: USB_LOG
+asm void USB_LOG(s32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7, M2C_UNK arg_sp8) {
     nofralloc
     stwu r1, -0x80(r1)
     mflr r0
@@ -111,10 +131,8 @@ lbl_80329BC4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// USB_ERR
-// ----------------------------------------------------------------------------
-asm void USB_ERR() {
+// asm_to_cpp: USB_ERR
+asm void USB_ERR(s8 *arg0, s32 arg1, s8 *arg2, s8 *arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7, M2C_UNK arg_sp8) {
     nofralloc
     stwu r1, -0x80(r1)
     mflr r0
@@ -163,10 +181,8 @@ lbl_80329C70:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IUSB_OpenLib
-// ----------------------------------------------------------------------------
-asm void IUSB_OpenLib() {
+// asm_to_cpp: IUSB_OpenLib
+asm s32 IUSB_OpenLib() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -236,19 +252,8 @@ lbl_80329D54:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IUSB_CloseLib
-// ----------------------------------------------------------------------------
-asm void IUSB_CloseLib() {
-    nofralloc
-    li r3, 0x0
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_80329D84
-// ----------------------------------------------------------------------------
-asm void fn_80329D84() {
+// asm_to_cpp: fn_80329D84
+asm s32 fn_80329D84() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -366,10 +371,8 @@ lbl_80329F10:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IUSB_OpenDeviceIds
-// ----------------------------------------------------------------------------
-asm void IUSB_OpenDeviceIds() {
+// asm_to_cpp: IUSB_OpenDeviceIds
+asm s32 IUSB_OpenDeviceIds() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -459,10 +462,8 @@ lbl_8032A054:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IUSB_CloseDeviceAsync
-// ----------------------------------------------------------------------------
-asm void IUSB_CloseDeviceAsync() {
+// asm_to_cpp: IUSB_CloseDeviceAsync
+asm s32 IUSB_CloseDeviceAsync() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -542,10 +543,8 @@ lbl_8032A178:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __LongBlkMsgInt
-// ----------------------------------------------------------------------------
-asm void __LongBlkMsgInt() {
+// asm_to_cpp: __LongBlkMsgInt
+asm s32 __LongBlkMsgInt() {
     nofralloc
     stwu r1, -0x40(r1)
     mflr r0
@@ -775,10 +774,8 @@ lbl_8032A4CC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __IntrBlkMsgInt
-// ----------------------------------------------------------------------------
-asm void __IntrBlkMsgInt() {
+// asm_to_cpp: __IntrBlkMsgInt
+asm s32 __IntrBlkMsgInt() {
     nofralloc
     stwu r1, -0x40(r1)
     mflr r0
@@ -1009,9 +1006,7 @@ lbl_8032A824:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IUSB_ReadIntrMsgAsync
-// ----------------------------------------------------------------------------
+// asm_to_cpp: IUSB_ReadIntrMsgAsync
 asm void IUSB_ReadIntrMsgAsync() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1045,9 +1040,7 @@ asm void IUSB_ReadIntrMsgAsync() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IUSB_ReadBlkMsgAsync
-// ----------------------------------------------------------------------------
+// asm_to_cpp: IUSB_ReadBlkMsgAsync
 asm void IUSB_ReadBlkMsgAsync() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1094,9 +1087,7 @@ lbl_8032A93C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IUSB_WriteBlkMsgAsync
-// ----------------------------------------------------------------------------
+// asm_to_cpp: IUSB_WriteBlkMsgAsync
 asm void IUSB_WriteBlkMsgAsync() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1143,10 +1134,8 @@ lbl_8032A9DC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __CtrlMsgInt
-// ----------------------------------------------------------------------------
-asm void __CtrlMsgInt() {
+// asm_to_cpp: __CtrlMsgInt
+asm s32 __CtrlMsgInt() {
     nofralloc
     stwu r1, -0x50(r1)
     mflr r0
@@ -1534,9 +1523,7 @@ lbl_8032AF7C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// IUSB_WriteCtrlMsgAsync
-// ----------------------------------------------------------------------------
+// asm_to_cpp: IUSB_WriteCtrlMsgAsync
 asm void IUSB_WriteCtrlMsgAsync() {
     nofralloc
     stwu r1, -0x40(r1)
@@ -1575,4 +1562,3 @@ asm void IUSB_WriteCtrlMsgAsync() {
     addi r1, r1, 0x40
     blr
 }
-

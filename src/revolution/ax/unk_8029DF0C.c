@@ -1,48 +1,45 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/ax/unk_8029DF0C.cpp
-// Total functions: 2
+extern s32 lbl_8049DF50;
+extern s32 lbl_8049DF54;
+extern s32 lbl_8049DF58;
+extern s32 lbl_8049DF5C;
+extern s32 lbl_8049DF60;
+extern s32 lbl_8049DF64;
+extern s32 lbl_8049DF68;
+extern s32 lbl_8049DF6C;
+extern s32 lbl_8049DF70;
+extern s32 lbl_8049DF74;
+extern s32 lbl_8049DF78;
+extern s32 lbl_8049DF7C;
+extern s32 lbl_8049DF80;
+extern s32 lbl_8049DF84;
+extern s32 lbl_8049DF88;
+extern s32 lbl_8049DF8C;
+extern s32 lbl_8049DF90;
+extern s32 lbl_8049DF94;
+extern s32 lbl_8049DF98;
+extern s32 lbl_8049DF9C;
 
-// Small Data symbols (@sda21)
-extern float lbl_8049DF50;
-extern float lbl_8049DF54;
-extern float lbl_8049DF58;
-extern float lbl_8049DF5C;
-extern float lbl_8049DF60;
-extern float lbl_8049DF64;
-extern float lbl_8049DF68;
-extern float lbl_8049DF6C;
-extern float lbl_8049DF70;
-extern float lbl_8049DF74;
-extern float lbl_8049DF78;
-extern float lbl_8049DF7C;
-extern float lbl_8049DF80;
-extern float lbl_8049DF84;
-extern float lbl_8049DF88;
-extern float lbl_8049DF8C;
-extern float lbl_8049DF90;
-extern float lbl_8049DF94;
-extern float lbl_8049DF98;
-extern float lbl_8049DF9C;
+void __AXSPBQuit();
+void __AXDepopVoice();
 
-// Forward declarations
-extern void __AXDepopVoice();
-extern void __AXSPBQuit();
+void __AXSPBQuit(void) {
+
+}
+
+// __AXDepopVoice: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+void __AXDepopVoice(s8 *arg0, M2C_UNK arg_sp0);
 extern void _restgpr_27();
 extern void _savegpr_27();
 
-// ----------------------------------------------------------------------------
-// __AXSPBQuit
-// ----------------------------------------------------------------------------
-asm void __AXSPBQuit() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// __AXDepopVoice
-// ----------------------------------------------------------------------------
-asm void __AXDepopVoice() {
+// asm_to_cpp: __AXDepopVoice
+asm void __AXDepopVoice(s8 *arg0, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -136,4 +133,3 @@ asm void __AXDepopVoice() {
     addi r1, r1, 0x20
     blr
 }
-

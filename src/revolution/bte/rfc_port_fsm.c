@@ -1,9 +1,136 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/rfc_port_fsm.cpp
-// Total functions: 17
+M2C_UNK LogMsg_0();               /* extern */
+M2C_UNK memset();             /* extern */
+extern M2C_UNK lbl_80377FE0;
+extern M2C_UNK lbl_80457828;
 
-// Global data symbols (@ha/@l)
+/*
+Decompilation failure in function rfc_port_sm_execute:
+
+Cannot find branch target rfc_port_sm_term_wait_sec_check
+*/
+
+/*
+Decompilation failure in function rfc_port_sm_state_closed:
+
+Found bctr instruction at rfc_port_fsm.s line 72, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+/*
+Decompilation failure in function rfc_port_sm_sabme_wait_ua:
+
+Found bctr instruction at rfc_port_fsm.s line 171, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+/*
+Decompilation failure in function rfc_port_sm_term_wait_sec_check:
+
+Found bctr instruction at rfc_port_fsm.s line 282, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+/*
+Decompilation failure in function rfc_port_sm_orig_wait_sec_check:
+
+Found bctr instruction at rfc_port_fsm.s line 402, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+/*
+Decompilation failure in function rfc_port_sm_opened:
+
+Found bctr instruction at rfc_port_fsm.s line 492, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+/*
+Decompilation failure in function rfc_port_sm_disc_wait_ua:
+
+Found bctr instruction at rfc_port_fsm.s line 622, but the corresponding jump table is not provided.
+
+Please include it in the input .s file(s), or in an additional file.
+
+*/
+
+void rfc_process_pn();
+void rfc_process_rpn();
+void rfc_process_msc();
+void rfc_process_rls();
+void rfc_process_nsc();
+void rfc_process_test_rsp();
+void rfc_process_fcon();
+void rfc_process_fcoff();
+void rfc_process_l2cap_congestion();
+void rfc_set_port_state();
+
+// rfc_process_pn: definicion C reemplazada por asm (ver abajo)
+
+
+
+// rfc_process_msc: definicion C reemplazada por asm (ver abajo)
+
+
+// rfc_process_rls: definicion C reemplazada por asm (ver abajo)
+
+
+void rfc_process_nsc(s32 arg0, s32 arg1) {
+
+}
+
+void rfc_process_test_rsp(s32 arg0, s32 arg1) {
+    GKI_freebuf(arg1);
+}
+
+// rfc_process_fcon: definicion C reemplazada por asm (ver abajo)
+
+
+// rfc_process_fcoff: definicion C reemplazada por asm (ver abajo)
+
+
+
+void rfc_set_port_state(u8 *arg0, s8 *arg1, s32 arg2) {
+    if (M2C_FIELD(arg1, u16 *, 0x12) & 1) {
+        M2C_FIELD(arg0, u8 *, 0) = M2C_FIELD(arg1, u8 *, 0xA);
+    }
+    if (M2C_FIELD(arg1, u16 *, 0x12) & 2) {
+        M2C_FIELD(arg0, u8 *, 1) = (u8) M2C_FIELD(arg1, u8 *, 0xB);
+    }
+    if (M2C_FIELD(arg1, u16 *, 0x12) & 4) {
+        M2C_FIELD(arg0, u8 *, 2) = (u8) M2C_FIELD(arg1, u8 *, 0xC);
+    }
+    if (M2C_FIELD(arg1, u16 *, 0x12) & 8) {
+        M2C_FIELD(arg0, u8 *, 3) = (u8) M2C_FIELD(arg1, u8 *, 0xD);
+    }
+    if (M2C_FIELD(arg1, u16 *, 0x12) & 0x10) {
+        M2C_FIELD(arg0, u8 *, 4) = (u8) M2C_FIELD(arg1, u8 *, 0xE);
+    }
+    if (M2C_FIELD(arg1, u16 *, 0x12) & 0x3F00) {
+        M2C_FIELD(arg0, u8 *, 5) = (u8) M2C_FIELD(arg1, u8 *, 0xF);
+    }
+    if (M2C_FIELD(arg1, u16 *, 0x12) & 0x20) {
+        M2C_FIELD(arg0, u8 *, 7) = (u8) M2C_FIELD(arg1, u8 *, 0x10);
+    }
+    if (M2C_FIELD(arg1, u16 *, 0x12) & 0x40) {
+        M2C_FIELD(arg0, u8 *, 8) = (u8) M2C_FIELD(arg1, u8 *, 0x11);
+    }
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern u8 jumptable_80377D38[];
 extern u8 jumptable_80377DA0[];
 extern u8 jumptable_80377E38[];
@@ -16,13 +143,6 @@ extern u8 lbl_80377D14[];
 extern u8 lbl_80377D74[];
 extern u8 lbl_80377F18[];
 extern u8 lbl_80377F78[];
-extern u8 lbl_80377FE0[];
-extern u8 lbl_80457828[];
-extern u8 rfc_sec_check_complete[];
-
-// Forward declarations
-extern void GKI_freebuf();
-extern void LogMsg_0();
 extern void LogMsg_1();
 extern void LogMsg_2();
 extern void PORT_ControlCnf();
@@ -32,7 +152,6 @@ extern void PORT_DlcEstablishCnf();
 extern void PORT_DlcEstablishInd();
 extern void PORT_DlcReleaseInd();
 extern void PORT_FlowInd();
-extern void PORT_LineStatusInd();
 extern void PORT_ParNegCnf();
 extern void PORT_ParNegInd();
 extern void PORT_PortNegCnf();
@@ -42,30 +161,26 @@ extern void _restgpr_27();
 extern void _savegpr_27();
 extern void btm_sec_abort_access_req();
 extern void btm_sec_mx_access_request();
-extern void memset();
-extern void port_find_mcb_dlci_port();
 extern void port_rfc_closed();
 extern void rfc_check_send_cmd();
 extern void rfc_dec_credit();
 extern void rfc_port_closed();
-extern void rfc_port_sm_disc_wait_ua();
-extern void rfc_port_sm_execute();
-extern void rfc_port_sm_opened();
-extern void rfc_port_sm_orig_wait_sec_check();
-extern void rfc_port_sm_sabme_wait_ua();
-extern void rfc_port_sm_state_closed();
-extern void rfc_port_sm_term_wait_sec_check();
+extern int rfc_port_sm_disc_wait_ua();
+extern int rfc_port_sm_execute();
+extern int rfc_port_sm_opened();
+extern int rfc_port_sm_orig_wait_sec_check();
+extern int rfc_port_sm_sabme_wait_ua();
+extern int rfc_port_sm_state_closed();
+extern int rfc_port_sm_term_wait_sec_check();
 extern void rfc_port_timer_start();
 extern void rfc_port_timer_stop();
-extern void rfc_process_fcoff();
-extern void rfc_process_fcon();
-extern void rfc_process_l2cap_congestion();
-extern void rfc_process_msc();
-extern void rfc_process_nsc();
-extern void rfc_process_pn();
-extern void rfc_process_rls();
-extern void rfc_process_rpn();
-extern void rfc_process_test_rsp();
+void rfc_process_fcoff(s8 *arg0, s32 arg1);
+void rfc_process_fcon(s8 *arg0, s32 arg1);
+void rfc_process_l2cap_congestion();
+void rfc_process_msc(s8 *arg0, s32 arg1, s8 *arg2, M2C_UNK arg_sp0);
+void rfc_process_pn(s8 *arg0, s32 arg1, s8 *arg2);
+void rfc_process_rls(s32 arg0, s32 arg1, s8 *arg2);
+void rfc_process_rpn();
 extern void rfc_send_buf_uih();
 extern void rfc_send_disc();
 extern void rfc_send_dm();
@@ -76,12 +191,9 @@ extern void rfc_send_rls();
 extern void rfc_send_rpn();
 extern void rfc_send_sabme();
 extern void rfc_send_ua();
-extern void rfc_set_port_state();
 
-// ----------------------------------------------------------------------------
-// rfc_port_sm_execute
-// ----------------------------------------------------------------------------
-asm void rfc_port_sm_execute() {
+// asm_to_cpp: rfc_port_sm_execute
+asm int rfc_port_sm_execute() {
     nofralloc
     cmpwi r3, 0x0
     mr r6, r4
@@ -129,10 +241,8 @@ lbl_802C6E04:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// rfc_port_sm_state_closed
-// ----------------------------------------------------------------------------
-asm void rfc_port_sm_state_closed() {
+// asm_to_cpp: rfc_port_sm_state_closed
+asm int rfc_port_sm_state_closed() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -231,10 +341,8 @@ lbl_802C6F68:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// rfc_port_sm_sabme_wait_ua
-// ----------------------------------------------------------------------------
-asm void rfc_port_sm_sabme_wait_ua() {
+// asm_to_cpp: rfc_port_sm_sabme_wait_ua
+asm int rfc_port_sm_sabme_wait_ua() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -343,10 +451,8 @@ lbl_802C7104:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// rfc_port_sm_term_wait_sec_check
-// ----------------------------------------------------------------------------
-asm void rfc_port_sm_term_wait_sec_check() {
+// asm_to_cpp: rfc_port_sm_term_wait_sec_check
+asm int rfc_port_sm_term_wait_sec_check() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -466,10 +572,8 @@ lbl_802C72C0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// rfc_port_sm_orig_wait_sec_check
-// ----------------------------------------------------------------------------
-asm void rfc_port_sm_orig_wait_sec_check() {
+// asm_to_cpp: rfc_port_sm_orig_wait_sec_check
+asm int rfc_port_sm_orig_wait_sec_check() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -561,10 +665,8 @@ lbl_802C7410:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// rfc_port_sm_opened
-// ----------------------------------------------------------------------------
-asm void rfc_port_sm_opened() {
+// asm_to_cpp: rfc_port_sm_opened
+asm int rfc_port_sm_opened() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -695,10 +797,8 @@ lbl_802C75FC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// rfc_port_sm_disc_wait_ua
-// ----------------------------------------------------------------------------
-asm void rfc_port_sm_disc_wait_ua() {
+// asm_to_cpp: rfc_port_sm_disc_wait_ua
+asm int rfc_port_sm_disc_wait_ua() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -775,10 +875,8 @@ lbl_802C771C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// rfc_process_pn
-// ----------------------------------------------------------------------------
-asm void rfc_process_pn() {
+// asm_to_cpp: rfc_process_pn
+asm void rfc_process_pn(s8 *arg0, s32 arg1, s8 *arg2) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -844,9 +942,7 @@ lbl_802C77FC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// rfc_process_rpn
-// ----------------------------------------------------------------------------
+// asm_to_cpp: rfc_process_rpn
 asm void rfc_process_rpn() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -1058,10 +1154,8 @@ lbl_802C7B04:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// rfc_process_msc
-// ----------------------------------------------------------------------------
-asm void rfc_process_msc() {
+// asm_to_cpp: rfc_process_msc
+asm void rfc_process_msc(s8 *arg0, s32 arg1, s8 *arg2, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1165,10 +1259,8 @@ lbl_802C7C78:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// rfc_process_rls
-// ----------------------------------------------------------------------------
-asm void rfc_process_rls() {
+// asm_to_cpp: rfc_process_rls
+asm void rfc_process_rls(s32 arg0, s32 arg1, s8 *arg2) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1210,27 +1302,8 @@ lbl_802C7D04:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// rfc_process_nsc
-// ----------------------------------------------------------------------------
-asm void rfc_process_nsc() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// rfc_process_test_rsp
-// ----------------------------------------------------------------------------
-asm void rfc_process_test_rsp() {
-    nofralloc
-    mr r3, r4
-    b GKI_freebuf
-}
-
-// ----------------------------------------------------------------------------
-// rfc_process_fcon
-// ----------------------------------------------------------------------------
-asm void rfc_process_fcon() {
+// asm_to_cpp: rfc_process_fcon
+asm void rfc_process_fcon(s8 *arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1260,10 +1333,8 @@ lbl_802C7D78:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// rfc_process_fcoff
-// ----------------------------------------------------------------------------
-asm void rfc_process_fcoff() {
+// asm_to_cpp: rfc_process_fcoff
+asm void rfc_process_fcoff(s8 *arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1294,9 +1365,7 @@ lbl_802C7DDC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// rfc_process_l2cap_congestion
-// ----------------------------------------------------------------------------
+// asm_to_cpp: rfc_process_l2cap_congestion
 asm void rfc_process_l2cap_congestion() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1337,59 +1406,3 @@ lbl_802C7E60:
     addi r1, r1, 0x10
     blr
 }
-
-// ----------------------------------------------------------------------------
-// rfc_set_port_state
-// ----------------------------------------------------------------------------
-asm void rfc_set_port_state() {
-    nofralloc
-    lhz r0, 0x12(r4)
-    clrlwi. r0, r0, 31
-    beq lbl_802C7E8C
-    lbz r0, 0xa(r4)
-    stb r0, 0x0(r3)
-lbl_802C7E8C:
-    lhz r0, 0x12(r4)
-    rlwinm. r0, r0, 0, 30, 30
-    beq lbl_802C7EA0
-    lbz r0, 0xb(r4)
-    stb r0, 0x1(r3)
-lbl_802C7EA0:
-    lhz r0, 0x12(r4)
-    rlwinm. r0, r0, 0, 29, 29
-    beq lbl_802C7EB4
-    lbz r0, 0xc(r4)
-    stb r0, 0x2(r3)
-lbl_802C7EB4:
-    lhz r0, 0x12(r4)
-    rlwinm. r0, r0, 0, 28, 28
-    beq lbl_802C7EC8
-    lbz r0, 0xd(r4)
-    stb r0, 0x3(r3)
-lbl_802C7EC8:
-    lhz r0, 0x12(r4)
-    rlwinm. r0, r0, 0, 27, 27
-    beq lbl_802C7EDC
-    lbz r0, 0xe(r4)
-    stb r0, 0x4(r3)
-lbl_802C7EDC:
-    lhz r0, 0x12(r4)
-    rlwinm. r0, r0, 0, 18, 23
-    beq lbl_802C7EF0
-    lbz r0, 0xf(r4)
-    stb r0, 0x5(r3)
-lbl_802C7EF0:
-    lhz r0, 0x12(r4)
-    rlwinm. r0, r0, 0, 26, 26
-    beq lbl_802C7F04
-    lbz r0, 0x10(r4)
-    stb r0, 0x7(r3)
-lbl_802C7F04:
-    lhz r0, 0x12(r4)
-    rlwinm. r0, r0, 0, 25, 25
-    beqlr
-    lbz r0, 0x11(r4)
-    stb r0, 0x8(r3)
-    blr
-}
-

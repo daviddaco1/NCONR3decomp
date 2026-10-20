@@ -1,51 +1,80 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/nwc24/NWC24Schedule.cpp
-// Total functions: 11
+M2C_UNK memset();           /* extern */
+extern M2C_UNK lbl_8038EDA0;
+extern M2C_UNK lbl_8038EDB4;
+extern M2C_UNK lbl_8038EDC8;
+extern M2C_UNK lbl_804700A0;
+extern s32 lbl_8049E580;
+extern s32 lbl_8049E584;
+extern s32 lbl_8049E588;
 
-// Small Data symbols (@sda21)
-extern float lbl_8049E580;
-extern float lbl_8049E584;
-extern float lbl_8049E588;
+s32 NWC24SuspendScheduler();
+s32 NWC24ResumeScheduler();
+s32 fn_80334334();
+s32 NWC24iRequestGenerateUserId();
+void ExecSuspendScheduler();
+void fn_803346A0();
+void fn_803346B0();
+s32 fn_803346C0();
+s32 fn_803346D0();
+s32 ExecResumeScheduler();
+s32 ExecNoParamCommand();
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_8038EDA0[];
-extern u8 lbl_8038EDB4[];
-extern u8 lbl_8038EDC8[];
-extern u8 lbl_804700A0[];
+// NWC24SuspendScheduler: definicion C reemplazada por asm (ver abajo)
 
-// Forward declarations
-extern void ExecNoParamCommand();
-extern void ExecResumeScheduler();
-extern void ExecSuspendScheduler();
-extern void NWC24ResumeScheduler();
-extern void NWC24SuspendScheduler();
-extern void NWC24iCloseResourceManager();
-extern void NWC24iIoctlResourceManager();
-extern void NWC24iOpenResourceManager();
-extern void NWC24iRequestGenerateUserId();
-extern void OSDisableInterrupts();
+
+// NWC24ResumeScheduler: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_80334334: definicion C reemplazada por asm (ver abajo)
+
+
+// NWC24iRequestGenerateUserId: definicion C reemplazada por asm (ver abajo)
+
+
+void ExecSuspendScheduler(s32 *arg0) {
+    ExecNoParamCommand(NULL, 6, arg0);
+}
+
+void fn_803346A0(s32 *arg0) {
+    ExecNoParamCommand(NULL, 7, arg0);
+}
+
+void fn_803346B0(void) {
+    ExecNoParamCommand(NULL, 8, NULL);
+}
+
+s32 fn_803346C0(void) {
+    return ExecNoParamCommand(NULL, 9, NULL);
+}
+
+s32 fn_803346D0(void) {
+    return ExecNoParamCommand(NULL, 1, NULL);
+}
+
+s32 ExecResumeScheduler(void) {
+    return ExecNoParamCommand(NULL, 3, NULL);
+}
+
+// ExecNoParamCommand: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+s32 ExecNoParamCommand(s32 *arg0, s32 arg1, s32 *arg2, M2C_UNK arg_sp0);
+s32 NWC24ResumeScheduler(void);
+s32 NWC24SuspendScheduler(void);
+s32 NWC24iRequestGenerateUserId(s8 *arg0, s32 *arg1, s32 arg2, M2C_UNK arg_sp0);
 extern void OSInitMutex();
-extern void OSLockMutex();
-extern void OSRestoreInterrupts();
 extern void OSUnlockMutex();
 extern void _restgpr_27();
 extern void _savegpr_27();
-extern void fn_8031C81C();
-extern void fn_80334098();
-extern void fn_803340AC();
-extern void fn_803340C0();
-extern void fn_80334334();
-extern void fn_803346A0();
-extern void fn_803346B0();
-extern void fn_803346C0();
-extern void fn_803346D0();
-extern void memset();
+s32 fn_80334334(s32 arg0);
 
-// ----------------------------------------------------------------------------
-// NWC24SuspendScheduler
-// ----------------------------------------------------------------------------
-asm void NWC24SuspendScheduler() {
+// asm_to_cpp: NWC24SuspendScheduler
+asm s32 NWC24SuspendScheduler(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -104,10 +133,8 @@ lbl_80334220:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// NWC24ResumeScheduler
-// ----------------------------------------------------------------------------
-asm void NWC24ResumeScheduler() {
+// asm_to_cpp: NWC24ResumeScheduler
+asm s32 NWC24ResumeScheduler(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -175,10 +202,8 @@ lbl_80334310:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80334334
-// ----------------------------------------------------------------------------
-asm void fn_80334334() {
+// asm_to_cpp: fn_80334334
+asm s32 fn_80334334(s32 arg0) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -297,10 +322,8 @@ lbl_803344B4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// NWC24iRequestGenerateUserId
-// ----------------------------------------------------------------------------
-asm void NWC24iRequestGenerateUserId() {
+// asm_to_cpp: NWC24iRequestGenerateUserId
+asm s32 NWC24iRequestGenerateUserId(s8 *arg0, s32 *arg1, s32 arg2, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -427,76 +450,8 @@ lbl_80334678:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// ExecSuspendScheduler
-// ----------------------------------------------------------------------------
-asm void ExecSuspendScheduler() {
-    nofralloc
-    mr r5, r3
-    li r3, 0x0
-    li r4, 0x6
-    b ExecNoParamCommand
-}
-
-// ----------------------------------------------------------------------------
-// fn_803346A0
-// ----------------------------------------------------------------------------
-asm void fn_803346A0() {
-    nofralloc
-    mr r5, r3
-    li r3, 0x0
-    li r4, 0x7
-    b ExecNoParamCommand
-}
-
-// ----------------------------------------------------------------------------
-// fn_803346B0
-// ----------------------------------------------------------------------------
-asm void fn_803346B0() {
-    nofralloc
-    li r3, 0x0
-    li r4, 0x8
-    li r5, 0x0
-    b ExecNoParamCommand
-}
-
-// ----------------------------------------------------------------------------
-// fn_803346C0
-// ----------------------------------------------------------------------------
-asm void fn_803346C0() {
-    nofralloc
-    li r3, 0x0
-    li r4, 0x9
-    li r5, 0x0
-    b ExecNoParamCommand
-}
-
-// ----------------------------------------------------------------------------
-// fn_803346D0
-// ----------------------------------------------------------------------------
-asm void fn_803346D0() {
-    nofralloc
-    li r3, 0x0
-    li r4, 0x1
-    li r5, 0x0
-    b ExecNoParamCommand
-}
-
-// ----------------------------------------------------------------------------
-// ExecResumeScheduler
-// ----------------------------------------------------------------------------
-asm void ExecResumeScheduler() {
-    nofralloc
-    li r3, 0x0
-    li r4, 0x3
-    li r5, 0x0
-    b ExecNoParamCommand
-}
-
-// ----------------------------------------------------------------------------
-// ExecNoParamCommand
-// ----------------------------------------------------------------------------
-asm void ExecNoParamCommand() {
+// asm_to_cpp: ExecNoParamCommand
+asm s32 ExecNoParamCommand(s32 *arg0, s32 arg1, s32 *arg2, M2C_UNK arg_sp0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -594,4 +549,3 @@ lbl_80334838:
     addi r1, r1, 0x30
     blr
 }
-

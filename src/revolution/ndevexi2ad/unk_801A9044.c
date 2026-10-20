@@ -1,53 +1,97 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/ndevexi2ad/unk_801A9044.cpp
-// Total functions: 10
+M2C_UNK OSSetAlarm();                      /* extern */
+extern s32 lbl_803603A8;
+extern s32 lbl_80360408;
+extern s32 lbl_80360418;
+extern M2C_UNK lbl_803D9D28;
+extern u8 lbl_8049C430;
+extern s32 lbl_8049C434;
+extern s32 lbl_8049D950;
+extern s32 *lbl_8049D954;
+extern u8 lbl_8049D958;
 
-// Small Data symbols (@sda21)
-extern float lbl_8049C430;
-extern float lbl_8049C434;
-extern float lbl_8049D950;
-extern float lbl_8049D954;
-extern float lbl_8049D958;
+void fn_801A9044();
+s32 fn_801A90AC();
+void fn_801A9118();
+void fn_801A913C();
+void fn_801A91D4();
+void fn_801A9280();
+void fn_801A9384();
+void fn_801A9418();
+void fn_801A95B4();
+void fn_801A95CC();
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_803603A8[];
-extern u8 lbl_80360408[];
-extern u8 lbl_80360418[];
-extern u8 lbl_803D9D28[];
+// fn_801A9044: definicion C reemplazada por asm (ver abajo)
 
-// Forward declarations
+
+s32 fn_801A90AC(s32 *arg0) {
+    s32 temp_r31;
+    s32 temp_r3;
+    s32 var_r4;
+    u16 var_r4_2;
+
+    temp_r3 = OSDisableInterrupts();
+    var_r4 = M2C_FIELD(arg0, u16 *, 0xC) - M2C_FIELD(arg0, u16 *, 0x10);
+    if (var_r4 < 0) {
+        var_r4 += M2C_FIELD(arg0, u16 *, 6);
+    }
+    var_r4_2 = (u16) var_r4;
+    if ((s32) M2C_FIELD(arg0, u16 *, 0xE) != 0) {
+        var_r4_2 += 1;
+    }
+    temp_r31 = M2C_FIELD(arg0, s32 *, 0x14) + var_r4_2;
+    OSRestoreInterrupts(temp_r3);
+    return temp_r31;
+}
+
+// fn_801A9118: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_801A913C: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_801A91D4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+
+void fn_801A9280(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 arg4, M2C_UNK arg_sp0);
+
+void fn_801A9384(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7, M2C_UNK arg_sp8);
+
+void fn_801A9418(s32 *arg0, s32 *arg1, s32 *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7, M2C_UNK arg_sp0, M2C_UNK arg_sp8);
+
+void fn_801A95B4(void) {
+    if ((s32 *) lbl_8049D954 != NULL) {
+        M2C_FIELD(lbl_8049D954, s8 *, 0x22) = 0;
+    }
+}
+
+// fn_801A95CC: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void OSCancelAlarm();
 extern void OSCreateAlarm();
-extern void OSDisableInterrupts();
-extern void OSDisableScheduler();
 extern void OSReport();
-extern void OSRestoreInterrupts();
-extern void OSSetAlarm();
 extern void PPCHalt();
 extern void UpdateVertexColor__Q34nw4r2ut10CharWriterFv();
-extern void VISetPostRetraceCallback();
-extern void VISetPreRetraceCallback();
 extern void _restgpr_26();
 extern void _restgpr_27();
 extern void _savegpr_26();
 extern void _savegpr_27();
-extern void fn_801A9044();
-extern void fn_801A90AC();
-extern void fn_801A9118();
-extern void fn_801A913C();
-extern void fn_801A91D4();
-extern void fn_801A9280();
-extern void fn_801A9384();
-extern void fn_801A9418();
-extern void fn_801A95B4();
-extern void fn_801A95CC();
+void fn_801A9044(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7, M2C_UNK arg_sp8);
+void fn_801A9118(s8 *arg0, s8 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+void fn_801A913C(s32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7, M2C_UNK arg_sp8);
+void fn_801A91D4();
+void fn_801A9280();
+void fn_801A9384();
+void fn_801A9418();
+void fn_801A95CC(s8 *arg0, s8 *arg1, s8 *arg2);
 extern void fn_80315F98();
 
-// ----------------------------------------------------------------------------
-// fn_801A9044
-// ----------------------------------------------------------------------------
-asm void fn_801A9044() {
+// asm_to_cpp: fn_801A9044
+asm void fn_801A9044(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7, M2C_UNK arg_sp8) {
     nofralloc
     stwu r1, -0x80(r1)
     bne cr1, lbl_801A906C
@@ -78,46 +122,8 @@ lbl_801A906C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801A90AC
-// ----------------------------------------------------------------------------
-asm void fn_801A90AC() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    bl OSDisableInterrupts
-    lhz r4, 0x10(r31)
-    lhz r0, 0xc(r31)
-    subf. r4, r4, r0
-    bge lbl_801A90DC
-    lhz r0, 0x6(r31)
-    add r4, r4, r0
-lbl_801A90DC:
-    lhz r0, 0xe(r31)
-    clrlwi r4, r4, 16
-    cmpwi r0, 0x0
-    beq lbl_801A90F4
-    addi r0, r4, 0x1
-    clrlwi r4, r0, 16
-lbl_801A90F4:
-    lwz r0, 0x14(r31)
-    add r31, r0, r4
-    bl OSRestoreInterrupts
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_801A9118
-// ----------------------------------------------------------------------------
-asm void fn_801A9118() {
+// asm_to_cpp: fn_801A9118
+asm void fn_801A9118(s8 *arg0, s8 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
     nofralloc
     lbz r7, 0x0(r4)
     lbz r6, 0x1(r4)
@@ -130,10 +136,8 @@ asm void fn_801A9118() {
     b UpdateVertexColor__Q34nw4r2ut10CharWriterFv
 }
 
-// ----------------------------------------------------------------------------
-// fn_801A913C
-// ----------------------------------------------------------------------------
-asm void fn_801A913C() {
+// asm_to_cpp: fn_801A913C
+asm void fn_801A913C(s32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7, M2C_UNK arg_sp8) {
     nofralloc
     stwu r1, -0x80(r1)
     mflr r0
@@ -177,9 +181,7 @@ lbl_801A91C0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801A91D4
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801A91D4
 asm void fn_801A91D4() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -229,9 +231,7 @@ lbl_801A9264:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801A9280
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801A9280
 asm void fn_801A9280() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -305,9 +305,7 @@ lbl_801A936C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801A9384
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801A9384
 asm void fn_801A9384() {
     nofralloc
     stwu r1, -0x80(r1)
@@ -350,9 +348,7 @@ lbl_801A93B8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801A9418
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801A9418
 asm void fn_801A9418() {
     nofralloc
     stwu r1, -0x90(r1)
@@ -465,23 +461,8 @@ lbl_801A959C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801A95B4
-// ----------------------------------------------------------------------------
-asm void fn_801A95B4() {
-    nofralloc
-    lwz r3, lbl_8049D954
-    cmpwi r3, 0x0
-    beqlr
-    li r0, 0x0
-    stb r0, 0x22(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_801A95CC
-// ----------------------------------------------------------------------------
-asm void fn_801A95CC() {
+// asm_to_cpp: fn_801A95CC
+asm void fn_801A95CC(s8 *arg0, s8 *arg1, s8 *arg2) {
     nofralloc
     lbz r11, 0x0(r4)
     lbz r10, 0x1(r4)
@@ -501,4 +482,3 @@ asm void fn_801A95CC() {
     stb r0, 0x1f(r3)
     b UpdateVertexColor__Q34nw4r2ut10CharWriterFv
 }
-

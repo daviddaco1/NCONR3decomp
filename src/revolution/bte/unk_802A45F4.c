@@ -1,82 +1,97 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/unk_802A45F4.cpp
-// Total functions: 13
+M2C_UNK IUSB_CloseDeviceAsync(s32, void (*)(s8), M2C_UNK); /* extern */
+M2C_UNK *IUSB_OpenDeviceIds();   /* extern */
+s32 IUSB_ReadBlkMsgAsync(s32, u8, s32, s32, void (*)(s16, s8 *), s8 *); /* extern */
+s32 IUSB_ReadIntrMsgAsync(s32, u8, s32, s32, void (*)(s16, s8 *), s8 *); /* extern */
+s32 IUSB_WriteBlkMsgAsync(s32, u8, u16, s8 *, void (*)(s32, s32), s8 *); /* extern */
+s32 IUSB_WriteCtrlMsgAsync(s32, M2C_UNK, M2C_UNK, M2C_UNK, M2C_UNK, u16, s8 *, void (*)(s32, s32)); /* extern */
+M2C_UNK OSSwitchFiberEx(s8 *, M2C_UNK, M2C_UNK, M2C_UNK, void (*)(s32), s8 *); /* extern */
+M2C_UNK memcpy();                   /* extern */
+M2C_UNK memset();        /* extern */
+extern M2C_UNK lbl_804501E0;
+extern M2C_UNK lbl_80450240;
+extern M2C_UNK lbl_80451240;
+extern s32 lbl_8049CF48;
+extern M2C_UNK *lbl_8049CF4C;
+extern M2C_UNK lbl_8049CF50;
+extern M2C_UNK lbl_8049CF54;
+extern s8 lbl_8049DFD0;
+extern u8 lbl_8049DFD1;
+extern s32 lbl_8049DFD4;
+extern u32 lbl_8049DFD8;
+extern u8 lbl_8049DFDC;
+extern s32 lbl_8049DFE0;
+extern s32 lbl_8049DFE4;
 
-// Small Data symbols (@sda21)
-extern float lbl_8049CF48;
-extern float lbl_8049CF4C;
-extern float lbl_8049CF50;
-extern float lbl_8049CF54;
-extern float lbl_8049DFD0;
-extern float lbl_8049DFD1;
-extern float lbl_8049DFD4;
-extern float lbl_8049DFD8;
-extern float lbl_8049DFDC;
-extern float lbl_8049DFE0;
-extern float lbl_8049DFE4;
+s32 fn_802A45F4();
+void fn_802A4600();
+void fn_802A4694();
+void fn_802A47A8();
+void fn_802A4944();
+void fn_802A4A10();
+void fn_802A4AFC();
+void fn_802A4BDC();
+void fn_802A4DE4();
+s32 fn_802A4EEC();
+u16 fn_802A4EF4();
+void fn_802A5108();
+void fn_802A51B4();
 
-// Global data symbols (@ha/@l)
-extern u8 bta_ci_hci_msg_handler[];
-extern u8 lbl_804501E0[];
-extern u8 lbl_80450240[];
-extern u8 lbl_80451240[];
+s32 fn_802A45F4(void) {
+    return 0x14A78;
+}
 
-// Forward declarations
-extern void GKI_create_pool();
+
+
+
+void fn_802A4944(void);
+
+// fn_802A4A10: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802A4AFC: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_802A4BDC(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
+
+void fn_802A4DE4(s32 arg0, s32 arg1);
+
+s32 fn_802A4EEC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    return 0;
+}
+
+
+// fn_802A5108: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_802A51B4: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void GKI_delete_pool();
-extern void GKI_dequeue();
 extern void GKI_disable();
 extern void GKI_enable();
 extern void GKI_enqueue();
 extern void GKI_enqueue_head();
 extern void GKI_freebuf();
-extern void GKI_get_buf_size();
-extern void GKI_getpoolbuf();
-extern void GKI_init_q();
-extern void IPCCltInit();
-extern void IUSB_CloseDeviceAsync();
-extern void IUSB_CloseLib();
-extern void IUSB_OpenDeviceIds();
-extern void IUSB_OpenLib();
-extern void IUSB_ReadBlkMsgAsync();
-extern void IUSB_ReadIntrMsgAsync();
-extern void IUSB_WriteBlkMsgAsync();
-extern void IUSB_WriteCtrlMsgAsync();
-extern void OSSwitchFiberEx();
 extern void _restgpr_25();
 extern void _savegpr_25();
-extern void fn_802A45F4();
-extern void fn_802A4600();
-extern void fn_802A4694();
-extern void fn_802A47A8();
-extern void fn_802A4944();
-extern void fn_802A4A10();
-extern void fn_802A4AFC();
-extern void fn_802A4BDC();
-extern void fn_802A4DE4();
-extern void fn_802A4EEC();
-extern void fn_802A4EF4();
-extern void fn_802A5108();
-extern void fn_802A51B4();
-extern void l2cap_link_chk_pkt_end();
-extern void l2cap_link_chk_pkt_start();
-extern void memcpy();
-extern void memset();
+void fn_802A4600();
+void fn_802A4694();
+void fn_802A47A8();
+void fn_802A4944();
+void fn_802A4A10(s32 arg0, s32 arg1);
+void fn_802A4AFC(s32 arg0, s32 arg1);
+void fn_802A4BDC();
+void fn_802A4DE4();
+u16 fn_802A4EF4();
+void fn_802A5108(s32 arg0);
+void fn_802A51B4(s32 arg0);
 
-// ----------------------------------------------------------------------------
-// fn_802A45F4
-// ----------------------------------------------------------------------------
-asm void fn_802A45F4() {
-    nofralloc
-    lis r3, 0x1
-    addi r3, r3, 0x4a78
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802A4600
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802A4600
 asm void fn_802A4600() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -119,9 +134,7 @@ lbl_802A4678:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802A4694
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802A4694
 asm void fn_802A4694() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -200,9 +213,7 @@ lbl_802A478C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802A47A8
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802A47A8
 asm void fn_802A47A8() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -317,9 +328,7 @@ lbl_802A4924:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802A4944
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802A4944
 asm void fn_802A4944() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -377,10 +386,8 @@ lbl_802A49E0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802A4A10
-// ----------------------------------------------------------------------------
-asm void fn_802A4A10() {
+// asm_to_cpp: fn_802A4A10
+asm void fn_802A4A10(s32 arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -446,10 +453,8 @@ lbl_802A4AE0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802A4AFC
-// ----------------------------------------------------------------------------
-asm void fn_802A4AFC() {
+// asm_to_cpp: fn_802A4AFC
+asm void fn_802A4AFC(s32 arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -512,9 +517,7 @@ lbl_802A4BC0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802A4BDC
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802A4BDC
 asm void fn_802A4BDC() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -658,9 +661,7 @@ lbl_802A4DCC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802A4DE4
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802A4DE4
 asm void fn_802A4DE4() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -735,19 +736,8 @@ lbl_802A4ECC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802A4EEC
-// ----------------------------------------------------------------------------
-asm void fn_802A4EEC() {
-    nofralloc
-    li r3, 0x0
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_802A4EF4
-// ----------------------------------------------------------------------------
-asm void fn_802A4EF4() {
+// asm_to_cpp: fn_802A4EF4
+asm u16 fn_802A4EF4() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -897,10 +887,8 @@ lbl_802A50F0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802A5108
-// ----------------------------------------------------------------------------
-asm void fn_802A5108() {
+// asm_to_cpp: fn_802A5108
+asm void fn_802A5108(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -953,10 +941,8 @@ lbl_802A5188:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_802A51B4
-// ----------------------------------------------------------------------------
-asm void fn_802A51B4() {
+// asm_to_cpp: fn_802A51B4
+asm void fn_802A51B4(s32 arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -976,4 +962,3 @@ asm void fn_802A51B4() {
     addi r1, r1, 0x10
     blr
 }
-

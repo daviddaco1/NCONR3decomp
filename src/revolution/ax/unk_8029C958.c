@@ -1,26 +1,71 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/ax/unk_8029C958.cpp
-// Total functions: 13
+extern M2C_UNK lbl_8036F460;
+extern s16 lbl_80415040;
+extern u16 lbl_8049DEE8;
+extern u16 lbl_8049DEEA;
+extern u16 lbl_8049DEEC;
+extern u16 lbl_8049DEEE;
+extern u16 lbl_8049DEF0;
+extern u32 lbl_8049DEF4;
+extern s32 lbl_8049DEF8;
+extern s32 lbl_8049DEFC;
+extern s32 lbl_8049DF00;
+extern s16 *lbl_8049DF04;
+extern s32 lbl_8049DF08;
 
-// Small Data symbols (@sda21)
-extern float lbl_8049DEE8;
-extern float lbl_8049DEEA;
-extern float lbl_8049DEEC;
-extern float lbl_8049DEEE;
-extern float lbl_8049DEF0;
-extern float lbl_8049DEF4;
-extern float lbl_8049DEF8;
-extern float lbl_8049DEFC;
-extern float lbl_8049DF00;
-extern float lbl_8049DF04;
-extern float lbl_8049DF08;
+s32 fn_8029C958();
+s8 * fn_8029C960();
+void fn_8029C990();
+void fn_8029D354();
+void fn_8029D3A4();
+void fn_8029D3A8();
+u16 fn_8029D3B0();
+u16 fn_8029D3B8();
+u16 fn_8029D3C0();
+void fn_8029D3C8();
+void fn_8029D3E0();
+void fn_8029D3E8();
+void fn_8029D3F0();
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_8036F460[];
-extern u8 lbl_80415040[];
+s32 fn_8029C958(void) {
+    return lbl_8049DEFC;
+}
 
-// Forward declarations
+// fn_8029C960: definicion C reemplazada por asm (ver abajo)
+
+
+
+// fn_8029D354: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_8029D3A4(void) {
+
+}
+
+void fn_8029D3A8(s32 arg0) {
+    lbl_8049DF00 = arg0;
+}
+
+u16 fn_8029D3B0(void) {
+    return lbl_8049DEEC;
+}
+
+u16 fn_8029D3B8(void) {
+    return lbl_8049DEEA;
+}
+
+u16 fn_8029D3C0(void) {
+    return lbl_8049DEE8;
+}
+
+
+
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void DCFlushRange();
 extern void __AXGetAuxAInput();
 extern void __AXGetAuxAInputDpl2();
@@ -36,35 +81,16 @@ extern void __AXGetAuxBOutputDpl2R();
 extern void __AXGetAuxBOutputDpl2Rs();
 extern void __AXGetAuxCInput();
 extern void __AXGetAuxCOutput();
-extern void __AXGetPBs();
-extern void __AXGetStudio();
-extern void fn_8029C958();
-extern void fn_8029C960();
-extern void fn_8029C990();
-extern void fn_8029D354();
-extern void fn_8029D3A4();
-extern void fn_8029D3A8();
-extern void fn_8029D3B0();
-extern void fn_8029D3B8();
-extern void fn_8029D3C0();
-extern void fn_8029D3C8();
-extern void fn_8029D3E0();
-extern void fn_8029D3E8();
-extern void fn_8029D3F0();
+s8 *fn_8029C960(void);
+void fn_8029C990();
+void fn_8029D354(void);
+void fn_8029D3C8();
+void fn_8029D3E0();
+void fn_8029D3E8();
+void fn_8029D3F0();
 
-// ----------------------------------------------------------------------------
-// fn_8029C958
-// ----------------------------------------------------------------------------
-asm void fn_8029C958() {
-    nofralloc
-    lwz r3, lbl_8049DEFC
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8029C960
-// ----------------------------------------------------------------------------
-asm void fn_8029C960() {
+// asm_to_cpp: fn_8029C960
+asm s8 *fn_8029C960(void) {
     nofralloc
     lwz r4, lbl_8049DF08
     lis r5, lbl_80415040@ha
@@ -80,9 +106,7 @@ asm void fn_8029C960() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8029C990
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8029C990
 asm void fn_8029C990() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -725,10 +749,8 @@ lbl_8029D308:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8029D354
-// ----------------------------------------------------------------------------
-asm void fn_8029D354() {
+// asm_to_cpp: fn_8029D354
+asm void fn_8029D354(void) {
     nofralloc
     lis r6, lbl_80415040@ha
     lis r4, lbl_8036F460@ha
@@ -752,53 +774,7 @@ asm void fn_8029D354() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8029D3A4
-// ----------------------------------------------------------------------------
-asm void fn_8029D3A4() {
-    nofralloc
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8029D3A8
-// ----------------------------------------------------------------------------
-asm void fn_8029D3A8() {
-    nofralloc
-    stw r3, lbl_8049DF00
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8029D3B0
-// ----------------------------------------------------------------------------
-asm void fn_8029D3B0() {
-    nofralloc
-    lhz r3, lbl_8049DEEC
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8029D3B8
-// ----------------------------------------------------------------------------
-asm void fn_8029D3B8() {
-    nofralloc
-    lhz r3, lbl_8049DEEA
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8029D3C0
-// ----------------------------------------------------------------------------
-asm void fn_8029D3C0() {
-    nofralloc
-    lhz r3, lbl_8049DEE8
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8029D3C8
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8029D3C8
 asm void fn_8029D3C8() {
     nofralloc
     cmplwi r3, 0x8000
@@ -810,30 +786,23 @@ lbl_8029D3D8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8029D3E0
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8029D3E0
 asm void fn_8029D3E0() {
     nofralloc
     sth r3, lbl_8049DEEC
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8029D3E8
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8029D3E8
 asm void fn_8029D3E8() {
     nofralloc
     sth r3, lbl_8049DEEA
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8029D3F0
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8029D3F0
 asm void fn_8029D3F0() {
     nofralloc
     sth r3, lbl_8049DEE8
     blr
 }
-

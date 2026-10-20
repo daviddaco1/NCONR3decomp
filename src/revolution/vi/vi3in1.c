@@ -1,51 +1,90 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/vi/vi3in1.cpp
-// Total functions: 12
+extern M2C_UNK lbl_8036BB88;
+extern M2C_UNK lbl_8040BED0;
+extern s32 lbl_8049CEB8;
+extern u8 lbl_8049CEBC;
+extern u8 lbl_8049CEBD;
+extern u8 lbl_8049CEBE;
+extern u8 lbl_8049CEBF;
+extern u8 lbl_8049CEC0;
+extern u8 lbl_8049CEC1;
+extern u8 lbl_8049CEC2;
+extern u8 lbl_8049CEC3;
+extern u8 lbl_8049CEC4;
+extern u8 lbl_8049CEC5;
+extern u8 lbl_8049CEC6;
+extern u8 lbl_8049CEC7;
+extern s32 lbl_8049DD70;
+extern s32 lbl_8049DD78;
+extern s32 lbl_8049DD7C;
+extern s32 lbl_8049DD80;
+extern s32 lbl_8049DD84;
 
-// Small Data symbols (@sda21)
-extern float lbl_8049CEB8;
-extern float lbl_8049CEBC;
-extern float lbl_8049CEBD;
-extern float lbl_8049CEBE;
-extern float lbl_8049CEBF;
-extern float lbl_8049CEC0;
-extern float lbl_8049CEC1;
-extern float lbl_8049CEC2;
-extern float lbl_8049CEC3;
-extern float lbl_8049CEC4;
-extern float lbl_8049CEC5;
-extern float lbl_8049CEC6;
-extern float lbl_8049CEC7;
-extern float lbl_8049DD70;
-extern float lbl_8049DD78;
-extern float lbl_8049DD7C;
-extern float lbl_8049DD80;
-extern float lbl_8049DD84;
+void __VISetFilter4EURGB60();
+void __VISetCGMS();
+void __VISetWSS();
+void __VISetClosedCaption();
+void __VISetMacrovision();
+void __VISetGammaImm();
+void __VISetGamma1_0();
+void __VISetGamma();
+void __VISetTrapFilter();
+void __VISetRGBOverDrive();
+void VISetRGBModeImm();
+void __VISetRGBModeImm();
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_8036BB88[];
-extern u8 lbl_8040BED0[];
 
-// Forward declarations
-extern void VISetRGBModeImm();
-extern void WaitMicroTime();
-extern void __VISendI2CData();
-extern void __VISetCGMS();
-extern void __VISetClosedCaption();
-extern void __VISetFilter4EURGB60();
-extern void __VISetGamma();
-extern void __VISetGamma1_0();
-extern void __VISetGammaImm();
-extern void __VISetMacrovision();
-extern void __VISetRGBModeImm();
-extern void __VISetRGBOverDrive();
-extern void __VISetTrapFilter();
-extern void __VISetWSS();
+// __VISetCGMS: definicion C reemplazada por asm (ver abajo)
 
-// ----------------------------------------------------------------------------
-// __VISetFilter4EURGB60
-// ----------------------------------------------------------------------------
+
+// __VISetWSS: definicion C reemplazada por asm (ver abajo)
+
+
+// __VISetClosedCaption: definicion C reemplazada por asm (ver abajo)
+
+
+// __VISetMacrovision: definicion C reemplazada por asm (ver abajo)
+
+
+// __VISetGammaImm: definicion C reemplazada por asm (ver abajo)
+
+
+// __VISetGamma1_0: definicion C reemplazada por asm (ver abajo)
+
+
+// __VISetGamma: definicion C reemplazada por asm (ver abajo)
+
+
+// __VISetTrapFilter: definicion C reemplazada por asm (ver abajo)
+
+
+// __VISetRGBOverDrive: definicion C reemplazada por asm (ver abajo)
+
+
+void VISetRGBModeImm(void) {
+    lbl_8049DD70 |= 0x80;
+}
+
+// __VISetRGBModeImm: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+void __VISetCGMS(void);
+void __VISetClosedCaption(void);
+void __VISetFilter4EURGB60();
+void __VISetGamma(void);
+void __VISetGamma1_0(void);
+void __VISetGammaImm(s8 *arg0);
+void __VISetMacrovision(void);
+void __VISetRGBModeImm(void);
+void __VISetRGBOverDrive(void);
+void __VISetTrapFilter(void);
+void __VISetWSS(void);
+
+// asm_to_cpp: __VISetFilter4EURGB60
 asm void __VISetFilter4EURGB60() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -66,10 +105,8 @@ asm void __VISetFilter4EURGB60() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __VISetCGMS
-// ----------------------------------------------------------------------------
-asm void __VISetCGMS() {
+// asm_to_cpp: __VISetCGMS
+asm void __VISetCGMS(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -95,10 +132,8 @@ asm void __VISetCGMS() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __VISetWSS
-// ----------------------------------------------------------------------------
-asm void __VISetWSS() {
+// asm_to_cpp: __VISetWSS
+asm void __VISetWSS(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -127,10 +162,8 @@ asm void __VISetWSS() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __VISetClosedCaption
-// ----------------------------------------------------------------------------
-asm void __VISetClosedCaption() {
+// asm_to_cpp: __VISetClosedCaption
+asm void __VISetClosedCaption(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -161,10 +194,8 @@ asm void __VISetClosedCaption() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __VISetMacrovision
-// ----------------------------------------------------------------------------
-asm void __VISetMacrovision() {
+// asm_to_cpp: __VISetMacrovision
+asm void __VISetMacrovision(void) {
     nofralloc
     stwu r1, -0x190(r1)
     mflr r0
@@ -1055,10 +1086,8 @@ lbl_8028618C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __VISetGammaImm
-// ----------------------------------------------------------------------------
-asm void __VISetGammaImm() {
+// asm_to_cpp: __VISetGammaImm
+asm void __VISetGammaImm(s8 *arg0) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1163,10 +1192,8 @@ asm void __VISetGammaImm() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __VISetGamma1_0
-// ----------------------------------------------------------------------------
-asm void __VISetGamma1_0() {
+// asm_to_cpp: __VISetGamma1_0
+asm void __VISetGamma1_0(void) {
     nofralloc
     lis r3, lbl_8036BB88@ha
     addi r3, r3, lbl_8036BB88@l
@@ -1174,10 +1201,8 @@ asm void __VISetGamma1_0() {
     b __VISetGammaImm
 }
 
-// ----------------------------------------------------------------------------
-// __VISetGamma
-// ----------------------------------------------------------------------------
-asm void __VISetGamma() {
+// asm_to_cpp: __VISetGamma
+asm void __VISetGamma(void) {
     nofralloc
     lwz r0, lbl_8049DD7C
     lis r3, lbl_8036BB88@ha
@@ -1187,10 +1212,8 @@ asm void __VISetGamma() {
     b __VISetGammaImm
 }
 
-// ----------------------------------------------------------------------------
-// __VISetTrapFilter
-// ----------------------------------------------------------------------------
-asm void __VISetTrapFilter() {
+// asm_to_cpp: __VISetTrapFilter
+asm void __VISetTrapFilter(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1219,10 +1242,8 @@ lbl_8028639C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// __VISetRGBOverDrive
-// ----------------------------------------------------------------------------
-asm void __VISetRGBOverDrive() {
+// asm_to_cpp: __VISetRGBOverDrive
+asm void __VISetRGBOverDrive(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1261,21 +1282,8 @@ lbl_80286438:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// VISetRGBModeImm
-// ----------------------------------------------------------------------------
-asm void VISetRGBModeImm() {
-    nofralloc
-    lwz r0, lbl_8049DD70
-    ori r0, r0, 0x80
-    stw r0, lbl_8049DD70
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// __VISetRGBModeImm
-// ----------------------------------------------------------------------------
-asm void __VISetRGBModeImm() {
+// asm_to_cpp: __VISetRGBModeImm
+asm void __VISetRGBModeImm(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1296,4 +1304,3 @@ asm void __VISetRGBModeImm() {
     addi r1, r1, 0x10
     blr
 }
-

@@ -1,6 +1,6 @@
 #include "types.h"
 
-// Translation unit: src/revolution/vi/unk_802864A0.cpp
+// Translation unit: src/revolution/kpad/unk_802864A0.cpp
 // Total functions: 90
 
 // Small Data symbols (@sda21)

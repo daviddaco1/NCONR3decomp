@@ -1,39 +1,58 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/bte/bta_hh_api.cpp
-// Total functions: 8
+M2C_UNK LogMsg_0();               /* extern */
+M2C_UNK memcpy();               /* extern */
+M2C_UNK memset();                   /* extern */
+extern M2C_UNK lbl_80373900;
+extern u8 lbl_8049E000;
+extern M2C_UNK lbl_804A2538;
 
-// Small Data symbols (@sda21)
-extern float lbl_8049E000;
-extern float lbl_804A2538;
+void BTA_HhEnable();
+void BTA_HhDisable();
+void BTA_HhClose();
+void BTA_HhOpen();
+void BTA_HhSendData();
+void BTA_HhAddDev();
+void BTA_HhRemoveDev();
+void BTA_HhGetAclQueueInfo();
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_80373900[];
 
-// Forward declarations
-extern void BTA_HhAddDev();
-extern void BTA_HhClose();
-extern void BTA_HhDisable();
-extern void BTA_HhEnable();
-extern void BTA_HhGetAclQueueInfo();
-extern void BTA_HhOpen();
-extern void BTA_HhRemoveDev();
-extern void BTA_HhSendData();
-extern void GKI_getbuf();
+void BTA_HhDisable(void) {
+    s16 *temp_r3;
+
+    temp_r3 = GKI_getbuf(8);
+    if (temp_r3 != NULL) {
+        *temp_r3 = 0x170D;
+        bta_sys_sendmsg((s32) temp_r3);
+    }
+}
+
+
+
+
+
+
+// BTA_HhGetAclQueueInfo: definicion C reemplazada por asm (ver abajo)
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+void BTA_HhAddDev();
+void BTA_HhClose();
+void BTA_HhEnable();
+void BTA_HhGetAclQueueInfo(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6);
+void BTA_HhOpen();
+void BTA_HhRemoveDev();
+void BTA_HhSendData();
 extern void GKI_sched_lock();
 extern void GKI_sched_unlock();
-extern void LogMsg_0();
 extern void _restgpr_26();
 extern void _savegpr_26();
 extern void bta_sys_register();
-extern void bta_sys_sendmsg();
 extern void fn_802A59E8();
-extern void memcpy();
-extern void memset();
 
-// ----------------------------------------------------------------------------
-// BTA_HhEnable
-// ----------------------------------------------------------------------------
+// asm_to_cpp: BTA_HhEnable
 asm void BTA_HhEnable() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -73,31 +92,7 @@ lbl_802AAC50:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTA_HhDisable
-// ----------------------------------------------------------------------------
-asm void BTA_HhDisable() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    li r3, 0x8
-    stw r0, 0x14(r1)
-    bl GKI_getbuf
-    cmpwi r3, 0x0
-    beq lbl_802AAC94
-    li r0, 0x170d
-    sth r0, 0x0(r3)
-    bl bta_sys_sendmsg
-lbl_802AAC94:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// BTA_HhClose
-// ----------------------------------------------------------------------------
+// asm_to_cpp: BTA_HhClose
 asm void BTA_HhClose() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -128,9 +123,7 @@ lbl_802AACF0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTA_HhOpen
-// ----------------------------------------------------------------------------
+// asm_to_cpp: BTA_HhOpen
 asm void BTA_HhOpen() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -182,9 +175,7 @@ lbl_802AAD9C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTA_HhSendData
-// ----------------------------------------------------------------------------
+// asm_to_cpp: BTA_HhSendData
 asm void BTA_HhSendData() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -226,9 +217,7 @@ lbl_802AAE30:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTA_HhAddDev
-// ----------------------------------------------------------------------------
+// asm_to_cpp: BTA_HhAddDev
 asm void BTA_HhAddDev() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -276,9 +265,7 @@ lbl_802AAEDC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTA_HhRemoveDev
-// ----------------------------------------------------------------------------
+// asm_to_cpp: BTA_HhRemoveDev
 asm void BTA_HhRemoveDev() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -311,10 +298,8 @@ lbl_802AAF48:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// BTA_HhGetAclQueueInfo
-// ----------------------------------------------------------------------------
-asm void BTA_HhGetAclQueueInfo() {
+// asm_to_cpp: BTA_HhGetAclQueueInfo
+asm void BTA_HhGetAclQueueInfo(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -339,4 +324,3 @@ lbl_802AAFA0:
     addi r1, r1, 0x10
     blr
 }
-

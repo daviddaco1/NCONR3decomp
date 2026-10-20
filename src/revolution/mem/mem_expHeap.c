@@ -1,43 +1,110 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/revolution/mem/mem_expHeap.cpp
-// Total functions: 18
+M2C_UNK memset();                   /* extern */
 
-// Forward declarations
-extern void AllocFromHead_();
-extern void AllocFromTail_();
-extern void AllocUsedBlockFromFreeBlock_();
-extern void MEMAllocFromExpHeapEx();
-extern void MEMCreateExpHeapEx();
-extern void MEMDestroyExpHeap();
-extern void MEMFreeToExpHeap();
-extern void MEMGetSizeForMBlockExpHeap();
-extern void MEMiFinalizeHeap();
+u32 AllocUsedBlockFromFreeBlock_();
+u32 AllocFromHead_();
+u32 AllocFromTail_();
+s32 RecycleRegion_();
+u32 MEMCreateExpHeapEx();
+s32 MEMDestroyExpHeap();
+u32 MEMAllocFromExpHeapEx();
+void MEMFreeToExpHeap();
+u16 fn_8030C61C();
+u32 fn_8030C66C();
+s32 fn_8030C6F0();
+u32 fn_8030C720();
+void fn_8030C840();
+s32 fn_8030C8E0();
+s32 fn_8030C9B4();
+void fn_8030CA68();
+void fn_8030CAD8();
+void MEMGetSizeForMBlockExpHeap();
+
+u32 AllocUsedBlockFromFreeBlock_(s8 *arg0, s8 *arg1, u32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0);
+
+u32 AllocFromHead_(s8 *arg0, u32 arg1, s32 arg2);
+
+u32 AllocFromTail_(s8 *arg0, u32 arg1, s32 arg2);
+
+s32 RecycleRegion_(s8 **arg0, s8 *arg1);
+
+u32 MEMCreateExpHeapEx(s32 arg0, s32 arg1, s32 arg2);
+
+s32 MEMDestroyExpHeap(s32 arg0) {
+    MEMiFinalizeHeap((s32 *) arg0);
+    return arg0;
+}
+
+// MEMAllocFromExpHeapEx: definicion C reemplazada por asm (ver abajo)
+
+
+void MEMFreeToExpHeap(s8 *arg0, s8 *arg1);
+
+
+// fn_8030C66C: definicion C reemplazada por asm (ver abajo)
+
+
+s32 fn_8030C6F0(s32 arg0) {
+    MEMiFinalizeHeap((s32 *) arg0);
+    return arg0;
+}
+
+// fn_8030C720: definicion C reemplazada por asm (ver abajo)
+
+
+// fn_8030C840: definicion C reemplazada por asm (ver abajo)
+
+
+s32 fn_8030C8E0(s8 *arg0, s32 arg1, M2C_UNK arg_sp0);
+
+// fn_8030C9B4: definicion C reemplazada por asm (ver abajo)
+
+
+void fn_8030CA68(s8 *arg0, s32 *arg1) {
+    if (arg1 != NULL) {
+        if (M2C_FIELD(arg0, s32 *, 0x38) & 4) {
+            OSLockMutex(arg0 + 0x20);
+        }
+        *arg1 = M2C_FIELD(arg0, s32 *, 0x3C);
+        M2C_FIELD(arg0, s32 *, 0x3C) = (s32) arg1;
+        if (M2C_FIELD(arg0, s32 *, 0x38) & 4) {
+            OSUnlockMutex(arg0 + 0x20);
+        }
+    }
+}
+
+// fn_8030CAD8: definicion C reemplazada por asm (ver abajo)
+
+
+void MEMGetSizeForMBlockExpHeap(s8 *arg0, s32 arg1);
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+u32 AllocFromHead_();
+u32 AllocFromTail_();
+u32 AllocUsedBlockFromFreeBlock_();
+u32 MEMAllocFromExpHeapEx(s8 *arg0, s32 arg1, s32 arg2);
+u32 MEMCreateExpHeapEx();
+void MEMFreeToExpHeap();
+void MEMGetSizeForMBlockExpHeap();
 extern void MEMiInitHeapHead();
-extern void OSDisableInterrupts();
-extern void OSLockMutex();
-extern void OSRestoreInterrupts();
-extern void OSUnlockMutex();
-extern void RecycleRegion_();
+s32 RecycleRegion_();
 extern void _restgpr_26();
 extern void _restgpr_27();
 extern void _savegpr_26();
 extern void _savegpr_27();
-extern void fn_8030C61C();
-extern void fn_8030C66C();
-extern void fn_8030C6F0();
-extern void fn_8030C720();
-extern void fn_8030C840();
-extern void fn_8030C8E0();
-extern void fn_8030C9B4();
-extern void fn_8030CA68();
-extern void fn_8030CAD8();
-extern void memset();
+u16 fn_8030C61C();
+u32 fn_8030C66C(s32 arg0, s32 arg1, s32 arg2);
+u32 fn_8030C720(s8 *arg0, s32 arg1, s32 arg2);
+void fn_8030C840(s8 *arg0, s32 arg1);
+s32 fn_8030C8E0();
+s32 fn_8030C9B4(s8 *arg0, s32 arg1);
+void fn_8030CAD8(s8 *arg0, s32 arg1);
 
-// ----------------------------------------------------------------------------
-// AllocUsedBlockFromFreeBlock_
-// ----------------------------------------------------------------------------
-asm void AllocUsedBlockFromFreeBlock_() {
+// asm_to_cpp: AllocUsedBlockFromFreeBlock_
+asm u32 AllocUsedBlockFromFreeBlock_() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -202,10 +269,8 @@ lbl_8030C0A0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// AllocFromHead_
-// ----------------------------------------------------------------------------
-asm void AllocFromHead_() {
+// asm_to_cpp: AllocFromHead_
+asm u32 AllocFromHead_() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -270,10 +335,8 @@ lbl_8030C17C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// AllocFromTail_
-// ----------------------------------------------------------------------------
-asm void AllocFromTail_() {
+// asm_to_cpp: AllocFromTail_
+asm u32 AllocFromTail_() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -333,10 +396,8 @@ lbl_8030C248:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// RecycleRegion_
-// ----------------------------------------------------------------------------
-asm void RecycleRegion_() {
+// asm_to_cpp: RecycleRegion_
+asm s32 RecycleRegion_() {
     nofralloc
     stwu r1, -0x10(r1)
     li r8, 0x0
@@ -449,10 +510,8 @@ lbl_8030C3C0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// MEMCreateExpHeapEx
-// ----------------------------------------------------------------------------
-asm void MEMCreateExpHeapEx() {
+// asm_to_cpp: MEMCreateExpHeapEx
+asm u32 MEMCreateExpHeapEx() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -503,29 +562,8 @@ lbl_8030C464:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// MEMDestroyExpHeap
-// ----------------------------------------------------------------------------
-asm void MEMDestroyExpHeap() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    bl MEMiFinalizeHeap
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// MEMAllocFromExpHeapEx
-// ----------------------------------------------------------------------------
-asm void MEMAllocFromExpHeapEx() {
+// asm_to_cpp: MEMAllocFromExpHeapEx
+asm u32 MEMAllocFromExpHeapEx(s8 *arg0, s32 arg1, s32 arg2) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -578,9 +616,7 @@ lbl_8030C538:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// MEMFreeToExpHeap
-// ----------------------------------------------------------------------------
+// asm_to_cpp: MEMFreeToExpHeap
 asm void MEMFreeToExpHeap() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -640,10 +676,8 @@ lbl_8030C604:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8030C61C
-// ----------------------------------------------------------------------------
-asm void fn_8030C61C() {
+// asm_to_cpp: fn_8030C61C
+asm u16 fn_8030C61C() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -667,10 +701,8 @@ asm void fn_8030C61C() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8030C66C
-// ----------------------------------------------------------------------------
-asm void fn_8030C66C() {
+// asm_to_cpp: fn_8030C66C
+asm u32 fn_8030C66C(s32 arg0, s32 arg1, s32 arg2) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -710,29 +742,8 @@ lbl_8030C6DC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8030C6F0
-// ----------------------------------------------------------------------------
-asm void fn_8030C6F0() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    bl MEMiFinalizeHeap
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8030C720
-// ----------------------------------------------------------------------------
-asm void fn_8030C720() {
+// asm_to_cpp: fn_8030C720
+asm u32 fn_8030C720(s8 *arg0, s32 arg1, s32 arg2) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -817,10 +828,8 @@ lbl_8030C820:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8030C840
-// ----------------------------------------------------------------------------
-asm void fn_8030C840() {
+// asm_to_cpp: fn_8030C840
+asm void fn_8030C840(s8 *arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -870,10 +879,8 @@ lbl_8030C8C8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8030C8E0
-// ----------------------------------------------------------------------------
-asm void fn_8030C8E0() {
+// asm_to_cpp: fn_8030C8E0
+asm s32 fn_8030C8E0() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -937,10 +944,8 @@ lbl_8030C998:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8030C9B4
-// ----------------------------------------------------------------------------
-asm void fn_8030C9B4() {
+// asm_to_cpp: fn_8030C9B4
+asm s32 fn_8030C9B4(s8 *arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -996,47 +1001,8 @@ lbl_8030CA4C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8030CA68
-// ----------------------------------------------------------------------------
-asm void fn_8030CA68() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    cmpwi r4, 0x0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r4
-    stw r30, 0x8(r1)
-    mr r30, r3
-    beq lbl_8030CAC0
-    lwz r0, 0x38(r3)
-    rlwinm. r0, r0, 0, 29, 29
-    beq lbl_8030CAA0
-    addi r3, r3, 0x20
-    bl OSLockMutex
-lbl_8030CAA0:
-    lwz r0, 0x3c(r30)
-    stw r0, 0x0(r31)
-    lwz r0, 0x38(r30)
-    stw r31, 0x3c(r30)
-    rlwinm. r0, r0, 0, 29, 29
-    beq lbl_8030CAC0
-    addi r3, r30, 0x20
-    bl OSUnlockMutex
-lbl_8030CAC0:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8030CAD8
-// ----------------------------------------------------------------------------
-asm void fn_8030CAD8() {
+// asm_to_cpp: fn_8030CAD8
+asm void fn_8030CAD8(s8 *arg0, s32 arg1) {
     nofralloc
     mr r5, r3
     lwz r3, 0x4(r3)
@@ -1044,12 +1010,9 @@ asm void fn_8030CAD8() {
     b MEMAllocFromExpHeapEx
 }
 
-// ----------------------------------------------------------------------------
-// MEMGetSizeForMBlockExpHeap
-// ----------------------------------------------------------------------------
+// asm_to_cpp: MEMGetSizeForMBlockExpHeap
 asm void MEMGetSizeForMBlockExpHeap() {
     nofralloc
     lwz r3, 0x4(r3)
     b MEMFreeToExpHeap
 }
-
