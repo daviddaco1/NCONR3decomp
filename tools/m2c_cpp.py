@@ -141,7 +141,10 @@ def cast_calls(s, protos):
             break
         name, args = m.group(1), split_args(s[k + 1:j])
         args = [cast_calls(a, protos) for a in args] if s[k + 1:j].strip() else []
-        if name in protos and name not in NOCALL and '...' not in protos[name][1]:
+        if name in protos and '...' in protos[name][1]:
+            # variadica: m2c agrega floats/registros sin asignar que el original no pasaba
+            args = [x for x in args if not re.match(r'M2C_(?:BITWISE\(f(?:32|64)|ERROR)\(', x)]
+        elif name in protos and name not in NOCALL:
             ts = param_types(protos[name][1])
             if len(ts) == len(args):
                 args = [cast(t, a) for t, a in zip(ts, args)]
@@ -304,6 +307,8 @@ class TU:
         contexto): sin `arg_spN` espurios y rellenada con parametros sin usar hasta esa aridad
         (en C++ la aridad tiene que coincidir; un parametro sin usar no cambia el codigo)."""
         own = [p for p in split_args(ps) if p and p != 'void' and 'arg_sp' not in p]
+        if '...' in ps or (name in ctx and '...' in ctx[name][1]):
+            return ctx[name][1] if name in ctx else ps
         if name in ctx:
             want = [p for p in split_args(ctx[name][1]) if p and p != 'void']
             names = {re.search(r'(\w+)$', p).group(1) for p in own}
@@ -360,7 +365,7 @@ class TU:
             else:
                 ret, ps = 's32', ''
             # aridad: la que usan todas las llamadas de esta TU (en C++ tiene que coincidir)
-            if len(ar.get(n, ())) == 1 and not fixed:
+            if len(ar.get(n, ())) == 1 and not fixed and '...' not in ps:
                 k, cur = next(iter(ar[n])), [p for p in split_args(ps) if p and p != 'void']
                 if k > len(cur):
                     cur += [f's32 arg{i}_pad' for i in range(len(cur), k)]

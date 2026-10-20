@@ -1,9 +1,10 @@
 #include "types.h"
 #include "m2c_macros.h"
 
-struct M2C_VC_0 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);   };
-struct M2C_VC_1 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);  };
-struct M2C_VC_2 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK); };
+struct M2C_VC_0 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);    };
+struct M2C_VC_1 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);   };
+struct M2C_VC_2 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);  };
+struct M2C_VC_3 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK); };
 
 extern "C" {
 
@@ -6781,22 +6782,10 @@ void fn_80182F34(s32 *arg0, s32 *arg1) {
     *arg0 = *arg1;
 }
 
-// asm_to_cpp: fn_80182F40
-asm s32 fn_80182F40(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_80030F4C
-    mr r4, r3
-    addi r3, r1, 0x8
-    addi r4, r4, 0x1c
-    bl fn_80182F74
-    lwz r3, 0x0(r3)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_80182F40(s32 arg0) {
+    s32 sp8;
+
+    return (s32) (*fn_80182F74((s32 *) (&sp8), (s32) (fn_80030F4C((s32 *) ((s32 *) arg0)) + 0x1C)));
 }
 
 // asm_to_cpp: fn_80182F74

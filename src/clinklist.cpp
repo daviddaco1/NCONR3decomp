@@ -974,35 +974,15 @@ lbl_80130D34:
     blr
 }
 
-// asm_to_cpp: fn_80130D4C
-asm u8 * fn_80130D4C(s8 *arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_29
-    mr r29, r3
-    mr r30, r4
-    li r4, 0x0
-    bl fn_80130B30
-    mr r31, r3
-    cmpwi r3, 0x0
-    beq lbl_80130D94
-    stw r30, 0x8(r3)
-    mr r3, r29
-    lwz r4, 0x20(r29)
-    mr r5, r31
-    li r6, 0x1
-    bl fn_80130C28
-lbl_80130D94:
-    mr r3, r31
-    addi r11, r1, 0x20
-    bl _restgpr_29
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+u8 * fn_80130D4C(s8 *arg0, s32 arg1) {
+    u8 *temp_r3;
+
+    temp_r3 = (u8 *) (fn_80130B30((s8 *) (arg0), (s32) (0)));
+    if (temp_r3 != NULL) {
+        M2C_FIELD(temp_r3, s32 *, 8) = (s32) (arg1);
+        fn_80130C28((s8 *) (arg0), (s8 *) (M2C_FIELD(arg0, s8 **, 0x20)), (u8 *) (temp_r3), (s32) (1));
+    }
+    return (u8 *) (temp_r3);
 }
 
 // asm_to_cpp: fn_80130DB0

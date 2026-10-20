@@ -813,29 +813,12 @@ s8 * fn_80043B60(s8 *arg0) {
     return (s8 *) (arg0);
 }
 
-// asm_to_cpp: fn_80043B90
-asm s32 fn_80043B90(s8 *arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r3
-    mr r3, r4
-    bl fn_80043B10
-    mr r4, r3
-    mr r3, r31
-    bl Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode
-    stw r3, 0x8(r1)
-    addi r3, r1, 0xc
-    addi r4, r1, 0x8
-    bl fn_80039CD0
-    lwz r3, 0x0(r3)
-    lwz r31, 0x1c(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+s32 fn_80043B90(s8 *arg0, s32 arg1) {
+    s32 spC;
+    s8 *sp8;
+
+    sp8 = (s8 *) (Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode((s32 *) ((s32 *) arg0), (s8 *) (fn_80043B10((s32) (arg1)))));
+    return (s32) (*fn_80039CD0((s32 *) (&spC), (s32) ((s32) &sp8)));
 }
 
 // asm_to_cpp: fn_80043BE0

@@ -85,6 +85,21 @@ def lib_protos():
     return {n: c.most_common(1)[0][0] for n, c in found.items()}
 
 
+VARFIXED = {'snprintf': 3, 'sprintf': 2, 'sscanf': 2, 'OSPanic': 3, 'fn_801A9384': 3}  # el resto: 1 fijo
+
+
+def variadics():
+    out = set()
+    for path in glob.glob('build/RNEPDA/asm/**/*.s', recursive=True):
+        prev = ''
+        for l in open(path):
+            m = re.search(r'\tbl (\w+)$', l)
+            if m and re.search(r'\t(?:crclr|creqv|crset|crxor) (?:cr1eq|6, 6, 6)', prev):
+                out.add(m.group(1))
+            prev = l
+    return out
+
+
 def main():
     files = glob.glob('build/RNEPDA/asm/**/*.s', recursive=True)
     with concurrent.futures.ThreadPoolExecutor(8) as ex:
@@ -134,6 +149,14 @@ def main():
         if name not in defs:
             params = ', '.join(f'{t} arg{i}' for i, t in enumerate(lps)) or 'void'
             lines.append(f'{"M2C_UNK" if lret == "s32" else lret} {name}({params});')
+    # variadicas: el llamador hace crclr/creqv cr1eq antes del bl (indica si hay floats); sin `...`
+    # m2c inventa argumentos con registros sin asignar
+    var = variadics()
+    for i, l in enumerate(lines):
+        m = re.match(r'(.*?)\b(\w+)\(', l)
+        if m and m.group(2) in var:
+            fixed = ', '.join(f's32 arg{k}' for k in range(VARFIXED.get(m.group(2), 1)))
+            lines[i] = f'{m.group(1).strip()} {m.group(2)}({fixed}, ...);'
     with open('build/m2c_ctx.h', 'w', newline='\n') as f:
         f.write(TYPEDEFS + '\n' + '\n'.join(lines) + '\n')
     # para incluir en el C generado: solo tipo de retorno (prototipo vacio, compatible con

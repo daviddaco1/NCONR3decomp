@@ -213,7 +213,7 @@ void fn_8019009C(void);
 void fn_80190118(void);
 void fn_80190170(void);
 s32 * fn_8019018C(s32 *arg0, s16 arg1);
-M2C_UNK fn_80190210(s32 arg0);
+void fn_80190210(s32 arg0);
 void fn_80190244(s32 arg0, s32 arg1);
 void fn_80190288(s32 arg0, s32 *arg1);
 void fn_801902CC(s32 arg0, u32 arg1);
@@ -3233,22 +3233,8 @@ s32 * fn_8019018C(s32 *arg0, s16 arg1) {
     return (s32 *) (arg0);
 }
 
-// asm_to_cpp: fn_80190210
-asm M2C_UNK fn_80190210(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    bl GetInstance__Q44nw4r3snd6detail9AxManagerFv
-    mr r4, r31
-    bl fn_801902CC
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_80190210(s32 arg0) {
+    fn_801902CC((s32) (GetInstance__Q44nw4r3snd6detail9AxManagerFv()), (u32) ((u32) arg0));
 }
 
 void fn_80190244(s32 arg0, s32 arg1) {

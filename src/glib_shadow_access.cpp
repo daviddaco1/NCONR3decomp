@@ -669,18 +669,8 @@ lbl_8003DB2C:
     blr
 }
 
-// asm_to_cpp: fn_8003DB44
-asm s32 fn_8003DB44(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_8003DAF0
-    lwz r3, 0xa8(r3)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_8003DB44(s32 arg0) {
+    return (s32) (M2C_FIELD(fn_8003DAF0((s8 **) ((s8 **) arg0)), s32 *, 0xA8));
 }
 
 } // extern "C"

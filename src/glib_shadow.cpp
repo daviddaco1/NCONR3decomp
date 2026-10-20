@@ -156,7 +156,7 @@ s32 fn_8003CCD8(s32 arg0);
 s32 * fn_8003CD0C(s32 *arg0, s32 arg1);
 void fn_8003CD70(s32 arg0);
 void fn_8003CD74(s32 *arg0);
-s32 fn_8003CDB0(void);
+s32 fn_8003CDB0(s32 arg0);
 s32 * fn_8003CDE4(s32 *arg0, s32 arg1);
 s32 fn_8003CE48(s32 *arg0);
 s32 fn_8003CE50(s32 *arg0);
@@ -3067,33 +3067,18 @@ lbl_8003CABC:
     blr
 }
 
-// asm_to_cpp: fn_8003CAD8
-asm s32 fn_8003CAD8(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_8003CB30
-    mr r0, r3
-    lwz r4, 0x0(r3)
-    cmpwi r4, 0x0
-    beq lbl_8003CB10
-    addi r3, r1, 0xc
-    add r4, r0, r4
-    subi r4, r4, 0x4
-    bl fn_8003CEC0
-    lwz r3, 0x0(r3)
-    b lbl_8003CB20
-lbl_8003CB10:
-    addi r3, r1, 0x8
-    li r4, 0x0
-    bl fn_8003CEC0
-    lwz r3, 0x0(r3)
-lbl_8003CB20:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_8003CAD8(s32 arg0) {
+    s32 spC;
+    s32 sp8;
+    s32 *temp_r3;
+    s32 temp_r4;
+
+    temp_r3 = (s32 *) (fn_8003CB30((s32 *) ((s32 *) arg0)));
+    temp_r4 = (s32) (*temp_r3);
+    if (temp_r4 != 0) {
+        return (s32) (*fn_8003CEC0((s32 *) (&spC), (s32) ((s32) (((s8 *)temp_r3 + temp_r4) - 4))));
+    }
+    return (s32) (*fn_8003CEC0((s32 *) (&sp8), (s32) (0)));
 }
 
 // asm_to_cpp: fn_8003CB30
@@ -3227,22 +3212,10 @@ asm u32 fn_8003CCB4(s32 arg0) {
     blr
 }
 
-// asm_to_cpp: fn_8003CCD8
-asm s32 fn_8003CCD8(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_80030F4C
-    mr r4, r3
-    addi r3, r1, 0x8
-    addi r4, r4, 0x1a8
-    bl fn_8003CD0C
-    lwz r3, 0x0(r3)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_8003CCD8(s32 arg0) {
+    s32 sp8;
+
+    return (s32) (*fn_8003CD0C((s32 *) (&sp8), (s32) (fn_80030F4C((s32 *) ((s32 *) arg0)) + 0x1A8)));
 }
 
 // asm_to_cpp: fn_8003CD0C
@@ -3299,22 +3272,10 @@ asm void fn_8003CD74(s32 *arg0) {
     blr
 }
 
-// asm_to_cpp: fn_8003CDB0
-asm s32 fn_8003CDB0(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_80030F4C
-    mr r4, r3
-    addi r3, r1, 0x8
-    addi r4, r4, 0x40
-    bl fn_8003CDE4
-    lwz r3, 0x0(r3)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_8003CDB0(s32 arg0) {
+    s32 sp8;
+
+    return (s32) (*fn_8003CDE4((s32 *) (&sp8), (s32) (fn_80030F4C((s32 *) (arg0)) + 0x40)));
 }
 
 // asm_to_cpp: fn_8003CDE4

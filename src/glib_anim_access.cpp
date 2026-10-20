@@ -1,9 +1,10 @@
 #include "types.h"
 #include "m2c_macros.h"
 
-struct M2C_VC_0 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual s32 f(s32 *, s32, s32);   };
-struct M2C_VC_1 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual s32 f(s32 *, s32, s32);  };
-struct M2C_VC_2 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual s32 f(s32 *, s32, s32); };
+struct M2C_VC_0 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual s32 f(s32 *, s32, s32);    };
+struct M2C_VC_1 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual s32 f(s32 *, s32, s32);   };
+struct M2C_VC_2 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual s32 f(s32 *, s32, s32);  };
+struct M2C_VC_3 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual s32 f(s32 *, s32, s32); };
 
 extern "C" {
 
@@ -82,7 +83,7 @@ void fn_80029AC0(s32 *arg0, s32 *arg1);
 s32 fn_80029ACC(s32 arg0, s32 arg1, u32 arg2);
 s32 fn_8002A0DC(s32 arg0, u32 arg1);
 s32 fn_8002A17C(s32 *arg0, s32 *arg1);
-M2C_UNK fn_8002A2D0(s32 *arg0);
+s32 fn_8002A2D0(s32 *arg0);
 s32 fn_8002A30C(s32 *arg0, s32 *arg1);
 s32 fn_8002A45C(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3, s32 arg4);
 void fn_8002A53C(s32 *arg0);
@@ -815,24 +816,13 @@ lbl_8002A2B8:
     blr
 }
 
-// asm_to_cpp: fn_8002A2D0
-asm M2C_UNK fn_8002A2D0(s32 *arg0) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r3
-    bl fn_80033A08
-    lwz r0, 0x0(r31)
-    stw r0, 0x8(r1)
-    addi r4, r1, 0x8
-    bl fn_8002AB84
-    lwz r31, 0x1c(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+s32 fn_8002A2D0(s32 *arg0) {
+    s32 sp8;
+    s32 temp_r3;
+
+    temp_r3 = (s32) (fn_80033A08());
+    sp8 = (s32) (*arg0);
+    return (s32) (fn_8002AB84((s32 *) ((s32 *) temp_r3), (s8 *) (&sp8)));
 }
 
 // asm_to_cpp: fn_8002A30C
@@ -996,25 +986,13 @@ lbl_8002A524:
     blr
 }
 
-// asm_to_cpp: fn_8002A53C
-asm void fn_8002A53C(s32 *arg0) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r3
-    bl fn_80029934
-    lwz r0, 0x0(r31)
-    stw r0, 0x8(r1)
-    addi r4, r1, 0x8
-    bl fn_8002AC0C
-    bl fn_800264D0
-    lwz r31, 0x1c(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+void fn_8002A53C(s32 *arg0) {
+    s32 sp8;
+    s32 temp_r3;
+
+    temp_r3 = (s32) (fn_80029934());
+    sp8 = (s32) (*arg0);
+    fn_800264D0((s8 *) (fn_8002AC0C((s32 *) ((s32 *) temp_r3), (s8 *) (&sp8))));
 }
 
 // asm_to_cpp: fn_8002A57C
@@ -1059,54 +1037,22 @@ asm void fn_8002A57C(s32 *arg0, f32 farg0) {
     blr
 }
 
-// asm_to_cpp: fn_8002A610
-asm void fn_8002A610(s32 *arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    stw r30, 0x18(r1)
-    mr r30, r3
-    mr r31, r4
-    bl fn_80029934
-    lwz r0, 0x0(r30)
-    stw r0, 0x8(r1)
-    addi r4, r1, 0x8
-    bl fn_8002AC0C
-    mr r4, r31
-    bl fn_80027E60
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+void fn_8002A610(s32 *arg0, s32 arg1) {
+    s32 sp8;
+    s32 temp_r3;
+
+    temp_r3 = (s32) (fn_80029934());
+    sp8 = (s32) (*arg0);
+    fn_80027E60((s8 *) (fn_8002AC0C((s32 *) ((s32 *) temp_r3), (s8 *) (&sp8))), (s32) (arg1));
 }
 
-// asm_to_cpp: fn_8002A660
-asm void fn_8002A660(s32 *arg0, s8 *arg1) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    stw r30, 0x18(r1)
-    mr r30, r3
-    mr r31, r4
-    bl fn_80029934
-    lwz r0, 0x0(r30)
-    stw r0, 0x8(r1)
-    addi r4, r1, 0x8
-    bl fn_8002AC0C
-    mr r4, r31
-    bl fn_80027E3C
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+void fn_8002A660(s32 *arg0, s8 *arg1) {
+    s32 sp8;
+    s32 temp_r3;
+
+    temp_r3 = (s32) (fn_80029934());
+    sp8 = (s32) (*arg0);
+    fn_80027E3C((s8 *) (fn_8002AC0C((s32 *) ((s32 *) temp_r3), (s8 *) (&sp8))), (s32) ((s32) arg1));
 }
 
 // asm_to_cpp: fn_8002A6B0
@@ -1294,25 +1240,13 @@ lbl_8002A928:
     blr
 }
 
-// asm_to_cpp: fn_8002A940
-asm void fn_8002A940(s32 *arg0) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r3
-    bl fn_80029934
-    lwz r0, 0x0(r31)
-    stw r0, 0x8(r1)
-    addi r4, r1, 0x8
-    bl fn_8002AC0C
-    bl fn_8002ADC0
-    lwz r31, 0x1c(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+void fn_8002A940(s32 *arg0) {
+    s32 sp8;
+    s32 temp_r3;
+
+    temp_r3 = (s32) (fn_80029934());
+    sp8 = (s32) (*arg0);
+    fn_8002ADC0((s8 *) (fn_8002AC0C((s32 *) ((s32 *) temp_r3), (s8 *) (&sp8))));
 }
 
 // asm_to_cpp: fn_8002A980
@@ -1435,40 +1369,16 @@ lbl_8002AAFC:
     blr
 }
 
-// asm_to_cpp: fn_8002AB0C
-asm void fn_8002AB0C(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_80029934
-    bl fn_80026D3C
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_8002AB0C(void) {
+    fn_80026D3C((s8 *) (fn_80029934()));
 }
 
-// asm_to_cpp: fn_8002AB30
-asm void fn_8002AB30(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_80029934
-    bl fn_80026DC8
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_8002AB30(void) {
+    fn_80026DC8((s8 *) (fn_80029934()));
 }
 
-// asm_to_cpp: fn_8002AB54
-asm void fn_8002AB54(void) {
-    nofralloc
-    la r3, lbl_8049D4AC
-    li r4, 0x0
-    b fn_8002AEE0
+void fn_8002AB54(void) {
+    fn_8002AEE0((s32 *) (&lbl_8049D4AC), (s32) (0));
 }
 
 s32 fn_8002AB60(s32 *arg0) {
