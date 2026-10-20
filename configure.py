@@ -1124,7 +1124,7 @@ config.libs = [
             AsmObject("seq_cmdeft.cpp"),
             Object(NonMatching, "seq_cmdtcg.cpp", source="seq_cmdtcg.c", extra_cflags=["-O4,s", "-schedule off", "-func_align 4", "-relax_pointers", "-opt nopeephole"]),
             AsmObject("file_task.cpp"),
-            Object(NonMatching, "sys_task.cpp", source="sys_task.c", extra_cflags=["-O4,s", "-schedule off", "-func_align 4", "-relax_pointers", "-opt nopeephole"]),
+            Object(NonMatching, "sys_task.cpp", source="sys_task.c", extra_cflags=["-O4,s", "-schedule off", "-func_align 4", "-opt nopeephole", "-lang=c++"]),
             Object(NonMatching, "homebutton.cpp", source="homebutton.c", extra_cflags=["-O4,s", "-schedule off", "-func_align 4", "-relax_pointers", "-opt nopeephole"]),
             Object(NonMatching, "gl_model.cpp", source="gl_model.c", extra_cflags=["-O4,s", "-schedule off", "-func_align 4", "-relax_pointers", "-opt nopeephole"]),
             Object(NonMatching, "gl_effect.cpp", source="gl_effect.c", extra_cflags=["-O4,s", "-schedule off", "-func_align 4", "-relax_pointers", "-opt nopeephole"]),

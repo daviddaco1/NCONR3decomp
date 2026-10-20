@@ -33,7 +33,7 @@ def fix_unset_args(c):
     for m in DEF.finditer(c):
         if m.start() < pos:
             continue
-        end = body_end(c, m.end() - 1)
+        end = body_end(c, c.index('{', m.start()))
         body = c[m.end():end]
         regs = sorted({int(n) for n in UNSET.findall(body) if 3 <= int(n) <= 10})
         out.append(c[pos:m.start()])
@@ -74,7 +74,7 @@ def fix_ptr_arith(c):
     for m in DEF.finditer(c):
         if m.start() < pos:
             continue
-        end = body_end(c, m.end() - 1)
+        end = body_end(c, c.index('{', m.start()))
         func = c[m.start():end]
         decls = m.group(3).split(',') + re.findall(r'^\s+([^=\n(]*?\w);', func, re.M)
         names = set()

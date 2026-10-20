@@ -42,7 +42,7 @@ def split_defs(c):
     for m in DEF.finditer(c):
         if m.start() < pos:
             continue
-        end = body_end(c, m.end() - 1)
+        end = body_end(c, c.index('{', m.start()))
         decls += [l for l in c[pos:m.start()].split('\n') if l.rstrip().endswith((';', '*/')) and '(' in l]
         defs[m.group(2)] = c[m.start():end] + '\n'
         pos = end
