@@ -5975,31 +5975,14 @@ asm f32 *fn_80127110(f32 *arg0, s32 *arg1, f32 *arg2, M2C_UNK arg_sp0) {
     blr
 }
 
-// asm_to_cpp: fn_80127174
-asm s32 *fn_80127174(s32 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    bl fn_8002AE40
-    addi r3, r31, 0x30
-    bl fn_8002AF5C
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 *fn_80127174(s32 *arg0) {
+    fn_8002AE40((s32) arg0);
+    fn_8002AF5C((s32) ((s8 *)arg0 + 0x30));
+    return arg0;
 }
 
-// asm_to_cpp: fn_801271AC
-asm void fn_801271AC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    nofralloc
-    li r7, 0x0
-    li r8, 0x7d
-    b GXSetTexCoordGen2
+void fn_801271AC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    GXSetTexCoordGen2(arg0, arg1, arg2, arg3, 0, 0x7D);
 }
 
 // asm_to_cpp: fn_801271BC

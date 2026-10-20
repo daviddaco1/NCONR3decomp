@@ -3558,12 +3558,8 @@ lbl_8017AC8C:
     blr
 }
 
-// asm_to_cpp: fn_8017AD78
-asm void fn_8017AD78(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    nofralloc
-    li r7, 0x0
-    li r8, 0x7d
-    b GXSetTexCoordGen2
+void fn_8017AD78(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    GXSetTexCoordGen2(arg0, arg1, arg2, arg3, 0, 0x7D);
 }
 
 // asm_to_cpp: fn_8017AD84
@@ -3621,31 +3617,11 @@ lbl_8017AE04:
     blr
 }
 
-// asm_to_cpp: fn_8017AE0C
-asm void fn_8017AE0C(f32 *arg0, s32 *arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    mr r5, r4
-    lwz r0, 0x0(r4)
-    clrlwi r0, r0, 31
-    cmpwi r0, 0x0
-    beq lbl_8017AE4C
-    addi r4, r4, 0x1c
-    addi r5, r5, 0x4
-    bl fn_8001B8B8
-    mr r3, r31
-    mr r4, r31
-    bl fn_8001B8B0
-lbl_8017AE4C:
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_8017AE0C(f32 *arg0, s32 *arg1) {
+    if ((s32) (*arg1 & 1) != 0) {
+        fn_8001B8B8((s32) arg0, (s32) ((s8 *)arg1 + 0x1C), (s32) ((s8 *)arg1 + 4));
+        fn_8001B8B0((s32) arg0, (s32) arg0);
+    }
 }
 
 // asm_to_cpp: fn_8017AE60

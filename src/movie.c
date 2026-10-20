@@ -704,56 +704,20 @@ s32 fn_80136BFC(s8 *arg0) {
     return (((u32) (temp_r5 & 0xFF000000) >> 0x18U) | ((u32) (temp_r5 & 0xFF0000) >> 8U) | (((u8) temp_r5 << 0x18) | ((temp_r5 & 0xFF00) << 8))) == 0x20061122;
 }
 
-// asm_to_cpp: fn_80136C54
-asm s32 fn_80136C54(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    lwz r3, lbl_8049D700
-    mr r4, r30
-    li r5, 0x0
-    bl fn_80170E2C
-    mr r31, r3
-    li r4, 0x0
-    mr r5, r30
-    bl memset
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_80136C54(s32 arg0) {
+    s32 temp_r3;
+
+    temp_r3 = fn_80170E2C(lbl_8049D700, arg0, 0);
+    memset(temp_r3, 0, arg0);
+    return temp_r3;
 }
 
-// asm_to_cpp: fn_80136CA8
-asm s32 fn_80136CA8(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    lwz r3, lbl_8049D700
-    mr r4, r30
-    li r5, 0x0
-    bl fn_80170E2C
-    mr r31, r3
-    li r4, 0x0
-    mr r5, r30
-    bl memset
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_80136CA8(s32 arg0) {
+    s32 temp_r3;
+
+    temp_r3 = fn_80170E2C(lbl_8049D700, arg0, 0);
+    memset(temp_r3, 0, arg0);
+    return temp_r3;
 }
 
 // asm_to_cpp: dtor_80136CFC
@@ -1924,12 +1888,8 @@ asm void fn_80137D38() {
     blr
 }
 
-// asm_to_cpp: fn_80137F38
-asm void fn_80137F38(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    nofralloc
-    li r7, 0x0
-    li r8, 0x7d
-    b GXSetTexCoordGen2
+void fn_80137F38(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    GXSetTexCoordGen2(arg0, arg1, arg2, arg3, 0, 0x7D);
 }
 
 // asm_to_cpp: fn_80137F48

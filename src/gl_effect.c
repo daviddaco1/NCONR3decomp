@@ -7508,12 +7508,8 @@ asm void fn_8018C980(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     blr
 }
 
-// asm_to_cpp: fn_8018CA80
-asm void fn_8018CA80(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    nofralloc
-    li r7, 0x0
-    li r8, 0x7d
-    b GXSetTexCoordGen2
+void fn_8018CA80(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    GXSetTexCoordGen2(arg0, arg1, arg2, arg3, 0, 0x7D);
 }
 
 // asm_to_cpp: fn_8018CA9C
@@ -7886,38 +7882,13 @@ asm void fn_8018CFCC(s32 *arg0, s32 arg1) {
     blr
 }
 
-// asm_to_cpp: fn_8018D00C
-asm void fn_8018D00C(s32 *arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    stw r30, 0x18(r1)
-    mr r30, r3
-    mr r31, r4
-    lwz r3, lbl_8049D880
-    bl fn_8002ADF8
-    mr r4, r31
-    bl GetFog__Q34nw4r3g3d7ScnRootFi
-    stw r3, 0x8(r1)
-    addi r3, r1, 0xc
-    addi r4, r1, 0x8
-    bl fn_8003A130
-    addi r3, r1, 0xc
-    mr r4, r30
-    addi r5, r30, 0x4
-    addi r6, r30, 0x8
-    addi r7, r30, 0xc
-    addi r8, r30, 0x10
-    addi r9, r30, 0x14
-    bl GetFog__Q34nw4r3g3d3FogFP10_GXFogTypePfPfPfPfP8_GXColor
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+void fn_8018D00C(s32 *arg0, s32 arg1) {
+    s32 *spC;
+    s32 sp8;
+
+    sp8 = GetFog__Q34nw4r3g3d7ScnRootFi(fn_8002ADF8((s8 *) lbl_8049D880), arg1);
+    fn_8003A130(&spC, (s32) &sp8);
+    GetFog__Q34nw4r3g3d3FogFP10_GXFogTypePfPfPfPfP8_GXColor((s8 **) &spC, arg0, (f32 *) ((s8 *)arg0 + 4), (f32 *) ((s8 *)arg0 + 8), (f32 *) ((s8 *)arg0 + 0xC), (f32 *) ((s8 *)arg0 + 0x10), (s8 *)arg0 + 0x14);
 }
 
 // asm_to_cpp: fn_8018D080

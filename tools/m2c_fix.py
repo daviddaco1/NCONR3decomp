@@ -67,8 +67,34 @@ def add_local_protos(c):
     return c[:i] + protos + '\n' + c[i:]
 
 
+def fix_ptr_arith(c):
+    """m2c escribe `p + n` con n en bytes aunque p sea `s32 *`/`T **` (mwcc escalaria por sizeof):
+    pasa a `(s8 *)p + n`. No toca `*(p + n)` (cambiaria el tipo leido) ni `p += n`/`p++`."""
+    out, pos = [], 0
+    for m in DEF.finditer(c):
+        if m.start() < pos:
+            continue
+        end = body_end(c, m.end() - 1)
+        func = c[m.start():end]
+        decls = m.group(3).split(',') + re.findall(r'^\s+([^=\n(]*?\w);', func, re.M)
+        names = set()
+        for d in decls:
+            k = re.match(r'^\s*(\w+(?:\s+\w+)*?)\s*(\*+)\s*(\w+)\s*$', d)
+            if k and (len(k.group(2)) > 1 or k.group(1) not in ('s8', 'u8', 'char', 'M2C_UNK8')):
+                names.add(k.group(3))
+        head, body = func[:m.end() - m.start()], func[m.end() - m.start():]
+        for n in names:
+            body = re.sub(r'(?<![\w*.>])(?<!\*\()(?<!->)\b' + n + r'\b(?=\s*[-+]\s*(?![-+=]))',
+                          '(s8 *)' + n, body)
+        out.append(c[pos:m.start()] + head + body)
+        pos = end
+    out.append(c[pos:])
+    return ''.join(out)
+
+
 def fixup(c):
     c = re.sub(r'\bvoid \*', 's8 *', c)
+    c = fix_ptr_arith(c)
     # campos puntero como s8*: m2c suma offsets en bytes a punteros tipados (p + 0x50 escalaria x4)
     c = re.sub(r'(M2C_FIELD\([^,]+, )\w+ \*\*(, )', r'\1s8 **\2', c)
     c = fix_unset_args(c)

@@ -73,52 +73,20 @@ extern void fn_8010E9A4();
 extern void fn_8017742C();
 extern void fn_8017C2CC();
 
-// asm_to_cpp: fn_80046108
-asm s8 *fn_80046108(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    li r3, 0x12
-    lis r4, fn_800461AC@ha
-    addi r4, r4, fn_800461AC@l
-    lwz r5, lbl_8049D660
-    bl fn_80177280
-    mr r31, r3
-    cmpwi r3, 0x0
-    bne lbl_80046148
-    li r3, 0x0
-    b lbl_80046190
-lbl_80046148:
-    li r4, 0x0
-    li r5, 0x7c
-    bl memset
-    addi r3, r31, 0xc
-    bl fn_80019D5C
-    stw r30, 0x8(r31)
-    li r3, 0xf
-    lwz r4, 0x8(r31)
-    mr r5, r31
-    li r6, 0x0
-    bl fn_8010E90C
-    cmpwi r3, 0x0
-    beq lbl_8004618C
-    cmpwi r31, 0x0
-    beq lbl_8004618C
-    mr r3, r31
-    bl fn_800461A8
-lbl_8004618C:
-    mr r3, r31
-lbl_80046190:
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s8 *fn_80046108(s32 arg0) {
+    s32 temp_r3;
+
+    temp_r3 = fn_80177280(0x12, (s32 *) fn_800461AC, lbl_8049D660);
+    if (temp_r3 == 0) {
+        return NULL;
+    }
+    memset(temp_r3, 0, 0x7C);
+    fn_80019D5C(temp_r3 + 0xC);
+    M2C_FIELD(temp_r3, s32 *, 8) = arg0;
+    if ((fn_8010E90C(0xFU, M2C_FIELD(temp_r3, s32 *, 8), temp_r3, 0) != 0) && (temp_r3 != 0)) {
+        fn_800461A8(temp_r3);
+    }
+    return (s8 *) temp_r3;
 }
 
 // asm_to_cpp: fn_800461AC

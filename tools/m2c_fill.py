@@ -119,6 +119,10 @@ def compile_until_ok(u):
             return False
         if what[0] == 'c':
             del u.c[what[1]]
+            if os.environ.get('M2C_STATS'):
+                err = re.search(r'\(\d+\)[^\n]*', r.stdout)
+                with open(os.environ['M2C_STATS'], 'a') as f:
+                    f.write(json.dumps({'tu': u.split, 'fn': what[1], 'err': err.group(0) if err else ''}) + '\n')
         else:
             del u.decls[what[1]]
     u.restore()
@@ -126,7 +130,9 @@ def compile_until_ok(u):
 
 
 def report():
-    subprocess.run(['ninja', '-k', '0'], capture_output=True)
+    r = subprocess.run(['ninja', '-k', '0'], capture_output=True, text=True)
+    if r.returncode:  # report.json queda viejo si falla algo
+        print('  build fallo:', [l for l in r.stdout.splitlines() if 'FAILED' in l][:5], flush=True)
     return {x['name'].removeprefix('main/'): x for x in json.load(open('build/RNEPDA/report.json'))['units']}
 
 

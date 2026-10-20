@@ -1262,19 +1262,15 @@ s32 fn_80019C10(s8 *arg0) {
     return var_r31;
 }
 
-// asm_to_cpp: fn_80019D70
-asm s8 *fn_80019D70(s32 **arg0) {
-    nofralloc
-    lwz r4, 0x0(r3)
-    cmpwi r4, 0x0
-    bne lbl_80019D84
-    li r3, 0x0
-    blr
-lbl_80019D84:
-    lwz r0, 0x0(r4)
-    stw r0, 0x0(r3)
-    addi r3, r4, 0x4
-    blr
+s8 *fn_80019D70(s32 **arg0) {
+    s32 *temp_r4;
+
+    temp_r4 = *arg0;
+    if (temp_r4 == NULL) {
+        return NULL;
+    }
+    *arg0 = (s32 *) *temp_r4;
+    return (s8 *)temp_r4 + 4;
 }
 
 // asm_to_cpp: fn_80019D94

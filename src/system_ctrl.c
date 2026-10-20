@@ -2050,41 +2050,14 @@ asm int fn_80070740() {
     blr
 }
 
-// asm_to_cpp: fn_80070760
-asm void fn_80070760(f32 *arg0, s32 *arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    mr r31, r4
-    mr r3, r31
-    bl fn_800707D8
-    cmpwi r3, 0x0
-    beq lbl_800707C0
-    lwz r0, 0x0(r31)
-    rlwinm r0, r0, 0, 29, 29
-    cmpwi r0, 0x0
-    beq lbl_800707B0
-    mr r3, r30
-    li r4, 0x3
-    lwz r5, 0x4(r31)
-    bl fn_80173580
-    b lbl_800707C0
-lbl_800707B0:
-    mr r3, r30
-    lwz r4, 0x4(r31)
-    addi r5, r31, 0x8
-    bl fn_80018AF8
-lbl_800707C0:
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_80070760(f32 *arg0, s32 *arg1) {
+    if (fn_800707D8(arg1) != 0) {
+        if ((s32) (M2C_FIELD(arg1, s32 *, 0) & 4) != 0) {
+            fn_80173580(arg0, 3, M2C_FIELD(arg1, s32 *, 4));
+            return;
+        }
+        fn_80018AF8((s32) arg0, M2C_FIELD(arg1, s32 *, 4), (s32) ((s8 *)arg1 + 8));
+    }
 }
 
 s32 fn_800707D8(s32 *arg0) {

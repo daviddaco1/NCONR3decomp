@@ -130,6 +130,10 @@ def main():
         if ret == 'void' and name in used:
             ret = 'M2C_UNK'
         lines.append(f'{ret} {name}({params});')
+    for name, (lret, lps) in sorted(lib.items()):  # funciones que m2c no pudo descompilar
+        if name not in defs:
+            params = ', '.join(f'{t} arg{i}' for i, t in enumerate(lps)) or 'void'
+            lines.append(f'{"M2C_UNK" if lret == "s32" else lret} {name}({params});')
     with open('build/m2c_ctx.h', 'w', newline='\n') as f:
         f.write(TYPEDEFS + '\n' + '\n'.join(lines) + '\n')
     # para incluir en el C generado: solo tipo de retorno (prototipo vacio, compatible con

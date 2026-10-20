@@ -16641,31 +16641,14 @@ lbl_80090A6C:
     blr
 }
 
-// asm_to_cpp: fn_80090A7C
-asm void fn_80090A7C(s32 arg0, s8 *arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    mr r31, r4
-    li r3, -0x1
-    bl fn_80090A40
-    cmpwi r3, 0x0
-    beq lbl_80090AB8
-    stw r30, 0x0(r3)
-    addi r3, r3, 0x4
-    mr r4, r31
-    bl fn_80090978
-lbl_80090AB8:
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_80090A7C(s32 arg0, s8 *arg1) {
+    s32 *temp_r3;
+
+    temp_r3 = fn_80090A40(-1);
+    if (temp_r3 != NULL) {
+        *temp_r3 = arg0;
+        fn_80090978((s8 *)temp_r3 + 4, arg1);
+    }
 }
 
 // asm_to_cpp: fn_80090AD0

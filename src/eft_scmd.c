@@ -2288,20 +2288,14 @@ lbl_80114A20:
     blr
 }
 
-// asm_to_cpp: fn_80114A3C
-asm s32 *fn_80114A3C(s32 *arg0) {
-    nofralloc
-    lwz r4, 0x0(r3)
-    clrlwi r0, r4, 30
-    cmpwi r0, 0x0
-    beq lbl_80114A54
-    li r0, 0x0
-    stw r0, 0x1(r0)
-lbl_80114A54:
-    addi r0, r4, 0x3
-    clrrwi r0, r0, 2
-    add r3, r3, r0
-    blr
+s32 *fn_80114A3C(s32 *arg0) {
+    s32 temp_r4;
+
+    temp_r4 = *arg0;
+    if ((s32) (temp_r4 & 3) != 0) {
+        *(s32 *)1 = 0;
+    }
+    return (s8 *)arg0 + ((temp_r4 + 3) & 0xFFFFFFFC);
 }
 
 // asm_to_cpp: fn_80114A64

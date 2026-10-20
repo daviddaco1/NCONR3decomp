@@ -3591,11 +3591,8 @@ asm s32 fn_80193180() {
     blr
 }
 
-// asm_to_cpp: fn_80193188
-asm s32 fn_80193188(s8 **arg0) {
-    nofralloc
-    addi r3, r3, 0x2c
-    blr
+s32 fn_80193188(s8 **arg0) {
+    return (s32) ((s8 *)arg0 + 0x2C);
 }
 
 // asm_to_cpp: fn_80193198
@@ -3637,18 +3634,12 @@ asm void fn_801931E8(s32 arg0, s32 arg1) {
     b fn_8019353C
 }
 
-// asm_to_cpp: fn_80193204
-asm void fn_80193204(s8 **arg0, s32 arg1) {
-    nofralloc
-    addi r3, r3, 0x4c
-    b fn_8019320C
+void fn_80193204(s8 **arg0, s32 arg1) {
+    fn_8019320C((f32 *) ((s8 *)arg0 + 0x4C), (s8 *) arg1);
 }
 
-// asm_to_cpp: fn_80193220
-asm s8 *fn_80193220(s8 **arg0) {
-    nofralloc
-    addi r3, r3, 0x4c
-    blr
+s8 *fn_80193220(s8 **arg0) {
+    return (s8 *)arg0 + 0x4C;
 }
 
 // asm_to_cpp: fn_80193230
@@ -3665,18 +3656,12 @@ asm void fn_80193230(f32 *arg0, s32 *arg1) {
     blr
 }
 
-// asm_to_cpp: fn_80193254
-asm void fn_80193254(s32 *arg0, s32 arg1) {
-    nofralloc
-    addi r3, r3, 0x34
-    b fn_80193230
+void fn_80193254(s32 *arg0, s32 arg1) {
+    fn_80193230((f32 *) ((s8 *)arg0 + 0x34), (s32 *) arg1);
 }
 
-// asm_to_cpp: fn_8019325C
-asm void fn_8019325C(s32 *arg0, s32 arg1) {
-    nofralloc
-    addi r3, r3, 0x4
-    b fn_8018B784
+void fn_8019325C(s32 *arg0, s32 arg1) {
+    fn_8018B784((s32) ((s8 *)arg0 + 4));
 }
 
 // asm_to_cpp: fn_80193264
@@ -3689,11 +3674,8 @@ asm void fn_80193264() {
     blr
 }
 
-// asm_to_cpp: fn_80193278
-asm void fn_80193278(s32 *arg0, s32 arg1) {
-    nofralloc
-    addi r3, r3, 0x44
-    b fn_8012E63C
+void fn_80193278(s32 *arg0, s32 arg1) {
+    fn_8012E63C((s32) ((s8 *)arg0 + 0x44), arg1);
 }
 
 // asm_to_cpp: fn_80193280

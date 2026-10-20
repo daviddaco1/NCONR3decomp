@@ -1245,12 +1245,8 @@ lbl_80047588:
     blr
 }
 
-// asm_to_cpp: fn_80047BE8
-asm void fn_80047BE8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    nofralloc
-    li r7, 0x0
-    li r8, 0x7d
-    b GXSetTexCoordGen2
+void fn_80047BE8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    GXSetTexCoordGen2(arg0, arg1, arg2, arg3, 0, 0x7D);
 }
 
 // asm_to_cpp: fn_80047BF4
