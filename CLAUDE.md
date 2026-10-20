@@ -50,7 +50,7 @@ ninja; el resto (dtk, objdiff-cli, binutils, compiladores CodeWarrior) se descar
 - **Archivos mixtos**: C para las funciones que matchean + asm para el resto, separados por
   `// ---- Funciones aun sin C que matchee (asm generado) ----`, cada función asm marcada
   `// asm_to_cpp: <fn>`. `configure.py progress` descuenta esas funciones del "C code".
-- `libs/`: código de terceros (CC0) — `PowerPC_EABI_Support`, `RVL_SDK`, `nw4r` (xbret/xenoblade),
+- `libs/`: código de terceros (CC0) — `xenoblade/` (`PowerPC_EABI_Support`, `RVL_SDK`, `nw4r`),
   `mkw/` (doldecomp/mkw: GameSpy) y `ss/` (zeldaret/ss: NW4R faltante). Ver `libs/README.md`.
   `include/` es del juego (`types.h`, `m2c_macros.h`).
 - `build/` es 100% generado; `build/RNEPDA/asm/` tiene el asm de dtk por split (fuente de
@@ -118,7 +118,7 @@ dtk-template (`project.py`, `download_tool.py`, etc.): no tocar salvo necesidad 
 ## Estado (actualizar al cerrar una etapa)
 
 - **Código 100% matcheado** (3,299,164 bytes, 11,293 funciones) mezclando asm y C; **C real
-  ≈10.6%**. Datos 0% (sin splits de datos).
+  ≈10.9%**. Datos 0% (sin splits de datos).
 - `.text` 100% splitteado. TUs `unk_<addr>` = fronteras sin nombre real (los huecos grandes, como
   `dwc/unk_8022813C.c`, pueden contener varios archivos). Funciones del juego siguen como `fn_*`.
 - Siguiente: subir el C real (m2c + ajuste manual) y splits de datos por TU (habilitan enlazar y

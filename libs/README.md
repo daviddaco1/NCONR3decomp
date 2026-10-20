@@ -1,13 +1,14 @@
 # libs/
 
-Headers de librerías de terceros (MSL/Runtime/MetroTRK, RVL SDK, NdevExi2A) copiados de
-[xbret/xenoblade](https://github.com/xbret/xenoblade) (CC0 1.0, ver `LICENSE.xenoblade`).
-Se usan para compilar el C importado de MSL_C/Runtime/TRK, RVL SDK y NW4R (Fases 98-100).
+Código de terceros importado de otros proyectos de descompilación (todos CC0 1.0; cada carpeta
+trae su `LICENSE`). Se compila con los flags de su proyecto de origen (`cflags_*` en
+`configure.py`). Nada de esto es código del juego.
 
-Además:
-- `mkw/` — de [doldecomp/mkw](https://github.com/doldecomp/mkw) (CC0, `LICENSE.mkw`): GameSpy,
-  piezas del RVL SDK y sus headers (Fase 101).
-- `ss/` — de [zeldaret/ss](https://github.com/zeldaret/ss) (CC0, `LICENSE.ss`): fuentes NW4R que
-  Xenoblade no tiene y sus headers (Fase 102).
+| Carpeta | Origen | Contenido |
+|---|---|---|
+| `xenoblade/` | [xbret/xenoblade](https://github.com/xbret/xenoblade) | `PowerPC_EABI_Support` (MSL_C, Runtime, MetroTRK), `RVL_SDK`, `nw4r`, `NdevExi2A` (fuentes y headers) e `include/` (su `types.h` y afines) |
+| `mkw/` | [doldecomp/mkw](https://github.com/doldecomp/mkw) | GameSpy, piezas del RVL SDK y sus headers |
+| `ss/` | [zeldaret/ss](https://github.com/zeldaret/ss) | Fuentes NW4R que Xenoblade no tiene y sus headers |
 
-Nada de esto es código del juego.
+Las copias editadas para esta versión del juego (diferencias de versión, archivos mixtos C+asm)
+viven en `src/`, no acá.

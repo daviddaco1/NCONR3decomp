@@ -37,7 +37,7 @@ The executable is split into *translation units* (TUs, one source file each) acc
 | | |
 |---|---|
 | Code matched (asm + C) | **100%** (3.3 MB, 11,293 functions) |
-| Code in real C | ≈10.6% |
+| Code in real C | ≈10.9% |
 | Data | 0% (no data splits yet) |
 | `.text` split | 100% |
 
@@ -94,7 +94,7 @@ area and known gotchas.
 `libs/` contains MSL/Runtime/MetroTRK, RVL SDK and NW4R sources and headers from
 [xbret/xenoblade](https://github.com/xbret/xenoblade), GameSpy from
 [doldecomp/mkw](https://github.com/doldecomp/mkw) and parts of NW4R from
-[zeldaret/ss](https://github.com/zeldaret/ss), all under CC0 (licenses in `libs/LICENSE.*`).
+[zeldaret/ss](https://github.com/zeldaret/ss), all under CC0 (license in each `libs/<source>/LICENSE`).
 Library TU names were also taken from those projects and from
 [doldecomp/ogws](https://github.com/doldecomp/ogws) and [zeldaret/tp](https://github.com/zeldaret/tp).
 
