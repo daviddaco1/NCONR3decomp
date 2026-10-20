@@ -249,6 +249,7 @@ void fn_800A7CDC(s8 *arg0) {
 // fn_800A8240: definicion C reemplazada por asm (ver abajo)
 
 
+#pragma peephole on
 s32 fn_800A8308(void) {
     s32 var_r0;
 
@@ -270,6 +271,7 @@ s32 fn_800A8308(void) {
     }
     return 1;
 }
+#pragma peephole reset
 
 /*
 Decompilation failure in function fn_800A8394:

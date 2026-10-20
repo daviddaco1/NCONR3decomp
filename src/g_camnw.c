@@ -921,6 +921,7 @@ void fn_8008DE14(s32 *arg0, s8 *arg1);
 
 s32 fn_8008E2A0(M2C_UNK arg_sp0);
 
+#pragma peephole on
 void fn_8008E4A4(s8 *arg0, s8 *arg1) {
     s32 temp_r4;
 
@@ -931,6 +932,7 @@ void fn_8008E4A4(s8 *arg0, s8 *arg1) {
         M2C_FIELD(arg0, s32 *, 4) = 0;
     }
 }
+#pragma peephole reset
 
 s32 fn_8008E500(s32 *arg0) {
     s32 temp_r4;

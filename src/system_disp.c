@@ -170,6 +170,7 @@ s32 fn_8007AEA0(s8 *arg0, u32 arg1) {
 // fn_8007AF64: definicion C reemplazada por asm (ver abajo)
 
 
+#pragma peephole on
 s32 fn_8007AFE4(s8 *arg0, u32 arg1) {
     u32 temp_r3;
 
@@ -183,6 +184,7 @@ s32 fn_8007AFE4(s8 *arg0, u32 arg1) {
     }
     return 0;
 }
+#pragma peephole reset
 
 u32 fn_8007B04C(s8 *arg0);
 

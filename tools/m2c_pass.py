@@ -109,6 +109,10 @@ def main():
                 del cand[sp]
                 break
             forced[sp].append(name)
+            if os.environ.get('M2C_STATS'):
+                err = re.search(r'\(\d+\)[^\n]*', log)
+                with open(os.environ['M2C_STATS'], 'a') as f:
+                    f.write(json.dumps({'tu': sp, 'fn': name, 'err': err.group(0) if err else ''}) + '\n')
             open(path, 'w', newline='\n').write(text)
         else:
             print('demasiados errores', sp)
@@ -128,6 +132,12 @@ def main():
         good = [f['name'] for f in fs if f.get('fuzzy_match_percent', 0) == 100 and f['name'] not in forced[sp]]
         bad = [f['name'] for f in fs if f['name'] not in good]
         results[sp] = (good, bad)
+        if os.environ.get('M2C_STATS'):
+            with open(os.environ['M2C_STATS'], 'a') as f:
+                for x in fs:
+                    if x['name'] not in good and x['name'] not in forced[sp]:
+                        f.write(json.dumps({'tu': sp, 'fn': x['name'], 'size': int(x.get('size', 0)),
+                                            'fuzzy': x.get('fuzzy_match_percent', 0)}) + '\n')
         if os.environ.get('M2C_DEBUG'):
             print(sp, 'forzadas', forced[sp], 'fuzzy', [(f['name'], f.get('fuzzy_match_percent')) for f in fs])
         if not good:

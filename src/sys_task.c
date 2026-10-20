@@ -1764,88 +1764,46 @@ asm s32 fn_801793CC() {
     b fn_80310908
 }
 
-// asm_to_cpp: fn_801793D0
-asm s32 fn_801793D0(s32 arg0, s32 arg1, s32 arg2) {
-    nofralloc
-    clrlwi r0, r4, 27
-    cmpwi r0, 0x0
-    beq lbl_801793E4
-    li r0, 0x0
-    stw r0, 0x1(r0)
-lbl_801793E4:
-    addi r0, r5, 0x1f
-    clrrwi r5, r0, 5
-    b NANDRead
+s32 fn_801793D0(s32 arg0, s32 arg1, s32 arg2) {
+    if ((s32) (arg1 & 0x1F) != 0) {
+        *(s32 *)1 = 0;
+    }
+    return NANDRead((s32 *) arg0, arg1, (arg2 + 0x1F) & 0xFFFFFFE0);
 }
 
-// asm_to_cpp: fn_801793F0
-asm s32 fn_801793F0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    nofralloc
-    clrlwi r0, r4, 27
-    cmpwi r0, 0x0
-    beq lbl_80179404
-    li r0, 0x0
-    stw r0, 0x1(r0)
-lbl_80179404:
-    addi r0, r5, 0x1f
-    clrrwi r5, r0, 5
-    b NANDReadAsync
+s32 fn_801793F0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    if ((s32) (arg1 & 0x1F) != 0) {
+        *(s32 *)1 = 0;
+    }
+    return NANDReadAsync((s32 *) arg0, arg1, (arg2 + 0x1F) & 0xFFFFFFE0, arg3, (s8 *) arg4);
 }
 
-// asm_to_cpp: fn_80179410
-asm s32 fn_80179410(s32 arg0, s32 arg1, s32 arg2) {
-    nofralloc
-    clrlwi r0, r4, 27
-    cmpwi r0, 0x0
-    beq lbl_80179424
-    li r0, 0x0
-    stw r0, 0x1(r0)
-lbl_80179424:
-    addi r0, r5, 0x1f
-    clrrwi r5, r0, 5
-    b NANDWrite
+s32 fn_80179410(s32 arg0, s32 arg1, s32 arg2) {
+    if ((s32) (arg1 & 0x1F) != 0) {
+        *(s32 *)1 = 0;
+    }
+    return NANDWrite((s32 *) arg0, arg1, (arg2 + 0x1F) & 0xFFFFFFE0);
 }
 
-// asm_to_cpp: fn_80179430
-asm s32 fn_80179430(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    nofralloc
-    clrlwi r0, r4, 27
-    cmpwi r0, 0x0
-    beq lbl_80179444
-    li r0, 0x0
-    stw r0, 0x1(r0)
-lbl_80179444:
-    addi r0, r5, 0x1f
-    clrrwi r5, r0, 5
-    b NANDWriteAsync
+s32 fn_80179430(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    if ((s32) (arg1 & 0x1F) != 0) {
+        *(s32 *)1 = 0;
+    }
+    return NANDWriteAsync((s32 *) arg0, arg1, (arg2 + 0x1F) & 0xFFFFFFE0, arg3, (s8 *) arg4);
 }
 
-// asm_to_cpp: fn_80179458
-asm s32 fn_80179458(s32 arg0, s32 arg1, s32 arg2) {
-    nofralloc
-    cmpwi r4, 0x0
-    beq lbl_80179474
-    clrlwi r0, r4, 27
-    cmpwi r0, 0x0
-    beq lbl_80179474
-    li r0, 0x0
-    stw r0, 0x1(r0)
-lbl_80179474:
-    b fn_8030EC80
+s32 fn_80179458(s32 arg0, s32 arg1, s32 arg2) {
+    if ((arg1 != 0) && ((s32) (arg1 & 0x1F) != 0)) {
+        *(s32 *)1 = 0;
+    }
+    return fn_8030EC80(arg0, arg1, arg2);
 }
 
-// asm_to_cpp: fn_80179478
-asm s32 fn_80179478(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    nofralloc
-    cmpwi r4, 0x0
-    beq lbl_80179494
-    clrlwi r0, r4, 27
-    cmpwi r0, 0x0
-    beq lbl_80179494
-    li r0, 0x0
-    stw r0, 0x1(r0)
-lbl_80179494:
-    b NANDReadDirAsync
+s32 fn_80179478(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    if ((arg1 != 0) && ((s32) (arg1 & 0x1F) != 0)) {
+        *(s32 *)1 = 0;
+    }
+    return NANDReadDirAsync(arg0, arg1, arg2, arg3, (s8 *) arg4);
 }
 
 // asm_to_cpp: fn_80179498
@@ -2671,17 +2629,10 @@ lbl_80179F94:
     blr
 }
 
-// asm_to_cpp: fn_80179FB4
-asm void fn_80179FB4(void) {
-    nofralloc
-    lwz r3, lbl_8049D82C
-    rlwinm r0, r3, 0, 26, 26
-    cmpwi r0, 0x0
-    beqlr
-    ori r0, r3, 0x4
-    rlwinm r0, r0, 0, 28, 26
-    stw r0, lbl_8049D82C
-    blr
+void fn_80179FB4(void) {
+    if ((s32) (lbl_8049D82C & 0x20) != 0) {
+        lbl_8049D82C = (lbl_8049D82C | 4) & 0xFFFFFFEF;
+    }
 }
 
 // asm_to_cpp: fn_8017A008
@@ -2693,34 +2644,16 @@ asm void fn_8017A008(void) {
     b fn_80179FD4
 }
 
-// asm_to_cpp: fn_8017A018
-asm s32 fn_8017A018(void) {
-    nofralloc
-    lwz r0, lbl_8049D82C
-    rlwinm r3, r0, 0, 30, 30
-    subic r0, r3, 0x1
-    subfe r3, r0, r3
-    blr
+s32 fn_8017A018(void) {
+    return (lbl_8049D82C & 2) != 0;
 }
 
-// asm_to_cpp: fn_8017A02C
-asm s32 fn_8017A02C(void) {
-    nofralloc
-    lwz r0, lbl_8049D82C
-    rlwinm r3, r0, 0, 29, 29
-    subic r0, r3, 0x1
-    subfe r3, r0, r3
-    blr
+s32 fn_8017A02C(void) {
+    return (lbl_8049D82C & 4) != 0;
 }
 
-// asm_to_cpp: fn_8017A040
-asm s32 fn_8017A040(void) {
-    nofralloc
-    lwz r0, lbl_8049D82C
-    clrlwi r3, r0, 31
-    subic r0, r3, 0x1
-    subfe r3, r0, r3
-    blr
+s32 fn_8017A040(void) {
+    return (lbl_8049D82C & 1) != 0;
 }
 
 // asm_to_cpp: fn_8017A054

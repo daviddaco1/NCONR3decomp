@@ -53,6 +53,11 @@ def main():
     with concurrent.futures.ThreadPoolExecutor(8) as ex:
         outs = list(ex.map(m2c, files))
     defs, ncall, used = {}, collections.defaultdict(collections.Counter), set()
+    # declaraciones de datos que m2c emite sin contexto (con --context las omite): el tipo mas votado
+    data = collections.defaultdict(collections.Counter)
+    for out in outs:
+        for typ, name in re.findall(r'^extern (\w[\w \*]*?)\s*\b((?:lbl|jumptable)_[0-9A-F]{8}\w*)(?:\[\])?;', out, re.M):
+            data[name][typ.strip()] += 1
     for out in outs:
         for ret, name, params in DEF.findall(out):
             ps = [p for p in (x.strip() for x in params.split(',')) if p and 'arg_sp' not in p and p != 'void']
@@ -82,11 +87,16 @@ def main():
         f.write(TYPEDEFS + '\n' + '\n'.join(lines) + '\n')
     # para incluir en el C generado: solo tipo de retorno (prototipo vacio, compatible con
     # cualquier definicion) y con void* como s8*, igual que tools/m2c_fix.py
-    with open('build/RNEPDA/include/m2c_protos.h', 'w', newline='\n') as f:
+    with open('include/m2c_protos.h', 'w', newline='\n') as f:
         for l in lines:
             m = re.match(r'(.*?)\b(\w+)\(', l)
             f.write(re.sub(r'\bvoid \*', 's8 *', f'{m.group(1).strip()} {m.group(2)}();') + '\n')
-    print(len(lines), 'prototipos -> build/m2c_ctx.h, build/RNEPDA/include/m2c_protos.h')
+    # datos aparte: solo lo incluye el C recien generado (los C ya ajustados declaran sus tipos)
+    with open('build/m2c_data.h', 'w', newline='\n') as f:
+        for name, typs in sorted(data.items()):
+            typ = re.sub(r'\bvoid \*', 's8 *', typs.most_common(1)[0][0])
+            f.write(f'extern {typ} {name};\n')
+    print(len(lines), 'prototipos -> build/m2c_ctx.h, include/m2c_protos.h')
 
 
 if __name__ == '__main__':
