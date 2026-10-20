@@ -215,25 +215,14 @@ lbl_80090C94:
     blr
 }
 
-// asm_to_cpp: fn_80090CC4
-asm s32 fn_80090CC4(s8 *arg0) {
-    nofralloc
-    cmpwi r3, 0x0
-    bne lbl_80090CD4
-    li r3, 0x0
-    blr
-lbl_80090CD4:
-    lwz r0, 0x20(r3)
-    cmpwi r0, 0x0
-    bne lbl_80090CE8
-    li r3, 0x0
-    blr
-lbl_80090CE8:
-    lwz r0, 0x4(r3)
-    rlwinm r0, r0, 0, 30, 30
-    cntlzw r0, r0
-    srwi r3, r0, 5
-    blr
+s32 fn_80090CC4(s8 *arg0) {
+    if (arg0 == NULL) {
+        return 0;
+    }
+    if ((s32) M2C_FIELD(arg0, s32 *, 0x20) == 0) {
+        return 0;
+    }
+    return (M2C_FIELD(arg0, s32 *, 4) & 2) == 0;
 }
 
 // asm_to_cpp: fn_80090D0C

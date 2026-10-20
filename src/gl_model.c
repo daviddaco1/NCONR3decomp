@@ -541,21 +541,15 @@ lbl_801832F8:
     blr
 }
 
-// asm_to_cpp: fn_8018331C
-asm s32 fn_8018331C(s32 *arg0) {
-    nofralloc
-    lwz r4, 0x0(r3)
-    rlwinm r0, r4, 0, 22, 22
-    cmpwi r0, 0x0
-    beq lbl_80183340
-    rlwinm r0, r4, 0, 23, 21
-    xori r0, r0, 0x4
-    stw r0, 0x0(r3)
-    li r3, 0x1
-    blr
-lbl_80183340:
-    li r3, 0x0
-    blr
+s32 fn_8018331C(s32 *arg0) {
+    s32 temp_r4;
+
+    temp_r4 = *arg0;
+    if ((s32) (temp_r4 & 0x200) != 0) {
+        *arg0 = (temp_r4 & 0xFFFFFDFF) ^ 4;
+        return 1;
+    }
+    return 0;
 }
 
 // asm_to_cpp: fn_80183348
@@ -4577,27 +4571,16 @@ lbl_80186A84:
     blr
 }
 
-// asm_to_cpp: fn_80186AAC
-asm s32 fn_80186AAC(s8 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lwz r4, 0xc(r3)
-    subi r0, r4, 0x1
-    stw r0, 0xc(r3)
-    cmpwi r0, 0x0
-    bne lbl_80186AD8
-    bl fn_80186808
-    li r3, 0x1
-    b lbl_80186ADC
-lbl_80186AD8:
-    li r3, 0x0
-lbl_80186ADC:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_80186AAC(s8 *arg0) {
+    s32 temp_r0;
+
+    temp_r0 = M2C_FIELD(arg0, s32 *, 0xC) - 1;
+    M2C_FIELD(arg0, s32 *, 0xC) = temp_r0;
+    if (temp_r0 == 0) {
+        fn_80186808(arg0);
+        return 1;
+    }
+    return 0;
 }
 
 // asm_to_cpp: fn_80186AEC

@@ -644,42 +644,18 @@ asm s32 fn_8003FDC0(s32 *arg0, s32 arg1) {
     blr
 }
 
-// asm_to_cpp: fn_8003FE58
-asm s32 fn_8003FE58(s32 *arg0) {
-    nofralloc
-    lwz r0, 0x0(r3)
-    rlwinm r0, r0, 0, 26, 26
-    cntlzw r0, r0
-    srwi r3, r0, 5
-    blr
+s32 fn_8003FE58(s32 *arg0) {
+    return (*arg0 & 0x20) == 0;
 }
 
-// asm_to_cpp: fn_8003FE6C
-asm s32 fn_8003FE6C(s32 *arg0) {
-    nofralloc
-    lwz r0, 0x0(r3)
-    rlwinm r0, r0, 0, 27, 27
-    cntlzw r0, r0
-    srwi r3, r0, 5
-    blr
+s32 fn_8003FE6C(s32 *arg0) {
+    return (*arg0 & 0x10) == 0;
 }
 
-// asm_to_cpp: fn_8003FE80
-asm s32 fn_8003FE80(s32 *arg0) {
-    nofralloc
-    lwz r0, 0x0(r3)
-    rlwinm r3, r0, 0, 29, 29
-    subic r0, r3, 0x1
-    subfe r3, r0, r3
-    blr
+s32 fn_8003FE80(s32 *arg0) {
+    return (*arg0 & 4) != 0;
 }
 
-// asm_to_cpp: fn_8003FEEC
-asm u32 fn_8003FEEC(s32 *arg0) {
-    nofralloc
-    lwz r0, 0x0(r3)
-    clrlwi r3, r0, 31
-    subic r0, r3, 0x1
-    subfe r3, r0, r3
-    blr
+u32 fn_8003FEEC(s32 *arg0) {
+    return (*arg0 & 1) != 0;
 }

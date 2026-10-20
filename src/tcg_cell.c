@@ -4764,21 +4764,13 @@ asm void fn_8012A600(s8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, M2C_UNK a
     blr
 }
 
-// asm_to_cpp: fn_8012A71C
-asm void fn_8012A71C(s8 *arg0, s32 arg1, s32 arg2) {
-    nofralloc
-    stw r4, 0x20(r3)
-    stw r5, 0x24(r3)
-    rlwinm r0, r5, 0, 19, 19
-    cmpwi r0, 0x0
-    beq lbl_8012A738
-    lwz r0, 0x210(r3)
-    stw r0, 0x238(r3)
-lbl_8012A738:
-    lwz r0, 0x0(r3)
-    ori r0, r0, 0x402
-    stw r0, 0x0(r3)
-    blr
+void fn_8012A71C(s8 *arg0, s32 arg1, s32 arg2) {
+    M2C_FIELD(arg0, s32 *, 0x20) = arg1;
+    M2C_FIELD(arg0, s32 *, 0x24) = arg2;
+    if ((s32) (arg2 & 0x1000) != 0) {
+        M2C_FIELD(arg0, s32 *, 0x238) = (s32) M2C_FIELD(arg0, s32 *, 0x210);
+    }
+    M2C_FIELD(arg0, s32 *, 0) = (s32) (M2C_FIELD(arg0, s32 *, 0) | 0x402);
 }
 
 // asm_to_cpp: fn_8012A760
@@ -6442,19 +6434,8 @@ lbl_8012BE48:
     blr
 }
 
-// asm_to_cpp: fn_8012BE78
-asm void fn_8012BE78(s8 *arg0) {
-    nofralloc
-    mr r10, r3
-    addi r3, r3, 0x2c8
-    addi r4, r10, 0x210
-    lwz r5, 0x14(r10)
-    lwz r6, 0x18(r10)
-    lwz r7, 0x0(r10)
-    lwz r8, 0x2b0(r10)
-    lwz r9, 0x2b4(r10)
-    lwz r10, 0x10(r10)
-    b fn_801248B0
+void fn_8012BE78(s8 *arg0) {
+    fn_801248B0((s32) (arg0 + 0x2C8), (s32) (arg0 + 0x210), M2C_FIELD(arg0, s32 *, 0x14), M2C_FIELD(arg0, s32 *, 0x18), M2C_FIELD(arg0, s32 *, 0), M2C_FIELD(arg0, s32 *, 0x2B0), M2C_FIELD(arg0, s32 *, 0x2B4), M2C_FIELD(arg0, s32 *, 0x10));
 }
 
 // asm_to_cpp: fn_8012BEA0

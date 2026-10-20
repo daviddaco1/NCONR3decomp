@@ -4368,48 +4368,8 @@ lbl_801259C0:
     blr
 }
 
-// asm_to_cpp: fn_801259D8
-asm void fn_801259D8(s8 *arg0) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    mr r4, r3
-    lis r0, 0x4330
-    stw r0, 0x8(r1)
-    lis r0, 0x4330
-    stw r0, 0x10(r1)
-    lwz r3, 0x8(r3)
-    lwz r0, 0xc(r4)
-    lfd f6, lbl_804A0900
-    stw r0, 0xc(r1)
-    lfd f0, 0x8(r1)
-    fsubs f1, f0, f6
-    lwz r0, 0x10(r4)
-    stw r0, 0x14(r1)
-    lfd f0, 0x10(r1)
-    fsubs f2, f0, f6
-    lwz r0, 0x14(r4)
-    stw r0, 0xc(r1)
-    lfd f0, 0x8(r1)
-    fsubs f3, f0, f6
-    lwz r0, 0x18(r4)
-    stw r0, 0x14(r1)
-    lfd f0, 0x10(r1)
-    fsubs f4, f0, f6
-    lwz r0, 0x1c(r4)
-    stw r0, 0xc(r1)
-    lfd f0, 0x8(r1)
-    fsubs f5, f0, f6
-    lwz r0, 0x20(r4)
-    stw r0, 0x14(r1)
-    lfd f0, 0x10(r1)
-    fsubs f6, f0, f6
-    bl fn_8017C3E0
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+void fn_801259D8(s8 *arg0) {
+    fn_8017C3E0(M2C_FIELD(arg0, s32 *, 8), (f32) M2C_FIELD(arg0, u32 *, 0xC), (f32) M2C_FIELD(arg0, u32 *, 0x10), (f32) M2C_FIELD(arg0, u32 *, 0x14), (f32) M2C_FIELD(arg0, u32 *, 0x18), (f32) M2C_FIELD(arg0, u32 *, 0x1C), (f32) M2C_FIELD(arg0, u32 *, 0x20), (s32) arg0);
 }
 
 // asm_to_cpp: fn_80125A74

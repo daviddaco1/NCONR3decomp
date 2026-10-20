@@ -715,22 +715,14 @@ lbl_8006F3E0:
     blr
 }
 
-// asm_to_cpp: fn_8006F410
-asm s32 fn_8006F410(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    nofralloc
-    mulli r0, r4, 0x18
-    add r3, r3, r0
-    lwz r3, 0x7c8(r3)
-    and r0, r5, r3
-    cmpwi r0, 0x0
-    beq lbl_8006F430
-    li r3, 0x0
-    blr
-lbl_8006F430:
-    and r3, r6, r3
-    subic r0, r3, 0x1
-    subfe r3, r0, r3
-    blr
+s32 fn_8006F410(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    s32 temp_r3;
+
+    temp_r3 = M2C_FIELD((arg0 + (arg1 * 0x18)), s32 *, 0x7C8);
+    if ((s32) (arg2 & temp_r3) != 0) {
+        return 0;
+    }
+    return (arg3 & temp_r3) != 0;
 }
 
 // asm_to_cpp: fn_8006F440
@@ -1102,72 +1094,41 @@ lbl_8006F944:
     blr
 }
 
-// asm_to_cpp: fn_8006F9CC
-asm f32 fn_8006F9CC() {
-    nofralloc
-    li r0, 0x1
-    stb r0, 0x0(r5)
-    stb r0, 0x0(r6)
-    la r7, lbl_8049F018
-    lfs f1, 0x4(r7)
-    lwz r0, 0x54(r3)
-    rlwinm r7, r0, 0, 16, 16
-    cmpwi r7, 0x0
-    beq lbl_8006FA00
-    lwz r0, 0x54(r4)
-    rlwinm r0, r0, 0, 16, 16
-    cmpwi r0, 0x0
-    bne lbl_8006FA38
-lbl_8006FA00:
-    cmpwi r7, 0x0
-    beq lbl_8006FA18
-    li r0, 0x0
-    stb r0, 0x0(r5)
-    la r7, lbl_8049F018
-    lfs f1, 0x8(r7)
-lbl_8006FA18:
-    lwz r0, 0x54(r4)
-    rlwinm r0, r0, 0, 16, 16
-    cmpwi r0, 0x0
-    beq lbl_8006FA38
-    li r0, 0x0
-    stb r0, 0x0(r6)
-    la r7, lbl_8049F018
-    lfs f1, 0x8(r7)
-lbl_8006FA38:
-    lwz r0, 0x58(r3)
-    rlwinm r3, r0, 0, 23, 23
-    cmpwi r3, 0x0
-    beq lbl_8006FA58
-    lwz r0, 0x58(r4)
-    rlwinm r0, r0, 0, 23, 23
-    cmpwi r0, 0x0
-    bne lbl_8006FA90
-lbl_8006FA58:
-    cmpwi r3, 0x0
-    beq lbl_8006FA70
-    li r0, 0x0
-    stb r0, 0x0(r5)
-    la r3, lbl_8049F018
-    lfs f1, 0x8(r3)
-lbl_8006FA70:
-    lwz r0, 0x58(r4)
-    rlwinm r0, r0, 0, 23, 23
-    cmpwi r0, 0x0
-    beq lbl_8006FA90
-    li r0, 0x0
-    stb r0, 0x0(r6)
-    la r3, lbl_8049F018
-    lfs f1, 0x8(r3)
-lbl_8006FA90:
-    lwz r0, 0x1640(r4)
-    cmpwi r0, 0x0
-    beqlr
-    li r0, 0x0
-    stb r0, 0x0(r6)
-    la r3, lbl_8049F018
-    lfs f1, 0x8(r3)
-    blr
+f32 fn_8006F9CC(s8 *arg0, s8 *arg1, u8 *arg2, u8 *arg3) {
+    f32 var_f1;
+    s32 temp_r3;
+    s32 temp_r7;
+
+    *arg2 = 1;
+    *arg3 = 1;
+    var_f1 = M2C_FIELD(&lbl_8049F018, f32 *, 4);
+    temp_r7 = M2C_FIELD(arg0, s32 *, 0x54) & 0x8000;
+    if ((temp_r7 == 0) || ((s32) (M2C_FIELD(arg1, s32 *, 0x54) & 0x8000) == 0)) {
+        if (temp_r7 != 0) {
+            *arg2 = 0;
+            var_f1 = M2C_FIELD(&lbl_8049F018, f32 *, 8);
+        }
+        if ((s32) (M2C_FIELD(arg1, s32 *, 0x54) & 0x8000) != 0) {
+            *arg3 = 0;
+            var_f1 = M2C_FIELD(&lbl_8049F018, f32 *, 8);
+        }
+    }
+    temp_r3 = M2C_FIELD(arg0, s32 *, 0x58) & 0x100;
+    if ((temp_r3 == 0) || ((s32) (M2C_FIELD(arg1, s32 *, 0x58) & 0x100) == 0)) {
+        if (temp_r3 != 0) {
+            *arg2 = 0;
+            var_f1 = M2C_FIELD(&lbl_8049F018, f32 *, 8);
+        }
+        if ((s32) (M2C_FIELD(arg1, s32 *, 0x58) & 0x100) != 0) {
+            *arg3 = 0;
+            var_f1 = M2C_FIELD(&lbl_8049F018, f32 *, 8);
+        }
+    }
+    if ((s32) M2C_FIELD(arg1, s32 *, 0x1640) != 0) {
+        *arg3 = 0;
+        return M2C_FIELD(&lbl_8049F018, f32 *, 8);
+    }
+    return var_f1;
 }
 
 // asm_to_cpp: fn_8006FAB8
@@ -2126,14 +2087,8 @@ lbl_800707C0:
     blr
 }
 
-// asm_to_cpp: fn_800707D8
-asm s32 fn_800707D8(s32 *arg0) {
-    nofralloc
-    lwz r0, 0x0(r3)
-    clrlwi r3, r0, 31
-    subic r0, r3, 0x1
-    subfe r3, r0, r3
-    blr
+s32 fn_800707D8(s32 *arg0) {
+    return (*arg0 & 1) != 0;
 }
 
 // asm_to_cpp: fn_800707EC
@@ -2215,38 +2170,28 @@ lbl_800708E4:
     blr
 }
 
-// asm_to_cpp: fn_800708FC
-asm s32 fn_800708FC(s32 *arg0) {
-    nofralloc
-    lwz r0, 0x0(r3)
-    clrlwi r3, r0, 31
-    subic r0, r3, 0x1
-    subfe r3, r0, r3
-    blr
+s32 fn_800708FC(s32 *arg0) {
+    return (*arg0 & 1) != 0;
 }
 
-// asm_to_cpp: fn_80070910
-asm void fn_80070910(s32 *arg0) {
-    nofralloc
-    lwz r4, 0x0(r3)
-    clrlwi r0, r4, 31
-    cmpwi r0, 0x0
-    beqlr
-    ori r0, r4, 0x2
-    stw r0, 0x0(r3)
-    blr
+void fn_80070910(s32 *arg0) {
+    s32 temp_r4;
+
+    temp_r4 = *arg0;
+    if ((s32) (temp_r4 & 1) != 0) {
+        *arg0 = temp_r4 | 2;
+    }
 }
 
-// asm_to_cpp: fn_8007093C
-asm s32 fn_8007093C(s32 *arg0) {
-    nofralloc
-    lwz r4, 0x0(r3)
-    clrlwi r0, r4, 31
-    cmpwi r0, 0x0
-    beqlr
-    rlwinm r0, r4, 0, 31, 29
-    stw r0, 0x0(r3)
-    blr
+s32 fn_8007093C(s32 *arg0) {
+    s32 temp_r4;
+
+    temp_r4 = *arg0;
+    if ((s32) (temp_r4 & 1) != 0) {
+        *arg0 = temp_r4 & 0xFFFFFFFD;
+        return (s32) arg0;
+    }
+    return (s32) arg0;
 }
 
 // asm_to_cpp: fn_80070958

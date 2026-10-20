@@ -896,33 +896,20 @@ lbl_800A1D7C:
     blr
 }
 
-// asm_to_cpp: fn_800A1D94
-asm s32 fn_800A1D94(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_800A4DFC
-    cmpwi r3, 0x0
-    bne lbl_800A1DB4
-    li r3, 0x0
-    b lbl_800A1DD8
-lbl_800A1DB4:
-    lwz r4, 0x0(r3)
-    clrlwi r0, r4, 31
-    cmpwi r0, 0x0
-    beq lbl_800A1DCC
-    li r3, 0x0
-    b lbl_800A1DD8
-lbl_800A1DCC:
-    ori r0, r4, 0x1
-    stw r0, 0x0(r3)
-    li r3, 0x1
-lbl_800A1DD8:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_800A1D94(s32 arg0) {
+    s32 *temp_r3;
+    s32 temp_r4;
+
+    temp_r3 = fn_800A4DFC(arg0);
+    if (temp_r3 == NULL) {
+        return 0;
+    }
+    temp_r4 = *temp_r3;
+    if ((s32) (temp_r4 & 1) != 0) {
+        return 0;
+    }
+    *temp_r3 = temp_r4 | 1;
+    return 1;
 }
 
 // asm_to_cpp: fn_800A1DE8

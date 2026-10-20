@@ -389,117 +389,39 @@ lbl_8001FE84:
     blr
 }
 
-// asm_to_cpp: fn_8001FE98
-asm void fn_8001FE98(s8 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    lwz r0, 0x4(r3)
-    rlwinm r0, r0, 0, 14, 14
-    cmpwi r0, 0x0
-    bne lbl_8001FED4
-    lwz r4, 0x1c(r3)
-    cmpwi r4, 0x0
-    beq lbl_8001FED4
-    addi r3, r3, 0x2c
-    addi r5, r31, 0x20
-    bl fn_80018AF8
-lbl_8001FED4:
-    lfs f1, 0x60(r31)
-    lfs f0, 0x6c(r31)
-    fadds f0, f1, f0
-    stfs f0, 0x60(r31)
-    lfs f1, 0x74(r31)
-    lfs f0, 0x78(r31)
-    fsubs f0, f1, f0
-    stfs f0, 0x74(r31)
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_8001FE98(s8 *arg0) {
+    s32 temp_r4;
+
+    if ((s32) (M2C_FIELD(arg0, s32 *, 4) & 0x20000) == 0) {
+        temp_r4 = M2C_FIELD(arg0, s32 *, 0x1C);
+        if (temp_r4 != 0) {
+            fn_80018AF8((s32) (arg0 + 0x2C), temp_r4, (s32) (arg0 + 0x20));
+        }
+    }
+    M2C_FIELD(arg0, f32 *, 0x60) = (f32) (M2C_FIELD(arg0, f32 *, 0x60) + M2C_FIELD(arg0, f32 *, 0x6C));
+    M2C_FIELD(arg0, f32 *, 0x74) = (f32) (M2C_FIELD(arg0, f32 *, 0x74) - M2C_FIELD(arg0, f32 *, 0x78));
 }
 
-// asm_to_cpp: fn_8001FF08
-asm void fn_8001FF08(s8 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    lwz r0, 0xc(r3)
-    cmpwi r0, 0x0
-    beq lbl_80020010
-    lwz r4, 0x4(r3)
-    rlwinm r0, r4, 0, 25, 25
-    cmpwi r0, 0x0
-    beq lbl_8001FF44
-    lwz r0, lbl_8049D6B0
-    cmpwi r0, 0x0
-    beq lbl_80020010
-lbl_8001FF44:
-    li r3, 0x0
-    bl fn_80016C30
-    cmpwi r3, 0x0
-    bne lbl_80020010
-    li r3, 0x0
-    bl fn_800169F4
-    lwz r3, 0x4(r31)
-    li r4, 0x9
-    bl fn_800163E4
-    lwz r0, 0x4(r31)
-    rlwinm r0, r0, 0, 25, 25
-    cmpwi r0, 0x0
-    beq lbl_80020000
-    lwz r3, lbl_8049D6B0
-    addi r3, r3, 0x4
-    li r4, 0x0
-    bl GXLoadTexObj
-    bl GXClearVtxDesc
-    li r3, 0x9
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0xb
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0xd
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0x0
-    li r4, 0x9
-    li r5, 0x1
-    li r6, 0x4
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    li r3, 0x0
-    li r4, 0xb
-    li r5, 0x1
-    li r6, 0x5
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    li r3, 0x0
-    li r4, 0xd
-    li r5, 0x1
-    li r6, 0x4
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    mr r3, r31
-    bl fn_80020024
-lbl_80020000:
-    li r3, 0x0
-    bl fn_80016A44
-    li r3, 0x0
-    bl fn_80016A94
-lbl_80020010:
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_8001FF08(s8 *arg0) {
+    s32 temp_r4;
+
+    if (((s32) M2C_FIELD(arg0, s32 *, 0xC) != 0) && ((temp_r4 = M2C_FIELD(arg0, s32 *, 4), (((s32) (temp_r4 & 0x40) == 0) != 0)) || ((s32) lbl_8049D6B0 != 0)) && (fn_80016C30(0, temp_r4) == 0)) {
+        fn_800169F4(0);
+        fn_800163E4(M2C_FIELD(arg0, s32 *, 4), 9);
+        if ((s32) (M2C_FIELD(arg0, s32 *, 4) & 0x40) != 0) {
+            GXLoadTexObj(lbl_8049D6B0 + 4, 0);
+            GXClearVtxDesc();
+            GXSetVtxDesc(9, 1);
+            GXSetVtxDesc(0xB, 1);
+            GXSetVtxDesc(0xD, 1);
+            GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+            GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
+            GXSetVtxAttrFmt(0, 0xD, 1, 4, 0);
+            fn_80020024((s32) arg0);
+        }
+        fn_80016A44(0);
+        fn_80016A94(0);
+    }
 }
 
 // asm_to_cpp: fn_80020024

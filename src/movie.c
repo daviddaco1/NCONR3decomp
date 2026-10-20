@@ -694,32 +694,14 @@ lbl_80136BE4:
     blr
 }
 
-// asm_to_cpp: fn_80136BFC
-asm s32 fn_80136BFC(s8 *arg0) {
-    nofralloc
-    cmpwi r3, 0x0
-    bne lbl_80136C0C
-    li r3, 0x0
-    blr
-lbl_80136C0C:
-    lwz r5, 0x20(r3)
-    clrrwi r0, r5, 24
-    srwi r3, r0, 24
-    rlwinm r0, r5, 0, 8, 15
-    srwi r0, r0, 8
-    or r4, r3, r0
-    clrlwi r0, r5, 24
-    slwi r3, r0, 24
-    rlwinm r0, r5, 0, 16, 23
-    slwi r0, r0, 8
-    or r0, r3, r0
-    or r4, r4, r0
-    lis r3, 0x2006
-    addi r0, r3, 0x1122
-    subf r0, r0, r4
-    cntlzw r0, r0
-    srwi r3, r0, 5
-    blr
+s32 fn_80136BFC(s8 *arg0) {
+    s32 temp_r5;
+
+    if (arg0 == NULL) {
+        return 0;
+    }
+    temp_r5 = M2C_FIELD(arg0, s32 *, 0x20);
+    return (((u32) (temp_r5 & 0xFF000000) >> 0x18U) | ((u32) (temp_r5 & 0xFF0000) >> 8U) | (((u8) temp_r5 << 0x18) | ((temp_r5 & 0xFF00) << 8))) == 0x20061122;
 }
 
 // asm_to_cpp: fn_80136C54

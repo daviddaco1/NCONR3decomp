@@ -1661,14 +1661,8 @@ asm s32 fn_80039EA4(s32 arg0) {
     b fn_80039E68
 }
 
-// asm_to_cpp: fn_80039F18
-asm s32 fn_80039F18(s32 *arg0) {
-    nofralloc
-    lwz r0, 0x0(r3)
-    rlwinm r3, r0, 0, 30, 30
-    subic r0, r3, 0x1
-    subfe r3, r0, r3
-    blr
+s32 fn_80039F18(s32 *arg0) {
+    return (*arg0 & 2) != 0;
 }
 
 // asm_to_cpp: fn_80039F34

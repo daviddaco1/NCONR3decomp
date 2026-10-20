@@ -48,6 +48,43 @@ def nargs(text, start):
     return n
 
 
+LIBDEF = re.compile(r'^(?:(?:static|inline|extern)\s+)*([A-Za-z_][\w \t\*]*?)\b(\w+)\s*\(([^;{)]*)\)\s*\{', re.M)
+
+
+def ctype(t):
+    t = re.sub(r'\b(const|volatile|register|signed|struct|enum|union)\b', '', t).strip()
+    if '*' in t or '[' in t:
+        return 's32'
+    t = t.rsplit(None, 1)[0] if len(t.split()) > 1 else t  # quita el nombre del parametro
+    if re.search(r'\b(float|f32)\b', t):
+        return 'f32'
+    if re.search(r'\b(double|f64)\b', t):
+        return 'f64'
+    if re.search(r'\b(s64|u64|long long)\b', t):
+        return 's64'
+    return 's32'
+
+
+def lib_protos():
+    """Firmas reales de las funciones C definidas en libs/ (SDK, MSL...): aridad y floats exactos,
+    que la inferencia sobre el asm no siempre recupera (wrappers que pasan registros intactos)."""
+    found = collections.defaultdict(collections.Counter)
+    for path in glob.glob('libs/**/*.c', recursive=True):
+        text = open(path, encoding='utf-8', errors='ignore').read()
+        text = re.sub(r'/\*.*?\*/|//[^\n]*', '', text, flags=re.S)
+        for ret, name, params in LIBDEF.findall(text):
+            if ret.split()[-1] in ('if', 'while', 'for', 'switch', 'return', 'else'):
+                continue
+            ps = [x.strip() for x in params.replace('\n', ' ').split(',') if x.strip()]
+            if any('...' in x for x in ps):
+                continue
+            if ps == ['void']:
+                ps = []
+            r = 'void' if ret.strip() == 'void' else ctype(ret + ' x')
+            found[name][(r, tuple(ctype(x) for x in ps))] += 1
+    return {n: c.most_common(1)[0][0] for n, c in found.items()}
+
+
 def main():
     files = glob.glob('build/RNEPDA/asm/**/*.s', recursive=True)
     with concurrent.futures.ThreadPoolExecutor(8) as ex:
@@ -70,8 +107,18 @@ def main():
                 used.add(name)
             elif m.group(1):
                 used.add(name)
+    lib = lib_protos()
     lines = []
     for name, (ret, ps) in sorted(defs.items()):
+        if name in lib:
+            lret, lps = lib[name]
+            if lret in ('f32', 'f64'):
+                ret = lret
+            elif lret == 'void':
+                ret = 'M2C_UNK' if name in used else 'void'
+            params = ', '.join(f'{t} arg{i}' for i, t in enumerate(lps)) or 'void'
+            lines.append(f'{ret} {name}({params});')
+            continue
         byidx = {int(m.group(1)): p for p in ps for m in [re.search(r'\barg(\d+)$', p)] if m}
         if len(byidx) != len(ps):
             byidx = {i: p for i, p in enumerate(ps)}
@@ -87,7 +134,8 @@ def main():
         f.write(TYPEDEFS + '\n' + '\n'.join(lines) + '\n')
     # para incluir en el C generado: solo tipo de retorno (prototipo vacio, compatible con
     # cualquier definicion) y con void* como s8*, igual que tools/m2c_fix.py
-    with open('include/m2c_protos.h', 'w', newline='\n') as f:
+    # solo con --protos: cambiarlo puede romper C ya commiteado que depende de estos retornos
+    with open('include/m2c_protos.h' if '--protos' in sys.argv else os.devnull, 'w', newline='\n') as f:
         for l in lines:
             m = re.match(r'(.*?)\b(\w+)\(', l)
             f.write(re.sub(r'\bvoid \*', 's8 *', f'{m.group(1).strip()} {m.group(2)}();') + '\n')

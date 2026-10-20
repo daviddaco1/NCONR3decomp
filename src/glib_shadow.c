@@ -3471,22 +3471,10 @@ asm void fn_8003CD74() {
     blr
 }
 
-// asm_to_cpp: fn_8003CDB0
-asm s32 fn_8003CDB0() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_80030F4C
-    mr r4, r3
-    addi r3, r1, 0x8
-    addi r4, r4, 0x40
-    bl fn_8003CDE4
-    lwz r3, 0x0(r3)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_8003CDB0(s32 arg0) {
+    s32 sp8;
+
+    return *fn_8003CDE4(&sp8, fn_80030F4C(arg0) + 0x40);
 }
 
 // asm_to_cpp: fn_8003CDE4

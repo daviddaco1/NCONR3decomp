@@ -1166,26 +1166,21 @@ lbl_80035A78:
     blr
 }
 
-// asm_to_cpp: fn_80035A80
-asm s32 fn_80035A80(s8 *arg0, u32 arg1, s32 arg2) {
-    nofralloc
-    cmpwi r5, 0x0
-    beq lbl_80035AB8
-    add r5, r4, r5
-    subi r5, r5, 0x1
-    lwz r0, 0x14(r3)
-    cmplw r4, r0
-    bge lbl_80035AB8
-    cmplw r5, r0
-    bge lbl_80035AB8
-    stw r4, 0x18(r3)
-    stw r5, 0x1c(r3)
-    stw r4, 0x20(r3)
-    li r3, 0x1
-    blr
-lbl_80035AB8:
-    li r3, 0x0
-    blr
+s32 fn_80035A80(s8 *arg0, u32 arg1, s32 arg2) {
+    u32 temp_r0;
+    u32 temp_r5;
+
+    if (arg2 != 0) {
+        temp_r5 = (arg1 + arg2) - 1;
+        temp_r0 = M2C_FIELD(arg0, u32 *, 0x14);
+        if ((arg1 < temp_r0) && (temp_r5 < temp_r0)) {
+            M2C_FIELD(arg0, u32 *, 0x18) = arg1;
+            M2C_FIELD(arg0, u32 *, 0x1C) = temp_r5;
+            M2C_FIELD(arg0, u32 *, 0x20) = arg1;
+            return 1;
+        }
+    }
+    return 0;
 }
 
 // asm_to_cpp: fn_80035AC0

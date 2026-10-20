@@ -612,142 +612,42 @@ lbl_8001E1C0:
     blr
 }
 
-// asm_to_cpp: fn_8001E264
-asm void fn_8001E264(s8 *arg0) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    stw r30, 0x18(r1)
-    mr r30, r3
-    li r3, 0x0
-    bl fn_80016CAC
-    mr r31, r3
-    lwz r0, 0xc(r30)
-    cmpwi r0, 0x0
-    beq lbl_8001E448
-    lha r0, 0x72(r30)
-    cmpwi r0, 0x1
-    blt lbl_8001E448
-    lwz r3, 0x4(r30)
-    rlwinm r0, r3, 0, 15, 15
-    cmpwi r0, 0x0
-    bne lbl_8001E448
-    rlwinm r0, r3, 0, 25, 25
-    cmpwi r0, 0x0
-    beq lbl_8001E2C8
-    lwz r0, lbl_8049D6B0
-    cmpwi r0, 0x0
-    beq lbl_8001E448
-lbl_8001E2C8:
-    rlwinm r0, r3, 0, 14, 14
-    cmpwi r0, 0x0
-    beq lbl_8001E2EC
-    lwz r3, 0x68(r30)
-    cmpwi r3, 0x0
-    beq lbl_8001E2EC
-    bl fn_800609D8
-    cmpwi r3, 0x0
-    beq lbl_8001E448
-lbl_8001E2EC:
-    lwz r0, 0x4(r30)
-    rlwinm r0, r0, 0, 18, 18
-    cmpwi r0, 0x0
-    bne lbl_8001E310
-    li r3, 0x0
-    li r4, 0x1
-    bl fn_8005E7D4
-    cmpwi r3, 0x0
-    bne lbl_8001E448
-lbl_8001E310:
-    li r3, 0x0
-    bl fn_800169F4
-    lwz r3, 0x4(r30)
-    li r4, 0x5
-    bl fn_800163E4
-    addi r3, r1, 0x8
-    addi r4, r31, 0x1c
-    addi r5, r31, 0x4
-    bl fn_8001B8B8
-    addi r3, r1, 0x8
-    mr r4, r3
-    bl fn_8001B8B0
-    lwz r0, 0x4(r30)
-    rlwinm r0, r0, 0, 25, 25
-    cmpwi r0, 0x0
-    beq lbl_8001E3E0
-    lwz r3, lbl_8049D6B0
-    addi r3, r3, 0x4
-    li r4, 0x0
-    bl GXLoadTexObj
-    bl GXClearVtxDesc
-    li r3, 0x9
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0xb
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0xd
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0x0
-    li r4, 0x9
-    li r5, 0x1
-    li r6, 0x4
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    li r3, 0x0
-    li r4, 0xb
-    li r5, 0x1
-    li r6, 0x5
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    li r3, 0x0
-    li r4, 0xd
-    li r5, 0x1
-    li r6, 0x4
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    mr r3, r30
-    addi r4, r1, 0x8
-    bl fn_8001EA44
-    b lbl_8001E438
-lbl_8001E3E0:
-    bl GXClearVtxDesc
-    li r3, 0x9
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0xb
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0x0
-    li r4, 0x9
-    li r5, 0x1
-    li r6, 0x4
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    li r3, 0x0
-    li r4, 0xb
-    li r5, 0x1
-    li r6, 0x5
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    mr r3, r30
-    addi r4, r1, 0x8
-    bl fn_8001E460
-lbl_8001E438:
-    li r3, 0x0
-    bl fn_80016A44
-    li r3, 0x0
-    bl fn_80016A94
-lbl_8001E448:
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+void fn_8001E264(s8 *arg0) {
+    f32 sp8;
+    s32 temp_r3;
+    s8 *temp_r31;
+    s8 *temp_r3_2;
+
+    temp_r31 = fn_80016CAC(0);
+    if (((s32) M2C_FIELD(arg0, s32 *, 0xC) != 0) && ((s16) M2C_FIELD(arg0, s16 *, 0x72) >= 1)) {
+        temp_r3 = M2C_FIELD(arg0, s32 *, 4);
+        if (((s32) (temp_r3 & 0x10000) == 0) && (((s32) (temp_r3 & 0x40) == 0) || ((s32) lbl_8049D6B0 != 0)) && (((s32) (temp_r3 & 0x20000) == 0) || (temp_r3_2 = M2C_FIELD(arg0, s8 **, 0x68), ((temp_r3_2 == NULL) != 0)) || (fn_800609D8(temp_r3_2) != 0)) && (((s32) (M2C_FIELD(arg0, s32 *, 4) & 0x2000) != 0) || (fn_8005E7D4(0, 1) == 0))) {
+            fn_800169F4(0);
+            fn_800163E4(M2C_FIELD(arg0, s32 *, 4), 5);
+            fn_8001B8B8((s32) &sp8, (s32) (temp_r31 + 0x1C), (s32) (temp_r31 + 4));
+            fn_8001B8B0((s32) &sp8, (s32) &sp8);
+            if ((s32) (M2C_FIELD(arg0, s32 *, 4) & 0x40) != 0) {
+                GXLoadTexObj(lbl_8049D6B0 + 4, 0);
+                GXClearVtxDesc();
+                GXSetVtxDesc(9, 1);
+                GXSetVtxDesc(0xB, 1);
+                GXSetVtxDesc(0xD, 1);
+                GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+                GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
+                GXSetVtxAttrFmt(0, 0xD, 1, 4, 0);
+                fn_8001EA44(arg0, &sp8);
+            } else {
+                GXClearVtxDesc();
+                GXSetVtxDesc(9, 1);
+                GXSetVtxDesc(0xB, 1);
+                GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+                GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
+                fn_8001E460(arg0, &sp8);
+            }
+            fn_80016A44(0);
+            fn_80016A94(0);
+        }
+    }
 }
 
 // asm_to_cpp: fn_8001E460

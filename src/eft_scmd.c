@@ -13872,37 +13872,11 @@ asm void fn_8011F188(void) {
     b fn_8014125C
 }
 
-// asm_to_cpp: fn_8011F208
-asm void fn_8011F208(s8 *arg0, s8 *arg1) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    lis r0, 0x4330
-    stw r0, 0x8(r1)
-    lis r0, 0x4330
-    stw r0, 0x10(r1)
-    lbz r0, 0x0(r4)
-    lfd f1, lbl_804A0878
-    stw r0, 0xc(r1)
-    lfd f0, 0x8(r1)
-    fsubs f0, f0, f1
-    stfs f0, 0x0(r3)
-    lbz r0, 0x1(r4)
-    stw r0, 0x14(r1)
-    lfd f0, 0x10(r1)
-    fsubs f0, f0, f1
-    stfs f0, 0x4(r3)
-    lbz r0, 0x2(r4)
-    stw r0, 0xc(r1)
-    lfd f0, 0x8(r1)
-    fsubs f0, f0, f1
-    stfs f0, 0x8(r3)
-    lbz r0, 0x3(r4)
-    stw r0, 0x14(r1)
-    lfd f0, 0x10(r1)
-    fsubs f0, f0, f1
-    stfs f0, 0xc(r3)
-    addi r1, r1, 0x20
-    blr
+void fn_8011F208(s8 *arg0, s8 *arg1) {
+    M2C_FIELD(arg0, f32 *, 0) = (f32) M2C_FIELD(arg1, u8 *, 0);
+    M2C_FIELD(arg0, f32 *, 4) = (f32) M2C_FIELD(arg1, u8 *, 1);
+    M2C_FIELD(arg0, f32 *, 8) = (f32) M2C_FIELD(arg1, u8 *, 2);
+    M2C_FIELD(arg0, f32 *, 0xC) = (f32) M2C_FIELD(arg1, u8 *, 3);
 }
 
 // asm_to_cpp: fn_8011F278
