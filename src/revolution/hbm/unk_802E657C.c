@@ -5113,38 +5113,20 @@ lbl_802E9FD0:
     blr
 }
 
-// asm_to_cpp: fn_802EA030
-asm s32 **fn_802EA030(s32 **arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    cmpwi r3, 0x0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r4
-    stw r30, 0x8(r1)
-    mr r30, r3
-    beq lbl_802EA080
-    addic. r3, r3, 0x24
-    beq lbl_802EA064
-    li r4, 0x0
-    bl fn_802FF21C
-lbl_802EA064:
-    mr r3, r30
-    li r4, 0x0
-    bl fn_802F96E0
-    cmpwi r31, 0x0
-    ble lbl_802EA080
-    mr r3, r30
-    bl dtor_80136CFC
-lbl_802EA080:
-    mr r3, r30
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 **fn_802EA030(s32 **arg0, s32 arg1) {
+    s32 **temp_r3;
+
+    if (arg0 != NULL) {
+        temp_r3 = (s8 *)arg0 + 0x24;
+        if (temp_r3 != NULL) {
+            fn_802FF21C(temp_r3, 0);
+        }
+        fn_802F96E0((s32) arg0, 0);
+        if (arg1 > 0) {
+            dtor_80136CFC((s32) arg0);
+        }
+    }
+    return arg0;
 }
 
 // asm_to_cpp: fn_802EA09C

@@ -16,7 +16,7 @@ from m2c_fix import fixup, body_end, DEF  # noqa: E402
 M2C = os.environ.get('M2C_DIR', '')
 ASM = re.compile(r'^// asm_to_cpp: (\w+)\n(?:asm[^\n]*\{\n.*?^\}\n)', re.M | re.S)
 SEP = '// ---- Funciones aun sin C que matchee (asm generado) ----'
-OBJ = re.compile(r'Object\(NonMatching, "([^"]+)", source="([^"/]+\.c)"')
+OBJ = re.compile(r'Object\(NonMatching, "([^"]+)", source="([^"]+\.c)"')
 
 
 def base(split):

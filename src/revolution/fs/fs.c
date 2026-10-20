@@ -558,74 +558,26 @@ lbl_802DBDF4:
     blr
 }
 
-// asm_to_cpp: ISFS_CreateDirAsync
-asm s32 ISFS_CreateDirAsync() {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    addi r11, r1, 0x30
-    bl _savegpr_23
-    cmpwi r3, 0x0
-    mr r23, r3
-    mr r24, r4
-    mr r25, r5
-    mr r26, r6
-    mr r27, r7
-    mr r28, r8
-    mr r29, r9
-    beq lbl_802DBE68
-    lwz r0, __fsFd_8049D050
-    cmpwi r0, 0x0
-    blt lbl_802DBE68
-    li r4, 0x40
-    bl strnlen
-    cmplwi r3, 0x40
-    mr r31, r3
-    bne lbl_802DBE70
-lbl_802DBE68:
-    li r3, -0x65
-    b lbl_802DBEEC
-lbl_802DBE70:
-    lwz r3, hId_8049E17C
-    li r4, 0x140
-    li r5, 0x20
-    bl iosAllocAligned
-    cmpwi r3, 0x0
-    mr r30, r3
-    bne lbl_802DBE94
-    li r3, -0x76
-    b lbl_802DBEEC
-lbl_802DBE94:
-    stw r28, 0x100(r3)
-    li r0, 0x0
-    mr r4, r23
-    addi r5, r31, 0x1
-    stw r29, 0x104(r3)
-    stw r0, 0x108(r3)
-    addi r3, r3, 0x6
-    bl memcpy
-    stb r24, 0x49(r30)
-    lis r9, _isfsFuncCb@ha
-    mr r5, r30
-    mr r10, r30
-    stb r25, 0x46(r30)
-    addi r9, r9, _isfsFuncCb@l
-    li r4, 0x3
-    li r6, 0x4c
-    stb r26, 0x47(r30)
-    li r7, 0x0
-    li r8, 0x0
-    stb r27, 0x48(r30)
-    lwz r3, __fsFd_8049D050
-    bl IOS_IoctlAsync
-lbl_802DBEEC:
-    addi r11, r1, 0x30
-    bl _restgpr_23
-    lwz r0, 0x34(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
+s32 ISFS_CreateDirAsync(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, M2C_UNK arg_sp0) {
+    s32 temp_r3;
+    u32 temp_r3_2;
+
+    if ((arg0 == 0) || ((s32) __fsFd_8049D050 < 0) || (temp_r3_2 = strnlen(arg0, 0x40), ((temp_r3_2 == 0x40U) != 0))) {
+        return -0x65;
+    }
+    temp_r3 = iosAllocAligned(hId_8049E17C, 0x140, 0x20);
+    if (temp_r3 == 0) {
+        return -0x76;
+    }
+    M2C_FIELD(temp_r3, s32 *, 0x100) = arg5;
+    M2C_FIELD(temp_r3, s32 *, 0x104) = arg6;
+    M2C_FIELD(temp_r3, s32 *, 0x108) = 0;
+    memcpy(temp_r3 + 6, arg0, temp_r3_2 + 1);
+    M2C_FIELD(temp_r3, s8 *, 0x49) = (s8) arg1;
+    M2C_FIELD(temp_r3, s8 *, 0x46) = (s8) arg2;
+    M2C_FIELD(temp_r3, s8 *, 0x47) = (s8) arg3;
+    M2C_FIELD(temp_r3, s8 *, 0x48) = (s8) arg4;
+    return IOS_IoctlAsync(__fsFd_8049D050, 3, temp_r3, 0x4C, 0, 0, (s32) _isfsFuncCb, temp_r3);
 }
 
 // asm_to_cpp: ISFS_ReadDir
@@ -1515,74 +1467,26 @@ lbl_802DCB10:
     blr
 }
 
-// asm_to_cpp: ISFS_CreateFileAsync
-asm s32 ISFS_CreateFileAsync() {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    addi r11, r1, 0x30
-    bl _savegpr_23
-    cmpwi r3, 0x0
-    mr r23, r3
-    mr r24, r4
-    mr r25, r5
-    mr r26, r6
-    mr r27, r7
-    mr r28, r8
-    mr r29, r9
-    beq lbl_802DCB84
-    lwz r0, __fsFd_8049D050
-    cmpwi r0, 0x0
-    blt lbl_802DCB84
-    li r4, 0x40
-    bl strnlen
-    cmplwi r3, 0x40
-    mr r31, r3
-    bne lbl_802DCB8C
-lbl_802DCB84:
-    li r3, -0x65
-    b lbl_802DCC08
-lbl_802DCB8C:
-    lwz r3, hId_8049E17C
-    li r4, 0x140
-    li r5, 0x20
-    bl iosAllocAligned
-    cmpwi r3, 0x0
-    mr r30, r3
-    bne lbl_802DCBB0
-    li r3, -0x76
-    b lbl_802DCC08
-lbl_802DCBB0:
-    stw r28, 0x100(r3)
-    li r0, 0x0
-    mr r4, r23
-    addi r5, r31, 0x1
-    stw r29, 0x104(r3)
-    stw r0, 0x108(r3)
-    addi r3, r3, 0x6
-    bl memcpy
-    stb r24, 0x49(r30)
-    lis r9, _isfsFuncCb@ha
-    mr r5, r30
-    mr r10, r30
-    stb r25, 0x46(r30)
-    addi r9, r9, _isfsFuncCb@l
-    li r4, 0x9
-    li r6, 0x4c
-    stb r26, 0x47(r30)
-    li r7, 0x0
-    li r8, 0x0
-    stb r27, 0x48(r30)
-    lwz r3, __fsFd_8049D050
-    bl IOS_IoctlAsync
-lbl_802DCC08:
-    addi r11, r1, 0x30
-    bl _restgpr_23
-    lwz r0, 0x34(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
+s32 ISFS_CreateFileAsync(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, M2C_UNK arg_sp0) {
+    s32 temp_r3;
+    u32 temp_r3_2;
+
+    if ((arg0 == 0) || ((s32) __fsFd_8049D050 < 0) || (temp_r3_2 = strnlen(arg0, 0x40), ((temp_r3_2 == 0x40U) != 0))) {
+        return -0x65;
+    }
+    temp_r3 = iosAllocAligned(hId_8049E17C, 0x140, 0x20);
+    if (temp_r3 == 0) {
+        return -0x76;
+    }
+    M2C_FIELD(temp_r3, s32 *, 0x100) = arg5;
+    M2C_FIELD(temp_r3, s32 *, 0x104) = arg6;
+    M2C_FIELD(temp_r3, s32 *, 0x108) = 0;
+    memcpy(temp_r3 + 6, arg0, temp_r3_2 + 1);
+    M2C_FIELD(temp_r3, s8 *, 0x49) = (s8) arg1;
+    M2C_FIELD(temp_r3, s8 *, 0x46) = (s8) arg2;
+    M2C_FIELD(temp_r3, s8 *, 0x47) = (s8) arg3;
+    M2C_FIELD(temp_r3, s8 *, 0x48) = (s8) arg4;
+    return IOS_IoctlAsync(__fsFd_8049D050, 9, temp_r3, 0x4C, 0, 0, (s32) _isfsFuncCb, temp_r3);
 }
 
 // asm_to_cpp: ISFS_Open

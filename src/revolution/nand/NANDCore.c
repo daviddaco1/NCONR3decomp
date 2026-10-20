@@ -1523,66 +1523,18 @@ asm u8 *nandGetHomeDir(void) {
     blr
 }
 
-// asm_to_cpp: NANDInitBanner
-asm void NANDInitBanner(s8 *arg0, s32 arg1, s32 *arg2, s32 *arg3) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    lis r7, 0x1
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r6
-    stw r30, 0x18(r1)
-    mr r30, r5
-    subi r5, r7, 0xf60
-    stw r29, 0x14(r1)
-    mr r29, r4
-    li r4, 0x0
-    stw r28, 0x10(r1)
-    mr r28, r3
-    bl memset
-    lis r3, 0x5749
-    stw r29, 0x4(r28)
-    addi r0, r3, 0x424e
-    la r4, lbl_8049D188
-    stw r0, 0x0(r28)
-    mr r3, r30
-    bl wcscmp
-    cmpwi r3, 0x0
-    bne lbl_80311EC0
-    addi r3, r28, 0x20
-    la r4, lbl_8049D18C
-    li r5, 0x20
-    bl wcsncpy
-    b lbl_80311ED0
-lbl_80311EC0:
-    mr r4, r30
-    addi r3, r28, 0x20
-    li r5, 0x20
-    bl wcsncpy
-lbl_80311ED0:
-    mr r3, r31
-    la r4, lbl_8049D188
-    bl wcscmp
-    cmpwi r3, 0x0
-    bne lbl_80311EF8
-    addi r3, r28, 0x60
-    la r4, lbl_8049D18C
-    li r5, 0x20
-    bl wcsncpy
-    b lbl_80311F08
-lbl_80311EF8:
-    mr r4, r31
-    addi r3, r28, 0x60
-    li r5, 0x20
-    bl wcsncpy
-lbl_80311F08:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r28, 0x10(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+void NANDInitBanner(s8 *arg0, s32 arg1, s32 *arg2, s32 *arg3) {
+    memset((s32) arg0, 0, 0xF0A0);
+    M2C_FIELD(arg0, s32 *, 4) = arg1;
+    M2C_FIELD(arg0, s32 *, 0) = 0x5749424E;
+    if (wcscmp((s32) arg2, (s32) &lbl_8049D188) == 0) {
+        wcsncpy((s32) (arg0 + 0x20), (s32) &lbl_8049D18C, 0x20);
+    } else {
+        wcsncpy((s32) (arg0 + 0x20), (s32) arg2, 0x20);
+    }
+    if (wcscmp((s32) arg3, (s32) &lbl_8049D188) == 0) {
+        wcsncpy((s32) (arg0 + 0x60), (s32) &lbl_8049D18C, 0x20);
+        return;
+    }
+    wcsncpy((s32) (arg0 + 0x60), (s32) arg3, 0x20);
 }
