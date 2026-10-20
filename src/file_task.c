@@ -733,7 +733,7 @@ void fn_8017733C(s32 arg0, s32 arg1);
 void fn_8017736C(void);
 void fn_80177374(M2C_UNK *arg0);
 void fn_801773E0(s32 arg0);
-void fn_8017742C(void);
+s32 fn_8017742C(void);
 void fn_8017743C(s32 arg0, s32 arg1);
 s32 fn_8017744C(M2C_UNK *arg0, s32 arg1, s32 arg2);
 void fn_8017750C(s32 arg0, s32 arg1);
@@ -19408,13 +19408,12 @@ lbl_80177418:
     blr
 }
 
-// asm_to_cpp: fn_8017742C
-asm void fn_8017742C(void) {
-    nofralloc
-    lwz r3, lbl_8049D7F0
-    addi r3, r3, 0x1
-    stw r3, lbl_8049D7F0
-    blr
+s32 fn_8017742C(void) {
+    s32 temp_r3;
+
+    temp_r3 = (s32) (lbl_8049D7F4 + 1);
+    lbl_8049D7F4 = temp_r3;
+    return (s32) (temp_r3);
 }
 
 void fn_8017743C(s32 arg0, s32 arg1) {
