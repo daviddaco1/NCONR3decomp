@@ -1,57 +1,47 @@
 #include "types.h"
+#include "m2c_macros.h"
 
-// Translation unit: src/band_eye.cpp
-// Total functions: 6
 
-// Small Data symbols (@sda21)
-extern "C" double lbl_804A07E0;
-extern "C" float lbl_804A07E8;
+extern "C" {
 
-// Global data symbols (@ha/@l)
+extern float lbl_804A07E0;
+extern float lbl_804A07E8;
 
-// Forward declarations
-extern "C" void _restgpr_24();
-extern "C" void _restgpr_25();
-extern "C" void _restgpr_27();
-extern "C" void _savegpr_24();
-extern "C" void _savegpr_25();
-extern "C" void _savegpr_27();
-extern "C" void fn_80018B04();
-extern "C" void fn_80018B0C();
-extern "C" void fn_8001B8B0();
-extern "C" void fn_8001DA9C();
-extern "C" void fn_80020D20();
-extern "C" void fn_80054ECC();
-extern "C" void fn_800F5B14();
-extern "C" void fn_800F5B78();
-extern "C" void fn_800F5C60();
-extern "C" void fn_8010C34C();
-extern "C" void fn_8010C354();
-extern "C" void fn_8010C6E0();
-extern "C" void fn_8010C7C0();
-extern "C" void fn_8010CD30();
-extern "C" void fn_8010D054();
-extern "C" void fn_80170E2C();
-extern "C" void fn_801734E4();
-extern "C" void fn_80173754();
-extern "C" void fn_8017375C();
-extern "C" void fn_8018149C();
-extern "C" void fn_80181504();
-extern "C" void memset();
+s32 _restgpr_24();
+s32 _restgpr_25();
+s32 _restgpr_27();
+s32 _savegpr_24();
+s32 _savegpr_25();
+s32 _savegpr_27();
+void fn_80018B04(s32 arg0, s32 arg1, s32 arg2);
+M2C_UNK fn_80018B0C(M2C_UNK *arg0, f32 farg0, f32 farg1, f32 farg2);
+void fn_8001B8B0(s32 arg0, s32 arg1);
+f32 fn_8001DA9C(f32 farg0);
+void fn_80020D20(M2C_UNK *arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3);
+void fn_80054ECC(f32 *arg0, M2C_UNK *arg1);
+void fn_800F5B14(s8 *arg0, s8 *arg1, s32 arg2, s32 arg3);
+s8 * fn_800F5B78(s8 *arg0, s32 arg1, s32 arg2);
+void fn_800F5C60(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
+void fn_8010C34C(s32 arg0, s32 arg1);
+s32 fn_8010C354(s8 *arg0, s32 arg1, s8 *arg2);
+M2C_UNK fn_8010C6E0(s32 arg0, s32 arg1, s32 arg2);
+void fn_8010C7C0(s32 arg0);
+void fn_8010CD30(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
+void fn_8010D054(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
+M2C_UNK fn_80170E2C(s32 arg0, s32 arg1, s32 arg2);
+void fn_801734E4(s32 arg0, s32 arg1);
+void fn_80173754(s32 arg0, s32 arg1);
+void fn_8017375C(s32 arg0, s32 arg1, s32 arg2);
+s32 * fn_8018149C(s8 *arg0, s32 arg1);
+s32 fn_80181504(s8 *arg0, s32 arg1);
+M2C_UNK memset(s32 arg0, s32 arg1, s32 arg2);
 
-// ----------------------------------------------------------------------------
-// fn_8010C34C
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_8010C34C() {
-    nofralloc
-    li r5, 0x0
-    b fn_8010C354
+void fn_8010C34C(s32 arg0, s32 arg1) {
+    fn_8010C354((s8 *) (arg0), (s32) (arg1), (s8 *) (NULL));
 }
 
-// ----------------------------------------------------------------------------
-// fn_8010C354
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_8010C354() {
+// asm_to_cpp: fn_8010C354
+asm s32 fn_8010C354(s8 *arg0, s32 arg1, s8 *arg2) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -301,10 +291,8 @@ lbl_8010C6C8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8010C6E0
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_8010C6E0() {
+// asm_to_cpp: fn_8010C6E0
+asm M2C_UNK fn_8010C6E0(s32 arg0, s32 arg1, s32 arg2) {
     nofralloc
     clrlwi r11, r1, 28
     subfic r11, r11, -0x50
@@ -364,10 +352,8 @@ extern "C" asm void fn_8010C6E0() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8010C7C0
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_8010C7C0() {
+// asm_to_cpp: fn_8010C7C0
+asm void fn_8010C7C0(s32 arg0) {
     nofralloc
     clrlwi r11, r1, 28
     subfic r11, r11, -0x200
@@ -750,10 +736,8 @@ lbl_8010CBDC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8010CD30
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_8010CD30() {
+// asm_to_cpp: fn_8010CD30
+asm void fn_8010CD30(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     nofralloc
     clrlwi r11, r1, 28
     subfic r11, r11, -0xd0
@@ -973,10 +957,8 @@ lbl_8010CF54:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8010D054
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_8010D054() {
+// asm_to_cpp: fn_8010D054
+asm void fn_8010D054(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     nofralloc
     clrlwi r11, r1, 28
     subfic r11, r11, -0xd0
@@ -1196,3 +1178,4 @@ lbl_8010D278:
     blr
 }
 
+} // extern "C"

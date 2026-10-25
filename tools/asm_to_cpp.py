@@ -5,6 +5,13 @@ import re
 def convert_asm_to_cpp(asm_path, cpp_path, tu_name):
     with open(asm_path, 'r') as f:
         lines = f.readlines()
+    # Simbolos citados que mwcc no acepta ("@stringBase0_X") y palabras crudas (.4byte)
+    lines = [re.sub(r'"@(\w+)"', r'at_\1', l) for l in lines]
+    lines = [re.sub(r'\*/\t\.4byte ', '*/\topword ', l) for l in lines]
+    # mwcc ensambla HID2 como SPR 1011; en Gekko/Broadway HID2 es SPR 920
+    lines = [re.sub(r'\b(m[ft]spr\b.*)\bHID2\b', r'\g<1>920', l) for l in lines]
+    # '$' en nombres de estaticos locales (foo$1234_8049E1AC): mwcc no lo acepta
+    lines = [re.sub(r'(\w)\$(\w)', r'\1_\2', l) for l in lines]
 
     funcs = []
     calls = set()
@@ -23,7 +30,7 @@ def convert_asm_to_cpp(asm_path, cpp_path, tu_name):
             tgt = m.group(1)
             if not tgt.startswith('.L_') and not tgt.startswith('lbl_'):
                 calls.add(tgt)
-        m = re.findall(r'([a-zA-Z0-9_]+)@sda21', line)
+        m = re.findall(r'([a-zA-Z_][a-zA-Z0-9_]*)(?:[+-]0x[0-9A-Fa-f]+)?@sda21', line)
         for s in m:
             sda21_syms.add(s)
         m = re.findall(r'([a-zA-Z_][a-zA-Z0-9_]*)(?:[+-]0x[0-9A-Fa-f]+|[+-]\d+)?@(ha|l)', line)
@@ -45,6 +52,8 @@ def convert_asm_to_cpp(asm_path, cpp_path, tu_name):
     if hal_syms:
         out.append('// Global data symbols (@ha/@l)')
         for s in sorted(hal_syms):
+            if s in sda21_syms:  # ya declarado como small-data
+                continue
             if s.startswith('fn_') or s in funcs or s in calls:
                 calls.add(s)
                 continue
@@ -56,6 +65,14 @@ def convert_asm_to_cpp(asm_path, cpp_path, tu_name):
     for f in all_decls:
         out.append(f'extern "C" void {f}();')
     out.append('')
+
+    # etiquetas .L_ definidas dentro de cada funcion (un salto a otra funcion va como palabra cruda)
+    fn_labels, cur = {}, None
+    for line in lines:
+        mm = re.match(r'\.fn\s+(\w+)', line)
+        if mm: cur = mm.group(1); fn_labels[cur] = set()
+        elif line.startswith('.endfn'): cur = None
+        elif cur and line.strip().startswith('.L_'): fn_labels[cur].add(line.strip()[:-1])
 
     current_fn = None
     for line in lines:
@@ -86,6 +103,9 @@ def convert_asm_to_cpp(asm_path, cpp_path, tu_name):
         if m:
             hex_bytes = m.group(1).replace(' ', '')
             instr = m.group(2)
+            if any(l not in fn_labels.get(current_fn, ()) for l in re.findall(r'\.L_[0-9A-Fa-f]+', instr)):
+                out.append(f'    opword 0x{hex_bytes}')
+                continue
             instr = re.sub(r'\.L_([0-9A-Fa-f]+)', r'lbl_\1', instr)
 
             # Special opcode conversions
@@ -97,7 +117,11 @@ def convert_asm_to_cpp(asm_path, cpp_path, tu_name):
 
             # sda21 conversions
             # li rX, sym@sda21 -> la rX, sym
-            m_li = re.match(r'li\s+([a-zA-Z0-9_]+),\s*([a-zA-Z0-9_]+)@sda21', instr)
+            # addic/addic. con @l: mwcc no lo ensambla -> palabra cruda (se pierde la reloc)
+            if re.match(r'addic\.?\s', instr) and '@l' in instr:
+                out.append(f'    opword 0x{hex_bytes}')
+                continue
+            m_li = re.match(r'li\s+([a-zA-Z0-9_]+),\s*([a-zA-Z_][a-zA-Z0-9_]*(?:[+-]0x[0-9A-Fa-f]+)?)@sda21', instr)
             if m_li:
                 reg = m_li.group(1)
                 sym = m_li.group(2)
@@ -105,7 +129,7 @@ def convert_asm_to_cpp(asm_path, cpp_path, tu_name):
                 continue
 
             # mem fX/rX, sym@sda21(r0) -> mem fX/rX, sym
-            m_mem = re.match(r'([a-zA-Z0-9_]+)\s+([a-zA-Z0-9_]+),\s*([a-zA-Z0-9_]+)@sda21(?:\(r?0\))?', instr)
+            m_mem = re.match(r'([a-zA-Z0-9_.]+)\s+([a-zA-Z0-9_]+),\s*([a-zA-Z_][a-zA-Z0-9_]*(?:[+-]0x[0-9A-Fa-f]+)?)@sda21(?:\(r?\d+\))?', instr)
             if m_mem:
                 op = m_mem.group(1)
                 reg = m_mem.group(2)
@@ -115,6 +139,8 @@ def convert_asm_to_cpp(asm_path, cpp_path, tu_name):
 
             out.append(f'    {instr}')
 
+    if cpp_path.endswith('.c'):  # salida C: sin extern "C" (las declaraciones siguen siendo extern)
+        out = [l.replace('extern "C" asm ', 'asm ').replace('extern "C" ', 'extern ') for l in out]
     with open(cpp_path, 'w', newline='\n') as f:
         f.write('\n'.join(out) + '\n')
     print(f'Wrote {len(out)} lines to {cpp_path}')

@@ -2261,3 +2261,613 @@ verificado en la sesión completa: **23**.
 
 
 
+
+## Fase 94 — Cobertura asm completa de game code + Runtime/MSL/TRK (2026-10-19)
+
+**Aviso de método:** desde la Fase 30, casi todo el "matching" de game code es `asm` inline
+generado por `tools/asm_to_cpp.py` (3,615 de 3,717 funciones antes de esta fase), no C. El %
+de `configure.py progress` cuenta esas funciones como "matched". Decisión del usuario: cubrir
+el 100% en asm para fijar splits y nombres, y después reescribir a C en una pasada aparte.
+
+- **Gap `0x80019E50`-`0x80050548` (game code, ~223 KB)**: 39 TUs nuevas. Fronteras por bloques
+  de datos (cada TU tiene su rango propio y contiguo en `.sdata2`/`.data`/`.rodata`); nombres
+  reales donde hay string `__FILE__` (`glib_anim`, `glib_anim_access`, `glib_model`,
+  `glib_model_access`, `glib_rendertarget`, `glib_rendertarget_access`, `glib_resource_access`,
+  `glib_scene`, `glib_scene_access`, `glib_shadow`, `glib_shadow_access`, `glib_process`,
+  `glib_process_access`, `glib_physics`, `glib_physics_access`, `glib_reflection`); el resto
+  `unk_<addr>.cpp`. Patrón útil: las TUs tipo efecto empiezan con una función init que toca
+  `.sbss`+`.sdata2` y terminan con 4-5 inlines GX chicos (escrituras a `0xCC008000`).
+  Con esto todo `0x80016340`-`0x8019359C` (game code) queda splitteado.
+- **Validación gratis de fronteras**: dtk falla con `Conflicting splits within reversed extab
+  group` si una frontera parte una TU que comparte entradas de extab — así se detectó que
+  `0x80042CC0` no era TU propia (fusionada con `unk_800423DC`).
+- **Runtime/MSL_C/TRK (`0x801935B8`-`0x801A8584`)**: 80 TUs. Nombres y orden tomados de
+  `zeldaret/ss` alineando la secuencia de tamaños de función (262/304 emparejadas). Funciones
+  sin pareja se asignaron a la TU anterior (salvo cabecera de `NMWException.cp`); `abort_exit.c`
+  es nombre supuesto. `strlen` (`0x8019359C`) queda fuera: pertenece a `__mem.c`, cuyo `.c`
+  actual solo cubre `.init`.
+- **`tools/asm_to_cpp.py`**: soporta símbolos citados (`"@stringBase0_X"` → `at_stringBase0_X`),
+  `.4byte` (→ `opword`) y `HID2` (mwcc lo ensambla como SPR 1011; Gekko usa 920). Para `.c`
+  hay que quitar `extern "C"` tras generar.
+- Resultado: **50.01% matched (1,649,948 / 3,299,164 bytes, 5,289 / 11,293 funciones)**,
+  `build.sha1` OK. C real sigue siendo ~100 funciones.
+- Pendiente siguiente región: `0x801A8584`-... (TRK Revolution, NW4R `db`, NW4R `EF`; SS tiene
+  NW4R como referencia de alineamiento).
+
+## Fase 95 — Métrica asm vs C separada (2026-10-19)
+
+- `configure.py`: helper `AsmObject(name)` (= `Object(NonMatching, name, progress_category="asm")`)
+  y categoría `asm`. 204 objetos reclasificados: todo archivo con header `// Translation unit:`
+  (generado por `asm_to_cpp.py`) más `clinklist.cpp` (28/30 funciones asm). Quedan como fuente
+  real: `tcg_text.cpp` (102/124 en C) y el SDK/Runtime previo (`PPCArch.c`, `__start.c`, `__mem.c`
+  usan asm también en el original), más `targsupp.s` (asm en el original).
+- `progress` imprime `C real (sin asm inline)` = matched total − matched `asm`: **0.77%
+  (25,560 / 3,299,164 bytes)**. Granularidad por objeto: las 22 funciones asm de `tcg_text.cpp`
+  se cuentan como C.
+
+## Fase 96 — Splits NW4R + RVL SDK heredados de zeldaret/ss, primera pasada (2026-10-19)
+
+- `tools/align_ref.py` (reescrito): mapeo **local por TU**. Cada TU de referencia busca su mejor
+  ventana en nuestro binario (anclas: nombres que dtk ya reconoció o el tamaño de su función más
+  grande), alinea tamaños con difflib y puntúa por bytes emparejados; veto si empareja un nombre
+  real nuestro con otro nombre (0 conflictos tras el veto). Una alineación global falla porque el
+  orden de librerías y las versiones difieren (NW4R va antes que el SDK acá; el SDK está
+  intercalado — `vi.c` en `0x80281C68`, anclado por `VIGetTvFormat`).
+- Filtro: ≥3 funciones y ≥60% de bytes emparejados, o anclada por nombre. Se descartan TUs sin
+  ancla fuera de su zona esperada y las que pisan splits existentes.
+- **139 TUs nuevas** (`nw4r/*`, `revolution/*`, rango = primera..última función emparejada,
+  huecos quedan como `auto_*`), libs `NW4R` y `RVL_SDK` en `configure.py`, **sin fuente** (dtk
+  enlaza el `.o` original). Splits cubren 62.0% de `.text`; zona de librerías 0x5FBAC de 0x190F3C.
+- `tools/insert_splits.py` inserta bloques por orden de dirección; `tools/mk_splits.py` acepta
+  `_gap`.
+- **Sospechas a revisar** (TUs de SS que pisan splits existentes): `revolution/os/OS.c` solapa
+  `OS/OSFPRInit.c`/`OS/OSPSInit.c` (probablemente son partes de `OS.c`); `revolution/os/
+  __ppc_eabi_init.c` solapa `Runtime.PPCEABI.H/exit.c`; también `PPCArch.c`, `OSCache.c`,
+  `OSReset.c` (los nuestros cubren solo parte de la TU real).
+- Pendiente: ~1.2 MB de librerías sin mapear (NW4R EF no está en SS; versiones distintas de
+  NW4R/SDK; TRK Revolution en `0x801A8584`-`0x801A913C`).
+
+## Fase 97 — Splits de librerías con más referencias (2026-10-19)
+
+- Referencias dtk descargadas (solo splits+symbols, en scratchpad, no en el repo): `xbret/
+  xenoblade` (us), `doldecomp/ogws` (RSPE01_01), `zeldaret/tp` (RZDE01_02), `doldecomp/mkw`
+  (RMCP01); `doldecomp/brawl` no trae splits útiles. Mejor ajuste de versión: **Xenoblade**
+  (3,077 funciones emparejadas vs 1,995 de SS).
+- `tools/select_tus.py`: filtro + selección multi-referencia por prioridad, normaliza rutas
+  (`RVL_SDK/src/revolution/OS/...` → `revolution/os/...`, `rvl/` → `revolution/`), no pisa
+  splits existentes ni repite nombres.
+- **+126 TUs** NW4R/RVL SDK (Xenoblade 86, Wii Sports 31 —incluye 3 de `nw4r/ef`—, TP 7, MKW 2)
+  y **+34 TUs GameSpy** (`gamespy/*`, de MKW; lib nueva `GameSpy`). `build.sha1` OK.
+- Cobertura de splits: **77.3% de `.text`**; zona de librerías 54.5%.
+- Huecos grandes restantes, identificados por strings: DWC (`0x8022813C`-`0x80253934`, 178 KB;
+  el `dwc/` de MKW es otra versión y no pasa el filtro), HBM (`~0x802E657C`), NCD
+  (`~0x8032B024`, `ncdsystem.c`), WPAD (`~0x802864A0`), y bloques sin strings en
+  `0x801A971C`-`0x801CEAA8` (probablemente NW4R `ef`/`g3d` de otra versión).
+
+## Fase 98 — C importado para MSL_C/Runtime/TRK (2026-10-19)
+
+- Fuente: `xbret/xenoblade` (CC0) — `libs/PowerPC_EABI_Support/{src,include}`, headers de
+  `RVL_SDK`/`NdevExi2A` y su `include/types.h` (en `libs/include/`). Atribución en
+  `libs/README.md` + `libs/LICENSE.xenoblade`.
+- `configure.py`: `lib_cflags()` antepone los includes de `libs/` (nuestro `include/types.h`
+  tapaba el suyo: `BOOL`/`NULL`/`wchar_t` indefinidos); `cflags_mw_runtime(_eh)`, `cflags_mslc`,
+  `cflags_trk` = flags de Xenoblade. Los objetos importados apuntan a `libs/` con
+  `Object(..., src_dir="libs", source=...)` sin renombrar el split.
+- **Clave: renombrar símbolos antes de comparar.** objdiff empareja funciones por nombre; con
+  `fn_XXXX` todo daba 0% aunque el código fuera idéntico. `tools/rename_symbols.py` aplicó 199
+  nombres de Xenoblade (alineación global por tamaños en `0x8019359C`-`0x801A8584`) a
+  `symbols.txt` y a todas las referencias en `src/`. Los `TRKxxx` que había adivinado dtk pasan a
+  `TRK_xxx` (nombre real en Xenoblade y SS).
+- `tools/try_import.py`: arnés que prueba un mapa split→fuente con una versión de compilador
+  (dos pasadas: los que no compilan vuelven a asm para que `report.json` se regenere). `Wii/1.0`
+  ≥ `Wii/1.1` en MSL/Runtime; `Wii/1.0a` deja `targimpl.c` al 100% en TRK.
+- **57 TUs adoptadas** (todas sus funciones al 100%), asm borrado. Corregidos además los splits de
+  matemática (`w_log.c`, `w_log10.c`, `e_sqrt.c` al 100%; 6 funciones sin equivalente en
+  `unk_801A3278.c`; `w_pow.c`/`math_ppc.c` quedan asm, 40% con el C de Xenoblade).
+- **C real: 0.77% → 1.77%** (58,480 bytes). Total sin cambios (50.01%). `build.sha1` OK.
+- `Matching` (enlazar nuestros `.o`) **no** funciona todavía: los splits solo cubren `.text`, y
+  los datos de cada TU siguen en objetos `auto_*` (símbolos duplicados/sin resolver al enlazar).
+  Requiere splittear `.data`/`.rodata`/`.bss`/`.sdata2` por TU.
+- Pendientes casi al 100% (versión distinta, corregir a mano): `targimpl`/`support`/`msghndlr`/
+  `dolphin_trk` (≥99.5%), `NMWException` 98.9%, `runtime` 97.9%, `dolphin_trk_glue` 97.5%,
+  `wstring` 96.6%, `strtoul` 91.7%, `FILE_POS` 89%, `Gecko_ExceptionPPC` 87.7%.
+
+## Fase 99 — MSL/Runtime/TRK completos en C (o mixto) (2026-10-19)
+
+- TRK: el original agrupa strings (`@stringBase0`) → `-str reuse,pool` en `cflags_trk`;
+  `InitMetroTRK` de esta versión no tiene el `blr` muerto que trae Xenoblade. Las 26 TUs TRK al
+  100% con C (las 4 que necesitaban cambios copiadas a `src/TRK_MINNOW_DOLPHIN/`).
+- `tools/mix_asm.py`: fuente mixto = C importado + asm (marcado `// asm_to_cpp: <fn>`) solo para
+  funciones sin C que matchee. Si el C define la función, se quita su definición y el asm usa su
+  firma; si no, toma el prototipo de los headers de `libs/`. Compila en bucle y corrige externs
+  según el error de mwcc. **17 TUs MSL/Runtime al 100% en modo mixto.** Ojo: tras renombrar
+  símbolos hay que regenerar los mixtos (sus `extern` genéricos pasan a chocar con prototipos).
+- `abort_exit.c` era en realidad **`math_api.c`** (`__fpclassifyf`/`__signbitd`/
+  `__fpclassifyd`): renombrado, 100% con C. TRK `main.c` (= `cc_gdev.c`) compila tras los
+  renombres: 100%.
+- `configure.py progress`: el C real descuenta el asm marcado dentro de archivos C.
+- **C real: 1.77% → 2.84%** (93,628 bytes). Total 50.01%, `build.sha1` OK.
+- Quedan asm: `unk_801A3278.c` (6 funciones sin equivalente), `w_pow.c`, `math_ppc.c`, y las
+  funciones marcadas en los mixtos (MSL de esta versión que Xenoblade no tiene o tiene como stub:
+  `strrchr`/`strtok`-like en `string.c`, `__fread` en `direct_io.c`, partes de
+  `Gecko_ExceptionPPC.cp`, `printf.c`, `scanf.c`, `strtold.c`...). Esas requieren descompilar a
+  mano (o otra referencia con esas funciones).
+
+## Fase 100 — C importado para RVL SDK y NW4R (2026-10-19)
+
+- Fuentes de `xbret/xenoblade` (CC0): `libs/RVL_SDK/src`, `libs/nw4r/{src,include}`.
+  `cflags_sdk`/`cflags_nw4r` = flags de Xenoblade vía `lib_cflags()`.
+- 3,475 símbolos de NW4R/RVL SDK/GameSpy renombrados con las alineaciones de Fase 96-97
+  (Xenoblade > Wii Sports > SS > TP > MKW). Sin cambios de match en el asm del juego.
+- Versión: strings `<< RVL_SDK - X release build: ... >>` del DOL dan SDK de jul-2008 a
+  feb-2009 compilado con `0x4199_60831` (Wii/1.0); Xenoblade es del 27-feb-2009 con
+  `0x4302_145`. NW4R (nov-2008) también `0x4199_60831`, **pero** `GC/3.0a5.2` matchea mucho mejor
+  (98 KB vs 38 KB) — igual que en Xenoblade.
+- 150 TUs con fuente en Xenoblade (60 SDK + 90 NW4R); **134 adoptadas** (las 16 con 0 bytes
+  emparejados quedan sin fuente). Antes no tenían fuente (0%), así que adoptar C parcial solo
+  suma. Muchas quedan parciales por diferencias reales de versión (p. ej. `quat.c`: tamaños
+  distintos) — punto de partida para corregir a mano.
+- **C real: 2.84% → 6.97%** (229,956 bytes). Total: 50.01% → 54.14%. `build.sha1` OK.
+- Sin fuente en Xenoblade: 115 TUs (BTE completo, partes de g3d/snd/lyt, `ef`, HBM) — candidatas:
+  SS/Wii Sports/TP/MKW (headers distintos, requiere armar otro árbol de includes).
+
+## Fase 101 — GameSpy importado de doldecomp/mkw (2026-10-19)
+
+- SS no tiene fuentes del RVL SDK (solo splits). Relevamiento de fuentes por repo: BTE solo en
+  MKW (8); g3d en SS/OGWS; HBM/VI/NAND/GX/WPAD en TP; GameSpy en MKW (60).
+- `libs/mkw/` (CC0, `libs/LICENSE.mkw`): `lib/{gamespy,dwc,MSL,rvl}` + `include/` de MKW.
+  `cflags_mkw_spy` replica su `cflags_base`+`cflags_rvl`+`cflags_spy` (`-nostdinc -gccinc
+  -lang=c99 -DREVOKART`...) con rutas en `libs/mkw`; compilador `GC/3.0a5.2` como en MKW.
+- 34/34 TUs GameSpy compilan; 89,452 / 111,632 bytes; 20 TUs al 100%. Adoptadas todas.
+- **C real: 6.97% → 9.68%** (319,408 bytes). Total 54.14% → 56.85%. `build.sha1` OK.
+
+## Fase 102 — NW4R desde SS, SDK suelto desde MKW; diagnóstico de parciales (2026-10-19)
+
+- `libs/ss/` (CC0, `libs/LICENSE.ss`): headers raíz + `include/{nw4r,rvl}` + headers MSL/MSL_C++
+  (los C++ no tienen extensión: `cstddef`, `climits`...) + 28 fuentes NW4R que Xenoblade no
+  tiene. `cflags_ss_nw4r` = su base + `-ipa file -fp_contract off`. Por TU se elige el mejor entre
+  `GC/3.0a5.2` (matchea mejor, compila 10/28) y `Wii/1.0` (compila 28/28). 22 adoptadas.
+- MKW: sus BTE son stubs (`UNKNOWN_FUNCTION`), no sirven. `so/soCommon.c` 100% con `GC/3.0a5.2`.
+- **C real: 9.68% → 10.37%** (342,052 bytes). Total 57.54%. `build.sha1` OK.
+- Diagnóstico de lo importado no matcheado: 222 KB en 690 funciones **parciales** + 100 KB en 533
+  funciones **sin pareja** (59 KB siguen como `fn_`). Las parciales grandes difieren sobre todo
+  en offsets dentro del bloque de strings agrupados y en símbolos de datos (`jumptable_X` vs
+  `@NNN`, `lbl_X` vs nombre real): requieren **splits de datos por TU**, no tocar el C.
+
+## Fase 103 — Todo el código matcheado, todo `.text` splitteado (2026-10-19)
+
+- **126 huecos de `.text`** → una TU por hueco (`<lib>/unk_<addr>`). Sin conflictos de extab.
+  Las 108 TUs splitteadas sin fuente → asm generado. `.init`: `TRK_MINNOW_DOLPHIN/__exception.s`
+  (`0x80004380`-`0x800062B4`); lo único sin split en `.init` son tablas del linker
+  (`_rom_copy_info`/`_bss_init_info`, `0x800065EC`-`0x80006690`), no código.
+- `tools/asm_to_cpp.py`: `$` en nombres de estáticos, `sym+off@sda21` (mwcc acepta `sym+4`),
+  `addic`/`addic.` con `@l` y saltos a etiquetas de otra función como `opword` (mwcc no los
+  ensambla con relocation), símbolos sda21 que también se usan con `@ha` sin doble declaración,
+  salida C con `extern` correcto.
+- TUs con `addic.@l` o saltos entre funciones (que pierden la relocation como `opword`) usan el
+  `.s` de dtk como fuente (`AsmObject(name, source="x.s")`, ensamblado por GNU as), con las
+  funciones `local` pasadas a `global` (si no, as resuelve el salto sin relocation).
+- C importado parcial → mixtos (`tools/mix_asm.py` ahora ubica métodos C++ por nombre mangled
+  CW: `Metodo__Q34nw4r3g3d6ScnMdlF...` → `ScnMdl::Metodo(`; sobrecargas/inlines de header no).
+  Mixtos compilan con `extra_cflags=["-i <dir original>"]` por los includes relativos. Los que no
+  compilan, cuelgan a mwcc (`ghttpPost.c`, `gstats.c`) o fallan por inlines de header → asm.
+  **Gotcha:** un `.o` viejo puede hacer pasar por buena una compilación que falla — borrar el
+  `.o` antes de verificar.
+- Auditoría de nombres heredados por alineación de tamaños: 19 falsos positivos (función lejos
+  de su TU de origen ya splitteado, nombre no conocido por dtk) revertidos a `fn_<addr>` con
+  `tools/rename_symbols.py --asm-only` (no toca C). `tools/rename_tu.py` reubica TUs `unk_` por
+  librería según strings: DWC (178 KB), NHTTP/NCD, KPAD, TPL, WUD, SSL, NATNEG.
+- **Code: 100.00% (3,299,164 / 3,299,164 bytes, 11,293 funciones). C real 8.41%.**
+  `build.sha1` OK. Data sigue en 0% (sin splits de datos).
+- Pendiente de nombres: TUs `unk_*` (165; fronteras internas de huecos grandes sin refinar) y
+  funciones del juego (`fn_*`, sin fuente de nombres).
+
+## Fase 104 — Inicio de la reescritura a C del game code (2026-10-19)
+
+- **Hallazgo de flags:** `ten_eye.cpp` solo llega al 100% con `-O4,s -schedule off`
+  (`-func_align 4` para el layout). Con `-O4,p` queda en 63%; con `-O4,s` (scheduler activo) en
+  94.5% por puro orden de instrucciones. Es decir, los "quirks de scheduler no accionables" del
+  gotcha 6 pueden ser simplemente **`-schedule off`**. Ojo: `tcg_text.cpp` matchea con `-O4,p`,
+  así que los flags varían por TU — probar ambos por archivo.
+- `ten_eye.cpp`, `kir_eye.cpp`, `kbt_eye.cpp`, `gai_eye.cpp` (misma plantilla, distinto ID y
+  tamaño) reescritos a C al 100%. `tools/gen_eye_stub.py` genera la plantilla desde el asm.
+- Detalles útiles para leer asm de mwcc: `beq A; b B` tras comparar un parámetro = ternario
+  `x = x ? x : f()`; un `mr r5, r3` "muerto" tras una llamada = el resultado se pasa como 3er
+  argumento en otra rama.
+
+## Fase 104b — Pipeline m2c (2026-10-19, resumen a posteriori)
+
+- `tools/m2c_pass.py` + `m2c_context.py` + `m2c_fix.py`: m2c sobre cada TU asm, se queda con lo
+  que matchea al 100% y arma mixtos. Contexto con prototipos inferidos de todo el binario (aridad
+  por moda de llamadores). Pasadas sobre game code y RVL SDK: C real 8.41% → 10.90%.
+
+## Fase 105 — El game code es C++; reescritura con m2c en modo C++ (2026-10-20)
+
+- **Hallazgo de flags:** el game code nunca usa formas record (`clrlwi.`, `rlwinm.`): se compiló
+  con **`-opt nopeephole`**. Con el flag, lo ya matcheado sigue al 100% salvo funciones sueltas
+  que se envuelven en `#pragma peephole on` / `#pragma peephole reset`.
+- **Lenguaje:** el juego es **C++, incluso sus `.c`**. Evidencia: `__FILE__` del DOL dan
+  `glib_*.cpp`/`clinklist.cpp` y también `sys_task.c`, `tcg_cell.c`, `tcg_text.c`...; pero en
+  `tcg_text.c` hay RTTI `@unnamed@tcg_text_c@::CTextEntry_Char` (clases en namespace anónimo) y en
+  `tcg_cell.c`, `eft_scmd.c`, `gl_sound.c`, `seq_cmdeft.c` hay llamadas virtuales reales
+  (`lwz r12,0(r3); lwz r12,N(r12); mtctr r12`, byte-idéntico a un `virtual` de mwcc C++; un
+  puntero a función, en C o C++, carga la vtable en r4). ~1800 llamadas virtuales en el game code.
+- Decisión: cada código en su lenguaje real. Game code → C++ (`-lang=c++`, todo en
+  `extern "C" {}` porque los `fn_*` no tienen nombre mangled conocido); librerías como estaban
+  (SDK/MSL/GameSpy C, NW4R C++). Nombres de archivo = los del DOL (`tools/rename_lang.py`): 14 TUs
+  `.c` (compiladas como C++), el resto `.cpp`.
+- `tools/m2c_cpp.py`: por TU parte del asm completo, genera C++ con `m2c -t ppc-mwcc-c++` y
+  reemplaza cada función que compila y matchea; el resto queda asm. Necesario para C++:
+  prototipos completos (C++ no tiene K&R: la aridad tiene que coincidir — se toma la de las
+  llamadas de la TU y se rellena con parámetros sin usar, que no cambian el código), casts
+  explícitos en argumentos/asignaciones/`return` entre enteros y punteros, `void *` → `s8 *`
+  también en los prototipos del contexto, tipos `nw4r::...*` de nombres mangled → `s8 *`,
+  variádicas de libc con su firma real. Compila con mwcc directo y muchos errores por pasada.
+- Otras mejoras de m2c (sirven a ambas pasadas): firmas reales de `libs/` en el contexto
+  (`GXSetTexCoordGen2` tiene 6 parámetros, la inferencia daba 2); `p + n` sobre punteros tipados
+  y sobre retornos de funciones puntero → `(s8 *)p + n` (m2c da offsets en bytes); `body_end`
+  arrancaba después de la llave si había línea en blanco (cuerpos mal cortados).
+- `include/m2c_protos.h` versionado (antes solo en `build/`: un clon limpio no compilaba sin m2c).
+- `tools/fn_diff.py`: compila una función aislada y la compara instrucción por instrucción con
+  el asm original (para ajustar a mano).
+- **C real: 10.90% → 12.16%** (401,064 bytes; 1602 funciones del juego en C++). `build.sha1` OK.
+- Segunda tanda sobre `m2c_cpp.py`:
+  - conserva el C++ que ya tiene el fuente (generado o ajustado a mano) y sus prototipos/externs:
+    re-pasadas idempotentes, y se puede ajustar una función a mano directamente en `src/`;
+  - llamadas por vtable de m2c (`M2C_FIELD(*X, T (**)(...), off)(X, ...)`) → llamadas virtuales
+    reales con una clase de llamada por slot (`struct M2C_VC_n { virtual void v0(); ... }`);
+  - retornos `u8/u16` inferidos para `fn_*` externos → 32 bits (el original no extiende en el
+    llamador); los de librerías con nombre real (NW4R `GetFrameSize`) se respetan;
+  - escrituras a registros de hardware (`0xCC......`/`0xCD......`) como `volatile` (FIFO de GX);
+  - externs escalares de símbolos fuera de small-data con `__declspec(section ".data")`: si no,
+    mwcc asume `sdata` (`li r3,sym@sda21`) en lugar de `lis/addi`;
+  - **variádicas** detectadas por `crclr/creqv cr1eq` antes del `bl` (24: `OSReport`, `snprintf`,
+    el assert `fn_801A9384(file, line, fmt, ...)`, `fn_802289B0` con 1272 llamadas...): con
+    `...` en el contexto m2c deja de inventar argumentos.
+- `tools/m2c_triage.py`: clasifica las funciones que compilan pero no matchean (registros, orden,
+  inmediatos, largo) y agrupa por plantilla de diferencia; guía qué arreglar en masa.
+- Ajuste a mano: accesores `s8 *f(s8 **p, s32 off) { s8 *b = *p; if (off) return b + off;
+  return 0; }` (6 en `glib_anim.cpp`): m2c tipaba el retorno como entero y mwcc generaba la
+  versión sin salto.
+- **C real: 12.16% → 12.79%** (421,884 bytes; 1861 funciones del juego en C++). `build.sha1` OK.
+- Contexto: "retorno usado" se detecta en el asm de los llamadores (tras `bl F`, `r3`/`f1` se lee
+  antes de escribirse); m2c sobre el archivo entero propagaba su propio `void`. `fix_unset_args`
+  también para `$f1..$f8` (floats que un wrapper pasa intactos).
+- `tools/apply_template.py <fn>|--all`: una función ya en C++ sirve de plantilla para las que
+  siguen en asm con la misma secuencia de instrucciones (inmediatos sustituidos); después
+  `m2c_cpp.py` sobre las TUs tocadas verifica. Flujo para ajustar a mano: arreglar una función en
+  `src/`, `apply_template.py <fn>`, `m2c_cpp.py <TUs>`.
+- **C real: 12.79% → 12.87%** (424,484 bytes; ~1960 funciones del juego en C++).
+- Pendiente: las llamadas virtuales necesitan clases C++ reales con `virtual` (en C emulado no
+  sale el `r12`); los métodos de esas clases tendrán nombre mangled, no `fn_*`.
+
+## Ronda 17: Auditoría, desbloqueo de splits, modelado de vtables y descompilación masiva C/C++
+
+- **Desbloqueo de build y splits**:
+  - Resuelto error crítico de overlapping functions en `dtk dol split`: `fn_8024C524` (0x8024C524) estaba solapada con `fn_8024BC0C` en `config/RNEPDA/symbols.txt`. Se determinó que correspondía a la tabla de saltos / switch jump table / Duff's device de `fn_8024BC0C`. Se eliminó `fn_8024C524`, ampliando `fn_8024BC0C` de 0x918 a 0x984 bytes, y se unificó la etiqueta en `src/dwc/unk_8022813C.s`.
+  - Instalación y configuración local de `m2c` en `build/m2c` con soporte de fallback automático en todas las herramientas del proyecto (`tools/m2c_cpp.py`, `fn_diff.py`, `m2c_context.py`, `m2c_fill.py`, `m2c_pass.py`).
+  - Generación de contexto integral `build/m2c_ctx.h` con 3,766 prototipos del proyecto.
+  - Corrección de bugs en `tools/m2c_cpp.py`:
+    - `compile_fast()` descartaba funciones válidas de `t.kept` cuando un candidato rompía la compilación; se protegió `t.kept` contra descarte.
+    - Resolución de prototipos: `t.orig_protos` tiene precedencia sobre las inferencias de `m2c` para preservar firmas manuales y de headers del proyecto.
+- **Arquitectura de llamadas virtuales**:
+  - Descubrimiento y modelado exacto del patrón de vtable en offset 0x4 (`lwz r12, 4(r3); lwz r12, 0xc(r12)`): se descubrió que Metrowerks CodeWarrior genera este patrón cuando una clase con métodos virtuales hereda de una clase base sin métodos virtuales que contiene 4 bytes de datos (`struct Base { int x; };`).
+- **Descompilación de funciones C/C++ (100% byte-for-byte exact matching)**:
+  - `src/unk_80019E50.cpp`: `fn_8001A940` (36b, desempaquetado de color con struct de campos de bits), `fn_80019E50` (216b, inicializador con `fn_80177280`, `memset` y copia de flotantes).
+  - `src/eft_vjob.c`: `fn_8011FDDC` (88b, recorrido de lista enlazada `while ((item = *node) != (s8 *)1)`).
+  - `src/seq.cpp`: `fn_8013EE80` (24b, pop de pila `*p; p + 1`), `fn_8013EEAC` (24b, alineación a 4 bytes `(arg1 + 3) & ~3`).
+  - `src/glib_process_access.cpp`: `fn_80044500` (64b, llamada virtual con vtable a offset 4), `fn_80044540` (112b, orden inverso de temporales de pila en CodeWarrior), `fn_800445B0` (112b, temporales de pila).
+  - `src/g_net_ctrl.cpp`: `fn_800AC6AC` (56b, aritmética de punteros), `fn_800AC6E4` (68b, extracción de bit booleano), `fn_800AC810` (96b, reenvío de parámetros), `fn_800AD4F8` (20b, extracción de packed struct), `fn_800AE2F0` (20b, acceso a array global `lwzx`), `fn_800AE428` (80b, PRNG LCG con multiplicación de 64 bits y `__mod2u`).
+  - `src/system_ctrl.cpp`: 6 funciones de bucle iterativo sobre 16 elementos de 24 bytes: `fn_80070450` (84b), `fn_800704A4` (84b), `fn_800704F8` (84b), `fn_80070644` (84b), `fn_80070698` (84b), `fn_800706EC` (84b). Total: 504b.
+  - `src/system_sub.cpp`: `fn_8005E37C` (160b, búsqueda en lista con condicional de flags y retorno anticipado).
+  - `src/gl_model.c`: `fn_80185194` (68b, empaquetado a 16 bits de valores con shift aritmético), `fn_801865AC` (140b, swap de matrices 3x4 en buffer de pila de 48 bytes), `fn_80186C44` (52b, validaciones y asignaciones a estructura). Total: 260b.
+  - `src/c_eye_ctrl.cpp`: `fn_800A19BC` (152b, asignación dinámica, assert `*(u32 *)1 = 0` y `memset`), `fn_800A32B8` (116b, `switch` con clamp branchless). Total: 268b.
+  - `src/c_eye.cpp`: `fn_800F5B14` (100b, inserción en lista doblemente enlazada con rama muerta tras retorno), `fn_800F5B78` (80b, búsqueda lineal por doble clave). Total: 180b.
+  - `src/gauge.cpp`: `fn_801914C4` (156b, invocaciones a métodos virtuales en slots 1 y 2), `fn_8019358C` (16b, inicialización dual con constante float SDA). Total: 172b.
+  - `src/clinklist.cpp`: `fn_80130AE8` (16b, getter/setter atómico), `fn_801305BC` (132b, pop y marcado de flag `0x00020000` en lista), `fn_801306FC` (104b, bubble sort dual de flotantes y enteros en paralelo con `n--`). Total: 252b.
+  - `src/glib_model.cpp`: `fn_80031350` (16b, dispatch tail call), `fn_80031360` (16b, dispatch tail call), `fn_80031370` (8b, setter), `fn_80031378` (8b, setter), `fn_80031380` (8b, setter), `fn_80031388` (8b, setter). Total: 64b.
+  - `src/file_task.c`: `fn_80169C14` (4b, stub blr), `fn_80177254` (8b, tail call forwarding con offset +0x30). Total: 12b.
+  - `src/sys_task.c`: `fn_801793C8` (4b, tail call a `NANDPrivateSafeOpenAsync`). Total: 4b.
+  - `src/n2d_main.c`: `fn_801222B4` (8b), `fn_801222BC` (8b), `fn_801222C4` (8b) (wrappers a `fn_80122188` con `#pragma dont_inline`). Total: 24b.
+- **Métricas**:
+  - C real inicial: 12.87% (424,484 bytes).
+  - C real alcanzado: **12.96% (427,444 / 3,299,164 bytes)** (+2,960 bytes de código C/C++ real).
+  - Matching binario: **100.00%** (11,292 / 11,292 funciones matcheadas). `build.sha1` OK.
+
+## Ronda 18: Superacion del hito del 13.00% de codigo C/C++ real y matching binario 100.00%
+
+- **Hito alcanzado**: Superada la barrera del **13.00%** de codigo C/C++ real en el repositorio (alcanzando **428,908 bytes**, +1,392 bytes de codigo real verificado en esta ronda respecto al estado anterior de 427,516 bytes).
+- **Matching binario**: Mantenido ininterrumpidamente al **100.00%** en todas las verificaciones (11,292 / 11,292 funciones coincidentes; SHA1 del `main.dol` identico bit a bit con `config/RNEPDA/build.sha1`: `OK`).
+- **Analisis y descompilacion sistematica por patrones arquitectonicos**:
+  - **Patron de gestion de clusters de efectos (`src/gl_effect.cpp`)**:
+    - Identificada y descompilada la arquitectura completa de gestores de efectos para 4 slots/offsets (0x8, 0x10, 0x18, 0x20). Cada slot contiene funciones de consulta de tamano agregado (`fn_8018ADC0`, `fn_8018AF60`, `fn_8018B100`, `fn_8018B2A0`), getters con `#pragma dont_inline on` (`fn_8018AE04`/`0C`, `fn_8018AFA4`/`AC`, `fn_8018B144`/`4C`, `fn_8018B2E4`/`EC`), dispatchers tail call condicionales (`fn_8018ADA4`/`14`/`30`/`4C`, `fn_8018AF44`/`B4`/`D0`/`EC`, `fn_8018B0E4`/`54`/`70`/`8C`, `fn_8018B284`/`F4`/`310`), y controladores de listas nw4r (`fn_8018AD48`, `fn_8018AEE8`, `fn_8018B088`, `fn_8018B228`).
+    - Vtable inicializer `fn_8018B578` (`*arg0 = lbl_8035EF48`) y comprobador de estado `fn_8018B634` (`return s == 1 || s == 2`).
+    - Array lookup indexado `fn_8018D16C` (`((s32 *)lbl_8035F3B8)[arg0]`).
+  - **Bitfields globales y operadores de mascara con rotacion (`rlwinm`)**:
+    - `src/seq_cmdeft.c`: `fn_8014BEB4` (`&= ~4`), `fn_8014BEC8` (`|= 4`), `fn_8014BEDC` (`|= 2`).
+    - `src/main_sub.cpp`: `fn_80057780` (`&= ~6`), `fn_80057A9C` (`|= 1`).
+    - `src/g_camnw.c`: `fn_8008AE98` (`|= 4`), `fn_8008AEAC` (`&= ~4`), `fn_8008AED0` (`|= 8`), `fn_8008AEE4` (`(lbl & 0x10) != 0`), `fn_8008AEFC` (`|= 0x81`), `fn_8008AF10` (`&= ~0x81`).
+    - `src/file_task.c`: `fn_80176908` (`lbl_803BE400 |= 0x80`), `fn_8017691C` (`lbl_803BE400 &= ~0x80`).
+  - **Manejo de estructuras de bits nativas (`src/gauge.cpp`)**:
+    - `fn_80193264`: Demostrado el patron de generacion de CodeWarrior para estructuras con campos de bits (`struct { u8 pad[0x50]; u8 a:2; u8 flag:1; u8 b:5; }`) que toma parametro tipo `bool`, emitiendo `clrlwi; lbz; rlwimi; stb`.
+  - **Gestion de listas libres simplemente enlazadas**:
+    - `src/glib_draw.cpp` (`fn_80019D94`) y `src/file_task.c` (`fn_801777DC`): descompilado el patron de push (`node = (s32*)(arg1 - 4); *node = (s32)*arg0; *arg0 = (M2C_UNK*)node`).
+  - **Expresiones booleanas branchless de CodeWarrior**:
+    - `src/g_cam_act.cpp` (`fn_80097298`): La expresion `return arg0 == 0 ? 0 : arg1;` con tipos `(s8*, s32, s32)` genera la secuencia optima sin saltos `subic r0, r3, 1; subfe r0, r0, r0; andc r3, r4, r0; blr`.
+  - **Puntos flotantes y contraccion de operaciones FMA**:
+    - `src/file_task.c` (`fn_80172A18`): `farg0 - (farg2 * (farg0 - farg1))` con `#pragma fp_contract off` para evitar la contraccion a `fnmsubs` y preservar la secuencia `fsubs; fmuls; fsubs`.
+    - `src/unk_8003FF00.cpp` (`fn_80041290`, `fn_800412A0`): helpers de escalado angular trigonometrico (`SinFIdx`/`CosFIdx`).
+    - `src/unk_8001FA80.cpp` (`fn_80020D20`): helper global de almacenamiento de colores/vectores de 4 flotantes en `arg0[0..3]`.
+    - `src/n2d_main.c` (`fn_80121D98`): lookup en array global de floats `((f32 *)lbl_8034F470)[arg0]`.
+  - **Indexacion de estructuras en sonido**:
+    - `src/gl_sound.c` (`fn_8018F5EC`): array de estructuras de tamano `0x41c` con `#pragma dont_inline on` para mantener llamadas explicitas en inicializadores.
+  - **Camara**:
+    - `src/g_cam_fra.cpp`: `fn_8009AF5C` (getter), `fn_8009B044` (copia memcpy de estructura 0x18 a offset 0x70).
+  - **Objetos y destructores**:
+    - `src/unk_80046BA0.cpp` (`fn_80046CDC`): `if (arg0 != 0) fn_8017776C(arg0);`.
+    - `src/glib_process.cpp` (`fn_80043C3C`): getter de offset `0xf8`.
+- **Metricas consolidadas**:
+  - C real inicial de la sesion: 12.96% (427,516 bytes).
+  - C real alcanzado: **13.00% (428,908 / 3,299,164 bytes)** (+1,392 bytes netos).
+  - Funciones C/C++ convertidas en esta ronda: **42 funciones**.
+  - Matching binario global: **100.00%** (11,292 / 11,292 funciones). `build.sha1: OK`.
+
+
+## Ronda 19: Superacion del hito de 430.000 bytes (13.04% C/C++ real) y matching binario 100.00%
+
+- **Hito alcanzado**: Superada la barrera de los **430.000 bytes** de codigo C/C++ real en el repositorio (alcanzando **430.076 bytes**, **13.04%**, con **+1.128 bytes netos** y **38 funciones** descompiladas en esta ronda).
+- **Matching binario**: Mantenido ininterrumpidamente al **100.00%** en todas las verificaciones (11.292 / 11.292 funciones coincidentes; SHA1 del `main.dol` identico bit a bit con `config/RNEPDA/build.sha1`: `OK`).
+- **Analisis y descompilacion sistematica por patrones arquitectonicos**:
+  - **Cluster de llamadas virtuales de animacion (`src/glib_anim_access.cpp`)**:
+    - Modelado mediante structs de interfaz virtual abstracta (`M2C_VC_Slot11` y `M2C_VC_Slot12`) que reproducen con precision absoluta las llamadas virtuales con tail-call (`bctr`):
+      - Slot 11 (offset `0x34` en vtable, pasando argumento de tipo `6` en `r5`): `fn_8002AC94`, `fn_8002ACAC`, `fn_8002ACC4`, `fn_8002ACDC`, `fn_8002ACF4` (5 funciones, 120 bytes).
+      - Slot 12 (offset `0x38` en vtable): `fn_8002AD0C`, `fn_8002AD20`, `fn_8002AD34`, `fn_8002AD48`, `fn_8002AD5C` (5 funciones, 100 bytes).
+  - **Llamadas virtuales de escena (`src/glib_scene.cpp`)**:
+    - `fn_80038228` (24b): Despacho virtual en Slot 11 pasando `this->field_0xE4` y `arg1` al metodo.
+  - **Despachadores de callbacks y vtables de modelos (`src/glib_model.cpp`)**:
+    - `fn_8003290C` (16b) y `fn_80032A0C` (16b): Asignacion directa de punteros de vtable `lbl_80346FD0` y `lbl_80346F70`.
+    - `fn_8003293C` (24b): Tail-call condicional `fn_80031A24(*arg0, arg1)` o `fn_8002AE08(*arg0)`.
+    - Despachadores de callbacks de modelo (32b cada uno, 160b total): `fn_80031594`, `fn_800315B4`, `fn_800315D4`, `fn_800315F4`, `fn_80031614`, implementando el patron de llamada indirecta a listener con tail-call.
+  - **Estructuras de camara y copias (`src/g_camnw.c` y `src/g_cam_act.cpp`)**:
+    - `fn_800868E0` (20b), `fn_800868F4` (16b): Tail calls a `fn_80019DAC` con offsets de `lbl_803909E8`.
+    - `fn_80086914` (24b), `fn_8008692C` (16b): `memcpy` y getter de direccion de `lbl_803909E8`.
+    - `fn_8008D090` (24b), `fn_8008D0A8` (24b): Indexacion de array estructurado `lbl_80393B60[arg0]` (stride `0x34`).
+    - `fn_8008D030` (96b): Seleccion condicional entre estructuras `lbl_80393B60` (stride `0x34`) y `lbl_803BD100` (stride `0x3cc`) segun `fn_8005CFCC()`.
+    - `src/g_cam_act.cpp` (`fn_80096228`, 24b): Asignacion condicional en `lbl_8049C300 + 0x2714` con llamada encadenada a `fn_80091778`.
+  - **Sistemas de tareas y ficheros (`src/file_task.c`)**:
+    - Cluster de 10 getters flotantes consecutivos indexando `lbl_803BD100[arg0]` (stride `0x3cc`, offsets `0x2bc` a `0x2e0`, 240 bytes en total): `fn_801761D4`, `fn_801761EC`, `fn_801762F4`, `fn_8017630C`, `fn_80176414`, `fn_8017642C`, `fn_80176534`, `fn_8017654C`, `fn_80176644`, `fn_8017665C`.
+    - `fn_8016CB6C` (20b): Comparacion de igualdad con generacion branchless via `cntlzw` y `srwi 5` (`return *arg0 == (s32)arg1;`).
+    - `fn_8016CB80` (36b): Incremento de contador con wrap-around en `0x10000` y recarga en memoria.
+    - Puntero global de gestion de ficheros (`lbl_8049D788`):
+      - `fn_80169048` (16b): Escritura en offset `0x32e50`.
+      - `fn_8016915C` (16b): Tail call a `fn_8016C62C` con offset `0x21574`.
+      - `fn_8016AF74` (16b) y `fn_8016AF84` (16b): Retorno de puntero a offset `0x215e4` con `#pragma dont_inline on` para prevenir inlining indeseado en la misma unidad.
+      - `fn_8016CC1C` (16b): Acceso encadenado indirecto a `0x4470` y tail call a `fn_8024EB88`.
+  - **Acciones del sistema (`src/system_act.cpp`)**:
+    - `fn_8007F4B8` (20b): Despacho de `memcpy` indexado por tabla de tamanos `lbl_80339788[arg2]`.
+  - **Medidores e interfaz (`src/gauge.cpp`)**:
+    - `fn_80193280` (24b): Inicializacion cuadruple de flotantes con `lbl_804A1110`.
+- **Metricas consolidadas**:
+  - C real inicial de la sesion: 13.00% (428.948 bytes).
+  - C real alcanzado: **13.04% (430.076 / 3.299.164 bytes)** (+1.128 bytes netos de codigo real C/C++).
+  - Funciones convertidas en esta ronda: **38 funciones**.
+  - Matching binario global: **100.00%** (11.292 / 11.292 funciones). `build.sha1: OK`.
+
+
+### Ronda continua — Maximizacion de C/C++ real y barrera de 430.800 bytes
+
+- **Metricas**:
+  - C code inicial de esta ronda: 13.04% (430.220 / 3.299.164 bytes)
+  - C code final: **13.06% (430.888 / 3.299.164 bytes)** (+668 bytes netos C/C++ puro).
+  - Funciones convertidas y matcheadas 100%: **19 funciones**.
+  - Matching binario global: **100.00%** (11.292 / 11.292 funciones). `build.sha1: OK` (`main.dol: OK`).
+
+- **Funciones descompiladas y verificadas**:
+  1. `src/file_task.c` (5 funciones, 140b):
+     - `fn_80176808` (20b): Acceso indexado estructurado a tabla global `lbl_803BE7A0` (stride `0xb00`).
+     - `fn_8017681C` (40b): Comprobacion de flags de bits (`0x10`, `0x20`) contra `lbl_8035DE44.field_0x10` y `field_0x14`.
+     - `fn_80176874` (24b): Tail call a `fn_8017688C(lbl_803BE7A0[arg0].field_0x5c)`.
+     - `fn_8016C48C` (24b): Array bidimensional no acotado `lbl_8033AC90[arg1][arg2]`, reproduciendo el patrón `slwi r0, r4, 3` + `add r0, r5, r0` + `lbzx`.
+     - `fn_8016D31C` (32b): Desreferencia segura de puntero global `*(u32 *)&lbl_8049D788` con lectura condicional de `ptr + 0x49E4`.
+  2. `src/gl_effect.cpp` (2 funciones, 48b):
+     - `fn_8018B858` (24b) y `fn_8018B870` (24b): Emisión branchless del booleano `arg1 != 0` via `subic; subfe` en tail calls a `fn_8018B808` y `fn_8018B830`.
+  3. `src/gl_model.c` (1 funcion, 24b):
+     - `fn_80183158` (24b): Invocacion condicional de tail call `fn_80170E84(*(s32 *)(arg0 + 0x3C), (s8 *)arg0)`.
+  4. `src/glib_g3d.cpp` (1 funcion, 20b):
+     - `fn_80016CAC` (20b): Clamping de enteros negativos antes de invocar `fn_8017ADBC` (`if (arg0 < 0) return fn_8017ADBC(0); return fn_8017ADBC(arg0);`).
+  5. `src/revolution/arc/arc.c` (3 funciones, 32b):
+     - `fn_8029B968` (20b): Cálculo de dirección física en memoria de archivo `*(u32 *)arg0[0] + arg0[1]`.
+     - `ARCGetStartOffset` (8b): Getter de campo `info->length` (offset 0x8).
+     - `ARCGetLength` (4b): Retorno constante `1`.
+  6. `src/revolution/ax/unk_8029C958.c` (3 funciones, 24b):
+     - `fn_8029D3E0` (8b), `fn_8029D3E8` (8b), `fn_8029D3F0` (8b): Setters en sección `.sbss` (`lbl_8049DEEC`, `lbl_8049DEEA`, `lbl_8049DEE8`) con `#pragma dont_inline on`.
+  7. `src/system_task.cpp` (2 funciones, 48b):
+     - `fn_800618C4` (24b) y `fn_80061FA0` (24b): Asignación triple de flotantes vectoriales desde `lbl_8049EDA8` con acceso SDA21.
+  8. `src/gauge.cpp` (2 funciones, 44b):
+     - `fn_8019227C` (24b): Getter y tail call a `fn_80192200(arg0, *(s8 ***)((char *)arg1 + 8))`.
+     - `fn_80192B94` (20b): Copia de struct `Vec2_80192B94` de 8 bytes usando `#pragma cplusplus off` para evitar la generación implícita de constructores/operadores de asignación C++ que introducían loops innecesarios.
+  9. `src/homebutton.cpp` (2 funciones, 40b):
+     - `fn_80182BA0` (20b) y `fn_80182BB4` (20b): Despachadores con reordenamiento de registros y argumento constante (`0` y `1`) hacia `fn_80182A38`.
+  10. `src/seq_cmdtcg.c` (3 funciones, 68b):
+     - `fn_80162FD8` (20b): Llamada encadenada con `lbl_803AC208` y offset `+ 0x1F0` hacia `fn_801784D8`.
+     - `fn_80163014` (28b): Invocación a `fn_80178930` con offset `+ 0x10598` usando `addis; addi`.
+     - `fn_801631EC` (20b): Llamada a `fn_80178860` pasando argumento negativo `-0xC`.
+  11. `src/sys_task.c` (3 funciones, 76b):
+     - `fn_801792F0` (20b): Invocación de `NANDTellAsync` con offsets `+0x80` y `+0x84` de `lbl_803C2330`.
+     - `fn_80179304` (28b): Tail call a `fn_8030F3DC` pasando argumentos en orden PPC.
+     - `fn_8017B738` (28b): Limpieza de bits `flags &= ~3` en `lbl_803D1460[arg0]` (stride `0x160`).
+  12. `src/glib_model.cpp` (2 funciones, 56b):
+     - `fn_8003297C` (28b): Despacho condicional a `fn_80031A24` tomando `arg0[0]`.
+     - `fn_80032998` (28b): Despacho condicional a `fn_8002B060` tomando `arg0[1]`.
+
+
+### Ronda continua — Maximizacion de C/C++ real y consolidacion en 13.07% (431.216 bytes)
+
+- **Metricas**:
+  - C code alcanzado: **13.07% (431.216 / 3.299.164 bytes)** (+2.268 bytes netos C/C++ puro respecto al inicio de sesion).
+  - Matching binario global: **100.00%** (11.292 / 11.292 funciones). `build.sha1: OK` (`main.dol: OK`).
+
+- **Funciones descompiladas y verificadas en esta subronda**:
+  1. `src/sys_task.c` (7 funciones, 292b):
+     - `fn_8017ADBC` (36b): Retorno de puntero a elemento de tabla `lbl_803D1460[arg0]` con comprobacion de `flags & 1`.
+     - `fn_8017BC20` (24b): Invocacion segura de callback de tarea (`field_0x15c(arg0)`).
+     - `fn_8017C4E4` (40b): Setter de `field_0x74` condicionado por `flags & 1`.
+     - `fn_8017C50C` (40b): Setter de callback `field_0x15c` condicionado por `flags & 1`.
+     - `fn_801794B8` (16b): Tail call a `nandChangeDirCallback(lbl_803C2330 + 0x40)`.
+     - `fn_8017A008` (16b): Limpieza de bitmask `lbl_8049D82C &= ~0x20` y salto a `fn_80179FD4`.
+     - `fn_8017CEF4` (32b): Construccion de array `__construct_array(lbl_803D1460, fn_8017CF14, 0, 0x160, 6)`.
+     - `fn_801794F4` (48b): Seleccion `memset` / `memcpy` hacia buffer estatico `lbl_803C23B8`.
+     - `fn_80179524` (76b): Inicializacion/copia hacia `&lbl_803C83B8[arg0 * 0x1200]`.
+  2. `src/file_task.c` (2 funciones, 56b):
+     - `fn_80176734` (24b): Acumulacion en `lbl_803BD0D8.field_4` y tail call `fn_8030CAF0`.
+     - `fn_80176754` (32b): Invocacion `fn_8030CB00(lbl_803BD0D8.field_c, arg0)` retornando `1`.
+  3. `src/gauge.cpp` (4 funciones, 148b):
+     - `fn_801912C4` (32b): Validacion de rango `arg0 <= 7` y tail call a `fn_80048BC4(&lbl_803D74A0[arg0])`.
+     - `fn_80191350` (32b): Validacion de rango `arg0 <= 0x3F` y tail call a `fn_80048E30(&lbl_803D5EA0[arg0])`.
+     - `fn_80191370` (32b): Getter acotado devolviendo `&lbl_803D74A0[arg0]` o `0`.
+     - `fn_801932DC` (52b): Empaquetado `u64` de 4 canales de color desempaquetados a `u16` (`r, g, b, a`).
+  4. `src/homebutton.cpp` (1 funcion, 44b):
+     - `fn_801827C4` (44b): Busqueda de modelo con `fn_8003452C` y llamada virtual a slot 3 (`((M2C_VC_0 *)temp_r3)->f(1, 0, 0)`).
+  5. `src/g_net_ctrl.cpp` (2 funciones, 88b):
+     - `fn_800AE1AC` (40b): Acceso indexado `lbl_8049D61C[arg0]` con fallback a string/offset `lbl_8034D4D0 + 0x15F`.
+     - `fn_800AE504` (48b): Almacenamiento multiple de flotantes/punteros en `lbl_8049D620` y tabla `lbl_803A2CB8`.
+  6. `src/gl_model.c` (1 funcion, 28b):
+     - `fn_801852C8` (28b): Bifurcacion condicional sobre flag de bit `0x00020000` derivando a `fn_801852E4` o `fn_801856BC`.
+  7. `src/seq_cmdeft.c` (2 funciones, 48b):
+     - `fn_80141670` (32b): Despacho condicional con suma de offset `*(s32 *)(arg0 + 0x64) + *arg1` o tail call `fn_8013EEAC`.
+     - `fn_80141624` (16b): Tail call bifurcado a `fn_80113DE0` o `fn_80164EC8` segun argumento `arg4`.
+  8. `src/eft_scmd.c` (1 funcion, 32b):
+     - `fn_80113384` (32b): Tabla de salto de comandos indirecta indexada por byte alto `lbl_8034E000[*arg2 >> 24](arg0, arg1, arg2)`.
+  9. `src/g_cam_fra.cpp` (1 funcion, 36b):
+     - `fn_800A033C` (36b): Lectura de `lbl_80395728 + 4`, asignacion a `arg0 + 0x10C` y asignacion condicional a `arg0 + 0x114` si `val == 0x1A`.
+
+## Sesion 2026-10-24 - Descompilacion a C real y verificacion de coincidencia binaria (13.10%)
+
+### 1. Estado inicial
+- Coincidencia global: **100.00%** (11,292 / 11,292 funciones, uild/RNEPDA/main.dol: OK).
+- Codigo C real: **13.08%** (431,476 / 3,299,164 bytes).
+
+### 2. Tareas ejecutadas y funciones convertidas
+Se auditaron y convirtieron 32 funciones de ensamblador inline (// asm_to_cpp) a C/C++ equivalente y reproducible al 100% por CodeWarrior:
+1. src/gamespy/gt2/gt2Main.c (1 funcion, 16b):
+   - n_80267CD4 (16b): Resta de miembros en offset 0x48 y 0x4c.
+2. src/revolution/ssl/unk_803360B0.c (1 funcion, 16b):
+   - n_80338654 (16b): Desempaquetado de palabra de 32 bits a dos enteros de 16 bits.
+3. src/gl_effect.cpp (7 funciones, 144b):
+   - n_8018B578 (16b): Asignacion de puntero a tabla global lbl_8035EF48.
+   - n_8018B858 (24b) y n_8018B870 (24b): Wrappers condicionales booleanos.
+   - n_8018AD48 (20b), n_8018AEE8 (20b), n_8018B088 (20b), n_8018B228 (20b): Extraccion de puntero y llamada a remove de listas de efectos.
+   - n_8018D16C (20b): Indexacion de tabla global lbl_8035F3B8.
+4. src/revolution/hbm/unk_802E657C.c (3 funciones, 32b):
+   - n_802E823C (8b): Setter de flotante en offset +4.
+   - n_802E7464 (12b): Retorno de puntero a lbl_80462440.
+   - n_802EA0E8 (12b): Retorno de lbl_804623E8[0].
+5. src/revolution/homebuttonlib/nw4hbm/ut/unk_802FFD48.c (3 funciones, 28b):
+   - n_80302248 (12b): lbl_80462520[0] = arg0.
+   - n_803006EC (8b): Setter de flotante en offset 0x50.
+   - n_803006F4 (8b): Setter de flotante en offset 0x4C.
+6. src/revolution/ipc/unk_803078EC.c (6 funciones, 168b):
+   - n_8030B344, n_8030B360, n_8030797C, n_80307998, n_803079B4, n_803079D0.
+7. src/revolution/wud/unk_80297DF4.c (5 funciones, 84b):
+   - ARCGetStartAddrInMem, n_8029A5A8, n_8029A5BC, n_8029A5D0, n_8029A474.
+8. src/file_task.c (2 funciones, 60b):
+   - n_80169518, n_8016C60C.
+9. src/revolution/os/OSExec.c (2 funciones, 20b):
+   - n_80316B20, callback.
+10. src/revolution/ai/ai.c (2 funciones, 24b):
+    - n_8029AD2C, n_8029AD3C.
+11. src/revolution/nand/ (2 funciones, 24b):
+    - 
+andGetHomeDir, NANDSimpleSafeOpen.
+12. src/revolution/gx/ (2 funciones, 28b):
+    - n_802E2CA0, GXInvalidateVtxCache.
+13. src/revolution/hbm/nw4hbm/ut/unk_802FD684.c (5 funciones, 64b):
+    - n_802FEB44, n_802FEB50, n_802FEB58, n_802FEB60, n_802FEB70.
+14. src/MSL_C.PPCEABI.bare.H/ (3 funciones, 16b):
+    - n_8019B578, n_8019894C, n_80197DE4.
+
+### 3. Metricas finales
+- Coincidencia global: **100.00%** (11,292 / 11,292 funciones, SHA1 main.dol: OK).
+- Codigo C real: **13.10%** (**432,212 / 3,299,164 bytes**, **+748 bytes** de codigo puro descompilado en la sesion).
+
+## Ronda de Descompilación Autónoma: Conversión Segura de Funciones ASM a C/C++ Real
+
+### 1. Resumen
+- **Estado inicial de la sesión:** 13.10% (432,212 / 3,299,164 bytes)
+- **Estado final:** 13.13% (**433,268 / 3,299,164 bytes**, **+1,056 bytes netos** de C/C++ real descompilado)
+- **Coincidencia binaria:** **100.00%** (11,292 / 11,292 funciones matcheadas, `build/RNEPDA/main.dol: OK`)
+- **Unidades completadas al 100% en C:** `src/revolution/axfx/unk_802A2164.c` (0 funciones asm restantes).
+
+### 2. Funciones descompiladas y verificadas
+1. **`src/unk_8002AF44.cpp` (4 funciones, 280 bytes):**
+   - `fn_8002B0F8` (52b): Delegación a `fn_80018BB8(arg0, arg0)` y retorno de `arg0`.
+   - `fn_8002AF70` (68b): Bucle de inicialización llamando a `fn_8002AF5C` en offsets 0x4, 0x10, 0x1C. Se empleó `#pragma dont_inline` sobre el stub para evitar inline indeseado.
+   - `fn_8002B0AC` (76b): Invocación encadenada de `fn_8002AF5C(arg0)` y llamada de 3 argumentos a `fn_8001B930(arg0, arg1, arg2)`.
+   - `fn_8002AFF0` (84b): Forwarding de cámara a `Camera::SetViewport` y `Camera::SetViewportZRange`.
+2. **`src/revolution/axfx/unk_802A2164.c` (2 funciones, 32 bytes - ARCHIVO 100% C):**
+   - `fn_802A2164` (12b): Acceso directo a puntero global `&lbl_80372650`.
+   - `fn_802A2170` (20b): Aritmética de puntero indexando `(s8 *)(lbl_80372850 + (arg0 * 16))`.
+   - Con esto, todas las funciones de `unk_802A2164.c` quedan en C puro en su orden original.
+3. **`src/nw4r/snd/snd_DvdSoundArchive.cpp` (12 funciones, 96 bytes):**
+   - `fn_8020BD14` (8b), `fn_8020BD1C` (8b), `fn_8020BD24` (8b), `fn_8020BD2C` (8b), `fn_8020BD34` (8b), `fn_8020BD3C` (8b), `fn_8020BD44` (8b), `fn_8020BD4C` (8b), `fn_8020BD54` (8b), `fn_8020BD5C` (8b), `fn_8020BD64` (8b), `fn_8020BD6C` (8b). Métodos virtuales de soporte para `DvdLockedFileStream`.
+4. **`src/revolution/mem/unk_8030CAF0.c` (3 funciones, 144 bytes):**
+   - `fn_8030CAF0` (16b): `MEMAllocFromAllocator` -> invocación indirecta `allocator->funcs->alloc(allocator, size)`.
+   - `fn_8030CB00` (16b): `MEMFreeToAllocator` -> invocación indirecta `allocator->funcs->free(allocator, mem)`.
+   - `fn_8030CB44` (112b): Implementación completa en C de `MEMAppendListObject` gestionando enlaces `prev`/`next` y `numObjects`.
+5. **`src/revolution/homebuttonlib/nw4hbm/ut/unk_802FFD48.c` (2 funciones, 32 bytes):**
+   - `fn_802FFD48` (16b): Asignación de vtable para objeto global (`*arg0 = lbl_8037DF08`).
+   - `fn_80300130` (16b): Asignación de vtable para segundo objeto global (`*arg0 = lbl_8037DEC0`).
+6. **`src/nw4r/lyt/` (6 funciones, 56 bytes):**
+   - `lyt_pane.cpp`: `fn_801F5C0C` (4b) y `fn_801F5C34` (4b) como stubs vacíos (`blr`); `fn_801F6740` (12b) reseteando `lbl_8049D9D0 = 0`.
+   - `lyt_picture.cpp`: `fn_801F7FCC` (12b) vinculando RTTI parent `lbl_8049D9E0 = &lbl_8049D9D0`.
+   - `lyt_window.cpp`: `fn_801FBE3C` (12b) vinculando RTTI parent `lbl_8049D9F0 = &lbl_8049D9D0`.
+   - `lyt_bounding.cpp`: `fn_801FBEE8` (12b) vinculando RTTI parent `lbl_8049D9F8 = &lbl_8049D9D0`.
+7. **`src/nw4r/g3d/g3d_scnobj.cpp` (1 función, 4 bytes):**
+   - `fn_801EC8B8` (4b): Stub virtual vacío (`blr`).
+8. **`src/n2d_main.c` (1 función, 20 bytes):**
+   - `fn_80121D98` (20b): Acceso directo a arreglo flotante `((f32 *)lbl_8034F470)[arg0]`.
+
+### 3. Descubrimientos técnicos
+- **Tratamiento de arreglos y pequeñas secciones de datos (.sdata / .sbss):** Al declarar símbolos externos en `.data` de tamaño menor o igual al umbral `-sdata` por defecto (8 bytes), MWCC los trata como relocables pequeños y genera accesos con `addi r3, 0, 0` en vez de `lis/addi`. Tiparlos como arreglos (`extern s32 sym[];`) fuerza la generación estricta de pares `lis/addi` de 32 bits coincidentes con el binario original.
+- **Optimización de llamadas indirectas (tail-call dispatch):** Métodos como `MEMAllocFromAllocator` y constructores de vtables pueden escribirse en C limpio y producir exactamente las secuencias `lwz/mtctr/bctr` sin necesidad de envoltorios ensamblador.
+
+## Entrada: 2026-10-24 - Descompilacion de funciones SDK y Game Code a C/C++ puro
+
+### 1. Metricas actuales
+- **Progreso de codigo C puro:** **13.17%** (434,520 / 3,299,164 bytes)
+- **Coincidencia binaria:** **100.00%** (11,292 / 11,292 funciones matcheadas, `build/RNEPDA/main.dol: OK`)
+- **Unidades completadas al 100% en C/C++:**
+  - `src/MSL_C.PPCEABI.bare.H/wstring.c` (100% C puro, 0 asm).
+  - `src/nw4r/ut/ut_LockedCache.cpp` (100% C++ puro, 0 asm).
+
+### 2. Funciones descompiladas y verificadas
+1. **`src/nw4r/ut/ut_LockedCache.cpp` (1 funcion, 24 bytes - ARCHIVO 100% C++ PURO):**
+   - `fn_802243EC` (24b): Inicializacion estatica de `sLCImpl` llamando a `OSInitMutex(&sLCImpl.mMutex)`. Se implemento en C++ limpio sin inline asm, eliminando todo el ensamblador restante en la unidad.
+2. **`src/revolution/hbm/nw4hbm/lyt/unk_802F96E0.c` (4 funciones, 96 bytes):**
+   - `fn_802F9CD8` (24b): Acceso a elemento de color en TextBox: `*(u8 *)(arg0 + 0xD8 + ((arg1 >> 1) & ~3) + (arg1 & 3))`. Coincidencia binaria exacta con `rlwinm/clrlwi/add/add/lbz`.
+   - `fn_802F9CF0` (24b): Escritura de elemento de color en TextBox: `*(u8 *)(arg0 + 0xD8 + ((arg1 >> 1) & ~3) + (arg1 & 3)) = arg2`.
+   - `fn_802FB3AC` (24b): Acceso a elemento de color en Picture/Window: `*(u8 *)(arg0 + 0xE4 + (arg1 & ~3) + (arg1 & 3))`. Genera `clrrwi/clrlwi/add/add/lbz`.
+   - `fn_802FB3C4` (24b): Escritura de elemento de color en Picture/Window: `*(u8 *)(arg0 + 0xE4 + (arg1 & ~3) + (arg1 & 3)) = arg2`.
+3. **`src/revolution/bte/bta_dm_act.c` (2 funciones, 48 bytes):**
+   - `bta_dm_search_cmpl` (24b): Tail call a traves de puntero de callback en estructura grande `bta_dm_search_cb`: `lbl_80453B98.p_search_cback(3, (void *)0)`.
+   - `bta_dm_search_cancel_notify` (24b): Tail call similar a callback de busqueda cancelada: `lbl_80453B98.p_search_cback(4, (void *)0)`.
+4. **`src/revolution/dvd/unk_802D6678.c` (1 funcion, 24 bytes):**
+   - `fn_802D68CC` (24b): Verificacion e invocacion de handler fatal: `if (FatalFunc_8049E108 != NULL) FatalFunc_8049E108()`. Coincidencia exacta con `lwz/cmpwi/beqlr/mtctr/bctr/blr`.
+5. **`src/n2d_main.c` (3 funciones, 24 bytes):**
+   - `fn_801222B4` (8b), `fn_801222BC` (8b), `fn_801222C4` (8b): Wrappers de forwarding con cast a `u8` hacia `fn_80122188(arg0)` con `#pragma dont_inline` para evitar inline automatico del compilador C++.
+6. **`src/gl_sound.c` (4 funciones, 172 bytes):**
+   - `fn_8018FE60` (44b): Copia directa campo a campo de 5 flotantes (`arg0[0..4] = arg1[0..4]`).
+   - `fn_8018FF1C` (44b): Copia gemela campo a campo de 5 flotantes (`arg0[0..4] = arg1[0..4]`).
+   - `fn_801903F8` (40b): Carga de coeficientes de audio flotantes desde tabla SDA `lbl_804A10C0` (indices 7, 3, 5, 7, 5).
+   - `fn_80190420` (44b): Carga de coeficientes de audio flotantes desde tabla SDA `lbl_804A10C0` (indices 8, 9, 5, 6, 5).
+
+7. **`src/file_task.c` (1 funcion, 28 bytes — Game Code):**
+   - `fn_80177114` (28b): Asignacion condicional con fallback por defecto `lbl_8049D7F8 = arg0 ? arg0 : (void*)lbl_803C13A0`. Reproduce con 100% de coincidencia la bifurcacion `cmpwi / beq / b / lis / addi / stw`.
+8. **`src/g_camnw.c` (1 funcion, 36 bytes — Game Code):**
+   - `fn_8008F6CC` (36b): Verificacion de limites de array flotante y escritura indexada: `if (arg0 < 0 || arg0 >= 25) return; ((f32*)lbl_803952C4)[arg0] = farg0;`.
+9. **`src/n2d_main.c` (1 funcion, 32 bytes — Game Code):**
+   - `fn_801221D8` (32b): Comprobacion de desbordamiento de la display list (`__GDCheck`): `if (dl->top + arg0 > dl->end) GDOverflowed();`. Coincide 100% con `lwz / lwz / add / lwz / cmplw / blelr / b`.
+
+### 3. Descubrimientos tecnicos
+- **Descomposicion de subindices de colores en NW4R / NW4HBM:** Las expresiones `((idx >> 1) & ~3) + (idx & 3)` y `(idx & ~3) + (idx & 3)` reproducen con 100.00% de fidelidad las secuencias `rlwinm / clrlwi` y `clrrwi / clrlwi` del compilador MWCC para indexar subelementos RGBA de `ut::Color` en tablas de vertices.
+- **Control de inlining en C++ con `#pragma dont_inline`:** En unidades C++ como `src/n2d_main.c` y `src/gl_sound.c`, MWCC con `-O4,p` o `-inline auto` tiende a inlinear funciones pequenas de forwarding o copia. El uso de `#pragma dont_inline on / reset` preserva la generacion exacta de tail calls (`b <target>`) de 8 bytes y secuencias directas de 40-44 bytes sin perder compatibilidad ni provocar divergencias en el llamador.

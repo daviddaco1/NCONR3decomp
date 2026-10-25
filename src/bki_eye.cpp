@@ -1,168 +1,73 @@
 #include "types.h"
+#include "m2c_macros.h"
 
-// Translation unit: src/bki_eye.cpp
-// Total functions: 4
 
-// Small Data symbols (@sda21)
-extern "C" float lbl_8049F800;
+extern "C" {
 
-// Forward declarations
-extern "C" void _restgpr_25();
-extern "C" void _restgpr_29();
-extern "C" void _savegpr_25();
-extern "C" void _savegpr_29();
-extern "C" void fn_80018AF8();
-extern "C" void fn_80018B00();
-extern "C" void fn_80018B04();
-extern "C" void fn_80018B08();
-extern "C" void fn_8001B8B0();
-extern "C" void fn_8001B8B8();
-extern "C" void fn_80020D20();
-extern "C" void fn_800B75F8();
-extern "C" void fn_800B7600();
-extern "C" void fn_800B77AC();
-extern "C" void fn_800B7874();
-extern "C" void fn_800F5B14();
-extern "C" void fn_800F5B78();
-extern "C" void fn_80170E2C();
-extern "C" void fn_801734E4();
-extern "C" void fn_80173754();
-extern "C" void fn_8017375C();
-extern "C" void fn_8018149C();
-extern "C" void fn_80181504();
-extern "C" void memset();
+extern float lbl_8049F800;
 
-// ----------------------------------------------------------------------------
-// fn_800B75F8
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_800B75F8() {
-    nofralloc
-    li r5, 0x0
-    b fn_800B7600
+s32 _restgpr_25();
+s32 _restgpr_29();
+s32 _savegpr_25();
+s32 _savegpr_29();
+void fn_80018AF8(s32 arg0, s32 arg1, s32 arg2);
+void fn_80018B00(s32 arg0, s32 arg1, s32 arg2);
+void fn_80018B04(s32 arg0, s32 arg1, s32 arg2);
+void fn_80018B08(s32 arg0, s32 arg1, s32 arg2);
+void fn_8001B8B0(s32 arg0, s32 arg1);
+void fn_8001B8B8(s32 arg0, s32 arg1, s32 arg2);
+void fn_80020D20(M2C_UNK *arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3);
+void fn_800B75F8(s32 arg0, s32 arg1);
+s32 fn_800B7600(s8 *arg0, s32 arg1, s8 *arg2);
+s32 fn_800B77AC(s32 arg0, s8 *arg1, s32 arg2);
+void fn_800B7874(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+void fn_800F5B14(s8 *arg0, s8 *arg1, s32 arg2, s32 arg3);
+s8 * fn_800F5B78(s8 *arg0, s32 arg1, s32 arg2);
+M2C_UNK fn_80170E2C(s32 arg0, s32 arg1, s32 arg2);
+void fn_801734E4(s32 arg0, s32 arg1);
+void fn_80173754(s32 arg0, s32 arg1);
+void fn_8017375C(s32 arg0, s32 arg1, s32 arg2);
+s32 * fn_8018149C(s8 *arg0, s32 arg1);
+s32 fn_80181504(s8 *arg0, s32 arg1);
+M2C_UNK memset(s32 arg0, s32 arg1, s32 arg2);
+
+void fn_800B75F8(s32 arg0, s32 arg1) {
+    fn_800B7600((s8 *) (arg0), (s32) (arg1), (s8 *) (NULL));
 }
 
-// ----------------------------------------------------------------------------
-// fn_800B7600
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_800B7600() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_29
-    mr r29, r3
-    mr r30, r4
-    mr r31, r5
-    li r4, 0x38
-    li r5, 0x0
-    bl fn_800F5B78
-    mr r5, r3
-    cmpwi r3, 0x0
-    bne lbl_800B7788
-    cmpwi r31, 0x0
-    beq lbl_800B7644
-    b lbl_800B7658
-lbl_800B7644:
-    lwz r3, 0x110(r29)
-    li r4, 0x290
-    li r5, 0x0
-    bl fn_80170E2C
-    mr r31, r3
-lbl_800B7658:
-    mr r3, r31
-    li r4, 0x0
-    li r5, 0x290
-    bl memset
-    mr r3, r29
-    li r4, 0x5
-    bl fn_8018149C
-    stw r3, 0x18(r31)
-    mr r3, r29
-    li r4, 0x5
-    bl fn_80181504
-    stw r3, 0x1c(r31)
-    mr r3, r29
-    li r4, 0xa0
-    bl fn_8018149C
-    stw r3, 0x20(r31)
-    mr r3, r29
-    li r4, 0xa1
-    bl fn_8018149C
-    stw r3, 0x24(r31)
-    mr r3, r29
-    li r4, 0xa2
-    bl fn_8018149C
-    stw r3, 0x28(r31)
-    mr r3, r29
-    li r4, 0xa3
-    bl fn_8018149C
-    stw r3, 0x2c(r31)
-    mr r3, r29
-    li r4, 0xa4
-    bl fn_8018149C
-    stw r3, 0x30(r31)
-    mr r3, r29
-    li r4, 0xa5
-    bl fn_8018149C
-    stw r3, 0x34(r31)
-    mr r3, r29
-    li r4, 0xa0
-    bl fn_80181504
-    stw r3, 0x38(r31)
-    mr r3, r29
-    li r4, 0xa1
-    bl fn_80181504
-    stw r3, 0x3c(r31)
-    mr r3, r29
-    li r4, 0xa2
-    bl fn_80181504
-    stw r3, 0x40(r31)
-    mr r3, r29
-    li r4, 0xa3
-    bl fn_80181504
-    stw r3, 0x44(r31)
-    mr r3, r29
-    li r4, 0xa4
-    bl fn_80181504
-    stw r3, 0x48(r31)
-    mr r3, r29
-    li r4, 0xa5
-    bl fn_80181504
-    stw r3, 0x4c(r31)
-    addi r3, r31, 0x50
-    lwz r4, 0x1c(r31)
-    addi r4, r4, 0x224
-    lwz r5, 0x20(r31)
-    addi r5, r5, 0x50
-    bl fn_8017375C
-    addi r3, r31, 0x170
-    addi r4, r31, 0x50
-    bl fn_801734E4
-    mr r3, r29
-    mr r4, r31
-    li r5, 0x38
-    li r6, 0x0
-    bl fn_800F5B14
-    li r3, 0x0
-    b lbl_800B7794
-lbl_800B7788:
-    mr r3, r29
-    mr r4, r30
-    bl fn_800B77AC
-lbl_800B7794:
-    addi r11, r1, 0x20
-    bl _restgpr_29
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+s32 fn_800B7600(s8 *arg0, s32 arg1, s8 *arg2) {
+    s8 *temp_r3;
+    s8 *var_r31;
+
+    var_r31 = (s8 *) (arg2);
+    temp_r3 = (s8 *) (fn_800F5B78((s8 *) (arg0), (s32) (0x38), (s32) (0)));
+    if (temp_r3 == NULL) {
+        var_r31 = (s8 *) (var_r31 ? var_r31 : fn_80170E2C((s32) (M2C_FIELD(arg0, s32 *, 0x110)), (s32) (0x290), (s32) (0)));
+        memset((s32) ((s32) var_r31), (s32) (0), (s32) (0x290));
+        M2C_FIELD(var_r31, s8 **, 0x18) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (5)));
+        M2C_FIELD(var_r31, s32 *, 0x1C) = (s32) (fn_80181504((s8 *) (arg0), (s32) (5)));
+        M2C_FIELD(var_r31, s8 **, 0x20) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (0xA0)));
+        M2C_FIELD(var_r31, s8 **, 0x24) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (0xA1)));
+        M2C_FIELD(var_r31, s8 **, 0x28) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (0xA2)));
+        M2C_FIELD(var_r31, s8 **, 0x2C) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (0xA3)));
+        M2C_FIELD(var_r31, s8 **, 0x30) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (0xA4)));
+        M2C_FIELD(var_r31, s8 **, 0x34) = (s8 *) (fn_8018149C((s8 *) (arg0), (s32) (0xA5)));
+        M2C_FIELD(var_r31, s32 *, 0x38) = (s32) (fn_80181504((s8 *) (arg0), (s32) (0xA0)));
+        M2C_FIELD(var_r31, s32 *, 0x3C) = (s32) (fn_80181504((s8 *) (arg0), (s32) (0xA1)));
+        M2C_FIELD(var_r31, s32 *, 0x40) = (s32) (fn_80181504((s8 *) (arg0), (s32) (0xA2)));
+        M2C_FIELD(var_r31, s32 *, 0x44) = (s32) (fn_80181504((s8 *) (arg0), (s32) (0xA3)));
+        M2C_FIELD(var_r31, s32 *, 0x48) = (s32) (fn_80181504((s8 *) (arg0), (s32) (0xA4)));
+        M2C_FIELD(var_r31, s32 *, 0x4C) = (s32) (fn_80181504((s8 *) (arg0), (s32) (0xA5)));
+        fn_8017375C((s32) ((s32) (var_r31 + 0x50)), (s32) (M2C_FIELD(var_r31, s32 *, 0x1C) + 0x224), (s32) ((s32) (M2C_FIELD(var_r31, s8 **, 0x20) + 0x50)));
+        fn_801734E4((s32) ((s32) (var_r31 + 0x170)), (s32) ((s32) (var_r31 + 0x50)));
+        fn_800F5B14((s8 *) (arg0), (s8 *) (var_r31), (s32) (0x38), (s32) (0));
+        return (s32) (0);
+    }
+    return (s32) (fn_800B77AC((s32) ((s32) arg0), (s8 *) ((s8 *) arg1), (s32) ((s32) temp_r3)));
 }
 
-// ----------------------------------------------------------------------------
-// fn_800B77AC
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_800B77AC() {
+// asm_to_cpp: fn_800B77AC
+asm s32 fn_800B77AC(s32 arg0, s8 *arg1, s32 arg2) {
     nofralloc
     clrlwi r11, r1, 28
     subfic r11, r11, -0x50
@@ -216,10 +121,8 @@ extern "C" asm void fn_800B77AC() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_800B7874
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_800B7874() {
+// asm_to_cpp: fn_800B7874
+asm void fn_800B7874(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
     nofralloc
     clrlwi r11, r1, 28
     subfic r11, r11, -0x1c0
@@ -703,3 +606,4 @@ lbl_800B7EEC:
     blr
 }
 
+} // extern "C"

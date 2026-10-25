@@ -1,52 +1,47 @@
 #include "types.h"
+#include "m2c_macros.h"
 
-// Translation unit: src/c_eye_sub.cpp
-// Total functions: 6
 
-// Small Data symbols (@sda21)
-extern "C" float lbl_8049F998;
+extern "C" {
 
-// Global data symbols (@ha/@l)
-extern "C" u8 lbl_8034D648[];
+extern u8 lbl_8034D648[];
+extern float lbl_8049F998;
 
-// Forward declarations
-extern "C" void _restgpr_23();
-extern "C" void _restgpr_24();
-extern "C" void _restgpr_28();
-extern "C" void _restgpr_29();
-extern "C" void _savegpr_23();
-extern "C" void _savegpr_24();
-extern "C" void _savegpr_28();
-extern "C" void _savegpr_29();
-extern "C" void fn_80018B08();
-extern "C" void fn_80018B0C();
-extern "C" void fn_8001DA9C();
-extern "C" void fn_8002AE00();
-extern "C" void fn_8002E628();
-extern "C" void fn_80031A74();
-extern "C" void fn_8003452C();
-extern "C" void fn_800CA050();
-extern "C" void fn_800CA0DC();
-extern "C" void fn_800CA1BC();
-extern "C" void fn_800CA290();
-extern "C" void fn_800CA45C();
-extern "C" void fn_800CA4D4();
-extern "C" void fn_801734E4();
-extern "C" void fn_80173580();
-extern "C" void fn_80181454();
-extern "C" void fn_8018149C();
-extern "C" void fn_80181504();
-extern "C" void fn_801A32A0();
-extern "C" void fn_801A32CC();
-extern "C" void fn_801A32F4();
-extern "C" void fn_801D0CD0();
-extern "C" void fn_801D4A9C();
-extern "C" void memset();
+s32 _restgpr_23();
+s32 _restgpr_24();
+s32 _restgpr_28();
+s32 _restgpr_29();
+s32 _savegpr_23();
+s32 _savegpr_24();
+s32 _savegpr_28();
+s32 _savegpr_29();
+void fn_80018B08(s32 arg0, s32 arg1, s32 arg2);
+M2C_UNK fn_80018B0C(M2C_UNK *arg0, f32 farg0, f32 farg1, f32 farg2);
+f32 fn_8001DA9C(f32 farg0);
+s32 fn_8002AE00(s8 *arg0);
+s32 * fn_8002E628(s32 *arg0, s32 arg1);
+s32 * fn_80031A74(s32 *arg0, s32 arg1);
+M2C_UNK fn_8003452C(s32 *arg0);
+void fn_800CA050(s8 *arg0, s8 *arg1);
+void fn_800CA0DC(s8 *arg0, s8 *arg1);
+s32 fn_800CA1BC(u64 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
+void fn_800CA290(void);
+s32 fn_800CA45C(s8 *arg0, s32 *arg1, s32 arg2, s32 arg3);
+s32 fn_800CA4D4(s32 *arg0, u32 *arg1, s32 arg2, s32 arg3, s8 *arg4);
+void fn_801734E4(s32 arg0, s32 arg1);
+s32 fn_80173580();
+s32 fn_80181454(s8 *arg0, s32 arg1);
+s32 * fn_8018149C(s8 *arg0, s32 arg1);
+s32 fn_80181504(s8 *arg0, s32 arg1);
+f32 fn_801A32A0(f64 farg0, f64 farg1);
+f32 fn_801A32CC(f64 farg0);
+f32 fn_801A32F4(f64 farg0);
+s8 * fn_801D0CD0(s8 **arg0, s32 arg1);
+void fn_801D4A9C(s8 **arg0, f32 farg0, f32 farg1, f32 farg2);
+M2C_UNK memset(s32 arg0, s32 arg1, s32 arg2);
 
-// ----------------------------------------------------------------------------
-// fn_800CA050
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_800CA050() {
+// asm_to_cpp: fn_800CA050
+asm void fn_800CA050(s8 *arg0, s8 *arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -85,10 +80,8 @@ extern "C" asm void fn_800CA050() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_800CA0DC
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_800CA0DC() {
+// asm_to_cpp: fn_800CA0DC
+asm void fn_800CA0DC(s8 *arg0, s8 *arg1) {
     nofralloc
     stwu r1, -0x50(r1)
     mflr r0
@@ -148,10 +141,8 @@ extern "C" asm void fn_800CA0DC() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_800CA1BC
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_800CA1BC() {
+// asm_to_cpp: fn_800CA1BC
+asm s32 fn_800CA1BC(u64 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -214,10 +205,8 @@ lbl_800CA26C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_800CA290
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_800CA290() {
+// asm_to_cpp: fn_800CA290
+asm void fn_800CA290(void) {
     nofralloc
     clrlwi r11, r1, 28
     subfic r11, r11, -0x40
@@ -342,10 +331,8 @@ lbl_800CA42C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_800CA45C
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_800CA45C() {
+// asm_to_cpp: fn_800CA45C
+asm s32 fn_800CA45C(s8 *arg0, s32 *arg1, s32 arg2, s32 arg3) {
     nofralloc
     stwu r1, -0x40(r1)
     mflr r0
@@ -379,10 +366,8 @@ extern "C" asm void fn_800CA45C() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_800CA4D4
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_800CA4D4() {
+// asm_to_cpp: fn_800CA4D4
+asm s32 fn_800CA4D4(s32 *arg0, u32 *arg1, s32 arg2, s32 arg3, s8 *arg4) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -442,3 +427,4 @@ extern "C" asm void fn_800CA4D4() {
     blr
 }
 
+} // extern "C"
