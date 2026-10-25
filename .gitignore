@@ -3,6 +3,7 @@
 .vs/
 .vscode/
 .agents/
+.playwright-mcp/
 
 # macOS
 .DS_Store

@@ -19,7 +19,7 @@ extern M2C_UNK lbl_80374694;
 extern M2C_UNK lbl_803746B4;
 extern M2C_UNK lbl_803746E8;
 extern M2C_UNK lbl_80374724;
-extern M2C_UNK lbl_80453F78;
+extern u8 lbl_80453F78[];
 extern u8 lbl_804A2540;
 extern u8 lbl_804A2544;
 
@@ -625,13 +625,8 @@ lbl_802AFD6C:
     blr
 }
 
-// asm_to_cpp: BTM_IsInquiryActive
-asm u8 BTM_IsInquiryActive(void) {
-    nofralloc
-    lis r3, lbl_80453F78@ha
-    addi r3, r3, lbl_80453F78@l
-    lbz r3, 0x1848(r3)
-    blr
+u8 BTM_IsInquiryActive(void) {
+    return lbl_80453F78[0x1848];
 }
 
 // asm_to_cpp: BTM_CancelInquiry

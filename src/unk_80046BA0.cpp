@@ -51,7 +51,7 @@ void fn_8001B978(f32 *arg0, f32 *arg1);
 void fn_8001F9C8(s32 arg0, s32 arg1, s32 arg2);
 void fn_80030E80(s32 *arg0, s32 *arg1);
 s8 * fn_80046BA0(s8 *arg0, s8 *arg1, s32 arg2, s32 arg3);
-s32 fn_80046CDC();
+void fn_80046CDC(s32 arg0);
 s32 fn_80046CEC(s8 *arg0, s32 arg1);
 void fn_80046FEC(s8 *arg0);
 void fn_800470CC(s8 *arg0);
@@ -177,13 +177,10 @@ lbl_80046CC4:
     blr
 }
 
-// asm_to_cpp: fn_80046CDC
-asm s32 fn_80046CDC() {
-    nofralloc
-    cmpwi r3, 0x0
-    beqlr
-    b fn_8017776C
-    blr
+void fn_80046CDC(s32 arg0) {
+    if (arg0 != 0) {
+        fn_8017776C(arg0);
+    }
 }
 
 // asm_to_cpp: fn_80046CEC

@@ -109,7 +109,12 @@ void GXInitTexObjCI(s8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, 
 }
 
 
-// GXInitTexObjWrapMode: definicion C reemplazada por asm (ver abajo)
+void GXInitTexObjWrapMode(s32 *arg0, s32 arg1, s32 arg2) {
+    u32 val = *arg0;
+    val = __rlwimi(val, arg1, 0, 30, 31);
+    val = __rlwimi(val, arg2, 2, 28, 29);
+    *arg0 = val;
+}
 
 
 void GXInitTexObjTlut(s8 *arg0, s32 arg1) {
@@ -682,15 +687,6 @@ lbl_802E34B0:
     blr
 }
 
-// asm_to_cpp: GXInitTexObjWrapMode
-asm void GXInitTexObjWrapMode(s32 *arg0, s32 arg1, s32 arg2) {
-    nofralloc
-    lwz r0, 0x0(r3)
-    rlwimi r0, r4, 0, 30, 31
-    rlwimi r0, r5, 2, 28, 29
-    stw r0, 0x0(r3)
-    blr
-}
 
 // asm_to_cpp: GXInitTexObjFilter
 asm void GXInitTexObjFilter(s32 *arg0, s32 arg1, s32 arg2) {

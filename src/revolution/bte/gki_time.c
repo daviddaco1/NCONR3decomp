@@ -2,7 +2,7 @@
 #include "m2c_macros.h"
 #include "m2c_protos.h"
 
-extern M2C_UNK lbl_804276C0;
+extern u8 lbl_804276C0[];
 
 void gki_timers_init();
 s32 GKI_get_tick_count();
@@ -16,7 +16,9 @@ void GKI_remove_from_timer_list();
 // gki_timers_init: definicion C reemplazada por asm (ver abajo)
 
 
-// GKI_get_tick_count: definicion C reemplazada por asm (ver abajo)
+s32 GKI_get_tick_count(void) {
+    return *(s32 *)(lbl_804276C0 + 0x28828);
+}
 
 
 // fn_802A3840: definicion C reemplazada por asm (ver abajo)
@@ -104,15 +106,6 @@ asm void gki_timers_init(void) {
     blr
 }
 
-// asm_to_cpp: GKI_get_tick_count
-asm s32 GKI_get_tick_count(void) {
-    nofralloc
-    lis r3, lbl_804276C0@ha
-    addi r3, r3, lbl_804276C0@l
-    addis r3, r3, 0x3
-    lwz r3, -0x77d8(r3)
-    blr
-}
 
 // asm_to_cpp: fn_802A3840
 asm void fn_802A3840(s32 arg0, s32 arg1, s32 arg2, M2C_UNK arg_sp0) {

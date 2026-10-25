@@ -4,15 +4,15 @@
 
 extern s32 DiFD;
 extern s32 diCommand_8049E134;
-extern u8 diRegValCache_80461260;
+extern u32 diRegValCache_80461260[];
 extern M2C_UNK dvdContexts_804611E0;
 extern s32 freeCommandBuf_8049E11C;
 extern s32 freeDvdContext_8049E120;
 extern M2C_UNK lbl_803798F0;
 extern s32 lbl_80461280;
 extern u8 lbl_804612A0;
-extern s32 lbl_80461360;
-extern s32 lbl_80461380;
+extern u8 lbl_80461360[];
+extern u8 lbl_80461380[];
 extern M2C_UNK lbl_8049D030;
 extern s8 lbl_8049E119;
 extern u8 lbl_8049E124;
@@ -2485,30 +2485,19 @@ lbl_802D8B3C:
     blr
 }
 
-// asm_to_cpp: DVDLowGetCoverRegister
-asm s32 DVDLowGetCoverRegister(void) {
-    nofralloc
-    lis r3, diRegValCache_80461260@ha
-    addi r3, r3, diRegValCache_80461260@l
-    lwz r3, 0x4(r3)
-    blr
+#pragma dont_inline on
+s32 DVDLowGetCoverRegister(void) {
+    return (s32)diRegValCache_80461260[1];
 }
 
-// asm_to_cpp: DVDLowGetStatusRegister
-asm s32 DVDLowGetStatusRegister(void) {
-    nofralloc
-    lis r3, lbl_80461360@ha
-    lwz r3, lbl_80461360@l(r3)
-    blr
+s32 DVDLowGetStatusRegister(void) {
+    return *(s32 *)lbl_80461360;
 }
 
-// asm_to_cpp: DVDLowGetControlRegister
-asm s32 DVDLowGetControlRegister(void) {
-    nofralloc
-    lis r3, lbl_80461380@ha
-    lwz r3, lbl_80461380@l(r3)
-    blr
+s32 DVDLowGetControlRegister(void) {
+    return *(s32 *)lbl_80461380;
 }
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_802D8B7C
 asm s32 fn_802D8B7C() {
@@ -2819,13 +2808,11 @@ lbl_802D8F9C:
     blr
 }
 
-// asm_to_cpp: DVDLowGetImmBufferReg
-asm s32 DVDLowGetImmBufferReg(void) {
-    nofralloc
-    lis r3, diRegValCache_80461260@ha
-    lwz r3, diRegValCache_80461260@l(r3)
-    blr
+#pragma dont_inline on
+s32 DVDLowGetImmBufferReg(void) {
+    return (s32)diRegValCache_80461260[0];
 }
+#pragma dont_inline reset
 
 // asm_to_cpp: DVDLowClearCoverInterrupt
 asm s32 DVDLowClearCoverInterrupt() {

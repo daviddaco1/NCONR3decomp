@@ -31,11 +31,11 @@ f32 fn_802FE994();
 u8 fn_802FE9F8();
 f32 fn_802FEA00();
 f32 fn_802FEA08();
-void fn_802FEB44();
-void fn_802FEB50();
-void fn_802FEB58();
-void fn_802FEB60();
-void fn_802FEB70();
+void fn_802FEB44(s8 *arg0, f32 farg0, f32 farg1);
+void fn_802FEB50(s8 *arg0, f32 farg0);
+void fn_802FEB58(s8 *arg0, f32 farg0);
+void fn_802FEB60(s8 *arg0, f32 farg0);
+void fn_802FEB70(s8 *arg0, f32 farg0);
 f32 fn_802FEB80();
 f32 fn_802FEB88();
 void fn_802FEB90();
@@ -171,11 +171,11 @@ f32 fn_802FE8CC(s8 *arg0);
 f32 fn_802FE930(s8 *arg0);
 f32 fn_802FE994(s8 *arg0);
 f32 fn_802FEA08();
-void fn_802FEB44();
-void fn_802FEB50();
-void fn_802FEB58();
-void fn_802FEB60();
-void fn_802FEB70();
+void fn_802FEB44(s8 *arg0, f32 farg0, f32 farg1);
+void fn_802FEB50(s8 *arg0, f32 farg0);
+void fn_802FEB58(s8 *arg0, f32 farg0);
+void fn_802FEB60(s8 *arg0, f32 farg0);
+void fn_802FEB70(s8 *arg0, f32 farg0);
 void fn_802FEB90();
 void fn_802FEE14(u8 *arg0, u8 *arg1);
 void fn_802FF174(s8 *arg0, s32 arg1);
@@ -1578,44 +1578,25 @@ lbl_802FEAFC:
     blr
 }
 
-// asm_to_cpp: fn_802FEB44
-asm void fn_802FEB44() {
-    nofralloc
-    stfs f1, 0x2c(r3)
-    stfs f2, 0x30(r3)
-    blr
+void fn_802FEB44(s8 *arg0, f32 farg0, f32 farg1) {
+    M2C_FIELD(arg0, f32 *, 0x2C) = farg0;
+    M2C_FIELD(arg0, f32 *, 0x30) = farg1;
 }
 
-// asm_to_cpp: fn_802FEB50
-asm void fn_802FEB50() {
-    nofralloc
-    stfs f1, 0x2c(r3)
-    blr
+void fn_802FEB50(s8 *arg0, f32 farg0) {
+    M2C_FIELD(arg0, f32 *, 0x2C) = farg0;
 }
 
-// asm_to_cpp: fn_802FEB58
-asm void fn_802FEB58() {
-    nofralloc
-    stfs f1, 0x30(r3)
-    blr
+void fn_802FEB58(s8 *arg0, f32 farg0) {
+    M2C_FIELD(arg0, f32 *, 0x30) = farg0;
 }
 
-// asm_to_cpp: fn_802FEB60
-asm void fn_802FEB60() {
-    nofralloc
-    lfs f0, 0x2c(r3)
-    fadds f0, f0, f1
-    stfs f0, 0x2c(r3)
-    blr
+void fn_802FEB60(s8 *arg0, f32 farg0) {
+    M2C_FIELD(arg0, f32 *, 0x2C) += farg0;
 }
 
-// asm_to_cpp: fn_802FEB70
-asm void fn_802FEB70() {
-    nofralloc
-    lfs f0, 0x30(r3)
-    fadds f0, f0, f1
-    stfs f0, 0x30(r3)
-    blr
+void fn_802FEB70(s8 *arg0, f32 farg0) {
+    M2C_FIELD(arg0, f32 *, 0x30) += farg0;
 }
 
 // asm_to_cpp: fn_802FEB90

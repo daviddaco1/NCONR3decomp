@@ -1217,14 +1217,11 @@ lbl_802E0D8C:
     blr
 }
 
-// asm_to_cpp: GXInvalidateVtxCache
-asm void GXInvalidateVtxCache(void) {
-    nofralloc
-    li r0, 0x48
-    lis r3, 0xcc01
-    stb r0, -0x8000(r3)
-    blr
+#pragma schedule off
+void GXInvalidateVtxCache(void) {
+    WGPIPE.c = 0x48;
 }
+#pragma schedule reset
 
 // asm_to_cpp: GXSetTexCoordGen2
 asm void GXSetTexCoordGen2(GXTexCoordID id, GXTexGenType type, GXTexGenSrc src,

@@ -602,22 +602,12 @@ s32 fn_80043814(s8 *arg0) {
     return (s32) (M2C_FIELD(arg0, s32 *, 0xF0));
 }
 
-// asm_to_cpp: fn_8004381C
-asm s32 fn_8004381C(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    addi r3, r1, 0x8
-    lis r4, lbl_8033C7A0@ha
-    addi r4, r4, lbl_8033C7A0@l
-    bl fn_800310D0
-    lwz r3, 0x0(r3)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+#pragma dont_inline on
+s32 fn_8004381C(void) {
+    s32 sp8;
+    return *(s32 *)fn_800310D0(&sp8, (s32)lbl_8033C7A0);
 }
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_8004384C
 asm void fn_8004384C(s8 **arg0) {
@@ -650,22 +640,12 @@ s32 fn_80043884(s32 arg0, s32 *arg1) {
     return (s32) (fn_800439CC((s32) (arg0), (s32 *) (&sp8)));
 }
 
-// asm_to_cpp: fn_800438F0
-asm s32 fn_800438F0(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    addi r3, r1, 0x8
-    lis r4, lbl_8033C7A0@ha
-    addi r4, r4, lbl_8033C7A0@l
-    bl fn_800310D0
-    lwz r3, 0x0(r3)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+#pragma dont_inline on
+s32 fn_800438F0(void) {
+    s32 sp8;
+    return *(s32 *)fn_800310D0(&sp8, (s32)lbl_8033C7A0);
 }
+#pragma dont_inline reset
 
 s32 fn_80043920(s32 arg0, s16 arg1) {
     if (arg0 != 0) {
@@ -714,22 +694,12 @@ s32 fn_800439CC(s32 arg0, s32 *arg1) {
     return (s32) (fn_80032B60((s32) (arg0), (s32 *) (&sp8)));
 }
 
-// asm_to_cpp: fn_80043A38
-asm s32 fn_80043A38(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    addi r3, r1, 0x8
-    lis r4, lbl_8033C748@ha
-    addi r4, r4, lbl_8033C748@l
-    bl fn_800310D0
-    lwz r3, 0x0(r3)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+#pragma dont_inline on
+s32 fn_80043A38(void) {
+    s32 sp8;
+    return *(s32 *)fn_800310D0(&sp8, (s32)lbl_8033C748);
 }
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_80043A68
 asm void fn_80043A68(s32 arg0, s32 arg1) {
@@ -851,11 +821,8 @@ lbl_80043C24:
     blr
 }
 
-// asm_to_cpp: fn_80043C3C
-asm s32 fn_80043C3C(s32 *arg0) {
-    nofralloc
-    lwz r3, 0xf8(r3)
-    blr
+s32 fn_80043C3C(s32 *arg0) {
+    return (s32) M2C_FIELD(arg0, s32 *, 0xf8);
 }
 
 s32 ** fn_80043C44(s32 **arg0, s16 arg1) {

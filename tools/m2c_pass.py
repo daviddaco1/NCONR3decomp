@@ -14,7 +14,7 @@ import json, os, re, subprocess, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from m2c_fix import fixup  # noqa: E402
 
-M2C = os.environ.get('M2C_DIR', '')
+M2C = os.environ.get('M2C_DIR') or os.path.abspath('build/m2c')
 HEADER = '#include "types.h"\n#include "m2c_macros.h"\n#include "m2c_protos.h"\n\n'
 DEF = re.compile(r'^[A-Za-z_][^;\n]*?\b(\w+)\(([^;{]*)\)\s*\{\s*$')
 

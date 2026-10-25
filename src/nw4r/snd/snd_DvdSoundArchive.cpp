@@ -224,18 +224,18 @@ extern "C" void __dt__Q34nw4r3snd12SoundArchiveFv();
 extern "C" void __dt__Q34nw4r3snd15DvdSoundArchiveFv();
 extern "C" void dtor_80136CFC();
 extern "C" void fn_8020BC8C();
-extern "C" void fn_8020BD14();
-extern "C" void fn_8020BD1C();
-extern "C" void fn_8020BD24();
-extern "C" void fn_8020BD2C();
-extern "C" void fn_8020BD34();
-extern "C" void fn_8020BD3C();
-extern "C" void fn_8020BD44();
-extern "C" void fn_8020BD4C();
-extern "C" void fn_8020BD54();
-extern "C" void fn_8020BD5C();
-extern "C" void fn_8020BD64();
-extern "C" void fn_8020BD6C();
+extern "C" u32 fn_8020BD14();
+extern "C" u32 fn_8020BD1C();
+extern "C" u32 fn_8020BD24();
+extern "C" u32 fn_8020BD2C();
+extern "C" u32 fn_8020BD34();
+extern "C" u32 fn_8020BD3C();
+extern "C" u32 fn_8020BD44();
+extern "C" u8 fn_8020BD4C(const u8 *self);
+extern "C" u32 fn_8020BD54();
+extern "C" u32 fn_8020BD5C();
+extern "C" u32 fn_8020BD64();
+extern "C" const void *fn_8020BD6C();
 
 // asm_to_cpp: __dt__Q34nw4r3snd15DvdSoundArchiveFv
 extern "C" asm void __dt__Q34nw4r3snd15DvdSoundArchiveFv() {
@@ -556,86 +556,50 @@ lbl_8020BD08:
     blr
 }
 
-// asm_to_cpp: fn_8020BD14
-extern "C" asm void fn_8020BD14() {
-    nofralloc
-    li r3, 0x20
-    blr
+extern "C" u32 fn_8020BD14() {
+    return 0x20;
 }
 
-// asm_to_cpp: fn_8020BD1C
-extern "C" asm void fn_8020BD1C() {
-    nofralloc
-    li r3, 0x20
-    blr
+extern "C" u32 fn_8020BD1C() {
+    return 0x20;
 }
 
-// asm_to_cpp: fn_8020BD24
-extern "C" asm void fn_8020BD24() {
-    nofralloc
-    li r3, 0x4
-    blr
+extern "C" u32 fn_8020BD24() {
+    return 4;
 }
 
-// asm_to_cpp: fn_8020BD2C
-extern "C" asm void fn_8020BD2C() {
-    nofralloc
-    li r3, 0x1
-    blr
+extern "C" u32 fn_8020BD2C() {
+    return 1;
 }
 
-// asm_to_cpp: fn_8020BD34
-extern "C" asm void fn_8020BD34() {
-    nofralloc
-    li r3, 0x0
-    blr
+extern "C" u32 fn_8020BD34() {
+    return 0;
 }
 
-// asm_to_cpp: fn_8020BD3C
-extern "C" asm void fn_8020BD3C() {
-    nofralloc
-    li r3, 0x1
-    blr
+extern "C" u32 fn_8020BD3C() {
+    return 1;
 }
 
-// asm_to_cpp: fn_8020BD44
-extern "C" asm void fn_8020BD44() {
-    nofralloc
-    li r3, 0x1
-    blr
+extern "C" u32 fn_8020BD44() {
+    return 1;
 }
 
-// asm_to_cpp: fn_8020BD4C
-extern "C" asm void fn_8020BD4C() {
-    nofralloc
-    lbz r3, 0x6c(r3)
-    blr
+extern "C" u8 fn_8020BD4C(const u8 *self) {
+    return self[0x6C];
 }
 
-// asm_to_cpp: fn_8020BD54
-extern "C" asm void fn_8020BD54() {
-    nofralloc
-    li r3, 0x0
-    blr
+extern "C" u32 fn_8020BD54() {
+    return 0;
 }
 
-// asm_to_cpp: fn_8020BD5C
-extern "C" asm void fn_8020BD5C() {
-    nofralloc
-    li r3, 0x0
-    blr
+extern "C" u32 fn_8020BD5C() {
+    return 0;
 }
 
-// asm_to_cpp: fn_8020BD64
-extern "C" asm void fn_8020BD64() {
-    nofralloc
-    li r3, 0x0
-    blr
+extern "C" u32 fn_8020BD64() {
+    return 0;
 }
 
-// asm_to_cpp: fn_8020BD6C
-extern "C" asm void fn_8020BD6C() {
-    nofralloc
-    la r3, lbl_8049DAB8
-    blr
+extern "C" const void *fn_8020BD6C() {
+    return &lbl_8049DAB8;
 }

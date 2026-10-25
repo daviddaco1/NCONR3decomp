@@ -168,17 +168,13 @@ void AxVoiceManager::FreeAllReservedAxVoice() {
 } // namespace nw4r
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-extern "C" void GetRequiredMemSize__Q44nw4r3snd6detail14AxVoiceManagerFi();
+extern "C" u32 GetRequiredMemSize__Q44nw4r3snd6detail14AxVoiceManagerFi(void* self, int voiceCount);
 extern "C" void Insert__Q44nw4r2ut6detail12LinkListImplFQ54nw4r2ut6detail12LinkListImpl8IteratorPQ34nw4r2ut12LinkListNode();
 extern "C" void Setup__Q44nw4r3snd6detail14AxVoiceManagerFPvUl();
 extern "C" void __ct__Q44nw4r3snd6detail7AxVoiceFv();
 
-// asm_to_cpp: GetRequiredMemSize__Q44nw4r3snd6detail14AxVoiceManagerFi
-extern "C" asm void GetRequiredMemSize__Q44nw4r3snd6detail14AxVoiceManagerFi() {
-    nofralloc
-    addi r0, r4, 0x10
-    mulli r3, r0, 0x48
-    blr
+extern "C" u32 GetRequiredMemSize__Q44nw4r3snd6detail14AxVoiceManagerFi(void* self, int voiceCount) {
+    return (voiceCount + 0x10) * 0x48;
 }
 
 // asm_to_cpp: Setup__Q44nw4r3snd6detail14AxVoiceManagerFPvUl

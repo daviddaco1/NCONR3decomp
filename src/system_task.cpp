@@ -1584,16 +1584,14 @@ lbl_800618AC:
     blr
 }
 
-// asm_to_cpp: fn_800618C4
-asm void fn_800618C4(s8 *arg0) {
-    nofralloc
-    la r4, lbl_8049EDA8
-    lfs f0, 0x4(r4)
-    stfs f0, 0x3784(r3)
-    stfs f0, 0x3788(r3)
-    stfs f0, 0x378c(r3)
-    blr
+#pragma dont_inline on
+void fn_800618C4(s8 *arg0) {
+    f32 val = M2C_FIELD(&lbl_8049EDA8, f32 *, 4);
+    M2C_FIELD(arg0, f32 *, 0x3784) = val;
+    M2C_FIELD(arg0, f32 *, 0x3788) = val;
+    M2C_FIELD(arg0, f32 *, 0x378C) = val;
 }
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_800618DC
 asm void fn_800618DC(s8 *arg0, s32 arg1, f32 farg0, f32 farg1) {
@@ -2084,16 +2082,14 @@ void fn_80061F84(s8 *arg0, f32 farg0, f32 farg1) {
     }
 }
 
-// asm_to_cpp: fn_80061FA0
-asm void fn_80061FA0(M2C_UNK *arg0) {
-    nofralloc
-    la r4, lbl_8049EDA8
-    lfs f0, 0x4(r4)
-    stfs f0, 0x0(r3)
-    stfs f0, 0x4(r3)
-    stfs f0, 0x8(r3)
-    blr
+#pragma dont_inline on
+void fn_80061FA0(M2C_UNK *arg0) {
+    f32 val = M2C_FIELD(&lbl_8049EDA8, f32 *, 4);
+    M2C_FIELD(arg0, f32 *, 0) = val;
+    M2C_FIELD(arg0, f32 *, 4) = val;
+    M2C_FIELD(arg0, f32 *, 8) = val;
 }
+#pragma dont_inline reset
 
 s32 fn_80061FB8(f32 farg0, s32 arg1) {
     f32 temp_f1;

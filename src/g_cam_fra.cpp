@@ -1316,12 +1316,8 @@ lbl_8009AF34:
     blr
 }
 
-// asm_to_cpp: fn_8009AF5C
-asm s32 fn_8009AF5C(void) {
-    nofralloc
-    lis r3, lbl_803A1C00@ha
-    lwz r3, lbl_803A1C00@l(r3)
-    blr
+s32 fn_8009AF5C(void) {
+    return (s32) (M2C_FIELD(&lbl_803A1C00, s32 *, 0));
 }
 
 s32 fn_8009AF68(void) {
@@ -1391,15 +1387,8 @@ asm void fn_8009B028(s32 arg0, s32 arg1) {
     b memcpy
 }
 
-// asm_to_cpp: fn_8009B044
-asm void fn_8009B044(s32 arg0) {
-    nofralloc
-    mr r4, r3
-    lis r3, lbl_803A1C00@ha
-    addi r3, r3, lbl_803A1C00@l
-    addi r3, r3, 0x70
-    li r5, 0x18
-    b memcpy
+void fn_8009B044(s32 arg0) {
+    memcpy((s32)&lbl_803A1C00[0x70], arg0, 0x18);
 }
 
 // asm_to_cpp: fn_8009B05C
@@ -6296,19 +6285,15 @@ void fn_800A0310(s8 *arg0, s8 *arg1) {
     }
 }
 
-// asm_to_cpp: fn_800A033C
-asm void fn_800A033C(s8 *arg0) {
-    nofralloc
-    lis r4, lbl_80395728@ha
-    addi r4, r4, lbl_80395728@l
-    lwz r0, 0x4(r4)
-    stw r0, 0x10c(r3)
-    cmpwi r0, 0x1a
-    bnelr
-    li r0, 0xa
-    stw r0, 0x114(r3)
-    blr
+#pragma dont_inline on
+void fn_800A033C(s8 *arg0) {
+    s32 val = *(s32 *)(lbl_80395728 + 4);
+    *(s32 *)(arg0 + 0x10C) = val;
+    if (val == 0x1A) {
+        *(s32 *)(arg0 + 0x114) = 0xA;
+    }
 }
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_800A0360
 asm s32 fn_800A0360() {

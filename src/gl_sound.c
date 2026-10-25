@@ -20,7 +20,10 @@ extern u8 lbl_803D3278[];
 extern u8 lbl_803D3590[];
 extern u8 lbl_803D35B0[];
 extern u8 lbl_803D4918[];
-extern u8 lbl_803D4928[];
+struct SoundStruct_0x58 {
+    u8 pad[0x58];
+};
+extern struct SoundStruct_0x58 lbl_803D4928[];
 extern u8 lbl_803D5168[];
 extern u8 lbl_803D5174[];
 extern u8 lbl_803D5DC8[];
@@ -72,7 +75,7 @@ s32 __construct_array();
 s8 * __ct__Q34nw4r3snd15DvdSoundArchiveFv(s8 *arg0);
 s8 * __ct__Q34nw4r3snd18SoundArchivePlayerFv(s8 *arg0);
 M2C_UNK ** __ct__Q34nw4r3snd9SoundHeapFv(M2C_UNK **arg0);
-s32 __destroy_arr();
+extern "C" void __destroy_arr(void *block, void *dtor, u32 size, u32 count);
 s8 * __dt__Q34nw4r3snd15DvdSoundArchiveFv(s8 *arg0, s32 arg1);
 s8 * __dt__Q34nw4r3snd18SoundArchivePlayerFv(s8 *arg0, s32 arg1);
 M2C_UNK ** __dt__Q34nw4r3snd9SoundHeapFv(M2C_UNK **arg0, s32 arg1);
@@ -204,9 +207,9 @@ void fn_8018FC90(M2C_UNK *arg0, s8 *arg1);
 s32 fn_8018FCEC(s32 arg0, M2C_UNK *arg1);
 void fn_8018FD7C(M2C_UNK *arg0, s8 *arg1);
 s32 fn_8018FDD0(s32 arg0, M2C_UNK *arg1);
-void fn_8018FE60(M2C_UNK *arg0, s8 *arg1);
+void fn_8018FE60(f32 *arg0, const f32 *arg1);
 s32 fn_8018FE8C(s32 arg0, M2C_UNK *arg1);
-void fn_8018FF1C(M2C_UNK *arg0, s8 *arg1);
+void fn_8018FF1C(f32 *arg0, const f32 *arg1);
 void fn_8018FF48(void);
 void fn_8018FFD8(void);
 void fn_8019009C(void);
@@ -219,8 +222,8 @@ void fn_80190288(s32 arg0, s32 *arg1);
 void fn_801902CC(s32 arg0, u32 arg1);
 void fn_80190350(M2C_UNK *arg0);
 void fn_801903A8(M2C_UNK *arg0);
-void fn_801903F8(M2C_UNK *arg0);
-void fn_80190420(M2C_UNK *arg0);
+void fn_801903F8(f32 *arg0);
+void fn_80190420(f32 *arg0);
 s8 * fn_8019044C(s32 *arg0);
 s32 fn_80190744(s32 arg0);
 void fn_801A9384(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7);
@@ -938,19 +941,12 @@ void fn_8018E08C(void) {
     fn_80176788();
 }
 
-// asm_to_cpp: fn_8018E100
-asm void fn_8018E100(s8 *arg0) {
-    nofralloc
-    stw r3, lbl_8049D8A4
-    blr
+void fn_8018E100(s8 *arg0) {
+    *(s8 **)&lbl_8049D8A4 = arg0;
 }
 
-// asm_to_cpp: fn_8018E108
-asm void fn_8018E108(void) {
-    nofralloc
-    li r0, 0x0
-    stw r0, lbl_8049D8A4
-    blr
+void fn_8018E108(void) {
+    *(s8 **)&lbl_8049D8A4 = 0;
 }
 
 // asm_to_cpp: fn_8018E114
@@ -1304,20 +1300,14 @@ s32 fn_8018E724(s32 *arg0) {
     return (s32) (*arg0 != 0);
 }
 
-// asm_to_cpp: fn_8018E734
-asm s32 * fn_8018E734(s32 arg0) {
-    nofralloc
-    cmpwi r3, 0x18
-    blt lbl_8018E744
-    li r3, 0x0
-    blr
-lbl_8018E744:
-    mulli r4, r3, 0x58
-    lis r3, lbl_803D4928@ha
-    addi r0, r3, lbl_803D4928@l
-    add r3, r0, r4
-    blr
+#pragma dont_inline on
+s32 * fn_8018E734(s32 arg0) {
+    if (arg0 >= 0x18) {
+        return (s32 *)0;
+    }
+    return (s32 *)&lbl_803D4928[arg0];
 }
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_8018E758
 asm s32 fn_8018E758(s32 *arg0) {
@@ -1984,17 +1974,11 @@ asm void fn_8018F0A4(void) {
     blr
 }
 
-// asm_to_cpp: fn_8018F0FC
-asm void fn_8018F0FC(void) {
-    nofralloc
-    lis r3, lbl_803D4928@ha
-    addi r3, r3, lbl_803D4928@l
-    lis r4, fn_8018F118@ha
-    addi r4, r4, fn_8018F118@l
-    li r5, 0x58
-    li r6, 0x18
-    b __destroy_arr
+#pragma dont_inline on
+void fn_8018F0FC(void) {
+    __destroy_arr((void *)lbl_803D4928, (void *)fn_8018F118, 0x58, 0x18);
 }
+#pragma dont_inline reset
 
 s32 * fn_8018F118(s32 *arg0, s16 arg1) {
     if (arg0 != NULL) {
@@ -2319,15 +2303,11 @@ asm s32 * fn_8018F5B4(s32 *arg0) {
     blr
 }
 
-// asm_to_cpp: fn_8018F5EC
-asm s32 * fn_8018F5EC(s32 arg0) {
-    nofralloc
-    mulli r4, r3, 0x41c
-    lis r3, lbl_803D5174@ha
-    addi r0, r3, lbl_803D5174@l
-    add r3, r0, r4
-    blr
+#pragma dont_inline on
+s32 * fn_8018F5EC(s32 arg0) {
+    return (s32 *)&lbl_803D5174[arg0 * 0x41c];
 }
+#pragma dont_inline reset
 
 void fn_8018F600(void) {
     s32 *temp_r3;
@@ -2945,21 +2925,15 @@ lbl_8018FE48:
     blr
 }
 
-// asm_to_cpp: fn_8018FE60
-asm void fn_8018FE60(M2C_UNK *arg0, s8 *arg1) {
-    nofralloc
-    lfs f0, 0x0(r4)
-    stfs f0, 0x0(r3)
-    lfs f0, 0x4(r4)
-    stfs f0, 0x4(r3)
-    lfs f0, 0x8(r4)
-    stfs f0, 0x8(r3)
-    lfs f0, 0xc(r4)
-    stfs f0, 0xc(r3)
-    lfs f0, 0x10(r4)
-    stfs f0, 0x10(r3)
-    blr
+#pragma dont_inline on
+void fn_8018FE60(f32 *arg0, const f32 *arg1) {
+    arg0[0] = arg1[0];
+    arg0[1] = arg1[1];
+    arg0[2] = arg1[2];
+    arg0[3] = arg1[3];
+    arg0[4] = arg1[4];
 }
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_8018FE8C
 asm s32 fn_8018FE8C(s32 arg0, M2C_UNK *arg1) {
@@ -3005,21 +2979,15 @@ lbl_8018FF04:
     blr
 }
 
-// asm_to_cpp: fn_8018FF1C
-asm void fn_8018FF1C(M2C_UNK *arg0, s8 *arg1) {
-    nofralloc
-    lfs f0, 0x0(r4)
-    stfs f0, 0x0(r3)
-    lfs f0, 0x4(r4)
-    stfs f0, 0x4(r3)
-    lfs f0, 0x8(r4)
-    stfs f0, 0x8(r3)
-    lfs f0, 0xc(r4)
-    stfs f0, 0xc(r3)
-    lfs f0, 0x10(r4)
-    stfs f0, 0x10(r3)
-    blr
+#pragma dont_inline on
+void fn_8018FF1C(f32 *arg0, const f32 *arg1) {
+    arg0[0] = arg1[0];
+    arg0[1] = arg1[1];
+    arg0[2] = arg1[2];
+    arg0[3] = arg1[3];
+    arg0[4] = arg1[4];
 }
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_8018FF48
 asm void fn_8018FF48(void) {
@@ -3187,17 +3155,11 @@ asm void fn_80190118(void) {
     blr
 }
 
-// asm_to_cpp: fn_80190170
-asm void fn_80190170(void) {
-    nofralloc
-    lis r3, lbl_803D5174@ha
-    addi r3, r3, lbl_803D5174@l
-    lis r4, fn_8019018C@ha
-    addi r4, r4, fn_8019018C@l
-    li r5, 0x41c
-    li r6, 0x3
-    b __destroy_arr
+#pragma dont_inline on
+void fn_80190170(void) {
+    __destroy_arr((void *)lbl_803D5174, (void *)fn_8019018C, 0x41C, 3);
 }
+#pragma dont_inline reset
 
 s32 * fn_8019018C(s32 *arg0, s16 arg1) {
     if (arg0 != NULL) {
@@ -3316,36 +3278,30 @@ asm void fn_801903A8(M2C_UNK *arg0) {
     blr
 }
 
-// asm_to_cpp: fn_801903F8
-asm void fn_801903F8(M2C_UNK *arg0) {
-    nofralloc
-    la r4, lbl_804A10C0
-    lfs f1, 0x1c(r4)
-    stfs f1, 0x0(r3)
-    lfs f0, 0xc(r4)
-    stfs f0, 0x4(r3)
-    lfs f0, 0x14(r4)
-    stfs f0, 0x8(r3)
-    stfs f1, 0xc(r3)
-    stfs f0, 0x10(r3)
-    blr
+#pragma dont_inline on
+void fn_801903F8(f32 *arg0) {
+    f32 *tbl = &lbl_804A10C0;
+    f32 f1 = tbl[7];
+    arg0[0] = f1;
+    arg0[1] = tbl[3];
+    f32 f0 = tbl[5];
+    arg0[2] = f0;
+    arg0[3] = f1;
+    arg0[4] = f0;
 }
+#pragma dont_inline reset
 
-// asm_to_cpp: fn_80190420
-asm void fn_80190420(M2C_UNK *arg0) {
-    nofralloc
-    la r4, lbl_804A10C0
-    lfs f0, 0x20(r4)
-    stfs f0, 0x0(r3)
-    lfs f0, 0x24(r4)
-    stfs f0, 0x4(r3)
-    lfs f1, 0x14(r4)
-    stfs f1, 0x8(r3)
-    lfs f0, 0x18(r4)
-    stfs f0, 0xc(r3)
-    stfs f1, 0x10(r3)
-    blr
+#pragma dont_inline on
+void fn_80190420(f32 *arg0) {
+    f32 *tbl = &lbl_804A10C0;
+    arg0[0] = tbl[8];
+    arg0[1] = tbl[9];
+    f32 f1 = tbl[5];
+    arg0[2] = f1;
+    arg0[3] = tbl[6];
+    arg0[4] = f1;
 }
+#pragma dont_inline reset
 
 s8 * fn_8019044C(s32 *arg0) {
     return (s8 *) ((s8 *)arg0 + 0x18);

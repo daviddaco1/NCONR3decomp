@@ -199,14 +199,11 @@ void strtok_r(){
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
 extern u8 lbl_8035FBD8[];
-extern void fn_80198624();
-extern void fn_801A3418();
+extern s32 fn_80198624();
 extern void fn_801A341C();
 
-// asm_to_cpp: fn_801A3418
-asm void fn_801A3418() {
-    nofralloc
-    b fn_80198624
+s32 fn_801A3418(void) {
+    return fn_80198624();
 }
 
 // asm_to_cpp: fn_801A341C

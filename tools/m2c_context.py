@@ -15,7 +15,7 @@ import collections, concurrent.futures, glob, os, re, subprocess, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from m2c_fix import fix_unset_args  # noqa: E402
 
-M2C = os.environ.get('M2C_DIR', '')
+M2C = os.environ.get('M2C_DIR') or os.path.abspath('build/m2c')
 DEF = re.compile(r'^([A-Za-z_][\w \*]*?)\b(\w+)\(([^;{)]*)\)\s*\{\s*$', re.M)
 CALL = re.compile(r'(=\s*|\(\s*|,\s*|return\s+|[-+*/&|<>!]\s*)?\b((?:fn|dtor)_[0-9A-F]{8}|[A-Za-z_]\w*)\(')
 TYPEDEFS = '''typedef signed char s8; typedef unsigned char u8; typedef signed short s16;

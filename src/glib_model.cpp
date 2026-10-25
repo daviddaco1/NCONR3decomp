@@ -114,6 +114,17 @@ struct M2C_VC_109 { virtual void v0(); virtual void v1(); virtual void v2(); vir
 struct M2C_VC_110 { virtual s32 f(s32 *); };
 struct M2C_VC_111 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32); };
 
+typedef void (*GlibModelCallback)(void *target, void *a, void *b, void *c);
+struct GlibModelListener_80031594 {
+    void *vtable;
+    void *target;
+    GlibModelCallback cb1;
+    GlibModelCallback cb2;
+    GlibModelCallback cb3;
+    GlibModelCallback cb4;
+    GlibModelCallback cb5;
+};
+
 extern "C" {
 
 extern u8 lbl_8033C738[];
@@ -217,7 +228,7 @@ s32 DCStore__Q34nw4r3g3d9ResMatPixFb(s32 arg0_pad, s32 arg1_pad);
 void Destroy__Q34nw4r3g3d6G3dObjFv(s8 *arg0);
 void DisableScnMdlCallbackTiming__Q34nw4r3g3d12ScnMdlSimpleFQ44nw4r3g3d6ScnObj6Timing(s8 *arg0, s32 arg1);
 void EnableScnMdlCallbackTiming__Q34nw4r3g3d12ScnMdlSimpleFQ44nw4r3g3d6ScnObj6Timing(s8 *arg0, s32 arg1);
-void EnableScnObjCallbackExecOp__Q34nw4r3g3d6ScnObjFQ44nw4r3g3d6ScnObj6ExecOp(s8 *arg0, u16 arg1);
+void EnableScnObjCallbackExecOp__Q34nw4r3g3d6ScnObjFQ44nw4r3g3d6ScnObj6ExecOp(s8 *arg0, s32 arg1);
 void EnableScnObjCallbackTiming__Q34nw4r3g3d6ScnObjFQ44nw4r3g3d6ScnObj6Timing(s8 *arg0, s32 arg1);
 s8 * Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode(s32 *arg0, s8 *arg1);
 s32 GXGetChanAmbColor__Q34nw4r3g3d10ResMatChanCF12_GXChannelIDP8_GXColor(s32 *arg0, s32 arg1, s8 *arg2);
@@ -404,8 +415,8 @@ s32 fn_80031294(s32 *arg0);
 void fn_8003129C(s32 arg0, s8 **arg1);
 s8 * fn_800312EC(s8 *arg0, s32 arg1);
 s32 fn_80031348(s32 arg0, s32 arg1);
-s32 fn_80031350();
-s32 fn_80031360();
+void fn_80031350(s8 *, s32, s32);
+void fn_80031360(s8 *, s32, s32);
 void fn_80031370(s32 *arg0, s32 arg1);
 void fn_80031378(s32 *arg0, s32 arg1);
 void fn_80031380(s32 *arg0, s32 arg1);
@@ -427,11 +438,11 @@ u32 fn_800314E8(s32 arg0);
 s32 fn_8003150C(void);
 s32 fn_80031514(s32 arg0, u16 arg1);
 s8 * fn_80031528(s8 *arg0, s16 arg1);
-s32 fn_80031594();
-s32 fn_800315B4();
-s32 fn_800315D4();
-s32 fn_800315F4();
-s32 fn_80031614();
+void fn_80031594(GlibModelListener_80031594 *self, void *a, void *b, void *dummy, void *c);
+void fn_800315B4(GlibModelListener_80031594 *self, void *a, void *b, void *dummy, void *c);
+void fn_800315D4(GlibModelListener_80031594 *self, void *a, void *b, void *dummy, void *c);
+void fn_800315F4(GlibModelListener_80031594 *self, void *a, void *b, void *dummy, void *c);
+void fn_80031614(GlibModelListener_80031594 *self, void *a, void *b, void *dummy, void *c);
 s32 fn_80031634(s32 arg0, s16 arg1);
 void fn_80031690(s32 arg0);
 void fn_80031694(s8 *arg0, s8 *arg1, s32 arg2, s8 *arg3);
@@ -538,10 +549,10 @@ void fn_80032920(void);
 void fn_80032924(void);
 void fn_80032928(s8 *arg0, u16 arg1);
 u16 fn_80032934(s8 *arg0);
-s32 fn_8003293C();
+s32 fn_8003293C(s32 *arg0, void *arg1);
 s32 fn_80032954();
-s32 fn_8003297C();
-s32 fn_80032998();
+void fn_8003297C(void **arg0, void *arg1);
+void fn_80032998(void **arg0, void *arg1);
 void fn_800329B4(s8 **arg0, u8 arg1);
 void fn_800329C0(s8 **arg0, s8 *arg1);
 s32 fn_800329C8(s32 arg0, s16 arg1);
@@ -622,7 +633,7 @@ void fn_801D4934(s8 **arg0, s8 *arg1);
 void fn_801D7300(s8 *arg0, s8 *arg1);
 void fn_801E635C(s8 *arg0, f32 farg0, f32 farg1, f32 farg2);
 void fn_801EC790(s8 *arg0, s32 arg1);
-void fn_801EC824(s8 *arg0, u16 arg1);
+void fn_801EC824(s8 *arg0, s32 arg1);
 s32 fn_801F140C(s8 *arg0, s32 arg1);
 s32 fn_801F1454(s8 *arg0, s32 arg1);
 f32 fn_802019BC(void);
@@ -4760,52 +4771,36 @@ s32 fn_80031348(s32 arg0, s32 arg1) {
     return (s32) (arg1);
 }
 
-// asm_to_cpp: fn_80031350
-asm s32 fn_80031350() {
-    nofralloc
-    cmpwi r5, 0x0
-    beq lbl_8003135C
-    b fn_801EC790
-lbl_8003135C:
-    b EnableScnObjCallbackTiming__Q34nw4r3g3d6ScnObjFQ44nw4r3g3d6ScnObj6Timing
+void fn_80031350(s8 *arg0, s32 arg1, s32 arg2) {
+    if (arg2 != 0) {
+        fn_801EC790(arg0, arg1);
+    } else {
+        EnableScnObjCallbackTiming__Q34nw4r3g3d6ScnObjFQ44nw4r3g3d6ScnObj6Timing(arg0, arg1);
+    }
 }
 
-// asm_to_cpp: fn_80031360
-asm s32 fn_80031360() {
-    nofralloc
-    cmpwi r5, 0x0
-    beq lbl_8003136C
-    b EnableScnObjCallbackExecOp__Q34nw4r3g3d6ScnObjFQ44nw4r3g3d6ScnObj6ExecOp
-lbl_8003136C:
-    b fn_801EC824
+void fn_80031360(s8 *arg0, s32 arg1, s32 arg2) {
+    if (arg2 != 0) {
+        EnableScnObjCallbackExecOp__Q34nw4r3g3d6ScnObjFQ44nw4r3g3d6ScnObj6ExecOp(arg0, arg1);
+    } else {
+        fn_801EC824(arg0, arg1);
+    }
 }
 
-// asm_to_cpp: fn_80031370
-asm void fn_80031370(s32 *arg0, s32 arg1) {
-    nofralloc
-    stw r4, 0x18(r3)
-    blr
+void fn_80031370(s32 *arg0, s32 arg1) {
+    arg0[6] = arg1;
 }
 
-// asm_to_cpp: fn_80031378
-asm void fn_80031378(s32 *arg0, s32 arg1) {
-    nofralloc
-    stw r4, 0x14(r3)
-    blr
+void fn_80031378(s32 *arg0, s32 arg1) {
+    arg0[5] = arg1;
 }
 
-// asm_to_cpp: fn_80031380
-asm void fn_80031380(s32 *arg0, s32 arg1) {
-    nofralloc
-    stw r4, 0xc(r3)
-    blr
+void fn_80031380(s32 *arg0, s32 arg1) {
+    arg0[3] = arg1;
 }
 
-// asm_to_cpp: fn_80031388
-asm void fn_80031388(s32 *arg0, s32 arg1) {
-    nofralloc
-    stw r4, 0x8(r3)
-    blr
+void fn_80031388(s32 *arg0, s32 arg1) {
+    arg0[2] = arg1;
 }
 
 void fn_80031390(s8 *arg0, s8 **arg1) {
@@ -4893,69 +4888,34 @@ s8 * fn_80031528(s8 *arg0, s16 arg1) {
     return (s8 *) (arg0);
 }
 
-// asm_to_cpp: fn_80031594
-asm s32 fn_80031594() {
-    nofralloc
-    lwz r12, 0x8(r3)
-    cmpwi r12, 0x0
-    beqlr
-    lwz r3, 0x4(r3)
-    mr r6, r7
-    mtctr r12
-    bctr
-    blr
+void fn_80031594(GlibModelListener_80031594 *self, void *a, void *b, void *dummy, void *c) {
+    if (self->cb1 != 0) {
+        self->cb1(self->target, a, b, c);
+    }
 }
 
-// asm_to_cpp: fn_800315B4
-asm s32 fn_800315B4() {
-    nofralloc
-    lwz r12, 0xc(r3)
-    cmpwi r12, 0x0
-    beqlr
-    lwz r3, 0x4(r3)
-    mr r6, r7
-    mtctr r12
-    bctr
-    blr
+void fn_800315B4(GlibModelListener_80031594 *self, void *a, void *b, void *dummy, void *c) {
+    if (self->cb2 != 0) {
+        self->cb2(self->target, a, b, c);
+    }
 }
 
-// asm_to_cpp: fn_800315D4
-asm s32 fn_800315D4() {
-    nofralloc
-    lwz r12, 0x10(r3)
-    cmpwi r12, 0x0
-    beqlr
-    lwz r3, 0x4(r3)
-    mr r6, r7
-    mtctr r12
-    bctr
-    blr
+void fn_800315D4(GlibModelListener_80031594 *self, void *a, void *b, void *dummy, void *c) {
+    if (self->cb3 != 0) {
+        self->cb3(self->target, a, b, c);
+    }
 }
 
-// asm_to_cpp: fn_800315F4
-asm s32 fn_800315F4() {
-    nofralloc
-    lwz r12, 0x14(r3)
-    cmpwi r12, 0x0
-    beqlr
-    lwz r3, 0x4(r3)
-    mr r6, r7
-    mtctr r12
-    bctr
-    blr
+void fn_800315F4(GlibModelListener_80031594 *self, void *a, void *b, void *dummy, void *c) {
+    if (self->cb4 != 0) {
+        self->cb4(self->target, a, b, c);
+    }
 }
 
-// asm_to_cpp: fn_80031614
-asm s32 fn_80031614() {
-    nofralloc
-    lwz r12, 0x18(r3)
-    cmpwi r12, 0x0
-    beqlr
-    lwz r3, 0x4(r3)
-    mr r6, r7
-    mtctr r12
-    bctr
-    blr
+void fn_80031614(GlibModelListener_80031594 *self, void *a, void *b, void *dummy, void *c) {
+    if (self->cb5 != 0) {
+        self->cb5(self->target, a, b, c);
+    }
 }
 
 s32 fn_80031634(s32 arg0, s16 arg1) {
@@ -6176,13 +6136,8 @@ s32 fn_800328C8(s32 arg0, s16 arg1) {
     return (s32) (arg0);
 }
 
-// asm_to_cpp: fn_8003290C
-asm void fn_8003290C(M2C_UNK **arg0) {
-    nofralloc
-    lis r4, lbl_80346FD0@ha
-    addi r0, r4, lbl_80346FD0@l
-    stw r0, 0x0(r3)
-    blr
+void fn_8003290C(M2C_UNK **arg0) {
+    *arg0 = (M2C_UNK *)lbl_80346FD0;
 }
 
 void fn_8003291C(void) {
@@ -6202,16 +6157,11 @@ u16 fn_80032934(s8 *arg0) {
     return (u16) (M2C_FIELD(arg0, u16 *, 6));
 }
 
-// asm_to_cpp: fn_8003293C
-asm s32 fn_8003293C() {
-    nofralloc
-    cmpwi r4, 0x0
-    beq lbl_8003294C
-    lwz r3, 0x0(r3)
-    b fn_80031A24
-lbl_8003294C:
-    lwz r3, 0x0(r3)
-    b fn_8002AE08
+s32 fn_8003293C(s32 *arg0, void *arg1) {
+    if (arg1 != 0) {
+        return fn_80031A24(*arg0, (M2C_UNK *)arg1);
+    }
+    return fn_8002AE08(*arg0);
 }
 
 // asm_to_cpp: fn_80032954
@@ -6230,29 +6180,19 @@ lbl_8003296C:
     b fn_801E635C
 }
 
-// asm_to_cpp: fn_8003297C
-asm s32 fn_8003297C() {
-    nofralloc
-    mr r5, r3
-    cmpwi r4, 0x0
-    beqlr
-    mr r3, r4
-    lwz r4, 0x0(r5)
-    b fn_80031A24
-    blr
+#pragma dont_inline on
+void fn_8003297C(void **arg0, void *arg1) {
+    if (arg1 != 0) {
+        fn_80031A24((s32)arg1, (M2C_UNK *)arg0[0]);
+    }
 }
 
-// asm_to_cpp: fn_80032998
-asm s32 fn_80032998() {
-    nofralloc
-    mr r5, r3
-    cmpwi r4, 0x0
-    beqlr
-    mr r3, r4
-    lwz r4, 0x4(r5)
-    b fn_8002B060
-    blr
+void fn_80032998(void **arg0, void *arg1) {
+    if (arg1 != 0) {
+        fn_8002B060((s32)arg1, (s32)arg0[1]);
+    }
 }
+#pragma dont_inline reset
 
 void fn_800329B4(s8 **arg0, u8 arg1) {
     M2C_FIELD(arg0, u8 *, 0xD9) = (u8) (arg1);
@@ -6269,13 +6209,8 @@ s32 fn_800329C8(s32 arg0, s16 arg1) {
     return (s32) (arg0);
 }
 
-// asm_to_cpp: fn_80032A0C
-asm void fn_80032A0C(M2C_UNK **arg0) {
-    nofralloc
-    lis r4, lbl_80346F70@ha
-    addi r0, r4, lbl_80346F70@l
-    stw r0, 0x0(r3)
-    blr
+void fn_80032A0C(M2C_UNK **arg0) {
+    *arg0 = (M2C_UNK *)lbl_80346F70;
 }
 
 s32 fn_80032A1C(s8 *arg0) {

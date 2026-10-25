@@ -9,7 +9,7 @@ extern M2C_UNK lbl_8036B630;
 extern M2C_UNK lbl_8040BD60;
 extern M2C_UNK lbl_8040BDD8;
 extern s32 lbl_8040BE50;
-extern s32 lbl_8040BEA8;
+extern s32 lbl_8040BEA8[];
 extern s32 lbl_8049CE94;
 extern M2C_UNK lbl_8049CEA8;
 extern s32 lbl_8049DCA8;
@@ -3418,6 +3418,7 @@ lbl_802848C4:
     addi r1, r1, 0x10
     blr
 }
+
 
 // asm_to_cpp: VIResetDimmingCount
 asm s32 VIResetDimmingCount(void) {

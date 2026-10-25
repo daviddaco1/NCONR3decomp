@@ -59,7 +59,6 @@ void setbuf(){
 extern u8 lbl_8035FBD8[];
 extern void fn_80197C00();
 extern void fn_80197DB4();
-extern void fn_80197DE4();
 extern void fn_80197DE8();
 
 // asm_to_cpp: fn_80197C00
@@ -156,8 +155,6 @@ lbl_80197DC4:
     blr
 }
 
-// asm_to_cpp: fn_80197DE4
-asm void fn_80197DE4() {
-    nofralloc
-    b fn_80197DE8
+void fn_80197DE4(void) {
+    fn_80197DE8();
 }

@@ -383,13 +383,8 @@ void gt2SetReceiveDump(GT2Socket socket, gt2DumpCallback callback) {
 }
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-extern void fn_80267CD4();
+s32 fn_80267CD4(s32 *arg0);
 
-// asm_to_cpp: fn_80267CD4
-asm void fn_80267CD4() {
-    nofralloc
-    lwz r4, 0x4c(r3)
-    lwz r0, 0x48(r3)
-    subf r3, r4, r0
-    blr
+s32 fn_80267CD4(s32 *arg0) {
+    return *(s32 *)((char *)arg0 + 0x48) - *(s32 *)((char *)arg0 + 0x4c);
 }

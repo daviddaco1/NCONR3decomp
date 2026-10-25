@@ -691,7 +691,7 @@ ScnGroup::~ScnGroup() {
 // ---- Funciones aun sin C que matchee (asm generado) ----
 extern "C" void EnableScnObjCallbackTiming__Q34nw4r3g3d6ScnObjFQ44nw4r3g3d6ScnObj6Timing();
 extern "C" void fn_801EC790();
-extern "C" void fn_801EC824();
+extern "C" void fn_801EC824(void* self, u32 mask);
 extern "C" void fn_801EC838();
 extern "C" void fn_801EC8B8();
 
@@ -741,14 +741,8 @@ lbl_801EC7F8:
     blr
 }
 
-// asm_to_cpp: fn_801EC824
-extern "C" asm void fn_801EC824() {
-    nofralloc
-    lhz r5, 0xda(r3)
-    clrlwi r0, r4, 16
-    andc r0, r5, r0
-    sth r0, 0xda(r3)
-    blr
+extern "C" void fn_801EC824(void* self, u32 mask) {
+    *(u16*)((char*)self + 0xDA) &= ~(u16)mask;
 }
 
 // asm_to_cpp: fn_801EC838
@@ -790,8 +784,5 @@ lbl_801EC8A0:
     bctr
 }
 
-// asm_to_cpp: fn_801EC8B8
-extern "C" asm void fn_801EC8B8() {
-    nofralloc
-    blr
+extern "C" void fn_801EC8B8() {
 }

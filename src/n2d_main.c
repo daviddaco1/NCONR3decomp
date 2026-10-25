@@ -44,7 +44,13 @@ s32 fn_80122168(void);
 void fn_80122174(s32 arg0);
 void fn_80122188(u8 arg0);
 void fn_801221C0(u8 arg0);
-s32 fn_801221D8(s32 arg0_pad);
+struct N2D_GDControl {
+    u8 *start;
+    u8 *ptr;
+    u8 *top;
+    u8 *end;
+};
+void fn_801221D8(u32 arg0);
 void fn_801221F8(u16 arg0);
 s32 fn_80122240(void);
 void fn_80122254(s8 *arg0);
@@ -52,9 +58,9 @@ s32 fn_8012225C(s8 *arg0);
 s32 fn_8012226C(s32 *arg0);
 void fn_80122274(void);
 void fn_80122278(s32 arg0, s32 arg1, u16 arg2);
-void fn_801222B4(u8 arg0);
-void fn_801222BC(u8 arg0);
-void fn_801222C4(u8 arg0);
+extern "C" void fn_801222B4(u8 arg0);
+extern "C" void fn_801222BC(u8 arg0);
+extern "C" void fn_801222C4(u8 arg0);
 void fn_801222CC(s8 *arg0, s8 *arg1);
 void fn_80122330(s8 *arg0, s8 *arg1);
 M2C_UNK fn_80170DFC(s32 arg0);
@@ -1568,14 +1574,8 @@ asm s32 fn_80121D4C() {
     blr
 }
 
-// asm_to_cpp: fn_80121D98
-asm f32 fn_80121D98(s32 arg0) {
-    nofralloc
-    slwi r0, r3, 2
-    lis r3, lbl_8034F470@ha
-    addi r3, r3, lbl_8034F470@l
-    lfsx f1, r3, r0
-    blr
+f32 fn_80121D98(s32 arg0) {
+    return ((f32 *)lbl_8034F470)[arg0];
 }
 
 // asm_to_cpp: fn_80121DAC
@@ -1857,18 +1857,14 @@ asm void fn_801221C0(u8 arg0) {
     blr
 }
 
-// asm_to_cpp: fn_801221D8
-asm s32 fn_801221D8(s32 arg0_pad) {
-    nofralloc
-    lwz r4, lbl_8049E180
-    lwz r0, 0x8(r4)
-    add r3, r0, r3
-    lwz r0, 0xc(r4)
-    cmplw r3, r0
-    blelr
-    b GDOverflowed
-    blr
+#pragma dont_inline on
+void fn_801221D8(u32 arg0) {
+    struct N2D_GDControl *dl = (struct N2D_GDControl *)lbl_8049E180;
+    if (dl->top + arg0 > dl->end) {
+        GDOverflowed();
+    }
 }
+#pragma dont_inline reset
 
 void fn_801221F8(u16 arg0) {
     fn_801221D8((s32) (2));
@@ -1915,26 +1911,19 @@ asm void fn_80122278(s32 arg0, s32 arg1, u16 arg2) {
     blr
 }
 
-// asm_to_cpp: fn_801222B4
-asm void fn_801222B4(u8 arg0) {
-    nofralloc
-    clrlwi r3, r3, 24
-    b fn_80122188
+#pragma dont_inline on
+extern "C" void fn_801222B4(u8 arg0) {
+    fn_80122188(arg0);
 }
 
-// asm_to_cpp: fn_801222BC
-asm void fn_801222BC(u8 arg0) {
-    nofralloc
-    clrlwi r3, r3, 24
-    b fn_80122188
+extern "C" void fn_801222BC(u8 arg0) {
+    fn_80122188(arg0);
 }
 
-// asm_to_cpp: fn_801222C4
-asm void fn_801222C4(u8 arg0) {
-    nofralloc
-    clrlwi r3, r3, 24
-    b fn_80122188
+extern "C" void fn_801222C4(u8 arg0) {
+    fn_80122188(arg0);
 }
+#pragma dont_inline reset
 
 void fn_801222CC(s8 *arg0, s8 *arg1) {
     M2C_FIELD(arg0, f32 *, 0) = (f32) M2C_FIELD(arg1, f32 *, 0);

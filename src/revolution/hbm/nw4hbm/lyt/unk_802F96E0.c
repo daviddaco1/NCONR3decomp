@@ -13,7 +13,7 @@ extern f32 lbl_80341E88;
 extern f32 lbl_80341EA0;
 extern f32 lbl_80341EB8;
 extern f32 lbl_80341EBC;
-extern s32 lbl_8037CA28;
+extern s32 lbl_8037CA28[];
 extern s32 lbl_8037CA40;
 extern M2C_UNK lbl_8037CA44;
 extern M2C_UNK lbl_8037CAF0;
@@ -21,9 +21,9 @@ extern M2C_UNK lbl_8037CB2C;
 extern M2C_UNK lbl_8037CBD8;
 extern M2C_UNK lbl_8037DBE8;
 extern s32 lbl_80462438;
-extern s32 lbl_80462440;
-extern s32 *lbl_80462450;
-extern s32 *lbl_80462458;
+extern s32 lbl_80462440[];
+extern s32 lbl_80462450[];
+extern s32 lbl_80462458[];
 
 s32 fn_802F96E0();
 void fn_802F9720();
@@ -35,7 +35,7 @@ void fn_802F9C30();
 void fn_802F9C64();
 void fn_802F9CAC();
 u8 fn_802F9CD8();
-void fn_802F9CF0();
+void fn_802F9CF0(u8 *arg0, u32 arg1, u32 arg2);
 void fn_802F9D08();
 s32 fn_802FA270();
 void fn_802FA69C();
@@ -56,7 +56,7 @@ void fn_802FB2C0();
 void fn_802FB354();
 void fn_802FB380();
 u8 fn_802FB3AC();
-void fn_802FB3C4();
+void fn_802FB3C4(u8 *arg0, u32 arg1, u32 arg2);
 void fn_802FB3DC();
 void fn_802FB51C();
 void fn_802FB5AC();
@@ -80,7 +80,9 @@ s32 fn_802F96E0(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-// fn_802F9720: definicion C reemplazada por asm (ver abajo)
+void fn_802F9720(s32 **arg0) {
+    *arg0 = lbl_8037CA28;
+}
 
 
 s32 fn_802F9730(void) {
@@ -133,10 +135,14 @@ s32 fn_802FA8CC(s32 arg0, s32 arg1) {
 
 
 
-// fn_802FADAC: definicion C reemplazada por asm (ver abajo)
+s32 **fn_802FADAC(void) {
+    return (s32 **)lbl_80462450;
+}
 
 
-// fn_802FADB8: definicion C reemplazada por asm (ver abajo)
+void fn_802FADB8(void) {
+    lbl_80462450[0] = (s32)lbl_80462440;
+}
 
 
 s8 *fn_802FADCC(s8 *arg0, s8 *arg1, s8 *arg2, M2C_UNK arg_sp0);
@@ -187,19 +193,25 @@ s32 fn_802FD224(s8 *arg0, u32 arg1) {
     return M2C_FIELD((M2C_FIELD(arg0, s32 *, 0xFC) + (arg1 * 8)), s32 *, 4);
 }
 
-/*
-Decompilation failure in function fn_802FD24C:
-
-Unable to determine jump table for bctr instruction at unk_802F96E0.s line 4120.
-
-There must be a read of a variable before the instruction
-which has a name starting with with "jtbl"/"jpt_"/"lbl_"/"jumptable_".
-*/
-
-// fn_802FD25C: definicion C reemplazada por asm (ver abajo)
 
 
-// fn_802FD268: definicion C reemplazada por asm (ver abajo)
+// asm_to_cpp: fn_802FD24C
+asm int fn_802FD24C() {
+    nofralloc
+    lwz r12, 0x0(r3)
+    lwz r12, 0x5c(r12)
+    mtctr r12
+    bctr
+}
+
+s32 **fn_802FD25C(void) {
+    return (s32 **)lbl_80462458;
+}
+
+
+void fn_802FD268(void) {
+    lbl_80462458[0] = (s32)lbl_80462440;
+}
 
 
 
@@ -245,8 +257,8 @@ s8 *fn_802F9AA0(s8 *arg0, s32 arg1);
 void fn_802F9C30();
 void fn_802F9C64(s32 arg0, u32 arg1, s8 *arg2);
 void fn_802F9CAC();
-u8 fn_802F9CD8(s32 arg0, u32 arg1);
-void fn_802F9CF0();
+u8 fn_802F9CD8(u8 *arg0, u32 arg1);
+void fn_802F9CF0(u8 *arg0, u32 arg1, u32 arg2);
 void fn_802F9D08();
 s32 fn_802FA270();
 void fn_802FA69C(s32 **arg0, s8 **arg1);
@@ -265,8 +277,8 @@ s32 fn_802FB21C(s8 *arg0, s32 arg1);
 void fn_802FB2C0(s8 *arg0, s32 arg1, s32 arg2, s32 arg3, M2C_UNK arg_sp0);
 void fn_802FB354();
 void fn_802FB380();
-u8 fn_802FB3AC(s32 arg0, s32 arg1);
-void fn_802FB3C4();
+u8 fn_802FB3AC(u8 *arg0, u32 arg1);
+void fn_802FB3C4(u8 *arg0, u32 arg1, u32 arg2);
 void fn_802FB3DC();
 void fn_802FB51C(s8 *arg0, s32 arg1);
 void fn_802FB5AC(s8 *arg0, s32 arg1);
@@ -288,20 +300,8 @@ extern void fn_802FE378();
 extern void fn_802FE3BC();
 extern void fn_802FE66C();
 extern void fn_802FE7FC();
-extern void fn_802FEB44();
-extern void fn_802FEB50();
-extern void fn_803006EC();
-extern void fn_803006F4();
 extern void fn_8030070C();
 
-// asm_to_cpp: fn_802F9720
-asm void fn_802F9720(s32 **arg0) {
-    nofralloc
-    lis r4, lbl_8037CA28@ha
-    addi r4, r4, lbl_8037CA28@l
-    stw r4, 0x0(r3)
-    blr
-}
 
 // asm_to_cpp: fn_802F9738
 asm void fn_802F9738(s32 *arg0, u16 *arg1, s32 arg2, s32 arg3) {
@@ -715,26 +715,12 @@ asm void fn_802F9CAC() {
     blr
 }
 
-// asm_to_cpp: fn_802F9CD8
-asm u8 fn_802F9CD8(s32 arg0, u32 arg1) {
-    nofralloc
-    rlwinm r5, r4, 31, 1, 29
-    clrlwi r0, r4, 30
-    add r3, r3, r5
-    add r3, r3, r0
-    lbz r3, 0xd8(r3)
-    blr
+u8 fn_802F9CD8(u8 *arg0, u32 arg1) {
+    return *(u8 *)(arg0 + 0xD8 + ((arg1 >> 1) & ~3) + (arg1 & 3));
 }
 
-// asm_to_cpp: fn_802F9CF0
-asm void fn_802F9CF0() {
-    nofralloc
-    rlwinm r6, r4, 31, 1, 29
-    clrlwi r0, r4, 30
-    add r3, r3, r6
-    add r3, r3, r0
-    stb r5, 0xd8(r3)
-    blr
+void fn_802F9CF0(u8 *arg0, u32 arg1, u32 arg2) {
+    *(u8 *)(arg0 + 0xD8 + ((arg1 >> 1) & ~3) + (arg1 & 3)) = arg2;
 }
 
 // asm_to_cpp: fn_802F9D08
@@ -1898,23 +1884,7 @@ lbl_802FAD78:
     blr
 }
 
-// asm_to_cpp: fn_802FADAC
-asm s32 **fn_802FADAC(void) {
-    nofralloc
-    lis r3, lbl_80462450@ha
-    addi r3, r3, lbl_80462450@l
-    blr
-}
 
-// asm_to_cpp: fn_802FADB8
-asm void fn_802FADB8(void) {
-    nofralloc
-    lis r4, lbl_80462440@ha
-    lis r3, lbl_80462450@ha
-    addi r4, r4, lbl_80462440@l
-    stw r4, lbl_80462450@l(r3)
-    blr
-}
 
 // asm_to_cpp: fn_802FADCC
 asm s8 * fn_802FADCC() {
@@ -2358,26 +2328,12 @@ asm void fn_802FB380() {
     blr
 }
 
-// asm_to_cpp: fn_802FB3AC
-asm u8 fn_802FB3AC(s32 arg0, s32 arg1) {
-    nofralloc
-    clrrwi r5, r4, 2
-    clrlwi r0, r4, 30
-    add r3, r3, r5
-    add r3, r3, r0
-    lbz r3, 0xe4(r3)
-    blr
+u8 fn_802FB3AC(u8 *arg0, u32 arg1) {
+    return *(u8 *)(arg0 + 0xE4 + (arg1 & ~3) + (arg1 & 3));
 }
 
-// asm_to_cpp: fn_802FB3C4
-asm void fn_802FB3C4() {
-    nofralloc
-    clrrwi r6, r4, 2
-    clrlwi r0, r4, 30
-    add r3, r3, r6
-    add r3, r3, r0
-    stb r5, 0xe4(r3)
-    blr
+void fn_802FB3C4(u8 *arg0, u32 arg1, u32 arg2) {
+    *(u8 *)(arg0 + 0xE4 + (arg1 & ~3) + (arg1 & 3)) = arg2;
 }
 
 // asm_to_cpp: fn_802FB3DC
@@ -4375,32 +4331,9 @@ lbl_802FD1EC:
     blr
 }
 
-// asm_to_cpp: fn_802FD24C
-asm int fn_802FD24C() {
-    nofralloc
-    lwz r12, 0x0(r3)
-    lwz r12, 0x5c(r12)
-    mtctr r12
-    bctr
-}
 
-// asm_to_cpp: fn_802FD25C
-asm s32 **fn_802FD25C(void) {
-    nofralloc
-    lis r3, lbl_80462458@ha
-    addi r3, r3, lbl_80462458@l
-    blr
-}
 
-// asm_to_cpp: fn_802FD268
-asm void fn_802FD268(void) {
-    nofralloc
-    lis r4, lbl_80462440@ha
-    lis r3, lbl_80462458@ha
-    addi r4, r4, lbl_80462440@l
-    stw r4, lbl_80462458@l(r3)
-    blr
-}
+
 
 // asm_to_cpp: fn_802FD27C
 asm f32 fn_802FD27C() {

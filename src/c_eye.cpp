@@ -711,67 +711,41 @@ asm s32 fn_800F59E0() {
     blr
 }
 
-// asm_to_cpp: fn_800F5B14
-asm void fn_800F5B14(s8 *arg0, s8 *arg1, s32 arg2, s32 arg3) {
-    nofralloc
-    cmpwi r3, 0x0
-    beqlr
-    lwz r3, 0x104(r3)
-    cmpwi r3, 0x0
-    beqlr
-    cmpwi r4, 0x0
-    bne lbl_800F5B34
-    blr
-lbl_800F5B34:
-    lwz r7, 0x14(r3)
-    stw r5, 0x4(r4)
-    stw r6, 0x0(r4)
-    li r0, 0x1
-    stw r0, 0x8(r4)
-    cmpwi r7, 0x0
-    bne lbl_800F5B60
-    stw r4, 0x14(r3)
-    blr
-    b lbl_800F5B60
-lbl_800F5B5C:
-    mr r7, r0
-lbl_800F5B60:
-    lwz r0, 0xc(r7)
-    cmpwi r0, 0x0
-    bne lbl_800F5B5C
-    stw r4, 0xc(r7)
-    stw r7, 0x10(r4)
-    blr
+void fn_800F5B14(s8 *arg0, s8 *arg1, s32 arg2, s32 arg3) {
+    if (arg0 == 0) {
+        return;
+    }
+    s8 *p = *(s8 **)(arg0 + 0x104);
+    if (p == 0 || arg1 == 0) {
+        return;
+    }
+    s8 *head = *(s8 **)(p + 0x14);
+    *(s32 *)(arg1 + 4) = arg2;
+    *(s32 *)(arg1 + 0) = arg3;
+    *(s32 *)(arg1 + 8) = 1;
+    if (head == 0) {
+        *(s8 **)(p + 0x14) = arg1;
+        return;
+    }
+    while (*(s8 **)(head + 0xc) != 0) {
+        head = *(s8 **)(head + 0xc);
+    }
+    *(s8 **)(head + 0xc) = arg1;
+    *(s8 **)(arg1 + 0x10) = head;
 }
 
-// asm_to_cpp: fn_800F5B78
-asm s8 * fn_800F5B78(s8 *arg0, s32 arg1, s32 arg2) {
-    nofralloc
-    cmpwi r3, 0x0
-    beq lbl_800F5B8C
-    lwz r3, 0x104(r3)
-    cmpwi r3, 0x0
-    bne lbl_800F5B94
-lbl_800F5B8C:
-    li r3, 0x0
-    blr
-lbl_800F5B94:
-    lwz r3, 0x14(r3)
-    b lbl_800F5BB8
-lbl_800F5B9C:
-    lwz r0, 0x4(r3)
-    cmpw r0, r4
-    bne lbl_800F5BB4
-    lwz r0, 0x0(r3)
-    cmpw r0, r5
-    beqlr
-lbl_800F5BB4:
-    lwz r3, 0xc(r3)
-lbl_800F5BB8:
-    cmpwi r3, 0x0
-    bne lbl_800F5B9C
-    li r3, 0x0
-    blr
+s8 * fn_800F5B78(s8 *arg0, s32 arg1, s32 arg2) {
+    if (arg0 == 0 || (arg0 = *(s8 **)(arg0 + 0x104)) == 0) {
+        return 0;
+    }
+    s8 *curr = *(s8 **)(arg0 + 0x14);
+    while (curr != 0) {
+        if (*(s32 *)(curr + 4) == arg1 && *(s32 *)curr == arg2) {
+            return curr;
+        }
+        curr = *(s8 **)(curr + 0xc);
+    }
+    return 0;
 }
 
 void fn_800F5BC8(s8 *arg0) {

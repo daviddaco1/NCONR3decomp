@@ -59,7 +59,7 @@ s32 __DVDCheckDevice();
 void __DVDShowFatalMessage(void);
 extern void __OSGetIOSRev();
 s32 fn_802D6678(s8 *arg0, s8 *arg1);
-extern int fn_802D68CC();
+void fn_802D68CC(void);
 
 // asm_to_cpp: fn_802D6678
 asm s32 fn_802D6678(s8 *arg0, s8 *arg1) {
@@ -236,15 +236,10 @@ lbl_802D6898:
     blr
 }
 
-// asm_to_cpp: fn_802D68CC
-asm int fn_802D68CC() {
-    nofralloc
-    lwz r12, FatalFunc_8049E108
-    cmpwi r12, 0x0
-    beqlr
-    mtctr r12
-    bctr
-    blr
+void fn_802D68CC(void) {
+    if (FatalFunc_8049E108 != NULL) {
+        FatalFunc_8049E108();
+    }
 }
 
 // asm_to_cpp: __DVDCheckDevice

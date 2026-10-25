@@ -170,9 +170,9 @@ void fn_801827C4(s8 *arg0);
 void fn_8018280C(s8 *arg0);
 void fn_80182868(s8 *arg0, s32 arg1);
 void fn_80182950(s8 *arg0, s32 arg1);
-void fn_80182A38(s8 *arg0, s32 arg1, s32 arg2, s32 arg3, u8 arg4);
-void fn_80182BA0(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
-void fn_80182BB4(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
+void fn_80182A38(s8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
+void fn_80182BA0(s8 *arg0, s32 arg1, s32 arg2, s32 arg3);
+void fn_80182BB4(s8 *arg0, s32 arg1, s32 arg2, s32 arg3);
 s32 fn_80182BC8(s8 *arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_80182CEC(s32 arg0, s32 arg1, s32 arg2);
 void fn_80182D00(s32 arg0, s32 arg1, s32 arg2);
@@ -5699,16 +5699,12 @@ asm void fn_80182048(s32 *arg0) {
     b fn_8001D9A4
 }
 
-// asm_to_cpp: fn_80182068
-asm void fn_80182068(s8 *arg0) {
-    nofralloc
-    lis r5, lbl_803D1CA0@ha
-    lha r4, lbl_803D1CA0@l(r5)
-    subi r0, r4, 0x1
-    sth r0, lbl_803D1CA0@l(r5)
-    addi r3, r3, 0x4
-    b fn_8002211C
+#pragma dont_inline on
+void fn_80182068(s8 *arg0) {
+    (*(s16 *)lbl_803D1CA0)--;
+    fn_8002211C(arg0 + 4);
 }
+#pragma dont_inline reset
 
 void fn_80182080(s32 arg0) {
     fn_80182068((s8 *) (arg0));
@@ -6196,28 +6192,13 @@ void fn_80182744(s32 arg0, s8 *arg1) {
     }
 }
 
-// asm_to_cpp: fn_801827C4
-asm void fn_801827C4(s8 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lwz r0, 0x114(r3)
-    stw r0, 0x8(r1)
-    addi r3, r1, 0x8
-    bl fn_8003452C
-    li r4, 0x1
-    li r5, 0x0
-    li r6, 0x0
-    lwz r12, 0x0(r3)
-    lwz r12, 0xc(r12)
-    mtctr r12
-    bctrl
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+#pragma dont_inline on
+void fn_801827C4(s8 *arg0) {
+    s32 sp8 = *(s32 *)(arg0 + 0x114);
+    s8 **temp_r3 = (s8 **)fn_8003452C(&sp8);
+    ((M2C_VC_0 *)temp_r3)->f((M2C_UNK)1, (M2C_UNK)0, (M2C_UNK)0);
 }
+#pragma dont_inline reset
 
 void fn_8018280C(s8 *arg0) {
     s32 sp8;
@@ -6362,7 +6343,7 @@ lbl_80182A18:
 }
 
 // asm_to_cpp: fn_80182A38
-asm void fn_80182A38(s8 *arg0, s32 arg1, s32 arg2, s32 arg3, u8 arg4) {
+asm void fn_80182A38(s8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     nofralloc
     stwu r1, -0x80(r1)
     mflr r0
@@ -6463,25 +6444,15 @@ lbl_80182B80:
     blr
 }
 
-// asm_to_cpp: fn_80182BA0
-asm void fn_80182BA0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    nofralloc
-    mr r0, r5
-    mr r7, r6
-    li r5, 0x0
-    mr r6, r0
-    b fn_80182A38
+#pragma dont_inline on
+void fn_80182BA0(s8 *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    fn_80182A38(arg0, arg1, 0, arg2, (s32)arg3);
 }
 
-// asm_to_cpp: fn_80182BB4
-asm void fn_80182BB4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    nofralloc
-    mr r0, r5
-    mr r7, r6
-    li r5, 0x1
-    mr r6, r0
-    b fn_80182A38
+void fn_80182BB4(s8 *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    fn_80182A38(arg0, arg1, 1, arg2, (s32)arg3);
 }
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_80182BC8
 asm s32 fn_80182BC8(s8 *arg0, s32 arg1, s32 arg2, s32 arg3) {

@@ -127,13 +127,10 @@ void rewind(){
 }
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-extern void fn_8019894C();
 extern void fn_80198950();
 
-// asm_to_cpp: fn_8019894C
-asm void fn_8019894C() {
-    nofralloc
-    b _fseek
+s32 fn_8019894C(FILE *stream, s32 offset, s32 whence) {
+    return _fseek(stream, offset, whence);
 }
 
 // asm_to_cpp: fn_80198950

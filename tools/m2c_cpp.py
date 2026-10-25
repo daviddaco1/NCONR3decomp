@@ -15,7 +15,7 @@ import concurrent.futures, json, os, re, subprocess, sys, time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from m2c_fix import body_end, DEF, fix_ptr_arith, fix_unset_args, TERN  # noqa: E402
 
-M2C = os.environ.get('M2C_DIR', '')
+M2C = os.environ.get('M2C_DIR') or os.path.abspath('build/m2c')
 FLAGS = ['-O4,s', '-schedule off', '-func_align 4', '-opt nopeephole', '-lang=c++']
 OBJ = re.compile(r'((?:AsmObject|Object)\((?:NonMatching, )?"([^"/]+)"[^\n]*?\))(?=,\r?\n)')
 HAND = ('ten_eye', 'kir_eye', 'kbt_eye', 'gai_eye', 'tcg_text')  # C++ escrito a mano: no tocar
@@ -350,11 +350,11 @@ class TU:
                 protos[n] = (d.group(1).strip(), d.group(2))
                 add(f'{protos[n][0]} {n}({protos[n][1]});', ('sym', n))
                 continue
-            fixed = n in self.kept or (n not in self.c and n in self.orig_protos)
-            if n in self.c:
-                ret, ps, body = self.c[n]
-            elif n in self.orig_protos:  # el fuente ya compilaba y matcheaba con este prototipo
+            fixed = n in self.kept or n in self.orig_protos
+            if n in self.orig_protos:  # el fuente ya compilaba y matcheaba con este prototipo
                 ret, ps = self.orig_protos[n]
+            elif n in self.c:
+                ret, ps, body = self.c[n]
             elif n in self.ctx:
                 ret, ps = self.ctx[n]
                 # m2c infiere u16/u8 de un lhz/lbz del callee, pero en el game code el original
@@ -412,11 +412,13 @@ MWCC = [os.path.abspath('build/compilers/Wii/1.0/mwcceppc.exe'), '-nodefaults', 
 def drop(t, what):
     """Quita el C culpable de un error en `what`; False si el error no es atribuible."""
     if what and what[0] == 'c':
+        if what[1] in t.kept:
+            return False
         t.c.pop(what[1], None)
         return True
     if what and what[0] == 'sym':  # choca una declaracion: fuera el C que la usa
-        users = [n for n, (_, _, b) in t.c.items() if re.search(r'\b' + what[1] + r'\b', b)] or \
-                ([what[1]] if what[1] in t.c else [])
+        users = [n for n, (_, _, b) in t.c.items() if n not in t.kept and re.search(r'\b' + what[1] + r'\b', b)] or \
+                ([what[1]] if what[1] in t.c and what[1] not in t.kept else [])
         for n in users:
             del t.c[n]
         return bool(users)

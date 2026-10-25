@@ -22,11 +22,11 @@ extern s32 lbl_8036F298;
 extern s32 lbl_8036F2AC;
 extern s32 lbl_8040FC00;
 extern s32 lbl_80410350;
-extern s32 lbl_80410458;
+extern s32 lbl_80410458[];
 extern M2C_UNK lbl_804104B8;
-extern M2C_UNK lbl_804109C0;
-extern M2C_UNK lbl_80411D68;
-extern M2C_UNK lbl_80411D88;
+extern u32 lbl_804109C0[];
+extern u16 lbl_80411D68[];
+extern u16 lbl_80411D88[];
 extern s32 lbl_8049CED0;
 extern M2C_UNK lbl_8049CF18;
 extern s32 lbl_8049DE24;
@@ -3120,12 +3120,8 @@ asm u8 fn_8029A438(void) {
     blr
 }
 
-// asm_to_cpp: fn_8029A474
-asm s32 *fn_8029A474(void) {
-    nofralloc
-    lis r3, lbl_80410458@ha
-    addi r3, r3, lbl_80410458@l
-    blr
+s32 *fn_8029A474(void) {
+    return lbl_80410458;
 }
 
 // asm_to_cpp: fn_8029A480
@@ -3217,44 +3213,26 @@ lbl_8029A584:
     blr
 }
 
-// asm_to_cpp: ARCGetStartAddrInMem
-asm void ARCGetStartAddrInMem(s32 arg0, s32 arg1) {
-    nofralloc
-    lis r5, lbl_804109C0@ha
-    clrlslwi r0, r3, 24, 2
-    addi r5, r5, lbl_804109C0@l
-    stwx r4, r5, r0
-    blr
+void ARCGetStartAddrInMem(s32 arg0, s32 arg1) {
+    lbl_804109C0[(u8)arg0] = arg1;
 }
 
-// asm_to_cpp: fn_8029A5A8
-asm s32 fn_8029A5A8(s32 arg0) {
-    nofralloc
-    lis r4, lbl_804109C0@ha
-    clrlslwi r0, r3, 24, 2
-    addi r4, r4, lbl_804109C0@l
-    lwzx r3, r4, r0
-    blr
+s32 fn_8029A5A8(s32 arg0) {
+    return lbl_804109C0[(u8)arg0];
 }
 
-// asm_to_cpp: fn_8029A5BC
-asm void fn_8029A5BC() {
-    nofralloc
-    lis r5, lbl_80411D68@ha
-    clrlslwi r0, r3, 24, 1
-    addi r5, r5, lbl_80411D68@l
-    sthx r4, r5, r0
-    blr
+void fn_8029A5BC(arg0, arg1)
+s32 arg0;
+s32 arg1;
+{
+    lbl_80411D68[(u8)arg0] = arg1;
 }
 
-// asm_to_cpp: fn_8029A5D0
-asm void fn_8029A5D0() {
-    nofralloc
-    lis r5, lbl_80411D88@ha
-    clrlslwi r0, r3, 24, 1
-    addi r5, r5, lbl_80411D88@l
-    sthx r4, r5, r0
-    blr
+void fn_8029A5D0(arg0, arg1)
+s32 arg0;
+s32 arg1;
+{
+    lbl_80411D88[(u8)arg0] = arg1;
 }
 
 // asm_to_cpp: fn_8029A5E4

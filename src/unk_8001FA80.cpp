@@ -1223,14 +1223,11 @@ void fn_80020D1C(s32 arg0, s32 arg1, s32 arg2) {
     fn_802019BC();
 }
 
-// asm_to_cpp: fn_80020D20
-asm void fn_80020D20(M2C_UNK *arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
-    nofralloc
-    stfs f1, 0x0(r3)
-    stfs f2, 0x4(r3)
-    stfs f3, 0x8(r3)
-    stfs f4, 0xc(r3)
-    blr
+void fn_80020D20(M2C_UNK *arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
+    ((f32 *)arg0)[0] = farg0;
+    ((f32 *)arg0)[1] = farg1;
+    ((f32 *)arg0)[2] = farg2;
+    ((f32 *)arg0)[3] = farg3;
 }
 
 void fn_80020D34(void) {

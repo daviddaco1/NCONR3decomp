@@ -29,7 +29,7 @@ M2C_UNK fn_8001D9AC(s32 arg0, s32 arg1);
 void fn_8001D9D0(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 f32 fn_8001DA9C(f32 farg0);
 s32 * fn_8005E4A4(s8 *arg0);
-f32 fn_800674B8(s32 arg0, s32 arg1);
+f32 fn_800674B8(f32 farg1, f32 farg2);
 void fn_80067B60(s8 *arg0);
 void fn_80067C94(s8 *arg0);
 void fn_80067F84(s8 *arg0);
@@ -37,7 +37,7 @@ void fn_800680C8(s8 *arg0);
 s32 fn_80068524();
 f32 fn_8006854C(s8 *arg0);
 s32 fn_800685D0(s8 *arg0);
-M2C_UNK fn_80068718(f32 *arg0);
+f32 fn_80068718(f32 *arg0);
 M2C_UNK fn_80068728(s8 *arg0);
 M2C_UNK fn_80068774(s8 *arg0, f32 farg0);
 M2C_UNK fn_800687C0(s8 *arg0, f32 farg0);
@@ -899,13 +899,8 @@ lbl_800686F4:
     blr
 }
 
-// asm_to_cpp: fn_80068718
-asm M2C_UNK fn_80068718(f32 *arg0) {
-    nofralloc
-    lfs f1, 0x0(r3)
-    lfs f0, 0x8(r3)
-    fneg f2, f0
-    b fn_800674B8
+f32 fn_80068718(f32 *arg0) {
+    return fn_800674B8(arg0[0], -arg0[2]);
 }
 
 // asm_to_cpp: fn_80068728

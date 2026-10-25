@@ -51,8 +51,8 @@ s32 DvdLockedFileStream::Peek(void* pDst, u32 size) {
 } // namespace nw4r
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-extern "C" float lbl_8049DAB0;
-extern "C" float lbl_8049DAB8;
+extern "C" void *lbl_8049DAB0;
+extern "C" void *lbl_8049DAB8;
 extern "C" float lbl_8049DAC0;
 extern "C" float lbl_8049DAC8;
 extern "C" u8 lbl_80362B70[];
@@ -323,10 +323,6 @@ extern "C" asm void Cancel__Q34nw4r2ut19DvdLockedFileStreamFv() {
     blr
 }
 
-// asm_to_cpp: fn_8022424C
-extern "C" asm void fn_8022424C() {
-    nofralloc
-    la r0, lbl_8049DAB0
-    stw r0, lbl_8049DAB8
-    blr
+extern "C" void fn_8022424C() {
+    lbl_8049DAB8 = &lbl_8049DAB0;
 }

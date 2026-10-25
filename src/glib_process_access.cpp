@@ -2,6 +2,15 @@
 #include "m2c_macros.h"
 
 
+struct Base_80044500 {
+    int x;
+};
+
+struct Derived_80044500 : public Base_80044500 {
+    virtual void v0();
+    virtual void v1(s32 arg);
+};
+
 extern "C" {
 
 extern u8 lbl_80349190[];
@@ -127,91 +136,31 @@ lbl_800444E4:
     blr
 }
 
-// asm_to_cpp: fn_80044500
-asm void fn_80044500(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    bl fn_800443B8
-    mr r4, r31
-    lwz r12, 0x4(r3)
-    lwz r12, 0xc(r12)
-    mtctr r12
-    bctrl
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_80044500(s32 arg0) {
+    Derived_80044500 *obj = (Derived_80044500 *)fn_800443B8();
+    obj->v1(arg0);
 }
 
-// asm_to_cpp: fn_80044540
-asm void fn_80044540(s32 *arg0, s32 *arg1) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_28
-    mr r28, r3
-    mr r29, r4
-    bl fn_800443B8
-    mr r31, r3
-    bl fn_800389F4
-    mr r30, r3
-    lwz r0, 0x0(r29)
-    stw r0, 0x8(r1)
-    lwz r0, 0x0(r28)
-    stw r0, 0xc(r1)
-    mr r3, r31
-    addi r4, r1, 0x8
-    bl fn_800447CC
-    mr r5, r3
-    mr r3, r30
-    addi r4, r1, 0xc
-    bl fn_800379D4
-    addi r11, r1, 0x20
-    bl _restgpr_28
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+void fn_80044540(s32 *arg0, s32 *arg1) {
+    s32 v0;
+    s32 v1;
+    s8 *obj = (s8 *)fn_800443B8();
+    s32 scn = (s32)fn_800389F4();
+    v1 = *arg1;
+    v0 = *arg0;
+    s32 res = fn_800447CC(obj, &v1);
+    fn_800379D4(scn, &v0, (s8 **)res);
 }
 
-// asm_to_cpp: fn_800445B0
-asm void fn_800445B0(s32 *arg0, s32 *arg1) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_28
-    mr r28, r3
-    mr r29, r4
-    bl fn_800443B8
-    mr r31, r3
-    bl fn_800389F4
-    mr r30, r3
-    lwz r0, 0x0(r29)
-    stw r0, 0x8(r1)
-    lwz r0, 0x0(r28)
-    stw r0, 0xc(r1)
-    mr r3, r31
-    addi r4, r1, 0x8
-    bl fn_800447CC
-    mr r5, r3
-    mr r3, r30
-    addi r4, r1, 0xc
-    bl fn_80037B00
-    addi r11, r1, 0x20
-    bl _restgpr_28
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+void fn_800445B0(s32 *arg0, s32 *arg1) {
+    s32 v0;
+    s32 v1;
+    s8 *obj = (s8 *)fn_800443B8();
+    s32 scn = (s32)fn_800389F4();
+    v1 = *arg1;
+    v0 = *arg0;
+    s32 res = fn_800447CC(obj, &v1);
+    fn_80037B00(scn, &v0, res);
 }
 
 // asm_to_cpp: fn_80044620

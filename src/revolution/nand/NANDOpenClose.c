@@ -18,7 +18,7 @@ s32 NANDPrivateOpenAsync();
 void nandOpenCallback_8030FBF0();
 s32 NANDClose();
 s32 NANDCloseAsync();
-void NANDSimpleSafeOpen();
+s32 NANDSimpleSafeOpen();
 s32 nandSafeOpen();
 void NANDPrivateSafeOpenAsync();
 s32 nandSafeClose();
@@ -83,7 +83,7 @@ s32 NANDOpen();
 s32 NANDOpenAsync();
 s32 NANDPrivateOpen();
 s32 NANDPrivateOpenAsync();
-void NANDSimpleSafeOpen(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
+s32 NANDSimpleSafeOpen(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 extern void OSReport();
 extern void _restgpr_23();
 extern void _restgpr_25();
@@ -380,12 +380,8 @@ lbl_8030FD40:
     blr
 }
 
-// asm_to_cpp: NANDSimpleSafeOpen
-asm void NANDSimpleSafeOpen(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    nofralloc
-    li r8, 0x0
-    li r9, 0x0
-    b nandSafeOpen
+s32 NANDSimpleSafeOpen(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    return nandSafeOpen(arg0, arg1, arg2, arg3, arg4, 0, 0);
 }
 
 // asm_to_cpp: nandSafeOpen

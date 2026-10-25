@@ -22,7 +22,7 @@ extern float lbl_8049E618;
 extern float lbl_8049E620;
 
 void C_MTXOrtho(s32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6);
-f32 CosFIdx__Q24nw4r4mathFf(f32 farg0, s32 arg1);
+f32 CosFIdx__Q24nw4r4mathFf(f32 farg0);
 void DCInvalidateRange(s32 arg0, s32 arg1);
 M2C_UNK GXBegin(s32 arg0, s32 arg1, s32 arg2);
 void GXClearVtxDesc(void);
@@ -48,7 +48,7 @@ void GXSetZCompLoc(s32 arg0);
 void GXSetZMode(s32 arg0, s32 arg1, s32 arg2);
 void Invalidate__Q34nw4r3g3d8G3DStateFUl(s32 arg0);
 void LoadFog__Q34nw4r3g3d8G3DStateFi(s32 arg0);
-f32 SinFIdx__Q24nw4r4mathFf(f32 farg0, s32 arg1);
+f32 SinFIdx__Q24nw4r4mathFf(f32 farg0);
 void VEC3TransformNormal__Q24nw4r4mathFPQ34nw4r4math4VEC3PCQ34nw4r4math5MTX34PCQ34nw4r4math4VEC3(s8 *arg0, s8 *arg1, s8 *arg2);
 s32 _restfpr_26();
 s32 _restgpr_26();
@@ -68,7 +68,7 @@ void fn_80016A94(s32 arg0);
 s32 fn_80016A98(s8 *arg0, s32 *arg1, s32 arg2);
 s32 fn_80016B5C(s8 *arg0, s32 arg1);
 s32 fn_80016C30(s32 arg0, s32 arg1);
-s32 fn_80016CAC();
+s32 * fn_80016CAC(s32 arg0);
 void fn_80016CC0(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 M2C_UNK * fn_80016CCC(M2C_UNK *arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5, s32 arg7, s32 arg8);
 void fn_80016D40(s32 arg0);
@@ -111,8 +111,8 @@ void fn_80018BDC(void);
 void fn_80018BE0(f32 farg0, f32 farg1);
 void fn_80018BF0(u8 arg0, u8 arg1, u8 arg2, u8 arg3);
 void fn_80018C18(f32 farg0, f32 farg1, f32 farg2);
-M2C_UNK fn_80018C2C(f32 farg0);
-M2C_UNK fn_80018C3C(f32 farg0);
+f32 fn_80018C2C(f32 farg0);
+f32 fn_80018C3C(f32 farg0);
 void fn_80034B38(s32 arg0, s32 arg1);
 void fn_80034B88(s8 *arg0, s32 arg1);
 s32 fn_8005E7D4(s32 arg0, s32 arg1);
@@ -742,15 +742,11 @@ s32 fn_80016C30(s32 arg0, s32 arg1) {
     return (s32) (0);
 }
 
-// asm_to_cpp: fn_80016CAC
-asm s32 fn_80016CAC() {
-    nofralloc
-    cmpwi r3, 0x0
-    bge lbl_80016CBC
-    li r3, 0x0
-    b fn_8017ADBC
-lbl_80016CBC:
-    b fn_8017ADBC
+s32 * fn_80016CAC(s32 arg0) {
+    if (arg0 < 0) {
+        return fn_8017ADBC(0);
+    }
+    return fn_8017ADBC(arg0);
 }
 
 void fn_80016CC0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
@@ -2859,11 +2855,8 @@ asm void fn_80018BB8(s32 arg0) {
     blr
 }
 
-// asm_to_cpp: fn_80018BD4
-asm f32 fn_80018BD4(f32 farg0) {
-    nofralloc
-    fabs f1, f1
-    blr
+f32 fn_80018BD4(f32 farg0) {
+    return __fabsf(farg0);
 }
 
 void fn_80018BDC(void) {
@@ -2887,22 +2880,12 @@ void fn_80018C18(f32 farg0, f32 farg1, f32 farg2) {
     *(f32 *)0xCC008000 = farg2;
 }
 
-// asm_to_cpp: fn_80018C2C
-asm M2C_UNK fn_80018C2C(f32 farg0) {
-    nofralloc
-    la r3, lbl_8049E620
-    lfs f0, 0x1c(r3)
-    fmuls f1, f0, f1
-    b SinFIdx__Q24nw4r4mathFf
+f32 fn_80018C2C(f32 farg0) {
+    return SinFIdx__Q24nw4r4mathFf(((float *)&lbl_8049E620)[7] * farg0);
 }
 
-// asm_to_cpp: fn_80018C3C
-asm M2C_UNK fn_80018C3C(f32 farg0) {
-    nofralloc
-    la r3, lbl_8049E620
-    lfs f0, 0x1c(r3)
-    fmuls f1, f0, f1
-    b CosFIdx__Q24nw4r4mathFf
+f32 fn_80018C3C(f32 farg0) {
+    return CosFIdx__Q24nw4r4mathFf(((float *)&lbl_8049E620)[7] * farg0);
 }
 
 } // extern "C"

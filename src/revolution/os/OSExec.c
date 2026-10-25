@@ -130,8 +130,8 @@ extern float lbl_8049D1F0;
 extern float lbl_8049D1F8;
 extern float lbl_8049E2D8;
 extern float lbl_8049E2DC;
-extern float lbl_8049E2E0;
-extern float lbl_8049E2E8;
+extern s32 lbl_8049E2E0;
+extern s32 lbl_8049E2E8;
 extern float lbl_804A2760;
 extern float lbl_804A2761;
 extern float lbl_804A2762;
@@ -551,19 +551,12 @@ asm void Run() {
     blr
 }
 
-// asm_to_cpp: fn_80316B20
-asm void fn_80316B20() {
-    nofralloc
-    li r0, 0x1
-    stw r0, lbl_8049E2E8
-    blr
+void fn_80316B20(void) {
+    lbl_8049E2E8 = 1;
 }
 
-// asm_to_cpp: callback
-asm void callback() {
-    nofralloc
-    stw r3, lbl_8049E2E0
-    blr
+void callback(s32 arg0) {
+    lbl_8049E2E0 = arg0;
 }
 
 // asm_to_cpp: __OSBootDolSimple

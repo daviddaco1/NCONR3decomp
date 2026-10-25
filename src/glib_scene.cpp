@@ -2,6 +2,13 @@
 #include "m2c_macros.h"
 
 
+struct M2C_VC_Slot11_Scene {
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+    virtual void v8(); virtual void v9(); virtual void v10();
+    virtual s32 f(void *e4, void *arg1);
+};
+
 extern "C" {
 
 extern u8 lbl_80348138[];
@@ -155,7 +162,7 @@ s32 fn_800381F0(s8 *arg0);
 void fn_80038200(s32 *arg0, s32 arg1);
 void fn_80038210(s32 *arg0, s32 arg1);
 s32 fn_80038220(void);
-s32 fn_80038228();
+s32 fn_80038228(void *arg0, void *arg1);
 s8 ** fn_80038240(s32 *arg0, s32 *arg1);
 s32 fn_800382C8(s8 *arg0, s32 *arg1, s32 arg2);
 s32 fn_80038428(s8 *arg0);
@@ -2242,15 +2249,8 @@ s32 fn_80038220(void) {
     return (s32) (1);
 }
 
-// asm_to_cpp: fn_80038228
-asm s32 fn_80038228() {
-    nofralloc
-    mr r5, r4
-    lwz r4, 0xe4(r3)
-    lwz r12, 0x0(r3)
-    lwz r12, 0x34(r12)
-    mtctr r12
-    bctr
+s32 fn_80038228(void *arg0, void *arg1) {
+    return ((M2C_VC_Slot11_Scene *)arg0)->f(*(void **)((char *)arg0 + 0xE4), arg1);
 }
 
 // asm_to_cpp: fn_80038240

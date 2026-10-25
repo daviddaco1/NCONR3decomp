@@ -497,7 +497,7 @@ Material* Pane::GetMaterial(u32 index) const {
 } // namespace nw4r
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-extern "C" float lbl_8049D9D0;
+extern "C" void *lbl_8049D9D0;
 extern "C" void fn_801F5BE8();
 extern "C" void fn_801F5C0C();
 extern "C" void fn_801F5C10();
@@ -520,10 +520,7 @@ lbl_801F5BFC:
     bctr
 }
 
-// asm_to_cpp: fn_801F5C0C
-extern "C" asm void fn_801F5C0C() {
-    nofralloc
-    blr
+extern "C" void fn_801F5C0C() {
 }
 
 // asm_to_cpp: fn_801F5C10
@@ -542,16 +539,9 @@ lbl_801F5C24:
     bctr
 }
 
-// asm_to_cpp: fn_801F5C34
-extern "C" asm void fn_801F5C34() {
-    nofralloc
-    blr
+extern "C" void fn_801F5C34() {
 }
 
-// asm_to_cpp: fn_801F6740
-extern "C" asm void fn_801F6740() {
-    nofralloc
-    li r0, 0x0
-    stw r0, lbl_8049D9D0
-    blr
+extern "C" void fn_801F6740() {
+    lbl_8049D9D0 = 0;
 }

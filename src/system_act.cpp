@@ -296,14 +296,8 @@ lbl_8007F444:
     blr
 }
 
-// asm_to_cpp: fn_8007F4B8
-asm void fn_8007F4B8(s32 arg0, s32 arg1, s32 arg2) {
-    nofralloc
-    slwi r0, r5, 2
-    lis r5, lbl_80339788@ha
-    addi r5, r5, lbl_80339788@l
-    lwzx r5, r5, r0
-    b memcpy
+void fn_8007F4B8(s32 arg0, s32 arg1, s32 arg2) {
+    memcpy(arg0, arg1, ((s32 *)lbl_80339788)[arg2]);
 }
 
 // asm_to_cpp: fn_8007F4CC

@@ -206,7 +206,7 @@ void __ai_src_get_time(){
 }
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-extern float lbl_8049DE50;
+extern u32 lbl_8049DE50;
 extern float lbl_8049DE58;
 extern float lbl_8049DE5C;
 extern float lbl_8049DE60;
@@ -217,37 +217,20 @@ extern float lbl_8049DE70;
 extern float lbl_8049DE74;
 extern float lbl_8049DE78;
 extern float lbl_8049DE7C;
-extern void fn_8029AD3C();
 extern void _restgpr_27();
 extern void _savegpr_27();
-extern void fn_8029AD14();
-extern void fn_8029AD2C();
+u32 fn_8029AD14(void);
 
-// asm_to_cpp: fn_8029AD14
-asm void fn_8029AD14() {
-    nofralloc
-    lis r3, 0xcc00
-    lhz r4, 0x5030(r3)
-    lhz r0, 0x5032(r3)
-    rlwinm r3, r0, 0, 16, 26
-    rlwimi r3, r4, 16, 3, 15
-    blr
+u32 fn_8029AD14(void) {
+    return ((*(volatile u16 *)0xCC005030 & 0x1FFF) << 16) | (*(volatile u16 *)0xCC005032 & 0xFFE0);
 }
 
-// asm_to_cpp: fn_8029AD2C
-asm void fn_8029AD2C() {
-    nofralloc
-    lis r3, 0xcc00
-    lhz r0, 0x5036(r3)
-    clrlslwi r3, r0, 17, 5
-    blr
+s32 fn_8029AD2C(void) {
+    return (*(volatile u16 *)0xCC005036 & 0x7FFF) << 5;
 }
 
-// asm_to_cpp: fn_8029AD3C
-asm void fn_8029AD3C() {
-    nofralloc
-    lwz r3, lbl_8049DE50
-    blr
+s32 fn_8029AD3C(void) {
+    return lbl_8049DE50;
 }
 
 // asm_to_cpp: __AI_SRC_INIT

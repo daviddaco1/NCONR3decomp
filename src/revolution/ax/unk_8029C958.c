@@ -25,7 +25,7 @@ void fn_8029D3A8();
 u16 fn_8029D3B0();
 u16 fn_8029D3B8();
 u16 fn_8029D3C0();
-void fn_8029D3C8();
+void fn_8029D3C8(u32 arg0);
 void fn_8029D3E0();
 void fn_8029D3E8();
 void fn_8029D3F0();
@@ -84,7 +84,7 @@ extern void __AXGetAuxCOutput();
 s8 *fn_8029C960(void);
 void fn_8029C990();
 void fn_8029D354(void);
-void fn_8029D3C8();
+void fn_8029D3C8(u32 arg0);
 void fn_8029D3E0();
 void fn_8029D3E8();
 void fn_8029D3F0();
@@ -774,35 +774,25 @@ asm void fn_8029D354(void) {
     blr
 }
 
-// asm_to_cpp: fn_8029D3C8
-asm void fn_8029D3C8() {
-    nofralloc
-    cmplwi r3, 0x8000
-    ble lbl_8029D3D8
-    lis r3, 0x1
-    addi r3, r3, -0x8000
-lbl_8029D3D8:
-    sth r3, lbl_8049DEEE
-    blr
+#pragma dont_inline on
+void fn_8029D3C8(u32 arg0) {
+    if (arg0 > 0x8000) {
+        arg0 = 0x8000;
+    }
+    lbl_8049DEEE = arg0;
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+void fn_8029D3E0(u32 arg0) {
+    lbl_8049DEEC = arg0;
 }
 
-// asm_to_cpp: fn_8029D3E0
-asm void fn_8029D3E0() {
-    nofralloc
-    sth r3, lbl_8049DEEC
-    blr
+void fn_8029D3E8(u32 arg0) {
+    lbl_8049DEEA = arg0;
 }
 
-// asm_to_cpp: fn_8029D3E8
-asm void fn_8029D3E8() {
-    nofralloc
-    sth r3, lbl_8049DEEA
-    blr
+void fn_8029D3F0(u32 arg0) {
+    lbl_8049DEE8 = arg0;
 }
-
-// asm_to_cpp: fn_8029D3F0
-asm void fn_8029D3F0() {
-    nofralloc
-    sth r3, lbl_8049DEE8
-    blr
-}
+#pragma dont_inline reset

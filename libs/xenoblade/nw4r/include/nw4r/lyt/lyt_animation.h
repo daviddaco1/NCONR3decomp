@@ -107,7 +107,19 @@ struct AnimationContent {
  * AnimResource
  *
  ******************************************************************************/
+class Group;
+
 class AnimResource {
+public:
+    AnimResource();
+    u16 CalcAnimationNum(Group* pGroup, bool recursive) const;
+    u16 CalcAnimationNum(Pane* pPane, bool recursive) const;
+    u16 GetGroupNum() const;
+    const void* GetGroupArray() const;
+    bool IsDescendingBind() const;
+    u16 GetAnimationShareInfoNum() const;
+    const void* GetAnimationShareInfoArray() const;
+
 protected:
     const res::BinaryFileHeader* mpFileHeader;
     const res::AnimationBlock* mpResBlock;
@@ -341,6 +353,30 @@ enum AnimTargetTexPat {
 
     ANIMTARGET_TEXPATTURN_MAX
 };
+
+
+class Layout;
+
+namespace detail {
+class AnimPaneTree {
+public:
+    AnimPaneTree(Pane* pTargetPane, const AnimResource& animRes);
+    void Init();
+    void Set(Pane* pTargetPane, const AnimResource& animRes);
+    AnimTransform* Bind(Layout* pLayout, Pane* pTargetPane, ResourceAccessor* pResAccessor) const;
+
+    u16 GetLinkNum() const {
+        return mLinkNum;
+    }
+
+private:
+    AnimResource mAnimRes; // at 0x00
+    u16 mAnimPaneIdx;      // at 0x10
+    u16 mLinkNum;          // at 0x12
+    u16 mAnimMatIdx[9];    // at 0x14
+    u8 mAnimMatCnt;        // at 0x26
+};
+} // namespace detail
 
 } // namespace lyt
 } // namespace nw4r

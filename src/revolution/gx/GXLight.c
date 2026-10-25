@@ -159,7 +159,6 @@ extern float lbl_804A25D0;
 extern float lbl_804A25D4;
 extern float lbl_804A25D8;
 extern u8 jumptable_8037AE98[];
-extern void fn_802E2CA0();
 
 // asm_to_cpp: GXInitLightSpot
 asm void GXInitLightSpot(GXLightObj* light, f32 angle, GXSpotFn fn) {
@@ -435,12 +434,8 @@ lbl_802E2C1C:
     blr
 }
 
-// asm_to_cpp: fn_802E2CA0
-asm void fn_802E2CA0() {
-    nofralloc
-    lwz r0, 0xc(r3)
-    stw r0, 0x0(r4)
-    blr
+void fn_802E2CA0(void *arg0, void *arg1) {
+    *(u32 *)arg1 = *(u32 *)((char *)arg0 + 12);
 }
 
 // asm_to_cpp: GXLoadLightObjImm

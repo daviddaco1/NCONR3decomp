@@ -12,7 +12,7 @@ extern float lbl_8049E988;
 extern M2C_UNK lbl_8049E990;
 
 f32 Atan2FIdx__Q24nw4r4mathFff(f32 farg0, f32 farg1);
-f32 CosFIdx__Q24nw4r4mathFf(f32 farg0, s32 arg1);
+f32 CosFIdx__Q24nw4r4mathFf(f32 farg0);
 M2C_UNK GXBegin(s32 arg0, s32 arg1, s32 arg2);
 void GXClearVtxDesc(void);
 void GXGetProjectionv(s32 arg0);
@@ -34,7 +34,7 @@ void GXSetZCompLoc(s32 arg0);
 void GXSetZMode(s32 arg0, s32 arg1, s32 arg2);
 void GetViewport__Q34nw4r3g3d6CameraCFPfPfPfPfPfPf(s8 **arg0, f32 *arg1, f32 *arg2, f32 *arg3, f32 *arg4, f32 *arg5, f32 *arg6);
 void Invalidate__Q34nw4r3g3d8G3DStateFUl(s32 arg0);
-f32 SinFIdx__Q24nw4r4mathFf(f32 farg0, s32 arg1);
+f32 SinFIdx__Q24nw4r4mathFf(f32 farg0);
 s32 __cvt_fp2unsigned(f64 arg0);
 s32 _restgpr_23();
 s32 _restgpr_27();
@@ -72,8 +72,8 @@ void fn_80040D08(s8 *arg0, f32 *arg1);
 void fn_80040E60(s8 *arg0, f32 *arg1, s32 arg2);
 void fn_80041224(f32 *arg0, f32 *arg1, f32 *arg2, f32 farg0);
 f32 fn_80041264(s32 arg0, s32 arg1, f32 farg0, f32 farg1);
-M2C_UNK fn_80041290(f32 farg0);
-M2C_UNK fn_800412A0(f32 farg0);
+f32 fn_80041290(f32 farg0);
+f32 fn_800412A0(f32 farg0);
 void fn_800412B0(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_800412BC(void);
 void fn_800412C0(f32 farg0, f32 farg1);
@@ -1362,22 +1362,12 @@ f32 fn_80041264(s32 arg0, s32 arg1, f32 farg0, f32 farg1) {
     return M2C_FIELD(&lbl_8049E990, f32 *, 0x20) * Atan2FIdx__Q24nw4r4mathFff(farg0, farg1);
 }
 
-// asm_to_cpp: fn_80041290
-asm M2C_UNK fn_80041290(f32 farg0) {
-    nofralloc
-    la r3, lbl_8049E990
-    lfs f0, 0x30(r3)
-    fmuls f1, f0, f1
-    b SinFIdx__Q24nw4r4mathFf
+f32 fn_80041290(f32 farg0) {
+    return SinFIdx__Q24nw4r4mathFf(((float *)&lbl_8049E990)[12] * farg0);
 }
 
-// asm_to_cpp: fn_800412A0
-asm M2C_UNK fn_800412A0(f32 farg0) {
-    nofralloc
-    la r3, lbl_8049E990
-    lfs f0, 0x30(r3)
-    fmuls f1, f0, f1
-    b CosFIdx__Q24nw4r4mathFf
+f32 fn_800412A0(f32 farg0) {
+    return CosFIdx__Q24nw4r4mathFf(((float *)&lbl_8049E990)[12] * farg0);
 }
 
 void fn_800412B0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {

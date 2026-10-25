@@ -5144,15 +5144,11 @@ lbl_8013EE68:
     blr
 }
 
-// asm_to_cpp: fn_8013EE80
-asm s32 fn_8013EE80(s8 *arg0) {
-    nofralloc
-    lwz r4, 0x5c(r3)
-    lwz r5, 0x0(r4)
-    addi r0, r4, 0x4
-    stw r0, 0x5c(r3)
-    mr r3, r5
-    blr
+s32 fn_8013EE80(s8 *arg0) {
+    s32 *p = *(s32 **)(arg0 + 0x5C);
+    s32 val = *p;
+    *(s32 **)(arg0 + 0x5C) = p + 1;
+    return val;
 }
 
 void fn_8013EE98(s8 *arg0, s32 arg1) {
@@ -5163,15 +5159,10 @@ void fn_8013EE98(s8 *arg0, s32 arg1) {
     *temp_r5 = arg1;
 }
 
-// asm_to_cpp: fn_8013EEAC
-asm s32 fn_8013EEAC(s8 *arg0, s32 arg1) {
-    nofralloc
-    addi r0, r4, 0x3
-    clrrwi r4, r0, 2
-    lwz r3, 0xc(r3)
-    lwz r0, 0x5c(r3)
-    add r3, r0, r4
-    blr
+s32 fn_8013EEAC(s8 *arg0, s32 arg1) {
+    arg1 = (arg1 + 3) & ~3;
+    s8 *p = *(s8 **)(arg0 + 0xC);
+    return *(s32 *)(p + 0x5C) + arg1;
 }
 
 s32 fn_8013EEC4(s8 *arg0, s32 arg1) {

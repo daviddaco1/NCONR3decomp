@@ -14,7 +14,7 @@ extern M2C_UNK lbl_80377404;
 extern M2C_UNK lbl_80377448;
 extern M2C_UNK lbl_80453A50;
 extern M2C_UNK lbl_80453F78;
-extern u8 lbl_80457040;
+extern u8 lbl_80457040[];
 extern M2C_UNK lbl_8049CFC8;
 extern M2C_UNK lbl_8049CFD0;
 
@@ -64,7 +64,9 @@ s32 l2cu_lcb_disconnecting();
 // l2cu_find_lcb_by_handle: definicion C reemplazada por asm (ver abajo)
 
 
-// l2cu_get_conn_role: definicion C reemplazada por asm (ver abajo)
+u8 l2cu_get_conn_role(void) {
+    return lbl_80457040[1];
+}
 
 
 
@@ -404,14 +406,6 @@ lbl_802C2200:
     blr
 }
 
-// asm_to_cpp: l2cu_get_conn_role
-asm u8 l2cu_get_conn_role(void) {
-    nofralloc
-    lis r3, lbl_80457040@ha
-    addi r3, r3, lbl_80457040@l
-    lbz r3, 0x1(r3)
-    blr
-}
 
 // asm_to_cpp: l2cu_build_header
 asm s8 * l2cu_build_header() {

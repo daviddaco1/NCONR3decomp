@@ -11,7 +11,6 @@ s32 RecycleRegion_();
 u32 MEMCreateExpHeapEx();
 s32 MEMDestroyExpHeap();
 u32 MEMAllocFromExpHeapEx();
-void MEMFreeToExpHeap();
 u16 fn_8030C61C();
 u32 fn_8030C66C();
 s32 fn_8030C6F0();
@@ -87,7 +86,6 @@ u32 AllocFromTail_();
 u32 AllocUsedBlockFromFreeBlock_();
 u32 MEMAllocFromExpHeapEx(s8 *arg0, s32 arg1, s32 arg2);
 u32 MEMCreateExpHeapEx();
-void MEMFreeToExpHeap();
 void MEMGetSizeForMBlockExpHeap();
 extern void MEMiInitHeapHead();
 s32 RecycleRegion_();
@@ -617,7 +615,7 @@ lbl_8030C538:
 }
 
 // asm_to_cpp: MEMFreeToExpHeap
-asm void MEMFreeToExpHeap() {
+asm void MEMFreeToExpHeap(s8 *arg0, s8 *arg1) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1001,18 +999,10 @@ lbl_8030CA4C:
     blr
 }
 
-// asm_to_cpp: fn_8030CAD8
-asm void fn_8030CAD8(s8 *arg0, s32 arg1) {
-    nofralloc
-    mr r5, r3
-    lwz r3, 0x4(r3)
-    lwz r5, 0x8(r5)
-    b MEMAllocFromExpHeapEx
+void fn_8030CAD8(s8 *arg0, s32 arg1) {
+    MEMAllocFromExpHeapEx(*(void **)(arg0 + 4), arg1, *(s32 *)(arg0 + 8));
 }
 
-// asm_to_cpp: MEMGetSizeForMBlockExpHeap
-asm void MEMGetSizeForMBlockExpHeap() {
-    nofralloc
-    lwz r3, 0x4(r3)
-    b MEMFreeToExpHeap
+void MEMGetSizeForMBlockExpHeap(s8 *arg0, s32 arg1) {
+    MEMFreeToExpHeap(*(void **)(arg0 + 4), (void *)arg1);
 }

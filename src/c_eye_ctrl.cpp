@@ -506,50 +506,24 @@ lbl_800A19A4:
     blr
 }
 
-// asm_to_cpp: fn_800A19BC
-asm void fn_800A19BC(s32 arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_29
-    cmpwi r4, 0x0
-    bge lbl_800A19DC
-    li r4, 0x8
-lbl_800A19DC:
-    cmpwi r3, 0x0
-    bgt lbl_800A19EC
-    li r0, 0x0
-    stw r0, 0x1(r0)
-lbl_800A19EC:
-    lis r5, lbl_803A1D58@ha
-    addi r31, r5, lbl_803A1D58@l
-    lwz r0, 0x30(r31)
-    cmpwi r0, 0x0
-    bne lbl_800A1A3C
-    clrlwi r0, r3, 24
-    stb r0, 0xc(r31)
-    clrlwi r0, r4, 24
-    stb r0, 0xe(r31)
-    slwi r30, r3, 8
-    mulli r0, r4, 0x3c
-    add r29, r30, r0
-    mr r3, r29
-    bl fn_80170DFC
-    stw r3, 0x30(r31)
-    add r0, r3, r30
-    stw r0, 0x34(r31)
-    li r4, 0x0
-    mr r5, r29
-    bl memset
-lbl_800A1A3C:
-    addi r11, r1, 0x20
-    bl _restgpr_29
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+void fn_800A19BC(s32 arg0, s32 arg1) {
+    if (arg1 < 0) {
+        arg1 = 8;
+    }
+    if (arg0 <= 0) {
+        *(u32 *)1 = 0;
+    }
+    u8 *ctrl = lbl_803A1D58;
+    if (*(s32 *)(ctrl + 0x30) == 0) {
+        *(u8 *)(ctrl + 0xc) = arg0;
+        *(u8 *)(ctrl + 0xe) = arg1;
+        s32 off = arg0 << 8;
+        s32 total = off + arg1 * 0x3c;
+        void *ptr = (void *)fn_80170DFC(total);
+        *(void **)(ctrl + 0x30) = ptr;
+        *(void **)(ctrl + 0x34) = (char *)ptr + off;
+        memset((s32)ptr, 0, total);
+    }
 }
 
 // asm_to_cpp: fn_800A1A54
@@ -2290,44 +2264,27 @@ lbl_800A32A0:
     blr
 }
 
-// asm_to_cpp: fn_800A32B8
-asm s32 fn_800A32B8(s32 arg0) {
-    nofralloc
-    cmpwi r3, 0x6
-    beq lbl_800A3300
-    bge lbl_800A32D8
-    cmpwi r3, 0x4
-    bge lbl_800A32F8
-    cmpwi r3, 0x1
-    bge lbl_800A32F0
-    b lbl_800A3310
-lbl_800A32D8:
-    cmpwi r3, 0xb
-    beq lbl_800A3308
-    bge lbl_800A3310
-    cmpwi r3, 0x9
-    bge lbl_800A3310
-    b lbl_800A3308
-lbl_800A32F0:
-    li r3, 0x1
-    blr
-lbl_800A32F8:
-    li r3, 0x4
-    blr
-lbl_800A3300:
-    li r3, 0x6
-    blr
-lbl_800A3308:
-    li r3, 0x7
-    blr
-lbl_800A3310:
-    li r0, 0xc
-    xoris r4, r0, 0x8000
-    subi r0, r3, 0xc
-    addc r0, r0, r4
-    subfe r0, r0, r0
-    andc r3, r3, r0
-    blr
+s32 fn_800A32B8(s32 arg0) {
+    switch (arg0) {
+    case 1:
+    case 2:
+    case 3:
+        return 1;
+    case 4:
+    case 5:
+        return 4;
+    case 6:
+        return 6;
+    case 7:
+    case 8:
+    case 11:
+        return 7;
+    default:
+        if (arg0 >= 12) {
+            return 0;
+        }
+        return arg0;
+    }
 }
 
 // asm_to_cpp: fn_800A332C

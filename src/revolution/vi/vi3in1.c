@@ -2,7 +2,7 @@
 #include "m2c_macros.h"
 #include "m2c_protos.h"
 
-extern M2C_UNK lbl_8036BB88;
+extern u8 lbl_8036BB88[];
 extern M2C_UNK lbl_8040BED0;
 extern s32 lbl_8049CEB8;
 extern u8 lbl_8049CEBC;
@@ -52,10 +52,14 @@ void __VISetRGBModeImm();
 // __VISetGammaImm: definicion C reemplazada por asm (ver abajo)
 
 
-// __VISetGamma1_0: definicion C reemplazada por asm (ver abajo)
+void __VISetGamma1_0(void) {
+    __VISetGammaImm((s8 *)lbl_8036BB88 + 0x154);
+}
 
 
-// __VISetGamma: definicion C reemplazada por asm (ver abajo)
+void __VISetGamma(void) {
+    __VISetGammaImm((s8 *)lbl_8036BB88 + lbl_8049DD7C * 0x22);
+}
 
 
 // __VISetTrapFilter: definicion C reemplazada por asm (ver abajo)
@@ -1192,25 +1196,8 @@ asm void __VISetGammaImm(s8 *arg0) {
     blr
 }
 
-// asm_to_cpp: __VISetGamma1_0
-asm void __VISetGamma1_0(void) {
-    nofralloc
-    lis r3, lbl_8036BB88@ha
-    addi r3, r3, lbl_8036BB88@l
-    addi r3, r3, 0x154
-    b __VISetGammaImm
-}
 
-// asm_to_cpp: __VISetGamma
-asm void __VISetGamma(void) {
-    nofralloc
-    lwz r0, lbl_8049DD7C
-    lis r3, lbl_8036BB88@ha
-    addi r3, r3, lbl_8036BB88@l
-    mulli r0, r0, 0x22
-    add r3, r3, r0
-    b __VISetGammaImm
-}
+
 
 // asm_to_cpp: __VISetTrapFilter
 asm void __VISetTrapFilter(void) {

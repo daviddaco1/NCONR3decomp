@@ -218,7 +218,7 @@ extern void _savegpr_26();
 extern void _savegpr_27();
 extern void fn_8029B248();
 extern void fn_8029B4EC();
-extern void fn_8029B968();
+u32 fn_8029B968(u32 *arg0);
 
 // asm_to_cpp: ARCInitHandle
 asm BOOL ARCInitHandle(void* bin, ARCHandle* handle) {
@@ -822,29 +822,19 @@ lbl_8029B950:
     blr
 }
 
-// asm_to_cpp: fn_8029B968
-asm void fn_8029B968() {
-    nofralloc
-    lwz r4, 0x0(r3)
-    lwz r0, 0x4(r3)
-    lwz r3, 0x0(r4)
-    add r3, r3, r0
-    blr
+#pragma dont_inline on
+u32 fn_8029B968(u32 *arg0) {
+    return *(u32 *)arg0[0] + arg0[1];
 }
 
-// asm_to_cpp: ARCGetStartOffset
-asm u32 ARCGetStartOffset(ARCFileInfo* info) {
-    nofralloc
-    lwz r3, 0x8(r3)
-    blr
+u32 ARCGetStartOffset(ARCFileInfo* info) {
+    return info->length;
 }
 
-// asm_to_cpp: ARCGetLength
-asm u32 ARCGetLength(ARCFileInfo* info) {
-    nofralloc
-    li r3, 0x1
-    blr
+u32 ARCGetLength(ARCFileInfo* info) {
+    return 1;
 }
+#pragma dont_inline reset
 
 // asm_to_cpp: ARCReadDir
 asm BOOL ARCReadDir(ARCDir* dir, ARCDirEntry* entry) {

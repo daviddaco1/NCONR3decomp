@@ -4,29 +4,44 @@
 
 extern M2C_UNK lbl_804A26F8;
 
-/*
-Decompilation failure in function fn_8030CAF0:
+typedef struct MEMAllocator MEMAllocator;
 
-Unable to determine jump table for bctr instruction at unk_8030CAF0.s line 13.
+typedef void* (*MEMAllocFunc)(MEMAllocator* allocator, u32 size);
+typedef void (*MEMFreeFunc)(MEMAllocator* allocator, void* mem);
 
-There must be a read of a variable before the instruction
-which has a name starting with with "jtbl"/"jpt_"/"lbl_"/"jumptable_".
-*/
+typedef struct MEMAllocatorFuncs {
+    MEMAllocFunc alloc;
+    MEMFreeFunc free;
+} MEMAllocatorFuncs;
 
-/*
-Decompilation failure in function fn_8030CB00:
+struct MEMAllocator {
+    const MEMAllocatorFuncs* funcs;
+    void* heap;
+    u32 heapParam1;
+    u32 heapParam2;
+};
 
-Unable to determine jump table for bctr instruction at unk_8030CAF0.s line 21.
+typedef struct MEMLink {
+    void* prev;
+    void* next;
+} MEMLink;
 
-There must be a read of a variable before the instruction
-which has a name starting with with "jtbl"/"jpt_"/"lbl_"/"jumptable_".
-*/
+typedef struct MEMList {
+    void* head;
+    void* tail;
+    u16 numObjects;
+    u16 offset;
+} MEMList;
 
-void fn_8030CB10();
-void fn_8030CB2C();
-void fn_8030CB44();
-void fn_8030CBB4();
-s32 fn_8030CC20();
+#define MEM_GET_LINK(list, obj) ((MEMLink*)((char*)(obj) + (list)->offset))
+
+void* fn_8030CAF0(MEMAllocator* allocator, u32 size) {
+    return allocator->funcs->alloc(allocator, size);
+}
+
+void fn_8030CB00(MEMAllocator* allocator, void* mem) {
+    allocator->funcs->free(allocator, mem);
+}
 
 void fn_8030CB10(s8 *arg0, s32 arg1, s32 arg2) {
     M2C_FIELD(arg0, s8 **, 0) = &lbl_804A26F8;
@@ -35,86 +50,31 @@ void fn_8030CB10(s8 *arg0, s32 arg1, s32 arg2) {
     M2C_FIELD(arg0, s32 *, 0xC) = 0;
 }
 
+void fn_8030CB2C(s8 *arg0, u16 arg1) {
+    MEMList* list = (MEMList*)arg0;
+    list->offset = arg1;
+    list->head = NULL;
+    list->tail = NULL;
+    list->numObjects = 0;
+}
 
-void fn_8030CB44(s8 *arg0, s32 arg1);
-
-void fn_8030CBB4(s8 *arg0, s32 arg1);
-
-s32 fn_8030CC20(s8 *arg0, s32 arg1) {
-    if (arg1 == 0) {
-        return M2C_FIELD(arg0, s32 *, 0);
+void fn_8030CB44(s8 *arg0, void *object) {
+    MEMList* list = (MEMList*)arg0;
+    if (list->head == NULL) {
+        MEMLink* link = MEM_GET_LINK(list, object);
+        link->next = NULL;
+        link->prev = NULL;
+        list->head = object;
+        list->tail = object;
+        list->numObjects++;
+    } else {
+        MEMLink* link = MEM_GET_LINK(list, object);
+        link->prev = list->tail;
+        link->next = NULL;
+        MEM_GET_LINK(list, list->tail)->next = object;
+        list->tail = object;
+        list->numObjects++;
     }
-    return M2C_FIELD((arg1 + M2C_FIELD(arg0, u16 *, 0xA)), s32 *, 4);
-}
-
-// ---- Funciones aun sin C que matchee (asm generado) ----
-extern int fn_8030CAF0();
-extern int fn_8030CB00();
-void fn_8030CB2C();
-void fn_8030CB44();
-void fn_8030CBB4();
-
-// asm_to_cpp: fn_8030CAF0
-asm int fn_8030CAF0() {
-    nofralloc
-    lwz r5, 0x0(r3)
-    lwz r12, 0x0(r5)
-    mtctr r12
-    bctr
-}
-
-// asm_to_cpp: fn_8030CB00
-asm int fn_8030CB00() {
-    nofralloc
-    lwz r5, 0x0(r3)
-    lwz r12, 0x4(r5)
-    mtctr r12
-    bctr
-}
-
-// asm_to_cpp: fn_8030CB2C
-asm void fn_8030CB2C() {
-    nofralloc
-    li r0, 0x0
-    sth r4, 0xa(r3)
-    stw r0, 0x0(r3)
-    stw r0, 0x4(r3)
-    sth r0, 0x8(r3)
-    blr
-}
-
-// asm_to_cpp: fn_8030CB44
-asm void fn_8030CB44() {
-    nofralloc
-    lwz r0, 0x0(r3)
-    cmpwi r0, 0x0
-    bne lbl_8030CB7C
-    lhz r5, 0xa(r3)
-    li r0, 0x0
-    add r5, r4, r5
-    stw r0, 0x4(r5)
-    stw r0, 0x0(r5)
-    lhz r5, 0x8(r3)
-    stw r4, 0x0(r3)
-    addi r0, r5, 0x1
-    stw r4, 0x4(r3)
-    sth r0, 0x8(r3)
-    blr
-lbl_8030CB7C:
-    lhz r6, 0xa(r3)
-    li r0, 0x0
-    lwz r5, 0x4(r3)
-    stwux r5, r6, r4
-    stw r0, 0x4(r6)
-    lwz r5, 0x4(r3)
-    lhz r0, 0xa(r3)
-    add r5, r5, r0
-    stw r4, 0x4(r5)
-    lhz r5, 0x8(r3)
-    stw r4, 0x4(r3)
-    addi r0, r5, 0x1
-    sth r0, 0x8(r3)
-    blr
 }
 
 // asm_to_cpp: fn_8030CBB4
@@ -151,4 +111,11 @@ lbl_8030CC04:
     subi r0, r4, 0x1
     sth r0, 0x8(r3)
     blr
+}
+
+s32 fn_8030CC20(s8 *arg0, s32 arg1) {
+    if (arg1 == 0) {
+        return M2C_FIELD(arg0, s32 *, 0);
+    }
+    return M2C_FIELD((arg1 + M2C_FIELD(arg0, u16 *, 0xA)), s32 *, 4);
 }

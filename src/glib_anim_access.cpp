@@ -7,6 +7,20 @@ struct M2C_VC_2 { virtual void v0(); virtual void v1(); virtual void v2(); virtu
 struct M2C_VC_3 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual s32 f(s32 *, s32, s32);  };
 struct M2C_VC_4 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual s32 f(s32 *, s32, s32); };
 
+struct M2C_VC_Slot11 {
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+    virtual void v8(); virtual void v9(); virtual void v10();
+    virtual s32 f(void *arg, s32 kind);
+};
+
+struct M2C_VC_Slot12 {
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+    virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+    virtual s32 f(void *arg);
+};
+
 extern "C" {
 
 extern u8 lbl_80346C10[];
@@ -103,16 +117,16 @@ void fn_8002AB70(s32 *arg0, s32 arg1);
 void fn_8002AB78(s32 *arg0, s32 *arg1);
 s32 fn_8002AB84(s32 *arg0, s8 *arg1);
 s8 * fn_8002AC0C(s32 *arg0, s8 *arg1);
-s32 fn_8002AC94();
-s32 fn_8002ACAC();
-s32 fn_8002ACC4();
-s32 fn_8002ACDC();
-s32 fn_8002ACF4();
-s32 fn_8002AD0C();
-s32 fn_8002AD20();
-s32 fn_8002AD34();
-s32 fn_8002AD48();
-s32 fn_8002AD5C();
+s32 fn_8002AC94(s8 *arg0, void *arg1);
+s32 fn_8002ACAC(s8 *arg0, void *arg1);
+s32 fn_8002ACC4(s8 *arg0, void *arg1);
+s32 fn_8002ACDC(s8 *arg0, void *arg1);
+s32 fn_8002ACF4(s8 *arg0, void *arg1);
+s32 fn_8002AD0C(s8 *arg0, void *arg1);
+s32 fn_8002AD20(s8 *arg0, void *arg1);
+s32 fn_8002AD34(s8 *arg0, void *arg1);
+s32 fn_8002AD48(s8 *arg0, void *arg1);
+s32 fn_8002AD5C(s8 *arg0, void *arg1);
 s32 fn_8002AD70(s8 *arg0);
 s32 fn_8002AD78(s8 *arg0);
 s32 fn_8002AD80(s8 *arg0);
@@ -1476,109 +1490,44 @@ lbl_8002AC7C:
     blr
 }
 
-// asm_to_cpp: fn_8002AC94
-asm s32 fn_8002AC94() {
-    nofralloc
-    lwz r3, 0x8(r3)
-    li r5, 0x6
-    lwz r12, 0x0(r3)
-    lwz r12, 0x34(r12)
-    mtctr r12
-    bctr
+s32 fn_8002AC94(s8 *arg0, void *arg1) {
+    return ((M2C_VC_Slot11 *) *(s8 **)(arg0 + 8))->f(arg1, 6);
 }
 
-// asm_to_cpp: fn_8002ACAC
-asm s32 fn_8002ACAC() {
-    nofralloc
-    lwz r3, 0x8(r3)
-    li r5, 0x6
-    lwz r12, 0x0(r3)
-    lwz r12, 0x34(r12)
-    mtctr r12
-    bctr
+s32 fn_8002ACAC(s8 *arg0, void *arg1) {
+    return ((M2C_VC_Slot11 *) *(s8 **)(arg0 + 8))->f(arg1, 6);
 }
 
-// asm_to_cpp: fn_8002ACC4
-asm s32 fn_8002ACC4() {
-    nofralloc
-    lwz r3, 0x8(r3)
-    li r5, 0x6
-    lwz r12, 0x0(r3)
-    lwz r12, 0x34(r12)
-    mtctr r12
-    bctr
+s32 fn_8002ACC4(s8 *arg0, void *arg1) {
+    return ((M2C_VC_Slot11 *) *(s8 **)(arg0 + 8))->f(arg1, 6);
 }
 
-// asm_to_cpp: fn_8002ACDC
-asm s32 fn_8002ACDC() {
-    nofralloc
-    lwz r3, 0x8(r3)
-    li r5, 0x6
-    lwz r12, 0x0(r3)
-    lwz r12, 0x34(r12)
-    mtctr r12
-    bctr
+s32 fn_8002ACDC(s8 *arg0, void *arg1) {
+    return ((M2C_VC_Slot11 *) *(s8 **)(arg0 + 8))->f(arg1, 6);
 }
 
-// asm_to_cpp: fn_8002ACF4
-asm s32 fn_8002ACF4() {
-    nofralloc
-    lwz r3, 0x8(r3)
-    li r5, 0x6
-    lwz r12, 0x0(r3)
-    lwz r12, 0x34(r12)
-    mtctr r12
-    bctr
+s32 fn_8002ACF4(s8 *arg0, void *arg1) {
+    return ((M2C_VC_Slot11 *) *(s8 **)(arg0 + 8))->f(arg1, 6);
 }
 
-// asm_to_cpp: fn_8002AD0C
-asm s32 fn_8002AD0C() {
-    nofralloc
-    lwz r3, 0x8(r3)
-    lwz r12, 0x0(r3)
-    lwz r12, 0x38(r12)
-    mtctr r12
-    bctr
+s32 fn_8002AD0C(s8 *arg0, void *arg1) {
+    return ((M2C_VC_Slot12 *) *(s8 **)(arg0 + 8))->f(arg1);
 }
 
-// asm_to_cpp: fn_8002AD20
-asm s32 fn_8002AD20() {
-    nofralloc
-    lwz r3, 0x8(r3)
-    lwz r12, 0x0(r3)
-    lwz r12, 0x38(r12)
-    mtctr r12
-    bctr
+s32 fn_8002AD20(s8 *arg0, void *arg1) {
+    return ((M2C_VC_Slot12 *) *(s8 **)(arg0 + 8))->f(arg1);
 }
 
-// asm_to_cpp: fn_8002AD34
-asm s32 fn_8002AD34() {
-    nofralloc
-    lwz r3, 0x8(r3)
-    lwz r12, 0x0(r3)
-    lwz r12, 0x38(r12)
-    mtctr r12
-    bctr
+s32 fn_8002AD34(s8 *arg0, void *arg1) {
+    return ((M2C_VC_Slot12 *) *(s8 **)(arg0 + 8))->f(arg1);
 }
 
-// asm_to_cpp: fn_8002AD48
-asm s32 fn_8002AD48() {
-    nofralloc
-    lwz r3, 0x8(r3)
-    lwz r12, 0x0(r3)
-    lwz r12, 0x38(r12)
-    mtctr r12
-    bctr
+s32 fn_8002AD48(s8 *arg0, void *arg1) {
+    return ((M2C_VC_Slot12 *) *(s8 **)(arg0 + 8))->f(arg1);
 }
 
-// asm_to_cpp: fn_8002AD5C
-asm s32 fn_8002AD5C() {
-    nofralloc
-    lwz r3, 0x8(r3)
-    lwz r12, 0x0(r3)
-    lwz r12, 0x38(r12)
-    mtctr r12
-    bctr
+s32 fn_8002AD5C(s8 *arg0, void *arg1) {
+    return ((M2C_VC_Slot12 *) *(s8 **)(arg0 + 8))->f(arg1);
 }
 
 s32 fn_8002AD70(s8 *arg0) {

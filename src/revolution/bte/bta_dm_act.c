@@ -24,7 +24,11 @@ extern M2C_UNK lbl_8037333C;
 extern M2C_UNK lbl_80373378;
 extern M2C_UNK lbl_80453AD8;
 extern s32 lbl_80453B68;
-extern s32 lbl_80453B98;
+struct tBTA_DM_SEARCH_CB {
+    void (*p_search_cback)(int, void *);
+    char pad[0x78];
+};
+extern struct tBTA_DM_SEARCH_CB lbl_80453B98;
 extern M2C_UNK lbl_80453C14;
 extern s32 lbl_80453D18;
 extern M2C_UNK lbl_80453F78;
@@ -1237,15 +1241,8 @@ lbl_802A6E5C:
     blr
 }
 
-// asm_to_cpp: bta_dm_search_cmpl
-asm int bta_dm_search_cmpl() {
-    nofralloc
-    lis r4, lbl_80453B98@ha
-    li r3, 0x3
-    lwz r12, lbl_80453B98@l(r4)
-    li r4, 0x0
-    mtctr r12
-    bctr
+int bta_dm_search_cmpl(void) {
+    lbl_80453B98.p_search_cback(3, (void *)0);
 }
 
 // asm_to_cpp: bta_dm_disc_result
@@ -1485,15 +1482,8 @@ lbl_802A7140:
     blr
 }
 
-// asm_to_cpp: bta_dm_search_cancel_notify
-asm int bta_dm_search_cancel_notify() {
-    nofralloc
-    lis r4, lbl_80453B98@ha
-    li r3, 0x4
-    lwz r12, lbl_80453B98@l(r4)
-    li r4, 0x0
-    mtctr r12
-    bctr
+int bta_dm_search_cancel_notify(void) {
+    lbl_80453B98.p_search_cback(4, (void *)0);
 }
 
 // asm_to_cpp: bta_dm_find_services

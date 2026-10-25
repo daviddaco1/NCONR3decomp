@@ -26,7 +26,8 @@ extern u8 jumptable_8034E704[];
 extern u8 jumptable_8034E728[];
 extern u8 lbl_80339960[];
 extern u8 lbl_8033AD70[];
-extern u8 lbl_8034E000[];
+typedef void (*DispatchFn_8034E000)(void *, void *, void *);
+extern DispatchFn_8034E000 lbl_8034E000[];
 extern u8 lbl_8034E7D0[];
 extern u8 lbl_80390580[];
 extern u8 lbl_80395728[];
@@ -173,7 +174,7 @@ s32 fn_80113228(s32 arg0);
 s32 fn_80113270(s32 arg0);
 s32 fn_801132CC(u32 arg0, s32 arg1, s32 arg2);
 s32 fn_80113348(u32 arg0, s32 arg1);
-s32 fn_80113384();
+void fn_80113384(void *arg0, void *arg1, u32 *arg2);
 s32 fn_801133A4(s32 arg0, s32 arg1);
 s32 fn_801133B0(s32 arg0, s32 arg1);
 s32 fn_801133BC(s32 arg0, s32 arg1, s32 arg2);
@@ -416,53 +417,30 @@ lbl_80113374:
     blr
 }
 
-// asm_to_cpp: fn_80113384
-asm s32 fn_80113384() {
-    nofralloc
-    lwz r0, 0x0(r5)
-    srwi r0, r0, 24
-    slwi r0, r0, 2
-    lis r6, lbl_8034E000@ha
-    addi r6, r6, lbl_8034E000@l
-    lwzx r12, r6, r0
-    mtctr r12
-    bctr
+#pragma dont_inline on
+void fn_80113384(void *arg0, void *arg1, u32 *arg2) {
+    lbl_8034E000[*arg2 >> 24](arg0, arg1, arg2);
+}
+#pragma dont_inline reset
+
+s32 fn_801133A4(s32 arg0, s32 arg1) {
+    return ((s32 *)arg0)[arg1];
 }
 
-// asm_to_cpp: fn_801133A4
-asm s32 fn_801133A4(s32 arg0, s32 arg1) {
-    nofralloc
-    slwi r0, r4, 2
-    lwzx r3, r3, r0
-    blr
+s32 fn_801133B0(s32 arg0, s32 arg1) {
+    return ((s32 *)arg0)[arg1];
 }
 
-// asm_to_cpp: fn_801133B0
-asm s32 fn_801133B0(s32 arg0, s32 arg1) {
-    nofralloc
-    slwi r0, r4, 2
-    lwzx r3, r3, r0
-    blr
+s32 fn_801133BC(s32 arg0, s32 arg1, s32 arg2) {
+    volatile s32 *arr = (volatile s32 *)arg0;
+    arr[arg1] = arg2;
+    return arr[arg1];
 }
 
-// asm_to_cpp: fn_801133BC
-asm s32 fn_801133BC(s32 arg0, s32 arg1, s32 arg2) {
-    nofralloc
-    slwi r0, r4, 2
-    stwx r5, r3, r0
-    lwzx r3, r3, r0
-    blr
-}
-
-// asm_to_cpp: fn_801133CC
-asm s32 fn_801133CC(s32 arg0, s32 arg1, s32 arg2) {
-    nofralloc
-    slwi r4, r4, 2
-    lwzx r0, r3, r4
-    add r0, r0, r5
-    stwx r0, r3, r4
-    lwzx r3, r3, r4
-    blr
+s32 fn_801133CC(s32 arg0, s32 arg1, s32 arg2) {
+    volatile s32 *arr = (volatile s32 *)arg0;
+    arr[arg1] += arg2;
+    return arr[arg1];
 }
 
 // asm_to_cpp: fn_801133E4

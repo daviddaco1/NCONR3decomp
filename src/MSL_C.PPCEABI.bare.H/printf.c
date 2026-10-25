@@ -1436,7 +1436,7 @@ void sprintf_s(){
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
 extern float at_wstringBase0_8049C400;
-extern float lbl_8049C408;
+extern s32 lbl_8049C408;
 extern u8 at_2934_8035FD00[];
 extern u8 at_stringBase0_8033B9A0[];
 extern u8 jumptable_8035FC20[];
@@ -2677,9 +2677,6 @@ asm int rand() {
     blr
 }
 
-// asm_to_cpp: fn_8019B578
-asm void fn_8019B578() {
-    nofralloc
-    stw r3, lbl_8049C408
-    blr
+void fn_8019B578(s32 arg0) {
+    lbl_8049C408 = arg0;
 }

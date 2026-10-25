@@ -21,7 +21,7 @@ extern M2C_UNK lbl_80377030;
 extern M2C_UNK lbl_80377050;
 extern M2C_UNK lbl_80453A50;
 extern M2C_UNK lbl_80453F78;
-extern u8 lbl_80457040;
+extern u8 lbl_80457040[];
 
 void l2c_link_hci_conn_req();
 s32 l2c_link_hci_conn_comp();
@@ -33,7 +33,7 @@ u8 l2c_link_send_to_lower();
 void l2c_link_check_send_pkts();
 void l2c_link_adjust_allocation();
 void l2c_link_process_num_completed_pkts();
-void l2c_link_processs_num_bufs();
+void l2c_link_processs_num_bufs(s32 arg0);
 s8 * l2cap_link_chk_pkt_start();
 s32 l2cap_link_chk_pkt_end();
 void l2c_link_role_changed();
@@ -108,7 +108,7 @@ void l2c_link_hci_conn_req(u8 *arg0);
 s32 l2c_link_hci_disc_comp();
 s32 l2c_link_hci_qos_violation(s32 arg0);
 void l2c_link_process_num_completed_pkts();
-void l2c_link_processs_num_bufs();
+void l2c_link_processs_num_bufs(s32 arg0);
 void l2c_link_role_change_failed(void);
 void l2c_link_role_changed();
 void l2c_link_sec_comp();
@@ -1104,14 +1104,10 @@ lbl_802C0A6C:
     blr
 }
 
-// asm_to_cpp: l2c_link_processs_num_bufs
-asm void l2c_link_processs_num_bufs() {
-    nofralloc
-    lis r4, lbl_80457040@ha
-    addi r4, r4, lbl_80457040@l
-    sth r3, 0x2(r4)
-    sth r3, 0x4(r4)
-    blr
+void l2c_link_processs_num_bufs(s32 arg0) {
+    u8 *p = lbl_80457040;
+    *(u16 *)(p + 2) = arg0;
+    *(u16 *)(p + 4) = arg0;
 }
 
 // asm_to_cpp: l2cap_link_chk_pkt_start

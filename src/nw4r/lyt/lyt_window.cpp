@@ -640,8 +640,8 @@ Material* Window::GetFrameMaterial(u32 idx) const {
 } // namespace nw4r
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-extern "C" float lbl_8049D9D0;
-extern "C" float lbl_8049D9F0;
+extern "C" void *lbl_8049D9D0;
+extern "C" void *lbl_8049D9F0;
 extern "C" float lbl_804A1EE8;
 extern "C" float lbl_804A1EF0;
 extern "C" float lbl_804A1EF8;
@@ -1037,10 +1037,6 @@ lbl_801FA714:
     blr
 }
 
-// asm_to_cpp: fn_801FBE3C
-extern "C" asm void fn_801FBE3C() {
-    nofralloc
-    la r0, lbl_8049D9D0
-    stw r0, lbl_8049D9F0
-    blr
+extern "C" void fn_801FBE3C() {
+    lbl_8049D9F0 = &lbl_8049D9D0;
 }

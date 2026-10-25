@@ -22,14 +22,10 @@ void Bounding::DrawSelf(const DrawInfo& rInfo) {
 } // namespace nw4r
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-extern "C" float lbl_8049D9D0;
-extern "C" float lbl_8049D9F8;
+extern "C" void *lbl_8049D9D0;
+extern "C" void *lbl_8049D9F8;
 extern "C" void fn_801FBEE8();
 
-// asm_to_cpp: fn_801FBEE8
-extern "C" asm void fn_801FBEE8() {
-    nofralloc
-    la r0, lbl_8049D9D0
-    stw r0, lbl_8049D9F8
-    blr
+extern "C" void fn_801FBEE8() {
+    lbl_8049D9F8 = &lbl_8049D9D0;
 }

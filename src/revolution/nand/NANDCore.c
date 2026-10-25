@@ -16,7 +16,7 @@ extern s32 lbl_8049D180;
 extern M2C_UNK lbl_8049D188;
 extern M2C_UNK lbl_8049D18C;
 extern u8 s_currentDir_8037F600;
-extern u8 s_homeDir_804648E0;
+extern u8 s_homeDir_804648E0[];
 extern s32 s_libState_8049E260;
 
 void nandRemoveTailToken();
@@ -1515,12 +1515,8 @@ lbl_80311E18:
     blr
 }
 
-// asm_to_cpp: nandGetHomeDir
-asm u8 *nandGetHomeDir(void) {
-    nofralloc
-    lis r3, s_homeDir_804648E0@ha
-    addi r3, r3, s_homeDir_804648E0@l
-    blr
+u8 *nandGetHomeDir(void) {
+    return s_homeDir_804648E0;
 }
 
 void NANDInitBanner(s8 *arg0, s32 arg1, s32 *arg2, s32 *arg3) {

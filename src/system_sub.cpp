@@ -948,55 +948,24 @@ loop_5:
     goto loop_5;
 }
 
-// asm_to_cpp: fn_8005E37C
-asm s8 * fn_8005E37C(s32 arg0) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_29
-    mr r29, r3
-    cmpwi r3, 0x0
-    bge lbl_8005E3A4
-    li r3, 0x0
-    b lbl_8005E404
-lbl_8005E3A4:
-    lbz r0, lbl_8049D4F8
-    cmpwi r0, 0x0
-    bne lbl_8005E3B8
-    li r3, 0x0
-    b lbl_8005E404
-lbl_8005E3B8:
-    li r31, 0x0
-    li r30, 0x0
-lbl_8005E3C0:
-    mr r3, r30
-    bl fn_8005E2CC
-    cmpwi r3, 0x0
-    beq lbl_8005E3F4
-    lwz r0, 0xc(r3)
-    cmpw r0, r29
-    bne lbl_8005E3F4
-    lwz r0, 0x0(r3)
-    rlwinm r0, r0, 0, 4, 4
-    cmpwi r0, 0x0
-    bne lbl_8005E3F0
-    b lbl_8005E404
-lbl_8005E3F0:
-    mr r31, r3
-lbl_8005E3F4:
-    addi r30, r30, 0x1
-    cmpwi r30, 0x19
-    blt lbl_8005E3C0
-    mr r3, r31
-lbl_8005E404:
-    addi r11, r1, 0x20
-    bl _restgpr_29
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+s8 * fn_8005E37C(s32 arg0) {
+    if (arg0 < 0) {
+        return 0;
+    }
+    if (lbl_8049D4F8 == 0) {
+        return 0;
+    }
+    s8 *ret = 0;
+    for (s32 i = 0; i < 25; i++) {
+        s8 *p = (s8 *)fn_8005E2CC(i);
+        if (p != 0 && *(s32 *)(p + 0xc) == arg0) {
+            if (!(*(u32 *)p & 0x08000000)) {
+                return p;
+            }
+            ret = p;
+        }
+    }
+    return ret;
 }
 
 s8 * fn_8005E41C(u32 arg0) {

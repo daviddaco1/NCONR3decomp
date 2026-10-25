@@ -60,10 +60,10 @@ def main():
     os.makedirs('build/fn_diff', exist_ok=True)
     path = sys.argv[3] if len(sys.argv) > 3 else f'build/fn_diff/{fn}.c'
     if len(sys.argv) <= 3:
-        r = subprocess.run([sys.executable, os.path.join(os.environ['M2C_DIR'], 'm2c.py'), '-t', 'ppc-mwcc-c',
+        r = subprocess.run([sys.executable, os.path.join((os.environ.get('M2C_DIR') or os.path.abspath('build/m2c')), 'm2c.py'), '-t', 'ppc-mwcc-c',
                             '--valid-syntax', '--context', os.path.abspath('build/m2c_ctx.h'), '-f', fn,
                             os.path.abspath(f'build/RNEPDA/asm/{split.rsplit(".", 1)[0]}.s')],
-                           capture_output=True, text=True, cwd=os.environ['M2C_DIR'])
+                           capture_output=True, text=True, cwd=(os.environ.get('M2C_DIR') or os.path.abspath('build/m2c')))
         c = fixup(r.stdout)
         used = set(re.findall(r'\b((?:lbl|jumptable)_[0-9A-F]{8}\w*)', c))
         data = [l for l in open('build/m2c_data.h') if any(re.search(r'\b' + u + r'\b', l) for u in used)]

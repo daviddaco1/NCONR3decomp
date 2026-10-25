@@ -15,7 +15,11 @@ extern u8 lbl_8034A530[];
 extern u8 lbl_8034C914[];
 extern u8 lbl_8034C9E0[];
 extern u8 lbl_80390580[];
-extern u8 lbl_80390668[];
+struct SubStruct_80390668 {
+    s32 count;
+    s32 entries[100];
+};
+extern struct SubStruct_80390668 lbl_80390668;
 extern u8 lbl_803906D0[];
 extern u8 lbl_80395728[];
 extern u8 lbl_803A1C88[];
@@ -202,14 +206,8 @@ lbl_80057764:
     blr
 }
 
-// asm_to_cpp: fn_80057780
-asm void fn_80057780(void) {
-    nofralloc
-    lis r3, lbl_80390580@ha
-    lwz r0, lbl_80390580@l(r3)
-    rlwinm r0, r0, 0, 31, 28
-    stw r0, lbl_80390580@l(r3)
-    blr
+void fn_80057780(void) {
+    *(u32 *)&lbl_80390580 &= ~6;
 }
 
 // asm_to_cpp: fn_80057794
@@ -448,14 +446,8 @@ lbl_80057A64:
     blr
 }
 
-// asm_to_cpp: fn_80057A9C
-asm void fn_80057A9C(void) {
-    nofralloc
-    lis r3, lbl_80390580@ha
-    lwz r0, lbl_80390580@l(r3)
-    ori r0, r0, 0x1
-    stw r0, lbl_80390580@l(r3)
-    blr
+void fn_80057A9C(void) {
+    *(u32 *)&lbl_80390580 |= 1;
 }
 
 // asm_to_cpp: fn_80057AB0
@@ -1164,22 +1156,14 @@ lbl_80058414:
     blr
 }
 
-// asm_to_cpp: fn_8005843C
-asm void fn_8005843C(s32 arg0) {
-    nofralloc
-    cmpwi r3, 0x0
-    beqlr
-    lis r5, lbl_80390668@ha
-    addi r4, r5, lbl_80390668@l
-    lwz r0, lbl_80390668@l(r5)
-    slwi r0, r0, 2
-    add r4, r4, r0
-    stw r3, 0x4(r4)
-    lwz r3, lbl_80390668@l(r5)
-    addi r0, r3, 0x1
-    stw r0, lbl_80390668@l(r5)
-    blr
+#pragma dont_inline on
+void fn_8005843C(s32 arg0) {
+    if (arg0 != 0) {
+        lbl_80390668.entries[lbl_80390668.count] = arg0;
+        lbl_80390668.count = lbl_80390668.count + 1;
+    }
 }
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_8005846C
 asm void fn_8005846C(void) {

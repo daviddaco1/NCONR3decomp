@@ -690,9 +690,9 @@ u32 * fn_8014107C(s32 arg0, s8 *arg1, u32 *arg2);
 void fn_80141254(s32 arg0, s32 arg1, s32 arg2);
 s32 fn_8014125C();
 s32 *** fn_80141438(s32 arg0, s32 ***arg1, s32 ***arg2, s32 arg3, s32 ***arg4);
-s32 fn_80141624();
+u32 * fn_80141624(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4);
 s32 ** fn_80141634(s32 ***arg0, u32 arg1, s32 ***arg2);
-s32 fn_80141670();
+s32 fn_80141670(s8 *arg0, s32 *arg1, s32 arg2);
 s32 *** fn_80141694(s32 ***arg0, s32 ***arg1, s32 ***arg2, s32 arg3, s32 ***arg4);
 s32 fn_80141954();
 s32 *** fn_80142028(s32 ***arg0, s32 ***arg1, s32 ***arg2, u32 arg3, s32 ***arg4);
@@ -3734,15 +3734,14 @@ lbl_80141608:
     blr
 }
 
-// asm_to_cpp: fn_80141624
-asm s32 fn_80141624() {
-    nofralloc
-    cmpwi r7, 0x0
-    beq lbl_80141630
-    b fn_80113DE0
-lbl_80141630:
-    b fn_80164EC8
+#pragma dont_inline on
+u32 * fn_80141624(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
+    if (arg4 != 0) {
+        return fn_80113DE0((M2C_UNK ***)arg0, (M2C_UNK **)arg1, (u32 **)arg2, (u32 *)arg3);
+    }
+    return fn_80164EC8((s32 **)arg0, (u32 *)arg1, (u32 *)arg2, (u32 *)arg3);
 }
+#pragma dont_inline reset
 
 s32 ** fn_80141634(s32 ***arg0, u32 arg1, s32 ***arg2) {
     s32 ***var_r0;
@@ -3758,20 +3757,14 @@ s32 ** fn_80141634(s32 ***arg0, u32 arg1, s32 ***arg2) {
     return (s32 **) ((s32 **) var_r0);
 }
 
-// asm_to_cpp: fn_80141670
-asm s32 fn_80141670() {
-    nofralloc
-    cmpwi r5, 0x0
-    beq lbl_80141688
-    lwz r3, 0x64(r3)
-    lwz r0, 0x0(r4)
-    add r3, r3, r0
-    blr
-lbl_80141688:
-    lwz r4, 0x0(r4)
-    b fn_8013EEAC
-    blr
+#pragma dont_inline on
+s32 fn_80141670(s8 *arg0, s32 *arg1, s32 arg2) {
+    if (arg2 != 0) {
+        return *(s32 *)(arg0 + 0x64) + *arg1;
+    }
+    return fn_8013EEAC(arg0, *arg1);
 }
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_80141694
 asm s32 *** fn_80141694(s32 ***arg0, s32 ***arg1, s32 ***arg2, s32 arg3, s32 ***arg4) {
@@ -15151,34 +15144,16 @@ lbl_8014BE98:
     blr
 }
 
-// asm_to_cpp: fn_8014BEB4
-asm void fn_8014BEB4(void) {
-    nofralloc
-    lis r3, lbl_80390580@ha
-    lwz r0, lbl_80390580@l(r3)
-    rlwinm r0, r0, 0, 30, 28
-    stw r0, lbl_80390580@l(r3)
-    blr
+void fn_8014BEB4(void) {
+    *(u32 *)&lbl_80390580 &= ~4;
 }
 
-// asm_to_cpp: fn_8014BEC8
-asm void fn_8014BEC8(void) {
-    nofralloc
-    lis r3, lbl_80390580@ha
-    lwz r0, lbl_80390580@l(r3)
-    ori r0, r0, 0x4
-    stw r0, lbl_80390580@l(r3)
-    blr
+void fn_8014BEC8(void) {
+    *(u32 *)&lbl_80390580 |= 4;
 }
 
-// asm_to_cpp: fn_8014BEDC
-asm void fn_8014BEDC(void) {
-    nofralloc
-    lis r3, lbl_80390580@ha
-    lwz r0, lbl_80390580@l(r3)
-    ori r0, r0, 0x2
-    stw r0, lbl_80390580@l(r3)
-    blr
+void fn_8014BEDC(void) {
+    *(u32 *)&lbl_80390580 |= 2;
 }
 
 // asm_to_cpp: fn_8014BEF0

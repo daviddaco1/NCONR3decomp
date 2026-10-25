@@ -51,6 +51,59 @@ struct HermiteKey {
 };
 
 } // namespace res
+AnimResource::AnimResource()
+    : mpFileHeader(NULL),
+      mpResBlock(NULL),
+      mpTagBlock(NULL),
+      mpShareBlock(NULL) {}
+
+
+u16 AnimResource::GetGroupNum() const {
+    if (mpTagBlock != NULL) {
+        return mpTagBlock->groupNum;
+    }
+    return 0;
+}
+
+const void* AnimResource::GetGroupArray() const {
+    if (mpTagBlock != NULL) {
+        return detail::ConvertOffsToPtr<void>(mpTagBlock, mpTagBlock->groupsOffset);
+    }
+    return NULL;
+}
+
+bool AnimResource::IsDescendingBind() const {
+    if (mpTagBlock != NULL) {
+        return mpTagBlock->flag & 1;
+    }
+    return false;
+}
+
+u16 AnimResource::GetAnimationShareInfoNum() const {
+    if (mpShareBlock != NULL) {
+        return mpShareBlock->shareNum;
+    }
+    return 0;
+}
+
+const void* AnimResource::GetAnimationShareInfoArray() const {
+    if (mpShareBlock != NULL) {
+        return detail::ConvertOffsToPtr<void>(mpShareBlock, mpShareBlock->animShareInfoOffset);
+    }
+    return NULL;
+}
+
+
+u16 AnimResource::CalcAnimationNum(Group* pGroup, bool recursive) const {
+    u16 num = 0;
+
+    NW4R_UT_LINKLIST_FOREACH (it, pGroup->GetPaneList(), {
+        num += CalcAnimationNum(it->mTarget, recursive);
+    })
+
+    return num;
+}
+
 } // namespace lyt
 } // namespace nw4r
 
@@ -338,7 +391,10 @@ AnimTransformBasic::~AnimTransformBasic() {
     }
 }
 
-// SetResource__Q34nw4r3lyt18AnimTransformBasicFPCQ44nw4r3lyt3res14AnimationBlockPQ34nw4r3lyt16ResourceAccessor: definicion C reemplazada por asm (ver abajo)
+void AnimTransformBasic::SetResource(const res::AnimationBlock* pBlock,
+                                     ResourceAccessor* pAccessor) {
+    SetResource(pBlock, pAccessor, pBlock->animContNum);
+}
 
 
 void AnimTransformBasic::Bind(Pane* pPane, bool recursive) {
@@ -501,6 +557,17 @@ void UnbindAnimationLink(AnimationLinkList* pAnimList,
             currIt->Reset();
         }
     })
+}
+
+
+void AnimPaneTree::Init() {
+    mLinkNum = 0;
+    mAnimPaneIdx = 0;
+    mAnimMatCnt = 0;
+
+    for (int i = 0; i < 9; i++) {
+        mAnimMatIdx[i] = 0;
+    }
 }
 
 } // namespace detail
@@ -761,15 +828,6 @@ lbl_801FF320:
     blr
 }
 
-// asm_to_cpp: SetResource__Q34nw4r3lyt18AnimTransformBasicFPCQ44nw4r3lyt3res14AnimationBlockPQ34nw4r3lyt16ResourceAccessor
-extern "C" asm void SetResource__Q34nw4r3lyt18AnimTransformBasicFPCQ44nw4r3lyt3res14AnimationBlockPQ34nw4r3lyt16ResourceAccessor() {
-    nofralloc
-    lwz r12, 0x0(r3)
-    lhz r6, 0xe(r4)
-    lwz r12, 0x10(r12)
-    mtctr r12
-    bctr
-}
 
 // asm_to_cpp: SetResource__Q34nw4r3lyt18AnimTransformBasicFPCQ44nw4r3lyt3res14AnimationBlockPQ34nw4r3lyt16ResourceAccessorUs
 extern "C" asm void SetResource__Q34nw4r3lyt18AnimTransformBasicFPCQ44nw4r3lyt3res14AnimationBlockPQ34nw4r3lyt16ResourceAccessorUs() {
@@ -1317,16 +1375,6 @@ lbl_801FFCF4:
     blr
 }
 
-// asm_to_cpp: __ct__Q34nw4r3lyt12AnimResourceFv
-extern "C" asm void __ct__Q34nw4r3lyt12AnimResourceFv() {
-    nofralloc
-    li r0, 0x0
-    stw r0, 0x0(r3)
-    stw r0, 0x4(r3)
-    stw r0, 0x8(r3)
-    stw r0, 0xc(r3)
-    blr
-}
 
 // asm_to_cpp: Set__Q34nw4r3lyt12AnimResourceFPCv
 extern "C" asm void Set__Q34nw4r3lyt12AnimResourceFPCv() {
@@ -1410,73 +1458,10 @@ lbl_801FFE3C:
     blr
 }
 
-// asm_to_cpp: GetGroupNum__Q34nw4r3lyt12AnimResourceCFv
-extern "C" asm void GetGroupNum__Q34nw4r3lyt12AnimResourceCFv() {
-    nofralloc
-    lwz r3, 0x8(r3)
-    cmpwi r3, 0x0
-    beq lbl_801FFE6C
-    lhz r3, 0xa(r3)
-    blr
-lbl_801FFE6C:
-    li r3, 0x0
-    blr
-}
 
-// asm_to_cpp: GetGroupArray__Q34nw4r3lyt12AnimResourceCFv
-extern "C" asm void GetGroupArray__Q34nw4r3lyt12AnimResourceCFv() {
-    nofralloc
-    lwz r3, 0x8(r3)
-    cmpwi r3, 0x0
-    beq lbl_801FFE8C
-    lwz r0, 0x10(r3)
-    add r3, r3, r0
-    blr
-lbl_801FFE8C:
-    li r3, 0x0
-    blr
-}
 
-// asm_to_cpp: IsDescendingBind__Q34nw4r3lyt12AnimResourceCFv
-extern "C" asm void IsDescendingBind__Q34nw4r3lyt12AnimResourceCFv() {
-    nofralloc
-    lwz r3, 0x8(r3)
-    cmpwi r3, 0x0
-    beq lbl_801FFEAC
-    lbz r0, 0x18(r3)
-    clrlwi r3, r0, 31
-    blr
-lbl_801FFEAC:
-    li r3, 0x0
-    blr
-}
 
-// asm_to_cpp: GetAnimationShareInfoNum__Q34nw4r3lyt12AnimResourceCFv
-extern "C" asm void GetAnimationShareInfoNum__Q34nw4r3lyt12AnimResourceCFv() {
-    nofralloc
-    lwz r3, 0xc(r3)
-    cmpwi r3, 0x0
-    beq lbl_801FFEC8
-    lhz r3, 0xc(r3)
-    blr
-lbl_801FFEC8:
-    li r3, 0x0
-    blr
-}
 
-// asm_to_cpp: GetAnimationShareInfoArray__Q34nw4r3lyt12AnimResourceCFv
-extern "C" asm void GetAnimationShareInfoArray__Q34nw4r3lyt12AnimResourceCFv() {
-    nofralloc
-    lwz r3, 0xc(r3)
-    cmpwi r3, 0x0
-    beq lbl_801FFEE8
-    lwz r0, 0x8(r3)
-    add r3, r3, r0
-    blr
-lbl_801FFEE8:
-    li r3, 0x0
-    blr
-}
 
 // asm_to_cpp: CalcAnimationNum__Q34nw4r3lyt12AnimResourceCFPQ34nw4r3lyt4Paneb
 extern "C" asm void CalcAnimationNum__Q34nw4r3lyt12AnimResourceCFPQ34nw4r3lyt4Paneb() {
@@ -1541,57 +1526,7 @@ lbl_801FFF98:
     blr
 }
 
-// asm_to_cpp: CalcAnimationNum__Q34nw4r3lyt12AnimResourceCFPQ34nw4r3lyt5Groupb
-extern "C" asm void CalcAnimationNum__Q34nw4r3lyt12AnimResourceCFPQ34nw4r3lyt5Groupb() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_27
-    lwz r31, 0x10(r4)
-    mr r27, r3
-    mr r28, r5
-    addi r30, r4, 0x10
-    li r29, 0x0
-    b lbl_8020000C
-lbl_801FFFF4:
-    lwz r4, 0x8(r31)
-    mr r3, r27
-    mr r5, r28
-    bl CalcAnimationNum__Q34nw4r3lyt12AnimResourceCFPQ34nw4r3lyt4Paneb
-    add r29, r29, r3
-    lwz r31, 0x0(r31)
-lbl_8020000C:
-    cmplw r31, r30
-    bne lbl_801FFFF4
-    addi r11, r1, 0x20
-    mr r3, r29
-    bl _restgpr_27
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
 
-// asm_to_cpp: Init__Q44nw4r3lyt6detail12AnimPaneTreeFv
-extern "C" asm void Init__Q44nw4r3lyt6detail12AnimPaneTreeFv() {
-    nofralloc
-    li r0, 0x0
-    sth r0, 0x12(r3)
-    sth r0, 0x10(r3)
-    stb r0, 0x26(r3)
-    sth r0, 0x14(r3)
-    sth r0, 0x16(r3)
-    sth r0, 0x18(r3)
-    sth r0, 0x1a(r3)
-    sth r0, 0x1c(r3)
-    sth r0, 0x1e(r3)
-    sth r0, 0x20(r3)
-    sth r0, 0x22(r3)
-    sth r0, 0x24(r3)
-    blr
-}
 
 // asm_to_cpp: Set__Q44nw4r3lyt6detail12AnimPaneTreeFPQ34nw4r3lyt4PaneRCQ34nw4r3lyt12AnimResource
 extern "C" asm void Set__Q44nw4r3lyt6detail12AnimPaneTreeFPQ34nw4r3lyt4PaneRCQ34nw4r3lyt12AnimResource() {

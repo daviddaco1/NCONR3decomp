@@ -224,20 +224,17 @@ extern void __destroy_new_array3(){
 }
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-extern "C" float lbl_8049C3E8;
+typedef void (*FuncPtr)(void);
+extern "C" FuncPtr lbl_8049C3E8;
 extern "C" void fn_801936E4();
 extern "C" void fn_801936E8();
 
-// asm_to_cpp: fn_801936E4
-extern "C" asm void fn_801936E4() {
-    nofralloc
-    b fn_801936E8
+#pragma dont_inline on
+extern "C" void fn_801936E4() {
+    fn_801936E8();
 }
 
-// asm_to_cpp: fn_801936E8
-extern "C" asm void fn_801936E8() {
-    nofralloc
-    lwz r12, lbl_8049C3E8
-    mtctr r12
-    bctr
+extern "C" void fn_801936E8() {
+    lbl_8049C3E8();
 }
+#pragma dont_inline reset

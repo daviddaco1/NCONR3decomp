@@ -747,33 +747,14 @@ void fn_8011FD98(s32 arg0) {
     }
 }
 
-// asm_to_cpp: fn_8011FDDC
-asm void fn_8011FDDC(s8 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    lwz r30, 0x8(r3)
-    b lbl_8011FE10
-lbl_8011FDF8:
-    addi r3, r31, 0x10
-    bl fn_8002211C
-    lwz r3, lbl_8049D6BC
-    mr r4, r31
-    bl fn_80019D94
-    lwz r30, 0x8(r30)
-lbl_8011FE10:
-    lwz r31, 0x0(r30)
-    cmplwi r31, 0x1
-    bne lbl_8011FDF8
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_8011FDDC(s8 *arg0) {
+    s8 *item;
+    s8 **node = *(s8 ***)(arg0 + 8);
+    while ((item = *node) != (s8 *)1) {
+        fn_8002211C((s8 *)(item + 0x10));
+        fn_80019D94((M2C_UNK **)lbl_8049D6BC, (s32)item);
+        node = *(s8 ***)(node + 2);
+    }
 }
 
 void fn_8011FE34(s8 *arg0, s8 *arg1) {

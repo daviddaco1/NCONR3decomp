@@ -103,17 +103,9 @@ void StoreData(void* pDst, void* pSrc, u32 size) {
 } // namespace ut
 } // namespace nw4r
 
-// ---- Funciones aun sin C que matchee (asm generado) ----
 extern "C" u8 lbl_80409180[];
-extern "C" void fn_802243EC();
 
-// asm_to_cpp: fn_802243EC
-extern "C" asm void fn_802243EC() {
-    nofralloc
-    lis r4, lbl_80409180@ha
-    li r0, 0x0
-    addi r3, r4, lbl_80409180@l
-    stb r0, lbl_80409180@l(r4)
-    addi r3, r3, 0x4
-    b OSInitMutex
+extern "C" void fn_802243EC() {
+    lbl_80409180[0] = 0;
+    OSInitMutex(reinterpret_cast<OSMutex*>(&lbl_80409180[4]));
 }

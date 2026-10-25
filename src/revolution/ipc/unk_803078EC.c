@@ -7,7 +7,7 @@ s32 fn_8028E330(s32, M2C_UNK, void (*)(s32, s32));  /* extern */
 M2C_UNK memset();        /* extern */
 M2C_UNK fn_8030816C();                /* static */
 extern M2C_UNK lbl_8037F558;
-extern M2C_UNK lbl_80463280;
+extern u8 lbl_80463280[][0x570];
 extern M2C_UNK lbl_80464870;
 extern M2C_UNK lbl_80464890;
 extern s32 lbl_8049D0C8;
@@ -84,10 +84,10 @@ extern f32 lbl_804A26F0;
 extern f32 lbl_804A26F4;
 
 void fn_803078EC();
-void fn_8030797C();
-void fn_80307998();
-void fn_803079B4();
-void fn_803079D0();
+void fn_8030797C(s32, f32, f32);
+void fn_80307998(s32, f32, f32);
+void fn_803079B4(s32, f32, f32);
+void fn_803079D0(s32, f32, f32);
 void fn_803079EC();
 void fn_80307BC0();
 void fn_80307D60();
@@ -221,10 +221,10 @@ extern void fn_8028AF20();
 extern void fn_8028B2E8();
 extern void fn_8028EE58();
 void fn_803078EC();
-void fn_8030797C();
-void fn_80307998();
-void fn_803079B4();
-void fn_803079D0();
+void fn_8030797C(s32, f32, f32);
+void fn_80307998(s32, f32, f32);
+void fn_803079B4(s32, f32, f32);
+void fn_803079D0(s32, f32, f32);
 void fn_803079EC(s8 *arg0);
 void fn_80307BC0(s8 *arg0, u32 arg1, s32 arg2);
 void fn_80307D60();
@@ -296,52 +296,24 @@ lbl_8030795C:
     blr
 }
 
-// asm_to_cpp: fn_8030797C
-asm void fn_8030797C() {
-    nofralloc
-    mulli r0, r3, 0x570
-    lis r3, lbl_80463280@ha
-    addi r3, r3, lbl_80463280@l
-    add r3, r3, r0
-    stfs f1, 0xb0(r3)
-    stfs f2, 0xb4(r3)
-    blr
+void fn_8030797C(s32 arg0, f32 arg1, f32 arg2) {
+    *(f32 *)&lbl_80463280[arg0][0xb0] = arg1;
+    *(f32 *)&lbl_80463280[arg0][0xb4] = arg2;
 }
 
-// asm_to_cpp: fn_80307998
-asm void fn_80307998() {
-    nofralloc
-    mulli r0, r3, 0x570
-    lis r3, lbl_80463280@ha
-    addi r3, r3, lbl_80463280@l
-    add r3, r3, r0
-    stfs f1, 0xb8(r3)
-    stfs f2, 0xbc(r3)
-    blr
+void fn_80307998(s32 arg0, f32 arg1, f32 arg2) {
+    *(f32 *)&lbl_80463280[arg0][0xb8] = arg1;
+    *(f32 *)&lbl_80463280[arg0][0xbc] = arg2;
 }
 
-// asm_to_cpp: fn_803079B4
-asm void fn_803079B4() {
-    nofralloc
-    mulli r0, r3, 0x570
-    lis r3, lbl_80463280@ha
-    addi r3, r3, lbl_80463280@l
-    add r3, r3, r0
-    stfs f1, 0xc0(r3)
-    stfs f2, 0xc4(r3)
-    blr
+void fn_803079B4(s32 arg0, f32 arg1, f32 arg2) {
+    *(f32 *)&lbl_80463280[arg0][0xc0] = arg1;
+    *(f32 *)&lbl_80463280[arg0][0xc4] = arg2;
 }
 
-// asm_to_cpp: fn_803079D0
-asm void fn_803079D0() {
-    nofralloc
-    mulli r0, r3, 0x570
-    lis r3, lbl_80463280@ha
-    addi r3, r3, lbl_80463280@l
-    add r3, r3, r0
-    stfs f1, 0xc8(r3)
-    stfs f2, 0xcc(r3)
-    blr
+void fn_803079D0(s32 arg0, f32 arg1, f32 arg2) {
+    *(f32 *)&lbl_80463280[arg0][0xc8] = arg1;
+    *(f32 *)&lbl_80463280[arg0][0xcc] = arg2;
 }
 
 // asm_to_cpp: fn_803079EC
@@ -4409,28 +4381,12 @@ asm void fn_8030B32C(s32 arg0, s32 arg1) {
     blr
 }
 
-// asm_to_cpp: fn_8030B344
-asm void fn_8030B344(s32 arg0) {
-    nofralloc
-    mulli r0, r3, 0x570
-    lis r3, lbl_80463280@ha
-    li r4, 0x0
-    addi r3, r3, lbl_80463280@l
-    add r3, r3, r0
-    stb r4, 0x556(r3)
-    blr
+void fn_8030B344(s32 arg0) {
+    lbl_80463280[arg0][0x556] = 0;
 }
 
-// asm_to_cpp: fn_8030B360
-asm void fn_8030B360(s32 arg0) {
-    nofralloc
-    mulli r0, r3, 0x570
-    lis r3, lbl_80463280@ha
-    li r4, 0x1
-    addi r3, r3, lbl_80463280@l
-    add r3, r3, r0
-    stb r4, 0x556(r3)
-    blr
+void fn_8030B360(s32 arg0) {
+    lbl_80463280[arg0][0x556] = 1;
 }
 
 // asm_to_cpp: fn_8030B37C

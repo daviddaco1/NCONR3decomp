@@ -135,8 +135,8 @@ void Picture::DrawSelf(const DrawInfo& rInfo) {
 } // namespace nw4r
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-extern "C" float lbl_8049D9D0;
-extern "C" float lbl_8049D9E0;
+extern "C" void *lbl_8049D9D0;
+extern "C" void *lbl_8049D9E0;
 extern "C" void fn_801F7E50();
 extern "C" void fn_801F7FCC();
 extern "C" void fn_80200BD0();
@@ -148,10 +148,6 @@ extern "C" asm void fn_801F7E50() {
     b fn_80200BD0
 }
 
-// asm_to_cpp: fn_801F7FCC
-extern "C" asm void fn_801F7FCC() {
-    nofralloc
-    la r0, lbl_8049D9D0
-    stw r0, lbl_8049D9E0
-    blr
+extern "C" void fn_801F7FCC() {
+    lbl_8049D9E0 = &lbl_8049D9D0;
 }

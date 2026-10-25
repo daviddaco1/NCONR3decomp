@@ -147,7 +147,7 @@ void fn_80137368(void);
 s32 fn_8013736C(s32 arg0);
 void fn_801373D0(s32 arg0);
 s32 fn_80137410(s32 arg0, s32 arg1);
-s32 fn_801374EC();
+void fn_801374EC(void);
 void fn_80137508(void);
 void fn_80137544(void);
 void fn_8013756C(s32 *arg0);
@@ -193,7 +193,7 @@ void fn_801392E8(M2C_UNK *arg0, M2C_UNK *arg1, u32 arg2);
 s32 fn_801396C0(s32 arg0, s32 arg1);
 s32 fn_801397E0(void);
 s32 fn_80139818(s32 arg0);
-s32 fn_801398C8();
+void fn_801398C8(void);
 void fn_801398E4(void);
 void fn_80139920(void);
 s32 ** fn_80139A00(void);
@@ -203,7 +203,7 @@ void fn_80139A7C(s32 **arg0);
 s32 ** fn_80139A90(void);
 void fn_80139AC4(s32 **arg0);
 s32 fn_80139AD8(s32 arg0, s32 arg1);
-s32 fn_80139BB8();
+void fn_80139BB8(void);
 void fn_80139BD4(void);
 void fn_80139C10(void);
 void fn_80139CDC(s32 *arg0);
@@ -893,17 +893,13 @@ lbl_801374DC:
     blr
 }
 
-// asm_to_cpp: fn_801374EC
-asm s32 fn_801374EC() {
-    nofralloc
-    lwz r0, lbl_8049D710
-    cmpwi r0, 0x0
-    beqlr
-    lis r3, lbl_803A65E0@ha
-    addi r3, r3, lbl_803A65E0@l
-    b fn_8031D460
-    blr
+#pragma dont_inline on
+void fn_801374EC(void) {
+    if (*(u32 *)&lbl_8049D710 != 0) {
+        fn_8031D460((s8 *)lbl_803A65E0);
+    }
 }
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_80137508
 asm void fn_80137508(void) {
@@ -3328,17 +3324,13 @@ lbl_801398B8:
     blr
 }
 
-// asm_to_cpp: fn_801398C8
-asm s32 fn_801398C8() {
-    nofralloc
-    lwz r0, lbl_8049D740
-    cmpwi r0, 0x0
-    beqlr
-    lis r3, lbl_803A7FF8@ha
-    addi r3, r3, lbl_803A7FF8@l
-    b fn_8031D460
-    blr
+#pragma dont_inline on
+void fn_801398C8(void) {
+    if (*(u32 *)&lbl_8049D740 != 0) {
+        fn_8031D460((s8 *)lbl_803A7FF8);
+    }
 }
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_801398E4
 asm void fn_801398E4(void) {
@@ -3525,17 +3517,13 @@ lbl_80139BA8:
     blr
 }
 
-// asm_to_cpp: fn_80139BB8
-asm s32 fn_80139BB8() {
-    nofralloc
-    lwz r0, lbl_8049D748
-    cmpwi r0, 0x0
-    beqlr
-    lis r3, lbl_803A9310@ha
-    addi r3, r3, lbl_803A9310@l
-    b fn_8031D460
-    blr
+#pragma dont_inline on
+void fn_80139BB8(void) {
+    if (*(u32 *)&lbl_8049D748 != 0) {
+        fn_8031D460((s8 *)lbl_803A9310);
+    }
 }
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_80139BD4
 asm void fn_80139BD4(void) {

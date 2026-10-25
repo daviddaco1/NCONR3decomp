@@ -1,6 +1,14 @@
 #include "types.h"
 #include "m2c_macros.h"
 
+struct Vec2_80192B94 { s32 a, b; };
+struct Gauge_80193264 {
+    u8 pad[0x50];
+    u8 a : 2;
+    u8 flag : 1;
+    u8 b : 5;
+};
+
 struct M2C_VC_0 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual M2C_UNK f();        };
 struct M2C_VC_1 { virtual void v0(); virtual s32 f(M2C_UNK, s32, M2C_UNK);        };
 struct M2C_VC_2 { virtual void v0(); virtual M2C_UNK f(s8 **);        };
@@ -110,8 +118,14 @@ extern u8 lbl_80390580[];
 extern u8 lbl_80395728[];
 extern u8 lbl_803C1A40[];
 extern u8 lbl_803C22B0[];
-extern u8 lbl_803D5EA0[];
-extern u8 lbl_803D74A0[];
+struct GaugeEntry_0x58 {
+    u8 pad[0x58];
+};
+extern struct GaugeEntry_0x58 lbl_803D5EA0[64];
+struct GaugeEntry_0xC {
+    u8 pad[0xC];
+};
+extern struct GaugeEntry_0xC lbl_803D74A0[8];
 extern float lbl_804A10E8;
 extern M2C_UNK lbl_804A10F0;
 extern float lbl_804A1108;
@@ -198,10 +212,10 @@ void fn_801910F8(void);
 s32 fn_801911A0(s32 arg0, s32 arg1);
 void fn_80191234(void);
 void fn_80191288(void);
-s32 fn_801912C4(s32 arg0_pad);
+void fn_801912C4(u32 arg0);
 void fn_801912E4(s32 arg0);
-s32 fn_80191350(s32 arg0_pad);
-s8 * fn_80191370(u32 arg0);
+void fn_80191350(u32 arg0);
+struct GaugeEntry_0xC * fn_80191370(u32 arg0);
 s8 * fn_80191394(s8 **arg0);
 s8 * fn_801913FC(s32 arg0);
 s32 fn_801914C4(s32 arg0, s8 *arg1);
@@ -219,7 +233,7 @@ void fn_80191C78(s8 *arg0);
 void fn_80191F04(s8 *arg0);
 void fn_8019217C(void);
 s8 * fn_80192200(s32 arg0, s8 **arg1);
-s32 fn_8019227C();
+s8 * fn_8019227C(s32 arg0, s8 **arg1);
 void fn_80192294(s32 arg0, s8 *arg1, s32 arg2);
 void fn_80192338(s32 arg0, s8 *arg1, s8 *arg2);
 void fn_801923EC(s32 arg0, s8 *arg1, s8 *arg2, u8 arg3);
@@ -232,7 +246,7 @@ s32 fn_80192990(s32 arg0, s8 *arg1);
 void fn_80192A20(s32 arg0, s8 *arg1, s8 *arg2);
 void fn_80192AA4(s32 arg0, s8 *arg1, s8 *arg2);
 f32 fn_80192B28(s32 arg0, s8 *arg1);
-void fn_80192B94(f32 *arg0, s32 arg1);
+void fn_80192B94(struct Vec2_80192B94 *arg0, struct Vec2_80192B94 *arg1);
 void fn_80192BA8(s32 arg0, s8 *arg1, u16 arg2, s32 arg3, f32 farg0);
 s32 fn_80193180(s8 *arg0, f32 farg0);
 s32 fn_80193188(s8 **arg0);
@@ -248,11 +262,11 @@ s32 fn_80193228(s32 arg0);
 void fn_80193230(s8 *arg0, s8 *arg1);
 void fn_80193254(s32 *arg0, s32 arg1);
 void fn_8019325C(s32 *arg0, s32 arg1);
-void fn_80193264(M2C_UNK *arg0, u8 arg1);
+void fn_80193264(Gauge_80193264 *arg0, bool arg1);
 void fn_80193278(s32 *arg0, s32 arg1);
 void fn_80193280(f32 *arg0);
 s32 * fn_80193298(s32 *arg0, s16 arg1);
-u64 fn_801932DC(M2C_UNK *arg0);
+u64 fn_801932DC(const u8 *arg0);
 void fn_80193310(s8 *arg0, u8 arg1, M2C_UNK *arg2);
 s8 * fn_80193394(s8 *arg0, u8 arg1);
 void fn_8019340C(s32 arg0, u32 arg1, s32 *arg2);
@@ -1170,18 +1184,13 @@ void fn_80191288(void) {
     } while (var_r31 < 0x40);
 }
 
-// asm_to_cpp: fn_801912C4
-asm s32 fn_801912C4(s32 arg0_pad) {
-    nofralloc
-    cmplwi r3, 0x7
-    bgtlr
-    mulli r4, r3, 0xc
-    lis r3, lbl_803D74A0@ha
-    addi r0, r3, lbl_803D74A0@l
-    add r3, r0, r4
-    b fn_80048BC4
-    blr
+#pragma dont_inline on
+void fn_801912C4(u32 arg0) {
+    if (arg0 <= 7) {
+        fn_80048BC4((s8 *)&lbl_803D74A0[arg0]);
+    }
 }
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_801912E4
 asm void fn_801912E4(s32 arg0) {
@@ -1218,33 +1227,22 @@ lbl_80191338:
     blr
 }
 
-// asm_to_cpp: fn_80191350
-asm s32 fn_80191350(s32 arg0_pad) {
-    nofralloc
-    cmplwi r3, 0x3f
-    bgtlr
-    mulli r4, r3, 0x58
-    lis r3, lbl_803D5EA0@ha
-    addi r0, r3, lbl_803D5EA0@l
-    add r3, r0, r4
-    b fn_80048E30
-    blr
+#pragma dont_inline on
+void fn_80191350(u32 arg0) {
+    if (arg0 <= 0x3F) {
+        fn_80048E30((s8 *)&lbl_803D5EA0[arg0]);
+    }
 }
+#pragma dont_inline reset
 
-// asm_to_cpp: fn_80191370
-asm s8 * fn_80191370(u32 arg0) {
-    nofralloc
-    cmplwi r3, 0x7
-    bgt lbl_8019138C
-    mulli r4, r3, 0xc
-    lis r3, lbl_803D74A0@ha
-    addi r0, r3, lbl_803D74A0@l
-    add r3, r0, r4
-    blr
-lbl_8019138C:
-    li r3, 0x0
-    blr
+#pragma dont_inline on
+struct GaugeEntry_0xC * fn_80191370(u32 arg0) {
+    if (arg0 <= 7) {
+        return &lbl_803D74A0[arg0];
+    }
+    return 0;
 }
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_80191394
 asm s8 * fn_80191394(s8 **arg0) {
@@ -1338,52 +1336,27 @@ lbl_801914A8:
     blr
 }
 
-// asm_to_cpp: fn_801914C4
-asm s32 fn_801914C4(s32 arg0, s8 *arg1) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r5, r3
-    mr r31, r4
-    lwz r3, 0x4(r4)
-    cmpwi r3, 0x0
-    beq lbl_801914F4
-    lwz r0, 0x8(r4)
-    cmpwi r0, 0x0
-    bne lbl_801914FC
-lbl_801914F4:
-    li r3, 0x0
-    b lbl_8019154C
-lbl_801914FC:
-    li r4, 0x0
-    addi r6, r1, 0x8
-    lwz r12, 0x0(r3)
-    lwz r12, 0xc(r12)
-    mtctr r12
-    bctrl
-    mr r4, r3
-    cmpwi r3, 0x0
-    bne lbl_80191528
-    li r3, 0x0
-    b lbl_8019154C
-lbl_80191528:
-    lwz r3, 0x8(r31)
-    lwz r5, 0x4(r31)
-    lwz r12, 0x0(r3)
-    lwz r12, 0xc(r12)
-    mtctr r12
-    bctrl
-    li r0, -0x1
-    sth r0, 0x10(r31)
-    li r3, 0x1
-lbl_8019154C:
-    lwz r31, 0x1c(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+struct GaugeObjA_801914C4 {
+    virtual void v0();
+    virtual s32 f(s32, s32, void *);
+};
+struct GaugeObjB_801914C4 {
+    virtual void v0();
+    virtual void f(s32, void *);
+};
+
+s32 fn_801914C4(s32 arg0, s8 *arg1) {
+    u8 temp[12];
+    if (*(GaugeObjA_801914C4 **)(arg1 + 4) == 0 || *(GaugeObjB_801914C4 **)(arg1 + 8) == 0) {
+        return 0;
+    }
+    s32 res = (*(GaugeObjA_801914C4 **)(arg1 + 4))->f(0, arg0, temp);
+    if (res == 0) {
+        return 0;
+    }
+    (*(GaugeObjB_801914C4 **)(arg1 + 8))->f(res, *(void **)(arg1 + 4));
+    *(s16 *)(arg1 + 0x10) = -1;
+    return 1;
 }
 
 // asm_to_cpp: fn_80191560
@@ -2299,17 +2272,14 @@ lbl_80192268:
     blr
 }
 
-// asm_to_cpp: fn_8019227C
-asm s32 fn_8019227C() {
-    nofralloc
-    cmpwi r4, 0x0
-    beq lbl_8019228C
-    lwz r4, 0x8(r4)
-    b fn_80192200
-lbl_8019228C:
-    li r3, 0x0
-    blr
+#pragma dont_inline on
+s8 * fn_8019227C(s32 arg0, s8 **arg1) {
+    if (arg1 != 0) {
+        return fn_80192200(arg0, *(s8 ***)((char *)arg1 + 8));
+    }
+    return 0;
 }
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_80192294
 asm void fn_80192294(s32 arg0, s8 *arg1, s32 arg2) {
@@ -2975,15 +2945,13 @@ lbl_80192B80:
     blr
 }
 
-// asm_to_cpp: fn_80192B94
-asm void fn_80192B94(f32 *arg0, s32 arg1) {
-    nofralloc
-    lwz r5, 0x0(r4)
-    lwz r0, 0x4(r4)
-    stw r5, 0x0(r3)
-    stw r0, 0x4(r3)
-    blr
+#pragma cplusplus off
+#pragma dont_inline on
+void fn_80192B94(struct Vec2_80192B94 *arg0, struct Vec2_80192B94 *arg1) {
+    *arg0 = *arg1;
 }
+#pragma dont_inline reset
+#pragma cplusplus reset
 
 // asm_to_cpp: fn_80192BA8
 asm void fn_80192BA8(s32 arg0, s8 *arg1, u16 arg2, s32 arg3, f32 farg0) {
@@ -3478,29 +3446,20 @@ void fn_8019325C(s32 *arg0, s32 arg1) {
     fn_8018B784((s32) ((s32) ((s8 *)arg0 + 4)));
 }
 
-// asm_to_cpp: fn_80193264
-asm void fn_80193264(M2C_UNK *arg0, u8 arg1) {
-    nofralloc
-    clrlwi r4, r4, 24
-    lbz r0, 0x50(r3)
-    rlwimi r0, r4, 5, 26, 26
-    stb r0, 0x50(r3)
-    blr
+void fn_80193264(Gauge_80193264 *arg0, bool arg1) {
+    arg0->flag = arg1;
 }
 
 void fn_80193278(s32 *arg0, s32 arg1) {
     fn_8012E63C((s32) ((s32) ((s8 *)arg0 + 0x44)), (s32) (arg1));
 }
 
-// asm_to_cpp: fn_80193280
-asm void fn_80193280(f32 *arg0) {
-    nofralloc
-    lfs f0, lbl_804A1110
-    stfs f0, 0x0(r3)
-    stfs f0, 0x4(r3)
-    stfs f0, 0x8(r3)
-    stfs f0, 0xc(r3)
-    blr
+void fn_80193280(f32 *arg0) {
+    f32 val = lbl_804A1110;
+    arg0[0] = val;
+    arg0[1] = val;
+    arg0[2] = val;
+    arg0[3] = val;
 }
 
 s32 * fn_80193298(s32 *arg0, s16 arg1) {
@@ -3510,23 +3469,18 @@ s32 * fn_80193298(s32 *arg0, s16 arg1) {
     return (s32 *) (arg0);
 }
 
-// asm_to_cpp: fn_801932DC
-asm u64 fn_801932DC(M2C_UNK *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    lbz r0, 0x0(r3)
-    sth r0, 0x8(r1)
-    lbz r0, 0x1(r3)
-    sth r0, 0xa(r1)
-    lbz r0, 0x2(r3)
-    sth r0, 0xc(r1)
-    lbz r0, 0x3(r3)
-    sth r0, 0xe(r1)
-    lwz r3, 0x8(r1)
-    lwz r4, 0xc(r1)
-    addi r1, r1, 0x10
-    blr
+#pragma dont_inline on
+u64 fn_801932DC(const u8 *arg0) {
+    struct {
+        u16 r, g, b, a;
+    } s;
+    s.r = arg0[0];
+    s.g = arg0[1];
+    s.b = arg0[2];
+    s.a = arg0[3];
+    return *(u64 *)&s;
 }
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_80193310
 asm void fn_80193310(s8 *arg0, u8 arg1, M2C_UNK *arg2) {
@@ -3693,13 +3647,10 @@ s32 fn_8019356C(u8 arg0, s32 arg1) {
     return (s32) ((arg0 & (u8) (1 << arg1)) != 0);
 }
 
-// asm_to_cpp: fn_8019358C
-asm void fn_8019358C(f32 *arg0) {
-    nofralloc
-    lfs f0, lbl_804A1110
-    stfs f0, 0x0(r3)
-    stfs f0, 0x4(r3)
-    blr
+void fn_8019358C(f32 *arg0) {
+    f32 val = lbl_804A1110;
+    arg0[0] = val;
+    arg0[1] = val;
 }
 
 } // extern "C"

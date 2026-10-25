@@ -15,7 +15,16 @@ size_t wcslen(const wchar_t *str) {
 void wcsnlen_s(){
 }
 
-// wcscpy: definicion C reemplazada por asm (ver abajo)
+wchar_t* wcscpy(wchar_t *dest, const wchar_t *src) {
+    size_t len = -1;
+    wchar_t* p = (wchar_t*)dest - 1;
+
+    do {
+        len++;
+    } while(*++p);
+
+    return (wchar_t*)len;
+}
 
 
 //unused
@@ -124,20 +133,4 @@ void wcstok(){
 
 //unused
 void wcsstr(){
-}
-
-// ---- Funciones aun sin C que matchee (asm generado) ----
-
-
-// asm_to_cpp: wcscpy
-asm wchar_t* wcscpy(wchar_t *dest, const wchar_t *src) {
-    nofralloc
-    subi r4, r3, 0x2
-    li r3, -0x1
-lbl_8019EED4:
-    lhzu r0, 0x2(r4)
-    addi r3, r3, 0x1
-    cmpwi r0, 0x0
-    bne lbl_8019EED4
-    blr
 }

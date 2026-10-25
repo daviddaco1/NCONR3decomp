@@ -3,6 +3,7 @@
 #include "m2c_protos.h"
 
 extern s8 *lbl_8049E180;
+extern void (*lbl_8049E184)(void);
 
 void GDInitGDLObj();
 void GDFlushCurrToMem();
@@ -21,18 +22,14 @@ void GDFlushCurrToMem(void) {
 
 void GDPadCurr32(void);
 
-/*
-Decompilation failure in function GDOverflowed:
-
-Unable to determine jump table for bctr instruction at GDBase.s line 109.
-
-There must be a read of a variable before the instruction
-which has a name starting with with "jtbl"/"jpt_"/"lbl_"/"jumptable_".
-*/
+void GDOverflowed(void) {
+    if (lbl_8049E184 != NULL) {
+        lbl_8049E184();
+    }
+}
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-extern float lbl_8049E184;
-extern int GDOverflowed();
+void GDOverflowed(void);
 void GDPadCurr32();
 
 // asm_to_cpp: GDPadCurr32
@@ -113,13 +110,3 @@ lbl_802DD1F4:
     blr
 }
 
-// asm_to_cpp: GDOverflowed
-asm int GDOverflowed() {
-    nofralloc
-    lwz r12, lbl_8049E184
-    cmpwi r12, 0x0
-    beqlr
-    mtctr r12
-    bctr
-    blr
-}

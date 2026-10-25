@@ -35,7 +35,7 @@ void fn_8001A1A4(s8 *arg0);
 void fn_8001A348(s8 *arg0);
 void fn_8001A548(s8 *arg0);
 void fn_8001A7CC(s8 *arg0);
-void fn_8001A940(s8 *arg0, u8 arg1);
+void fn_8001A940(s8 *arg0, u32 arg1);
 void fn_8001A964(void);
 void fn_8001A968(f32 farg0, f32 farg1);
 void fn_8001A978(u8 arg0, u8 arg1, u8 arg2, u8 arg3);
@@ -48,66 +48,29 @@ void fn_8017776C(s32 arg0);
 void fn_8017C2CC(void);
 M2C_UNK memset(s32 arg0, s32 arg1, s32 arg2);
 
-// asm_to_cpp: fn_80019E50
-asm s8 * fn_80019E50(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    li r3, 0x12
-    lis r4, fn_80019F28@ha
-    addi r4, r4, fn_80019F28@l
-    lwz r5, lbl_8049D630
-    bl fn_80177280
-    mr r31, r3
-    cmpwi r3, 0x0
-    bne lbl_80019E90
-    li r3, 0x0
-    b lbl_80019F10
-lbl_80019E90:
-    li r4, 0x0
-    li r5, 0x38
-    bl memset
-    li r0, 0x4
-    stw r0, 0x0(r31)
-    stw r30, 0x4(r31)
-    li r0, 0x0
-    stw r0, 0x8(r31)
-    lfs f0, lbl_8049E678
-    stfs f0, 0x1c(r31)
-    stfs f0, 0x24(r31)
-    stfs f0, 0x28(r31)
-    stfs f0, 0x2c(r31)
-    stfs f0, 0x30(r31)
-    addi r3, r31, 0x14
-    li r4, -0x1
-    bl fn_8001A940
-    addi r3, r31, 0x18
-    li r4, -0x1
-    bl fn_8001A940
-    li r3, 0x2
-    lwz r4, 0x4(r31)
-    mr r5, r31
-    li r6, 0x0
-    bl fn_8010E90C
-    cmpwi r3, 0x0
-    beq lbl_80019F0C
-    cmpwi r31, 0x0
-    beq lbl_80019F0C
-    mr r3, r31
-    bl fn_8017776C
-lbl_80019F0C:
-    mr r3, r31
-lbl_80019F10:
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s8 * fn_80019E50(s32 arg0) {
+    s8 *p = (s8 *)fn_80177280(0x12, (M2C_UNK *)fn_80019F28, (M2C_UNK **)*(s32 *)&lbl_8049D630);
+    if (!p) {
+        return 0;
+    }
+    memset((s32)p, 0, 0x38);
+    *(s32 *)(p + 0x0) = 4;
+    *(s32 *)(p + 0x4) = arg0;
+    *(s32 *)(p + 0x8) = 0;
+    float f = lbl_8049E678;
+    *(float *)(p + 0x1c) = f;
+    *(float *)(p + 0x24) = f;
+    *(float *)(p + 0x28) = f;
+    *(float *)(p + 0x2c) = f;
+    *(float *)(p + 0x30) = f;
+    fn_8001A940(p + 0x14, 0xFFFFFFFF);
+    fn_8001A940(p + 0x18, 0xFFFFFFFF);
+    if (fn_8010E90C(2, *(s32 *)(p + 4), (s32)p, 0) != 0) {
+        if (p != 0) {
+            fn_8017776C((s32)p);
+        }
+    }
+    return p;
 }
 
 s32 fn_80019F28(s8 *arg0, s32 arg1) {
@@ -634,18 +597,18 @@ asm void fn_8001A7CC(s8 *arg0) {
     blr
 }
 
-// asm_to_cpp: fn_8001A940
-asm void fn_8001A940(s8 *arg0, u8 arg1) {
-    nofralloc
-    srwi r0, r4, 24
-    stb r0, 0x0(r3)
-    extrwi r0, r4, 8, 8
-    stb r0, 0x1(r3)
-    extrwi r0, r4, 8, 16
-    stb r0, 0x2(r3)
-    clrlwi r0, r4, 24
-    stb r0, 0x3(r3)
-    blr
+void fn_8001A940(s8 *arg0, u32 arg1) {
+    struct Color {
+        u32 a: 8;
+        u32 b: 8;
+        u32 c: 8;
+        u32 d: 8;
+    };
+    Color c = *(Color *)&arg1;
+    ((u8 *)arg0)[0] = c.a;
+    ((u8 *)arg0)[1] = c.b;
+    ((u8 *)arg0)[2] = c.c;
+    ((u8 *)arg0)[3] = c.d;
 }
 
 void fn_8001A964(void) {
