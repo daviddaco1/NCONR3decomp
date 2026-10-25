@@ -1134,6 +1134,13 @@ config.libs = [
     },
 ]
 
+# Los AsmObject cuentan tambien en la categoria de su lib (game/sdk); "asm" queda
+# como marca para que progress los descuente.
+for lib in config.libs:
+    for obj in lib["objects"]:
+        if obj.options["progress_category"] == "asm" and lib.get("progress_category"):
+            obj.options["progress_category"] = [lib["progress_category"], "asm"]
+
 
 # Optional callback to adjust link order. This can be used to add, remove, or reorder objects.
 # This is called once per module, with the module ID and the current link order.
@@ -1172,32 +1179,42 @@ if args.mode == "configure":
     # Write build.ninja and objdiff.json
     generate_build(config)
 elif args.mode == "progress":
-    # Print progress information
-    calculate_progress(config)
-    # "All" suma el asm inline; esto es lo descompilado a C de verdad.
-    import json
-
-    report = json.load(open(config.out_path() / "report.json"))
-    total = int(report["measures"]["total_code"])
-    asm = next(
-        (int(c["measures"].get("matched_code", 0)) for c in report["categories"] if c["id"] == "asm"),
-        0,
-    )
-    # Fuentes mixtos (tools/mix_asm.py): restar las funciones asm marcadas dentro de objetos C.
-    mixed = 0
-    for unit in report["units"]:
-        name = unit["name"].removeprefix("main/")
-        for ext in (".c", ".cpp", ".cp"):
-            path = Path("src") / (name + ext)
-            if path.exists():
+    # El asm (objetos AsmObject y funciones "// asm_to_cpp:" de fuentes mixtos) es
+    # el código del DOL copiado, no descompilado: se descuenta de matched/fuzzy y
+    # se muestra aparte como asm_code / asm_functions.
+    def strip_asm(report: Dict[str, Any]) -> None:
+        cats = {c["id"]: c["measures"] for c in report.get("categories", [])}
+        for unit in report["units"]:
+            meta = unit.get("metadata", {})
+            unit_cats = meta.get("progress_categories", [])
+            if "asm" in unit_cats:
+                is_asm = lambda f: True
+            else:
+                path = Path(meta.get("source_path", ""))
+                if not path.is_file():
+                    continue
                 marked = set(re.findall(r"^// asm_to_cpp: (\S+)$", path.read_text(errors="replace"), re.M))
-                mixed += sum(
-                    int(f.get("size", 0))
-                    for f in unit.get("functions", [])
-                    if f["name"] in marked and f.get("fuzzy_match_percent", 0) == 100
-                )
-                break
-    real = int(report["measures"]["matched_code"]) - asm - mixed
-    print(f"  C code: {real / total:.2%} ({real} / {total} bytes)")
+                is_asm = lambda f: f["name"] in marked
+            funcs = [
+                f for f in unit.get("functions", [])
+                if is_asm(f) and f.get("fuzzy_match_percent", 0) == 100
+            ]
+            size = sum(int(f.get("size", 0)) for f in funcs)
+            if not size:
+                continue
+            for m in [report["measures"]] + [cats[c] for c in unit_cats if c in cats]:
+                m["matched_code"] = m.get("matched_code", 0) - size
+                m["matched_functions"] = m.get("matched_functions", 0) - len(funcs)
+                m["fuzzy_match_percent"] = max(0, m.get("fuzzy_match_percent", 0) - 100 * size / m["total_code"])
+                m["asm_code"] = m.get("asm_code", 0) + size
+                m["asm_functions"] = m.get("asm_functions", 0) + len(funcs)
+        for m in [report["measures"]] + list(cats.values()):
+            if m.get("total_code"):
+                m["matched_code_percent"] = 100 * m["matched_code"] / m["total_code"]
+                m["asm_code_percent"] = 100 * m.get("asm_code", 0) / m["total_code"]
+
+    config.progress_report_hook = strip_asm
+    config.print_progress_categories = ["game", "sdk"]
+    calculate_progress(config)
 else:
     sys.exit("Unknown mode: " + args.mode)

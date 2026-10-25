@@ -23,7 +23,7 @@ traducir.
 python configure.py            # genera build.ninja + objdiff.json (correr tras tocar configure.py,
                                # splits.txt, symbols.txt o crear/borrar fuentes)
 ninja                          # compila todo y regenera build/RNEPDA/report.json
-python configure.py progress   # progreso; la última línea "C code" es el % de C real
+python configure.py progress   # progreso; matched/fuzzy ya excluyen el asm (= % de C real)
 sha1sum -c config/RNEPDA/build.sha1   # verificación final (forzar relink: borrar build/RNEPDA/main.dol)
 ninja build/RNEPDA/src/<split sin ext>.o   # compilar un solo objeto
 python setup.py                # chequeo de prerrequisitos + integridad del dump + build de prueba
@@ -43,13 +43,19 @@ ninja; el resto (dtk, objdiff-cli, binutils, compiladores CodeWarrior) se descar
   `source=`/`src_dir=`. Tipos en uso:
   - `Object(NonMatching, "x.c", ...)` — C/C++ real (escrito, importado o mixto).
   - `AsmObject("x.cpp")` — fuente asm (generado por `tools/asm_to_cpp.py`, o `.s` de dtk con
-    `source="x.s"`). Categoría de progreso `asm`.
+    `source="x.s"`). Categorías de progreso `[<cat de su lib>, "asm"]` (post-proceso tras
+    `config.libs`); `asm` es solo marca, no se imprime.
   - Objetos sin fuente: dtk enlaza el `.o` original. Todo es `NonMatching`: hoy no se puede enlazar
     código propio porque los datos de cada TU no están splitteados.
   - C importado de otros proyectos: `src_dir="libs", source="..."` con `cflags_*` y `mw_version`.
 - **Archivos mixtos**: C para las funciones que matchean + asm para el resto, separados por
   `// ---- Funciones aun sin C que matchee (asm generado) ----`, cada función asm marcada
-  `// asm_to_cpp: <fn>`. `configure.py progress` descuenta esas funciones del "C code".
+  `// asm_to_cpp: <fn>`.
+- **Progreso**: `report.json` (objdiff) cuenta el asm como matched. `configure.py progress`
+  registra `strip_asm` en `config.progress_report_hook` (agregado a `tools/project.py`): resta
+  de matched/fuzzy las unidades `asm` y las funciones marcadas, y lo muestra aparte como `% asm`
+  y línea `Asm:`. Así matched = C real. `tools/progress_svg.py` lee `report.json` crudo
+  (genera `docs/progress.svg` del README).
 - `libs/`: código de terceros (CC0) — `xenoblade/` (`PowerPC_EABI_Support`, `RVL_SDK`, `nw4r`),
   `mkw/` (doldecomp/mkw: GameSpy) y `ss/` (zeldaret/ss: NW4R faltante). Ver `libs/README.md`.
   `include/` es del juego (`types.h`, `m2c_macros.h`).
@@ -71,7 +77,8 @@ ninja; el resto (dtk, objdiff-cli, binutils, compiladores CodeWarrior) se descar
 ## Herramientas propias (`tools/`)
 
 Se corren desde la raíz; cada una documenta su uso en el docstring. El resto de `tools/` es de
-dtk-template (`project.py`, `download_tool.py`, etc.): no tocar salvo necesidad real.
+dtk-template (`project.py`, `download_tool.py`, etc.): no tocar salvo necesidad real (cambios
+locales en `project.py`: `progress_report_hook` y columna asm en `print_category`).
 
 - Splits: `tu_datarefs.py` (refs a datos por función → fronteras de TU), `mk_splits.py`
   (bloques con extab/extabindex calculados del DOL), `insert_splits.py` (inserta en orden de

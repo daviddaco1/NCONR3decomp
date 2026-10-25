@@ -41,11 +41,12 @@ El ejecutable se divide en *translation units* (TUs, un archivo fuente cada una)
 | | |
 |---|---|
 | Código matcheado (asm + C) | **100%** (3.3 MB, 11,293 funciones) |
-| Código en C real | ≈10.9% |
+| Código en C real | ≈13.2% |
 | Datos | 0% (sin splits de datos todavía) |
 | `.text` splitteado | 100% |
 
-`python configure.py progress` muestra los números actualizados (la línea "C code" es el C real).
+`python configure.py progress` muestra los números actualizados (matched = C real; el asm se
+muestra aparte).
 El historial detallado está en [`docs/decompilation_log.md`](docs/decompilation_log.md).
 
 ## Dependencias

@@ -8,7 +8,9 @@ rojo->amarillo = fuzzy match parcial, gris oscuro = sin empezar.
 Uso: python tools/progress_svg.py [report.json] [salida.svg]
 """
 import json
+import re
 import sys
+from pathlib import Path
 from html import escape
 
 W, H, HEADER = 1024, 512, 56
@@ -75,6 +77,23 @@ def color(unit):
     return f"#d6{g:02x}2a"
 
 
+def asm_functions(unit):
+    """Funciones asm matcheadas de una unidad: todas si es AsmObject, las marcadas
+    `// asm_to_cpp:` si es un fuente mixto (mismo criterio que configure.py progress)."""
+    meta = unit.get("metadata", {})
+    if "asm" in meta.get("progress_categories", []):
+        marked = None
+    else:
+        path = Path(meta.get("source_path", ""))
+        if not path.is_file():
+            return []
+        marked = set(re.findall(r"^// asm_to_cpp: (\S+)$", path.read_text(errors="replace"), re.M))
+    return [
+        f for f in unit.get("functions", [])
+        if (marked is None or f["name"] in marked) and f.get("fuzzy_match_percent", 0) == 100
+    ]
+
+
 def main():
     src = sys.argv[1] if len(sys.argv) > 1 else "build/RNEPDA/report.json"
     dst = sys.argv[2] if len(sys.argv) > 2 else "docs/progress.svg"
@@ -86,14 +105,14 @@ def main():
     rects = squarify(units, 0, HEADER, W, H - HEADER)
 
     m = report["measures"]
-    asm = next((c for c in report.get("categories", []) if c["id"] == "asm"), None)
-    asm_code = int(asm["measures"]["matched_code"]) if asm else 0
+    asm = [f for u in report["units"] for f in asm_functions(u)]
+    asm_code = sum(int(f.get("size", 0)) for f in asm)
     total = int(m["total_code"])
     real_c = int(m["matched_code"]) - asm_code
+    real_fns = int(m["matched_functions"]) - len(asm)
     title = (
-        f"Matched: {m['matched_code_percent']:.2f}% "
-        f"({m['matched_functions']}/{m['total_functions']} funciones)  ·  "
-        f"C real: {100 * real_c / total:.2f}%  ·  asm inline: {100 * asm_code / total:.2f}%"
+        f"Matched (C real): {100 * real_c / total:.2f}% "
+        f"({real_fns}/{m['total_functions']} funciones)  ·  asm: {100 * asm_code / total:.2f}%"
     )
 
     parts = [
