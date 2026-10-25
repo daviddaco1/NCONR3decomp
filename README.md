@@ -5,6 +5,10 @@
 Descompilación por coincidencia (*matching decompilation*) de **Naruto Shippuden: Clash of
 Ninja Revolution 3** (Wii), con el objetivo de portearlo a PC.
 
+![Progreso](docs/progress.svg)
+
+*Verde: C real matcheado · azul: asm inline (matchea pero aún no es C) · gris: sin empezar.*
+
 ## Legal
 
 Este repositorio no distribuye ni incluye ningún ISO, DOL, asset o archivo extraído del juego.
@@ -65,6 +69,7 @@ python setup.py                # opcional: verifica prerrequisitos e integridad 
 python configure.py            # genera build.ninja + objdiff.json
 ninja                          # compila
 python configure.py progress   # progreso
+python tools/progress_svg.py   # regenera docs/progress.svg (tras ninja)
 sha1sum -c config/RNEPDA/build.sha1   # verifica que el DOL reconstruido es idéntico
 ```
 
