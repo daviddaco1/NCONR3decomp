@@ -41,11 +41,11 @@ The executable is split into *translation units* (TUs, one source file each) acc
 | | |
 |---|---|
 | Code matched (asm + C) | **100%** (3.3 MB, 11,293 functions) |
-| Code in real C | ≈10.9% |
+| Code in real C | ≈13.2% |
 | Data | 0% (no data splits yet) |
 | `.text` split | 100% |
 
-`python configure.py progress` prints up-to-date numbers (the "C code" line is real C). The
+`python configure.py progress` prints up-to-date numbers (matched = real C; asm is shown separately). The
 detailed history (in Spanish) is in [`docs/decompilation_log.md`](docs/decompilation_log.md).
 
 ## Dependencies
