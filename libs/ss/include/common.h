@@ -105,7 +105,7 @@
         dummy.~cls();                                                                                                  \
     }
 #define DECOMP_INLINE inline
-#define DECOMP_DONT_INLINE __attribute__((never_inline))
+#define DECOMP_DONT_INLINE
 #endif
 
 typedef signed char s8;

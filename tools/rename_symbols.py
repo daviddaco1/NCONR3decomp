@@ -11,7 +11,7 @@ para otra direccion, o que aparecen mas de una vez en la lista (ej. funciones st
 mismo nombre en dos TUs)."""
 import collections, os, re, sys
 
-IDENT = re.compile(r'^[A-Za-z_][A-Za-z0-9_]*$')
+IDENT = re.compile(r'^[A-Za-z_@][A-Za-z0-9_@]*$')
 MIX_MARK = '// ---- Funciones aun sin C que matchee (asm generado) ----'
 
 

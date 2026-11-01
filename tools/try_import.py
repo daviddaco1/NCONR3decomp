@@ -22,10 +22,10 @@ def patched(t0, rows, mw):
     for split, src, cflags in rows:
         new = (f'Object(NonMatching, "{split}", src_dir="libs", source="{src}", '
                f'cflags={cflags}, mw_version="{mw}")')
-        for a in (f'AsmObject("{split}")', f'Object(NonMatching, "{split}")'):
-            if t.count(a) == 1:
-                t = t.replace(a, new)
-                break
+        import re
+        pat = rf'(?:AsmObject\s*\(|Object\(NonMatching,\s*)"{re.escape(split)}"[^\n]*?\)'
+        if len(re.findall(pat, t)) == 1:
+            t = re.sub(pat, new, t, count=1)
         else:
             raise SystemExit(f'no encuentro el objeto {split} en configure.py')
     return t

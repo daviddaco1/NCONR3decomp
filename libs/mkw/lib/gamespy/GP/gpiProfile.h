@@ -69,6 +69,9 @@ typedef struct GPIProfile {
   char* authSig;
   int requestCount;
   char* peerSig;
+  gsi_bool blocked;
+  int blockIndex;
+  gsi_bool buddyOrBlockCache;
 } GPIProfile;
 
 // A list of profiles.
@@ -77,6 +80,7 @@ typedef struct {
   HashTable profileTable;
   int num;
   int numBuddies;
+  int numBlocked;
 } GPIProfileList;
 
 // FUNCTIONS

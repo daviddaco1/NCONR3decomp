@@ -2871,3 +2871,75 @@ andGetHomeDir, NANDSimpleSafeOpen.
 ### 3. Descubrimientos tecnicos
 - **Descomposicion de subindices de colores en NW4R / NW4HBM:** Las expresiones `((idx >> 1) & ~3) + (idx & 3)` y `(idx & ~3) + (idx & 3)` reproducen con 100.00% de fidelidad las secuencias `rlwinm / clrlwi` y `clrrwi / clrlwi` del compilador MWCC para indexar subelementos RGBA de `ut::Color` en tablas de vertices.
 - **Control de inlining en C++ con `#pragma dont_inline`:** En unidades C++ como `src/n2d_main.c` y `src/gl_sound.c`, MWCC con `-O4,p` o `-inline auto` tiende a inlinear funciones pequenas de forwarding o copia. El uso de `#pragma dont_inline on / reset` preserva la generacion exacta de tail calls (`b <target>`) de 8 bytes y secuencias directas de 40-44 bytes sin perder compatibilidad ni provocar divergencias en el llamador.
+
+
+## Entrada: 2026-10-24 - Avance Masivo en SDK, NW4R y MSL_C (+42,408 bytes de C/C++ Real)
+
+### 1. Métricas alcanzadas
+- **Progreso de código C/C++ real:** **14.46%** (**476,928 / 3,299,164 bytes**, **+42,408 bytes netos** y **+209 funciones** en C/C++ puro).
+- **Progreso SDK Code:** **17.84%** (**309,980 / 1,737,984 bytes**, +42,408 bytes).
+- **Progreso Game Code:** **10.69%** (166,948 bytes, 2,310 funciones C++).
+- **Coincidencia binaria:** **100.00%** (11,292 / 11,292 funciones matcheadas, `build/RNEPDA/main.dol: OK` con SHA1 verificado).
+
+### 2. Unidades completadas al 100% en C puro
+1. **`OS/unk_80312B7C.c` (14 funciones, 4,828 bytes - 100% C puro):**
+   - Identificado como copia idéntica del núcleo de inicialización del OS (`revolution/os/OS.c` de Xenoblade / RVL_SDK).
+   - Se configuró con `src_dir="libs", source="xenoblade/RVL_SDK/src/revolution/os/OS.c"`, eliminando el objeto ensamblador correspondiente.
+2. **`MSL_C.PPCEABI.bare.H/ansi_fp.c` (10 funciones, 6,264 bytes - 100% C puro):**
+   - Se identificaron y renombraron los símbolos `fn_801972E0` como `__num2dec` y `fn_80197480` como `__dec2num` en `symbols.txt`.
+   - Con los nombres restaurados, el archivo de la biblioteca estándar Metrowerks coincide al 100% sin una sola discrepancia. Se eliminó la copia mixta en `src/` en favor del archivo canónico en `libs/`.
+3. **`MSL_C.PPCEABI.bare.H/strtoul.c` (5 funciones, 2,836 bytes - 100% C puro):**
+   - Se identificó la función faltante `fn_8019ED1C` como la implementación estándar de `strtol`. Tras renombrarla en `symbols.txt`, toda la unidad compiló y matcheó byte-a-byte con `strtoul.c` de `libs/xenoblade`.
+
+### 3. Módulos de NW4R convertidos a fuentes mixtos con C++ real
+Se integraron y validaron 17 módulos de NintendoWare for Revolution (NW4R) utilizando `tools/mix_asm.py` y `cflags_nw4r` con `GC/3.0a5.2`:
+- `nw4r/lyt/lyt_material.cpp`: **+7,508 bytes** (24 funciones C++).
+- `nw4r/g3d/res/g3d_resfile.cpp`: **+5,680 bytes** (15 funciones C++).
+- `nw4r/snd/snd_AxVoice.cpp`: **+4,236 bytes** (19 funciones C++).
+- `nw4r/snd/snd_RemoteSpeaker.cpp`: **+1,816 bytes** (7 funciones C++).
+- `nw4r/snd/snd_AxManager.cpp`: **+1,624 bytes** (10 funciones C++).
+- `nw4r/ut/ut_DvdFileStream.cpp`: **+1,452 bytes** (13 funciones C++).
+- `nw4r/snd/snd_Voice.cpp`: **+608 bytes** (4 funciones C++).
+- `nw4r/snd/snd_SeqSound.cpp`: **+424 bytes** (5 funciones C++).
+- `nw4r/lyt/lyt_textBox.cpp`: **+304 bytes** (7 funciones C++).
+- `nw4r/snd/snd_StrmPlayer.cpp`: **+276 bytes** (7 funciones C++).
+- `nw4r/snd/snd_VoiceManager.cpp`: **+252 bytes** (2 funciones C++).
+- `nw4r/snd/snd_Channel.cpp`: **+220 bytes** (2 funciones C++).
+- `nw4r/snd/snd_RemoteSpeakerManager.cpp`: **+172 bytes** (2 funciones C++).
+- `nw4r/snd/snd_WaveSound.cpp`: **+136 bytes** (3 funciones C++).
+- `nw4r/snd/snd_BasicSound.cpp`: **+92 bytes** (3 funciones C++).
+- `nw4r/snd/snd_WsdPlayer.cpp`: **+24 bytes** (3 funciones C++).
+- `nw4r/snd/snd_StrmSound.cpp`: **+8 bytes** (1 función C++).
+- `nw4r/snd/snd_SeqPlayer.cpp`: **+4 bytes** (1 función C++).
+
+### 4. Módulos de RVL SDK convertidos a fuentes mixtos
+- `revolution/dvd/dvd.c`: **+3,500 bytes** (23 funciones C).
+- `revolution/fs/fs.c`: **+4,360 bytes** (23 funciones C).
+- `revolution/sc/scsystem.c`: **+1,908 bytes** (11 funciones C).
+- `revolution/ipc/ipcclt.c`: **+1,944 bytes** (9 funciones C).
+- `revolution/dvd/dvderror.c`: **+1,688 bytes** (10 funciones C).
+- `revolution/usb/usb.c`: **+1,448 bytes** (8 funciones C).
+- `revolution/os/OSFont.c`: **+620 bytes** (1 función C).
+- `revolution/os/OSAlarm.c`: **+552 bytes** (7 funciones C).
+- `revolution/exi/EXIUart.c`: **+444 bytes** (1 función C).
+- `revolution/os/OSRtc.c`: **+292 bytes** (3 funciones C).
+- `revolution/exi/EXIBios.c`: **+164 bytes** (1 función C).
+
+### 5. Mejoras en herramientas del repositorio
+- `tools/mix_asm.py`:
+  - Se corrigió la generación de declaraciones adelantadas de funciones `static` eliminadas, permitiendo que llamadas previas en el cuerpo de la TU las invoquen sin errores de `undefined identifier`.
+  - Se corrigió el analizador de errores del compilador para reconocer mensajes de tipo `illegal overloading` en funciones de sistema C++ (`OSDisableInterrupts`, `OSLockMutex`, etc.), descartando automáticamente prototipos redundantes generados por `asm_to_cpp`.
+- `tools/try_import.py`:
+  - Se extendió la expresión regular de sustitución en `patched()` para soportar objetos con argumentos adicionales como `source="..."` o `extra_cflags=[...]`.
+
+### 6. Integración masiva de GameSpy SDK y RVL NAND (Hito 16.17%)
+- **GameSpy Stats (src/gamespy/gstats/)**: **+21,672 bytes** de C real coincidente al 100%:
+  - src/gamespy/gstats/gstats.c: **+10,508 bytes** (16 funciones al 100%: PersistThink, ProcessGetData, ProcessStatement, CallReqCallback, ServerOp*, TeamOp*, PlayerOp*, etc.).
+  - src/gamespy/gstats/unk_80274A58.c: **+11,164 bytes** (11 funciones al 100%: GenerateAuthA, InitStatsAsync, InitStatsThink, InitStatsConnection, CloseStatsConnection, IsStatsConnected, GetChallenge, PreAuthenticatePlayerPartner, GetPersistDataValuesModifiedA, GetPersistDataValuesA, SetPersistDataValuesA).
+- **GameSpy NatNeg (src/gamespy/natneg/)**: **+2,108 bytes** de C real coincidente al 100%:
+  - src/gamespy/natneg/NATify.c: 3 funciones al 100% (AddressToString, DetermineNatType, NatifyThink).
+  - src/gamespy/natneg/natneg.c: 3 funciones al 100% (CheckNatifyStatus, NNInternalBeginNegotiationWithSocket, NNCancel).
+- **GameSpy GP Search (src/gamespy/GP/gpiSearch.c)**: 5 funciones coincidentes al 100% (gpiStartProfileSearch, gpiInitSearchData, gpiProfileSearch, gpiOthersBuddyList, gpiProcessSearches).
+- **RVL SDK NAND (src/revolution/nand/nand.c)**: **+956 bytes** (8 funciones al 100%: NANDPrivateDeleteAsync, NANDRead, NANDReadAsync, NANDWrite, NANDWriteAsync, NANDMove, 
+andComposePerm, NANDPrivateGetStatusAsync).
+- **Verificación**: main.dol coincide byte a byte (SHA1: 982a4f104272d2637fbbabbcad30aeead05d6e6d). Progreso global alcanzado: **16.17% matched (533,384 bytes) / 16.80% fuzzy**.

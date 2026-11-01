@@ -236,6 +236,7 @@ static struct tm tb = {0}; /* time block used in SecondsToDate */
 
 static char buf[26]; /* buffer used to store string in SecondsToString */
 
+#undef _T
 #define _T(a) L##a
 static char* store_dt(char*, int);
 static char* store_dt(char* p, int val) {

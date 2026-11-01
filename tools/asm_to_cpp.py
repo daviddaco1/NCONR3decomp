@@ -69,7 +69,7 @@ def convert_asm_to_cpp(asm_path, cpp_path, tu_name):
     # etiquetas .L_ definidas dentro de cada funcion (un salto a otra funcion va como palabra cruda)
     fn_labels, cur = {}, None
     for line in lines:
-        mm = re.match(r'\.fn\s+(\w+)', line)
+        mm = re.match(r'\.fn\s+"?([a-zA-Z0-9_@]+)"?', line)
         if mm: cur = mm.group(1); fn_labels[cur] = set()
         elif line.startswith('.endfn'): cur = None
         elif cur and line.strip().startswith('.L_'): fn_labels[cur].add(line.strip()[:-1])
@@ -78,7 +78,7 @@ def convert_asm_to_cpp(asm_path, cpp_path, tu_name):
     for line in lines:
         line_clean = line.strip()
         if line.startswith('.fn '):
-            m = re.match(r'\.fn\s+([a-zA-Z0-9_]+)', line)
+            m = re.match(r'\.fn\s+"?([a-zA-Z0-9_@]+)"?', line)
             current_fn = m.group(1)
             out.append('// ' + '-' * 76)
             out.append(f'// {current_fn}')

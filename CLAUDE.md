@@ -133,7 +133,7 @@ locales en `project.py`: `progress_report_hook` y columna asm en `print_category
 ## Estado (actualizar al cerrar una etapa)
 
 - **Código 100% matcheado** (3,299,164 bytes, 11,292 funciones) mezclando asm y C/C++; **C real
-  13.17%** (434,520 / 3,299,164 bytes; >2,168 funciones del juego en C++). Datos 0% (sin splits de datos).
+  14.46%** (476,928 / 3,299,164 bytes; 4,365 funciones en C/C++ puro). Datos 0% (sin splits de datos).
 - `.text` 100% splitteado. TUs `unk_<addr>` = fronteras sin nombre real (los huecos grandes, como
   `dwc/unk_8022813C.c`, pueden contener varios archivos). Funciones del juego siguen como `fn_*`.
 - Patrón de vtables en offset 0x4 resuelto: herencia de base sin virtuales con 4 bytes de datos (`struct Base { int x; };`).

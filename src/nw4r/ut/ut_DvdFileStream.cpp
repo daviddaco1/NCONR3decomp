@@ -36,8 +36,8 @@ extern "C" void __dt__Q34nw4r2ut13DvdFileStreamFv();
 extern "C" void _restgpr_22();
 extern "C" void _savegpr_22();
 extern "C" void dtor_80136CFC();
-extern "C" void fn_802237D8();
-extern "C" void fn_8022383C();
+extern "C" void Skip__Q44nw4r2ut10FileStream12FilePositionFl();
+extern "C" void Append__Q44nw4r2ut10FileStream12FilePositionFl();
 extern "C" void fn_80223EAC();
 extern "C" void fn_802D55B4();
 
@@ -118,7 +118,7 @@ lbl_8022399C:
     li r4, 0x0
     li r5, 0x0
     stw r0, 0x14(r31)
-    bl fn_8022383C
+    bl Append__Q44nw4r2ut10FileStream12FilePositionFl
     li r0, 0x1
     stb r0, 0x6d(r31)
     stb r0, 0x6e(r31)
@@ -201,7 +201,7 @@ lbl_80223A64:
     stw r6, 0x5c(r30)
     stw r0, 0x60(r30)
     stw r6, 0x14(r30)
-    bl fn_8022383C
+    bl Append__Q44nw4r2ut10FileStream12FilePositionFl
     li r3, 0x0
     li r0, 0x1
     stb r3, 0x6d(r30)
@@ -315,7 +315,7 @@ lbl_80223C30:
     ble lbl_80223C54
     mr r4, r31
     addi r3, r30, 0x14
-    bl fn_802237D8
+    bl Skip__Q44nw4r2ut10FileStream12FilePositionFl
 lbl_80223C54:
     mr r3, r31
     lwz r31, 0xc(r1)
@@ -382,7 +382,7 @@ lbl_80223D04:
     beq lbl_80223D3C
     mr r4, r30
     addi r3, r31, 0x14
-    bl fn_802237D8
+    bl Skip__Q44nw4r2ut10FileStream12FilePositionFl
     b lbl_80223D44
 lbl_80223D3C:
     li r0, 0x0
@@ -467,7 +467,7 @@ lbl_80223DEC:
 extern "C" asm void Seek__Q34nw4r2ut13DvdFileStreamFlUl() {
     nofralloc
     addi r3, r3, 0x14
-    b fn_8022383C
+    b Append__Q44nw4r2ut10FileStream12FilePositionFl
 }
 
 // ----------------------------------------------------------------------------

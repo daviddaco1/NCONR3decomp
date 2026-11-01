@@ -64,6 +64,7 @@ GPIBool gpiInitProfiles(GPConnection* connection) {
   GPIConnection* iconnection = (GPIConnection*)*connection;
 
   iconnection->profileList.numBuddies = 0;
+  iconnection->profileList.numBlocked = 0;
   iconnection->profileList.num = 0;
   iconnection->profileList.profileTable =
       TableNew(sizeof(GPIProfile), 32, gpiProfilesTableHash,

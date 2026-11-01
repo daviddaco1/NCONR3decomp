@@ -743,7 +743,7 @@ s32 fn_801769E0();
 s32 fn_80176DA8(void);
 s32 fn_80176EB0(s32 arg0);
 s32 fn_80176F84(s32 arg0, s32 arg1);
-void fn_80176F8C(s32 *arg0, s32 arg1);
+s32 fn_80176F8C(s32 arg0);
 void fn_80176FC0(M2C_UNK *arg0, s32 arg1);
 s32 fn_80177054(s32 **arg0, s32 *arg1, s32 arg2);
 s32 fn_801770C4(s32 *arg0);
@@ -819,7 +819,7 @@ f32 fn_801A32F4(f64 farg0);
 void fn_801F40F4(s32 arg0);
 void fn_801F41E8(s32 arg0);
 f32 fn_802019BC(void);
-s32 fn_8020FA34();
+s32 fn_8020FA34(M2C_UNK *arg0, M2C_UNK *arg1);
 s32 fn_8020FAF4();
 s32 fn_8020FBA0(s8 *arg0, s8 arg1);
 s32 fn_8022849C(u8 **arg0);
@@ -18250,64 +18250,20 @@ f32 fn_8017665C(s32 arg0) {
     return lbl_803BD100[arg0].f_2e0;
 }
 
-// asm_to_cpp: fn_80176674
-asm void fn_80176674(void) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_29
-    li r29, 0x0
-    li r31, 0x0
-    lis r3, lbl_803BD100@ha
-    addi r30, r3, lbl_803BD100@l
-lbl_80176698:
-    mr r3, r29
-    bl fn_8030B360
-    lwzx r0, r30, r31
-    ori r0, r0, 0x20
-    stwx r0, r30, r31
-    addi r29, r29, 0x1
-    addi r31, r31, 0x3cc
-    cmpwi r29, 0x4
-    blt lbl_80176698
-    addi r11, r1, 0x20
-    bl _restgpr_29
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+void fn_80176674(void) {
+    s32 i;
+    for (i = 0; i < 4; i++) {
+        fn_8030B360(i);
+        *(u32 *)((u8 *)lbl_803BD100 + i * 0x3cc) |= 0x20;
+    }
 }
 
-// asm_to_cpp: fn_801766D4
-asm void fn_801766D4(void) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_29
-    li r29, 0x0
-    li r31, 0x0
-    lis r3, lbl_803BD100@ha
-    addi r30, r3, lbl_803BD100@l
-lbl_801766F8:
-    mr r3, r29
-    bl fn_8030B344
-    lwzx r0, r30, r31
-    rlwinm r0, r0, 0, 27, 25
-    stwx r0, r30, r31
-    addi r29, r29, 0x1
-    addi r31, r31, 0x3cc
-    cmpwi r29, 0x4
-    blt lbl_801766F8
-    addi r11, r1, 0x20
-    bl _restgpr_29
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+void fn_801766D4(void) {
+    s32 i;
+    for (i = 0; i < 4; i++) {
+        fn_8030B344(i);
+        *(u32 *)((u8 *)lbl_803BD100 + i * 0x3cc) &= ~0x20;
+    }
 }
 
 #pragma dont_inline on
@@ -18324,39 +18280,13 @@ s32 fn_80176754(s32 arg0) {
 }
 #pragma dont_inline reset
 
-// asm_to_cpp: fn_80176788
-asm void fn_80176788(void) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_28
-    li r28, 0x0
-    li r31, 0x0
-    lis r30, fn_80174AFC@ha
-    lis r3, lbl_803BD100@ha
-    addi r29, r3, lbl_803BD100@l
-lbl_801767B0:
-    lwzx r0, r29, r31
-    rlwinm r0, r0, 0, 28, 28
-    cmpwi r0, 0x0
-    beq lbl_801767D0
-    mr r3, r28
-    bl fn_80176F8C
-    addi r4, r30, fn_80174AFC@l
-    bl fn_8020FA34
-lbl_801767D0:
-    addi r28, r28, 0x1
-    addi r31, r31, 0x3cc
-    cmpwi r28, 0x4
-    blt lbl_801767B0
-    addi r11, r1, 0x20
-    bl _restgpr_28
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+void fn_80176788(void) {
+    s32 i;
+    for (i = 0; i < 4; i++) {
+        if (*(u32 *)((u8 *)lbl_803BD100 + i * 0x3cc) & 8) {
+            fn_8020FA34((M2C_UNK *)fn_80176F8C(i), (M2C_UNK *)fn_80174AFC);
+        }
+    }
 }
 
 #pragma peephole on
@@ -18893,8 +18823,8 @@ s32 fn_80176F84(s32 arg0, s32 arg1) {
     return (s32) (MEMCreateExpHeapEx((s32) (arg0), (s32) (arg1), (s32) (0)));
 }
 
-void fn_80176F8C(s32 *arg0, s32 arg1) {
-    GetRemoteSpeaker__Q44nw4r3snd6detail20RemoteSpeakerManagerFi((s32) (GetInstance__Q44nw4r3snd6detail20RemoteSpeakerManagerFv()), (s32) ((s32) arg0));
+s32 fn_80176F8C(s32 arg0) {
+    return (s32)GetRemoteSpeaker__Q44nw4r3snd6detail20RemoteSpeakerManagerFi((s32)GetInstance__Q44nw4r3snd6detail20RemoteSpeakerManagerFv(), arg0);
 }
 
 // asm_to_cpp: fn_80176FC0
