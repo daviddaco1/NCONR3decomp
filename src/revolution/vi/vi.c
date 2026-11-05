@@ -268,7 +268,7 @@ s32 __VIResetRFIdle(void);
 extern int __VIRetraceHandler();
 extern void __VISetCGMS();
 extern void __VISetClosedCaption();
-extern void __VISetFilter4EURGB60();
+extern void __VISetFilter4EURGB60(u8);
 extern void __VISetGamma();
 extern void __VISetGamma1_0();
 extern void __VISetMacrovision();

@@ -50,6 +50,7 @@ extern "C" void fn_8030CB00();
 // ----------------------------------------------------------------------------
 // fn_802F4154
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802F4154
 extern "C" asm void fn_802F4154() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -188,6 +189,7 @@ lbl_802F42D4:
 // ----------------------------------------------------------------------------
 // fn_802F42F4
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802F42F4
 extern "C" asm void fn_802F42F4() {
     nofralloc
     li r0, 0x0
@@ -213,6 +215,7 @@ extern "C" asm void fn_802F42F4() {
 // ----------------------------------------------------------------------------
 // __dt__Q36nw4hbm3lyt6LayoutFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q36nw4hbm3lyt6LayoutFv
 extern "C" asm void __dt__Q36nw4hbm3lyt6LayoutFv() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -300,6 +303,7 @@ lbl_802F4448:
 // ----------------------------------------------------------------------------
 // Build__Q36nw4hbm3lyt6LayoutFPCvPQ36nw4hbm3lyt16ResourceAccessor
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Build__Q36nw4hbm3lyt6LayoutFPCvPQ36nw4hbm3lyt16ResourceAccessor
 extern "C" asm void Build__Q36nw4hbm3lyt6LayoutFPCvPQ36nw4hbm3lyt16ResourceAccessor() {
     nofralloc
     stwu r1, -0x60(r1)
@@ -528,6 +532,7 @@ lbl_802F4750:
 // ----------------------------------------------------------------------------
 // fn_802F4768
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802F4768
 extern "C" asm void fn_802F4768() {
     nofralloc
     stwu r1, -0x40(r1)
@@ -646,6 +651,7 @@ lbl_802F48D8:
 // ----------------------------------------------------------------------------
 // BindAnimation__Q36nw4hbm3lyt6LayoutFPQ36nw4hbm3lyt13AnimTransform
 // ----------------------------------------------------------------------------
+// asm_to_cpp: BindAnimation__Q36nw4hbm3lyt6LayoutFPQ36nw4hbm3lyt13AnimTransform
 extern "C" asm void BindAnimation__Q36nw4hbm3lyt6LayoutFPQ36nw4hbm3lyt13AnimTransform() {
     nofralloc
     lwz r3, 0x10(r3)
@@ -662,6 +668,7 @@ extern "C" asm void BindAnimation__Q36nw4hbm3lyt6LayoutFPQ36nw4hbm3lyt13AnimTran
 // ----------------------------------------------------------------------------
 // UnbindAnimation__Q36nw4hbm3lyt6LayoutFPQ36nw4hbm3lyt13AnimTransform
 // ----------------------------------------------------------------------------
+// asm_to_cpp: UnbindAnimation__Q36nw4hbm3lyt6LayoutFPQ36nw4hbm3lyt13AnimTransform
 extern "C" asm void UnbindAnimation__Q36nw4hbm3lyt6LayoutFPQ36nw4hbm3lyt13AnimTransform() {
     nofralloc
     lwz r3, 0x10(r3)
@@ -678,6 +685,7 @@ extern "C" asm void UnbindAnimation__Q36nw4hbm3lyt6LayoutFPQ36nw4hbm3lyt13AnimTr
 // ----------------------------------------------------------------------------
 // UnbindAllAnimation__Q36nw4hbm3lyt6LayoutFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: UnbindAllAnimation__Q36nw4hbm3lyt6LayoutFv
 extern "C" asm void UnbindAllAnimation__Q36nw4hbm3lyt6LayoutFv() {
     nofralloc
     lwz r12, 0x0(r3)
@@ -690,6 +698,7 @@ extern "C" asm void UnbindAllAnimation__Q36nw4hbm3lyt6LayoutFv() {
 // ----------------------------------------------------------------------------
 // SetAnimationEnable__Q36nw4hbm3lyt6LayoutFPQ36nw4hbm3lyt13AnimTransformb
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetAnimationEnable__Q36nw4hbm3lyt6LayoutFPQ36nw4hbm3lyt13AnimTransformb
 extern "C" asm void SetAnimationEnable__Q36nw4hbm3lyt6LayoutFPQ36nw4hbm3lyt13AnimTransformb() {
     nofralloc
     lwz r3, 0x10(r3)
@@ -706,6 +715,7 @@ extern "C" asm void SetAnimationEnable__Q36nw4hbm3lyt6LayoutFPQ36nw4hbm3lyt13Ani
 // ----------------------------------------------------------------------------
 // CalculateMtx__Q36nw4hbm3lyt6LayoutFRCQ36nw4hbm3lyt8DrawInfo
 // ----------------------------------------------------------------------------
+// asm_to_cpp: CalculateMtx__Q36nw4hbm3lyt6LayoutFRCQ36nw4hbm3lyt8DrawInfo
 extern "C" asm void CalculateMtx__Q36nw4hbm3lyt6LayoutFRCQ36nw4hbm3lyt8DrawInfo() {
     nofralloc
     lwz r3, 0x10(r3)
@@ -721,6 +731,7 @@ extern "C" asm void CalculateMtx__Q36nw4hbm3lyt6LayoutFRCQ36nw4hbm3lyt8DrawInfo(
 // ----------------------------------------------------------------------------
 // Draw__Q36nw4hbm3lyt6LayoutFRCQ36nw4hbm3lyt8DrawInfo
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Draw__Q36nw4hbm3lyt6LayoutFRCQ36nw4hbm3lyt8DrawInfo
 extern "C" asm void Draw__Q36nw4hbm3lyt6LayoutFRCQ36nw4hbm3lyt8DrawInfo() {
     nofralloc
     lwz r3, 0x10(r3)
@@ -736,6 +747,7 @@ extern "C" asm void Draw__Q36nw4hbm3lyt6LayoutFRCQ36nw4hbm3lyt8DrawInfo() {
 // ----------------------------------------------------------------------------
 // Animate__Q36nw4hbm3lyt6LayoutFUl
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Animate__Q36nw4hbm3lyt6LayoutFUl
 extern "C" asm void Animate__Q36nw4hbm3lyt6LayoutFUl() {
     nofralloc
     lwz r3, 0x10(r3)
@@ -751,6 +763,7 @@ extern "C" asm void Animate__Q36nw4hbm3lyt6LayoutFUl() {
 // ----------------------------------------------------------------------------
 // GetLayoutRect__Q36nw4hbm3lyt6LayoutCFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetLayoutRect__Q36nw4hbm3lyt6LayoutCFv
 extern "C" asm void GetLayoutRect__Q36nw4hbm3lyt6LayoutCFv() {
     nofralloc
     lbz r0, 0x20(r4)

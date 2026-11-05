@@ -87,6 +87,7 @@ extern "C" void fn_8020BEBC();
 // ----------------------------------------------------------------------------
 // GetInstance__Q44nw4r3snd6detail14ChannelManagerFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetInstance__Q44nw4r3snd6detail14ChannelManagerFv
 extern "C" asm void GetInstance__Q44nw4r3snd6detail14ChannelManagerFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -126,6 +127,7 @@ lbl_8020A374:
 // ----------------------------------------------------------------------------
 // __dt__Q44nw4r3snd6detail14ChannelManagerFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q44nw4r3snd6detail14ChannelManagerFv
 extern "C" asm void __dt__Q44nw4r3snd6detail14ChannelManagerFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -159,6 +161,7 @@ lbl_8020A3D0:
 // ----------------------------------------------------------------------------
 // GetRequiredMemSize__Q44nw4r3snd6detail14ChannelManagerFi
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetRequiredMemSize__Q44nw4r3snd6detail14ChannelManagerFi
 extern "C" asm void GetRequiredMemSize__Q44nw4r3snd6detail14ChannelManagerFi() {
     nofralloc
     addi r0, r4, 0x1
@@ -169,6 +172,7 @@ extern "C" asm void GetRequiredMemSize__Q44nw4r3snd6detail14ChannelManagerFi() {
 // ----------------------------------------------------------------------------
 // Setup__Q44nw4r3snd6detail14ChannelManagerFPvUl
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Setup__Q44nw4r3snd6detail14ChannelManagerFPvUl
 extern "C" asm void Setup__Q44nw4r3snd6detail14ChannelManagerFPvUl() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -215,6 +219,7 @@ lbl_8020A46C:
 // ----------------------------------------------------------------------------
 // UpdateAllChannel__Q44nw4r3snd6detail14ChannelManagerFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: UpdateAllChannel__Q44nw4r3snd6detail14ChannelManagerFv
 extern "C" asm void UpdateAllChannel__Q44nw4r3snd6detail14ChannelManagerFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -245,6 +250,7 @@ lbl_8020A4C0:
 // ----------------------------------------------------------------------------
 // InitParam__Q44nw4r3snd6detail7ChannelFPFPQ44nw4r3snd6detail7ChannelQ54nw4r3snd6detail7Channel21ChannelCallbackStatusUl_vUl
 // ----------------------------------------------------------------------------
+// asm_to_cpp: InitParam__Q44nw4r3snd6detail7ChannelFPFPQ44nw4r3snd6detail7ChannelQ54nw4r3snd6detail7Channel21ChannelCallbackStatusUl_vUl
 extern "C" asm void InitParam__Q44nw4r3snd6detail7ChannelFPFPQ44nw4r3snd6detail7ChannelQ54nw4r3snd6detail7Channel21ChannelCallbackStatusUl_vUl() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -328,6 +334,7 @@ extern "C" asm void InitParam__Q44nw4r3snd6detail7ChannelFPFPQ44nw4r3snd6detail7
 // ----------------------------------------------------------------------------
 // Update__Q44nw4r3snd6detail7ChannelFb
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Update__Q44nw4r3snd6detail7ChannelFb
 extern "C" asm void Update__Q44nw4r3snd6detail7ChannelFb() {
     nofralloc
     stwu r1, -0x130(r1)
@@ -850,6 +857,7 @@ lbl_8020AD3C:
 // ----------------------------------------------------------------------------
 // Start__Q44nw4r3snd6detail7ChannelFRCQ44nw4r3snd6detail8WaveInfoiUl
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Start__Q44nw4r3snd6detail7ChannelFRCQ44nw4r3snd6detail8WaveInfoiUl
 extern "C" asm void Start__Q44nw4r3snd6detail7ChannelFRCQ44nw4r3snd6detail8WaveInfoiUl() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -889,6 +897,7 @@ extern "C" asm void Start__Q44nw4r3snd6detail7ChannelFRCQ44nw4r3snd6detail8WaveI
 // ----------------------------------------------------------------------------
 // Release__Q44nw4r3snd6detail7ChannelFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Release__Q44nw4r3snd6detail7ChannelFv
 extern "C" asm void Release__Q44nw4r3snd6detail7ChannelFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -924,6 +933,7 @@ lbl_8020AE88:
 // ----------------------------------------------------------------------------
 // NoteOff__Q44nw4r3snd6detail7ChannelFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: NoteOff__Q44nw4r3snd6detail7ChannelFv
 extern "C" asm void NoteOff__Q44nw4r3snd6detail7ChannelFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -963,6 +973,7 @@ lbl_8020AF04:
 // ----------------------------------------------------------------------------
 // Stop__Q44nw4r3snd6detail7ChannelFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Stop__Q44nw4r3snd6detail7ChannelFv
 extern "C" asm void Stop__Q44nw4r3snd6detail7ChannelFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1049,6 +1060,7 @@ lbl_8020B02C:
 // ----------------------------------------------------------------------------
 // UpdateSweep__Q44nw4r3snd6detail7ChannelFi
 // ----------------------------------------------------------------------------
+// asm_to_cpp: UpdateSweep__Q44nw4r3snd6detail7ChannelFi
 extern "C" asm void UpdateSweep__Q44nw4r3snd6detail7ChannelFi() {
     nofralloc
     lwz r0, 0xa8(r3)
@@ -1064,6 +1076,7 @@ extern "C" asm void UpdateSweep__Q44nw4r3snd6detail7ChannelFi() {
 // ----------------------------------------------------------------------------
 // SetSweepParam__Q44nw4r3snd6detail7ChannelFfib
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetSweepParam__Q44nw4r3snd6detail7ChannelFfib
 extern "C" asm void SetSweepParam__Q44nw4r3snd6detail7ChannelFfib() {
     nofralloc
     li r0, 0x0
@@ -1077,6 +1090,7 @@ extern "C" asm void SetSweepParam__Q44nw4r3snd6detail7ChannelFfib() {
 // ----------------------------------------------------------------------------
 // SetBiquadFilter__Q44nw4r3snd6detail7ChannelFif
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetBiquadFilter__Q44nw4r3snd6detail7ChannelFif
 extern "C" asm void SetBiquadFilter__Q44nw4r3snd6detail7ChannelFif() {
     nofralloc
     stb r4, 0x3b(r3)
@@ -1087,6 +1101,7 @@ extern "C" asm void SetBiquadFilter__Q44nw4r3snd6detail7ChannelFif() {
 // ----------------------------------------------------------------------------
 // VoiceCallbackFunc__Q44nw4r3snd6detail7ChannelFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: VoiceCallbackFunc__Q44nw4r3snd6detail7ChannelFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv
 extern "C" asm void VoiceCallbackFunc__Q44nw4r3snd6detail7ChannelFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1187,6 +1202,7 @@ lbl_8020B1BC:
 // ----------------------------------------------------------------------------
 // AllocChannel__Q44nw4r3snd6detail7ChannelFiiiPFPQ44nw4r3snd6detail7ChannelQ54nw4r3snd6detail7Channel21ChannelCallbackStatusUl_vUl
 // ----------------------------------------------------------------------------
+// asm_to_cpp: AllocChannel__Q44nw4r3snd6detail7ChannelFiiiPFPQ44nw4r3snd6detail7ChannelQ54nw4r3snd6detail7Channel21ChannelCallbackStatusUl_vUl
 extern "C" asm void AllocChannel__Q44nw4r3snd6detail7ChannelFiiiPFPQ44nw4r3snd6detail7ChannelQ54nw4r3snd6detail7Channel21ChannelCallbackStatusUl_vUl() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -1329,6 +1345,7 @@ lbl_8020B3B8:
 // ----------------------------------------------------------------------------
 // FreeChannel__Q44nw4r3snd6detail7ChannelFPQ44nw4r3snd6detail7Channel
 // ----------------------------------------------------------------------------
+// asm_to_cpp: FreeChannel__Q44nw4r3snd6detail7ChannelFPQ44nw4r3snd6detail7Channel
 extern "C" asm void FreeChannel__Q44nw4r3snd6detail7ChannelFPQ44nw4r3snd6detail7Channel() {
     nofralloc
     cmpwi r3, 0x0

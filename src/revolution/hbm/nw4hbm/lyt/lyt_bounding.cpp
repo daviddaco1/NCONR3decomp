@@ -24,6 +24,7 @@ extern "C" void fn_802F9090();
 // ----------------------------------------------------------------------------
 // __ct__Q36nw4hbm3lyt8BoundingFPCQ46nw4hbm3lyt3res8BoundingRCQ36nw4hbm3lyt11ResBlockSet
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __ct__Q36nw4hbm3lyt8BoundingFPCQ46nw4hbm3lyt3res8BoundingRCQ36nw4hbm3lyt11ResBlockSet
 extern "C" asm void __ct__Q36nw4hbm3lyt8BoundingFPCQ46nw4hbm3lyt3res8BoundingRCQ36nw4hbm3lyt11ResBlockSet() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -46,6 +47,7 @@ extern "C" asm void __ct__Q36nw4hbm3lyt8BoundingFPCQ46nw4hbm3lyt3res8BoundingRCQ
 // ----------------------------------------------------------------------------
 // __dt__Q36nw4hbm3lyt8BoundingFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q36nw4hbm3lyt8BoundingFv
 extern "C" asm void __dt__Q36nw4hbm3lyt8BoundingFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -76,6 +78,7 @@ lbl_802F2E6C:
 // ----------------------------------------------------------------------------
 // DrawSelf__Q36nw4hbm3lyt8BoundingFRCQ36nw4hbm3lyt8DrawInfo
 // ----------------------------------------------------------------------------
+// asm_to_cpp: DrawSelf__Q36nw4hbm3lyt8BoundingFRCQ36nw4hbm3lyt8DrawInfo
 extern "C" asm void DrawSelf__Q36nw4hbm3lyt8BoundingFRCQ36nw4hbm3lyt8DrawInfo() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -112,6 +115,7 @@ lbl_802F2EE4:
 // ----------------------------------------------------------------------------
 // __dt__Q36nw4hbm2ut5ColorFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q36nw4hbm2ut5ColorFv
 extern "C" asm void __dt__Q36nw4hbm2ut5ColorFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -136,6 +140,7 @@ lbl_802F2F20:
 // ----------------------------------------------------------------------------
 // GetRuntimeTypeInfo__Q36nw4hbm3lyt8BoundingCFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetRuntimeTypeInfo__Q36nw4hbm3lyt8BoundingCFv
 extern "C" asm void GetRuntimeTypeInfo__Q36nw4hbm3lyt8BoundingCFv() {
     nofralloc
     lis r3, lbl_80462408@ha
@@ -146,6 +151,7 @@ extern "C" asm void GetRuntimeTypeInfo__Q36nw4hbm3lyt8BoundingCFv() {
 // ----------------------------------------------------------------------------
 // fn_802F2F44
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802F2F44
 extern "C" asm void fn_802F2F44() {
     nofralloc
     lis r4, lbl_80462440@ha

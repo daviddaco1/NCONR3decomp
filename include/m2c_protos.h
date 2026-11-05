@@ -2522,7 +2522,7 @@ s32 __VIResetSIIdle();
 s32 __VISendI2CData();
 void __VISetCGMS();
 void __VISetClosedCaption();
-void __VISetFilter4EURGB60();
+void __VISetFilter4EURGB60(u8);
 void __VISetGamma();
 void __VISetGamma1_0();
 void __VISetGammaImm();

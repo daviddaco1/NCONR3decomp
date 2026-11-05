@@ -38,6 +38,7 @@ extern "C" void fn_801C9DAC();
 // ----------------------------------------------------------------------------
 // Create__Q34nw4r2ef19DrawStrategyBuilderFUl
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Create__Q34nw4r2ef19DrawStrategyBuilderFUl
 extern "C" asm void Create__Q34nw4r2ef19DrawStrategyBuilderFUl() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -175,6 +176,7 @@ lbl_801BECC4:
 // ----------------------------------------------------------------------------
 // __dt__Q34nw4r2ef21DrawBillboardStrategyFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q34nw4r2ef21DrawBillboardStrategyFv
 extern "C" asm void __dt__Q34nw4r2ef21DrawBillboardStrategyFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -199,6 +201,7 @@ lbl_801BED04:
 // ----------------------------------------------------------------------------
 // __dt__Q34nw4r2ef23DrawDirectionalStrategyFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q34nw4r2ef23DrawDirectionalStrategyFv
 extern "C" asm void __dt__Q34nw4r2ef23DrawDirectionalStrategyFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -223,6 +226,7 @@ lbl_801BED44:
 // ----------------------------------------------------------------------------
 // __dt__Q34nw4r2ef16DrawFreeStrategyFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q34nw4r2ef16DrawFreeStrategyFv
 extern "C" asm void __dt__Q34nw4r2ef16DrawFreeStrategyFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -247,6 +251,7 @@ lbl_801BED84:
 // ----------------------------------------------------------------------------
 // __dt__Q34nw4r2ef16DrawLineStrategyFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q34nw4r2ef16DrawLineStrategyFv
 extern "C" asm void __dt__Q34nw4r2ef16DrawLineStrategyFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -271,6 +276,7 @@ lbl_801BEDC4:
 // ----------------------------------------------------------------------------
 // __dt__Q34nw4r2ef17DrawPointStrategyFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q34nw4r2ef17DrawPointStrategyFv
 extern "C" asm void __dt__Q34nw4r2ef17DrawPointStrategyFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -295,6 +301,7 @@ lbl_801BEE04:
 // ----------------------------------------------------------------------------
 // __dt__Q34nw4r2ef18DrawStripeStrategyFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q34nw4r2ef18DrawStripeStrategyFv
 extern "C" asm void __dt__Q34nw4r2ef18DrawStripeStrategyFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -319,6 +326,7 @@ lbl_801BEE44:
 // ----------------------------------------------------------------------------
 // __dt__Q34nw4r2ef24DrawSmoothStripeStrategyFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q34nw4r2ef24DrawSmoothStripeStrategyFv
 extern "C" asm void __dt__Q34nw4r2ef24DrawSmoothStripeStrategyFv() {
     nofralloc
     stwu r1, -0x10(r1)

@@ -38,6 +38,7 @@ extern "C" void dtor_80136CFC();
 // ----------------------------------------------------------------------------
 // __ct__Q46nw4hbm2ut6detail11ResFontBaseFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __ct__Q46nw4hbm2ut6detail11ResFontBaseFv
 extern "C" asm void __ct__Q46nw4hbm2ut6detail11ResFontBaseFv() {
     nofralloc
     lis r5, lbl_8037DE68@ha
@@ -62,6 +63,7 @@ extern "C" asm void __ct__Q46nw4hbm2ut6detail11ResFontBaseFv() {
 // ----------------------------------------------------------------------------
 // __dt__Q46nw4hbm2ut6detail11ResFontBaseFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q46nw4hbm2ut6detail11ResFontBaseFv
 extern "C" asm void __dt__Q46nw4hbm2ut6detail11ResFontBaseFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -86,6 +88,7 @@ lbl_802FF7E4:
 // ----------------------------------------------------------------------------
 // SetResourceBuffer__Q46nw4hbm2ut6detail11ResFontBaseFPvPQ36nw4hbm2ut15FontInformation
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetResourceBuffer__Q46nw4hbm2ut6detail11ResFontBaseFPvPQ36nw4hbm2ut15FontInformation
 extern "C" asm void SetResourceBuffer__Q46nw4hbm2ut6detail11ResFontBaseFPvPQ36nw4hbm2ut15FontInformation() {
     nofralloc
     stw r4, 0x10(r3)
@@ -96,6 +99,7 @@ extern "C" asm void SetResourceBuffer__Q46nw4hbm2ut6detail11ResFontBaseFPvPQ36nw
 // ----------------------------------------------------------------------------
 // GetWidth__Q46nw4hbm2ut6detail11ResFontBaseCFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetWidth__Q46nw4hbm2ut6detail11ResFontBaseCFv
 extern "C" asm void GetWidth__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
     nofralloc
     lwz r3, 0x14(r3)
@@ -106,6 +110,7 @@ extern "C" asm void GetWidth__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
 // ----------------------------------------------------------------------------
 // GetHeight__Q46nw4hbm2ut6detail11ResFontBaseCFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetHeight__Q46nw4hbm2ut6detail11ResFontBaseCFv
 extern "C" asm void GetHeight__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
     nofralloc
     lwz r3, 0x14(r3)
@@ -116,6 +121,7 @@ extern "C" asm void GetHeight__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
 // ----------------------------------------------------------------------------
 // GetAscent__Q46nw4hbm2ut6detail11ResFontBaseCFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetAscent__Q46nw4hbm2ut6detail11ResFontBaseCFv
 extern "C" asm void GetAscent__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
     nofralloc
     lwz r3, 0x14(r3)
@@ -126,6 +132,7 @@ extern "C" asm void GetAscent__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
 // ----------------------------------------------------------------------------
 // GetDescent__Q46nw4hbm2ut6detail11ResFontBaseCFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetDescent__Q46nw4hbm2ut6detail11ResFontBaseCFv
 extern "C" asm void GetDescent__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
     nofralloc
     lwz r4, 0x14(r3)
@@ -138,6 +145,7 @@ extern "C" asm void GetDescent__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
 // ----------------------------------------------------------------------------
 // GetBaselinePos__Q46nw4hbm2ut6detail11ResFontBaseCFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetBaselinePos__Q46nw4hbm2ut6detail11ResFontBaseCFv
 extern "C" asm void GetBaselinePos__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
     nofralloc
     lwz r3, 0x14(r3)
@@ -150,6 +158,7 @@ extern "C" asm void GetBaselinePos__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
 // ----------------------------------------------------------------------------
 // GetCellHeight__Q46nw4hbm2ut6detail11ResFontBaseCFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetCellHeight__Q46nw4hbm2ut6detail11ResFontBaseCFv
 extern "C" asm void GetCellHeight__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
     nofralloc
     lwz r3, 0x14(r3)
@@ -161,6 +170,7 @@ extern "C" asm void GetCellHeight__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
 // ----------------------------------------------------------------------------
 // GetCellWidth__Q46nw4hbm2ut6detail11ResFontBaseCFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetCellWidth__Q46nw4hbm2ut6detail11ResFontBaseCFv
 extern "C" asm void GetCellWidth__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
     nofralloc
     lwz r3, 0x14(r3)
@@ -172,6 +182,7 @@ extern "C" asm void GetCellWidth__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
 // ----------------------------------------------------------------------------
 // GetMaxCharWidth__Q46nw4hbm2ut6detail11ResFontBaseCFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetMaxCharWidth__Q46nw4hbm2ut6detail11ResFontBaseCFv
 extern "C" asm void GetMaxCharWidth__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
     nofralloc
     lwz r3, 0x14(r3)
@@ -183,6 +194,7 @@ extern "C" asm void GetMaxCharWidth__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
 // ----------------------------------------------------------------------------
 // GetType__Q46nw4hbm2ut6detail11ResFontBaseCFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetType__Q46nw4hbm2ut6detail11ResFontBaseCFv
 extern "C" asm void GetType__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
     nofralloc
     li r3, 0x2
@@ -192,6 +204,7 @@ extern "C" asm void GetType__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
 // ----------------------------------------------------------------------------
 // GetTextureFormat__Q46nw4hbm2ut6detail11ResFontBaseCFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetTextureFormat__Q46nw4hbm2ut6detail11ResFontBaseCFv
 extern "C" asm void GetTextureFormat__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
     nofralloc
     lwz r3, 0x14(r3)
@@ -203,6 +216,7 @@ extern "C" asm void GetTextureFormat__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
 // ----------------------------------------------------------------------------
 // GetLineFeed__Q46nw4hbm2ut6detail11ResFontBaseCFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetLineFeed__Q46nw4hbm2ut6detail11ResFontBaseCFv
 extern "C" asm void GetLineFeed__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
     nofralloc
     lwz r3, 0x14(r3)
@@ -214,6 +228,7 @@ extern "C" asm void GetLineFeed__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
 // ----------------------------------------------------------------------------
 // GetDefaultCharWidths__Q46nw4hbm2ut6detail11ResFontBaseCFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetDefaultCharWidths__Q46nw4hbm2ut6detail11ResFontBaseCFv
 extern "C" asm void GetDefaultCharWidths__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
     nofralloc
     lwz r4, 0x14(r3)
@@ -227,6 +242,7 @@ extern "C" asm void GetDefaultCharWidths__Q46nw4hbm2ut6detail11ResFontBaseCFv() 
 // ----------------------------------------------------------------------------
 // SetDefaultCharWidths__Q46nw4hbm2ut6detail11ResFontBaseFRCQ36nw4hbm2ut10CharWidths
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetDefaultCharWidths__Q46nw4hbm2ut6detail11ResFontBaseFRCQ36nw4hbm2ut10CharWidths
 extern "C" asm void SetDefaultCharWidths__Q46nw4hbm2ut6detail11ResFontBaseFRCQ36nw4hbm2ut10CharWidths() {
     nofralloc
     lwz r5, 0x14(r3)
@@ -242,6 +258,7 @@ extern "C" asm void SetDefaultCharWidths__Q46nw4hbm2ut6detail11ResFontBaseFRCQ36
 // ----------------------------------------------------------------------------
 // SetAlternateChar__Q46nw4hbm2ut6detail11ResFontBaseFUs
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetAlternateChar__Q46nw4hbm2ut6detail11ResFontBaseFUs
 extern "C" asm void SetAlternateChar__Q46nw4hbm2ut6detail11ResFontBaseFUs() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -293,6 +310,7 @@ lbl_802FF968:
 // ----------------------------------------------------------------------------
 // SetLineFeed__Q46nw4hbm2ut6detail11ResFontBaseFi
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetLineFeed__Q46nw4hbm2ut6detail11ResFontBaseFi
 extern "C" asm void SetLineFeed__Q46nw4hbm2ut6detail11ResFontBaseFi() {
     nofralloc
     lwz r3, 0x14(r3)
@@ -303,6 +321,7 @@ extern "C" asm void SetLineFeed__Q46nw4hbm2ut6detail11ResFontBaseFi() {
 // ----------------------------------------------------------------------------
 // GetCharWidth__Q46nw4hbm2ut6detail11ResFontBaseCFUs
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetCharWidth__Q46nw4hbm2ut6detail11ResFontBaseCFUs
 extern "C" asm void GetCharWidth__Q46nw4hbm2ut6detail11ResFontBaseCFUs() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -329,6 +348,7 @@ extern "C" asm void GetCharWidth__Q46nw4hbm2ut6detail11ResFontBaseCFUs() {
 // ----------------------------------------------------------------------------
 // GetCharWidths__Q46nw4hbm2ut6detail11ResFontBaseCFUs
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetCharWidths__Q46nw4hbm2ut6detail11ResFontBaseCFUs
 extern "C" asm void GetCharWidths__Q46nw4hbm2ut6detail11ResFontBaseCFUs() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -405,6 +425,7 @@ lbl_802FFA9C:
 // ----------------------------------------------------------------------------
 // GetGlyph__Q46nw4hbm2ut6detail11ResFontBaseCFPQ36nw4hbm2ut5GlyphUs
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetGlyph__Q46nw4hbm2ut6detail11ResFontBaseCFPQ36nw4hbm2ut5GlyphUs
 extern "C" asm void GetGlyph__Q46nw4hbm2ut6detail11ResFontBaseCFPQ36nw4hbm2ut5GlyphUs() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -459,6 +480,7 @@ lbl_802FFB44:
 // ----------------------------------------------------------------------------
 // GetEncoding__Q46nw4hbm2ut6detail11ResFontBaseCFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetEncoding__Q46nw4hbm2ut6detail11ResFontBaseCFv
 extern "C" asm void GetEncoding__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
     nofralloc
     lwz r3, 0x14(r3)
@@ -469,6 +491,7 @@ extern "C" asm void GetEncoding__Q46nw4hbm2ut6detail11ResFontBaseCFv() {
 // ----------------------------------------------------------------------------
 // FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs
 // ----------------------------------------------------------------------------
+// asm_to_cpp: FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs
 extern "C" asm void FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs() {
     nofralloc
     lhz r0, 0x4(r4)
@@ -537,6 +560,7 @@ lbl_802FFC38:
 // ----------------------------------------------------------------------------
 // GetGlyphFromIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPQ36nw4hbm2ut5GlyphUs
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetGlyphFromIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPQ36nw4hbm2ut5GlyphUs
 extern "C" asm void GetGlyphFromIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPQ36nw4hbm2ut5GlyphUs() {
     nofralloc
     stwu r1, -0x10(r1)

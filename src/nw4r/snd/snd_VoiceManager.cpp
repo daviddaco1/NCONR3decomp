@@ -48,6 +48,7 @@ extern "C" void dtor_80136CFC();
 // ----------------------------------------------------------------------------
 // GetInstance__Q44nw4r3snd6detail12VoiceManagerFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetInstance__Q44nw4r3snd6detail12VoiceManagerFv
 extern "C" asm void GetInstance__Q44nw4r3snd6detail12VoiceManagerFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -91,6 +92,7 @@ lbl_80220548:
 // ----------------------------------------------------------------------------
 // __dt__Q44nw4r3snd6detail12VoiceManagerFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q44nw4r3snd6detail12VoiceManagerFv
 extern "C" asm void __dt__Q44nw4r3snd6detail12VoiceManagerFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -129,6 +131,7 @@ lbl_802205B4:
 // ----------------------------------------------------------------------------
 // GetRequiredMemSize__Q44nw4r3snd6detail12VoiceManagerFi
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetRequiredMemSize__Q44nw4r3snd6detail12VoiceManagerFi
 extern "C" asm void GetRequiredMemSize__Q44nw4r3snd6detail12VoiceManagerFi() {
     nofralloc
     mulli r3, r4, 0x124
@@ -138,6 +141,7 @@ extern "C" asm void GetRequiredMemSize__Q44nw4r3snd6detail12VoiceManagerFi() {
 // ----------------------------------------------------------------------------
 // Setup__Q44nw4r3snd6detail12VoiceManagerFPvUl
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Setup__Q44nw4r3snd6detail12VoiceManagerFPvUl
 extern "C" asm void Setup__Q44nw4r3snd6detail12VoiceManagerFPvUl() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -194,6 +198,7 @@ lbl_80220670:
 // ----------------------------------------------------------------------------
 // AllocVoice__Q44nw4r3snd6detail12VoiceManagerFiiiPFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv_vPv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: AllocVoice__Q44nw4r3snd6detail12VoiceManagerFiiiPFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv_vPv
 extern "C" asm void AllocVoice__Q44nw4r3snd6detail12VoiceManagerFiiiPFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv_vPv() {
     nofralloc
     stwu r1, -0x40(r1)
@@ -324,6 +329,7 @@ lbl_8022082C:
 // ----------------------------------------------------------------------------
 // FreeVoice__Q44nw4r3snd6detail12VoiceManagerFPQ44nw4r3snd6detail5Voice
 // ----------------------------------------------------------------------------
+// asm_to_cpp: FreeVoice__Q44nw4r3snd6detail12VoiceManagerFPQ44nw4r3snd6detail5Voice
 extern "C" asm void FreeVoice__Q44nw4r3snd6detail12VoiceManagerFPQ44nw4r3snd6detail5Voice() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -369,6 +375,7 @@ extern "C" asm void FreeVoice__Q44nw4r3snd6detail12VoiceManagerFPQ44nw4r3snd6det
 // ----------------------------------------------------------------------------
 // UpdateAllVoices__Q44nw4r3snd6detail12VoiceManagerFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: UpdateAllVoices__Q44nw4r3snd6detail12VoiceManagerFv
 extern "C" asm void UpdateAllVoices__Q44nw4r3snd6detail12VoiceManagerFv() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -426,6 +433,7 @@ lbl_80220960:
 // ----------------------------------------------------------------------------
 // NotifyVoiceUpdate__Q44nw4r3snd6detail12VoiceManagerFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: NotifyVoiceUpdate__Q44nw4r3snd6detail12VoiceManagerFv
 extern "C" asm void NotifyVoiceUpdate__Q44nw4r3snd6detail12VoiceManagerFv() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -461,6 +469,7 @@ lbl_802209C8:
 // ----------------------------------------------------------------------------
 // ChangeVoicePriority__Q44nw4r3snd6detail12VoiceManagerFPQ44nw4r3snd6detail5Voice
 // ----------------------------------------------------------------------------
+// asm_to_cpp: ChangeVoicePriority__Q44nw4r3snd6detail12VoiceManagerFPQ44nw4r3snd6detail5Voice
 extern "C" asm void ChangeVoicePriority__Q44nw4r3snd6detail12VoiceManagerFPQ44nw4r3snd6detail5Voice() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -541,6 +550,7 @@ lbl_80220ADC:
 // ----------------------------------------------------------------------------
 // UpdateAllVoicesSync__Q44nw4r3snd6detail12VoiceManagerFUl
 // ----------------------------------------------------------------------------
+// asm_to_cpp: UpdateAllVoicesSync__Q44nw4r3snd6detail12VoiceManagerFUl
 extern "C" asm void UpdateAllVoicesSync__Q44nw4r3snd6detail12VoiceManagerFUl() {
     nofralloc
     stwu r1, -0x10(r1)

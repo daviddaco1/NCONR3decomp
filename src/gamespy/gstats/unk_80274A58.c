@@ -53,9 +53,23 @@ extern u8 lbl_8040B630[];
 
 // Forward declarations
 extern void CallReqCallback();
+extern void CloseStatsConnection();
+extern void DoSend();
 extern void GOAGetLastError();
 extern void GSISocketSelect();
+extern void GenerateAuthA();
+extern void GetChallenge();
+extern void GetPersistDataValuesA();
+extern void GetPersistDataValuesModifiedA();
+extern void InitStatsAsync();
+extern void InitStatsConnection();
+extern void InitStatsThink();
+extern void IsStatsConnected();
 extern void MD5Digest();
+extern void PreAuthenticatePlayerPartner();
+extern void RecvSessionKey();
+extern void SetPersistDataHelper();
+extern void SetPersistDataValuesA();
 extern void _restgpr_14();
 extern void _restgpr_19();
 extern void _restgpr_20();
@@ -66,34 +80,20 @@ extern void _savegpr_20();
 extern void _savegpr_25();
 extern void closesocket();
 extern void connect();
+extern void current_time();
 extern void fn_80253528();
 extern void fn_802535C4();
 extern void fn_80253658();
 extern void fn_80253690();
 extern void fn_80255D78();
-extern void fn_80255E4C();
-extern void fn_802565E8();
-extern void fn_802565F0();
-extern void fn_80256638();
-extern void fn_80256C4C();
-extern void fn_80256C70();
-extern void fn_80274A58();
-extern void fn_80274B0C();
-extern void fn_80274ECC();
-extern void fn_80276440();
-extern void fn_80276490();
-extern void fn_802766B8();
-extern void fn_802766D0();
-extern void fn_80276768();
-extern void fn_80276E44();
-extern void fn_80277540();
-extern void fn_80277574();
-extern void fn_80277AA8();
-extern void fn_80277C68();
-extern void fn_80277D64();
-extern void fn_80277E34();
+extern void gsiInitializeCriticalSection();
+extern void gsiInterlockedIncrement();
+extern void gsifree();
+extern void gsimalloc();
+extern void gstats_get_sockaddrin();
 extern void inet_addr();
 extern void memset();
+extern void msleep();
 extern void recv();
 extern void shutdown();
 extern void socket();
@@ -104,9 +104,9 @@ extern void strlen();
 extern void strstr();
 
 // ----------------------------------------------------------------------------
-// fn_80274A58
+// GenerateAuthA
 // ----------------------------------------------------------------------------
-asm void fn_80274A58() {
+asm void GenerateAuthA() {
     nofralloc
     stwu r1, -0xa0(r1)
     mflr r0
@@ -158,9 +158,9 @@ lbl_80274AEC:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80274B0C
+// InitStatsAsync
 // ----------------------------------------------------------------------------
-asm void fn_80274B0C() {
+asm void InitStatsAsync() {
     nofralloc
     stwu r1, -0xe0(r1)
     mflr r0
@@ -192,8 +192,8 @@ lbl_80274B4C:
     stb r3, 0x10(r30)
     stb r0, 0x20(r30)
 lbl_80274B78:
-    bl fn_802565E8
-    bl fn_802565F0
+    bl gsiInitializeCriticalSection
+    bl current_time
     lwz r0, lbl_8049CD80
     stw r3, lbl_8049DC28
     cmpwi r0, -0x1
@@ -328,7 +328,7 @@ lbl_80274D64:
     lwz r3, lbl_8049DC30
     cmpwi r3, 0x0
     beq lbl_80274D80
-    bl fn_80256C70
+    bl gsifree
     li r0, 0x0
     stw r0, lbl_8049DC30
     stw r0, lbl_8049DC34
@@ -360,7 +360,7 @@ lbl_80274DD4:
     addi r5, r1, 0x8
     li r4, 0x74e0
     li r6, 0x0
-    bl fn_80277D64
+    bl gstats_get_sockaddrin
     cmpwi r3, 0x0
     bne lbl_80274DF8
     li r3, 0x2
@@ -400,7 +400,7 @@ lbl_80274E1C:
     b lbl_80274EB4
 lbl_80274E74:
     li r3, 0x40
-    bl fn_80256C4C
+    bl gsimalloc
     cmpwi r3, 0x0
     stw r3, lbl_8049DC30
     bne lbl_80274E90
@@ -411,7 +411,7 @@ lbl_80274E90:
     li r0, 0x0
     stw r3, lbl_8049DC34
     stw r0, lbl_8049DC38
-    bl fn_802565F0
+    bl current_time
     li r0, 0x2
     stw r3, lbl_8049DC44
     li r3, 0x6
@@ -426,9 +426,9 @@ lbl_80274EB4:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80274ECC
+// InitStatsThink
 // ----------------------------------------------------------------------------
-asm void fn_80274ECC() {
+asm void InitStatsThink() {
     nofralloc
     stwu r1, -0x2f0(r1)
     mflr r0
@@ -602,7 +602,7 @@ lbl_80275138:
     lwz r3, lbl_8049DC30
     cmpwi r3, 0x0
     beq lbl_80275158
-    bl fn_80256C70
+    bl gsifree
     li r0, 0x0
     stw r0, lbl_8049DC30
     stw r0, lbl_8049DC34
@@ -613,7 +613,7 @@ lbl_80275158:
 lbl_80275160:
     cmpwi r3, 0x0
     bne lbl_80275394
-    bl fn_802565F0
+    bl current_time
     lwz r4, lbl_8049DC44
     lwz r0, lbl_8049CD88
     subf r3, r4, r3
@@ -753,7 +753,7 @@ lbl_80275364:
     lwz r3, lbl_8049DC30
     cmpwi r3, 0x0
     beq lbl_80275384
-    bl fn_80256C70
+    bl gsifree
     li r0, 0x0
     stw r0, lbl_8049DC30
     stw r0, lbl_8049DC34
@@ -769,10 +769,10 @@ lbl_80275394:
     stw r0, lbl_8049DC3C
 lbl_8027539C:
     lwz r3, lbl_8049CD80
-    bl fn_80255E4C
+    bl gsiInterlockedIncrement
     cmpwi r3, 0x0
     bne lbl_802755D8
-    bl fn_802565F0
+    bl current_time
     lwz r4, lbl_8049DC44
     lwz r0, lbl_8049CD88
     subf r3, r4, r3
@@ -912,7 +912,7 @@ lbl_802755A8:
     lwz r3, lbl_8049DC30
     cmpwi r3, 0x0
     beq lbl_802755C8
-    bl fn_80256C70
+    bl gsifree
     li r0, 0x0
     stw r0, lbl_8049DC30
     stw r0, lbl_8049DC34
@@ -1068,7 +1068,7 @@ lbl_802757E4:
     lwz r3, lbl_8049DC30
     cmpwi r3, 0x0
     beq lbl_80275804
-    bl fn_80256C70
+    bl gsifree
     li r0, 0x0
     stw r0, lbl_8049DC30
     stw r0, lbl_8049DC34
@@ -1426,7 +1426,7 @@ lbl_80275D08:
     bl sprintf
     mr r4, r3
     addi r3, r1, 0xd0
-    bl fn_80277C68
+    bl DoSend
     cmpwi r3, 0x0
     bgt lbl_80275D54
     lwz r3, lbl_8049CD80
@@ -1572,7 +1572,7 @@ lbl_80275F44:
     lwz r3, lbl_8049DC30
     cmpwi r3, 0x0
     beq lbl_80275F64
-    bl fn_80256C70
+    bl gsifree
     li r0, 0x0
     stw r0, lbl_8049DC30
     stw r0, lbl_8049DC34
@@ -1594,10 +1594,10 @@ lbl_80275F6C:
     bl memset
 lbl_80275F98:
     lwz r3, lbl_8049CD80
-    bl fn_80255E4C
+    bl gsiInterlockedIncrement
     cmpwi r3, 0x0
     bne lbl_802761D4
-    bl fn_802565F0
+    bl current_time
     lwz r4, lbl_8049DC44
     lwz r0, lbl_8049CD88
     subf r3, r4, r3
@@ -1737,7 +1737,7 @@ lbl_802761A4:
     lwz r3, lbl_8049DC30
     cmpwi r3, 0x0
     beq lbl_802761C4
-    bl fn_80256C70
+    bl gsifree
     li r0, 0x0
     stw r0, lbl_8049DC30
     stw r0, lbl_8049DC34
@@ -1749,7 +1749,7 @@ lbl_802761CC:
     li r3, 0x6
     b lbl_80276428
 lbl_802761D4:
-    bl fn_80277AA8
+    bl RecvSessionKey
     cmpwi r3, 0x0
     mr r17, r3
     beq lbl_802763F0
@@ -1887,7 +1887,7 @@ lbl_802763C8:
     lwz r3, lbl_8049DC30
     cmpwi r3, 0x0
     beq lbl_802763E8
-    bl fn_80256C70
+    bl gsifree
     li r0, 0x0
     stw r0, lbl_8049DC30
     stw r0, lbl_8049DC34
@@ -1922,23 +1922,23 @@ lbl_80276428:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80276440
+// InitStatsConnection
 // ----------------------------------------------------------------------------
-asm void fn_80276440() {
+asm void InitStatsConnection() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
     li r4, 0x0
     stw r0, 0x14(r1)
     stw r31, 0xc(r1)
-    bl fn_80274B0C
+    bl InitStatsAsync
     mr r31, r3
     b lbl_80276470
 lbl_80276460:
-    bl fn_80274ECC
+    bl InitStatsThink
     mr r31, r3
     li r3, 0x5
-    bl fn_80256638
+    bl msleep
 lbl_80276470:
     cmpwi r31, 0x6
     beq lbl_80276460
@@ -1951,9 +1951,9 @@ lbl_80276470:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80276490
+// CloseStatsConnection
 // ----------------------------------------------------------------------------
-asm void fn_80276490() {
+asm void CloseStatsConnection() {
     nofralloc
     stwu r1, -0x50(r1)
     mflr r0
@@ -2092,7 +2092,7 @@ lbl_80276680:
     lwz r3, lbl_8049DC30
     cmpwi r3, 0x0
     beq lbl_802766A0
-    bl fn_80256C70
+    bl gsifree
     li r0, 0x0
     stw r0, lbl_8049DC30
     stw r0, lbl_8049DC34
@@ -2107,9 +2107,9 @@ lbl_802766A0:
 }
 
 // ----------------------------------------------------------------------------
-// fn_802766B8
+// IsStatsConnected
 // ----------------------------------------------------------------------------
-asm void fn_802766B8() {
+asm void IsStatsConnected() {
     nofralloc
     lwz r4, lbl_8049CD80
     subfic r3, r4, -0x1
@@ -2120,9 +2120,9 @@ asm void fn_802766B8() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_802766D0
+// GetChallenge
 // ----------------------------------------------------------------------------
-asm void fn_802766D0() {
+asm void GetChallenge() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -2170,9 +2170,9 @@ lbl_80276754:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80276768
+// PreAuthenticatePlayerPartner
 // ----------------------------------------------------------------------------
-asm void fn_80276768() {
+asm void PreAuthenticatePlayerPartner() {
     nofralloc
     stwu r1, -0x200(r1)
     mflr r0
@@ -2396,7 +2396,7 @@ lbl_80276A04:
     beq lbl_80276AD0
     mr r4, r3
     addi r3, r1, 0x70
-    bl fn_80277C68
+    bl DoSend
     mr r21, r3
 lbl_80276AD0:
     cmpwi r21, 0x0
@@ -2533,7 +2533,7 @@ lbl_80276CB4:
     lwz r3, lbl_8049DC30
     cmpwi r3, 0x0
     beq lbl_80276CD4
-    bl fn_80256C70
+    bl gsifree
     li r0, 0x0
     stw r0, lbl_8049DC30
     stw r0, lbl_8049DC34
@@ -2643,9 +2643,9 @@ lbl_80276E2C:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80276E44
+// GetPersistDataValuesModifiedA
 // ----------------------------------------------------------------------------
-asm void fn_80276E44() {
+asm void GetPersistDataValuesModifiedA() {
     nofralloc
     stwu r1, -0x440(r1)
     mflr r0
@@ -2927,7 +2927,7 @@ lbl_8027726C:
     beq lbl_80277288
     mr r4, r14
     addi r3, r1, 0x180
-    bl fn_80277C68
+    bl DoSend
     mr r14, r3
 lbl_80277288:
     cmpwi r14, 0x0
@@ -3064,7 +3064,7 @@ lbl_8027746C:
     lwz r3, lbl_8049DC30
     cmpwi r3, 0x0
     beq lbl_8027748C
-    bl fn_80256C70
+    bl gsifree
     li r0, 0x0
     stw r0, lbl_8049DC30
     stw r0, lbl_8049DC34
@@ -3121,9 +3121,9 @@ lbl_80277528:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80277540
+// GetPersistDataValuesA
 // ----------------------------------------------------------------------------
-asm void fn_80277540() {
+asm void GetPersistDataValuesA() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -3133,7 +3133,7 @@ asm void fn_80277540() {
     stw r9, 0x8(r1)
     mr r9, r7
     li r7, 0x0
-    bl fn_80276E44
+    bl GetPersistDataValuesModifiedA
     lwz r0, 0x14(r1)
     mtlr r0
     addi r1, r1, 0x10
@@ -3141,9 +3141,9 @@ asm void fn_80277540() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_80277574
+// SetPersistDataValuesA
 // ----------------------------------------------------------------------------
-asm void fn_80277574() {
+asm void SetPersistDataValuesA() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -3170,7 +3170,7 @@ asm void fn_80277574() {
     mr r9, r30
     mr r10, r31
     addi r8, r8, 0x1
-    bl fn_80277E34
+    bl SetPersistDataHelper
     addi r11, r1, 0x30
     bl _restgpr_25
     lwz r0, 0x34(r1)

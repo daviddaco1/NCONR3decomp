@@ -27,12 +27,28 @@ python configure.py progress   # progreso; matched/fuzzy ya excluyen el asm (= %
 sha1sum -c config/RNEPDA/build.sha1   # verificación final (forzar relink: borrar build/RNEPDA/main.dol)
 ninja build/RNEPDA/src/<split sin ext>.o   # compilar un solo objeto
 python setup.py                # chequeo de prerrequisitos + integridad del dump + build de prueba
+python tools/check_workspace.py [--clean]   # coherencia configure/objdiff/build/report (ver abajo)
 ```
 
 No hay tests ni linter: la verificación es `ninja` limpio + `build.sha1` + `report.json`
 (`fuzzy_match_percent` por unidad/función; `python tools/list_unmatched.py <unidad>` lista lo que
 falta). objdiff (app) abre la raíz del repo y lee `objdiff.json`. Dependencias manuales: Python 3 y
 ninja; el resto (dtk, objdiff-cli, binutils, compiladores CodeWarrior) se descarga solo en `build/`.
+
+### Verificación (antes de commitear o cerrar una sesión)
+
+1. `python configure.py && ninja` sin errores (si falla, `report.json` queda viejo).
+2. `rm build/RNEPDA/main.dol && ninja` y `sha1sum -c config/RNEPDA/build.sha1` → `OK`.
+3. `python tools/check_workspace.py` → `0 problemas`. Detecta fuentes inexistentes, fuente con
+   nombre base distinto al split, `.o` huérfanos y unidades asm < 100%: todo eso un build
+   incremental lo oculta (el `.o` viejo sigue en disco y el reporte lo lee).
+4. `python configure.py progress`: comparar con la cifra anterior. Si baja sin haber tocado C,
+   buscar la causa por unidad comparando contra una copia previa de `report.json`.
+5. Para una verificación desde cero sin volver a bajar herramientas: borrar
+   `build/RNEPDA/src/` (no `build/` entero) y correr `ninja`.
+
+Dos métricas distintas: **matching crudo** (`report.json` → `measures.matched_code_percent`,
+C + asm) y **C real** (`configure.py progress`, sin asm). El objetivo es C real.
 
 ## Arquitectura
 
@@ -52,15 +68,25 @@ ninja; el resto (dtk, objdiff-cli, binutils, compiladores CodeWarrior) se descar
   `// ---- Funciones aun sin C que matchee (asm generado) ----`, cada función asm marcada
   `// asm_to_cpp: <fn>`.
 - **Progreso**: `report.json` (objdiff) cuenta el asm como matched. `configure.py progress`
-  registra `strip_asm` en `config.progress_report_hook` (agregado a `tools/project.py`): resta
-  de matched/fuzzy las unidades `asm` y las funciones marcadas, y lo muestra aparte como `% asm`
-  y línea `Asm:`. Así matched = C real. `tools/progress_svg.py` lee `report.json` crudo
-  (genera `docs/progress.svg` del README).
-- `libs/`: código de terceros (CC0) — `xenoblade/` (`PowerPC_EABI_Support`, `RVL_SDK`, `nw4r`),
-  `mkw/` (doldecomp/mkw: GameSpy) y `ss/` (zeldaret/ss: NW4R faltante). Ver `libs/README.md`.
-  `include/` es del juego (`types.h`, `m2c_macros.h`).
+  registra `strip_asm` en `config.progress_report_hook` (en `configure.py`; el hook lo agrega
+  `tools/project.py`): resta de matched/fuzzy las unidades `asm` y las funciones marcadas
+  `// asm_to_cpp: <fn>` en el fuente, y lo muestra aparte como `% asm` y línea `Asm:`. Así
+  matched = C real. **Toda función asm generada dentro de un `Object` (no `AsmObject`) debe llevar
+  esa marca**, si no cuenta como C. El asm original de Nintendo/Metrowerks (Runtime, TRK, OSCache,
+  PPCArch, mtx) no se marca: en el fuente real ya era asm. `tools/progress_svg.py` lee
+  `report.json` crudo (genera `docs/progress.svg` del README).
+- `libs/`: código de terceros (CC0), no editar — `xenoblade/` (`PowerPC_EABI_Support`, `RVL_SDK`,
+  `nw4r`), `mkw/` (doldecomp/mkw: GameSpy), `ss/` (zeldaret/ss: NW4R faltante) y `forecast/`
+  (doldecomp/forecast, subset: NW4R `ef`/`g3d`/`snd`, BTE). Ver `libs/README.md`. Locales sin
+  versionar (en `.git/info/exclude`, solo referencia, la build no los usa): `libs/unispy/` (GameSpy
+  open source) y `_forecast_full/` (clon completo de forecast). `include/` es del juego
+  (`types.h`, `m2c_macros.h`, `m2c_protos.h`).
 - `build/` es 100% generado; `build/RNEPDA/asm/` tiene el asm de dtk por split (fuente de
-  `asm_to_cpp.py` y m2c).
+  `asm_to_cpp.py` y m2c). Las herramientas usan `build/m2c_ctx.h`, `build/m2c_data.h`,
+  `build/triage.json` y los directorios `build/{fn_diff,hand,m2c,m2c_cpp}`.
+- `scratch/` (ignorado): área de trabajo descartable. `scratch/fase1_archivo/` guarda lo que se
+  sacó del repo en la auditoría de la fase 1 (scripts sueltos de `tools/`, `_ef_staging/`,
+  archivos de la raíz, experimentos de `build/`).
 
 ### Compilador y flags (verificados por matching)
 
@@ -76,7 +102,9 @@ ninja; el resto (dtk, objdiff-cli, binutils, compiladores CodeWarrior) se descar
 
 ## Herramientas propias (`tools/`)
 
-Se corren desde la raíz; cada una documenta su uso en el docstring. El resto de `tools/` es de
+Se corren desde la raíz; cada una documenta su uso en el docstring. Solo las listadas acá (y las
+versionadas en git) son herramientas; los scripts desechables (`check_*`, `apply_*`, `test_*`,
+`.o` de prueba) van en `scratch/` (ignorado), no en `tools/` ni en la raíz. El resto de `tools/` es de
 dtk-template (`project.py`, `download_tool.py`, etc.): no tocar salvo necesidad real (cambios
 locales en `project.py`: `progress_report_hook` y columna asm en `print_category`).
 
@@ -84,7 +112,11 @@ locales en `project.py`: `progress_report_hook` y columna asm en `print_category
   (bloques con extab/extabindex calculados del DOL), `insert_splits.py` (inserta en orden de
   dirección), `align_ref.py` + `select_tus.py` (heredar TUs de proyectos de referencia por
   secuencia de tamaños), `rename_tu.py`, `find_sources.py`.
-- Símbolos: `rename_symbols.py` (`--asm-only` no toca C), `pair_unnamed.py`.
+- Símbolos: `rename_symbols.py` (`--asm-only` no toca C), `pair_unnamed.py`. Renombrar en
+  `symbols.txt` sin actualizar los fuentes asm deja esas funciones en 0% (gotcha 1): usar siempre
+  `rename_symbols.py`, que actualiza ambos.
+- Verificación: `check_workspace.py` (coherencia configure/objdiff/build/report; `--clean` borra
+  `.o` huérfanos).
 - Asm/C: `asm_to_cpp.py` (asm dtk → asm inline mwcc), `try_import.py` (probar C importado por
   TU y compilador), `mix_asm.py` (arma mixtos), `gen_eye_stub.py`, `list_unmatched.py`.
 - **Game code = C++** (incluso los `.c` del DOL: RTTI y llamadas virtuales lo prueban, ver fase
@@ -129,15 +161,49 @@ locales en `project.py`: `progress_report_hook` y columna asm en `print_category
     "muerto" tras una llamada = ese valor es el 3er argumento en otra rama; invertir `if/else`
     cambia el orden de bloques solo si el contenido de cada rama difiere.
 11. `Matching=True` en objetos de runtime rompe `build.sha1` (quirk de `mwldeppc`, sin resolver).
+12. **Cambiar un `AsmObject` por C de `libs/` que no matchea entero baja el matching crudo** (el
+    DOL sigue dando OK porque `NonMatching` enlaza el `.o` original, así que `build.sha1` no lo
+    detecta). Importar C solo como mixto (`mix_asm.py`): C para lo que matchea + asm para el resto.
+    Con `src_dir="libs"`, el nombre base del fuente debe coincidir con el del split (gotcha 2); si
+    no, renombrar el split con `rename_tu.py`.
+
+## Archivos que nunca se borran
+
+`src/`, `include/`, `libs/`, `config/RNEPDA/` (`splits.txt`, `symbols.txt`, `build.sha1`,
+`config.yml`), `configure.py`, `tools/` versionados (incluidos los cambios locales de
+`project.py`), `docs/`, `orig/` (dump, nunca se commitea) y `build/compilers`, `build/tools` y
+`build/binutils` (se vuelven a bajar, pero tardan). Un fuente asm (`AsmObject`) es parte del
+matching aunque parezca generado: no borrarlo sin reemplazo que dé 100%.
+
+## Limpieza de temporales
+
+Lo descartable va en `scratch/` desde el principio. Para limpiar: `python tools/check_workspace.py
+--clean` (`.o` huérfanos) y revisar `git status --ignored` fuera de `build/` y `orig/`. Mover a
+`scratch/` en vez de borrar, salvo `.o`/`.s`/`.log` regenerables. Nunca `git clean -x` ni borrar
+`build/` entero.
+
+## Retomar una sesión interrumpida
+
+1. `git status` y `git stash list`: hay trabajo sin commitear en fuentes nuevas que **no** están
+   en git hasta que se agregan (`src/gamespy/...`, `src/nw4r/ef/...`).
+2. `python configure.py && ninja && python tools/check_workspace.py`.
+3. `python configure.py progress` y comparar con **Estado** y la última entrada de la bitácora.
+4. Si una herramienta quedó a medias (`m2c_pass.py` revierte sola lo que falla; `mix_asm.py`
+   no), verificar el último split tocado con `tools/list_unmatched.py <unidad>`.
 
 ## Estado (actualizar al cerrar una etapa)
 
-- **Código 100% matcheado** (3,299,164 bytes, 11,292 funciones) mezclando asm y C/C++; **C real
-  14.46%** (476,928 / 3,299,164 bytes; 4,365 funciones en C/C++ puro). Datos 0% (sin splits de datos).
+- Auditoría de la fase 1 (2026-11-04), verificada desde cero (`build/RNEPDA/src/` borrado):
+  **C real 23.52%** (776,108 / 3,299,164 bytes; 5,426 / 11,292 funciones). Game Code 9.73%
+  (151,832 / 1,561,180), SDK 35.92% (624,276 / 1,737,984). Asm 68.28% (2,252,672 bytes). Matching
+  crudo C+asm **91.80%** (3,028,780 bytes, 10,242 funciones): faltan ~270 KB en unidades de `libs/`
+  con C parcial (gotcha 12). El 26.08% anterior estaba inflado por `.o` viejos y por asm generado
+  sin marcar. Datos 0% (sin splits de datos). Cifras vivas: `python configure.py progress`.
 - `.text` 100% splitteado. TUs `unk_<addr>` = fronteras sin nombre real (los huecos grandes, como
   `dwc/unk_8022813C.c`, pueden contener varios archivos). Funciones del juego siguen como `fn_*`.
 - Patrón de vtables en offset 0x4 resuelto: herencia de base sin virtuales con 4 bytes de datos (`struct Base { int x; };`).
-- Siguiente: ampliar clases C++ con `virtual` modeladas, ajuste manual de casi-matches (`fn_diff.py`) y splits de datos
+- Siguiente: devolver el matching crudo al 100% pasando las ~160 unidades parciales a mixtos
+  (`mix_asm.py`); después, ampliar clases C++ con `virtual` modeladas, ajuste manual de casi-matches (`fn_diff.py`) y splits de datos
   por TU (habilitan enlazar y arreglan funciones casi idénticas por offsets de strings).
 
 Historial ronda por ronda en [`docs/decompilation_log.md`](docs/decompilation_log.md);

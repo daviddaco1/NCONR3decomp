@@ -2943,3 +2943,60 @@ Se integraron y validaron 17 módulos de NintendoWare for Revolution (NW4R) util
 - **RVL SDK NAND (src/revolution/nand/nand.c)**: **+956 bytes** (8 funciones al 100%: NANDPrivateDeleteAsync, NANDRead, NANDReadAsync, NANDWrite, NANDWriteAsync, NANDMove, 
 andComposePerm, NANDPrivateGetStatusAsync).
 - **Verificación**: main.dol coincide byte a byte (SHA1: 982a4f104272d2637fbbabbcad30aeead05d6e6d). Progreso global alcanzado: **16.17% matched (533,384 bytes) / 16.80% fuzzy**.
+
+## Entrada: 2026-11-04 - Fase 1: auditoría, limpieza y corrección de métricas (sin avance de C)
+
+Sin descompilación nueva. Se auditó el workspace y se corrigieron métricas infladas o rotas que
+un build incremental ocultaba. Backup previo de los 950 archivos sin commitear/ignorados (fuera
+del repo).
+
+### Estado inicial (build incremental, tal como estaba)
+- `configure.py progress`: **26.08% C real** (860,432 bytes, 5,817 funciones). Matching crudo
+  90.31% (2,979,344 bytes): no era 100% como decía CLAUDE.md.
+- Al borrar `build/RNEPDA/src/` y recompilar, `report.json` **fallaba** (`unk_80312B7C.o` no
+  existe): el reporte se estaba generando con `.o` viejos.
+
+### Problemas encontrados y corregidos
+- **Fuente con nombre base distinto al split** (gotcha 2), en el commit 0cec9fc: `OS/unk_80312B7C`
+  (OS.c) y `nw4r/snd/unk_8020BD8C`/`unk_8020CCD0`/`unk_8020D488` (snd_FxDelay/FxChorus/
+  FxReverbHiDpl2). mwcc escribía `OS.o` y el reporte leía el `.o` asm viejo (100% falso). Se
+  renombraron los splits con `rename_tu.py` (OS/OS.c, nw4r/snd/snd_Fx*.cpp). Con nombre correcto,
+  el C de `libs/` da 0-79%, así que se volvieron a `AsmObject` (el asm ya estaba versionado).
+- **7 unidades sin fuente** (0%): Runtime `global_destructor_chain`, `__init_cpp_exceptions` y
+  `__mem` apuntaban a `source="libs/..."` sin `src_dir`; `g3d_maya`/`g3d_xsi`/`g3d_3dsmax` a
+  archivos que no existen en `libs/forecast`; `ansi_fp` a un archivo inexistente. Se restauraron
+  las declaraciones previas a 0cec9fc (fuentes en `src/`) y `ansi_fp` pasó a asm generado.
+- **Unidades asm < 100%**: `ef_drawsmoothstripestrategy.cpp` no existía (regenerado con
+  `asm_to_cpp.py`); `gamespy/gstats/unk_80274A58.c` era asm con nombres `fn_*` mientras
+  `symbols.txt` ya tenía `GenerateAuthA`, etc. (gotcha 1, regenerado). **La entrada anterior de
+  esta bitácora que lo da como "11 funciones al 100% en C" es incorrecta**: no existe C de esa TU
+  en ningún lado. Lo mismo pasaba en `gamespy/common/revolution/unk_802557FC`,
+  `ghttp/unk_8026FCFC` y `sc/unk_80324614` (se actualizaron los `fn_*` a los nombres de `symbols.txt`).
+- **Asm contado como C real**: 343 funciones asm sin la marca `// asm_to_cpp:` dentro de
+  `Object` (archivos enteros de `asm_to_cpp.py` como `snd_Voice`, `snd_BasicSound`, `nand`,
+  `lyt_pane`, y 22 funciones asm escritas a mano en `tcg_text.c`). Se agregaron las marcas (solo
+  comentarios). Quedan sin marcar 2 funciones en `libs/mkw` (qr2, ghttpCommon; 512 bytes) para no
+  editar código de terceros, y el asm original del SDK/Runtime/TRK (legítimo).
+- `configure.py`: `import os` estaba antes del shebang.
+
+### Limpieza (todo movido a `scratch/fase1_archivo/`, nada borrado salvo regenerables)
+- 269 scripts sueltos de `tools/` (sin versionar, ninguno referenciado por archivos versionados).
+- Raíz: `__AXVPBInitCommon` (dump asm), `renombres_*.txt`, `step7126.patch`, `configure_safe.py`.
+- `_ef_staging/` (copias de `src/`, 3 con diferencias y `ef_animcurve.cpp` sin par).
+- `build/`: 33 fuentes/scripts de experimentos archivados; `.o`/`.s`/`.bin`/`.log` sueltos
+  borrados. Raíz: `build_test_*.o`, `glib_model.o`, `test.o` borrados.
+- `.git/info/exclude` (local): de 322 a 12 líneas (entradas de archivos que ya no existen).
+
+### Infraestructura nueva
+- `tools/check_workspace.py`: detecta unidades sin fuente, nombre de fuente distinto al split,
+  `.o` huérfanos y unidades asm < 100%. Se agregó al procedimiento de verificación de CLAUDE.md.
+
+### Estado final (verificado desde cero)
+- **C real 23.52%** (776,108 / 3,299,164 bytes; 5,426 funciones). Game Code 9.73%, SDK 35.92%.
+- Matching crudo **91.80%** (3,028,780 bytes; 10,242 funciones): +49,436 bytes y 126 funciones
+  recuperadas; **0 funciones perdidas** respecto del estado inicial.
+- `main.dol` OK contra `build.sha1`; `check_workspace.py`: 0 problemas.
+- La baja de 26.08% a 23.52% (−84,324 bytes) no es pérdida de trabajo: es la cifra honesta
+  (−75,296 de asm sin marcar, −9,324 de `.o` fantasma, −1,276 de `OSExceptionInit` que volvió a
+  asm con su unidad, +1,572 de C de Runtime/`__mem` que vuelve a compilar).
+

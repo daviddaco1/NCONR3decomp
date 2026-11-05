@@ -1252,19 +1252,19 @@ nw4r/snd/snd_DisposeCallbackManager.cpp:
 nw4r/snd/snd_DvdSoundArchive.cpp:
 	.text       start:0x8020B778 end:0x8020BD8C
 
-nw4r/snd/unk_8020BD8C.cpp:
+nw4r/snd/snd_FxDelay.cpp:
 	.text       start:0x8020BD8C end:0x8020C574
 
 nw4r/snd/snd_FrameHeap.cpp:
 	.text       start:0x8020C574 end:0x8020CCD0
 
-nw4r/snd/unk_8020CCD0.cpp:
+nw4r/snd/snd_FxChorus.cpp:
 	.text       start:0x8020CCD0 end:0x8020D0BC
 
 nw4r/snd/snd_FxReverbHi.cpp:
 	.text       start:0x8020D0BC end:0x8020D488
 
-nw4r/snd/unk_8020D488.cpp:
+nw4r/snd/snd_FxReverbHiDpl2.cpp:
 	.text       start:0x8020D488 end:0x8020DF40
 
 nw4r/snd/snd_InstancePool.cpp:
@@ -2136,7 +2136,7 @@ revolution/nand/NANDLogging.c:
 OS/OSFPRInit.c:
 	.text       start:0x80312A54 end:0x80312B7C
 
-OS/unk_80312B7C.c:
+OS/OS.c:
 	.text       start:0x80312B7C end:0x80313E58
 
 OS/OSPSInit.c:

@@ -23,7 +23,7 @@ extern s32 lbl_8049DD7C;
 extern s32 lbl_8049DD80;
 extern s32 lbl_8049DD84;
 
-void __VISetFilter4EURGB60();
+void __VISetFilter4EURGB60(u8 arg0);
 void __VISetCGMS();
 void __VISetWSS();
 void __VISetClosedCaption();
@@ -78,7 +78,7 @@ void VISetRGBModeImm(void) {
 // ---- Funciones aun sin C que matchee (asm generado) ----
 void __VISetCGMS(void);
 void __VISetClosedCaption(void);
-void __VISetFilter4EURGB60();
+void __VISetFilter4EURGB60(u8 arg0);
 void __VISetGamma(void);
 void __VISetGamma1_0(void);
 void __VISetGammaImm(s8 *arg0);
@@ -88,25 +88,12 @@ void __VISetRGBOverDrive(void);
 void __VISetTrapFilter(void);
 void __VISetWSS(void);
 
-// asm_to_cpp: __VISetFilter4EURGB60
-asm void __VISetFilter4EURGB60() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    li r5, 0x2
-    stw r0, 0x14(r1)
-    li r0, 0x6e
-    addi r4, r1, 0x8
-    stb r3, 0x9(r1)
-    li r3, 0xe0
-    stb r0, 0x8(r1)
-    bl __VISendI2CData
-    li r3, 0x2
-    bl WaitMicroTime
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void __VISetFilter4EURGB60(u8 arg0) {
+    u8 data[2];
+    data[0] = 0x6e;
+    data[1] = arg0;
+    __VISendI2CData(0xe0, data, 2);
+    WaitMicroTime(2);
 }
 
 // asm_to_cpp: __VISetCGMS
@@ -166,36 +153,15 @@ asm void __VISetWSS(void) {
     blr
 }
 
-// asm_to_cpp: __VISetClosedCaption
-asm void __VISetClosedCaption(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    li r9, 0x7a
-    stw r0, 0x14(r1)
-    addi r4, r1, 0x8
-    lbz r0, lbl_8049CEC3
-    lbz r5, lbl_8049CEC4
-    clrlwi r8, r0, 25
-    lbz r3, lbl_8049CEC5
-    lbz r0, lbl_8049CEC6
-    clrlwi r7, r5, 25
-    clrlwi r6, r3, 25
-    stb r9, 0x8(r1)
-    clrlwi r0, r0, 25
-    li r3, 0xe0
-    stb r8, 0x9(r1)
-    li r5, 0x5
-    stb r7, 0xa(r1)
-    stb r6, 0xb(r1)
-    stb r0, 0xc(r1)
-    bl __VISendI2CData
-    li r3, 0x2
-    bl WaitMicroTime
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void __VISetClosedCaption(void) {
+    u8 data[5];
+    data[0] = 0x7a;
+    data[1] = lbl_8049CEC3 & 0x7f;
+    data[2] = lbl_8049CEC4 & 0x7f;
+    data[3] = lbl_8049CEC5 & 0x7f;
+    data[4] = lbl_8049CEC6 & 0x7f;
+    __VISendI2CData(0xe0, data, 5);
+    WaitMicroTime(2);
 }
 
 // asm_to_cpp: __VISetMacrovision
@@ -1199,95 +1165,38 @@ asm void __VISetGammaImm(s8 *arg0) {
 
 
 
-// asm_to_cpp: __VISetTrapFilter
-asm void __VISetTrapFilter(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    li r3, 0x3
-    stw r0, 0x14(r1)
-    lbz r0, lbl_8049CEC7
-    stb r3, 0x8(r1)
-    cmplwi r0, 0x1
-    bne lbl_80286394
-    li r0, 0x0
-    stb r0, 0x9(r1)
-    b lbl_8028639C
-lbl_80286394:
-    li r0, 0x1
-    stb r0, 0x9(r1)
-lbl_8028639C:
-    addi r4, r1, 0x8
-    li r3, 0xe0
-    li r5, 0x2
-    bl __VISendI2CData
-    li r3, 0x2
-    bl WaitMicroTime
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void __VISetTrapFilter(void) {
+    u8 data[2];
+    data[0] = 3;
+    if (lbl_8049CEC7 == 1) {
+        data[1] = 0;
+    } else {
+        data[1] = 1;
+    }
+    __VISendI2CData(0xe0, data, 2);
+    WaitMicroTime(2);
 }
 
-// asm_to_cpp: __VISetRGBOverDrive
-asm void __VISetRGBOverDrive(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lwz r0, lbl_8049DD84
-    cmpwi r0, 0x3
-    bne lbl_80286410
-    lwz r0, lbl_8049DD78
-    li r3, 0xa
-    stb r3, 0x8(r1)
-    addi r4, r1, 0x8
-    slwi r0, r0, 1
-    li r3, 0xe0
-    ori r0, r0, 0x1
-    li r5, 0x2
-    stb r0, 0x9(r1)
-    bl __VISendI2CData
-    li r3, 0x2
-    bl WaitMicroTime
-    b lbl_80286438
-lbl_80286410:
-    li r3, 0xa
-    li r0, 0x0
-    stb r3, 0x8(r1)
-    addi r4, r1, 0x8
-    li r3, 0xe0
-    li r5, 0x2
-    stb r0, 0x9(r1)
-    bl __VISendI2CData
-    li r3, 0x2
-    bl WaitMicroTime
-lbl_80286438:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void __VISetRGBOverDrive(void) {
+    u8 data[2];
+    if (lbl_8049DD84 == 3) {
+        data[0] = 0xa;
+        data[1] = (lbl_8049DD78 << 1) | 1;
+        __VISendI2CData(0xe0, data, 2);
+        WaitMicroTime(2);
+    } else {
+        data[0] = 0xa;
+        data[1] = 0;
+        __VISendI2CData(0xe0, data, 2);
+        WaitMicroTime(2);
+    }
 }
 
-// asm_to_cpp: __VISetRGBModeImm
-asm void __VISetRGBModeImm(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    li r6, 0x3
-    li r3, 0xe0
-    stw r0, 0x14(r1)
-    li r0, 0x1
-    addi r4, r1, 0x8
-    li r5, 0x2
-    stw r6, lbl_8049DD84
-    stb r0, 0x8(r1)
-    stb r6, 0x9(r1)
-    bl __VISendI2CData
-    li r3, 0x2
-    bl WaitMicroTime
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void __VISetRGBModeImm(void) {
+    u8 data[2];
+    lbl_8049DD84 = 3;
+    data[0] = 1;
+    data[1] = 3;
+    __VISendI2CData(0xe0, data, 2);
+    WaitMicroTime(2);
 }

@@ -132,6 +132,7 @@ extern "C" void dtor_80136CFC();
 // ----------------------------------------------------------------------------
 // __ct__Q44nw4r3snd6detail5VoiceFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __ct__Q44nw4r3snd6detail5VoiceFv
 extern "C" asm void __ct__Q44nw4r3snd6detail5VoiceFv() {
     nofralloc
     lfs f0, lbl_804A221C
@@ -300,6 +301,7 @@ lbl_8021DBE4:
 // ----------------------------------------------------------------------------
 // __dt__Q44nw4r3snd6detail5VoiceFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q44nw4r3snd6detail5VoiceFv
 extern "C" asm void __dt__Q44nw4r3snd6detail5VoiceFv() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -352,6 +354,7 @@ lbl_8021DCB4:
 // ----------------------------------------------------------------------------
 // InitParam__Q44nw4r3snd6detail5VoiceFiiPFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv_vPv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: InitParam__Q44nw4r3snd6detail5VoiceFiiPFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv_vPv
 extern "C" asm void InitParam__Q44nw4r3snd6detail5VoiceFiiPFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv_vPv() {
     nofralloc
     lfs f1, lbl_804A2218
@@ -403,6 +406,7 @@ extern "C" asm void InitParam__Q44nw4r3snd6detail5VoiceFiiPFPQ44nw4r3snd6detail5
 // ----------------------------------------------------------------------------
 // StopFinished__Q44nw4r3snd6detail5VoiceFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: StopFinished__Q44nw4r3snd6detail5VoiceFv
 extern "C" asm void StopFinished__Q44nw4r3snd6detail5VoiceFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -452,6 +456,7 @@ lbl_8021DE04:
 // ----------------------------------------------------------------------------
 // Calc__Q44nw4r3snd6detail5VoiceFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Calc__Q44nw4r3snd6detail5VoiceFv
 extern "C" asm void Calc__Q44nw4r3snd6detail5VoiceFv() {
     nofralloc
     stwu r1, -0x40(r1)
@@ -648,6 +653,7 @@ lbl_8021E084:
 // ----------------------------------------------------------------------------
 // Update__Q44nw4r3snd6detail5VoiceFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Update__Q44nw4r3snd6detail5VoiceFv
 extern "C" asm void Update__Q44nw4r3snd6detail5VoiceFv() {
     nofralloc
     stwu r1, -0x40(r1)
@@ -864,6 +870,7 @@ lbl_8021E344:
 // ----------------------------------------------------------------------------
 // Acquire__Q44nw4r3snd6detail5VoiceFiiiPFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv_vPv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Acquire__Q44nw4r3snd6detail5VoiceFiiiPFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv_vPv
 extern "C" asm void Acquire__Q44nw4r3snd6detail5VoiceFiiiPFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv_vPv() {
     nofralloc
     stwu r1, -0x60(r1)
@@ -1037,6 +1044,7 @@ lbl_8021E588:
 // ----------------------------------------------------------------------------
 // Free__Q44nw4r3snd6detail5VoiceFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Free__Q44nw4r3snd6detail5VoiceFv
 extern "C" asm void Free__Q44nw4r3snd6detail5VoiceFv() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -1102,6 +1110,7 @@ lbl_8021E654:
 // ----------------------------------------------------------------------------
 // Setup__Q44nw4r3snd6detail5VoiceFRCQ44nw4r3snd6detail8WaveInfoUl
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Setup__Q44nw4r3snd6detail5VoiceFRCQ44nw4r3snd6detail8WaveInfoUl
 extern "C" asm void Setup__Q44nw4r3snd6detail5VoiceFRCQ44nw4r3snd6detail8WaveInfoUl() {
     nofralloc
     stwu r1, -0xa0(r1)
@@ -1277,6 +1286,7 @@ lbl_8021E8A0:
 // ----------------------------------------------------------------------------
 // Start__Q44nw4r3snd6detail5VoiceFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Start__Q44nw4r3snd6detail5VoiceFv
 extern "C" asm void Start__Q44nw4r3snd6detail5VoiceFv() {
     nofralloc
     lhz r0, 0xa2(r3)
@@ -1292,6 +1302,7 @@ extern "C" asm void Start__Q44nw4r3snd6detail5VoiceFv() {
 // ----------------------------------------------------------------------------
 // Stop__Q44nw4r3snd6detail5VoiceFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Stop__Q44nw4r3snd6detail5VoiceFv
 extern "C" asm void Stop__Q44nw4r3snd6detail5VoiceFv() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1358,6 +1369,7 @@ lbl_8021E9AC:
 // ----------------------------------------------------------------------------
 // Pause__Q44nw4r3snd6detail5VoiceFb
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Pause__Q44nw4r3snd6detail5VoiceFb
 extern "C" asm void Pause__Q44nw4r3snd6detail5VoiceFb() {
     nofralloc
     lbz r0, 0x9f(r3)
@@ -1373,6 +1385,7 @@ extern "C" asm void Pause__Q44nw4r3snd6detail5VoiceFb() {
 // ----------------------------------------------------------------------------
 // GetFormat__Q44nw4r3snd6detail5VoiceCFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetFormat__Q44nw4r3snd6detail5VoiceCFv
 extern "C" asm void GetFormat__Q44nw4r3snd6detail5VoiceCFv() {
     nofralloc
     lwz r3, 0xc(r3)
@@ -1388,6 +1401,7 @@ lbl_8021EA08:
 // ----------------------------------------------------------------------------
 // SetVolume__Q44nw4r3snd6detail5VoiceFf
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetVolume__Q44nw4r3snd6detail5VoiceFf
 extern "C" asm void SetVolume__Q44nw4r3snd6detail5VoiceFf() {
     nofralloc
     lfs f2, lbl_804A2218
@@ -1415,6 +1429,7 @@ lbl_8021EA34:
 // ----------------------------------------------------------------------------
 // SetVeVolume__Q44nw4r3snd6detail5VoiceFff
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetVeVolume__Q44nw4r3snd6detail5VoiceFff
 extern "C" asm void SetVeVolume__Q44nw4r3snd6detail5VoiceFff() {
     nofralloc
     lfs f3, lbl_804A2218
@@ -1471,6 +1486,7 @@ lbl_8021EAE0:
 // ----------------------------------------------------------------------------
 // SetPitch__Q44nw4r3snd6detail5VoiceFf
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetPitch__Q44nw4r3snd6detail5VoiceFf
 extern "C" asm void SetPitch__Q44nw4r3snd6detail5VoiceFf() {
     nofralloc
     lfs f0, 0x104(r3)
@@ -1486,6 +1502,7 @@ extern "C" asm void SetPitch__Q44nw4r3snd6detail5VoiceFf() {
 // ----------------------------------------------------------------------------
 // SetPanMode__Q44nw4r3snd6detail5VoiceFQ34nw4r3snd7PanMode
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetPanMode__Q44nw4r3snd6detail5VoiceFQ34nw4r3snd7PanMode
 extern "C" asm void SetPanMode__Q44nw4r3snd6detail5VoiceFQ34nw4r3snd7PanMode() {
     nofralloc
     lwz r0, 0x114(r3)
@@ -1501,6 +1518,7 @@ extern "C" asm void SetPanMode__Q44nw4r3snd6detail5VoiceFQ34nw4r3snd7PanMode() {
 // ----------------------------------------------------------------------------
 // SetPanCurve__Q44nw4r3snd6detail5VoiceFQ34nw4r3snd8PanCurve
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetPanCurve__Q44nw4r3snd6detail5VoiceFQ34nw4r3snd8PanCurve
 extern "C" asm void SetPanCurve__Q44nw4r3snd6detail5VoiceFQ34nw4r3snd8PanCurve() {
     nofralloc
     lwz r0, 0x118(r3)
@@ -1516,6 +1534,7 @@ extern "C" asm void SetPanCurve__Q44nw4r3snd6detail5VoiceFQ34nw4r3snd8PanCurve()
 // ----------------------------------------------------------------------------
 // SetPan__Q44nw4r3snd6detail5VoiceFf
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetPan__Q44nw4r3snd6detail5VoiceFf
 extern "C" asm void SetPan__Q44nw4r3snd6detail5VoiceFf() {
     nofralloc
     lfs f0, 0xac(r3)
@@ -1531,6 +1550,7 @@ extern "C" asm void SetPan__Q44nw4r3snd6detail5VoiceFf() {
 // ----------------------------------------------------------------------------
 // SetSurroundPan__Q44nw4r3snd6detail5VoiceFf
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetSurroundPan__Q44nw4r3snd6detail5VoiceFf
 extern "C" asm void SetSurroundPan__Q44nw4r3snd6detail5VoiceFf() {
     nofralloc
     lfs f0, 0xb0(r3)
@@ -1546,6 +1566,7 @@ extern "C" asm void SetSurroundPan__Q44nw4r3snd6detail5VoiceFf() {
 // ----------------------------------------------------------------------------
 // SetLpfFreq__Q44nw4r3snd6detail5VoiceFf
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetLpfFreq__Q44nw4r3snd6detail5VoiceFf
 extern "C" asm void SetLpfFreq__Q44nw4r3snd6detail5VoiceFf() {
     nofralloc
     lfs f0, 0xb4(r3)
@@ -1561,6 +1582,7 @@ extern "C" asm void SetLpfFreq__Q44nw4r3snd6detail5VoiceFf() {
 // ----------------------------------------------------------------------------
 // SetBiquadFilter__Q44nw4r3snd6detail5VoiceFif
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetBiquadFilter__Q44nw4r3snd6detail5VoiceFif
 extern "C" asm void SetBiquadFilter__Q44nw4r3snd6detail5VoiceFif() {
     nofralloc
     lfs f2, lbl_804A2218
@@ -1599,6 +1621,7 @@ lbl_8021EC08:
 // ----------------------------------------------------------------------------
 // SetRemoteFilter__Q44nw4r3snd6detail5VoiceFi
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetRemoteFilter__Q44nw4r3snd6detail5VoiceFi
 extern "C" asm void SetRemoteFilter__Q44nw4r3snd6detail5VoiceFi() {
     nofralloc
     cmpwi r4, 0x7f
@@ -1622,6 +1645,7 @@ lbl_8021EC38:
 // ----------------------------------------------------------------------------
 // SetOutputLine__Q44nw4r3snd6detail5VoiceFi
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetOutputLine__Q44nw4r3snd6detail5VoiceFi
 extern "C" asm void SetOutputLine__Q44nw4r3snd6detail5VoiceFi() {
     nofralloc
     lwz r0, 0xbc(r3)
@@ -1637,6 +1661,7 @@ extern "C" asm void SetOutputLine__Q44nw4r3snd6detail5VoiceFi() {
 // ----------------------------------------------------------------------------
 // SetMainOutVolume__Q44nw4r3snd6detail5VoiceFf
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetMainOutVolume__Q44nw4r3snd6detail5VoiceFf
 extern "C" asm void SetMainOutVolume__Q44nw4r3snd6detail5VoiceFf() {
     nofralloc
     lfs f2, lbl_804A2218
@@ -1664,6 +1689,7 @@ lbl_8021EC9C:
 // ----------------------------------------------------------------------------
 // SetMainSend__Q44nw4r3snd6detail5VoiceFf
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetMainSend__Q44nw4r3snd6detail5VoiceFf
 extern "C" asm void SetMainSend__Q44nw4r3snd6detail5VoiceFf() {
     nofralloc
     lfs f2, lbl_804A2218
@@ -1692,6 +1718,7 @@ lbl_8021ECE4:
 // ----------------------------------------------------------------------------
 // SetFxSend__Q44nw4r3snd6detail5VoiceFQ34nw4r3snd6AuxBusf
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetFxSend__Q44nw4r3snd6detail5VoiceFQ34nw4r3snd6AuxBusf
 extern "C" asm void SetFxSend__Q44nw4r3snd6detail5VoiceFQ34nw4r3snd6AuxBusf() {
     nofralloc
     lfs f2, lbl_804A2218
@@ -1721,6 +1748,7 @@ lbl_8021ED28:
 // ----------------------------------------------------------------------------
 // SetRemoteOutVolume__Q44nw4r3snd6detail5VoiceFif
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetRemoteOutVolume__Q44nw4r3snd6detail5VoiceFif
 extern "C" asm void SetRemoteOutVolume__Q44nw4r3snd6detail5VoiceFif() {
     nofralloc
     lfs f2, lbl_804A2218
@@ -1750,6 +1778,7 @@ lbl_8021ED74:
 // ----------------------------------------------------------------------------
 // SetRemoteSend__Q44nw4r3snd6detail5VoiceFif
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetRemoteSend__Q44nw4r3snd6detail5VoiceFif
 extern "C" asm void SetRemoteSend__Q44nw4r3snd6detail5VoiceFif() {
     nofralloc
     lfs f2, lbl_804A2218
@@ -1780,6 +1809,7 @@ lbl_8021EDC4:
 // ----------------------------------------------------------------------------
 // SetRemoteFxSend__Q44nw4r3snd6detail5VoiceFif
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetRemoteFxSend__Q44nw4r3snd6detail5VoiceFif
 extern "C" asm void SetRemoteFxSend__Q44nw4r3snd6detail5VoiceFif() {
     nofralloc
     lfs f2, lbl_804A2218
@@ -1809,6 +1839,7 @@ lbl_8021EE10:
 // ----------------------------------------------------------------------------
 // SetVoiceOutParam__Q44nw4r3snd6detail5VoiceFiRCQ34nw4r3snd13VoiceOutParam
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetVoiceOutParam__Q44nw4r3snd6detail5VoiceFiRCQ34nw4r3snd13VoiceOutParam
 extern "C" asm void SetVoiceOutParam__Q44nw4r3snd6detail5VoiceFiRCQ34nw4r3snd13VoiceOutParam() {
     nofralloc
     mulli r0, r4, 0x18
@@ -1834,6 +1865,7 @@ extern "C" asm void SetVoiceOutParam__Q44nw4r3snd6detail5VoiceFiRCQ34nw4r3snd13V
 // ----------------------------------------------------------------------------
 // SetPriority__Q44nw4r3snd6detail5VoiceFi
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetPriority__Q44nw4r3snd6detail5VoiceFi
 extern "C" asm void SetPriority__Q44nw4r3snd6detail5VoiceFi() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1887,6 +1919,7 @@ lbl_8021EF08:
 // ----------------------------------------------------------------------------
 // UpdateVoicesPriority__Q44nw4r3snd6detail5VoiceFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: UpdateVoicesPriority__Q44nw4r3snd6detail5VoiceFv
 extern "C" asm void UpdateVoicesPriority__Q44nw4r3snd6detail5VoiceFv() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1936,6 +1969,7 @@ lbl_8021EF98:
 // ----------------------------------------------------------------------------
 // SetAdpcmLoop__Q44nw4r3snd6detail5VoiceFiPCQ44nw4r3snd6detail14AdpcmLoopParam
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetAdpcmLoop__Q44nw4r3snd6detail5VoiceFiPCQ44nw4r3snd6detail14AdpcmLoopParam
 extern "C" asm void SetAdpcmLoop__Q44nw4r3snd6detail5VoiceFiPCQ44nw4r3snd6detail14AdpcmLoopParam() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1977,6 +2011,7 @@ lbl_8021F000:
 // ----------------------------------------------------------------------------
 // GetCurrentPlayingSample__Q44nw4r3snd6detail5VoiceCFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetCurrentPlayingSample__Q44nw4r3snd6detail5VoiceCFv
 extern "C" asm void GetCurrentPlayingSample__Q44nw4r3snd6detail5VoiceCFv() {
     nofralloc
     lwz r3, 0xc(r3)
@@ -1991,6 +2026,7 @@ lbl_8021F03C:
 // ----------------------------------------------------------------------------
 // SetLoopStart__Q44nw4r3snd6detail5VoiceFiPCvUl
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetLoopStart__Q44nw4r3snd6detail5VoiceFiPCvUl
 extern "C" asm void SetLoopStart__Q44nw4r3snd6detail5VoiceFiPCvUl() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -2030,6 +2066,7 @@ lbl_8021F094:
 // ----------------------------------------------------------------------------
 // SetLoopEnd__Q44nw4r3snd6detail5VoiceFiPCvUl
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetLoopEnd__Q44nw4r3snd6detail5VoiceFiPCvUl
 extern "C" asm void SetLoopEnd__Q44nw4r3snd6detail5VoiceFiPCvUl() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -2069,6 +2106,7 @@ lbl_8021F108:
 // ----------------------------------------------------------------------------
 // SetLoopFlag__Q44nw4r3snd6detail5VoiceFb
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetLoopFlag__Q44nw4r3snd6detail5VoiceFb
 extern "C" asm void SetLoopFlag__Q44nw4r3snd6detail5VoiceFb() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -2115,6 +2153,7 @@ lbl_8021F190:
 // ----------------------------------------------------------------------------
 // StopAtPoint__Q44nw4r3snd6detail5VoiceFiPCvUl
 // ----------------------------------------------------------------------------
+// asm_to_cpp: StopAtPoint__Q44nw4r3snd6detail5VoiceFiPCvUl
 extern "C" asm void StopAtPoint__Q44nw4r3snd6detail5VoiceFiPCvUl() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -2154,6 +2193,7 @@ lbl_8021F204:
 // ----------------------------------------------------------------------------
 // SetVoiceType__Q44nw4r3snd6detail5VoiceFQ54nw4r3snd6detail7AxVoice9VoiceType
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetVoiceType__Q44nw4r3snd6detail5VoiceFQ54nw4r3snd6detail7AxVoice9VoiceType
 extern "C" asm void SetVoiceType__Q44nw4r3snd6detail5VoiceFQ54nw4r3snd6detail7AxVoice9VoiceType() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -2200,6 +2240,7 @@ lbl_8021F28C:
 // ----------------------------------------------------------------------------
 // CalcAxVe__Q44nw4r3snd6detail5VoiceFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: CalcAxVe__Q44nw4r3snd6detail5VoiceFv
 extern "C" asm void CalcAxVe__Q44nw4r3snd6detail5VoiceFv() {
     nofralloc
     stwu r1, -0x50(r1)
@@ -2272,6 +2313,7 @@ lbl_8021F364:
 // ----------------------------------------------------------------------------
 // CalcAxMix__Q44nw4r3snd6detail5VoiceFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: CalcAxMix__Q44nw4r3snd6detail5VoiceFv
 extern "C" asm void CalcAxMix__Q44nw4r3snd6detail5VoiceFv() {
     nofralloc
     stwu r1, -0x50(r1)
@@ -2344,6 +2386,7 @@ lbl_8021F464:
 // ----------------------------------------------------------------------------
 // ResetDelta__Q44nw4r3snd6detail5VoiceFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: ResetDelta__Q44nw4r3snd6detail5VoiceFv
 extern "C" asm void ResetDelta__Q44nw4r3snd6detail5VoiceFv() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -2388,6 +2431,7 @@ lbl_8021F4E8:
 // ----------------------------------------------------------------------------
 // AxVoiceCallbackFunc__Q44nw4r3snd6detail5VoiceFPQ44nw4r3snd6detail7AxVoiceQ54nw4r3snd6detail7AxVoice21AxVoiceCallbackStatusPv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: AxVoiceCallbackFunc__Q44nw4r3snd6detail5VoiceFPQ44nw4r3snd6detail7AxVoiceQ54nw4r3snd6detail7AxVoice21AxVoiceCallbackStatusPv
 extern "C" asm void AxVoiceCallbackFunc__Q44nw4r3snd6detail5VoiceFPQ44nw4r3snd6detail7AxVoiceQ54nw4r3snd6detail7AxVoice21AxVoiceCallbackStatusPv() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -2493,6 +2537,7 @@ lbl_8021F644:
 // ----------------------------------------------------------------------------
 // TransformDpl2Pan__Q44nw4r3snd6detail5VoiceFPfPfff
 // ----------------------------------------------------------------------------
+// asm_to_cpp: TransformDpl2Pan__Q44nw4r3snd6detail5VoiceFPfPfff
 extern "C" asm void TransformDpl2Pan__Q44nw4r3snd6detail5VoiceFPfPfff() {
     nofralloc
     lfs f3, lbl_804A2218
@@ -2610,6 +2655,7 @@ lbl_8021F7E8:
 // ----------------------------------------------------------------------------
 // CalcMixParam__Q44nw4r3snd6detail5VoiceFiiPQ54nw4r3snd6detail7AxVoice8MixParamPQ54nw4r3snd6detail7AxVoice14RemoteMixParam
 // ----------------------------------------------------------------------------
+// asm_to_cpp: CalcMixParam__Q44nw4r3snd6detail5VoiceFiiPQ54nw4r3snd6detail7AxVoice8MixParamPQ54nw4r3snd6detail7AxVoice14RemoteMixParam
 extern "C" asm void CalcMixParam__Q44nw4r3snd6detail5VoiceFiiPQ54nw4r3snd6detail7AxVoice8MixParamPQ54nw4r3snd6detail7AxVoice14RemoteMixParam() {
     nofralloc
     stwu r1, -0x1b0(r1)
@@ -3444,6 +3490,7 @@ lbl_802202D8:
 // ----------------------------------------------------------------------------
 // InvalidateWaveData__Q44nw4r3snd6detail5VoiceFPCvPCv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: InvalidateWaveData__Q44nw4r3snd6detail5VoiceFPCvPCv
 extern "C" asm void InvalidateWaveData__Q44nw4r3snd6detail5VoiceFPCvPCv() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -3546,6 +3593,7 @@ lbl_802204B8:
 // ----------------------------------------------------------------------------
 // InvalidateData__Q44nw4r3snd6detail5VoiceFPCvPCv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: InvalidateData__Q44nw4r3snd6detail5VoiceFPCvPCv
 extern "C" asm void InvalidateData__Q44nw4r3snd6detail5VoiceFPCvPCv() {
     nofralloc
     blr
