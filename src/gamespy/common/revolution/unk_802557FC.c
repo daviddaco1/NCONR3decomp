@@ -41,29 +41,29 @@ extern void closesocket();
 extern void fn_802557FC();
 extern void fn_80255D78();
 extern void fn_80255DF0();
-extern void fn_80255E4C();
-extern void fn_80255E94();
+extern void gsiInterlockedIncrement();
+extern void gsiInterlockedDecrement();
 extern void fn_80255EDC();
 extern void fn_802560A8();
-extern void fn_80256120();
+extern void gsiTimeInSec();
 extern void fn_80256170();
 extern void fn_8025622C();
 extern void fn_80256360();
 extern void fn_80256428();
 extern void fn_8025651C();
 extern void fn_8025658C();
-extern void fn_802565E8();
-extern void fn_802565EC();
-extern void fn_802565F0();
-extern void fn_80256638();
-extern void fn_80256674();
-extern void fn_8025668C();
-extern void fn_80256700();
-extern void fn_80256A24();
-extern void fn_80256C30();
-extern void fn_80256C4C();
-extern void fn_80256C5C();
-extern void fn_80256C70();
+extern void gsiInitializeCriticalSection();
+extern void gsiEnterCriticalSection();
+extern void current_time();
+extern void msleep();
+extern void Util_RandSeed();
+extern void Util_RandInt();
+extern void B64Decode();
+extern void B64Encode();
+extern void gsiMemoryCallbacksSet();
+extern void gsimalloc();
+extern void gsirealloc();
+extern void gsifree();
 extern void fn_80256C90();
 extern void fn_80256E0C();
 extern void fn_8031C828();
@@ -551,9 +551,9 @@ lbl_80255E2C:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80255E4C
+// gsiInterlockedIncrement
 // ----------------------------------------------------------------------------
-asm void fn_80255E4C() {
+asm void gsiInterlockedIncrement() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -578,9 +578,9 @@ lbl_80255E84:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80255E94
+// gsiInterlockedDecrement
 // ----------------------------------------------------------------------------
-asm void fn_80255E94() {
+asm void gsiInterlockedDecrement() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -776,9 +776,9 @@ lbl_80256110:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80256120
+// gsiTimeInSec
 // ----------------------------------------------------------------------------
-asm void fn_80256120() {
+asm void gsiTimeInSec() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1165,25 +1165,25 @@ lbl_802565D4:
 }
 
 // ----------------------------------------------------------------------------
-// fn_802565E8
+// gsiInitializeCriticalSection
 // ----------------------------------------------------------------------------
-asm void fn_802565E8() {
+asm void gsiInitializeCriticalSection() {
     nofralloc
     blr
 }
 
 // ----------------------------------------------------------------------------
-// fn_802565EC
+// gsiEnterCriticalSection
 // ----------------------------------------------------------------------------
-asm void fn_802565EC() {
+asm void gsiEnterCriticalSection() {
     nofralloc
     blr
 }
 
 // ----------------------------------------------------------------------------
-// fn_802565F0
+// current_time
 // ----------------------------------------------------------------------------
-asm void fn_802565F0() {
+asm void current_time() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1206,9 +1206,9 @@ asm void fn_802565F0() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_80256638
+// msleep
 // ----------------------------------------------------------------------------
-asm void fn_80256638() {
+asm void msleep() {
     nofralloc
     lis r5, 0x8000
     lis r4, 0x1062
@@ -1228,9 +1228,9 @@ asm void fn_80256638() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_80256674
+// Util_RandSeed
 // ----------------------------------------------------------------------------
-asm void fn_80256674() {
+asm void Util_RandSeed() {
     nofralloc
     cmpwi r3, 0x0
     li r0, 0x1
@@ -1242,9 +1242,9 @@ lbl_80256684:
 }
 
 // ----------------------------------------------------------------------------
-// fn_8025668C
+// Util_RandInt
 // ----------------------------------------------------------------------------
-asm void fn_8025668C() {
+asm void Util_RandInt() {
     nofralloc
     subf. r7, r3, r4
     beqlr
@@ -1280,9 +1280,9 @@ lbl_802566E8:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80256700
+// B64Decode
 // ----------------------------------------------------------------------------
-asm void fn_80256700() {
+asm void B64Decode() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1511,9 +1511,9 @@ lbl_80256A0C:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80256A24
+// B64Encode
 // ----------------------------------------------------------------------------
-asm void fn_80256A24() {
+asm void B64Encode() {
     nofralloc
     stwu r1, -0x20(r1)
     cmpwi r6, 0x2
@@ -1672,9 +1672,9 @@ lbl_80256C24:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80256C30
+// gsiMemoryCallbacksSet
 // ----------------------------------------------------------------------------
-asm void fn_80256C30() {
+asm void gsiMemoryCallbacksSet() {
     nofralloc
     lis r8, lbl_80409F98@ha
     addi r7, r8, lbl_80409F98@l
@@ -1686,9 +1686,9 @@ asm void fn_80256C30() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_80256C4C
+// gsimalloc
 // ----------------------------------------------------------------------------
-asm void fn_80256C4C() {
+asm void gsimalloc() {
     nofralloc
     lis r4, lbl_80409F98@ha
     lwz r12, lbl_80409F98@l(r4)
@@ -1697,9 +1697,9 @@ asm void fn_80256C4C() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_80256C5C
+// gsirealloc
 // ----------------------------------------------------------------------------
-asm void fn_80256C5C() {
+asm void gsirealloc() {
     nofralloc
     lis r5, lbl_80409F98@ha
     addi r5, r5, lbl_80409F98@l
@@ -1709,9 +1709,9 @@ asm void fn_80256C5C() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_80256C70
+// gsifree
 // ----------------------------------------------------------------------------
-asm void fn_80256C70() {
+asm void gsifree() {
     nofralloc
     cmpwi r3, 0x0
     beqlr
@@ -1743,7 +1743,7 @@ asm void fn_80256C90() {
     bl strcpy
     li r0, -0x1
     stw r0, 0x80(r29)
-    bl fn_802565E8
+    bl gsiInitializeCriticalSection
     lbz r31, 0x40(r29)
     extsb. r31, r31
     bne lbl_80256CF4
@@ -1817,7 +1817,7 @@ lbl_80256D70:
     li r6, 0x0
     li r8, 0x8
     bl sendto
-    bl fn_802565F0
+    bl current_time
     li r0, 0x0
     stw r3, 0x50(r30)
     stw r0, 0x54(r30)
@@ -1855,7 +1855,7 @@ asm void fn_80256E0C() {
     stw r0, lbl_8049DBB8
     b lbl_80256FCC
 lbl_80256E50:
-    bl fn_80255E4C
+    bl gsiInterlockedIncrement
     cmpwi r3, 0x0
     beq lbl_80256F58
     lwz r3, lbl_8040A1E8@l(r31)
@@ -1930,7 +1930,7 @@ lbl_80256F50:
     mr r3, r0
     b lbl_80256FCC
 lbl_80256F58:
-    bl fn_802565F0
+    bl current_time
     lis r5, lbl_8040A1E8@ha
     addi r31, r5, lbl_8040A1E8@l
     lwz r4, 0x50(r31)
@@ -1954,7 +1954,7 @@ lbl_80256F98:
     li r6, 0x0
     li r8, 0x8
     bl sendto
-    bl fn_802565F0
+    bl current_time
     lwz r4, 0x54(r31)
     stw r3, 0x50(r31)
     addi r0, r4, 0x1

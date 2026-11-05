@@ -447,6 +447,7 @@ extern "C" void _restgpr_24();
 extern "C" void _savegpr_29();
 extern "C" void _restgpr_29();
 
+// asm_to_cpp: fn_80135810
 extern "C" asm void fn_80135810(TcgTextEntryHandle* h, u32 p2, u32 v)
 {
 	stwu r1, -32(r1)
@@ -971,6 +972,7 @@ extern "C" u8 lbl_80359FA8[0x38];
 extern "C" u8* lbl_8049C344;
 extern "C" u32 jumptable_80359FE0[];
 
+// asm_to_cpp: fn_8013654C
 extern "C" asm u8 fn_8013654C(u8 c)
 {
 	li r8, 0
@@ -1082,6 +1084,7 @@ extern "C" void fn_801309EC(void* obj);
 // reusado via CSE, pero 2 `beq` fisicos distintos) -- mismo patron de doble
 // chequeo redundante-pero-no-colapsado que en fn_80135BB0. Nunca antes
 // decompilada.
+// asm_to_cpp: fn_80135CC0
 extern "C" asm void fn_80135CC0(void)
 {
 	stwu r1, -32(r1)
@@ -1155,6 +1158,7 @@ extern "C" void fn_8013108C(void);
 // pero el `if (!result) assert(...)` de mas abajo es un chequeo SEPARADO en
 // el C original que mwcc no colapsa (mismo patron ya visto en
 // fn_80136308/fn_80135CC0). Nunca antes decompilada.
+// asm_to_cpp: fn_80135BB0
 extern "C" asm void fn_80135BB0(s32 poolSize)
 {
 	stwu r1, -16(r1)
@@ -1300,6 +1304,7 @@ extern "C" s32 fn_80135F38(s32 idx, const char* fmt, ...)
 
 extern "C" s32 fn_80133410(void* h, void** tables, void** arrB, void** arrC, s32 tableCount);
 
+// asm_to_cpp: fn_80135FCC
 extern "C" asm s32 fn_80135FCC(s32 idx, s32 count, void* p2, void* p3, ...)
 {
 	stwu r1, -144(r1)
@@ -1361,6 +1366,7 @@ extern "C" u32 strlen(const char* s);
 extern "C" void* memcpy(void* dst, const void* src, s32 n);
 extern "C" void memset(void* dst, int val, s32 n);
 
+// asm_to_cpp: fn_80136748
 extern "C" asm s32 fn_80136748(void* pVoid, char* str, s32 len)
 {
 	stwu r1, -176(r1)
@@ -1494,6 +1500,7 @@ extern "C" u8* fn_80136B1C(void* table);
 // descarta" que fn_80136404/fn_801363B8) -- se preserva el calculo tal cual
 // (swap de 16 bits + division con redondeo hacia cero, idiom srawi/addze)
 // por fidelidad aunque el valor de retorno no dependa de el.
+// asm_to_cpp: fn_80136308
 extern "C" asm s32 fn_80136308(u32 v)
 {
 	stwu r1, -16(r1)
@@ -1891,6 +1898,7 @@ extern "C" u8 lbl_804A0240[];
 extern "C" u8 lbl_8049D6FC;
 extern "C" __declspec(section ".sdata2") f32 lbl_804A0AA8[];
 
+// asm_to_cpp: fn_8013330C
 extern "C" asm s32 fn_8013330C(void* h, void* p2, void* p3)
 {
 	stwu r1, -32(r1)
@@ -1967,6 +1975,7 @@ lbl_801333A8:
 // en vez de 2). fn_80132D24 sin decompilar todavia (536 bytes).
 extern "C" TempList* fn_80132D24(void* h, s32 maxCount, void** tables, void** arrB, s32 tableCount, void** arrC);
 
+// asm_to_cpp: fn_80133410
 extern "C" asm s32 fn_80133410(void* h, void** tables, void** arrB, void** arrC, s32 tableCount)
 {
 	stwu r1, -32(r1)
@@ -2045,6 +2054,7 @@ lbl_801334BC:
 // Filtra/compacta el mismo `list->items` in-place: si fn_80136A90(item)
 // (bit 0x5 de CTextEntryBaseData) es true, dispatch virtual + descartar;
 // si no, se re-empaqueta en el mismo array. Reusa fn_80136A88/fn_80136A70/
+// asm_to_cpp: fn_80133524
 extern "C" asm void fn_80133524(void* h)
 {
 	stwu r1, -32(r1)
@@ -2154,6 +2164,7 @@ extern "C" s32 fn_80131288(TempList* dest, s32 idx, void* item);
 extern "C" void* lbl_8049D6F0;
 extern "C" void* lbl_8049D6F4;
 
+// asm_to_cpp: fn_80132B8C
 extern "C" asm TempList* fn_80132B8C(void* ctx, s32 maxCount, void* table, void* extra)
 {
 	stwu r1, -64(r1)
@@ -2298,6 +2309,7 @@ extern "C" u32 jumptable_80359ED4[];
 extern "C" int sprintf(char* str, const char* format, ...);
 extern "C" u32 strlen(const char* str);
 
+// asm_to_cpp: fn_80132348
 extern "C" asm TempList* fn_80132348(void* ctx, s32 maxCount, s32 len, void* str, void* extraB, void* extraC)
 {
 	stwu r1,-176(r1)
@@ -2879,6 +2891,7 @@ lbl_80132B64:
 	blr 
 }
 
+// asm_to_cpp: fn_80132D24
 extern "C" asm TempList* fn_80132D24(void* ctx, s32 maxCount, void** tables, void** arrB, s32 tableCount, void** arrC)
 {
 	stwu r1, -128(r1)
@@ -3043,6 +3056,7 @@ extern "C" void memset(void* dst, int val, s32 n);
 extern "C" void _savegpr_27();
 extern "C" void _restgpr_27();
 
+// asm_to_cpp: fn_80131324
 extern "C" asm s32 fn_80131324(TempList* dest, s32 idx, u16 code, s32 extra)
 {
 	stwu r1, -32(r1)
@@ -3136,6 +3150,7 @@ extern "C" char lbl_8035A13C[]; // formato "%d"
 extern "C" void fn_801A9384(const char* cond, s32 line, const char* file, ...);
 extern "C" u16 lbl_80359C60[][8];
 
+// asm_to_cpp: fn_80136120
 extern "C" asm s32 fn_80136120(s32 row, s32 col)
 {
 	stwu r1, -16(r1)
@@ -3199,6 +3214,7 @@ lbl_801361C8:
 	blr
 }
 
+// asm_to_cpp: fn_80131428
 extern "C" asm TempList* fn_80131428(void* ctx, s32 maxCount, s32 len, void* str, void* extra)
 {
 stwu r1,-1120(r1)
@@ -4245,6 +4261,7 @@ extern "C" void fn_801309EC(void* obj);
 
 // Encadena docenas de setters definidos arriba en este mismo archivo --
 // sin dont_inline mwcc los auto-inlinea todos (mismo gotcha de siempre).
+// asm_to_cpp: fn_80132F3C
 extern "C" asm void* fn_80132F3C(void* h, u32 p2, s32 maxCount, u32 p4)
 {
 	stwu r1, -32(r1)
@@ -4451,6 +4468,7 @@ struct SpacingTable {
 extern "C" SpacingTable lbl_80339F60;
 extern "C" SpacingTable lbl_8033A25C;
 
+// asm_to_cpp: fn_801361FC
 extern "C" asm s32 fn_801361FC(s32 code, s32 unused, s32 mode)
 {
 	stwu r1, -1552(r1)
@@ -4527,6 +4545,7 @@ lbl_80136294:
 // lbl_804A0AA8 ya declarada arriba en .sdata2
 extern "C" __declspec(section ".sdata2") f64 lbl_804A0AA0; // constante "magica" de conversion int->float (0x4330_0000...)
 
+// asm_to_cpp: fn_801335F4
 extern "C" asm s32 fn_801335F4(TcgTextEntryHandle* h)
 {
 stwu r1,-432(r1)
@@ -5423,6 +5442,7 @@ lbl_801341D8:
 	blr
 }
 
+// asm_to_cpp: fn_80134304
 extern "C" asm void fn_80134304(void* hVoid, s32 doStuff, s32 unused)
 {
 	stwu r1, -144(r1)
@@ -5646,6 +5666,7 @@ lbl_801345F0:
 // mucha aritmetica de punto flotante transcrita casi 1:1 del disasm.
 extern "C" s32 labs(s32 v);
 
+// asm_to_cpp: fn_80134EA0
 extern "C" asm s32 fn_80134EA0(void* hVoid, void* posAVoid, void* posBVoid, void* extentAVoid, void* extentBVoid, f32 scaleA, f32 scaleB)
 {
 	stwu r1, -128(r1)
@@ -5907,6 +5928,7 @@ lbl_8013521C:
 // offsets y llamadas reales confirmadas por disasm, pero varias formulas de
 // interpolacion exactas (el bloque de keyframes de 0x110-0x150, el ratio
 // de field_0x94/0x9c) no se verificaron bit a bit.
+// asm_to_cpp: fn_80134664
 extern "C" asm void fn_80134664(TcgTextEntryHandle* h)
 {
 	stwu r1,-112(r1)

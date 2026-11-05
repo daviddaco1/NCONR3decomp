@@ -30,7 +30,7 @@ extern void SIIsChanBusy();
 extern void fn_80324614();
 extern void fn_80324704();
 extern void fn_80324754();
-extern void fn_803248C0();
+extern void SCGetProductArea();
 extern void fn_80324944();
 extern void fn_80324980();
 extern void fn_803249E8();
@@ -249,9 +249,9 @@ lbl_803248B8:
 }
 
 // ----------------------------------------------------------------------------
-// fn_803248C0
+// SCGetProductArea
 // ----------------------------------------------------------------------------
-asm void fn_803248C0() {
+asm void SCGetProductArea() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0

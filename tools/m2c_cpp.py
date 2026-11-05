@@ -45,7 +45,7 @@ def fixup_cpp(c):
     # registros de hardware (0xCC000000-0xCDFFFFFF: GX FIFO, VI, PI...) son volatile en el original
     c = re.sub(r'\*\(((?:\w+ )*\w+) \*\)(0xC[CD][0-9A-Fa-f]{6})\b', r'*(volatile \1 *)\2', c)
     # tipos C++ que m2c saca de nombres mangled (nw4r::g3d::Camera *): no estan declarados
-    c = re.sub(r'\((?:const )?(?:\w+::)+\w+ (\*+)\)', lambda m: f'(s8 {m.group(1)})', c)
+    c = re.sub(r'\b(?:const\s+)?(?:\w+::)+\w+\b', 's8', c)
     c = fix_ptr_arith(c)
     c = re.sub(r'(M2C_FIELD\([^,]+, )\w+ \*\*(, )', r'\1s8 **\2', c)
     c = fix_unset_args(c)

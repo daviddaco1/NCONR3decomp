@@ -135,8 +135,8 @@ void fn_8012907C(s32 arg0, s8 *arg1, s32 arg2, u32 arg3);
 void fn_80129188(s8 *arg0, s32 *arg1, s32 arg2, s32 arg3);
 void fn_80129330(s32 arg0, s8 *arg1, s32 arg2, u32 arg3);
 void fn_8012949C(s32 arg0, s8 *arg1, s32 arg2, u32 arg3);
-s32 fn_80129638();
-s32 fn_8012965C();
+void fn_80129638(s32 arg0, u8 *arg1);
+void fn_8012965C(s32 arg0, u8 *arg1);
 void fn_80129680(s8 *arg0, s32 *arg1, s32 arg2, s32 arg3);
 void fn_80129C84(s32 arg0, s8 *arg1, s32 arg2, s32 arg3);
 void fn_80129DFC(s8 *arg0, s32 *arg1, s32 arg2, s32 arg3);
@@ -167,8 +167,8 @@ void fn_8012AAB0(s8 *arg0, f32 farg0, f32 farg1);
 void fn_8012AAC8(s8 *arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_8012AAF4(s8 *arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_8012AB20(s32 *arg0, s32 arg1);
-void fn_8012AB38(s8 *arg0);
-void fn_8012AB5C(s8 *arg0);
+void fn_8012AB38(s8 *arg0, u32 arg1);
+void fn_8012AB5C(s8 *arg0, u32 arg1);
 s32 fn_8012AB80(s32 *arg0, s32 arg1);
 void fn_8012AB90(s32 *arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_8012ABAC(s32 arg0, s32 arg1, s32 arg2);
@@ -405,115 +405,41 @@ lbl_8012740C:
     blr
 }
 
-// asm_to_cpp: fn_80127424
-asm void fn_80127424(s32 *arg0, s32 *arg1, u32 arg2) {
-    nofralloc
-    lwz r0, 0x0(r3)
-    cmpwi r0, 0x0
-    ble lbl_8012743C
-    subf r0, r5, r0
-    stw r0, 0x0(r3)
-    b lbl_80127448
-lbl_8012743C:
-    lwz r0, 0x0(r4)
-    add r0, r0, r5
-    stw r0, 0x0(r4)
-lbl_80127448:
-    lwz r0, 0x0(r3)
-    cmpwi r0, 0x0
-    bgelr
-    lwz r5, 0x0(r4)
-    neg r0, r0
-    add r0, r5, r0
-    stw r0, 0x0(r4)
-    li r0, 0x0
-    stw r0, 0x0(r3)
-    blr
+void fn_80127424(s32 *arg0, s32 *arg1, u32 arg2) {
+    if (*arg0 > 0) {
+        *arg0 -= arg2;
+    } else {
+        *arg1 += arg2;
+    }
+    if (*arg0 < 0) {
+        *arg1 += -*arg0;
+        *arg0 = 0;
+    }
 }
 
-// asm_to_cpp: fn_80127470
-asm s8 * fn_80127470(s32 arg0) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_29
-    mr r29, r3
-    mulli r3, r3, 0x33c
-    addi r31, r3, 0x10
-    lis r3, lbl_803C1A40@ha
-    addi r3, r3, lbl_803C1A40@l
-    lwz r3, 0x830(r3)
-    mr r4, r31
-    li r5, 0x4
-    bl fn_80170E2C
-    mr r30, r3
-    cmpwi r3, 0x0
-    bne lbl_801274CC
-    lis r3, lbl_8034F9A0@ha
-    addi r3, r3, lbl_8034F9A0@l
-    li r4, 0x10d
-    addi r5, r3, 0xb
-    opword 0x4CC63182
-    bl fn_801A9384
-lbl_801274CC:
-    mr r3, r30
-    li r4, 0x0
-    mr r5, r31
-    bl memset
-    addi r0, r30, 0x10
-    stw r0, 0x0(r30)
-    stw r29, 0x8(r30)
-    mr r3, r30
-    bl fn_801276E4
-    mr r3, r30
-    addi r11, r1, 0x20
-    bl _restgpr_29
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+s8 * fn_80127470(s32 arg0) {
+    s32 size = arg0 * 0x33c + 0x10;
+    u8 *ptr = (u8 *)((void *(*)(void *, s32, s32))fn_80170E2C)(*(void **)((u8 *)&lbl_803C1A40 + 0x830), size, 4);
+    if (ptr == 0) {
+        ((void (*)(s32, const char *))fn_801A9384)(0x10d, (char *)lbl_8034F9A0 + 0xb);
+    }
+    memset((s32)ptr, 0, size);
+    *(u8 **)ptr = ptr + 0x10;
+    *(s32 *)(ptr + 8) = arg0;
+    ((void (*)(void *))fn_801276E4)(ptr);
+    return (s8 *)ptr;
 }
 
-// asm_to_cpp: fn_8012750C
-asm s8 * fn_8012750C(s8 *arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    mr r31, r4
-    lis r3, lbl_803C1A40@ha
-    addi r3, r3, lbl_803C1A40@l
-    lwz r3, 0x830(r3)
-    mulli r4, r4, 0x5c
-    li r5, 0x4
-    bl fn_80170E2C
-    stw r3, 0x4(r30)
-    cmpwi r3, 0x0
-    bne lbl_80127564
-    lis r3, lbl_8034F9A0@ha
-    addi r3, r3, lbl_8034F9A0@l
-    li r4, 0x12d
-    addi r5, r3, 0x2c
-    opword 0x4CC63182
-    bl fn_801A9384
-lbl_80127564:
-    stw r31, 0xc(r30)
-    lwz r3, 0x4(r30)
-    li r4, 0x0
-    mulli r5, r31, 0x5c
-    bl memset
-    lwz r3, 0x4(r30)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s8 * fn_8012750C(s8 *arg0, s32 arg1) {
+    s32 size = arg1 * 0x5c;
+    u8 *ptr = (u8 *)((void *(*)(void *, s32, s32))fn_80170E2C)(*(void **)((u8 *)&lbl_803C1A40 + 0x830), size, 4);
+    *(u8 **)(arg0 + 4) = ptr;
+    if (ptr == 0) {
+        ((void (*)(s32, const char *))fn_801A9384)(0x12d, (char *)lbl_8034F9A0 + 0x2c);
+    }
+    *(s32 *)(arg0 + 0xc) = arg1;
+    memset((s32)*(u8 **)(arg0 + 4), 0, arg1 * 0x5c);
+    return *(s8 **)(arg0 + 4);
 }
 
 void fn_80127594(s8 **arg0) {
@@ -597,80 +523,23 @@ lbl_801276B0:
     blr
 }
 
-// asm_to_cpp: fn_801276E4
-asm void fn_801276E4(s8 *arg0) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_29
-    mr r29, r3
-    li r30, 0x0
-    li r31, 0x0
-    b lbl_8012771C
-lbl_80127708:
-    lwz r0, 0x0(r29)
-    add r3, r0, r31
-    bl fn_80127600
-    addi r30, r30, 0x1
-    addi r31, r31, 0x33c
-lbl_8012771C:
-    lwz r0, 0x8(r29)
-    cmplw r30, r0
-    blt lbl_80127708
-    addi r11, r1, 0x20
-    bl _restgpr_29
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+void fn_801276E4(s8 *arg0) {
+    u32 i;
+    for (i = 0; i < *(u32 *)(arg0 + 8); i++) {
+        ((void (*)(void *))fn_80127600)(*(u8 **)arg0 + i * 0x33c);
+    }
 }
 
-// asm_to_cpp: fn_80127740
-asm void fn_80127740(s32 *arg0, s32 arg1, s32 arg2, s8 *arg3) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_27
-    mr r27, r4
-    mr r28, r5
-    mr r29, r6
-    cmpwi r3, 0x0
-    beq lbl_801277BC
-    stw r3, lbl_8049D6D8
-    li r30, 0x0
-    li r31, 0x0
-    b lbl_801277AC
-lbl_80127778:
-    lwz r0, 0x0(r3)
-    add r4, r0, r31
-    lwz r0, 0x0(r4)
-    rlwinm r0, r0, 0, 30, 30
-    cmpwi r0, 0x0
-    beq lbl_801277A4
-    mr r3, r29
-    mr r5, r30
-    mr r6, r28
-    mr r7, r27
-    bl fn_8012781C
-lbl_801277A4:
-    addi r30, r30, 0x1
-    addi r31, r31, 0x33c
-lbl_801277AC:
-    lwz r3, lbl_8049D6D8
-    lwz r0, 0x8(r3)
-    cmplw r30, r0
-    blt lbl_80127778
-lbl_801277BC:
-    addi r11, r1, 0x20
-    bl _restgpr_27
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+void fn_80127740(s32 *arg0, s32 arg1, s32 arg2, s8 *arg3) {
+    u32 i;
+    if (arg0 == 0) return;
+    *(s32 **)&lbl_8049D6D8 = arg0;
+    for (i = 0; i < (u32)arg0[2]; i++) {
+        u8 *item = *(u8 **)arg0 + i * 0x33c;
+        if (*(u32 *)item & 2) {
+            ((void (*)(s8 *, u8 *, u32, s32, s32))fn_8012781C)(arg3, item, i, arg2, arg1);
+        }
+    }
 }
 
 void fn_801277D4(s32 *arg0, s8 *arg1, s32 *arg2, s32 arg3, s32 arg4, s32 arg5) {
@@ -1186,33 +1055,20 @@ lbl_80127EF8:
     blr
 }
 
-// asm_to_cpp: fn_80127F00
-asm void fn_80127F00(s32 arg0, s8 *arg1, s32 arg2, s32 arg3) {
-    nofralloc
-    lfs f0, 0x18(r4)
-    lfs f1, 0x14(r4)
-    fsubs f2, f0, f1
-    lfs f0, 0x20(r4)
-    fmuls f0, f2, f0
-    fadds f0, f1, f0
-    stfs f0, 0x18(r4)
-    fsubs f1, f1, f0
-    la r3, lbl_804A0970
-    lfs f0, 0x14(r3)
-    fcmpo cr0, f1, f0
-    ble lbl_80127F34
-    fmr f1, f0
-lbl_80127F34:
-    la r3, lbl_804A0970
-    lfs f0, 0x18(r3)
-    fcmpo cr0, f1, f0
-    bge lbl_80127F48
-    fmr f1, f0
-lbl_80127F48:
-    lfs f0, 0x18(r4)
-    fadds f0, f0, f1
-    stfs f0, 0x18(r4)
-    blr
+void fn_80127F00(s32 arg0, s8 *arg1, s32 arg2, s32 arg3) {
+    f32 f14 = *(f32 *)(arg1 + 0x14);
+    f32 diff = *(f32 *)(arg1 + 0x18) - f14;
+    f32 scaled = diff * *(f32 *)(arg1 + 0x20) + f14;
+    f32 rem;
+    *(f32 *)(arg1 + 0x18) = scaled;
+    rem = f14 - scaled;
+    if (rem > *(f32 *)((u8 *)&lbl_804A0970 + 0x14)) {
+        rem = *(f32 *)((u8 *)&lbl_804A0970 + 0x14);
+    }
+    if (rem < *(f32 *)((u8 *)&lbl_804A0970 + 0x18)) {
+        rem = *(f32 *)((u8 *)&lbl_804A0970 + 0x18);
+    }
+    *(f32 *)(arg1 + 0x18) += rem;
 }
 
 // asm_to_cpp: fn_80127F58
@@ -2899,32 +2755,18 @@ lbl_80129624:
     blr
 }
 
-// asm_to_cpp: fn_80129638
-asm s32 fn_80129638() {
-    nofralloc
-    lwz r0, 0x28(r4)
-    cmpwi r0, 0x0
-    beqlr
-    rlwinm r0, r0, 0, 30, 30
-    cmpwi r0, 0x0
-    beqlr
-    mr r3, r4
-    b fn_8012B7C0
-    blr
+void fn_80129638(s32 arg0, u8 *arg1) {
+    u32 val = *(u32 *)(arg1 + 0x28);
+    if (val != 0 && (val & 2)) {
+        ((void (*)(u8 *))fn_8012B7C0)(arg1);
+    }
 }
 
-// asm_to_cpp: fn_8012965C
-asm s32 fn_8012965C() {
-    nofralloc
-    lwz r0, 0x28(r4)
-    cmpwi r0, 0x0
-    beqlr
-    rlwinm r0, r0, 0, 30, 30
-    cmpwi r0, 0x0
-    beqlr
-    mr r3, r4
-    b fn_8012B880
-    blr
+void fn_8012965C(s32 arg0, u8 *arg1) {
+    u32 val = *(u32 *)(arg1 + 0x28);
+    if (val != 0 && (val & 2)) {
+        ((void (*)(u8 *))fn_8012B880)(arg1);
+    }
 }
 
 // asm_to_cpp: fn_80129680
@@ -3977,35 +3819,13 @@ lbl_8012A584:
     blr
 }
 
-// asm_to_cpp: fn_8012A59C
-asm void fn_8012A59C(s32 *arg0, s8 *arg1) {
-    nofralloc
-    stwu r1, -0x50(r1)
-    mflr r0
-    stw r0, 0x54(r1)
-    stw r31, 0x4c(r1)
-    stw r30, 0x48(r1)
-    mr r30, r3
-    mr r31, r4
-    addi r3, r1, 0x8
-    bl fn_80127174
-    cmpwi r31, 0x0
-    beq lbl_8012A5E8
-    mr r3, r30
-    mr r4, r31
-    addi r5, r1, 0x8
-    bl fn_8012A4E0
-    addi r3, r1, 0x8
-    mr r4, r31
-    lwz r5, 0x10(r30)
-    bl fn_80124684
-lbl_8012A5E8:
-    lwz r31, 0x4c(r1)
-    lwz r30, 0x48(r1)
-    lwz r0, 0x54(r1)
-    mtlr r0
-    addi r1, r1, 0x50
-    blr
+void fn_8012A59C(s32 *arg0, s8 *arg1) {
+    u8 mtx[64];
+    fn_80127174((M2C_UNK *)mtx);
+    if (arg1 != 0) {
+        fn_8012A4E0(arg0, arg1, (s8 *)mtx);
+        fn_80124684((s8 *)mtx, (s32)arg1, *(s32 *)((u8 *)arg0 + 0x10));
+    }
 }
 
 // asm_to_cpp: fn_8012A600
@@ -4107,139 +3927,67 @@ void fn_8012A764(s8 *arg0, s32 arg1, s32 arg2) {
     M2C_FIELD(arg0, s32 *, 0) = (s32) ((s32) (M2C_FIELD(arg0, s32 *, 0) | 0x402));
 }
 
-// asm_to_cpp: fn_8012A784
-asm s32 fn_8012A784(s32 *arg0, s32 arg1, s32 arg2) {
-    nofralloc
-    cmpwi r5, 0x0
-    beq lbl_8012A7B0
-    cmpwi r5, 0x1
-    beq lbl_8012A7B8
-    cmpwi r5, 0x2
-    beq lbl_8012A7C8
-    cmpwi r5, 0x3
-    beq lbl_8012A7D8
-    cmpwi r5, 0x4
-    beq lbl_8012A7EC
-    b lbl_8012A7F8
-lbl_8012A7B0:
-    stw r4, 0x0(r3)
-    b lbl_8012A7F8
-lbl_8012A7B8:
-    lwz r0, 0x0(r3)
-    or r0, r0, r4
-    stw r0, 0x0(r3)
-    b lbl_8012A7F8
-lbl_8012A7C8:
-    lwz r0, 0x0(r3)
-    and r0, r0, r4
-    stw r0, 0x0(r3)
-    b lbl_8012A7F8
-lbl_8012A7D8:
-    lwz r5, 0x0(r3)
-    nor r0, r4, r4
-    and r0, r5, r0
-    stw r0, 0x0(r3)
-    b lbl_8012A7F8
-lbl_8012A7EC:
-    lwz r0, 0x0(r3)
-    and r3, r0, r4
-    blr
-lbl_8012A7F8:
-    lwz r0, 0x0(r3)
-    ori r0, r0, 0x402
-    stw r0, 0x0(r3)
-    mr r3, r0
-    blr
+s32 fn_8012A784(s32 *arg0, s32 arg1, s32 arg2) {
+    switch (arg2) {
+    case 0:
+        *arg0 = arg1;
+        break;
+    case 1:
+        *arg0 |= arg1;
+        break;
+    case 2:
+        *arg0 &= arg1;
+        break;
+    case 3:
+        *arg0 &= ~arg1;
+        break;
+    case 4:
+        return *arg0 & arg1;
+    }
+    *arg0 |= 0x402;
+    return *arg0;
 }
 
-// asm_to_cpp: fn_8012A80C
-asm s32 fn_8012A80C(s8 *arg0, s32 arg1, s32 arg2) {
-    nofralloc
-    cmpwi r5, 0x0
-    beq lbl_8012A838
-    cmpwi r5, 0x1
-    beq lbl_8012A840
-    cmpwi r5, 0x2
-    beq lbl_8012A850
-    cmpwi r5, 0x3
-    beq lbl_8012A860
-    cmpwi r5, 0x4
-    beq lbl_8012A874
-    b lbl_8012A880
-lbl_8012A838:
-    stw r4, 0x4(r3)
-    b lbl_8012A880
-lbl_8012A840:
-    lwz r0, 0x4(r3)
-    or r0, r0, r4
-    stw r0, 0x4(r3)
-    b lbl_8012A880
-lbl_8012A850:
-    lwz r0, 0x4(r3)
-    and r0, r0, r4
-    stw r0, 0x4(r3)
-    b lbl_8012A880
-lbl_8012A860:
-    lwz r5, 0x4(r3)
-    nor r0, r4, r4
-    and r0, r5, r0
-    stw r0, 0x4(r3)
-    b lbl_8012A880
-lbl_8012A874:
-    lwz r0, 0x4(r3)
-    and r3, r0, r4
-    blr
-lbl_8012A880:
-    lwz r0, 0x0(r3)
-    ori r0, r0, 0x402
-    stw r0, 0x0(r3)
-    lwz r3, 0x4(r3)
-    blr
+s32 fn_8012A80C(s8 *arg0, s32 arg1, s32 arg2) {
+    switch (arg2) {
+    case 0:
+        *(s32 *)(arg0 + 4) = arg1;
+        break;
+    case 1:
+        *(s32 *)(arg0 + 4) |= arg1;
+        break;
+    case 2:
+        *(s32 *)(arg0 + 4) &= arg1;
+        break;
+    case 3:
+        *(s32 *)(arg0 + 4) &= ~arg1;
+        break;
+    case 4:
+        return *(s32 *)(arg0 + 4) & arg1;
+    }
+    *(s32 *)arg0 |= 0x402;
+    return *(s32 *)(arg0 + 4);
 }
 
-// asm_to_cpp: fn_8012A894
-asm s32 fn_8012A894(s8 *arg0, s32 arg1, s32 arg2) {
-    nofralloc
-    cmpwi r5, 0x0
-    beq lbl_8012A8C0
-    cmpwi r5, 0x1
-    beq lbl_8012A8C8
-    cmpwi r5, 0x2
-    beq lbl_8012A8D8
-    cmpwi r5, 0x3
-    beq lbl_8012A8E8
-    cmpwi r5, 0x4
-    beq lbl_8012A8FC
-    b lbl_8012A908
-lbl_8012A8C0:
-    stw r4, 0x8(r3)
-    b lbl_8012A908
-lbl_8012A8C8:
-    lwz r0, 0x8(r3)
-    or r0, r0, r4
-    stw r0, 0x8(r3)
-    b lbl_8012A908
-lbl_8012A8D8:
-    lwz r0, 0x8(r3)
-    and r0, r0, r4
-    stw r0, 0x8(r3)
-    b lbl_8012A908
-lbl_8012A8E8:
-    lwz r5, 0x8(r3)
-    nor r0, r4, r4
-    and r0, r5, r0
-    stw r0, 0x8(r3)
-    b lbl_8012A908
-lbl_8012A8FC:
-    lwz r0, 0x8(r3)
-    and r3, r0, r4
-    blr
-lbl_8012A908:
-    lwz r0, 0x0(r3)
-    ori r0, r0, 0x402
-    stw r0, 0x0(r3)
-    lwz r3, 0x8(r3)
-    blr
+s32 fn_8012A894(s8 *arg0, s32 arg1, s32 arg2) {
+    switch (arg2) {
+    case 0:
+        *(s32 *)(arg0 + 8) = arg1;
+        break;
+    case 1:
+        *(s32 *)(arg0 + 8) |= arg1;
+        break;
+    case 2:
+        *(s32 *)(arg0 + 8) &= arg1;
+        break;
+    case 3:
+        *(s32 *)(arg0 + 8) &= ~arg1;
+        break;
+    case 4:
+        return *(s32 *)(arg0 + 8) & arg1;
+    }
+    *(s32 *)arg0 |= 0x402;
+    return *(s32 *)(arg0 + 8);
 }
 
 s32 fn_8012A91C(s32 *arg0, s32 arg1) {
@@ -4370,43 +4118,18 @@ void fn_8012AAF4(s8 *arg0, s32 arg1, s32 arg2, s32 arg3) {
     M2C_FIELD(arg0, s32 *, 0) = (s32) ((s32) (M2C_FIELD(arg0, s32 *, 0) | 0x402));
 }
 
-// asm_to_cpp: fn_8012AB20
-asm void fn_8012AB20(s32 *arg0, s32 arg1) {
-    nofralloc
-    lwz r5, 0x0(r3)
-    nor r0, r4, r4
-    and r0, r5, r0
-    ori r0, r0, 0x402
-    stw r0, 0x0(r3)
-    blr
+void fn_8012AB20(s32 *arg0, s32 arg1) {
+    *arg0 = (*arg0 & ~arg1) | 0x402;
 }
 
-// asm_to_cpp: fn_8012AB38
-asm void fn_8012AB38(s8 *arg0) {
-    nofralloc
-    lwz r5, 0x18(r3)
-    li r0, 0x3
-    nand r0, r4, r0
-    and r0, r5, r0
-    stw r0, 0x18(r3)
-    lwz r0, 0x0(r3)
-    ori r0, r0, 0x402
-    stw r0, 0x0(r3)
-    blr
+void fn_8012AB38(s8 *arg0, u32 arg1) {
+    *(u32 *)(arg0 + 0x18) &= ~(arg1 & 3);
+    *(u32 *)arg0 |= 0x402;
 }
 
-// asm_to_cpp: fn_8012AB5C
-asm void fn_8012AB5C(s8 *arg0) {
-    nofralloc
-    lwz r5, 0x18(r3)
-    li r0, 0x3c
-    nand r0, r4, r0
-    and r0, r5, r0
-    stw r0, 0x18(r3)
-    lwz r0, 0x0(r3)
-    ori r0, r0, 0x402
-    stw r0, 0x0(r3)
-    blr
+void fn_8012AB5C(s8 *arg0, u32 arg1) {
+    *(u32 *)(arg0 + 0x18) &= ~(arg1 & 0x3c);
+    *(u32 *)arg0 |= 0x402;
 }
 
 s32 fn_8012AB80(s32 *arg0, s32 arg1) {
@@ -4424,84 +4147,47 @@ void fn_8012ABAC(s32 arg0, s32 arg1, s32 arg2) {
     fn_8003C244((s8 *) ((s8 *) arg0), (s32) (arg1), (s32) (arg2), (s32) (1));
 }
 
-// asm_to_cpp: fn_8012ABB4
-asm void fn_8012ABB4(s32 *arg0, s32 arg1, f32 farg0) {
-    nofralloc
-    lwz r0, 0x0(r3)
-    rlwinm r0, r0, 0, 29, 29
-    cmpwi r0, 0x0
-    beq lbl_8012ABD0
-    la r5, lbl_804A0970
-    lfs f0, 0x20(r5)
-    fmuls f1, f0, f1
-lbl_8012ABD0:
-    mulli r0, r4, 0x2c
-    add r4, r3, r0
-    stfs f1, 0x6c(r4)
-    stfs f1, 0x70(r4)
-    li r0, 0x0
-    stw r0, 0x54(r4)
-    stw r0, 0x60(r4)
-    lwz r0, 0x0(r3)
-    ori r0, r0, 0x402
-    stw r0, 0x0(r3)
-    blr
+void fn_8012ABB4(s32 *arg0, s32 arg1, f32 farg0) {
+    u8 *ptr;
+    if (*arg0 & 4) {
+        farg0 *= *(f32 *)((u8 *)&lbl_804A0970 + 0x20);
+    }
+    ptr = (u8 *)arg0 + arg1 * 0x2c;
+    *(f32 *)(ptr + 0x6c) = farg0;
+    *(f32 *)(ptr + 0x70) = farg0;
+    *(u32 *)(ptr + 0x54) = 0;
+    *(u32 *)(ptr + 0x60) = 0;
+    *arg0 |= 0x402;
 }
 
-// asm_to_cpp: fn_8012ABFC
-asm void fn_8012ABFC(s32 *arg0, s32 arg1, f32 farg0) {
-    nofralloc
-    lwz r0, 0x0(r3)
-    rlwinm r0, r0, 0, 29, 29
-    cmpwi r0, 0x0
-    beq lbl_8012AC18
-    la r5, lbl_804A0970
-    lfs f0, 0x20(r5)
-    fmuls f1, f0, f1
-lbl_8012AC18:
-    mulli r0, r4, 0x2c
-    add r4, r3, r0
-    lfs f0, 0x6c(r4)
-    fadds f0, f0, f1
-    stfs f0, 0x6c(r4)
-    li r0, 0x0
-    stw r0, 0x60(r4)
-    lwz r0, 0x0(r3)
-    ori r0, r0, 0x402
-    stw r0, 0x0(r3)
-    blr
+void fn_8012ABFC(s32 *arg0, s32 arg1, f32 farg0) {
+    u8 *ptr;
+    if (*arg0 & 4) {
+        farg0 *= *(f32 *)((u8 *)&lbl_804A0970 + 0x20);
+    }
+    ptr = (u8 *)arg0 + arg1 * 0x2c;
+    *(f32 *)(ptr + 0x6c) += farg0;
+    *(u32 *)(ptr + 0x60) = 0;
+    *arg0 |= 0x402;
 }
 
 f32 fn_8012AC44(s32 arg0, s32 arg1) {
     return M2C_FIELD((arg0 + (arg1 * 0x2C)), f32 *, 0x70);
 }
 
-// asm_to_cpp: fn_8012AC54
-asm void fn_8012AC54(s32 *arg0, s32 arg1, s32 arg2, s32 arg3, f32 farg0) {
-    nofralloc
-    lwz r0, 0x0(r3)
-    rlwinm r0, r0, 0, 29, 29
-    cmpwi r0, 0x0
-    beq lbl_8012AC70
-    la r7, lbl_804A0970
-    lfs f0, 0x20(r7)
-    fmuls f1, f0, f1
-lbl_8012AC70:
-    mulli r0, r4, 0x2c
-    add r4, r3, r0
-    lfs f0, 0x6c(r4)
-    stfs f0, 0x64(r4)
-    slwi r0, r5, 8
-    stw r0, 0x5c(r4)
-    li r0, 0x0
-    stw r0, 0x58(r4)
-    stw r6, 0x54(r4)
-    stfs f1, 0x68(r4)
-    stw r0, 0x60(r4)
-    lwz r0, 0x0(r3)
-    ori r0, r0, 0x442
-    stw r0, 0x0(r3)
-    blr
+void fn_8012AC54(s32 *arg0, s32 arg1, s32 arg2, s32 arg3, f32 farg0) {
+    u8 *ptr;
+    if (*arg0 & 4) {
+        farg0 *= *(f32 *)((u8 *)&lbl_804A0970 + 0x20);
+    }
+    ptr = (u8 *)arg0 + arg1 * 0x2c;
+    *(f32 *)(ptr + 0x64) = *(f32 *)(ptr + 0x6c);
+    *(u32 *)(ptr + 0x5c) = arg2 << 8;
+    *(u32 *)(ptr + 0x58) = 0;
+    *(u32 *)(ptr + 0x54) = arg3;
+    *(f32 *)(ptr + 0x68) = farg0;
+    *(u32 *)(ptr + 0x60) = 0;
+    *arg0 |= 0x442;
 }
 
 void fn_8012ACAC(s32 arg0, s32 arg1, s32 arg2) {
@@ -4516,126 +4202,72 @@ void fn_8012ACBC(s32 arg0, s32 arg1, s32 arg2) {
     fn_8003C244((s8 *) ((s8 *) arg0), (s32) (arg1), (s32) (arg2), (s32) (8));
 }
 
-// asm_to_cpp: fn_8012ACC4
-asm void fn_8012ACC4(s32 *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2) {
-    nofralloc
-    lwz r0, 0x0(r3)
-    rlwinm r0, r0, 0, 29, 29
-    cmpwi r0, 0x0
-    beq lbl_8012ACE4
-    la r5, lbl_804A0970
-    lfs f0, 0x20(r5)
-    fmuls f1, f0, f1
-    fmuls f2, f0, f2
-lbl_8012ACE4:
-    mulli r0, r4, 0x2c
-    add r4, r3, r0
-    stfs f3, 0x7c(r4)
-    stfs f1, 0x64(r4)
-    stfs f2, 0x68(r4)
-    li r0, 0x0
-    stw r0, 0x60(r4)
-    li r0, 0x10
-    stw r0, 0x54(r4)
-    lwz r0, 0x0(r3)
-    ori r0, r0, 0x442
-    stw r0, 0x0(r3)
-    blr
+void fn_8012ACC4(s32 *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2) {
+    u8 *ptr;
+    if (*arg0 & 4) {
+        f32 factor = *(f32 *)((u8 *)&lbl_804A0970 + 0x20);
+        farg0 *= factor;
+        farg1 *= factor;
+    }
+    ptr = (u8 *)arg0 + arg1 * 0x2c;
+    *(f32 *)(ptr + 0x7c) = farg2;
+    *(f32 *)(ptr + 0x64) = farg0;
+    *(f32 *)(ptr + 0x68) = farg1;
+    *(u32 *)(ptr + 0x60) = 0;
+    *(u32 *)(ptr + 0x54) = 0x10;
+    *arg0 |= 0x442;
 }
 
-// asm_to_cpp: fn_8012AD18
-asm void fn_8012AD18(s32 *arg0, s32 arg1, f32 farg0, f32 farg1) {
-    nofralloc
-    lwz r0, 0x0(r3)
-    rlwinm r0, r0, 0, 29, 29
-    cmpwi r0, 0x0
-    beq lbl_8012AD38
-    la r5, lbl_804A0970
-    lfs f0, 0x20(r5)
-    fmuls f1, f0, f1
-    fmuls f2, f0, f2
-lbl_8012AD38:
-    mulli r0, r4, 0x2c
-    add r5, r3, r0
-    stfs f1, 0x68(r5)
-    la r4, lbl_804A0970
-    lfs f0, 0x8(r4)
-    fdivs f0, f2, f0
-    stfs f0, 0x74(r5)
-    li r0, 0x20
-    stw r0, 0x54(r5)
-    li r0, 0x0
-    stw r0, 0x60(r5)
-    lwz r0, 0x0(r3)
-    ori r0, r0, 0x442
-    stw r0, 0x0(r3)
-    blr
+void fn_8012AD18(s32 *arg0, s32 arg1, f32 farg0, f32 farg1) {
+    u8 *ptr;
+    if (*arg0 & 4) {
+        f32 factor = *(f32 *)((u8 *)&lbl_804A0970 + 0x20);
+        farg0 *= factor;
+        farg1 *= factor;
+    }
+    ptr = (u8 *)arg0 + arg1 * 0x2c;
+    *(f32 *)(ptr + 0x68) = farg0;
+    *(f32 *)(ptr + 0x74) = farg1 / *(f32 *)((u8 *)&lbl_804A0970 + 8);
+    *(u32 *)(ptr + 0x54) = 0x20;
+    *(u32 *)(ptr + 0x60) = 0;
+    *arg0 |= 0x442;
 }
 
-// asm_to_cpp: fn_8012AD74
-asm void fn_8012AD74(s32 *arg0, s32 arg1, s32 arg2, f32 farg0, f32 farg1) {
-    nofralloc
-    lwz r0, 0x0(r3)
-    rlwinm r0, r0, 0, 29, 29
-    cmpwi r0, 0x0
-    beq lbl_8012AD94
-    la r6, lbl_804A0970
-    lfs f0, 0x20(r6)
-    fmuls f1, f0, f1
-    fmuls f2, f0, f2
-lbl_8012AD94:
-    mulli r0, r4, 0x2c
-    add r6, r3, r0
-    stfs f1, 0x78(r6)
-    stfs f2, 0x68(r6)
-    lfs f0, 0x6c(r6)
-    stfs f0, 0x64(r6)
-    slwi r0, r5, 8
-    stw r0, 0x5c(r6)
-    li r4, 0x0
-    stw r4, 0x58(r6)
-    li r0, 0x40
-    stw r0, 0x54(r6)
-    stw r4, 0x60(r6)
-    lwz r0, 0x0(r3)
-    ori r0, r0, 0x442
-    stw r0, 0x0(r3)
-    blr
+void fn_8012AD74(s32 *arg0, s32 arg1, s32 arg2, f32 farg0, f32 farg1) {
+    u8 *ptr;
+    if (*arg0 & 4) {
+        f32 factor = *(f32 *)((u8 *)&lbl_804A0970 + 0x20);
+        farg0 *= factor;
+        farg1 *= factor;
+    }
+    ptr = (u8 *)arg0 + arg1 * 0x2c;
+    *(f32 *)(ptr + 0x78) = farg0;
+    *(f32 *)(ptr + 0x68) = farg1;
+    *(f32 *)(ptr + 0x64) = *(f32 *)(ptr + 0x6c);
+    *(u32 *)(ptr + 0x5c) = arg2 << 8;
+    *(u32 *)(ptr + 0x58) = 0;
+    *(u32 *)(ptr + 0x54) = 0x40;
+    *(u32 *)(ptr + 0x60) = 0;
+    *arg0 |= 0x442;
 }
 
-// asm_to_cpp: fn_8012ADD8
-asm void fn_8012ADD8(s32 *arg0, s32 arg1, s32 arg2, f32 farg0) {
-    nofralloc
-    lwz r0, 0x0(r3)
-    rlwinm r0, r0, 0, 29, 29
-    cmpwi r0, 0x0
-    beq lbl_8012ADF4
-    la r6, lbl_804A0970
-    lfs f0, 0x20(r6)
-    fmuls f1, f0, f1
-lbl_8012ADF4:
-    mulli r0, r4, 0x2c
-    add r6, r3, r0
-    lfs f0, 0x6c(r6)
-    stfs f0, 0x64(r6)
-    stfs f1, 0x74(r6)
-    li r4, 0x0
-    stw r4, 0x58(r6)
-    li r0, 0x80
-    stw r0, 0x54(r6)
-    stw r4, 0x60(r6)
-    cmpwi r5, -0x1
-    beq lbl_8012AE30
-    slwi r0, r5, 8
-    stw r0, 0x5c(r6)
-    b lbl_8012AE34
-lbl_8012AE30:
-    stw r5, 0x5c(r6)
-lbl_8012AE34:
-    lwz r0, 0x0(r3)
-    ori r0, r0, 0x442
-    stw r0, 0x0(r3)
-    blr
+void fn_8012ADD8(s32 *arg0, s32 arg1, s32 arg2, f32 farg0) {
+    u8 *ptr;
+    if (*arg0 & 4) {
+        farg0 *= *(f32 *)((u8 *)&lbl_804A0970 + 0x20);
+    }
+    ptr = (u8 *)arg0 + arg1 * 0x2c;
+    *(f32 *)(ptr + 0x64) = *(f32 *)(ptr + 0x6c);
+    *(f32 *)(ptr + 0x74) = farg0;
+    *(u32 *)(ptr + 0x58) = 0;
+    *(u32 *)(ptr + 0x54) = 0x80;
+    *(u32 *)(ptr + 0x60) = 0;
+    if (arg2 != -1) {
+        *(u32 *)(ptr + 0x5c) = arg2 << 8;
+    } else {
+        *(u32 *)(ptr + 0x5c) = arg2;
+    }
+    *arg0 |= 0x442;
 }
 
 // asm_to_cpp: fn_8012AE44
@@ -4802,15 +4434,10 @@ lbl_8012B07C:
     blr
 }
 
-// asm_to_cpp: fn_8012B08C
-asm void fn_8012B08C(s32 arg0, s32 arg1) {
-    nofralloc
-    mulli r4, r4, 0x2c
-    li r0, 0x0
-    add r3, r3, r4
-    stw r0, 0x54(r3)
-    stw r0, 0x60(r3)
-    blr
+void fn_8012B08C(s32 arg0, s32 arg1) {
+    u8 *ptr = (u8 *)arg0 + arg1 * 0x2c;
+    *(u32 *)(ptr + 0x54) = 0;
+    *(u32 *)(ptr + 0x60) = 0;
 }
 
 void fn_8012B0A4(s32 *arg0, s32 arg1, s32 arg2) {
@@ -4857,15 +4484,10 @@ void fn_8012B140(s32 arg0, s32 arg1, s32 arg2) {
     fn_8003C244((s8 *) ((s8 *) arg0), (s32) (arg1), (s32) (arg2), (s32) (0x10));
 }
 
-// asm_to_cpp: fn_8012B148
-asm void fn_8012B148(s32 arg0, s32 arg1) {
-    nofralloc
-    slwi r4, r4, 5
-    li r0, 0x0
-    add r3, r3, r4
-    stw r0, 0xd8(r3)
-    stw r0, 0xe4(r3)
-    blr
+void fn_8012B148(s32 arg0, s32 arg1) {
+    u8 *ptr = (u8 *)arg0 + (arg1 << 5);
+    *(u32 *)(ptr + 0xd8) = 0;
+    *(u32 *)(ptr + 0xe4) = 0;
 }
 
 void fn_8012B160(s32 *arg0, s32 arg1, s32 arg2) {
@@ -4925,37 +4547,19 @@ void fn_8012B258(s32 arg0, s32 arg1, s32 arg2) {
     fn_8003C244((s8 *) ((s8 *) arg0), (s32) (arg1), (s32) (arg2), (s32) (0x10));
 }
 
-// asm_to_cpp: fn_8012B260
-asm void fn_8012B260(s32 *arg0, s32 arg1, f32 farg0) {
-    nofralloc
-    mulli r0, r4, 0x1c
-    la r4, lbl_804A0970
-    lfs f0, 0x8(r4)
-    fdivs f0, f1, f0
-    add r4, r3, r0
-    stfs f0, 0x140(r4)
-    li r0, 0x40
-    stw r0, 0x138(r4)
-    li r0, 0x0
-    stw r0, 0x150(r4)
-    lwz r0, 0x0(r3)
-    ori r0, r0, 0x502
-    stw r0, 0x0(r3)
-    lwz r0, 0x138(r4)
-    oris r0, r0, 0x8000
-    stw r0, 0x138(r4)
-    blr
+void fn_8012B260(s32 *arg0, s32 arg1, f32 farg0) {
+    u8 *ptr = (u8 *)arg0 + arg1 * 0x1c;
+    *(f32 *)(ptr + 0x140) = farg0 / *(f32 *)((u8 *)&lbl_804A0970 + 8);
+    *(u32 *)(ptr + 0x138) = 0x40;
+    *(u32 *)(ptr + 0x150) = 0;
+    *arg0 |= 0x502;
+    *(u32 *)(ptr + 0x138) |= 0x80000000;
 }
 
-// asm_to_cpp: fn_8012B2A4
-asm void fn_8012B2A4(s32 arg0, s32 arg1) {
-    nofralloc
-    mulli r4, r4, 0x1c
-    li r0, 0x0
-    add r3, r3, r4
-    stw r0, 0x150(r3)
-    stw r0, 0x138(r3)
-    blr
+void fn_8012B2A4(s32 arg0, s32 arg1) {
+    u8 *ptr = (u8 *)arg0 + arg1 * 0x1c;
+    *(u32 *)(ptr + 0x150) = 0;
+    *(u32 *)(ptr + 0x138) = 0;
 }
 
 void fn_8012B2BC(s32 *arg0, s32 arg1, s32 arg2) {
@@ -4977,37 +4581,12 @@ void fn_8012B2DC(s32 *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3
     *arg0 |= 0x602;
 }
 
-// asm_to_cpp: fn_8012B31C
-asm void fn_8012B31C(s32 *arg0, s32 arg1, f32 farg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    mr r31, r4
-    lwz r0, 0x0(r3)
-    rlwinm r0, r0, 0, 29, 29
-    cmpwi r0, 0x0
-    beq lbl_8012B354
-    la r3, lbl_804A0970
-    lfs f0, 0x20(r3)
-    fmuls f1, f0, f1
-lbl_8012B354:
-    mr r3, r30
-    mr r4, r31
-    bl fn_8012B2DC
-    li r4, 0x2
-    slwi r0, r31, 5
-    add r3, r30, r0
-    stw r4, 0x18c(r3)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_8012B31C(s32 *arg0, s32 arg1, f32 farg0) {
+    if (*arg0 & 4) {
+        farg0 *= *(f32 *)((u8 *)&lbl_804A0970 + 0x20);
+    }
+    ((void (*)(s32 *, s32, f32))fn_8012B2DC)(arg0, arg1, farg0);
+    *(u32 *)((u8 *)arg0 + (arg1 << 5) + 0x18c) = 2;
 }
 
 void fn_8012B388(s32 arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
@@ -5024,27 +4603,16 @@ void fn_8012B424(s32 arg0, s32 arg1) {
     M2C_FIELD((arg0 + (arg1 << 5)), s32 *, 0x18C) = (s32) (0);
 }
 
-// asm_to_cpp: fn_8012B438
-asm void fn_8012B438(s32 *arg0, s32 arg1, u32 arg2) {
-    nofralloc
-    mulli r0, r4, 0x28
-    add r4, r3, r0
-    stw r5, 0x210(r4)
-    srwi r0, r5, 24
-    stb r0, 0x210(r4)
-    extrwi r0, r5, 8, 8
-    stb r0, 0x211(r4)
-    extrwi r0, r5, 8, 16
-    stb r0, 0x212(r4)
-    clrlwi r0, r5, 24
-    stb r0, 0x213(r4)
-    li r0, 0x0
-    stw r0, 0x1ec(r4)
-    stw r0, 0x1fc(r4)
-    lwz r0, 0x0(r3)
-    ori r0, r0, 0x402
-    stw r0, 0x0(r3)
-    blr
+void fn_8012B438(s32 *arg0, s32 arg1, u32 arg2) {
+    u8 *ptr = (u8 *)arg0 + arg1 * 0x28;
+    *(u32 *)(ptr + 0x210) = arg2;
+    ptr[0x210] = (u8)(arg2 >> 24);
+    ptr[0x211] = (u8)(arg2 >> 16);
+    ptr[0x212] = (u8)(arg2 >> 8);
+    ptr[0x213] = (u8)arg2;
+    *(u32 *)(ptr + 0x1ec) = 0;
+    *(u32 *)(ptr + 0x1fc) = 0;
+    *arg0 |= 0x402;
 }
 
 void fn_8012B480(s32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
@@ -5071,18 +4639,11 @@ void fn_8012B4D4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
     fn_8012B480((s32 *) ((s32 *) arg0), (s32) (arg1), (s32) (arg2), (s32) (arg3), (s32) (arg4), (s32) (arg5), (s32) (arg6), (s32) (4));
 }
 
-// asm_to_cpp: fn_8012B4DC
-asm void fn_8012B4DC(s32 *arg0, s32 arg1) {
-    nofralloc
-    mulli r4, r4, 0x28
-    li r0, 0x0
-    add r4, r3, r4
-    stw r0, 0x1ec(r4)
-    stw r0, 0x1fc(r4)
-    lwz r0, 0x0(r3)
-    ori r0, r0, 0x402
-    stw r0, 0x0(r3)
-    blr
+void fn_8012B4DC(s32 *arg0, s32 arg1) {
+    u8 *ptr = (u8 *)arg0 + arg1 * 0x28;
+    *(u32 *)(ptr + 0x1ec) = 0;
+    *(u32 *)(ptr + 0x1fc) = 0;
+    *(u32 *)arg0 |= 0x402;
 }
 
 void fn_8012B500(s32 *arg0, s32 arg1, s32 arg2) {
@@ -5121,29 +4682,13 @@ void fn_8012B564(void) {
     fn_80130640();
 }
 
-// asm_to_cpp: fn_8012B568
-asm void fn_8012B568(s32 arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    mr r3, r4
-    bl fn_8012FE70
-    stw r31, 0x2c(r3)
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_8012B568(s32 arg0, s32 arg1) {
+    u8 *res = (u8 *)((void *(*)(s32))fn_8012FE70)(arg1);
+    *(s32 *)(res + 0x2c) = arg0;
 }
 
-// asm_to_cpp: fn_8012B59C
-asm void fn_8012B59C(s32 arg0, s32 arg1) {
-    nofralloc
-    mr r3, r4
-    b fn_8012FE70
+void fn_8012B59C(s32 arg0, s32 arg1) {
+    ((void (*)(s32))fn_8012FE70)(arg1);
 }
 
 void fn_8012B5A4(void) {
@@ -5176,42 +4721,20 @@ void fn_8012B5B4(void) {
     }
 }
 
-// asm_to_cpp: fn_8012B60C
-asm void fn_8012B60C(s32 arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    stw r30, 0x18(r1)
-    mr r30, r4
-    bl fn_8012FE70
-    mr r31, r3
-    cmpwi r3, 0x0
-    beq lbl_8012B674
-    slwi r30, r30, 2
-    lwz r4, 0x118(r3)
-    lwzx r0, r4, r30
-    stw r0, 0xc(r1)
-    lwz r0, 0x114(r3)
-    stw r0, 0x10(r1)
-    addi r3, r1, 0x10
-    addi r4, r1, 0xc
-    bl fn_8002A17C
-    lwz r3, 0x118(r31)
-    lwzx r0, r3, r30
-    stw r0, 0x8(r1)
-    addi r3, r1, 0x8
-    la r4, lbl_804A0970
-    lfs f1, 0x4(r4)
-    bl fn_8002A57C
-lbl_8012B674:
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+void fn_8012B60C(s32 arg0, s32 arg1) {
+    u8 *ptr = (u8 *)((void *(*)(s32))fn_8012FE70)(arg0);
+    if (ptr != 0) {
+        s32 var1;
+        s32 var2;
+        s32 var3;
+        s32 *arr = *(s32 **)(ptr + 0x118);
+        var2 = arr[arg1];
+        var1 = *(s32 *)(ptr + 0x114);
+        fn_8002A17C(&var1, &var2);
+        arr = *(s32 **)(ptr + 0x118);
+        var3 = arr[arg1];
+        fn_8002A57C(&var3, *(f32 *)((u8 *)&lbl_804A0970 + 4));
+    }
 }
 
 void fn_8012B68C(void) {
@@ -5246,15 +4769,11 @@ void fn_8012B6F0(void) {
     }
 }
 
-// asm_to_cpp: fn_8012B71C
-asm s32 fn_8012B71C(s32 arg0) {
-    nofralloc
-    lwz r4, lbl_8049D758
-    lwz r4, 0x4(r4)
-    lwz r4, 0x0(r4)
-    mulli r0, r3, 0x33c
-    add r3, r4, r0
-    blr
+s32 fn_8012B71C(s32 arg0) {
+    u8 *p1 = *(u8 **)&lbl_8049D758;
+    u8 *p2 = *(u8 **)(p1 + 4);
+    u8 *p3 = *(u8 **)p2;
+    return (s32)(p3 + arg0 * 0x33c);
 }
 
 // asm_to_cpp: fn_8012B734
@@ -7197,36 +6716,13 @@ lbl_8012D2A4:
 void fn_8012D2C8(void) {
 }
 
-// asm_to_cpp: fn_8012D2CC
-asm void fn_8012D2CC(s32 *arg0) {
-    nofralloc
-    stwu r1, -0x50(r1)
-    mflr r0
-    stw r0, 0x54(r1)
-    stw r31, 0x4c(r1)
-    mr r31, r3
-    addi r3, r1, 0x8
-    bl fn_80127174
-    mr r3, r31
-    lwz r4, 0x334(r31)
-    addi r5, r1, 0x8
-    bl fn_8012A4E0
-    lwz r0, 0x2b8(r31)
-    clrlwi r0, r0, 31
-    cmpwi r0, 0x0
-    bne lbl_8012D320
-    addi r3, r1, 0x8
-    lwz r4, 0x334(r31)
-    lwz r5, 0x2b0(r31)
-    lwz r6, 0x2b4(r31)
-    lwz r7, 0x10(r31)
-    bl fn_80124700
-lbl_8012D320:
-    lwz r31, 0x4c(r1)
-    lwz r0, 0x54(r1)
-    mtlr r0
-    addi r1, r1, 0x50
-    blr
+void fn_8012D2CC(s32 *arg0) {
+    u8 mtx[64];
+    fn_80127174((M2C_UNK *)mtx);
+    fn_8012A4E0(arg0, *(s8 **)((u8 *)arg0 + 0x334), (s8 *)mtx);
+    if ((*(u32 *)((u8 *)arg0 + 0x2b8) & 1) == 0) {
+        fn_80124700((s8 *)mtx, *(s32 *)((u8 *)arg0 + 0x334), *(s32 *)((u8 *)arg0 + 0x2b0), *(s32 *)((u8 *)arg0 + 0x2b4), *(s32 *)((u8 *)arg0 + 0x10));
+    }
 }
 
 void fn_8012D334(s8 *arg0) {
@@ -8048,30 +7544,16 @@ lbl_8012DF24:
 void fn_8012DF3C(void) {
 }
 
-// asm_to_cpp: fn_8012DF40
-asm void fn_8012DF40(s8 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    lwz r4, 0x2b4(r3)
-    lfs f1, 0x70(r4)
-    stfs f1, 0x8(r1)
-    lwz r4, 0x2b8(r3)
-    lfs f0, 0x70(r4)
-    stfs f0, 0xc(r1)
-    fcmpo cr0, f0, f1
-    ble lbl_8012DF6C
-    stfs f0, 0x8(r1)
-    stfs f1, 0xc(r1)
-lbl_8012DF6C:
-    lfs f1, 0x8(r1)
-    lfs f0, 0xc(r1)
-    fsubs f0, f1, f0
-    stfs f0, 0x2c(r3)
-    lwz r0, 0x0(r3)
-    ori r0, r0, 0x402
-    stw r0, 0x0(r3)
-    addi r1, r1, 0x10
-    blr
+void fn_8012DF40(s8 *arg0) {
+    f32 a = *(f32 *)(*(u8 **)(arg0 + 0x2b4) + 0x70);
+    f32 b = *(f32 *)(*(u8 **)(arg0 + 0x2b8) + 0x70);
+    if (b > a) {
+        f32 tmp = a;
+        a = b;
+        b = tmp;
+    }
+    *(f32 *)(arg0 + 0x2c) = a - b;
+    *(u32 *)arg0 |= 0x402;
 }
 
 // asm_to_cpp: fn_8012DF90

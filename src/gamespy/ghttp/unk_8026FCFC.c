@@ -9,14 +9,14 @@ extern u8 ghiPostSetAutoFree[];
 extern u8 lbl_8036AF10[];
 
 // Forward declarations
-extern void fn_80256C4C();
-extern void fn_80256C70();
+extern void gsimalloc();
+extern void gsifree();
 extern void fn_8026FCFC();
 extern void fn_8026FE28();
 extern void fn_8026FF08();
 extern void fn_8026FF78();
 extern void fn_80270018();
-extern void fn_80270098();
+extern void ghiEncryptorSslDecryptRecv();
 extern void fn_803377F8();
 extern void fn_80337950();
 extern void fn_80337A18();
@@ -132,7 +132,7 @@ asm void fn_8026FE28() {
     stw r29, 0x14(r1)
     mr r29, r3
     li r3, 0x10
-    bl fn_80256C4C
+    bl gsimalloc
     cmpwi r3, 0x0
     stw r3, 0x0(r30)
     bne lbl_8026FE64
@@ -204,7 +204,7 @@ asm void fn_8026FF08() {
     lwz r3, 0x0(r31)
     bl fn_80338054
     mr r3, r31
-    bl fn_80256C70
+    bl gsifree
     li r0, 0x0
     stw r0, 0x0(r30)
 lbl_8026FF4C:
@@ -318,9 +318,9 @@ lbl_80270084:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80270098
+// ghiEncryptorSslDecryptRecv
 // ----------------------------------------------------------------------------
-asm void fn_80270098() {
+asm void ghiEncryptorSslDecryptRecv() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0

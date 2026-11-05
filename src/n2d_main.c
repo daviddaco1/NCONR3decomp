@@ -1846,15 +1846,9 @@ void fn_80122188(u8 arg0) {
     fn_801221C0((u8) (arg0));
 }
 
-// asm_to_cpp: fn_801221C0
-asm void fn_801221C0(u8 arg0) {
-    nofralloc
-    lwz r5, lbl_8049E180
-    lwz r4, 0x8(r5)
-    stb r3, 0x0(r4)
-    addi r0, r4, 0x1
-    stw r0, 0x8(r5)
-    blr
+void fn_801221C0(u8 arg0) {
+    struct N2D_GDControl *dl = (struct N2D_GDControl *)lbl_8049E180;
+    *dl->top++ = arg0;
 }
 
 #pragma dont_inline on

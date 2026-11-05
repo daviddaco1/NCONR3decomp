@@ -92,6 +92,7 @@ extern "C" void memset();
 // ----------------------------------------------------------------------------
 // __ct__Q44nw4r3snd6detail9AxManagerFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __ct__Q44nw4r3snd6detail9AxManagerFv
 extern "C" asm void __ct__Q44nw4r3snd6detail9AxManagerFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -413,6 +414,7 @@ lbl_80202F5C:
 // ----------------------------------------------------------------------------
 // fn_80203050
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80203050
 extern "C" asm void fn_80203050() {
     nofralloc
     li r0, 0x0
@@ -428,6 +430,7 @@ extern "C" asm void fn_80203050() {
 // ----------------------------------------------------------------------------
 // fn_80203070
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80203070
 extern "C" asm void fn_80203070() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -458,6 +461,7 @@ lbl_802030AC:
 // ----------------------------------------------------------------------------
 // GetInstance__Q44nw4r3snd6detail9AxManagerFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetInstance__Q44nw4r3snd6detail9AxManagerFv
 extern "C" asm void GetInstance__Q44nw4r3snd6detail9AxManagerFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -491,6 +495,7 @@ lbl_80203110:
 // ----------------------------------------------------------------------------
 // __dt__Q44nw4r3snd6detail9AxManagerFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q44nw4r3snd6detail9AxManagerFv
 extern "C" asm void __dt__Q44nw4r3snd6detail9AxManagerFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -530,6 +535,7 @@ lbl_80203188:
 // ----------------------------------------------------------------------------
 // Init__Q44nw4r3snd6detail9AxManagerFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Init__Q44nw4r3snd6detail9AxManagerFv
 extern "C" asm void Init__Q44nw4r3snd6detail9AxManagerFv() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -609,6 +615,7 @@ lbl_802032A4:
 // ----------------------------------------------------------------------------
 // GetOutputVolume__Q44nw4r3snd6detail9AxManagerCFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetOutputVolume__Q44nw4r3snd6detail9AxManagerCFv
 extern "C" asm void GetOutputVolume__Q44nw4r3snd6detail9AxManagerCFv() {
     nofralloc
     lwz r5, 0x24(r3)
@@ -645,6 +652,7 @@ lbl_80203324:
 // ----------------------------------------------------------------------------
 // Update__Q44nw4r3snd6detail9AxManagerFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Update__Q44nw4r3snd6detail9AxManagerFv
 extern "C" asm void Update__Q44nw4r3snd6detail9AxManagerFv() {
     nofralloc
     stwu r1, -0x70(r1)
@@ -927,6 +935,7 @@ lbl_802036A8:
 // ----------------------------------------------------------------------------
 // GetZeroBufferAddress__Q44nw4r3snd6detail9AxManagerFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetZeroBufferAddress__Q44nw4r3snd6detail9AxManagerFv
 extern "C" asm void GetZeroBufferAddress__Q44nw4r3snd6detail9AxManagerFv() {
     nofralloc
     lwz r3, 0x4(r3)
@@ -936,6 +945,7 @@ extern "C" asm void GetZeroBufferAddress__Q44nw4r3snd6detail9AxManagerFv() {
 // ----------------------------------------------------------------------------
 // RegisterCallback__Q44nw4r3snd6detail9AxManagerFPQ54nw4r3snd6detail9AxManager16CallbackListNodePFv_v
 // ----------------------------------------------------------------------------
+// asm_to_cpp: RegisterCallback__Q44nw4r3snd6detail9AxManagerFPQ54nw4r3snd6detail9AxManager16CallbackListNodePFv_v
 extern "C" asm void RegisterCallback__Q44nw4r3snd6detail9AxManagerFPQ54nw4r3snd6detail9AxManager16CallbackListNodePFv_v() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -970,6 +980,7 @@ extern "C" asm void RegisterCallback__Q44nw4r3snd6detail9AxManagerFPQ54nw4r3snd6
 // ----------------------------------------------------------------------------
 // UnregisterCallback__Q44nw4r3snd6detail9AxManagerFPQ54nw4r3snd6detail9AxManager16CallbackListNode
 // ----------------------------------------------------------------------------
+// asm_to_cpp: UnregisterCallback__Q44nw4r3snd6detail9AxManagerFPQ54nw4r3snd6detail9AxManager16CallbackListNode
 extern "C" asm void UnregisterCallback__Q44nw4r3snd6detail9AxManagerFPQ54nw4r3snd6detail9AxManager16CallbackListNode() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -999,6 +1010,7 @@ extern "C" asm void UnregisterCallback__Q44nw4r3snd6detail9AxManagerFPQ54nw4r3sn
 // ----------------------------------------------------------------------------
 // SetOutputMode__Q44nw4r3snd6detail9AxManagerFQ34nw4r3snd10OutputMode
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetOutputMode__Q44nw4r3snd6detail9AxManagerFQ34nw4r3snd10OutputMode
 extern "C" asm void SetOutputMode__Q44nw4r3snd6detail9AxManagerFQ34nw4r3snd10OutputMode() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -1083,6 +1095,7 @@ lbl_802038BC:
 // ----------------------------------------------------------------------------
 // GetOutputMode__Q44nw4r3snd6detail9AxManagerFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetOutputMode__Q44nw4r3snd6detail9AxManagerFv
 extern "C" asm void GetOutputMode__Q44nw4r3snd6detail9AxManagerFv() {
     nofralloc
     lwz r3, 0x0(r3)
@@ -1092,6 +1105,7 @@ extern "C" asm void GetOutputMode__Q44nw4r3snd6detail9AxManagerFv() {
 // ----------------------------------------------------------------------------
 // SetMasterVolume__Q44nw4r3snd6detail9AxManagerFfi
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetMasterVolume__Q44nw4r3snd6detail9AxManagerFfi
 extern "C" asm void SetMasterVolume__Q44nw4r3snd6detail9AxManagerFfi() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1161,6 +1175,7 @@ lbl_802039AC:
 // ----------------------------------------------------------------------------
 // AxCallbackFunc__Q44nw4r3snd6detail9AxManagerFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: AxCallbackFunc__Q44nw4r3snd6detail9AxManagerFv
 extern "C" asm void AxCallbackFunc__Q44nw4r3snd6detail9AxManagerFv() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -1261,6 +1276,7 @@ lbl_80203AFC:
 // ----------------------------------------------------------------------------
 // AppendEffect__Q44nw4r3snd6detail9AxManagerFQ34nw4r3snd6AuxBusPQ34nw4r3snd6FxBase
 // ----------------------------------------------------------------------------
+// asm_to_cpp: AppendEffect__Q44nw4r3snd6detail9AxManagerFQ34nw4r3snd6AuxBusPQ34nw4r3snd6FxBase
 extern "C" asm void AppendEffect__Q44nw4r3snd6detail9AxManagerFQ34nw4r3snd6AuxBusPQ34nw4r3snd6FxBase() {
     nofralloc
     stwu r1, -0x40(r1)
@@ -1413,6 +1429,7 @@ lbl_80203D00:
 // ----------------------------------------------------------------------------
 // ClearEffect__Q44nw4r3snd6detail9AxManagerFQ34nw4r3snd6AuxBusi
 // ----------------------------------------------------------------------------
+// asm_to_cpp: ClearEffect__Q44nw4r3snd6detail9AxManagerFQ34nw4r3snd6AuxBusi
 extern "C" asm void ClearEffect__Q44nw4r3snd6detail9AxManagerFQ34nw4r3snd6AuxBusi() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1513,6 +1530,7 @@ lbl_80203E5C:
 // ----------------------------------------------------------------------------
 // ShutdownEffect__Q44nw4r3snd6detail9AxManagerFQ34nw4r3snd6AuxBus
 // ----------------------------------------------------------------------------
+// asm_to_cpp: ShutdownEffect__Q44nw4r3snd6detail9AxManagerFQ34nw4r3snd6AuxBus
 extern "C" asm void ShutdownEffect__Q44nw4r3snd6detail9AxManagerFQ34nw4r3snd6AuxBus() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1593,6 +1611,7 @@ lbl_80203F5C:
 // ----------------------------------------------------------------------------
 // AuxCallbackFunc__Q44nw4r3snd6detail9AxManagerFPvPv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: AuxCallbackFunc__Q44nw4r3snd6detail9AxManagerFPvPv
 extern "C" asm void AuxCallbackFunc__Q44nw4r3snd6detail9AxManagerFPvPv() {
     nofralloc
     stwu r1, -0x40(r1)
@@ -1868,6 +1887,7 @@ lbl_80204338:
 // ----------------------------------------------------------------------------
 // fn_80204350
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80204350
 extern "C" asm void fn_80204350() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1926,6 +1946,7 @@ extern "C" asm void fn_80204350() {
 // ----------------------------------------------------------------------------
 // __dt__Q44nw4r3snd6detail15BiquadFilterLpfFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q44nw4r3snd6detail15BiquadFilterLpfFv
 extern "C" asm void __dt__Q44nw4r3snd6detail15BiquadFilterLpfFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1950,6 +1971,7 @@ lbl_80204444:
 // ----------------------------------------------------------------------------
 // __dt__Q44nw4r3snd6detail15BiquadFilterHpfFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q44nw4r3snd6detail15BiquadFilterHpfFv
 extern "C" asm void __dt__Q44nw4r3snd6detail15BiquadFilterHpfFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1974,6 +1996,7 @@ lbl_80204484:
 // ----------------------------------------------------------------------------
 // __dt__Q44nw4r3snd6detail18BiquadFilterBpf512Fv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q44nw4r3snd6detail18BiquadFilterBpf512Fv
 extern "C" asm void __dt__Q44nw4r3snd6detail18BiquadFilterBpf512Fv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1998,6 +2021,7 @@ lbl_802044C4:
 // ----------------------------------------------------------------------------
 // __dt__Q44nw4r3snd6detail19BiquadFilterBpf1024Fv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q44nw4r3snd6detail19BiquadFilterBpf1024Fv
 extern "C" asm void __dt__Q44nw4r3snd6detail19BiquadFilterBpf1024Fv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -2022,6 +2046,7 @@ lbl_80204504:
 // ----------------------------------------------------------------------------
 // __dt__Q44nw4r3snd6detail19BiquadFilterBpf2048Fv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q44nw4r3snd6detail19BiquadFilterBpf2048Fv
 extern "C" asm void __dt__Q44nw4r3snd6detail19BiquadFilterBpf2048Fv() {
     nofralloc
     stwu r1, -0x10(r1)

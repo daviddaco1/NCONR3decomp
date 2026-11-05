@@ -7,6 +7,13 @@
 #include "gsDebug.h"
 #include "gsPlatform.h"
 #include "gsPlatformUtil.h"
+extern void* malloc(size_t size);
+extern void* calloc(size_t num, size_t size);
+extern void free(void* ptr);
+extern void* realloc(void* ptr, size_t size);
+
+
+
 
 typedef gsi_u32 gsi_uint;
 #define PTR_ALIGNMENT 16

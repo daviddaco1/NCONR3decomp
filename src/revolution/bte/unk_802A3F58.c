@@ -10,6 +10,7 @@ extern void hcisu_h2_usb_cback();
 // ----------------------------------------------------------------------------
 // hcisu_h2_usb_cback
 // ----------------------------------------------------------------------------
+// asm_to_cpp: hcisu_h2_usb_cback
 asm void hcisu_h2_usb_cback() {
     nofralloc
     cmpwi r3, 0x4

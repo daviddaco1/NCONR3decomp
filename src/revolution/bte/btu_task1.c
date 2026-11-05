@@ -50,6 +50,7 @@ extern void sdp_conn_timeout();
 // ----------------------------------------------------------------------------
 // btu_task_init
 // ----------------------------------------------------------------------------
+// asm_to_cpp: btu_task_init
 asm void btu_task_init() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -73,6 +74,7 @@ asm void btu_task_init() {
 // ----------------------------------------------------------------------------
 // btu_task_msg_handler
 // ----------------------------------------------------------------------------
+// asm_to_cpp: btu_task_msg_handler
 asm void btu_task_msg_handler() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -352,6 +354,7 @@ lbl_802A594C:
 // ----------------------------------------------------------------------------
 // btu_start_timer
 // ----------------------------------------------------------------------------
+// asm_to_cpp: btu_start_timer
 asm void btu_start_timer() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -387,6 +390,7 @@ asm void btu_start_timer() {
 // ----------------------------------------------------------------------------
 // btu_stop_timer
 // ----------------------------------------------------------------------------
+// asm_to_cpp: btu_stop_timer
 asm void btu_stop_timer() {
     nofralloc
     lis r5, lbl_80453A50@ha

@@ -18,7 +18,7 @@ def funcs(obj):
     fs = []
     for l in out.splitlines():
         p = l.split()
-        if len(p) == 4 and p[2] in 'Tt':
+        if len(p) == 4 and p[2] in 'TtWw':
             fs.append((p[3], int(p[1], 16)))
     return fs
 

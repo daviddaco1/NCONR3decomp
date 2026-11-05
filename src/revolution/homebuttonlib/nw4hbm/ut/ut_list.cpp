@@ -13,6 +13,7 @@ extern "C" void List_Remove__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv();
 // ----------------------------------------------------------------------------
 // List_Init__Q26nw4hbm2utFPQ36nw4hbm2ut4ListUs
 // ----------------------------------------------------------------------------
+// asm_to_cpp: List_Init__Q26nw4hbm2utFPQ36nw4hbm2ut4ListUs
 extern "C" asm void List_Init__Q26nw4hbm2utFPQ36nw4hbm2ut4ListUs() {
     nofralloc
     li r0, 0x0
@@ -26,6 +27,7 @@ extern "C" asm void List_Init__Q26nw4hbm2utFPQ36nw4hbm2ut4ListUs() {
 // ----------------------------------------------------------------------------
 // List_Append__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: List_Append__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv
 extern "C" asm void List_Append__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv() {
     nofralloc
     lwz r0, 0x0(r3)
@@ -62,6 +64,7 @@ lbl_802FF364:
 // ----------------------------------------------------------------------------
 // List_Remove__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: List_Remove__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv
 extern "C" asm void List_Remove__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv() {
     nofralloc
     lhz r5, 0xa(r3)
@@ -100,6 +103,7 @@ lbl_802FF3EC:
 // ----------------------------------------------------------------------------
 // List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv
 extern "C" asm void List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv() {
     nofralloc
     cmpwi r4, 0x0
@@ -116,6 +120,7 @@ lbl_802FF418:
 // ----------------------------------------------------------------------------
 // List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs
 // ----------------------------------------------------------------------------
+// asm_to_cpp: List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs
 extern "C" asm void List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs() {
     nofralloc
     li r6, 0x0

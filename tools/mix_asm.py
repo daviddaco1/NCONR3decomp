@@ -50,19 +50,28 @@ def strip_def(text, name):
                               text, re.M))
         if ms:
             break
-    if len(ms) != 1:  # ninguna o sobrecargada: no se puede elegir por nombre
+    if not ms:
         return text, None
-    m = ms[0]
-    sig = None if q else text[m.start():m.end() - 1].strip()
-    depth = 0
-    for j in range(m.end() - 1, len(text)):
-        if text[j] == '{':
-            depth += 1
-        elif text[j] == '}':
-            depth -= 1
-            if depth == 0:
-                return text[:m.start()] + f'// {name}: definicion C reemplazada por asm (ver abajo)\n' + text[j + 1:], sig
-    return text, None
+    sig = None
+    for m in reversed(ms):
+        start_pos = m.start()
+        prev_nl = text.rfind('\n', 0, start_pos - 1)
+        line_before = text[prev_nl + 1:start_pos].strip() if prev_nl != -1 else text[:start_pos].strip()
+        if line_before and not any(c in line_before for c in ';}{/#:') and not line_before.startswith('//'):
+            start_pos = prev_nl + 1 if prev_nl != -1 else 0
+        s = None if q else text[start_pos:m.end() - 1].strip()
+        depth = 0
+        for j in range(m.end() - 1, len(text)):
+            if text[j] == '{':
+                depth += 1
+            elif text[j] == '}':
+                depth -= 1
+                if depth == 0:
+                    fwd = (s.replace('static ', '') + ';\n') if s else f'void {name}();\n'
+                    text = text[:start_pos] + f'// {name}: definicion C reemplazada por asm (ver abajo)\n' + (fwd if not q else '') + text[j + 1:]
+                    sig = s
+                    break
+    return text, sig
 
 
 def header_sig(name):
@@ -154,8 +163,10 @@ def main():
             return
         log = re.sub(r'\n#\s{2,}(?![\d(]|Error|In:|File:|-)', '', log)  # mwcc parte identificadores largos
         m = re.search(r"identifier '(\w+)[^']*'\s*(?:#\s*)?redeclared", log)
-        if not m and 'illegal function overloading' in log:
-            m = re.search(r"^#\s+\d+:.*?\b(\w+)\s*\(\)\s*;\s*$", log, re.M)
+        if not m and 'overload' in log:
+            m = re.search(r'extern "C" [^\n]*\b(\w+)\s*\(\)\s*;', log)
+            if not m:
+                m = re.search(r"illegal overloading '(\w+)\(\)'", log)
         u = re.search(r"undefined (?:label|identifier) '(\w+)'", log)
         if m and m.group(1) in names:
             # firma: prototipo en el propio fuente (p. ej. el que deja tools/m2c_pass.py) o en headers

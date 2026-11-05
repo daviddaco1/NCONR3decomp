@@ -63,6 +63,7 @@ extern "C" void strncmp();
 // ----------------------------------------------------------------------------
 // EqualsPaneName__Q36nw4hbm3lyt6detailFPCcPCc
 // ----------------------------------------------------------------------------
+// asm_to_cpp: EqualsPaneName__Q36nw4hbm3lyt6detailFPCcPCc
 extern "C" asm void EqualsPaneName__Q36nw4hbm3lyt6detailFPCcPCc() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -81,6 +82,7 @@ extern "C" asm void EqualsPaneName__Q36nw4hbm3lyt6detailFPCcPCc() {
 // ----------------------------------------------------------------------------
 // EqualsMaterialName__Q36nw4hbm3lyt6detailFPCcPCc
 // ----------------------------------------------------------------------------
+// asm_to_cpp: EqualsMaterialName__Q36nw4hbm3lyt6detailFPCcPCc
 extern "C" asm void EqualsMaterialName__Q36nw4hbm3lyt6detailFPCcPCc() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -99,6 +101,7 @@ extern "C" asm void EqualsMaterialName__Q36nw4hbm3lyt6detailFPCcPCc() {
 // ----------------------------------------------------------------------------
 // TestFileHeader__Q36nw4hbm3lyt6detailFRCQ46nw4hbm3lyt3res16BinaryFileHeader
 // ----------------------------------------------------------------------------
+// asm_to_cpp: TestFileHeader__Q36nw4hbm3lyt6detailFRCQ46nw4hbm3lyt3res16BinaryFileHeader
 extern "C" asm void TestFileHeader__Q36nw4hbm3lyt6detailFRCQ46nw4hbm3lyt3res16BinaryFileHeader() {
     nofralloc
     lhz r0, 0x4(r3)
@@ -117,6 +120,7 @@ lbl_802F2FD0:
 // ----------------------------------------------------------------------------
 // TestFileHeader__Q36nw4hbm3lyt6detailFRCQ46nw4hbm3lyt3res16BinaryFileHeaderUl
 // ----------------------------------------------------------------------------
+// asm_to_cpp: TestFileHeader__Q36nw4hbm3lyt6detailFRCQ46nw4hbm3lyt3res16BinaryFileHeaderUl
 extern "C" asm void TestFileHeader__Q36nw4hbm3lyt6detailFRCQ46nw4hbm3lyt3res16BinaryFileHeaderUl() {
     nofralloc
     lwz r0, 0x0(r3)
@@ -138,6 +142,7 @@ lbl_802F3004:
 // ----------------------------------------------------------------------------
 // __ct__Q46nw4hbm3lyt6detail11TexCoordAryFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __ct__Q46nw4hbm3lyt6detail11TexCoordAryFv
 extern "C" asm void __ct__Q46nw4hbm3lyt6detail11TexCoordAryFv() {
     nofralloc
     li r0, 0x0
@@ -150,6 +155,7 @@ extern "C" asm void __ct__Q46nw4hbm3lyt6detail11TexCoordAryFv() {
 // ----------------------------------------------------------------------------
 // Free__Q46nw4hbm3lyt6detail11TexCoordAryFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Free__Q46nw4hbm3lyt6detail11TexCoordAryFv
 extern "C" asm void Free__Q46nw4hbm3lyt6detail11TexCoordAryFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -178,6 +184,7 @@ lbl_802F305C:
 // ----------------------------------------------------------------------------
 // Reserve__Q46nw4hbm3lyt6detail11TexCoordAryFUc
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Reserve__Q46nw4hbm3lyt6detail11TexCoordAryFUc
 extern "C" asm void Reserve__Q46nw4hbm3lyt6detail11TexCoordAryFUc() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -221,6 +228,7 @@ lbl_802F30E0:
 // ----------------------------------------------------------------------------
 // SetSize__Q46nw4hbm3lyt6detail11TexCoordAryFUc
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetSize__Q46nw4hbm3lyt6detail11TexCoordAryFUc
 extern "C" asm void SetSize__Q46nw4hbm3lyt6detail11TexCoordAryFUc() {
     nofralloc
     lwz r0, 0x4(r3)
@@ -293,6 +301,7 @@ lbl_802F31E8:
 // ----------------------------------------------------------------------------
 // Copy__Q46nw4hbm3lyt6detail11TexCoordAryFPCvUc
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Copy__Q46nw4hbm3lyt6detail11TexCoordAryFPCvUc
 extern "C" asm void Copy__Q46nw4hbm3lyt6detail11TexCoordAryFPCvUc() {
     nofralloc
     lbz r0, 0x1(r3)
@@ -339,6 +348,7 @@ lbl_802F3214:
 // ----------------------------------------------------------------------------
 // IsModulateVertexColor__Q36nw4hbm3lyt6detailFPQ36nw4hbm2ut5ColorUc
 // ----------------------------------------------------------------------------
+// asm_to_cpp: IsModulateVertexColor__Q36nw4hbm3lyt6detailFPQ36nw4hbm2ut5ColorUc
 extern "C" asm void IsModulateVertexColor__Q36nw4hbm3lyt6detailFPQ36nw4hbm2ut5ColorUc() {
     nofralloc
     cmplwi r4, 0xff
@@ -375,6 +385,7 @@ lbl_802F32E4:
 // ----------------------------------------------------------------------------
 // fn_802F32EC
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802F32EC
 extern "C" asm void fn_802F32EC() {
     nofralloc
     lbz r8, 0x0(r4)
@@ -403,6 +414,7 @@ extern "C" asm void fn_802F32EC() {
 // ----------------------------------------------------------------------------
 // SetVertexFormat__Q36nw4hbm3lyt6detailFbUc
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetVertexFormat__Q36nw4hbm3lyt6detailFbUc
 extern "C" asm void SetVertexFormat__Q36nw4hbm3lyt6detailFbUc() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -473,6 +485,7 @@ lbl_802F3400:
 // ----------------------------------------------------------------------------
 // DrawQuad__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeUcPA4_CQ36nw4hbm4math4VEC2PCQ36nw4hbm2ut5Color
 // ----------------------------------------------------------------------------
+// asm_to_cpp: DrawQuad__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeUcPA4_CQ36nw4hbm4math4VEC2PCQ36nw4hbm2ut5Color
 extern "C" asm void DrawQuad__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeUcPA4_CQ36nw4hbm4math4VEC2PCQ36nw4hbm2ut5Color() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -848,6 +861,7 @@ lbl_802F396C:
 // ----------------------------------------------------------------------------
 // fn_802F3984
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802F3984
 extern "C" asm void fn_802F3984() {
     nofralloc
     stwu r1, -0x50(r1)
@@ -919,6 +933,7 @@ lbl_802F3A3C:
 // ----------------------------------------------------------------------------
 // fn_802F3A7C
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802F3A7C
 extern "C" asm void fn_802F3A7C() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1034,6 +1049,7 @@ extern "C" asm void fn_802F3A7C() {
 // ----------------------------------------------------------------------------
 // InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl
 // ----------------------------------------------------------------------------
+// asm_to_cpp: InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl
 extern "C" asm void InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl() {
     nofralloc
     stwu r1, -0x30(r1)

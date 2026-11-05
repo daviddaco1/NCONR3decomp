@@ -15,6 +15,7 @@ extern "C" void dtor_80136CFC();
 // ----------------------------------------------------------------------------
 // __ct__Q210homebutton18GroupAnmControllerFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __ct__Q210homebutton18GroupAnmControllerFv
 extern "C" asm void __ct__Q210homebutton18GroupAnmControllerFv() {
     nofralloc
     lis r4, lbl_8037B290@ha
@@ -29,6 +30,7 @@ extern "C" asm void __ct__Q210homebutton18GroupAnmControllerFv() {
 // ----------------------------------------------------------------------------
 // __dt__Q210homebutton18GroupAnmControllerFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q210homebutton18GroupAnmControllerFv
 extern "C" asm void __dt__Q210homebutton18GroupAnmControllerFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -53,6 +55,7 @@ lbl_802E64B4:
 // ----------------------------------------------------------------------------
 // do_calc__Q210homebutton18GroupAnmControllerFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: do_calc__Q210homebutton18GroupAnmControllerFv
 extern "C" asm void do_calc__Q210homebutton18GroupAnmControllerFv() {
     nofralloc
     stwu r1, -0x20(r1)

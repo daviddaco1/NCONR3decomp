@@ -35,6 +35,7 @@ extern "C" void strncpy();
 // ----------------------------------------------------------------------------
 // fn_802F2A68
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802F2A68
 extern "C" asm void fn_802F2A68() {
     nofralloc
     stwu r1, -0x40(r1)
@@ -101,6 +102,7 @@ lbl_802F2B18:
 // ----------------------------------------------------------------------------
 // fn_802F2B44
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802F2B44
 extern "C" asm void fn_802F2B44() {
     nofralloc
     stwu r1, -0x40(r1)
@@ -196,6 +198,7 @@ lbl_802F2C74:
 // ----------------------------------------------------------------------------
 // fn_802F2C8C
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802F2C8C
 extern "C" asm void fn_802F2C8C() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -226,6 +229,7 @@ extern "C" asm void fn_802F2C8C() {
 // ----------------------------------------------------------------------------
 // Attach__Q36nw4hbm3lyt19ArcResourceAccessorFPvPCc
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Attach__Q36nw4hbm3lyt19ArcResourceAccessorFPvPCc
 extern "C" asm void Attach__Q36nw4hbm3lyt19ArcResourceAccessorFPvPCc() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -266,6 +270,7 @@ lbl_802F2D48:
 // ----------------------------------------------------------------------------
 // GetResource__Q36nw4hbm3lyt19ArcResourceAccessorFUlPCcPUl
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetResource__Q36nw4hbm3lyt19ArcResourceAccessorFUlPCcPUl
 extern "C" asm void GetResource__Q36nw4hbm3lyt19ArcResourceAccessorFUlPCcPUl() {
     nofralloc
     mr r8, r4
@@ -281,6 +286,7 @@ extern "C" asm void GetResource__Q36nw4hbm3lyt19ArcResourceAccessorFUlPCcPUl() {
 // ----------------------------------------------------------------------------
 // GetFont__Q36nw4hbm3lyt19ArcResourceAccessorFPCc
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetFont__Q36nw4hbm3lyt19ArcResourceAccessorFPCc
 extern "C" asm void GetFont__Q36nw4hbm3lyt19ArcResourceAccessorFPCc() {
     nofralloc
     stwu r1, -0x20(r1)

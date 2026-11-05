@@ -70,6 +70,7 @@ extern "C" void memcpy();
 // ----------------------------------------------------------------------------
 // __ct__Q44nw4r3snd6detail10BasicSoundFii
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __ct__Q44nw4r3snd6detail10BasicSoundFii
 extern "C" asm void __ct__Q44nw4r3snd6detail10BasicSoundFii() {
     nofralloc
     lfs f0, lbl_804A204C
@@ -132,6 +133,7 @@ extern "C" asm void __ct__Q44nw4r3snd6detail10BasicSoundFii() {
 // ----------------------------------------------------------------------------
 // InitParam__Q44nw4r3snd6detail10BasicSoundFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: InitParam__Q44nw4r3snd6detail10BasicSoundFv
 extern "C" asm void InitParam__Q44nw4r3snd6detail10BasicSoundFv() {
     nofralloc
     li r0, 0x0
@@ -227,6 +229,7 @@ lbl_80208A78:
 // ----------------------------------------------------------------------------
 // StartPrepared__Q44nw4r3snd6detail10BasicSoundFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: StartPrepared__Q44nw4r3snd6detail10BasicSoundFv
 extern "C" asm void StartPrepared__Q44nw4r3snd6detail10BasicSoundFv() {
     nofralloc
     lbz r0, 0x81(r3)
@@ -240,6 +243,7 @@ extern "C" asm void StartPrepared__Q44nw4r3snd6detail10BasicSoundFv() {
 // ----------------------------------------------------------------------------
 // Stop__Q44nw4r3snd6detail10BasicSoundFi
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Stop__Q44nw4r3snd6detail10BasicSoundFi
 extern "C" asm void Stop__Q44nw4r3snd6detail10BasicSoundFi() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -377,6 +381,7 @@ lbl_80208CBC:
 // ----------------------------------------------------------------------------
 // Pause__Q44nw4r3snd6detail10BasicSoundFbi
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Pause__Q44nw4r3snd6detail10BasicSoundFbi
 extern "C" asm void Pause__Q44nw4r3snd6detail10BasicSoundFbi() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -552,6 +557,7 @@ lbl_80208F34:
 // ----------------------------------------------------------------------------
 // fn_80208F3C
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80208F3C
 extern "C" asm void fn_80208F3C() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -629,6 +635,7 @@ lbl_80209038:
 // ----------------------------------------------------------------------------
 // fn_80209040
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80209040
 extern "C" asm void fn_80209040() {
     nofralloc
     lwz r0, 0x84(r3)
@@ -644,6 +651,7 @@ extern "C" asm void fn_80209040() {
 // ----------------------------------------------------------------------------
 // Update__Q44nw4r3snd6detail10BasicSoundFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Update__Q44nw4r3snd6detail10BasicSoundFv
 extern "C" asm void Update__Q44nw4r3snd6detail10BasicSoundFv() {
     nofralloc
     stwu r1, -0xa0(r1)
@@ -1089,6 +1097,7 @@ lbl_802096A0:
 // ----------------------------------------------------------------------------
 // UpdateMoveValue__Q44nw4r3snd6detail10BasicSoundFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: UpdateMoveValue__Q44nw4r3snd6detail10BasicSoundFv
 extern "C" asm void UpdateMoveValue__Q44nw4r3snd6detail10BasicSoundFv() {
     nofralloc
     lwz r4, 0x6c(r3)
@@ -1110,6 +1119,7 @@ lbl_802096D4:
 // ----------------------------------------------------------------------------
 // UpdateParam__Q44nw4r3snd6detail10BasicSoundFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: UpdateParam__Q44nw4r3snd6detail10BasicSoundFv
 extern "C" asm void UpdateParam__Q44nw4r3snd6detail10BasicSoundFv() {
     nofralloc
     stwu r1, -0xd0(r1)
@@ -1374,6 +1384,7 @@ lbl_80209A54:
 // ----------------------------------------------------------------------------
 // Shutdown__Q44nw4r3snd6detail10BasicSoundFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Shutdown__Q44nw4r3snd6detail10BasicSoundFv
 extern "C" asm void Shutdown__Q44nw4r3snd6detail10BasicSoundFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1481,6 +1492,7 @@ lbl_80209C14:
 // ----------------------------------------------------------------------------
 // AttachPlayerHeap__Q44nw4r3snd6detail10BasicSoundFPQ44nw4r3snd6detail10PlayerHeap
 // ----------------------------------------------------------------------------
+// asm_to_cpp: AttachPlayerHeap__Q44nw4r3snd6detail10BasicSoundFPQ44nw4r3snd6detail10PlayerHeap
 extern "C" asm void AttachPlayerHeap__Q44nw4r3snd6detail10BasicSoundFPQ44nw4r3snd6detail10PlayerHeap() {
     nofralloc
     stw r4, 0x4(r3)
@@ -1490,6 +1502,7 @@ extern "C" asm void AttachPlayerHeap__Q44nw4r3snd6detail10BasicSoundFPQ44nw4r3sn
 // ----------------------------------------------------------------------------
 // DetachPlayerHeap__Q44nw4r3snd6detail10BasicSoundFPQ44nw4r3snd6detail10PlayerHeap
 // ----------------------------------------------------------------------------
+// asm_to_cpp: DetachPlayerHeap__Q44nw4r3snd6detail10BasicSoundFPQ44nw4r3snd6detail10PlayerHeap
 extern "C" asm void DetachPlayerHeap__Q44nw4r3snd6detail10BasicSoundFPQ44nw4r3snd6detail10PlayerHeap() {
     nofralloc
     li r0, 0x0
@@ -1500,6 +1513,7 @@ extern "C" asm void DetachPlayerHeap__Q44nw4r3snd6detail10BasicSoundFPQ44nw4r3sn
 // ----------------------------------------------------------------------------
 // AttachSoundPlayer__Q44nw4r3snd6detail10BasicSoundFPQ34nw4r3snd11SoundPlayer
 // ----------------------------------------------------------------------------
+// asm_to_cpp: AttachSoundPlayer__Q44nw4r3snd6detail10BasicSoundFPQ34nw4r3snd11SoundPlayer
 extern "C" asm void AttachSoundPlayer__Q44nw4r3snd6detail10BasicSoundFPQ34nw4r3snd11SoundPlayer() {
     nofralloc
     stw r4, 0x10(r3)
@@ -1509,6 +1523,7 @@ extern "C" asm void AttachSoundPlayer__Q44nw4r3snd6detail10BasicSoundFPQ34nw4r3s
 // ----------------------------------------------------------------------------
 // DetachSoundPlayer__Q44nw4r3snd6detail10BasicSoundFPQ34nw4r3snd11SoundPlayer
 // ----------------------------------------------------------------------------
+// asm_to_cpp: DetachSoundPlayer__Q44nw4r3snd6detail10BasicSoundFPQ34nw4r3snd11SoundPlayer
 extern "C" asm void DetachSoundPlayer__Q44nw4r3snd6detail10BasicSoundFPQ34nw4r3snd11SoundPlayer() {
     nofralloc
     li r0, 0x0
@@ -1519,6 +1534,7 @@ extern "C" asm void DetachSoundPlayer__Q44nw4r3snd6detail10BasicSoundFPQ34nw4r3s
 // ----------------------------------------------------------------------------
 // AttachSoundActor__Q44nw4r3snd6detail10BasicSoundFPQ34nw4r3snd10SoundActor
 // ----------------------------------------------------------------------------
+// asm_to_cpp: AttachSoundActor__Q44nw4r3snd6detail10BasicSoundFPQ34nw4r3snd10SoundActor
 extern "C" asm void AttachSoundActor__Q44nw4r3snd6detail10BasicSoundFPQ34nw4r3snd10SoundActor() {
     nofralloc
     stw r4, 0x14(r3)
@@ -1528,6 +1544,7 @@ extern "C" asm void AttachSoundActor__Q44nw4r3snd6detail10BasicSoundFPQ34nw4r3sn
 // ----------------------------------------------------------------------------
 // AttachExternalSoundPlayer__Q44nw4r3snd6detail10BasicSoundFPQ44nw4r3snd6detail19ExternalSoundPlayer
 // ----------------------------------------------------------------------------
+// asm_to_cpp: AttachExternalSoundPlayer__Q44nw4r3snd6detail10BasicSoundFPQ44nw4r3snd6detail19ExternalSoundPlayer
 extern "C" asm void AttachExternalSoundPlayer__Q44nw4r3snd6detail10BasicSoundFPQ44nw4r3snd6detail19ExternalSoundPlayer() {
     nofralloc
     stw r4, 0x18(r3)
@@ -1537,6 +1554,7 @@ extern "C" asm void AttachExternalSoundPlayer__Q44nw4r3snd6detail10BasicSoundFPQ
 // ----------------------------------------------------------------------------
 // DetachExternalSoundPlayer__Q44nw4r3snd6detail10BasicSoundFPQ44nw4r3snd6detail19ExternalSoundPlayer
 // ----------------------------------------------------------------------------
+// asm_to_cpp: DetachExternalSoundPlayer__Q44nw4r3snd6detail10BasicSoundFPQ44nw4r3snd6detail19ExternalSoundPlayer
 extern "C" asm void DetachExternalSoundPlayer__Q44nw4r3snd6detail10BasicSoundFPQ44nw4r3snd6detail19ExternalSoundPlayer() {
     nofralloc
     li r0, 0x0
@@ -1547,6 +1565,7 @@ extern "C" asm void DetachExternalSoundPlayer__Q44nw4r3snd6detail10BasicSoundFPQ
 // ----------------------------------------------------------------------------
 // GetVoiceOutCount__Q44nw4r3snd6detail10BasicSoundCFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetVoiceOutCount__Q44nw4r3snd6detail10BasicSoundCFv
 extern "C" asm void GetVoiceOutCount__Q44nw4r3snd6detail10BasicSoundCFv() {
     nofralloc
     lbz r3, 0x95(r3)
@@ -1556,6 +1575,7 @@ extern "C" asm void GetVoiceOutCount__Q44nw4r3snd6detail10BasicSoundCFv() {
 // ----------------------------------------------------------------------------
 // SetPlayerPriority__Q44nw4r3snd6detail10BasicSoundFi
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetPlayerPriority__Q44nw4r3snd6detail10BasicSoundFi
 extern "C" asm void SetPlayerPriority__Q44nw4r3snd6detail10BasicSoundFi() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1586,6 +1606,7 @@ lbl_80209CB4:
 // ----------------------------------------------------------------------------
 // OnUpdatePlayerPriority__Q44nw4r3snd6detail10BasicSoundFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: OnUpdatePlayerPriority__Q44nw4r3snd6detail10BasicSoundFv
 extern "C" asm void OnUpdatePlayerPriority__Q44nw4r3snd6detail10BasicSoundFv() {
     nofralloc
     blr
@@ -1594,6 +1615,7 @@ extern "C" asm void OnUpdatePlayerPriority__Q44nw4r3snd6detail10BasicSoundFv() {
 // ----------------------------------------------------------------------------
 // SetInitialVolume__Q44nw4r3snd6detail10BasicSoundFf
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetInitialVolume__Q44nw4r3snd6detail10BasicSoundFf
 extern "C" asm void SetInitialVolume__Q44nw4r3snd6detail10BasicSoundFf() {
     nofralloc
     lfs f0, lbl_804A2048
@@ -1615,6 +1637,7 @@ lbl_80209D04:
 // ----------------------------------------------------------------------------
 // SetVolume__Q44nw4r3snd6detail10BasicSoundFfi
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetVolume__Q44nw4r3snd6detail10BasicSoundFfi
 extern "C" asm void SetVolume__Q44nw4r3snd6detail10BasicSoundFfi() {
     nofralloc
     lfs f5, lbl_804A2048
@@ -1668,6 +1691,7 @@ lbl_80209D94:
 // ----------------------------------------------------------------------------
 // SetPan__Q44nw4r3snd6detail10BasicSoundFf
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetPan__Q44nw4r3snd6detail10BasicSoundFf
 extern "C" asm void SetPan__Q44nw4r3snd6detail10BasicSoundFf() {
     nofralloc
     stfs f1, 0xb8(r3)
@@ -1677,6 +1701,7 @@ extern "C" asm void SetPan__Q44nw4r3snd6detail10BasicSoundFf() {
 // ----------------------------------------------------------------------------
 // fn_80209DB8
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80209DB8
 extern "C" asm void fn_80209DB8() {
     nofralloc
     stfs f1, 0xb0(r3)
@@ -1686,6 +1711,7 @@ extern "C" asm void fn_80209DB8() {
 // ----------------------------------------------------------------------------
 // fn_80209DC0
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80209DC0
 extern "C" asm void fn_80209DC0() {
     nofralloc
     stw r4, 0xc4(r3)
@@ -1695,6 +1721,7 @@ extern "C" asm void fn_80209DC0() {
 // ----------------------------------------------------------------------------
 // fn_80209DC8
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80209DC8
 extern "C" asm void fn_80209DC8() {
     nofralloc
     slwi r0, r4, 2
@@ -1706,6 +1733,7 @@ extern "C" asm void fn_80209DC8() {
 // ----------------------------------------------------------------------------
 // SetRemoteFilter__Q44nw4r3snd6detail10BasicSoundFi
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetRemoteFilter__Q44nw4r3snd6detail10BasicSoundFi
 extern "C" asm void SetRemoteFilter__Q44nw4r3snd6detail10BasicSoundFi() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1729,6 +1757,7 @@ extern "C" asm void SetRemoteFilter__Q44nw4r3snd6detail10BasicSoundFi() {
 // ----------------------------------------------------------------------------
 // SetPanMode__Q44nw4r3snd6detail10BasicSoundFQ34nw4r3snd7PanMode
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetPanMode__Q44nw4r3snd6detail10BasicSoundFQ34nw4r3snd7PanMode
 extern "C" asm void SetPanMode__Q44nw4r3snd6detail10BasicSoundFQ34nw4r3snd7PanMode() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1751,6 +1780,7 @@ extern "C" asm void SetPanMode__Q44nw4r3snd6detail10BasicSoundFQ34nw4r3snd7PanMo
 // ----------------------------------------------------------------------------
 // SetPanCurve__Q44nw4r3snd6detail10BasicSoundFQ34nw4r3snd8PanCurve
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetPanCurve__Q44nw4r3snd6detail10BasicSoundFQ34nw4r3snd8PanCurve
 extern "C" asm void SetPanCurve__Q44nw4r3snd6detail10BasicSoundFQ34nw4r3snd8PanCurve() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1773,6 +1803,7 @@ extern "C" asm void SetPanCurve__Q44nw4r3snd6detail10BasicSoundFQ34nw4r3snd8PanC
 // ----------------------------------------------------------------------------
 // SetAmbientInfo__Q44nw4r3snd6detail10BasicSoundFRCQ54nw4r3snd6detail10BasicSound11AmbientInfo
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetAmbientInfo__Q44nw4r3snd6detail10BasicSoundFRCQ54nw4r3snd6detail10BasicSound11AmbientInfo
 extern "C" asm void SetAmbientInfo__Q44nw4r3snd6detail10BasicSoundFRCQ54nw4r3snd6detail10BasicSound11AmbientInfo() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1833,6 +1864,7 @@ lbl_80209F40:
 // ----------------------------------------------------------------------------
 // fn_80209F5C
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80209F5C
 extern "C" asm void fn_80209F5C() {
     nofralloc
     lwz r0, 0x0(r3)
@@ -1854,6 +1886,7 @@ lbl_80209F74:
 // ----------------------------------------------------------------------------
 // fn_80209F90
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80209F90
 extern "C" asm void fn_80209F90() {
     nofralloc
     blr
@@ -1862,6 +1895,7 @@ extern "C" asm void fn_80209F90() {
 // ----------------------------------------------------------------------------
 // IsAttachedGeneralHandle__Q44nw4r3snd6detail10BasicSoundFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: IsAttachedGeneralHandle__Q44nw4r3snd6detail10BasicSoundFv
 extern "C" asm void IsAttachedGeneralHandle__Q44nw4r3snd6detail10BasicSoundFv() {
     nofralloc
     lwz r3, 0x8(r3)
@@ -1874,6 +1908,7 @@ extern "C" asm void IsAttachedGeneralHandle__Q44nw4r3snd6detail10BasicSoundFv() 
 // ----------------------------------------------------------------------------
 // DetachTempGeneralHandle__Q44nw4r3snd6detail10BasicSoundFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: DetachTempGeneralHandle__Q44nw4r3snd6detail10BasicSoundFv
 extern "C" asm void DetachTempGeneralHandle__Q44nw4r3snd6detail10BasicSoundFv() {
     nofralloc
     lwz r3, 0x8(r3)
@@ -1883,6 +1918,7 @@ extern "C" asm void DetachTempGeneralHandle__Q44nw4r3snd6detail10BasicSoundFv() 
 // ----------------------------------------------------------------------------
 // SetId__Q44nw4r3snd6detail10BasicSoundFUl
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetId__Q44nw4r3snd6detail10BasicSoundFUl
 extern "C" asm void SetId__Q44nw4r3snd6detail10BasicSoundFUl() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1906,6 +1942,7 @@ extern "C" asm void SetId__Q44nw4r3snd6detail10BasicSoundFUl() {
 // ----------------------------------------------------------------------------
 // __dt__Q44nw4r3snd6detail10BasicSoundFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q44nw4r3snd6detail10BasicSoundFv
 extern "C" asm void __dt__Q44nw4r3snd6detail10BasicSoundFv() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1930,6 +1967,7 @@ lbl_8020A018:
 // ----------------------------------------------------------------------------
 // GetRuntimeTypeInfo__Q44nw4r3snd6detail10BasicSoundCFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetRuntimeTypeInfo__Q44nw4r3snd6detail10BasicSoundCFv
 extern "C" asm void GetRuntimeTypeInfo__Q44nw4r3snd6detail10BasicSoundCFv() {
     nofralloc
     la r3, lbl_8049DA30
@@ -1939,6 +1977,7 @@ extern "C" asm void GetRuntimeTypeInfo__Q44nw4r3snd6detail10BasicSoundCFv() {
 // ----------------------------------------------------------------------------
 // fn_8020A038
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8020A038
 extern "C" asm void fn_8020A038() {
     nofralloc
     li r0, 0x0

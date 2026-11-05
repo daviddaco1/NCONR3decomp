@@ -64,6 +64,7 @@ extern "C" void fn_8030CB00();
 // ----------------------------------------------------------------------------
 // __dt__Q36nw4hbm3lyt4PaneFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: __dt__Q36nw4hbm3lyt4PaneFv
 extern "C" asm void __dt__Q36nw4hbm3lyt4PaneFv() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -154,6 +155,7 @@ lbl_802F8474:
 // ----------------------------------------------------------------------------
 // AppendChild__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt4Pane
 // ----------------------------------------------------------------------------
+// asm_to_cpp: AppendChild__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt4Pane
 extern "C" asm void AppendChild__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt4Pane() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -181,6 +183,7 @@ extern "C" asm void AppendChild__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt4Pane() {
 // ----------------------------------------------------------------------------
 // fn_802F84E0
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802F84E0
 extern "C" asm void fn_802F84E0() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -241,6 +244,7 @@ lbl_802F8590:
 // ----------------------------------------------------------------------------
 // GetVtxColor__Q36nw4hbm3lyt4PaneCFUl
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetVtxColor__Q36nw4hbm3lyt4PaneCFUl
 extern "C" asm void GetVtxColor__Q36nw4hbm3lyt4PaneCFUl() {
     nofralloc
     li r0, -0x1
@@ -251,6 +255,7 @@ extern "C" asm void GetVtxColor__Q36nw4hbm3lyt4PaneCFUl() {
 // ----------------------------------------------------------------------------
 // SetVtxColor__Q36nw4hbm3lyt4PaneFUlQ36nw4hbm2ut5Color
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetVtxColor__Q36nw4hbm3lyt4PaneFUlQ36nw4hbm2ut5Color
 extern "C" asm void SetVtxColor__Q36nw4hbm3lyt4PaneFUlQ36nw4hbm2ut5Color() {
     nofralloc
     blr
@@ -259,6 +264,7 @@ extern "C" asm void SetVtxColor__Q36nw4hbm3lyt4PaneFUlQ36nw4hbm2ut5Color() {
 // ----------------------------------------------------------------------------
 // GetColorElement__Q36nw4hbm3lyt4PaneCFUl
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetColorElement__Q36nw4hbm3lyt4PaneCFUl
 extern "C" asm void GetColorElement__Q36nw4hbm3lyt4PaneCFUl() {
     nofralloc
     cmpwi r4, 0x10
@@ -277,6 +283,7 @@ lbl_802F85D4:
 // ----------------------------------------------------------------------------
 // fn_802F85E4
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802F85E4
 extern "C" asm void fn_802F85E4() {
     nofralloc
     blr
@@ -285,6 +292,7 @@ extern "C" asm void fn_802F85E4() {
 // ----------------------------------------------------------------------------
 // SetColorElement__Q36nw4hbm3lyt4PaneFUlUc
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetColorElement__Q36nw4hbm3lyt4PaneFUlUc
 extern "C" asm void SetColorElement__Q36nw4hbm3lyt4PaneFUlUc() {
     nofralloc
     cmpwi r4, 0x10
@@ -303,6 +311,7 @@ lbl_802F85FC:
 // ----------------------------------------------------------------------------
 // fn_802F860C
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802F860C
 extern "C" asm void fn_802F860C() {
     nofralloc
     blr
@@ -311,6 +320,7 @@ extern "C" asm void fn_802F860C() {
 // ----------------------------------------------------------------------------
 // GetVtxColorElement__Q36nw4hbm3lyt4PaneCFUl
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetVtxColorElement__Q36nw4hbm3lyt4PaneCFUl
 extern "C" asm void GetVtxColorElement__Q36nw4hbm3lyt4PaneCFUl() {
     nofralloc
     li r3, 0xff
@@ -320,6 +330,7 @@ extern "C" asm void GetVtxColorElement__Q36nw4hbm3lyt4PaneCFUl() {
 // ----------------------------------------------------------------------------
 // SetVtxColorElement__Q36nw4hbm3lyt4PaneFUlUc
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetVtxColorElement__Q36nw4hbm3lyt4PaneFUlUc
 extern "C" asm void SetVtxColorElement__Q36nw4hbm3lyt4PaneFUlUc() {
     nofralloc
     blr
@@ -328,6 +339,7 @@ extern "C" asm void SetVtxColorElement__Q36nw4hbm3lyt4PaneFUlUc() {
 // ----------------------------------------------------------------------------
 // FindPaneByName__Q36nw4hbm3lyt4PaneFPCcb
 // ----------------------------------------------------------------------------
+// asm_to_cpp: FindPaneByName__Q36nw4hbm3lyt4PaneFPCcb
 extern "C" asm void FindPaneByName__Q36nw4hbm3lyt4PaneFPCcb() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -384,6 +396,7 @@ lbl_802F86A8:
 // ----------------------------------------------------------------------------
 // FindMaterialByName__Q36nw4hbm3lyt4PaneFPCcb
 // ----------------------------------------------------------------------------
+// asm_to_cpp: FindMaterialByName__Q36nw4hbm3lyt4PaneFPCcb
 extern "C" asm void FindMaterialByName__Q36nw4hbm3lyt4PaneFPCcb() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -443,6 +456,7 @@ lbl_802F8760:
 // ----------------------------------------------------------------------------
 // CalculateMtx__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo
 // ----------------------------------------------------------------------------
+// asm_to_cpp: CalculateMtx__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo
 extern "C" asm void CalculateMtx__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo() {
     nofralloc
     stwu r1, -0xe0(r1)
@@ -654,6 +668,7 @@ lbl_802F8A60:
 // ----------------------------------------------------------------------------
 // Draw__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Draw__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo
 extern "C" asm void Draw__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -697,6 +712,7 @@ lbl_802F8AE8:
 // ----------------------------------------------------------------------------
 // fn_802F8B04
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802F8B04
 extern "C" asm void fn_802F8B04() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -736,6 +752,7 @@ lbl_802F8B6C:
 // ----------------------------------------------------------------------------
 // Animate__Q36nw4hbm3lyt4PaneFUl
 // ----------------------------------------------------------------------------
+// asm_to_cpp: Animate__Q36nw4hbm3lyt4PaneFUl
 extern "C" asm void Animate__Q36nw4hbm3lyt4PaneFUl() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -782,6 +799,7 @@ lbl_802F8BF0:
 // ----------------------------------------------------------------------------
 // AnimateSelf__Q36nw4hbm3lyt4PaneFUl
 // ----------------------------------------------------------------------------
+// asm_to_cpp: AnimateSelf__Q36nw4hbm3lyt4PaneFUl
 extern "C" asm void AnimateSelf__Q36nw4hbm3lyt4PaneFUl() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -839,6 +857,7 @@ lbl_802F8CA0:
 // ----------------------------------------------------------------------------
 // BindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformb
 // ----------------------------------------------------------------------------
+// asm_to_cpp: BindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformb
 extern "C" asm void BindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformb() {
     nofralloc
     lwz r12, 0x0(r4)
@@ -853,6 +872,7 @@ extern "C" asm void BindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransf
 // ----------------------------------------------------------------------------
 // UnbindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformb
 // ----------------------------------------------------------------------------
+// asm_to_cpp: UnbindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformb
 extern "C" asm void UnbindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformb() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -899,6 +919,7 @@ lbl_802F8D4C:
 // ----------------------------------------------------------------------------
 // UnbindAllAnimation__Q36nw4hbm3lyt4PaneFb
 // ----------------------------------------------------------------------------
+// asm_to_cpp: UnbindAllAnimation__Q36nw4hbm3lyt4PaneFb
 extern "C" asm void UnbindAllAnimation__Q36nw4hbm3lyt4PaneFb() {
     nofralloc
     lwz r12, 0x0(r3)
@@ -912,6 +933,7 @@ extern "C" asm void UnbindAllAnimation__Q36nw4hbm3lyt4PaneFb() {
 // ----------------------------------------------------------------------------
 // UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform
 // ----------------------------------------------------------------------------
+// asm_to_cpp: UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform
 extern "C" asm void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -963,6 +985,7 @@ lbl_802F8E04:
 // ----------------------------------------------------------------------------
 // AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink
 // ----------------------------------------------------------------------------
+// asm_to_cpp: AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink
 extern "C" asm void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -983,6 +1006,7 @@ extern "C" asm void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13Animati
 // ----------------------------------------------------------------------------
 // FindAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform
 // ----------------------------------------------------------------------------
+// asm_to_cpp: FindAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform
 extern "C" asm void FindAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1023,6 +1047,7 @@ lbl_802F8EB8:
 // ----------------------------------------------------------------------------
 // SetAnimationEnable__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformbb
 // ----------------------------------------------------------------------------
+// asm_to_cpp: SetAnimationEnable__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformbb
 extern "C" asm void SetAnimationEnable__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformbb() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1081,6 +1106,7 @@ lbl_802F8F70:
 // ----------------------------------------------------------------------------
 // LoadMtx__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo
 // ----------------------------------------------------------------------------
+// asm_to_cpp: LoadMtx__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo
 extern "C" asm void LoadMtx__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo() {
     nofralloc
     stwu r1, -0x40(r1)
@@ -1158,6 +1184,7 @@ lbl_802F906C:
 // ----------------------------------------------------------------------------
 // fn_802F9090
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802F9090
 extern "C" asm void fn_802F9090() {
     nofralloc
     lis r4, 0x5555
@@ -1239,6 +1266,7 @@ lbl_802F9180:
 // ----------------------------------------------------------------------------
 // GetMaterial__Q36nw4hbm3lyt4PaneCFv
 // ----------------------------------------------------------------------------
+// asm_to_cpp: GetMaterial__Q36nw4hbm3lyt4PaneCFv
 extern "C" asm void GetMaterial__Q36nw4hbm3lyt4PaneCFv() {
     nofralloc
     lwz r3, 0x28(r3)
@@ -1248,6 +1276,7 @@ extern "C" asm void GetMaterial__Q36nw4hbm3lyt4PaneCFv() {
 // ----------------------------------------------------------------------------
 // fn_802F9198
 // ----------------------------------------------------------------------------
+// asm_to_cpp: fn_802F9198
 extern "C" asm void fn_802F9198() {
     nofralloc
     li r0, 0x0

@@ -936,9 +936,35 @@ revolution/ndevexi2ad/unk_801A9044.c:
 nw4r/ef/ef_draworder.cpp:
 	.text       start:0x801A9610 end:0x801A971C
 
-nw4r/ef/unk_801A971C.cpp:
-	.text       start:0x801A971C end:0x801BA190
-	.ctors      start:0x803394EC end:0x803394F8
+nw4r/ef/ef_effect.cpp:
+	.text       start:0x801A971C end:0x801AA3E0
+
+nw4r/ef/ef_effectsystem.cpp:
+	.text       start:0x801AA3E0 end:0x801AADB4
+	.ctors      start:0x803394EC end:0x803394F0
+
+nw4r/ef/ef_emitter.cpp:
+	.text       start:0x801AADB4 end:0x801ACFE0
+
+nw4r/ef/ef_animcurve.cpp:
+	.text       start:0x801ACFE0 end:0x801B5504
+
+nw4r/ef/ef_particle.cpp:
+	.text       start:0x801B5504 end:0x801B6324
+
+nw4r/ef/ef_particlemanager.cpp:
+	.text       start:0x801B6324 end:0x801B865C
+
+nw4r/ef/ef_resource.cpp:
+	.text       start:0x801B865C end:0x801B920C
+	.ctors      start:0x803394F0 end:0x803394F4
+
+nw4r/ef/ef_memorymanager.cpp:
+	.text       start:0x801B920C end:0x801B9BF4
+	.ctors      start:0x803394F4 end:0x803394F8
+
+nw4r/ef/ef_util.cpp:
+	.text       start:0x801B9BF4 end:0x801BA190
 
 nw4r/ef/ef_handle.cpp:
 	.text       start:0x801BA190 end:0x801BA248
@@ -950,9 +976,30 @@ nw4r/ef/unk_801BA248.cpp:
 nw4r/ef/drawstrategy/ef_drawstrategybuilder.cpp:
 	.text       start:0x801BEAF8 end:0x801BEE9C
 
-nw4r/ef/drawstrategy/unk_801BEE9C.cpp:
-	.text       start:0x801BEE9C end:0x801CEAA8
+nw4r/ef/drawstrategy/ef_drawstrategyimpl.cpp:
+	.text       start:0x801BEE9C end:0x801C117C
 	.ctors      start:0x803394FC end:0x80339500
+
+nw4r/ef/drawstrategy/ef_drawbillboardstrategy.cpp:
+	.text       start:0x801C117C end:0x801C3218
+
+nw4r/ef/drawstrategy/ef_drawdirectionalstrategy.cpp:
+	.text       start:0x801C3218 end:0x801C53E8
+
+nw4r/ef/drawstrategy/ef_drawfreestrategy.cpp:
+	.text       start:0x801C53E8 end:0x801C5DC8
+
+nw4r/ef/drawstrategy/ef_drawlinestrategy.cpp:
+	.text       start:0x801C5DC8 end:0x801C63A8
+
+nw4r/ef/drawstrategy/ef_drawpointstrategy.cpp:
+	.text       start:0x801C63A8 end:0x801C67F8
+
+nw4r/ef/drawstrategy/ef_drawstripestrategy.cpp:
+	.text       start:0x801C67F8 end:0x801C9DAC
+
+nw4r/ef/drawstrategy/ef_drawsmoothstripestrategy.cpp:
+	.text       start:0x801C9DAC end:0x801CEAA8
 
 nw4r/g3d/res/g3d_resdict.cpp:
 	.text       start:0x801CEAA8 end:0x801CEDA8
@@ -1205,19 +1252,19 @@ nw4r/snd/snd_DisposeCallbackManager.cpp:
 nw4r/snd/snd_DvdSoundArchive.cpp:
 	.text       start:0x8020B778 end:0x8020BD8C
 
-nw4r/snd/unk_8020BD8C.cpp:
+nw4r/snd/snd_FxDelay.cpp:
 	.text       start:0x8020BD8C end:0x8020C574
 
 nw4r/snd/snd_FrameHeap.cpp:
 	.text       start:0x8020C574 end:0x8020CCD0
 
-nw4r/snd/unk_8020CCD0.cpp:
+nw4r/snd/snd_FxChorus.cpp:
 	.text       start:0x8020CCD0 end:0x8020D0BC
 
 nw4r/snd/snd_FxReverbHi.cpp:
 	.text       start:0x8020D0BC end:0x8020D488
 
-nw4r/snd/unk_8020D488.cpp:
+nw4r/snd/snd_FxReverbHiDpl2.cpp:
 	.text       start:0x8020D488 end:0x8020DF40
 
 nw4r/snd/snd_InstancePool.cpp:
@@ -1415,8 +1462,11 @@ gamespy/common/unk_802581B4.c:
 gamespy/GP/gp.c:
 	.text       start:0x802581C4 end:0x802590E8
 
-gamespy/GP/unk_802590E8.c:
-	.text       start:0x802590E8 end:0x8025BA74
+gamespy/GP/gpi.c:
+	.text       start:0x802590E8 end:0x80259AE4
+
+gamespy/GP/gpiBuddy.c:
+	.text       start:0x80259AE4 end:0x8025BA74
 
 gamespy/GP/gpiBuffer.c:
 	.text       start:0x8025BA74 end:0x8025C4A8
@@ -1442,8 +1492,14 @@ gamespy/GP/gpiPeer.c:
 gamespy/GP/gpiProfile.c:
 	.text       start:0x80262938 end:0x80263228
 
-gamespy/GP/unk_80263228.c:
-	.text       start:0x80263228 end:0x80265D94
+gamespy/GP/gpiSearch.c:
+	.text       start:0x80263228 end:0x80265A54
+
+gamespy/GP/gpiTransfer.c:
+	.text       start:0x80265A54 end:0x80265B3C
+
+gamespy/GP/gpiUnique.c:
+	.text       start:0x80265B3C end:0x80265D94
 
 gamespy/GP/gpiUtility.c:
 	.text       start:0x80265D94 end:0x80266454
@@ -1463,7 +1519,7 @@ gamespy/gt2/gt2Connection.c:
 gamespy/gt2/gt2Main.c:
 	.text       start:0x80267910 end:0x80267D1C
 
-gamespy/gt2/unk_80267D1C.c:
+gamespy/gt2/gt2Message.c:
 	.text       start:0x80267D1C end:0x8026AE18
 
 gamespy/gt2/gt2Socket.c:
@@ -1514,8 +1570,11 @@ gamespy/gstats/unk_80274A58.c:
 gamespy/gstats/gstats.c:
 	.text       start:0x802775F4 end:0x80279FD0
 
-gamespy/natneg/unk_80279FD0.c:
-	.text       start:0x80279FD0 end:0x8027C088
+gamespy/natneg/NATify.c:
+	.text       start:0x80279FD0 end:0x8027A810
+
+gamespy/natneg/natneg.c:
+	.text       start:0x8027A810 end:0x8027C088
 
 gamespy/serverbrowsing/sb_crypt.c:
 	.text       start:0x8027C088 end:0x8027C4BC
@@ -1529,7 +1588,7 @@ gamespy/serverbrowsing/sb_server.c:
 gamespy/serverbrowsing/sb_serverbrowsing.c:
 	.text       start:0x8027DCC4 end:0x8027E4D8
 
-gamespy/serverbrowsing/unk_8027E4D8.c:
+gamespy/serverbrowsing/sb_serverlist.c:
 	.text       start:0x8027E4D8 end:0x80281C68
 
 revolution/vi/vi.c:
@@ -2077,7 +2136,7 @@ revolution/nand/NANDLogging.c:
 OS/OSFPRInit.c:
 	.text       start:0x80312A54 end:0x80312B7C
 
-OS/unk_80312B7C.c:
+OS/OS.c:
 	.text       start:0x80312B7C end:0x80313E58
 
 OS/OSPSInit.c:
