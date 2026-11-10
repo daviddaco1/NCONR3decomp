@@ -5,80 +5,22 @@
 namespace nw4r {
 namespace ef {
 
-Emitter::Emitter() : mActivityList(offsetof(ParticleManager, mActivityLink)) {}
+// __ct__Q34nw4r2ef7EmitterFv: definicion C reemplazada por asm (ver abajo)
+
 
 Emitter::~Emitter() {}
 
-u32 Emitter::RetireParticleAll() {
-    u32 num = 0;
-    void* pArray[NW4R_EF_MAX_PARTICLEMANAGER];
+// RetireParticleAll__Q34nw4r2ef7EmitterFv: definicion C reemplazada por asm (ver abajo)
 
-    u16 size = UtlistToArray(&mActivityList.mActiveList, pArray,
-                             UtlistSize(&mActivityList.mActiveList));
 
-    for (u16 i = 0; i < size; i++) {
-        ParticleManager* pManager =
-            reinterpret_cast<ParticleManager*>(pArray[i]);
+// SendClosing__Q34nw4r2ef7EmitterFv: definicion C reemplazada por asm (ver abajo)
 
-        num += pManager->RetireParticleAll();
-    }
 
-    return num;
-}
+// DestroyFunc__Q34nw4r2ef7EmitterFv: definicion C reemplazada por asm (ver abajo)
 
-void Emitter::SendClosing() {
-    mManagerEF->Closing(this);
-}
 
-void Emitter::DestroyFunc() {
-    void* pArray[NW4R_EF_MAX_EMITTER];
+// Closing__Q34nw4r2ef7EmitterFPQ34nw4r2ef15ParticleManager: definicion C reemplazada por asm (ver abajo)
 
-    if (mForm != NULL) {
-        mForm = NULL;
-    }
-
-    if (mParameter.mComFlags & EmitterDesc::CMN_FLAG_SYNC_LIFE) {
-        RetireParticleAll();
-    }
-
-    RetireParticleManagerAll();
-
-    if (mParameter.mComFlags & EmitterDesc::CMN_FLAG_SYNC_LIFE) {
-        u16 size =
-            UtlistToArray(&mManagerEF->mActivityList.mActiveList, pArray,
-                          UtlistSize(&mManagerEF->mActivityList.mActiveList));
-
-        for (u16 i = 0; i < size; i++) {
-            Emitter* pEmitter = reinterpret_cast<Emitter*>(pArray[i]);
-
-            for (Emitter* pIt = pEmitter->mParent; pIt != NULL;
-                 pIt = pIt->mParent) {
-
-                if (pIt != this) {
-                    continue;
-                }
-
-                pEmitter->RetireParticleAll();
-
-                if (pEmitter->mLifeStatus == NW4R_EF_LS_ACTIVE) {
-                    mManagerEF->RetireEmitter(pEmitter);
-                }
-
-                break;
-            }
-        }
-    }
-}
-
-bool Emitter::Closing(ParticleManager* pManager) {
-    mManagerEF->ParticleManagerRemove(pManager);
-    pManager->mManagerEM->UnRef();
-
-    mActivityList.ToClosing(pManager);
-    pManager->ChangeLifeStatus(NW4R_EF_LS_CLOSING);
-
-    return true;
-}
 
 u32 Emitter::RetireParticleManager(ParticleManager* pManager) {
     if (pManager->GetLifeStatus() != NW4R_EF_LS_ACTIVE) {
@@ -1126,14 +1068,24 @@ extern "C" float lbl_804A1728;
 extern "C" float lbl_804A172C;
 extern "C" float lbl_804A1730;
 extern "C" u8 lbl_803604A8[];
+extern "C" void Closing__Q34nw4r2ef6EffectFPQ34nw4r2ef7Emitter();
+extern "C" void Closing__Q34nw4r2ef7EmitterFPQ34nw4r2ef15ParticleManager();
+extern "C" void DestroyFunc__Q34nw4r2ef7EmitterFv();
 extern "C" void ForeachEmitterFrom__Q34nw4r2ef6EffectFPFPvUl_vUlbPQ34nw4r2ef7Emitter();
 extern "C" void FrSqrt__Q24nw4r4mathFf();
 extern "C" void Initialize__Q34nw4r2ef8ResourceFv();
 extern "C" void List_Append__Q24nw4r2utFPQ34nw4r2ut4ListPv();
 extern "C" void List_GetNext__Q24nw4r2utFPCQ34nw4r2ut4ListPCv();
 extern "C" void List_Init__Q24nw4r2utFPQ34nw4r2ut4ListUs();
+extern "C" void List_Remove__Q24nw4r2utFPQ34nw4r2ut4ListPv();
 extern "C" void MTX34Trans__Q24nw4r4mathFPQ34nw4r4math5MTX34PCQ34nw4r4math5MTX34PCQ34nw4r4math4VEC3();
+extern "C" void MtxGetTranslate__Q24nw4r2efFRCQ34nw4r4math5MTX34PQ34nw4r4math4VEC3();
 extern "C" void RetireEmitter__Q34nw4r2ef6EffectFPQ34nw4r2ef7Emitter();
+extern "C" void RetireParticleAll__Q34nw4r2ef15ParticleManagerFv();
+extern "C" void RetireParticleAll__Q34nw4r2ef7EmitterFv();
+extern "C" void SendClosing__Q34nw4r2ef7EmitterFv();
+extern "C" void UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi();
+extern "C" void __ct__Q34nw4r2ef7EmitterFv();
 extern "C" void _restgpr_19();
 extern "C" void _restgpr_23();
 extern "C" void _restgpr_24();
@@ -1161,16 +1113,13 @@ extern "C" void fn_801AC83C();
 extern "C" void fn_801ACA14();
 extern "C" void fn_801ACC48();
 extern "C" void fn_801ACD98();
-extern "C" void fn_801ACEA8();
 extern "C" void fn_801ACEF0();
 extern "C" void fn_801ACFD4();
 extern "C" void fn_801AE2D8();
 extern "C" void fn_801B7FB8();
-extern "C" void fn_801B92C0();
 extern "C" void fn_801B9344();
 extern "C" void fn_801B9448();
 extern "C" void fn_801B955C();
-extern "C" void fn_801B96C8();
 extern "C" void fn_801B96E4();
 extern "C" void fn_801B9B90();
 extern "C" void fn_801B9E1C();
@@ -1178,8 +1127,203 @@ extern "C" void fn_801B9F88();
 extern "C" void fn_801BA008();
 extern "C" void fn_801BA090();
 extern "C" void fn_801BA138();
-extern "C" void fn_8030D7E0();
 extern "C" void fn_8030E000();
+extern "C" void foreachParticleManagerSub__Q24nw4r2efFPvUl();
+
+// asm_to_cpp: Closing__Q34nw4r2ef7EmitterFPQ34nw4r2ef15ParticleManager
+extern "C" asm void Closing__Q34nw4r2ef7EmitterFPQ34nw4r2ef15ParticleManager() {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    stw r0, 0x14(r1)
+    stw r31, 0xc(r1)
+    mr r31, r4
+    stw r30, 0x8(r1)
+    mr r30, r3
+    lwz r5, 0xbc(r3)
+    lwz r3, 0x9c(r5)
+    mr r4, r5
+    mr r5, r31
+    lwz r12, 0x0(r3)
+    lwz r12, 0xc(r12)
+    mtctr r12
+    bctrl
+    lwz r3, 0x20(r31)
+    lwz r0, 0x10(r3)
+    subic. r0, r0, 0x1
+    stw r0, 0x10(r3)
+    bne lbl_801AB030
+    lwz r0, 0xc(r3)
+    cmpwi r0, 0x2
+    bne lbl_801AB030
+    lwz r12, 0x1c(r3)
+    lwz r12, 0x8(r12)
+    mtctr r12
+    bctrl
+lbl_801AB030:
+    mr r4, r31
+    addi r3, r30, 0xc0
+    bl List_Remove__Q24nw4r2utFPQ34nw4r2ut4ListPv
+    mr r4, r31
+    addi r3, r30, 0xcc
+    bl List_Append__Q24nw4r2utFPQ34nw4r2ut4ListPv
+    li r0, 0x3
+    li r3, 0x1
+    stw r0, 0xc(r31)
+    lwz r31, 0xc(r1)
+    lwz r30, 0x8(r1)
+    lwz r0, 0x14(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
+}
+
+// asm_to_cpp: DestroyFunc__Q34nw4r2ef7EmitterFv
+extern "C" asm void DestroyFunc__Q34nw4r2ef7EmitterFv() {
+    nofralloc
+    stwu r1, -0x1020(r1)
+    mflr r0
+    stw r0, 0x1024(r1)
+    addi r11, r1, 0x1020
+    bl _savegpr_27
+    lwz r0, 0xf0(r3)
+    mr r27, r3
+    cmpwi r0, 0x0
+    beq lbl_801AAF08
+    li r0, 0x0
+    stw r0, 0xf0(r3)
+lbl_801AAF08:
+    lwz r0, 0x20(r3)
+    clrlwi. r0, r0, 31
+    beq lbl_801AAF1C
+    mr r3, r27
+    bl RetireParticleAll__Q34nw4r2ef7EmitterFv
+lbl_801AAF1C:
+    mr r3, r27
+    bl fn_801AB06C
+    lwz r0, 0x20(r27)
+    clrlwi. r0, r0, 31
+    beq lbl_801AAFAC
+    lwz r3, 0xbc(r27)
+    addi r4, r1, 0x8
+    lhz r5, 0x2c(r3)
+    addi r3, r3, 0x24
+    bl UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
+    addi r30, r1, 0x8
+    clrlwi r31, r3, 16
+    li r29, 0x0
+    b lbl_801AAFA0
+lbl_801AAF54:
+    clrlslwi r0, r29, 16, 2
+    lwzx r28, r30, r0
+    lwz r3, 0xf4(r28)
+    b lbl_801AAF94
+lbl_801AAF64:
+    cmplw r3, r27
+    bne lbl_801AAF90
+    mr r3, r28
+    bl RetireParticleAll__Q34nw4r2ef7EmitterFv
+    lwz r0, 0xc(r28)
+    cmpwi r0, 0x1
+    bne lbl_801AAF9C
+    lwz r3, 0xbc(r27)
+    mr r4, r28
+    bl RetireEmitter__Q34nw4r2ef6EffectFPQ34nw4r2ef7Emitter
+    b lbl_801AAF9C
+lbl_801AAF90:
+    lwz r3, 0xf4(r3)
+lbl_801AAF94:
+    cmpwi r3, 0x0
+    bne lbl_801AAF64
+lbl_801AAF9C:
+    addi r29, r29, 0x1
+lbl_801AAFA0:
+    clrlwi r0, r29, 16
+    cmplw r0, r31
+    blt lbl_801AAF54
+lbl_801AAFAC:
+    addi r11, r1, 0x1020
+    bl _restgpr_27
+    lwz r0, 0x1024(r1)
+    mtlr r0
+    addi r1, r1, 0x1020
+    blr
+}
+
+// asm_to_cpp: RetireParticleAll__Q34nw4r2ef7EmitterFv
+extern "C" asm void RetireParticleAll__Q34nw4r2ef7EmitterFv() {
+    nofralloc
+    stwu r1, -0x1020(r1)
+    mflr r0
+    stw r0, 0x1024(r1)
+    addi r4, r1, 0x8
+    stw r31, 0x101c(r1)
+    stw r30, 0x1018(r1)
+    stw r29, 0x1014(r1)
+    li r29, 0x0
+    stw r28, 0x1010(r1)
+    lhz r5, 0xc8(r3)
+    addi r3, r3, 0xc0
+    bl UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
+    addi r30, r1, 0x8
+    clrlwi r31, r3, 16
+    li r28, 0x0
+    b lbl_801AAEA0
+lbl_801AAE8C:
+    clrlslwi r0, r28, 16, 2
+    lwzx r3, r30, r0
+    bl RetireParticleAll__Q34nw4r2ef15ParticleManagerFv
+    add r29, r29, r3
+    addi r28, r28, 0x1
+lbl_801AAEA0:
+    clrlwi r0, r28, 16
+    cmplw r0, r31
+    blt lbl_801AAE8C
+    lwz r31, 0x101c(r1)
+    mr r3, r29
+    lwz r30, 0x1018(r1)
+    lwz r29, 0x1014(r1)
+    lwz r28, 0x1010(r1)
+    lwz r0, 0x1024(r1)
+    mtlr r0
+    addi r1, r1, 0x1020
+    blr
+}
+
+// asm_to_cpp: SendClosing__Q34nw4r2ef7EmitterFv
+extern "C" asm void SendClosing__Q34nw4r2ef7EmitterFv() {
+    nofralloc
+    mr r4, r3
+    lwz r3, 0xbc(r3)
+    b Closing__Q34nw4r2ef6EffectFPQ34nw4r2ef7Emitter
+}
+
+// asm_to_cpp: __ct__Q34nw4r2ef7EmitterFv
+extern "C" asm void __ct__Q34nw4r2ef7EmitterFv() {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    lis r5, lbl_803604A8@ha
+    li r4, 0x14
+    stw r0, 0x14(r1)
+    addi r5, r5, lbl_803604A8@l
+    stw r31, 0xc(r1)
+    mr r31, r3
+    stw r5, 0x1c(r3)
+    addi r3, r3, 0xc0
+    bl List_Init__Q24nw4r2utFPQ34nw4r2ut4ListUs
+    addi r3, r31, 0xcc
+    li r4, 0x14
+    bl List_Init__Q24nw4r2utFPQ34nw4r2ut4ListUs
+    li r0, 0x0
+    mr r3, r31
+    sth r0, 0xd8(r31)
+    lwz r31, 0xc(r1)
+    lwz r0, 0x14(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
+}
 
 // asm_to_cpp: fn_801AB06C
 extern "C" asm void fn_801AB06C() {
@@ -1194,7 +1338,7 @@ extern "C" asm void fn_801AB06C() {
     addi r4, r1, 0x8
     li r28, 0x0
     addi r3, r3, 0xc0
-    bl fn_801B92C0
+    bl UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
     addi r29, r1, 0x8
     clrlwi r31, r3, 16
     li r27, 0x0
@@ -1839,7 +1983,7 @@ lbl_801AB968:
     stfs f2, 0x20(r1)
     stfs f1, 0x24(r1)
     stfs f0, 0x28(r1)
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0x20
     mr r4, r3
     bl fn_801B9B90
@@ -2424,7 +2568,7 @@ lbl_801AC214:
     bl fn_801ACC48
     addi r4, r29, 0x90
     addi r5, r1, 0x18
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addis r4, r19, 0x1
     lfs f3, 0x44(r29)
     lfs f1, -0x3fa4(r4)
@@ -2742,7 +2886,7 @@ extern "C" asm void fn_801AC6A0() {
     lhz r5, 0xc8(r3)
     addi r4, r1, 0x8
     addi r3, r3, 0xc0
-    bl fn_801B92C0
+    bl UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
     addi r30, r1, 0x8
     clrlwi r31, r3, 16
     li r29, 0x0
@@ -3037,7 +3181,7 @@ lbl_801ACAE8:
     bl PSMTXIdentity
     mr r3, r27
     addi r4, r1, 0x2c
-    bl fn_801B96C8
+    bl MtxGetTranslate__Q24nw4r2efFRCQ34nw4r4math5MTX34PQ34nw4r4math4VEC3
     extsb r0, r30
     cmpwi r0, 0x64
     bne lbl_801ACB1C
@@ -3308,29 +3452,6 @@ lbl_801ACE90:
     blr
 }
 
-// asm_to_cpp: fn_801ACEA8
-extern "C" asm void fn_801ACEA8() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    li r7, 0x0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r4
-    lwz r4, 0x4(r4)
-    lwz r5, 0x8(r31)
-    lbz r6, 0xc(r31)
-    bl fn_801ACEF0
-    lwz r0, 0x0(r31)
-    add r0, r0, r3
-    stw r0, 0x0(r31)
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
 // asm_to_cpp: fn_801ACEF0
 extern "C" asm void fn_801ACEF0() {
     nofralloc
@@ -3375,10 +3496,10 @@ lbl_801ACF70:
     cmpwi r28, 0x0
     beq lbl_801ACFB8
     li r0, 0x0
-    lis r4, fn_801ACEA8@ha
+    lis r4, foreachParticleManagerSub__Q24nw4r2efFPvUl@ha
     stw r0, 0x8(r1)
     mr r7, r24
-    addi r4, r4, fn_801ACEA8@l
+    addi r4, r4, foreachParticleManagerSub__Q24nw4r2efFPvUl@l
     addi r5, r1, 0x8
     stw r25, 0xc(r1)
     li r6, 0x1

@@ -54,3 +54,7 @@ compile_commands.json
 /*.txt
 *.exe
 scratch/
+
+orig/*/
+
+orig/RNEPDA

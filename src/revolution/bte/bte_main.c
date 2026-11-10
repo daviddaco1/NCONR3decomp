@@ -35,7 +35,7 @@ extern void bta_usb_close_evt();
 extern void bte_hcisu_close();
 extern void bte_hcisu_task();
 extern void btu_task_init();
-extern void fn_802B6F8C();
+extern void BTE_Init();
 
 // ----------------------------------------------------------------------------
 // BTUInterruptHandler
@@ -63,7 +63,7 @@ asm void BTA_Init() {
     stw r0, lbl_8049DFF4
     bl GKI_init
     bl GKI_enable
-    bl fn_802B6F8C
+    bl BTE_Init
     lis r4, lbl_80341560@ha
     la r0, lbl_8049CF90
     addi r4, r4, lbl_80341560@l

@@ -1296,9 +1296,9 @@
 .sym __OSDBINTEND, global
 
 # .text:0x11C0 | 0x80313D3C | size: 0x4
-.fn fn_80313D3C, global
+.fn __OSDBJump, global
 /* 80313D3C 0030019C  48 00 00 61 */	bl OSExceptionVector+0x38
-.endfn fn_80313D3C
+.endfn __OSDBJump
 # .text:0x11C4 | 0x80313D40 | size: 0x0
 .sym __OSDBJUMPEND, global
 

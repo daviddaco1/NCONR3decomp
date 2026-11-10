@@ -219,17 +219,17 @@ extern float lbl_8049DE78;
 extern float lbl_8049DE7C;
 extern void _restgpr_27();
 extern void _savegpr_27();
-u32 fn_8029AD14(void);
+u32 AIGetDMAStartAddr(void);
 
-u32 fn_8029AD14(void) {
+u32 AIGetDMAStartAddr(void) {
     return ((*(volatile u16 *)0xCC005030 & 0x1FFF) << 16) | (*(volatile u16 *)0xCC005032 & 0xFFE0);
 }
 
-s32 fn_8029AD2C(void) {
+s32 AIGetDMALength(void) {
     return (*(volatile u16 *)0xCC005036 & 0x7FFF) << 5;
 }
 
-s32 fn_8029AD3C(void) {
+s32 AICheckInit(void) {
     return lbl_8049DE50;
 }
 

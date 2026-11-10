@@ -33,11 +33,11 @@ extern void _savegpr_24();
 extern void _savegpr_27();
 extern void atoi();
 extern void detail_HoldSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandlePCcPCQ44nw4r3snd14SoundStartable9StartInfo();
-extern void fn_80253528();
-extern void fn_802535C4();
-extern void fn_80253658();
-extern void fn_80253660();
-extern void fn_80253690();
+extern void ArrayNew();
+extern void ArrayFree();
+extern void ArrayLength();
+extern void ArrayNth();
+extern void ArrayAppend();
 extern void fn_80256120();
 extern void fn_8025651C();
 extern void fn_802565F0();
@@ -524,7 +524,7 @@ lbl_802617C8:
 lbl_802617E0:
     lwz r3, 0x44(r30)
     li r4, 0x0
-    bl fn_80253660
+    bl ArrayNth
     mr r31, r3
     lwz r4, 0x8(r30)
     lhz r5, 0xc(r30)
@@ -553,7 +553,7 @@ lbl_80261830:
     bl detail_HoldSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandlePCcPCQ44nw4r3snd14SoundStartable9StartInfo
 lbl_8026184C:
     lwz r3, 0x44(r30)
-    bl fn_80253658
+    bl ArrayLength
     cmpwi r3, 0x0
     bne lbl_802617E0
 lbl_8026185C:
@@ -912,7 +912,7 @@ asm void gpiDestroyPeer() {
     stw r31, 0x34(r30)
     cmpwi r3, 0x0
     beq lbl_80261D28
-    bl fn_802535C4
+    bl ArrayFree
     stw r31, 0x44(r30)
 lbl_80261D28:
     mr r3, r30
@@ -963,7 +963,7 @@ lbl_80261DA0:
 lbl_80261DB8:
     lwz r3, 0x44(r30)
     li r4, 0x0
-    bl fn_80253660
+    bl ArrayNth
     lwz r5, 0x10(r3)
     mr r4, r3
     cmpwi r5, 0x64
@@ -980,7 +980,7 @@ lbl_80261DEC:
     bl detail_HoldSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandlePCcPCQ44nw4r3snd14SoundStartable9StartInfo
 lbl_80261DF8:
     lwz r3, 0x44(r30)
-    bl fn_80253658
+    bl ArrayLength
     cmpwi r3, 0x0
     bne lbl_80261DB8
     lwz r3, 0x24(r30)
@@ -993,7 +993,7 @@ lbl_80261DF8:
     stw r31, 0x34(r30)
     cmpwi r3, 0x0
     beq lbl_80261E38
-    bl fn_802535C4
+    bl ArrayFree
     stw r31, 0x44(r30)
 lbl_80261E38:
     mr r3, r30
@@ -1190,7 +1190,7 @@ lbl_80262044:
     li r4, 0x0
     lwz r0, 0x5d8(r29)
     stw r0, 0x54(r30)
-    bl fn_80253528
+    bl ArrayNew
     stw r3, 0x44(r30)
     mr r3, r30
     stw r30, 0x5d8(r29)
@@ -1428,7 +1428,7 @@ lbl_80262390:
 lbl_802623AC:
     lwz r3, 0x44(r28)
     addi r4, r1, 0x8
-    bl fn_80253690
+    bl ArrayAppend
     li r3, 0x0
     bl fn_80256120
     li r5, 0x2710

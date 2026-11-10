@@ -150,11 +150,11 @@ extern "C" void _savegpr_24();
 extern "C" void _savegpr_25();
 extern "C" void detail_ConvertLabelStringToSoundId__Q34nw4r3snd18SoundArchivePlayerFPCc();
 extern "C" void dtor_80136CFC();
-extern "C" void fn_8020C018();
+extern "C" void SetAttack__Q44nw4r3snd6detail12EnvGeneratorFi();
 extern "C" void fn_8020C030();
-extern "C" void fn_8020C048();
-extern "C" void fn_8020C0E8();
-extern "C" void fn_8020C0F0();
+extern "C" void SetDecay__Q44nw4r3snd6detail12EnvGeneratorFi();
+extern "C" void SetSustain__Q44nw4r3snd6detail12EnvGeneratorFi();
+extern "C" void SetRelease__Q44nw4r3snd6detail12EnvGeneratorFi();
 
 // asm_to_cpp: __ct__Q44nw4r3snd6detail8SeqTrackFv
 extern "C" asm void __ct__Q44nw4r3snd6detail8SeqTrackFv() {
@@ -655,7 +655,7 @@ lbl_80212964:
     blt lbl_80212984
     mr r3, r31
     clrlwi r4, r30, 24
-    bl fn_8020C0F0
+    bl SetRelease__Q44nw4r3snd6detail12EnvGeneratorFi
 lbl_80212984:
     mr r3, r31
     bl Release__Q44nw4r3snd6detail7ChannelFv
@@ -1508,25 +1508,25 @@ lbl_8021353C:
     cmplwi r4, 0x7f
     bgt lbl_80213550
     mr r3, r30
-    bl fn_8020C018
+    bl SetAttack__Q44nw4r3snd6detail12EnvGeneratorFi
 lbl_80213550:
     lbz r4, 0x8c(r25)
     cmplwi r4, 0x7f
     bgt lbl_80213564
     mr r3, r30
-    bl fn_8020C048
+    bl SetDecay__Q44nw4r3snd6detail12EnvGeneratorFi
 lbl_80213564:
     lbz r4, 0x8d(r25)
     cmplwi r4, 0x7f
     bgt lbl_80213578
     mr r3, r30
-    bl fn_8020C0E8
+    bl SetSustain__Q44nw4r3snd6detail12EnvGeneratorFi
 lbl_80213578:
     lbz r4, 0x8e(r25)
     cmplwi r4, 0x7f
     bgt lbl_8021358C
     mr r3, r30
-    bl fn_8020C0F0
+    bl SetRelease__Q44nw4r3snd6detail12EnvGeneratorFi
 lbl_8021358C:
     lha r4, 0x90(r25)
     cmpwi r4, 0x7f

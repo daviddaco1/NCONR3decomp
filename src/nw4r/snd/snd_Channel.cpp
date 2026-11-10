@@ -1,9 +1,107 @@
-#include "types.h"
+#include <nw4r/snd.h>
 
-// Translation unit: src/nw4r/snd/snd_Channel.cpp
-// Total functions: 17
+#include <revolution/AX.h>
 
-// Small Data symbols (@sda21)
+namespace nw4r {
+namespace snd {
+namespace detail {
+
+ChannelManager& ChannelManager::GetInstance() {
+    static ChannelManager instance;
+    return instance;
+}
+
+ChannelManager::ChannelManager() : mInitialized(false), mChannelCount(0) {}
+
+// GetRequiredMemSize__Q44nw4r3snd6detail14ChannelManagerFi: definicion C reemplazada por asm (ver abajo)
+
+
+// Setup__Q44nw4r3snd6detail14ChannelManagerFPvUl: definicion C reemplazada por asm (ver abajo)
+
+
+void ChannelManager::Shutdown() {
+    ut::AutoInterruptLock lock;
+
+    if (!mInitialized) {
+        return;
+    }
+
+    NW4R_UT_LINKLIST_FOREACH_SAFE (it, mChannelList, { it->Stop(); })
+
+    mPool.Destroy(mMem, mMemSize);
+    mInitialized = false;
+}
+
+Channel* ChannelManager::Alloc() {
+    Channel* pChannel = mPool.Alloc();
+    mChannelList.PushBack(pChannel);
+    return pChannel;
+}
+
+void ChannelManager::Free(Channel* pChannel) {
+    mChannelList.Erase(pChannel);
+    mPool.Free(pChannel);
+}
+
+// UpdateAllChannel__Q44nw4r3snd6detail14ChannelManagerFv: definicion C reemplazada por asm (ver abajo)
+
+
+Channel::Channel()
+    : mPauseFlag(false), mActiveFlag(false), mAllocFlag(false), mVoice(NULL) {}
+
+Channel::~Channel() {}
+
+// InitParam__Q44nw4r3snd6detail7ChannelFPFPQ44nw4r3snd6detail7ChannelQ54nw4r3snd6detail7Channel21ChannelCallbackStatusUl_vUl: definicion C reemplazada por asm (ver abajo)
+
+
+// Update__Q44nw4r3snd6detail7ChannelFb: definicion C reemplazada por asm (ver abajo)
+
+
+// Start__Q44nw4r3snd6detail7ChannelFRCQ44nw4r3snd6detail8WaveInfoiUl: definicion C reemplazada por asm (ver abajo)
+
+
+// Release__Q44nw4r3snd6detail7ChannelFv: definicion C reemplazada por asm (ver abajo)
+
+
+// Stop__Q44nw4r3snd6detail7ChannelFv: definicion C reemplazada por asm (ver abajo)
+
+
+// UpdateSweep__Q44nw4r3snd6detail7ChannelFi: definicion C reemplazada por asm (ver abajo)
+
+
+// SetSweepParam__Q44nw4r3snd6detail7ChannelFfib: definicion C reemplazada por asm (ver abajo)
+
+
+f32 Channel::GetSweepValue() const {
+    if (mSweepPitch == 0.0f) {
+        return 0.0f;
+    }
+
+    if (mSweepCounter >= mSweepLength) {
+        return 0.0f;
+    }
+
+    f32 sweep = mSweepPitch;
+    sweep *= mSweepLength - mSweepCounter;
+    sweep /= mSweepLength;
+
+    return sweep;
+}
+
+// VoiceCallbackFunc__Q44nw4r3snd6detail7ChannelFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv: definicion C reemplazada por asm (ver abajo)
+
+
+// AllocChannel__Q44nw4r3snd6detail7ChannelFiiiPFPQ44nw4r3snd6detail7ChannelQ54nw4r3snd6detail7Channel21ChannelCallbackStatusUl_vUl: definicion C reemplazada por asm (ver abajo)
+
+
+// FreeChannel__Q44nw4r3snd6detail7ChannelFPQ44nw4r3snd6detail7Channel: definicion C reemplazada por asm (ver abajo)
+
+
+} // namespace detail
+} // namespace snd
+} // namespace nw4r
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern "C" float lbl_8049DA38;
 extern "C" float lbl_804A2068;
 extern "C" float lbl_804A206C;
@@ -13,12 +111,8 @@ extern "C" float lbl_804A2078;
 extern "C" float lbl_804A2080;
 extern "C" float lbl_804A2088;
 extern "C" float lbl_804A2090;
-
-// Global data symbols (@ha/@l)
 extern "C" u8 lbl_804040A0[];
 extern "C" u8 lbl_804040B0[];
-
-// Forward declarations
 extern "C" void AllocChannel__Q44nw4r3snd6detail7ChannelFiiiPFPQ44nw4r3snd6detail7ChannelQ54nw4r3snd6detail7Channel21ChannelCallbackStatusUl_vUl();
 extern "C" void AllocImpl__Q44nw4r3snd6detail8PoolImplFv();
 extern "C" void AllocVoice__Q44nw4r3snd6detail12VoiceManagerFiiiPFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv_vPv();
@@ -30,16 +124,15 @@ extern "C" void FreeChannel__Q44nw4r3snd6detail7ChannelFPQ44nw4r3snd6detail7Chan
 extern "C" void FreeImpl__Q44nw4r3snd6detail8PoolImplFPv();
 extern "C" void Free__Q44nw4r3snd6detail5VoiceFv();
 extern "C" void GetInstance__Q44nw4r3snd6detail12VoiceManagerFv();
-extern "C" void GetInstance__Q44nw4r3snd6detail14ChannelManagerFv();
 extern "C" void GetRequiredMemSize__Q44nw4r3snd6detail14ChannelManagerFi();
+extern "C" void GetValue__Q44nw4r3snd6detail12EnvGeneratorCFv();
 extern "C" void GetValue__Q44nw4r3snd6detail3LfoCFv();
 extern "C" void InitParam__Q44nw4r3snd6detail7ChannelFPFPQ44nw4r3snd6detail7ChannelQ54nw4r3snd6detail7Channel21ChannelCallbackStatusUl_vUl();
 extern "C" void Init__Q44nw4r3snd6detail8LfoParamFv();
 extern "C" void Insert__Q44nw4r2ut6detail12LinkListImplFQ54nw4r2ut6detail12LinkListImpl8IteratorPQ34nw4r2ut12LinkListNode();
 extern "C" void NoteOff__Q44nw4r3snd6detail7ChannelFv();
-extern "C" void OSDisableInterrupts();
-extern "C" void OSRestoreInterrupts();
 extern "C" void Release__Q44nw4r3snd6detail7ChannelFv();
+extern "C" void Reset__Q44nw4r3snd6detail12EnvGeneratorFf();
 extern "C" void Reset__Q44nw4r3snd6detail3LfoFv();
 extern "C" void SetBiquadFilter__Q44nw4r3snd6detail5VoiceFif();
 extern "C" void SetBiquadFilter__Q44nw4r3snd6detail7ChannelFif();
@@ -72,30 +165,30 @@ extern "C" void UpdateSweep__Q44nw4r3snd6detail7ChannelFi();
 extern "C" void Update__Q44nw4r3snd6detail3LfoFi();
 extern "C" void Update__Q44nw4r3snd6detail7ChannelFb();
 extern "C" void VoiceCallbackFunc__Q44nw4r3snd6detail7ChannelFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv();
-extern "C" void __dt__Q44nw4r2ut6detail12LinkListImplFv();
 extern "C" void __dt__Q44nw4r3snd6detail14ChannelManagerFv();
 extern "C" void __register_global_object();
 extern "C" void _restgpr_24();
 extern "C" void _savegpr_24();
-extern "C" void dtor_80136CFC();
 extern "C" void fn_8020BDF4();
 extern "C" void fn_8020BE38();
-extern "C" void fn_8020BE78();
-extern "C" void fn_8020BE90();
 extern "C" void fn_8020BEBC();
 
-// ----------------------------------------------------------------------------
-// GetInstance__Q44nw4r3snd6detail14ChannelManagerFv
-// ----------------------------------------------------------------------------
-// asm_to_cpp: GetInstance__Q44nw4r3snd6detail14ChannelManagerFv
-extern "C" asm void GetInstance__Q44nw4r3snd6detail14ChannelManagerFv() {
+// asm_to_cpp: AllocChannel__Q44nw4r3snd6detail7ChannelFiiiPFPQ44nw4r3snd6detail7ChannelQ54nw4r3snd6detail7Channel21ChannelCallbackStatusUl_vUl
+extern "C" asm void AllocChannel__Q44nw4r3snd6detail7ChannelFiiiPFPQ44nw4r3snd6detail7ChannelQ54nw4r3snd6detail7Channel21ChannelCallbackStatusUl_vUl() {
     nofralloc
-    stwu r1, -0x10(r1)
+    stwu r1, -0x30(r1)
     mflr r0
-    stw r0, 0x14(r1)
+    stw r0, 0x34(r1)
+    addi r11, r1, 0x30
+    bl _savegpr_24
     lbz r0, lbl_8049DA38
+    mr r24, r3
+    mr r25, r4
+    mr r26, r5
     extsb. r0, r0
-    bne lbl_8020A374
+    mr r27, r6
+    mr r28, r7
+    bne lbl_8020B254
     lis r6, lbl_804040B0@ha
     li r0, 0x0
     addi r3, r6, lbl_804040B0@l
@@ -115,52 +208,122 @@ extern "C" asm void GetInstance__Q44nw4r3snd6detail14ChannelManagerFv() {
     bl __register_global_object
     li r0, 0x1
     stb r0, lbl_8049DA38
-lbl_8020A374:
-    lwz r0, 0x14(r1)
-    lis r3, lbl_804040B0@ha
-    addi r3, r3, lbl_804040B0@l
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// __dt__Q44nw4r3snd6detail14ChannelManagerFv
-// ----------------------------------------------------------------------------
-// asm_to_cpp: __dt__Q44nw4r3snd6detail14ChannelManagerFv
-extern "C" asm void __dt__Q44nw4r3snd6detail14ChannelManagerFv() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
+lbl_8020B254:
+    lis r31, lbl_804040B0@ha
+    addi r31, r31, lbl_804040B0@l
+    mr r3, r31
+    bl AllocImpl__Q44nw4r3snd6detail8PoolImplFv
     cmpwi r3, 0x0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r4
-    stw r30, 0x8(r1)
     mr r30, r3
-    beq lbl_8020A3D0
-    addic. r3, r3, 0x4
-    beq lbl_8020A3C0
-    li r4, 0x0
-    bl __dt__Q44nw4r2ut6detail12LinkListImplFv
-lbl_8020A3C0:
-    cmpwi r31, 0x0
-    ble lbl_8020A3D0
+    bne lbl_8020B278
+    li r30, 0x0
+    b lbl_8020B2C0
+lbl_8020B278:
+    beq lbl_8020B2C0
+    bl fn_8020BDF4
+    addi r3, r30, 0x1c
+    bl Init__Q44nw4r3snd6detail8LfoParamFv
+    li r0, 0x0
+    lfs f0, lbl_804A2068
+    stw r0, 0x2c(r30)
+    stfs f0, 0x30(r30)
+    stb r0, 0x35(r30)
+    stb r0, 0x36(r30)
+    stb r0, 0x37(r30)
+    stb r0, 0xc0(r30)
+    stb r0, 0xc1(r30)
+    sth r0, 0xc2(r30)
+    sth r0, 0xc4(r30)
+    stw r0, 0xf0(r30)
+    stw r0, 0xf8(r30)
+    stw r0, 0xfc(r30)
+lbl_8020B2C0:
+    addi r0, r31, 0x8
+    addi r29, r30, 0xf8
+    stw r0, 0x8(r1)
+    mr r5, r29
+    addi r3, r31, 0x4
+    addi r4, r1, 0x8
+    bl Insert__Q44nw4r2ut6detail12LinkListImplFQ54nw4r2ut6detail12LinkListImpl8IteratorPQ34nw4r2ut12LinkListNode
+    cmpwi r30, 0x0
+    bne lbl_8020B2EC
+    li r3, 0x0
+    b lbl_8020B3B8
+lbl_8020B2EC:
+    li r31, 0x1
+    stb r31, 0x37(r30)
+    bl GetInstance__Q44nw4r3snd6detail12VoiceManagerFv
+    lis r7, VoiceCallbackFunc__Q44nw4r3snd6detail7ChannelFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv@ha
+    mr r4, r24
+    mr r5, r25
+    mr r6, r26
+    mr r8, r30
+    addi r7, r7, VoiceCallbackFunc__Q44nw4r3snd6detail7ChannelFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv@l
+    bl AllocVoice__Q44nw4r3snd6detail12VoiceManagerFiiiPFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv_vPv
+    cmpwi r3, 0x0
+    bne lbl_8020B3A0
+    lbz r0, lbl_8049DA38
+    extsb. r0, r0
+    bne lbl_8020B370
+    lis r6, lbl_804040B0@ha
+    li r0, 0x0
+    addi r3, r6, lbl_804040B0@l
+    lis r4, __dt__Q44nw4r3snd6detail14ChannelManagerFv@ha
+    stw r0, 0x8(r3)
+    addi r7, r3, 0x8
+    lis r5, lbl_804040A0@ha
+    addi r4, r4, __dt__Q44nw4r3snd6detail14ChannelManagerFv@l
+    stw r0, 0xc(r3)
+    addi r5, r5, lbl_804040A0@l
+    stw r0, lbl_804040B0@l(r6)
+    stw r0, 0x4(r3)
+    stw r7, 0x8(r3)
+    stw r7, 0xc(r3)
+    stb r0, 0x10(r3)
+    stw r0, 0x14(r3)
+    bl __register_global_object
+    stb r31, lbl_8049DA38
+lbl_8020B370:
+    lis r31, lbl_804040B0@ha
+    mr r4, r29
+    addi r31, r31, lbl_804040B0@l
+    addi r3, r31, 0x4
+    bl Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode
+    cmpwi r30, 0x0
+    beq lbl_8020B398
+    mr r3, r31
+    mr r4, r30
+    bl FreeImpl__Q44nw4r3snd6detail8PoolImplFPv
+lbl_8020B398:
+    li r3, 0x0
+    b lbl_8020B3B8
+lbl_8020B3A0:
+    stw r3, 0xf0(r30)
     mr r3, r30
-    bl dtor_80136CFC
-lbl_8020A3D0:
+    mr r4, r27
+    mr r5, r28
+    bl InitParam__Q44nw4r3snd6detail7ChannelFPFPQ44nw4r3snd6detail7ChannelQ54nw4r3snd6detail7Channel21ChannelCallbackStatusUl_vUl
     mr r3, r30
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
+lbl_8020B3B8:
+    addi r11, r1, 0x30
+    bl _restgpr_24
+    lwz r0, 0x34(r1)
     mtlr r0
-    addi r1, r1, 0x10
+    addi r1, r1, 0x30
     blr
 }
 
-// ----------------------------------------------------------------------------
-// GetRequiredMemSize__Q44nw4r3snd6detail14ChannelManagerFi
-// ----------------------------------------------------------------------------
+// asm_to_cpp: FreeChannel__Q44nw4r3snd6detail7ChannelFPQ44nw4r3snd6detail7Channel
+extern "C" asm void FreeChannel__Q44nw4r3snd6detail7ChannelFPQ44nw4r3snd6detail7Channel() {
+    nofralloc
+    cmpwi r3, 0x0
+    beqlr
+    li r0, 0x0
+    stw r0, 0xe0(r3)
+    stw r0, 0xe4(r3)
+    blr
+}
+
 // asm_to_cpp: GetRequiredMemSize__Q44nw4r3snd6detail14ChannelManagerFi
 extern "C" asm void GetRequiredMemSize__Q44nw4r3snd6detail14ChannelManagerFi() {
     nofralloc
@@ -169,87 +332,6 @@ extern "C" asm void GetRequiredMemSize__Q44nw4r3snd6detail14ChannelManagerFi() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// Setup__Q44nw4r3snd6detail14ChannelManagerFPvUl
-// ----------------------------------------------------------------------------
-// asm_to_cpp: Setup__Q44nw4r3snd6detail14ChannelManagerFPvUl
-extern "C" asm void Setup__Q44nw4r3snd6detail14ChannelManagerFPvUl() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    stw r30, 0x18(r1)
-    mr r30, r5
-    stw r29, 0x14(r1)
-    mr r29, r4
-    stw r28, 0x10(r1)
-    mr r28, r3
-    bl OSDisableInterrupts
-    lbz r0, 0x10(r28)
-    mr r31, r3
-    cmpwi r0, 0x0
-    beq lbl_8020A43C
-    bl OSRestoreInterrupts
-    b lbl_8020A46C
-lbl_8020A43C:
-    mr r3, r28
-    mr r4, r29
-    mr r5, r30
-    li r6, 0x100
-    bl CreateImpl__Q44nw4r3snd6detail8PoolImplFPvUlUl
-    li r0, 0x1
-    stw r3, 0x14(r28)
-    mr r3, r31
-    stw r29, 0x18(r28)
-    stw r30, 0x1c(r28)
-    stb r0, 0x10(r28)
-    bl OSRestoreInterrupts
-lbl_8020A46C:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r28, 0x10(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// UpdateAllChannel__Q44nw4r3snd6detail14ChannelManagerFv
-// ----------------------------------------------------------------------------
-// asm_to_cpp: UpdateAllChannel__Q44nw4r3snd6detail14ChannelManagerFv
-extern "C" asm void UpdateAllChannel__Q44nw4r3snd6detail14ChannelManagerFv() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    addi r30, r3, 0x8
-    lwz r31, 0x8(r3)
-    b lbl_8020A4C0
-lbl_8020A4AC:
-    mr r3, r31
-    lwz r31, 0x0(r31)
-    subi r3, r3, 0xf8
-    li r4, 0x1
-    bl Update__Q44nw4r3snd6detail7ChannelFb
-lbl_8020A4C0:
-    cmplw r31, r30
-    bne lbl_8020A4AC
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// InitParam__Q44nw4r3snd6detail7ChannelFPFPQ44nw4r3snd6detail7ChannelQ54nw4r3snd6detail7Channel21ChannelCallbackStatusUl_vUl
-// ----------------------------------------------------------------------------
 // asm_to_cpp: InitParam__Q44nw4r3snd6detail7ChannelFPFPQ44nw4r3snd6detail7ChannelQ54nw4r3snd6detail7Channel21ChannelCallbackStatusUl_vUl
 extern "C" asm void InitParam__Q44nw4r3snd6detail7ChannelFPFPQ44nw4r3snd6detail7ChannelQ54nw4r3snd6detail7Channel21ChannelCallbackStatusUl_vUl() {
     nofralloc
@@ -331,9 +413,301 @@ extern "C" asm void InitParam__Q44nw4r3snd6detail7ChannelFPFPQ44nw4r3snd6detail7
     blr
 }
 
-// ----------------------------------------------------------------------------
-// Update__Q44nw4r3snd6detail7ChannelFb
-// ----------------------------------------------------------------------------
+// asm_to_cpp: NoteOff__Q44nw4r3snd6detail7ChannelFv
+extern "C" asm void NoteOff__Q44nw4r3snd6detail7ChannelFv() {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    stw r0, 0x14(r1)
+    stw r31, 0xc(r1)
+    mr r31, r3
+    lbz r0, 0x3a(r3)
+    cmpwi r0, 0x0
+    bne lbl_8020AF04
+    lwz r0, 0x0(r3)
+    cmpwi r0, 0x4
+    beq lbl_8020AEFC
+    lwz r4, 0xf0(r3)
+    cmpwi r4, 0x0
+    beq lbl_8020AEF4
+    lbz r0, 0x39(r3)
+    cmpwi r0, 0x0
+    bne lbl_8020AEF4
+    mr r3, r4
+    li r4, 0x1
+    bl SetPriority__Q44nw4r3snd6detail5VoiceFi
+lbl_8020AEF4:
+    li r0, 0x4
+    stw r0, 0x0(r31)
+lbl_8020AEFC:
+    li r0, 0x0
+    stb r0, 0x35(r31)
+lbl_8020AF04:
+    lwz r0, 0x14(r1)
+    lwz r31, 0xc(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
+}
+
+// asm_to_cpp: Release__Q44nw4r3snd6detail7ChannelFv
+extern "C" asm void Release__Q44nw4r3snd6detail7ChannelFv() {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    stw r0, 0x14(r1)
+    stw r31, 0xc(r1)
+    mr r31, r3
+    lwz r0, 0x0(r3)
+    cmpwi r0, 0x4
+    beq lbl_8020AE88
+    lwz r4, 0xf0(r3)
+    cmpwi r4, 0x0
+    beq lbl_8020AE80
+    lbz r0, 0x39(r3)
+    cmpwi r0, 0x0
+    bne lbl_8020AE80
+    mr r3, r4
+    li r4, 0x1
+    bl SetPriority__Q44nw4r3snd6detail5VoiceFi
+lbl_8020AE80:
+    li r0, 0x4
+    stw r0, 0x0(r31)
+lbl_8020AE88:
+    li r0, 0x0
+    stb r0, 0x35(r31)
+    lwz r31, 0xc(r1)
+    lwz r0, 0x14(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
+}
+
+// asm_to_cpp: SetBiquadFilter__Q44nw4r3snd6detail7ChannelFif
+extern "C" asm void SetBiquadFilter__Q44nw4r3snd6detail7ChannelFif() {
+    nofralloc
+    stb r4, 0x3b(r3)
+    stfs f1, 0x54(r3)
+    blr
+}
+
+// asm_to_cpp: SetSweepParam__Q44nw4r3snd6detail7ChannelFfib
+extern "C" asm void SetSweepParam__Q44nw4r3snd6detail7ChannelFfib() {
+    nofralloc
+    li r0, 0x0
+    stfs f1, 0xa4(r3)
+    stw r4, 0xac(r3)
+    stb r5, 0x38(r3)
+    stw r0, 0xa8(r3)
+    blr
+}
+
+// asm_to_cpp: Setup__Q44nw4r3snd6detail14ChannelManagerFPvUl
+extern "C" asm void Setup__Q44nw4r3snd6detail14ChannelManagerFPvUl() {
+    nofralloc
+    stwu r1, -0x20(r1)
+    mflr r0
+    stw r0, 0x24(r1)
+    stw r31, 0x1c(r1)
+    stw r30, 0x18(r1)
+    mr r30, r5
+    stw r29, 0x14(r1)
+    mr r29, r4
+    stw r28, 0x10(r1)
+    mr r28, r3
+    bl OSDisableInterrupts
+    lbz r0, 0x10(r28)
+    mr r31, r3
+    cmpwi r0, 0x0
+    beq lbl_8020A43C
+    bl OSRestoreInterrupts
+    b lbl_8020A46C
+lbl_8020A43C:
+    mr r3, r28
+    mr r4, r29
+    mr r5, r30
+    li r6, 0x100
+    bl CreateImpl__Q44nw4r3snd6detail8PoolImplFPvUlUl
+    li r0, 0x1
+    stw r3, 0x14(r28)
+    mr r3, r31
+    stw r29, 0x18(r28)
+    stw r30, 0x1c(r28)
+    stb r0, 0x10(r28)
+    bl OSRestoreInterrupts
+lbl_8020A46C:
+    lwz r0, 0x24(r1)
+    lwz r31, 0x1c(r1)
+    lwz r30, 0x18(r1)
+    lwz r29, 0x14(r1)
+    lwz r28, 0x10(r1)
+    mtlr r0
+    addi r1, r1, 0x20
+    blr
+}
+
+// asm_to_cpp: Start__Q44nw4r3snd6detail7ChannelFRCQ44nw4r3snd6detail8WaveInfoiUl
+extern "C" asm void Start__Q44nw4r3snd6detail7ChannelFRCQ44nw4r3snd6detail8WaveInfoiUl() {
+    nofralloc
+    stwu r1, -0x20(r1)
+    mflr r0
+    stw r0, 0x24(r1)
+    stw r31, 0x1c(r1)
+    mr r31, r6
+    stw r30, 0x18(r1)
+    mr r30, r4
+    stw r29, 0x14(r1)
+    mr r29, r3
+    stw r5, 0xd0(r3)
+    addi r3, r3, 0x1c
+    bl Reset__Q44nw4r3snd6detail3LfoFv
+    lfs f1, lbl_804A2090
+    mr r3, r29
+    bl Reset__Q44nw4r3snd6detail12EnvGeneratorFf
+    li r0, 0x0
+    lwz r3, 0xf0(r29)
+    stw r0, 0xa8(r29)
+    mr r4, r30
+    mr r5, r31
+    bl Setup__Q44nw4r3snd6detail5VoiceFRCQ44nw4r3snd6detail8WaveInfoUl
+    lwz r3, 0xf0(r29)
+    bl Start__Q44nw4r3snd6detail5VoiceFv
+    li r0, 0x1
+    stb r0, 0x36(r29)
+    lwz r31, 0x1c(r1)
+    lwz r30, 0x18(r1)
+    lwz r29, 0x14(r1)
+    lwz r0, 0x24(r1)
+    mtlr r0
+    addi r1, r1, 0x20
+    blr
+}
+
+// asm_to_cpp: Stop__Q44nw4r3snd6detail7ChannelFv
+extern "C" asm void Stop__Q44nw4r3snd6detail7ChannelFv() {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    stw r0, 0x14(r1)
+    stw r31, 0xc(r1)
+    stw r30, 0x8(r1)
+    mr r30, r3
+    lwz r0, 0xf0(r3)
+    cmpwi r0, 0x0
+    beq lbl_8020B02C
+    mr r3, r0
+    bl Stop__Q44nw4r3snd6detail5VoiceFv
+    lwz r3, 0xf0(r30)
+    bl Free__Q44nw4r3snd6detail5VoiceFv
+    lwz r12, 0xe0(r30)
+    li r0, 0x0
+    stw r0, 0xf0(r30)
+    cmpwi r12, 0x0
+    stb r0, 0x35(r30)
+    stb r0, 0x36(r30)
+    beq lbl_8020AF7C
+    mr r3, r30
+    lwz r5, 0xe4(r30)
+    li r4, 0x0
+    mtctr r12
+    bctrl
+lbl_8020AF7C:
+    lwz r3, 0xe8(r30)
+    cmpwi r3, 0x0
+    beq lbl_8020AF9C
+    lwz r12, 0x0(r3)
+    lwz r4, 0xec(r30)
+    lwz r12, 0xc(r12)
+    mtctr r12
+    bctrl
+lbl_8020AF9C:
+    lbz r0, 0x37(r30)
+    cmpwi r0, 0x0
+    beq lbl_8020B02C
+    li r7, 0x0
+    stb r7, 0x37(r30)
+    lbz r0, lbl_8049DA38
+    extsb. r0, r0
+    bne lbl_8020B004
+    lis r6, lbl_804040B0@ha
+    lis r4, __dt__Q44nw4r3snd6detail14ChannelManagerFv@ha
+    addi r3, r6, lbl_804040B0@l
+    lis r5, lbl_804040A0@ha
+    stw r7, 0x8(r3)
+    addi r8, r3, 0x8
+    addi r4, r4, __dt__Q44nw4r3snd6detail14ChannelManagerFv@l
+    addi r5, r5, lbl_804040A0@l
+    stw r7, 0xc(r3)
+    stw r7, lbl_804040B0@l(r6)
+    stw r7, 0x4(r3)
+    stw r8, 0x8(r3)
+    stw r8, 0xc(r3)
+    stb r7, 0x10(r3)
+    stw r7, 0x14(r3)
+    bl __register_global_object
+    li r0, 0x1
+    stb r0, lbl_8049DA38
+lbl_8020B004:
+    lis r31, lbl_804040B0@ha
+    addi r4, r30, 0xf8
+    addi r31, r31, lbl_804040B0@l
+    addi r3, r31, 0x4
+    bl Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode
+    cmpwi r30, 0x0
+    beq lbl_8020B02C
+    mr r3, r31
+    mr r4, r30
+    bl FreeImpl__Q44nw4r3snd6detail8PoolImplFPv
+lbl_8020B02C:
+    lwz r0, 0x14(r1)
+    lwz r31, 0xc(r1)
+    lwz r30, 0x8(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
+}
+
+// asm_to_cpp: UpdateAllChannel__Q44nw4r3snd6detail14ChannelManagerFv
+extern "C" asm void UpdateAllChannel__Q44nw4r3snd6detail14ChannelManagerFv() {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    stw r0, 0x14(r1)
+    stw r31, 0xc(r1)
+    stw r30, 0x8(r1)
+    addi r30, r3, 0x8
+    lwz r31, 0x8(r3)
+    b lbl_8020A4C0
+lbl_8020A4AC:
+    mr r3, r31
+    lwz r31, 0x0(r31)
+    subi r3, r3, 0xf8
+    li r4, 0x1
+    bl Update__Q44nw4r3snd6detail7ChannelFb
+lbl_8020A4C0:
+    cmplw r31, r30
+    bne lbl_8020A4AC
+    lwz r0, 0x14(r1)
+    lwz r31, 0xc(r1)
+    lwz r30, 0x8(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
+}
+
+// asm_to_cpp: UpdateSweep__Q44nw4r3snd6detail7ChannelFi
+extern "C" asm void UpdateSweep__Q44nw4r3snd6detail7ChannelFi() {
+    nofralloc
+    lwz r0, 0xa8(r3)
+    lwz r5, 0xac(r3)
+    add r0, r0, r4
+    cmpw r0, r5
+    stw r0, 0xa8(r3)
+    blelr
+    stw r5, 0xa8(r3)
+    blr
+}
+
 // asm_to_cpp: Update__Q44nw4r3snd6detail7ChannelFb
 extern "C" asm void Update__Q44nw4r3snd6detail7ChannelFb() {
     nofralloc
@@ -420,7 +794,7 @@ lbl_8020A728:
     lfs f29, lbl_804A206C
     fdivs f0, f1, f0
     fmuls f30, f30, f0
-    bl fn_8020BE90
+    bl GetValue__Q44nw4r3snd6detail12EnvGeneratorCFv
     bl CalcVolumeRatio__Q44nw4r3snd6detail4UtilFf
     lbz r0, 0x34(r30)
     fmuls f29, f29, f1
@@ -733,7 +1107,7 @@ lbl_8020ABDC:
     fmr f23, f1
     lfs f20, lbl_804A206C
     mr r3, r30
-    bl fn_8020BE90
+    bl GetValue__Q44nw4r3snd6detail12EnvGeneratorCFv
     bl CalcVolumeRatio__Q44nw4r3snd6detail4UtilFf
     lbz r0, 0x34(r30)
     fmuls f20, f20, f1
@@ -854,253 +1228,6 @@ lbl_8020AD3C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// Start__Q44nw4r3snd6detail7ChannelFRCQ44nw4r3snd6detail8WaveInfoiUl
-// ----------------------------------------------------------------------------
-// asm_to_cpp: Start__Q44nw4r3snd6detail7ChannelFRCQ44nw4r3snd6detail8WaveInfoiUl
-extern "C" asm void Start__Q44nw4r3snd6detail7ChannelFRCQ44nw4r3snd6detail8WaveInfoiUl() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r6
-    stw r30, 0x18(r1)
-    mr r30, r4
-    stw r29, 0x14(r1)
-    mr r29, r3
-    stw r5, 0xd0(r3)
-    addi r3, r3, 0x1c
-    bl Reset__Q44nw4r3snd6detail3LfoFv
-    lfs f1, lbl_804A2090
-    mr r3, r29
-    bl fn_8020BE78
-    li r0, 0x0
-    lwz r3, 0xf0(r29)
-    stw r0, 0xa8(r29)
-    mr r4, r30
-    mr r5, r31
-    bl Setup__Q44nw4r3snd6detail5VoiceFRCQ44nw4r3snd6detail8WaveInfoUl
-    lwz r3, 0xf0(r29)
-    bl Start__Q44nw4r3snd6detail5VoiceFv
-    li r0, 0x1
-    stb r0, 0x36(r29)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// Release__Q44nw4r3snd6detail7ChannelFv
-// ----------------------------------------------------------------------------
-// asm_to_cpp: Release__Q44nw4r3snd6detail7ChannelFv
-extern "C" asm void Release__Q44nw4r3snd6detail7ChannelFv() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    lwz r0, 0x0(r3)
-    cmpwi r0, 0x4
-    beq lbl_8020AE88
-    lwz r4, 0xf0(r3)
-    cmpwi r4, 0x0
-    beq lbl_8020AE80
-    lbz r0, 0x39(r3)
-    cmpwi r0, 0x0
-    bne lbl_8020AE80
-    mr r3, r4
-    li r4, 0x1
-    bl SetPriority__Q44nw4r3snd6detail5VoiceFi
-lbl_8020AE80:
-    li r0, 0x4
-    stw r0, 0x0(r31)
-lbl_8020AE88:
-    li r0, 0x0
-    stb r0, 0x35(r31)
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// NoteOff__Q44nw4r3snd6detail7ChannelFv
-// ----------------------------------------------------------------------------
-// asm_to_cpp: NoteOff__Q44nw4r3snd6detail7ChannelFv
-extern "C" asm void NoteOff__Q44nw4r3snd6detail7ChannelFv() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    lbz r0, 0x3a(r3)
-    cmpwi r0, 0x0
-    bne lbl_8020AF04
-    lwz r0, 0x0(r3)
-    cmpwi r0, 0x4
-    beq lbl_8020AEFC
-    lwz r4, 0xf0(r3)
-    cmpwi r4, 0x0
-    beq lbl_8020AEF4
-    lbz r0, 0x39(r3)
-    cmpwi r0, 0x0
-    bne lbl_8020AEF4
-    mr r3, r4
-    li r4, 0x1
-    bl SetPriority__Q44nw4r3snd6detail5VoiceFi
-lbl_8020AEF4:
-    li r0, 0x4
-    stw r0, 0x0(r31)
-lbl_8020AEFC:
-    li r0, 0x0
-    stb r0, 0x35(r31)
-lbl_8020AF04:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// Stop__Q44nw4r3snd6detail7ChannelFv
-// ----------------------------------------------------------------------------
-// asm_to_cpp: Stop__Q44nw4r3snd6detail7ChannelFv
-extern "C" asm void Stop__Q44nw4r3snd6detail7ChannelFv() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    lwz r0, 0xf0(r3)
-    cmpwi r0, 0x0
-    beq lbl_8020B02C
-    mr r3, r0
-    bl Stop__Q44nw4r3snd6detail5VoiceFv
-    lwz r3, 0xf0(r30)
-    bl Free__Q44nw4r3snd6detail5VoiceFv
-    lwz r12, 0xe0(r30)
-    li r0, 0x0
-    stw r0, 0xf0(r30)
-    cmpwi r12, 0x0
-    stb r0, 0x35(r30)
-    stb r0, 0x36(r30)
-    beq lbl_8020AF7C
-    mr r3, r30
-    lwz r5, 0xe4(r30)
-    li r4, 0x0
-    mtctr r12
-    bctrl
-lbl_8020AF7C:
-    lwz r3, 0xe8(r30)
-    cmpwi r3, 0x0
-    beq lbl_8020AF9C
-    lwz r12, 0x0(r3)
-    lwz r4, 0xec(r30)
-    lwz r12, 0xc(r12)
-    mtctr r12
-    bctrl
-lbl_8020AF9C:
-    lbz r0, 0x37(r30)
-    cmpwi r0, 0x0
-    beq lbl_8020B02C
-    li r7, 0x0
-    stb r7, 0x37(r30)
-    lbz r0, lbl_8049DA38
-    extsb. r0, r0
-    bne lbl_8020B004
-    lis r6, lbl_804040B0@ha
-    lis r4, __dt__Q44nw4r3snd6detail14ChannelManagerFv@ha
-    addi r3, r6, lbl_804040B0@l
-    lis r5, lbl_804040A0@ha
-    stw r7, 0x8(r3)
-    addi r8, r3, 0x8
-    addi r4, r4, __dt__Q44nw4r3snd6detail14ChannelManagerFv@l
-    addi r5, r5, lbl_804040A0@l
-    stw r7, 0xc(r3)
-    stw r7, lbl_804040B0@l(r6)
-    stw r7, 0x4(r3)
-    stw r8, 0x8(r3)
-    stw r8, 0xc(r3)
-    stb r7, 0x10(r3)
-    stw r7, 0x14(r3)
-    bl __register_global_object
-    li r0, 0x1
-    stb r0, lbl_8049DA38
-lbl_8020B004:
-    lis r31, lbl_804040B0@ha
-    addi r4, r30, 0xf8
-    addi r31, r31, lbl_804040B0@l
-    addi r3, r31, 0x4
-    bl Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode
-    cmpwi r30, 0x0
-    beq lbl_8020B02C
-    mr r3, r31
-    mr r4, r30
-    bl FreeImpl__Q44nw4r3snd6detail8PoolImplFPv
-lbl_8020B02C:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// UpdateSweep__Q44nw4r3snd6detail7ChannelFi
-// ----------------------------------------------------------------------------
-// asm_to_cpp: UpdateSweep__Q44nw4r3snd6detail7ChannelFi
-extern "C" asm void UpdateSweep__Q44nw4r3snd6detail7ChannelFi() {
-    nofralloc
-    lwz r0, 0xa8(r3)
-    lwz r5, 0xac(r3)
-    add r0, r0, r4
-    cmpw r0, r5
-    stw r0, 0xa8(r3)
-    blelr
-    stw r5, 0xa8(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// SetSweepParam__Q44nw4r3snd6detail7ChannelFfib
-// ----------------------------------------------------------------------------
-// asm_to_cpp: SetSweepParam__Q44nw4r3snd6detail7ChannelFfib
-extern "C" asm void SetSweepParam__Q44nw4r3snd6detail7ChannelFfib() {
-    nofralloc
-    li r0, 0x0
-    stfs f1, 0xa4(r3)
-    stw r4, 0xac(r3)
-    stb r5, 0x38(r3)
-    stw r0, 0xa8(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// SetBiquadFilter__Q44nw4r3snd6detail7ChannelFif
-// ----------------------------------------------------------------------------
-// asm_to_cpp: SetBiquadFilter__Q44nw4r3snd6detail7ChannelFif
-extern "C" asm void SetBiquadFilter__Q44nw4r3snd6detail7ChannelFif() {
-    nofralloc
-    stb r4, 0x3b(r3)
-    stfs f1, 0x54(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// VoiceCallbackFunc__Q44nw4r3snd6detail7ChannelFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv
-// ----------------------------------------------------------------------------
 // asm_to_cpp: VoiceCallbackFunc__Q44nw4r3snd6detail7ChannelFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv
 extern "C" asm void VoiceCallbackFunc__Q44nw4r3snd6detail7ChannelFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv() {
     nofralloc
@@ -1198,161 +1325,3 @@ lbl_8020B1BC:
     addi r1, r1, 0x10
     blr
 }
-
-// ----------------------------------------------------------------------------
-// AllocChannel__Q44nw4r3snd6detail7ChannelFiiiPFPQ44nw4r3snd6detail7ChannelQ54nw4r3snd6detail7Channel21ChannelCallbackStatusUl_vUl
-// ----------------------------------------------------------------------------
-// asm_to_cpp: AllocChannel__Q44nw4r3snd6detail7ChannelFiiiPFPQ44nw4r3snd6detail7ChannelQ54nw4r3snd6detail7Channel21ChannelCallbackStatusUl_vUl
-extern "C" asm void AllocChannel__Q44nw4r3snd6detail7ChannelFiiiPFPQ44nw4r3snd6detail7ChannelQ54nw4r3snd6detail7Channel21ChannelCallbackStatusUl_vUl() {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    addi r11, r1, 0x30
-    bl _savegpr_24
-    lbz r0, lbl_8049DA38
-    mr r24, r3
-    mr r25, r4
-    mr r26, r5
-    extsb. r0, r0
-    mr r27, r6
-    mr r28, r7
-    bne lbl_8020B254
-    lis r6, lbl_804040B0@ha
-    li r0, 0x0
-    addi r3, r6, lbl_804040B0@l
-    lis r4, __dt__Q44nw4r3snd6detail14ChannelManagerFv@ha
-    stw r0, 0x8(r3)
-    addi r7, r3, 0x8
-    lis r5, lbl_804040A0@ha
-    addi r4, r4, __dt__Q44nw4r3snd6detail14ChannelManagerFv@l
-    stw r0, 0xc(r3)
-    addi r5, r5, lbl_804040A0@l
-    stw r0, lbl_804040B0@l(r6)
-    stw r0, 0x4(r3)
-    stw r7, 0x8(r3)
-    stw r7, 0xc(r3)
-    stb r0, 0x10(r3)
-    stw r0, 0x14(r3)
-    bl __register_global_object
-    li r0, 0x1
-    stb r0, lbl_8049DA38
-lbl_8020B254:
-    lis r31, lbl_804040B0@ha
-    addi r31, r31, lbl_804040B0@l
-    mr r3, r31
-    bl AllocImpl__Q44nw4r3snd6detail8PoolImplFv
-    cmpwi r3, 0x0
-    mr r30, r3
-    bne lbl_8020B278
-    li r30, 0x0
-    b lbl_8020B2C0
-lbl_8020B278:
-    beq lbl_8020B2C0
-    bl fn_8020BDF4
-    addi r3, r30, 0x1c
-    bl Init__Q44nw4r3snd6detail8LfoParamFv
-    li r0, 0x0
-    lfs f0, lbl_804A2068
-    stw r0, 0x2c(r30)
-    stfs f0, 0x30(r30)
-    stb r0, 0x35(r30)
-    stb r0, 0x36(r30)
-    stb r0, 0x37(r30)
-    stb r0, 0xc0(r30)
-    stb r0, 0xc1(r30)
-    sth r0, 0xc2(r30)
-    sth r0, 0xc4(r30)
-    stw r0, 0xf0(r30)
-    stw r0, 0xf8(r30)
-    stw r0, 0xfc(r30)
-lbl_8020B2C0:
-    addi r0, r31, 0x8
-    addi r29, r30, 0xf8
-    stw r0, 0x8(r1)
-    mr r5, r29
-    addi r3, r31, 0x4
-    addi r4, r1, 0x8
-    bl Insert__Q44nw4r2ut6detail12LinkListImplFQ54nw4r2ut6detail12LinkListImpl8IteratorPQ34nw4r2ut12LinkListNode
-    cmpwi r30, 0x0
-    bne lbl_8020B2EC
-    li r3, 0x0
-    b lbl_8020B3B8
-lbl_8020B2EC:
-    li r31, 0x1
-    stb r31, 0x37(r30)
-    bl GetInstance__Q44nw4r3snd6detail12VoiceManagerFv
-    lis r7, VoiceCallbackFunc__Q44nw4r3snd6detail7ChannelFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv@ha
-    mr r4, r24
-    mr r5, r25
-    mr r6, r26
-    mr r8, r30
-    addi r7, r7, VoiceCallbackFunc__Q44nw4r3snd6detail7ChannelFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv@l
-    bl AllocVoice__Q44nw4r3snd6detail12VoiceManagerFiiiPFPQ44nw4r3snd6detail5VoiceQ54nw4r3snd6detail5Voice19VoiceCallbackStatusPv_vPv
-    cmpwi r3, 0x0
-    bne lbl_8020B3A0
-    lbz r0, lbl_8049DA38
-    extsb. r0, r0
-    bne lbl_8020B370
-    lis r6, lbl_804040B0@ha
-    li r0, 0x0
-    addi r3, r6, lbl_804040B0@l
-    lis r4, __dt__Q44nw4r3snd6detail14ChannelManagerFv@ha
-    stw r0, 0x8(r3)
-    addi r7, r3, 0x8
-    lis r5, lbl_804040A0@ha
-    addi r4, r4, __dt__Q44nw4r3snd6detail14ChannelManagerFv@l
-    stw r0, 0xc(r3)
-    addi r5, r5, lbl_804040A0@l
-    stw r0, lbl_804040B0@l(r6)
-    stw r0, 0x4(r3)
-    stw r7, 0x8(r3)
-    stw r7, 0xc(r3)
-    stb r0, 0x10(r3)
-    stw r0, 0x14(r3)
-    bl __register_global_object
-    stb r31, lbl_8049DA38
-lbl_8020B370:
-    lis r31, lbl_804040B0@ha
-    mr r4, r29
-    addi r31, r31, lbl_804040B0@l
-    addi r3, r31, 0x4
-    bl Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode
-    cmpwi r30, 0x0
-    beq lbl_8020B398
-    mr r3, r31
-    mr r4, r30
-    bl FreeImpl__Q44nw4r3snd6detail8PoolImplFPv
-lbl_8020B398:
-    li r3, 0x0
-    b lbl_8020B3B8
-lbl_8020B3A0:
-    stw r3, 0xf0(r30)
-    mr r3, r30
-    mr r4, r27
-    mr r5, r28
-    bl InitParam__Q44nw4r3snd6detail7ChannelFPFPQ44nw4r3snd6detail7ChannelQ54nw4r3snd6detail7Channel21ChannelCallbackStatusUl_vUl
-    mr r3, r30
-lbl_8020B3B8:
-    addi r11, r1, 0x30
-    bl _restgpr_24
-    lwz r0, 0x34(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// FreeChannel__Q44nw4r3snd6detail7ChannelFPQ44nw4r3snd6detail7Channel
-// ----------------------------------------------------------------------------
-// asm_to_cpp: FreeChannel__Q44nw4r3snd6detail7ChannelFPQ44nw4r3snd6detail7Channel
-extern "C" asm void FreeChannel__Q44nw4r3snd6detail7ChannelFPQ44nw4r3snd6detail7Channel() {
-    nofralloc
-    cmpwi r3, 0x0
-    beqlr
-    li r0, 0x0
-    stw r0, 0xe0(r3)
-    stw r0, 0xe4(r3)
-    blr
-}
-

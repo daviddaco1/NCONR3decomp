@@ -68,11 +68,11 @@ extern void _savegpr_27();
 extern void atoi();
 extern void closesocket();
 extern void detail_HoldSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandlePCcPCQ44nw4r3snd14SoundStartable9StartInfo();
-extern void fn_80253528();
-extern void fn_802535C4();
-extern void fn_80253658();
-extern void fn_80253660();
-extern void fn_80253690();
+extern void ArrayNew();
+extern void ArrayFree();
+extern void ArrayLength();
+extern void ArrayNth();
+extern void ArrayAppend();
 extern void fn_802557FC();
 extern void fn_80255E4C();
 extern void fn_80256C4C();
@@ -167,7 +167,7 @@ lbl_802776CC:
     stw r0, lbl_8049CD80
     cmpwi r3, 0x0
     beq lbl_8027788C
-    bl fn_80253658
+    bl ArrayLength
     lis r28, lbl_8036B240@ha
     lis r30, lbl_8036B478@ha
     addi r28, r28, lbl_8036B240@l
@@ -279,7 +279,7 @@ lbl_80277874:
     cmpwi r31, 0x0
     bge lbl_80277700
     lwz r3, lbl_8049DC48
-    bl fn_802535C4
+    bl ArrayFree
     li r0, 0x0
     stw r0, lbl_8049DC48
 lbl_8027788C:
@@ -1055,7 +1055,7 @@ lbl_80278344:
     stw r0, lbl_8049CD80
     cmpwi r3, 0x0
     beq lbl_80278504
-    bl fn_80253658
+    bl ArrayLength
     lis r29, lbl_8036B240@ha
     lis r31, lbl_8036B478@ha
     addi r29, r29, lbl_8036B240@l
@@ -1167,7 +1167,7 @@ lbl_802784EC:
     cmpwi r30, 0x0
     bge lbl_80278378
     lwz r3, lbl_8049DC48
-    bl fn_802535C4
+    bl ArrayFree
     li r0, 0x0
     stw r0, lbl_8049DC48
 lbl_80278504:
@@ -1211,12 +1211,12 @@ lbl_80278560:
     li r3, 0x1c
     li r4, 0x2
     li r5, 0x0
-    bl fn_80253528
+    bl ArrayNew
     stw r3, lbl_8049DC48
 lbl_802785A4:
     lwz r3, lbl_8049DC48
     addi r4, r1, 0x28
-    bl fn_80253690
+    bl ArrayAppend
 lbl_802785B0:
     addi r0, r1, 0x88
     cmplw r28, r0
@@ -1507,7 +1507,7 @@ lbl_8027897C:
 lbl_80278984:
     lwz r3, lbl_8049DC48
     mr r4, r29
-    bl fn_80253660
+    bl ArrayNth
     lwz r0, 0x0(r3)
     cmpwi r0, 0x1
     bne lbl_802789B8
@@ -1522,7 +1522,7 @@ lbl_802789B8:
     addi r29, r29, 0x1
 lbl_802789BC:
     lwz r3, lbl_8049DC48
-    bl fn_80253658
+    bl ArrayLength
     cmpw r29, r3
     blt lbl_80278984
     li r29, -0x1
@@ -1834,7 +1834,7 @@ lbl_80278DDC:
 lbl_80278DE4:
     lwz r3, lbl_8049DC48
     mr r4, r27
-    bl fn_80253660
+    bl ArrayNth
     lwz r0, 0x0(r3)
     cmpwi r0, 0x0
     bne lbl_80278E18
@@ -1849,7 +1849,7 @@ lbl_80278E18:
     addi r27, r27, 0x1
 lbl_80278E1C:
     lwz r3, lbl_8049DC48
-    bl fn_80253658
+    bl ArrayLength
     cmpw r27, r3
     blt lbl_80278DE4
     li r27, -0x1
@@ -1858,7 +1858,7 @@ lbl_80278E30:
     beq lbl_8027977C
     lwz r3, lbl_8049DC48
     mr r4, r27
-    bl fn_80253660
+    bl ArrayNth
     neg r0, r31
     stw r31, 0x8(r3)
     andc r0, r0, r31
@@ -2012,7 +2012,7 @@ lbl_8027904C:
 lbl_80279054:
     lwz r3, lbl_8049DC48
     mr r4, r28
-    bl fn_80253660
+    bl ArrayNth
     lwz r0, 0x0(r3)
     cmpwi r0, 0x3
     bne lbl_80279088
@@ -2027,7 +2027,7 @@ lbl_80279088:
     addi r28, r28, 0x1
 lbl_8027908C:
     lwz r3, lbl_8049DC48
-    bl fn_80253658
+    bl ArrayLength
     cmpw r28, r3
     blt lbl_80279054
     li r28, -0x1
@@ -2036,7 +2036,7 @@ lbl_802790A0:
     beq lbl_8027977C
     lwz r3, lbl_8049DC48
     mr r4, r28
-    bl fn_80253660
+    bl ArrayNth
     neg r0, r30
     stw r30, 0x8(r3)
     andc r0, r0, r30
@@ -2190,7 +2190,7 @@ lbl_802792BC:
 lbl_802792C4:
     lwz r3, lbl_8049DC48
     mr r4, r28
-    bl fn_80253660
+    bl ArrayNth
     lwz r0, 0x0(r3)
     cmpwi r0, 0x3
     bne lbl_802792F8
@@ -2205,7 +2205,7 @@ lbl_802792F8:
     addi r28, r28, 0x1
 lbl_802792FC:
     lwz r3, lbl_8049DC48
-    bl fn_80253658
+    bl ArrayLength
     cmpw r28, r3
     blt lbl_802792C4
     li r28, -0x1
@@ -2214,7 +2214,7 @@ lbl_80279310:
     beq lbl_8027977C
     lwz r3, lbl_8049DC48
     mr r4, r28
-    bl fn_80253660
+    bl ArrayNth
     neg r0, r30
     stw r30, 0x8(r3)
     andc r0, r0, r30
@@ -2503,7 +2503,7 @@ lbl_80279704:
 lbl_8027970C:
     lwz r3, lbl_8049DC48
     mr r4, r27
-    bl fn_80253660
+    bl ArrayNth
     lwz r0, 0x0(r3)
     cmpwi r0, 0x2
     bne lbl_80279740
@@ -2518,7 +2518,7 @@ lbl_80279740:
     addi r27, r27, 0x1
 lbl_80279744:
     lwz r3, lbl_8049DC48
-    bl fn_80253658
+    bl ArrayLength
     cmpw r27, r3
     blt lbl_8027970C
     li r27, -0x1
@@ -2560,14 +2560,14 @@ asm void CallReqCallback() {
     mr r31, r8
     blt lbl_802798D0
     lwz r3, lbl_8049DC48
-    bl fn_80253658
+    bl ArrayLength
     cmpw r26, r3
     blt lbl_802797DC
     b lbl_802798D0
 lbl_802797DC:
     lwz r3, lbl_8049DC48
     mr r4, r26
-    bl fn_80253660
+    bl ArrayNth
     lwz r12, 0x18(r3)
     mr r8, r3
     cmpwi r12, 0x0
@@ -2803,7 +2803,7 @@ lbl_80279AC8:
 lbl_80279AD4:
     lwz r3, 0x20(r3)
     mr r4, r7
-    bl fn_80253660
+    bl ArrayNth
     lwz r7, 0x0(r3)
 lbl_80279AE4:
     mr r6, r7
@@ -2873,7 +2873,7 @@ lbl_80279BAC:
 lbl_80279BB8:
     lwz r3, 0x20(r3)
     mr r4, r6
-    bl fn_80253660
+    bl ArrayNth
     lwz r6, 0x0(r3)
 lbl_80279BC8:
     mr r5, r30
@@ -2942,7 +2942,7 @@ lbl_80279C8C:
 lbl_80279C98:
     lwz r3, 0x20(r3)
     mr r4, r7
-    bl fn_80253660
+    bl ArrayNth
     lwz r7, 0x0(r3)
 lbl_80279CA8:
     mr r6, r7
@@ -3010,7 +3010,7 @@ lbl_80279D68:
 lbl_80279D74:
     lwz r3, 0x1c(r3)
     mr r4, r7
-    bl fn_80253660
+    bl ArrayNth
     lwz r7, 0x0(r3)
 lbl_80279D84:
     mr r6, r7
@@ -3080,7 +3080,7 @@ lbl_80279E4C:
 lbl_80279E58:
     lwz r3, 0x1c(r3)
     mr r4, r6
-    bl fn_80253660
+    bl ArrayNth
     lwz r6, 0x0(r3)
 lbl_80279E68:
     mr r5, r30
@@ -3149,7 +3149,7 @@ lbl_80279F2C:
 lbl_80279F38:
     lwz r3, 0x1c(r3)
     mr r4, r7
-    bl fn_80253660
+    bl ArrayNth
     lwz r7, 0x0(r3)
 lbl_80279F48:
     mr r6, r7

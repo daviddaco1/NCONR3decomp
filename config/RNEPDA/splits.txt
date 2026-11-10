@@ -1433,7 +1433,13 @@ nw4r/ut/ut_TextWriterBase.cpp:
 	.ctors      start:0x80339544 end:0x80339548
 
 dwc/unk_8022813C.c:
-	.text       start:0x8022813C end:0x80253934
+	.text       start:0x8022813C end:0x8022E320
+
+dwc/unk_8022E320.c:
+	.text       start:0x8022E320 end:0x8022E6D8
+
+dwc/unk_8022E6D8.c:
+	.text       start:0x8022E6D8 end:0x80253934
 
 nw4r/snd/snd_SoundStartable.cpp:
 	.text       start:0x80253934 end:0x80253BA0

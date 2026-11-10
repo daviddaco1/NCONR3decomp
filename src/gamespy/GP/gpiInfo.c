@@ -46,7 +46,7 @@ extern void _savegpr_23();
 extern void _savegpr_25();
 extern void atoi();
 extern void fn_8025651C();
-extern void fn_8025658C();
+extern void _strlwr();
 extern void fn_80256C4C();
 extern void fn_80256C70();
 extern void fn_80259940();
@@ -1787,7 +1787,7 @@ lbl_8025F7A8:
     li r5, 0x33
     bl strzcpy
     addi r3, r1, 0x38
-    bl fn_8025658C
+    bl _strlwr
     addi r3, r29, 0x144
     addi r4, r1, 0x38
     li r5, 0x33

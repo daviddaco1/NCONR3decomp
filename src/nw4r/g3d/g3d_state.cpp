@@ -1582,10 +1582,10 @@ extern "C" void fn_801D2798();
 extern "C" void fn_801E03FC();
 extern "C" void fn_801E04F0();
 extern "C" void fn_801E0908();
-extern "C" void fn_801E292C();
+extern "C" void GetCameraMtxPtr__Q34nw4r3g3d8G3DStateFi();
 extern "C" void fn_801E3034();
 extern "C" void fn_801E32C8();
-extern "C" void fn_801E6240();
+extern "C" void CalcTexMtx__Q24nw4r3g3dFPQ34nw4r4math5MTX34bRCQ34nw4r3g3d6TexSrtQ44nw4r3g3d6TexSrt4FlagQ44nw4r3g3d13TexSrtTypedef13TexMatrixMode();
 extern "C" void fn_8030DE44();
 extern "C" void fn_8030DEEC();
 extern "C" void fn_8030DF28();
@@ -3897,7 +3897,7 @@ lbl_801E1EB4:
     addi r5, r5, 0x8
     srw r0, r0, r28
     clrlwi r6, r0, 28
-    bl fn_801E6240
+    bl CalcTexMtx__Q24nw4r3g3dFPQ34nw4r4math5MTX34bRCQ34nw4r3g3d6TexSrtQ44nw4r3g3d6TexSrt4FlagQ44nw4r3g3d13TexSrtTypedef13TexMatrixMode
     b lbl_801E1F44
 lbl_801E1EEC:
     lwz r6, 0x0(r21)
@@ -3909,7 +3909,7 @@ lbl_801E1EEC:
     addi r5, r5, 0x8
     srw r0, r0, r28
     clrlwi r6, r0, 28
-    bl fn_801E6240
+    bl CalcTexMtx__Q24nw4r3g3dFPQ34nw4r4math5MTX34bRCQ34nw4r3g3d6TexSrtQ44nw4r3g3d6TexSrt4FlagQ44nw4r3g3d13TexSrtTypedef13TexMatrixMode
     lfs f2, 0x40(r1)
     addi r4, r1, 0x68
     lfs f1, 0x44(r1)
@@ -4509,8 +4509,8 @@ lbl_801E2890:
     blr
 }
 
-// asm_to_cpp: fn_801E292C
-extern "C" asm void fn_801E292C() {
+// asm_to_cpp: GetCameraMtxPtr__Q34nw4r3g3d8G3DStateFi
+extern "C" asm void GetCameraMtxPtr__Q34nw4r3g3d8G3DStateFi() {
     nofralloc
     cmpwi r3, 0x20
     bge lbl_801E2954

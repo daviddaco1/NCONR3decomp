@@ -148,7 +148,7 @@ extern "C" void fn_8021C954();
 extern "C" void fn_8021C95C();
 extern "C" void fn_8021C964();
 extern "C" void fn_8021C96C();
-extern "C" void fn_8021D13C();
+extern "C" void __dt__Q34nw4r2ef16DrawStrategyImplFv();
 extern "C" void memcpy();
 
 // ----------------------------------------------------------------------------
@@ -236,7 +236,7 @@ extern "C" asm void __dt__Q54nw4r3snd6detail10StrmPlayer18StrmHeaderLoadTaskFv()
     mr r30, r3
     beq lbl_8021A084
     li r4, 0x0
-    bl fn_8021D13C
+    bl __dt__Q34nw4r2ef16DrawStrategyImplFv
     cmpwi r31, 0x0
     ble lbl_8021A084
     mr r3, r30
@@ -266,7 +266,7 @@ extern "C" asm void __dt__Q54nw4r3snd6detail10StrmPlayer16StrmDataLoadTaskFv() {
     mr r30, r3
     beq lbl_8021A0DC
     li r4, 0x0
-    bl fn_8021D13C
+    bl __dt__Q34nw4r2ef16DrawStrategyImplFv
     cmpwi r31, 0x0
     ble lbl_8021A0DC
     mr r3, r30
@@ -340,7 +340,7 @@ lbl_8021A1B8:
     addic. r3, r29, 0x174
     beq lbl_8021A1C8
     li r4, 0x0
-    bl fn_8021D13C
+    bl __dt__Q34nw4r2ef16DrawStrategyImplFv
 lbl_8021A1C8:
     cmpwi r30, 0x0
     ble lbl_8021A1D8

@@ -4,6 +4,13 @@
 
 extern "C" {
 
+struct N2D_GDControl {
+    u8 *start;
+    u8 *ptr;
+    u8 *top;
+    u8 *end;
+};
+
 extern u8 jumptable_8034EBA8[];
 extern u8 lbl_8034F470[];
 extern u8 lbl_8034F540[];
@@ -16,10 +23,11 @@ extern float lbl_8049D6C4;
 extern s32 lbl_8049D6C8;
 extern u32 lbl_8049D6CC;
 extern s8 *lbl_8049E180;
-extern float lbl_804A08E8;
+__declspec(section ".sdata2") extern const f32 lbl_804A08E8[];
 
 void DCFlushRange(s32 arg0, s32 arg1);
 void DCInvalidateRange(s32 arg0, s32 arg1);
+void DCStoreRange(s32 arg0, s32 arg1);
 void GDFlushCurrToMem(void);
 void GDInitGDLObj(s8 *arg0, s32 arg1, s32 arg2);
 s32 GDOverflowed();
@@ -33,8 +41,8 @@ M2C_UNK fn_80018B0C(M2C_UNK *arg0, f32 farg0, f32 farg1, f32 farg2);
 s32 fn_80019D1C(s8 *arg0);
 M2C_UNK fn_80019DAC(s8 *arg0, f32 *arg1);
 void fn_8008396C(s8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
-s32 fn_80120784();
-s32 fn_80121D4C();
+M2C_UNK fn_80120784(void);
+M2C_UNK fn_80121D4C(void);
 f32 fn_80121D98(s32 arg0);
 void fn_80121DAC(s32 arg0);
 void fn_801220B4(s8 *arg0);
@@ -44,12 +52,6 @@ s32 fn_80122168(void);
 void fn_80122174(s32 arg0);
 void fn_80122188(u8 arg0);
 void fn_801221C0(u8 arg0);
-struct N2D_GDControl {
-    u8 *start;
-    u8 *ptr;
-    u8 *top;
-    u8 *end;
-};
 void fn_801221D8(u32 arg0);
 void fn_801221F8(u16 arg0);
 s32 fn_80122240(void);
@@ -58,21 +60,147 @@ s32 fn_8012225C(s8 *arg0);
 s32 fn_8012226C(s32 *arg0);
 void fn_80122274(void);
 void fn_80122278(s32 arg0, s32 arg1, u16 arg2);
-extern "C" void fn_801222B4(u8 arg0);
-extern "C" void fn_801222BC(u8 arg0);
-extern "C" void fn_801222C4(u8 arg0);
+void fn_801222B4(u8 arg0);
+void fn_801222BC(u8 arg0);
+void fn_801222C4(u8 arg0);
 void fn_801222CC(s8 *arg0, s8 *arg1);
 void fn_80122330(s8 *arg0, s8 *arg1);
 M2C_UNK fn_80170DFC(s32 arg0);
-void fn_801A9384(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7);
-s32 fn_802DD228();
-s32 fn_802DD804();
-void fn_802DDE28(s32 arg0, u8 arg1, u8 arg2);
-void fn_802DE02C(s32 arg0);
-void fn_803150C4(s32 arg0, u32 arg1);
+void fn_801A9384(s32 arg0, s32 arg1, s32 arg2, ...);
+s32 fn_802DD228(void);
+s32 fn_802DD804(void);
+s32 fn_802DDE28(s32 arg0, u8 arg1, u8 arg2);
+s32 fn_802DE02C(s32 arg0);
+
+
+f32 fn_80121D98(s32 arg0) {
+    return ((f32 *)lbl_8034F470)[arg0];
+}
+
+void fn_8012212C(void) {
+    lbl_8049D6CC = 0;
+}
+
+s32 fn_80122138(void) {
+    u32 temp_r4;
+
+    temp_r4 = (u32) (lbl_8049D6CC);
+    if (temp_r4 >= (u32) lbl_8049D6C8) {
+        return (s32) (0);
+    }
+    lbl_8049D6CC = temp_r4 + 1;
+    return (s32) (lbl_8049D6C0 + (temp_r4 * 0xA0));
+}
+
+s32 fn_80122168(void) {
+    return (s32) (M2C_FIELD(lbl_8049E180, s32 *, 8));
+}
+
+void fn_80122174(s32 arg0) {
+    M2C_FIELD(lbl_8049E180, s32 *, 8) = (s32) ((s32) (M2C_FIELD(lbl_8049E180, s32 *, 0) + arg0));
+}
+
+void fn_80122188(u8 arg0) {
+    fn_801221D8((s32) (1));
+    fn_801221C0((u8) (arg0));
+}
+
+void fn_801221C0(u8 arg0) {
+    struct N2D_GDControl *dl = (struct N2D_GDControl *)lbl_8049E180;
+    *dl->top++ = arg0;
+}
+
+#pragma dont_inline on
+void fn_801221D8(u32 arg0) {
+    struct N2D_GDControl *dl = (struct N2D_GDControl *)lbl_8049E180;
+    if (dl->top + arg0 > dl->end) {
+        GDOverflowed();
+    }
+}
+#pragma dont_inline reset
+
+void fn_801221F8(u16 arg0) {
+    fn_801221D8((s32) (2));
+    fn_801221C0((u8) ((u8) ((s32) arg0 >> 8)));
+    fn_801221C0((u8) ((u8) arg0));
+}
+
+s32 fn_80122240(void) {
+    return (s32) (M2C_FIELD(lbl_8049E180, s32 *, 8) - M2C_FIELD(lbl_8049E180, s32 *, 0));
+}
+
+void fn_80122254(s8 *arg0) {
+    lbl_8049E180 = arg0;
+}
+
+s32 fn_8012225C(s8 *arg0) {
+    return (s32) (M2C_FIELD(arg0, s32 *, 8) - M2C_FIELD(arg0, s32 *, 0));
+}
+
+s32 fn_8012226C(s32 *arg0) {
+    return (s32) (*arg0);
+}
+
+void fn_80122274(void) {
+}
+
+#pragma dont_inline on
+extern "C" void fn_801222B4(u8 arg0) {
+    fn_80122188(arg0);
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+extern "C" void fn_801222BC(u8 arg0) {
+    fn_80122188(arg0);
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+extern "C" void fn_801222C4(u8 arg0) {
+    fn_80122188(arg0);
+}
+#pragma dont_inline reset
+
+void fn_801222CC(s8 *arg0, s8 *arg1) {
+    M2C_FIELD(arg0, f32 *, 0) = (f32) M2C_FIELD(arg1, f32 *, 0);
+    M2C_FIELD(arg0, f32 *, 4) = (f32) M2C_FIELD(arg1, f32 *, 4);
+    M2C_FIELD(arg0, f32 *, 8) = (f32) M2C_FIELD(arg1, f32 *, 8);
+    M2C_FIELD(arg0, f32 *, 0x10) = (f32) M2C_FIELD(arg1, f32 *, 0x10);
+    M2C_FIELD(arg0, f32 *, 0x14) = (f32) M2C_FIELD(arg1, f32 *, 0x14);
+    M2C_FIELD(arg0, f32 *, 0x18) = (f32) M2C_FIELD(arg1, f32 *, 0x18);
+    M2C_FIELD(arg0, f32 *, 0x20) = (f32) M2C_FIELD(arg1, f32 *, 0x20);
+    M2C_FIELD(arg0, f32 *, 0x24) = (f32) M2C_FIELD(arg1, f32 *, 0x24);
+    M2C_FIELD(arg0, f32 *, 0x28) = (f32) M2C_FIELD(arg1, f32 *, 0x28);
+    M2C_FIELD(arg0, f32 *, 0x30) = (f32) M2C_FIELD(arg1, f32 *, 0xC);
+    M2C_FIELD(arg0, f32 *, 0x34) = (f32) M2C_FIELD(arg1, f32 *, 0x1C);
+    M2C_FIELD(arg0, f32 *, 0x38) = (f32) M2C_FIELD(arg1, f32 *, 0x2C);
+}
+
+void fn_80122330(s8 *arg0, s8 *arg1) {
+    M2C_FIELD(arg0, f32 *, 0) = (f32) M2C_FIELD(arg1, f32 *, 0);
+    M2C_FIELD(arg0, f32 *, 4) = (f32) M2C_FIELD(arg1, f32 *, 4);
+    M2C_FIELD(arg0, f32 *, 8) = (f32) M2C_FIELD(arg1, f32 *, 8);
+    M2C_FIELD(arg0, f32 *, 0x10) = (f32) M2C_FIELD(arg1, f32 *, 0x10);
+    M2C_FIELD(arg0, f32 *, 0x14) = (f32) M2C_FIELD(arg1, f32 *, 0x14);
+    M2C_FIELD(arg0, f32 *, 0x18) = (f32) M2C_FIELD(arg1, f32 *, 0x18);
+    M2C_FIELD(arg0, f32 *, 0x20) = (f32) M2C_FIELD(arg1, f32 *, 0x20);
+    M2C_FIELD(arg0, f32 *, 0x24) = (f32) M2C_FIELD(arg1, f32 *, 0x24);
+    M2C_FIELD(arg0, f32 *, 0x28) = (f32) M2C_FIELD(arg1, f32 *, 0x28);
+    M2C_FIELD(arg0, f32 *, 0xC) = (f32) M2C_FIELD(arg1, f32 *, 0x30);
+    M2C_FIELD(arg0, f32 *, 0x1C) = (f32) M2C_FIELD(arg1, f32 *, 0x34);
+    M2C_FIELD(arg0, f32 *, 0x2C) = (f32) M2C_FIELD(arg1, f32 *, 0x38);
+}
+
+#pragma dont_inline on
+void fn_80122278(s32 arg0, s32 arg1, u16 arg2) {
+    fn_80122188((u8) ((u8) (arg1 | arg0)));
+    fn_801221F8((u16) (arg2));
+}
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_80120784
-asm s32 fn_80120784() {
+asm M2C_UNK fn_80120784(void) {
     nofralloc
     stwu r1, -0x40(r1)
     mflr r0
@@ -1551,7 +1679,7 @@ lbl_80121D34:
 }
 
 // asm_to_cpp: fn_80121D4C
-asm s32 fn_80121D4C() {
+asm M2C_UNK fn_80121D4C(void) {
     nofralloc
     lwz r4, 0xc(r1)
     subi r5, r4, 0x321
@@ -1572,10 +1700,6 @@ asm s32 fn_80121D4C() {
     li r7, 0x1
     b fn_8008396C
     blr
-}
-
-f32 fn_80121D98(s32 arg0) {
-    return ((f32 *)lbl_8034F470)[arg0];
 }
 
 // asm_to_cpp: fn_80121DAC
@@ -1735,7 +1859,7 @@ lbl_80121E68:
     bl fn_802DE02C
     mr r3, r25
     li r4, 0x4
-    bl fn_803150C4
+    bl DCStoreRange
     lwz r0, lbl_8049D6C0
     add r3, r0, r27
     lwz r3, 0x6c(r3)
@@ -1749,7 +1873,7 @@ lbl_80121E68:
     bl fn_802DE02C
     mr r3, r25
     li r4, 0x4
-    bl fn_803150C4
+    bl DCStoreRange
     lwz r0, lbl_8049D6C0
     add r3, r0, r27
     lwz r3, 0x70(r3)
@@ -1762,7 +1886,7 @@ lbl_80121E68:
     bl fn_802DE02C
     mr r3, r25
     li r4, 0x4
-    bl fn_803150C4
+    bl DCStoreRange
     mr r3, r28
     bl fn_80122174
     li r3, 0x0
@@ -1782,171 +1906,15 @@ lbl_80122090:
     blr
 }
 
-// asm_to_cpp: fn_801220B4
-asm void fn_801220B4(s8 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    cmpwi r3, 0x0
-    bne lbl_801220EC
-    lis r3, lbl_8034F5A0@ha
-    addi r3, r3, lbl_8034F5A0@l
-    li r4, 0xa6
-    addi r5, r3, 0x53
-    opword 0x4CC63182
-    bl fn_801A9384
-lbl_801220EC:
-    lwz r3, 0x60(r30)
-    li r4, 0x80
-    bl DCFlushRange
-    addi r3, r30, 0x74
-    bl fn_8012225C
-    mr r31, r3
-    addi r3, r30, 0x74
-    bl fn_8012226C
-    mr r4, r31
-    bl GXCallDisplayList
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-void fn_8012212C(void) {
-    lbl_8049D6CC = 0;
-}
-
-s32 fn_80122138(void) {
-    u32 temp_r4;
-
-    temp_r4 = (u32) (lbl_8049D6CC);
-    if (temp_r4 >= (u32) lbl_8049D6C8) {
-        return (s32) (0);
-    }
-    lbl_8049D6CC = temp_r4 + 1;
-    return (s32) (lbl_8049D6C0 + (temp_r4 * 0xA0));
-}
-
-s32 fn_80122168(void) {
-    return (s32) (M2C_FIELD(lbl_8049E180, s32 *, 8));
-}
-
-void fn_80122174(s32 arg0) {
-    M2C_FIELD(lbl_8049E180, s32 *, 8) = (s32) ((s32) (M2C_FIELD(lbl_8049E180, s32 *, 0) + arg0));
-}
-
-void fn_80122188(u8 arg0) {
-    fn_801221D8((s32) (1));
-    fn_801221C0((u8) (arg0));
-}
-
-void fn_801221C0(u8 arg0) {
-    struct N2D_GDControl *dl = (struct N2D_GDControl *)lbl_8049E180;
-    *dl->top++ = arg0;
-}
-
 #pragma dont_inline on
-void fn_801221D8(u32 arg0) {
-    struct N2D_GDControl *dl = (struct N2D_GDControl *)lbl_8049E180;
-    if (dl->top + arg0 > dl->end) {
-        GDOverflowed();
+void fn_801220B4(s8 *arg0) {
+
+    if (arg0 == NULL) {
+        fn_801A9384((s32) &lbl_8034F5A0, 0xA6, (s32) ((s8 *) &lbl_8034F5A0 + 0x53));
     }
+    DCFlushRange((s32) (M2C_FIELD(arg0, s32 *, 0x60)), (s32) (0x80));
+    GXCallDisplayList((s32) (fn_8012226C((s32 *) (arg0 + 0x74))), (s32) ((fn_8012225C((s8 *) (arg0 + 0x74)))));
 }
 #pragma dont_inline reset
-
-void fn_801221F8(u16 arg0) {
-    fn_801221D8((s32) (2));
-    fn_801221C0((u8) ((u8) ((s32) arg0 >> 8)));
-    fn_801221C0((u8) ((u8) arg0));
-}
-
-s32 fn_80122240(void) {
-    return (s32) (M2C_FIELD(lbl_8049E180, s32 *, 8) - M2C_FIELD(lbl_8049E180, s32 *, 0));
-}
-
-void fn_80122254(s8 *arg0) {
-    lbl_8049E180 = arg0;
-}
-
-s32 fn_8012225C(s8 *arg0) {
-    return (s32) (M2C_FIELD(arg0, s32 *, 8) - M2C_FIELD(arg0, s32 *, 0));
-}
-
-s32 fn_8012226C(s32 *arg0) {
-    return (s32) (*arg0);
-}
-
-void fn_80122274(void) {
-}
-
-// asm_to_cpp: fn_80122278
-asm void fn_80122278(s32 arg0, s32 arg1, u16 arg2) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r5
-    or r0, r4, r3
-    clrlwi r3, r0, 24
-    bl fn_80122188
-    clrlwi r3, r31, 16
-    bl fn_801221F8
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-#pragma dont_inline on
-extern "C" void fn_801222B4(u8 arg0) {
-    fn_80122188(arg0);
-}
-
-extern "C" void fn_801222BC(u8 arg0) {
-    fn_80122188(arg0);
-}
-
-extern "C" void fn_801222C4(u8 arg0) {
-    fn_80122188(arg0);
-}
-#pragma dont_inline reset
-
-void fn_801222CC(s8 *arg0, s8 *arg1) {
-    M2C_FIELD(arg0, f32 *, 0) = (f32) M2C_FIELD(arg1, f32 *, 0);
-    M2C_FIELD(arg0, f32 *, 4) = (f32) M2C_FIELD(arg1, f32 *, 4);
-    M2C_FIELD(arg0, f32 *, 8) = (f32) M2C_FIELD(arg1, f32 *, 8);
-    M2C_FIELD(arg0, f32 *, 0x10) = (f32) M2C_FIELD(arg1, f32 *, 0x10);
-    M2C_FIELD(arg0, f32 *, 0x14) = (f32) M2C_FIELD(arg1, f32 *, 0x14);
-    M2C_FIELD(arg0, f32 *, 0x18) = (f32) M2C_FIELD(arg1, f32 *, 0x18);
-    M2C_FIELD(arg0, f32 *, 0x20) = (f32) M2C_FIELD(arg1, f32 *, 0x20);
-    M2C_FIELD(arg0, f32 *, 0x24) = (f32) M2C_FIELD(arg1, f32 *, 0x24);
-    M2C_FIELD(arg0, f32 *, 0x28) = (f32) M2C_FIELD(arg1, f32 *, 0x28);
-    M2C_FIELD(arg0, f32 *, 0x30) = (f32) M2C_FIELD(arg1, f32 *, 0xC);
-    M2C_FIELD(arg0, f32 *, 0x34) = (f32) M2C_FIELD(arg1, f32 *, 0x1C);
-    M2C_FIELD(arg0, f32 *, 0x38) = (f32) M2C_FIELD(arg1, f32 *, 0x2C);
-}
-
-void fn_80122330(s8 *arg0, s8 *arg1) {
-    M2C_FIELD(arg0, f32 *, 0) = (f32) M2C_FIELD(arg1, f32 *, 0);
-    M2C_FIELD(arg0, f32 *, 4) = (f32) M2C_FIELD(arg1, f32 *, 4);
-    M2C_FIELD(arg0, f32 *, 8) = (f32) M2C_FIELD(arg1, f32 *, 8);
-    M2C_FIELD(arg0, f32 *, 0x10) = (f32) M2C_FIELD(arg1, f32 *, 0x10);
-    M2C_FIELD(arg0, f32 *, 0x14) = (f32) M2C_FIELD(arg1, f32 *, 0x14);
-    M2C_FIELD(arg0, f32 *, 0x18) = (f32) M2C_FIELD(arg1, f32 *, 0x18);
-    M2C_FIELD(arg0, f32 *, 0x20) = (f32) M2C_FIELD(arg1, f32 *, 0x20);
-    M2C_FIELD(arg0, f32 *, 0x24) = (f32) M2C_FIELD(arg1, f32 *, 0x24);
-    M2C_FIELD(arg0, f32 *, 0x28) = (f32) M2C_FIELD(arg1, f32 *, 0x28);
-    M2C_FIELD(arg0, f32 *, 0xC) = (f32) M2C_FIELD(arg1, f32 *, 0x30);
-    M2C_FIELD(arg0, f32 *, 0x1C) = (f32) M2C_FIELD(arg1, f32 *, 0x34);
-    M2C_FIELD(arg0, f32 *, 0x2C) = (f32) M2C_FIELD(arg1, f32 *, 0x38);
-}
 
 } // extern "C"

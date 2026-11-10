@@ -1,64 +1,225 @@
-#include "types.h"
+#include <revolution/OS.h>
+#include <revolution/SI.h>
 
-// Translation unit: src/revolution/si/SIBios.cpp
-// Total functions: 15
+typedef enum {
+    SI_ERROR_NOREP = (1 << 3),
+    SI_ERROR_BUSY = (1 << 7),
+    SI_WIRELESS_LITE = (1 << 18),
+    SI_WIRELESS_CONT = (1 << 19),
+} SIStatus;
 
-// Small Data symbols (@sda21)
+typedef struct SIMain {
+    s32 chan;            // at 0x0
+    u32 poll;            // at 0x4
+    u32 inSize;          // at 0x8
+    void* inAddr;        // at 0xC
+    SICallback callback; // at 0x10
+} SIMain;
+
+typedef struct SIPacket {
+    s32 chan;            // at 0x0
+    void* outAddr;       // at 0x4
+    u32 outSize;         // at 0x8
+    void* inAddr;        // at 0xC
+    u32 inSize;          // at 0x10
+    SICallback callback; // at 0x14
+    s64 fire;            // at 0x18
+} SIPacket;
+
+const char* __SIVersion =
+    "<< RVL_SDK - SI \trelease build: May  8 2007 13:00:23 (0x4199_60831) >>";
+
+static SIMain Si = {SI_CHAN_NONE};
+static u32 Type[SI_MAX_CHAN] = {SI_ERROR_NOREP, SI_ERROR_NOREP, SI_ERROR_NOREP,
+                                SI_ERROR_NOREP};
+
+static SIPacket Packet[SI_MAX_CHAN];
+static s64 XferTime[SI_MAX_CHAN];
+static s64 TypeTime[SI_MAX_CHAN];
+static SICallback TypeCallback[SI_MAX_TYPE][SI_MAX_CHAN];
+static BOOL InputBufferValid[SI_MAX_CHAN];
+static u32 InputBuffer[SI_MAX_CHAN][2];
+static OSInterruptHandler RDSTHandler[SI_MAX_CHAN];
+static u32 InputBufferVcount[SI_MAX_CHAN];
+static OSAlarm Alarm[SI_MAX_CHAN];
+
+static void SIClearTCInterrupt(void) {
+    u32 csr = SI_HW_REGS[SI_SICOMSCR];
+
+    csr |= SI_SICOMCSR_TCINT;
+    csr &= ~SI_SICOMCSR_TSTART;
+
+    SI_HW_REGS[SI_SICOMSCR] = csr;
+}
+
+// CompleteTransfer: definicion C reemplazada por asm (ver abajo)
+u32 CompleteTransfer(void);
+
+
+// TODO
+// SIInterruptHandler: definicion C reemplazada por asm (ver abajo)
+void SIInterruptHandler(s16 intr, OSContext* ctx);
+
+
+// SIInit: definicion C reemplazada por asm (ver abajo)
+void SIInit(void);
+
+
+static BOOL __SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr,
+                         u32 inSize, SICallback callback) {
+    BOOL enabled;
+    u32 sr;
+    u32 alignSize;
+    u32 i;
+
+    union {
+        struct {
+            u32 TCINT : 1;
+            u32 TCINTMSK : 1;
+            u32 COMERR : 1;
+            u32 RDSTINT : 1;
+            u32 RDSTINTMSK : 1;
+            u32 reserved2 : 4;
+            u32 OUTLNGTH : 7;
+            u32 reserved1 : 1;
+            u32 INLNGTH : 7;
+            u32 reserved0 : 5;
+            u32 CHANNEL : 2;
+            u32 TSTART : 1;
+        };
+
+        u32 reg;
+    } comscr;
+
+    enabled = OSDisableInterrupts();
+
+    if (Si.chan != SI_CHAN_NONE) {
+        OSRestoreInterrupts(enabled);
+        return FALSE;
+    }
+
+    sr = SI_HW_REGS[SI_SISR];
+    sr &= (SI_SISR_UNRUN0 | SI_SISR_OVRUN0 | SI_SISR_COLL0 | SI_SISR_NOREP0) >>
+          (chan * 8);
+    SI_HW_REGS[SI_SISR] = sr;
+
+    Si.chan = chan;
+    Si.callback = callback;
+    Si.inSize = inSize;
+    Si.inAddr = inAddr;
+
+    alignSize = (outSize + 3) / 4;
+    for (i = 0; i < alignSize; i++) {
+        SI_HW_REGS[SI_RAM_BASE + i] = ((u32*)outAddr)[i];
+    }
+
+    comscr.reg = SI_HW_REGS[SI_SICOMSCR];
+
+    comscr.TCINT = TRUE;
+    comscr.TCINTMSK = callback != NULL;
+    // Minimum transfer is 1 byte. 0x00 will transfer 128 bytes
+    comscr.OUTLNGTH = outSize == 128 ? 0 : outSize;
+    comscr.INLNGTH = inSize == 128 ? 0 : inSize;
+    comscr.CHANNEL = chan;
+    comscr.TSTART = TRUE;
+
+    SI_HW_REGS[SI_SICOMSCR] = comscr.reg;
+
+    OSRestoreInterrupts(enabled);
+    return TRUE;
+}
+
+u32 SISetXY(u32 lines, u32 times) {
+    BOOL enabled;
+    u32 poll;
+
+    poll = lines << 16;
+    poll |= times << 8;
+
+    enabled = OSDisableInterrupts();
+
+    Si.poll &= ~(SI_SIPOLL_X | SI_SIPOLL_Y);
+    Si.poll |= poll;
+
+    poll = Si.poll;
+    SI_HW_REGS[SI_SIPOLL] = poll;
+
+    OSRestoreInterrupts(enabled);
+    return poll;
+}
+
+static void AlarmHandler(OSAlarm* alarm, OSContext* ctx) {
+    s32 chan;
+    SIPacket* packet;
+
+    chan = alarm - Alarm;
+    packet = &Packet[chan];
+
+    if (packet->chan != SI_CHAN_NONE) {
+        if (__SITransfer(packet->chan, packet->outAddr, packet->outSize,
+                         packet->inAddr, packet->inSize, packet->callback)) {
+            packet->chan = SI_CHAN_NONE;
+        }
+    }
+}
+
+// SITransfer: definicion C reemplazada por asm (ver abajo)
+BOOL SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr, u32 inSize,
+                SICallback callback, s64 wait);
+
+
+// TODO
+static void GetTypeCallback(s32 chan, u32 status) {
+    // static u32 cmdFixDevice[SI_MAX_CHAN];
+
+    // Type[chan] &= ~SI_ERROR_BUSY;
+    // Type[chan] |= status;
+    // TypeTime[chan] = __OSGetSystemTime();
+}
+
+// TODO
+u32 SIGetType(s32 chan) {
+    ;
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern float Initialized_694_8049E40C;
-extern float __SIVersion;
 extern float lbl_8049E408;
-
-// Global data symbols (@ha/@l)
 extern u8 GetTypeCallback_80325A78[];
 extern u8 Packet_8046EFC8[];
 extern u8 Si_8038DB08[];
 extern u8 TypeTime_8046F068[];
 extern u8 Type_8038DB20[];
 extern u8 lbl_8046F048[];
-extern u8 lbl_8046F088[];
 extern u8 lbl_8046F148[];
 extern u8 lbl_8046F168[];
 extern u8 lbl_8046F178[];
 extern u8 lbl_8046F188[];
-
-// Forward declarations
-extern void AlarmHandler();
-extern void CompleteTransfer();
+static u32 CompleteTransfer(void);
 extern void OSCancelAlarm();
-extern void OSDisableInterrupts();
 extern void OSRegisterVersion();
-extern void OSRestoreInterrupts();
 extern void OSSetAlarm();
-extern void SIDisablePolling();
-extern void SIEnablePolling();
-extern void SIEnablePollingInterrupt();
-extern void SIGetResponse();
-extern void SIGetStatus();
-extern void SIGetType();
-extern void SIInit();
-extern void SIInterruptHandler();
-extern void SISetCommand();
+extern int SIDisablePolling();
+extern int SIEnablePolling();
+extern int SIEnablePollingInterrupt();
+extern int SIGetResponse();
+extern int SIGetStatus();
+void SIInit(void);
+static void SIInterruptHandler(s16 intr, OSContext* ctx);
+extern int SISetCommand();
 extern void SISetSamplingRate();
-extern void SISetXY();
-extern void SITransfer();
-extern void SITransferCommands();
-extern void SIUnregisterPollingHandler();
+BOOL SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr, u32 inSize,
+                SICallback callback, s64 wait);
+extern int SITransferCommands();
+extern int SIUnregisterPollingHandler();
 extern void VIGetCurrentLine();
-extern void __OSGetSystemTime();
-extern void __OSSetInterruptHandler();
-extern void __OSUnmaskInterrupts();
-extern void __SITransfer();
 extern void _restgpr_17();
 extern void _restgpr_21();
-extern void _restgpr_26();
 extern void _savegpr_17();
 extern void _savegpr_21();
-extern void _savegpr_26();
 
-// ----------------------------------------------------------------------------
-// CompleteTransfer
-// ----------------------------------------------------------------------------
-asm void CompleteTransfer() {
+// asm_to_cpp: CompleteTransfer
+asm static u32 CompleteTransfer(void) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -263,10 +424,292 @@ lbl_80324D94:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// SIInterruptHandler
-// ----------------------------------------------------------------------------
-asm void SIInterruptHandler() {
+// asm_to_cpp: SIDisablePolling
+asm int SIDisablePolling() {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    cmpwi r3, 0x0
+    stw r0, 0x14(r1)
+    stw r31, 0xc(r1)
+    mr r31, r3
+    bne lbl_8032571C
+    lis r3, Si_8038DB08@ha
+    addi r3, r3, Si_8038DB08@l
+    lwz r3, 0x4(r3)
+    b lbl_80325748
+lbl_8032571C:
+    bl OSDisableInterrupts
+    lis r6, Si_8038DB08@ha
+    rlwinm r0, r31, 8, 24, 27
+    addi r6, r6, Si_8038DB08@l
+    lis r4, 0xcd00
+    lwz r5, 0x4(r6)
+    andc r31, r5, r0
+    stw r31, 0x6430(r4)
+    stw r31, 0x4(r6)
+    bl OSRestoreInterrupts
+    mr r3, r31
+lbl_80325748:
+    lwz r0, 0x14(r1)
+    lwz r31, 0xc(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
+}
+
+// asm_to_cpp: SIEnablePolling
+asm int SIEnablePolling() {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    cmpwi r3, 0x0
+    stw r0, 0x14(r1)
+    stw r31, 0xc(r1)
+    mr r31, r3
+    bne lbl_80325694
+    lis r3, Si_8038DB08@ha
+    addi r3, r3, Si_8038DB08@l
+    lwz r3, 0x4(r3)
+    b lbl_803256DC
+lbl_80325694:
+    bl OSDisableInterrupts
+    srwi r31, r31, 24
+    lis r6, Si_8038DB08@ha
+    extrwi r8, r31, 4, 24
+    lis r4, 0xcd00
+    addi r6, r6, Si_8038DB08@l
+    lis r0, 0x8000
+    oris r7, r8, 0x3ff
+    lwz r5, 0x4(r6)
+    ori r7, r7, 0xfff0
+    and r31, r31, r7
+    andc r5, r5, r8
+    or r31, r5, r31
+    stw r31, 0x4(r6)
+    stw r0, 0x6438(r4)
+    stw r31, 0x6430(r4)
+    bl OSRestoreInterrupts
+    mr r3, r31
+lbl_803256DC:
+    lwz r0, 0x14(r1)
+    lwz r31, 0xc(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
+}
+
+// asm_to_cpp: SIEnablePollingInterrupt
+asm int SIEnablePollingInterrupt() {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    stw r0, 0x14(r1)
+    stw r31, 0xc(r1)
+    mr r31, r3
+    bl OSDisableInterrupts
+    lis r4, 0xcd00
+    cmpwi r31, 0x0
+    lwz r5, 0x6434(r4)
+    extrwi r31, r5, 1, 4
+    beq lbl_803251EC
+    li r0, 0x0
+    lis r4, lbl_8046F178@ha
+    stwu r0, lbl_8046F178@l(r4)
+    oris r5, r5, 0x800
+    stw r0, 0x4(r4)
+    stw r0, 0x8(r4)
+    stw r0, 0xc(r4)
+    b lbl_803251F0
+lbl_803251EC:
+    rlwinm r5, r5, 0, 5, 3
+lbl_803251F0:
+    rlwinm r0, r5, 0, 1, 30
+    lis r4, 0xcd00
+    stw r0, 0x6434(r4)
+    bl OSRestoreInterrupts
+    mr r3, r31
+    lwz r31, 0xc(r1)
+    lwz r0, 0x14(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
+}
+
+// asm_to_cpp: SIGetResponse
+asm int SIGetResponse() {
+    nofralloc
+    stwu r1, -0x20(r1)
+    mflr r0
+    stw r0, 0x24(r1)
+    stw r31, 0x1c(r1)
+    stw r30, 0x18(r1)
+    mr r30, r4
+    stw r29, 0x14(r1)
+    mr r29, r3
+    stw r28, 0x10(r1)
+    bl OSDisableInterrupts
+    mr r31, r3
+    bl OSDisableInterrupts
+    lis r4, 0xcd00
+    subfic r0, r29, 0x3
+    lwz r28, 0x6438(r4)
+    slwi r0, r0, 3
+    srw r28, r28, r0
+    rlwinm. r0, r28, 0, 28, 28
+    beq lbl_803257C8
+    lis r4, Type_8038DB20@ha
+    slwi r5, r29, 2
+    addi r4, r4, Type_8038DB20@l
+    lwzx r0, r4, r5
+    rlwinm. r0, r0, 0, 24, 24
+    bne lbl_803257C8
+    li r0, 0x8
+    stwx r0, r4, r5
+lbl_803257C8:
+    bl OSRestoreInterrupts
+    rlwinm. r0, r28, 0, 26, 26
+    beq lbl_80325814
+    mulli r5, r29, 0xc
+    lis r0, 0xcd00
+    lis r4, lbl_8046F148@ha
+    lis r3, lbl_8046F168@ha
+    add r7, r0, r5
+    slwi r8, r29, 3
+    lwz r6, 0x6404(r7)
+    addi r4, r4, lbl_8046F148@l
+    add r5, r4, r8
+    slwi r0, r29, 2
+    stwx r6, r4, r8
+    addi r3, r3, lbl_8046F168@l
+    li r4, 0x1
+    lwz r6, 0x6408(r7)
+    stw r6, 0x4(r5)
+    stwx r4, r3, r0
+lbl_80325814:
+    lis r3, lbl_8046F168@ha
+    slwi r4, r29, 2
+    addi r3, r3, lbl_8046F168@l
+    li r0, 0x0
+    lwzx r28, r3, r4
+    cmpwi r28, 0x0
+    stwx r0, r3, r4
+    beq lbl_80325854
+    lis r3, lbl_8046F148@ha
+    slwi r4, r29, 3
+    addi r3, r3, lbl_8046F148@l
+    lwzx r0, r3, r4
+    add r3, r3, r4
+    stw r0, 0x0(r30)
+    lwz r0, 0x4(r3)
+    stw r0, 0x4(r30)
+lbl_80325854:
+    mr r3, r31
+    bl OSRestoreInterrupts
+    lwz r31, 0x1c(r1)
+    mr r3, r28
+    lwz r30, 0x18(r1)
+    lwz r29, 0x14(r1)
+    lwz r28, 0x10(r1)
+    lwz r0, 0x24(r1)
+    mtlr r0
+    addi r1, r1, 0x20
+    blr
+}
+
+// asm_to_cpp: SIGetStatus
+asm int SIGetStatus() {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    stw r0, 0x14(r1)
+    stw r31, 0xc(r1)
+    stw r30, 0x8(r1)
+    mr r30, r3
+    bl OSDisableInterrupts
+    lis r4, 0xcd00
+    subfic r0, r30, 0x3
+    lwz r31, 0x6438(r4)
+    slwi r0, r0, 3
+    srw r31, r31, r0
+    rlwinm. r0, r31, 0, 28, 28
+    beq lbl_803255C8
+    lis r4, Type_8038DB20@ha
+    slwi r5, r30, 2
+    addi r4, r4, Type_8038DB20@l
+    lwzx r0, r4, r5
+    rlwinm. r0, r0, 0, 24, 24
+    bne lbl_803255C8
+    li r0, 0x8
+    stwx r0, r4, r5
+lbl_803255C8:
+    bl OSRestoreInterrupts
+    mr r3, r31
+    lwz r31, 0xc(r1)
+    lwz r30, 0x8(r1)
+    lwz r0, 0x14(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
+}
+
+// asm_to_cpp: SIInit
+asm void SIInit(void) {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    stw r0, 0x14(r1)
+    lwz r0, Initialized_694_8049E40C
+    cmpwi r0, 0x0
+    bne lbl_803253B0
+    lwz r3, __SIVersion
+    bl OSRegisterVersion
+    lis r6, Packet_8046EFC8@ha
+    lis r4, Si_8038DB08@ha
+    li r7, -0x1
+    li r0, 0x0
+    addi r5, r6, Packet_8046EFC8@l
+    addi r4, r4, Si_8038DB08@l
+    stw r7, 0x60(r5)
+    li r3, 0x0
+    stw r7, 0x40(r5)
+    stw r7, 0x20(r5)
+    stw r7, Packet_8046EFC8@l(r6)
+    stw r0, 0x4(r4)
+    bl SISetSamplingRate
+    lis r3, 0xcd00
+lbl_80325358:
+    lwz r0, 0x6434(r3)
+    clrlwi. r0, r0, 31
+    bne lbl_80325358
+    lis r0, 0x8000
+    lis r3, 0xcd00
+    lis r4, SIInterruptHandler@ha
+    stw r0, 0x6434(r3)
+    addi r4, r4, SIInterruptHandler@l
+    li r3, 0x14
+    bl __OSSetInterruptHandler
+    li r3, 0x800
+    bl __OSUnmaskInterrupts
+    li r3, 0x0
+    bl SIGetType
+    li r3, 0x1
+    bl SIGetType
+    li r3, 0x2
+    bl SIGetType
+    li r3, 0x3
+    bl SIGetType
+    li r0, 0x1
+    stw r0, Initialized_694_8049E40C
+lbl_803253B0:
+    lwz r0, 0x14(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
+}
+
+// asm_to_cpp: SIInterruptHandler
+asm static void SIInterruptHandler(s16 intr, OSContext* ctx) {
     nofralloc
     stwu r1, -0x50(r1)
     mflr r0
@@ -540,335 +983,8 @@ lbl_80325188:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// SIEnablePollingInterrupt
-// ----------------------------------------------------------------------------
-asm void SIEnablePollingInterrupt() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    bl OSDisableInterrupts
-    lis r4, 0xcd00
-    cmpwi r31, 0x0
-    lwz r5, 0x6434(r4)
-    extrwi r31, r5, 1, 4
-    beq lbl_803251EC
-    li r0, 0x0
-    lis r4, lbl_8046F178@ha
-    stwu r0, lbl_8046F178@l(r4)
-    oris r5, r5, 0x800
-    stw r0, 0x4(r4)
-    stw r0, 0x8(r4)
-    stw r0, 0xc(r4)
-    b lbl_803251F0
-lbl_803251EC:
-    rlwinm r5, r5, 0, 5, 3
-lbl_803251F0:
-    rlwinm r0, r5, 0, 1, 30
-    lis r4, 0xcd00
-    stw r0, 0x6434(r4)
-    bl OSRestoreInterrupts
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// SIUnregisterPollingHandler
-// ----------------------------------------------------------------------------
-asm void SIUnregisterPollingHandler() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    bl OSDisableInterrupts
-    lis r4, lbl_8046F188@ha
-    li r0, 0x4
-    mr r31, r3
-    li r5, 0x0
-    addi r4, r4, lbl_8046F188@l
-    mtctr r0
-lbl_8032524C:
-    lwz r0, 0x0(r4)
-    cmplw r0, r30
-    bne lbl_803252D0
-    lis r3, lbl_8046F188@ha
-    slwi r0, r5, 2
-    addi r3, r3, lbl_8046F188@l
-    li r4, 0x0
-    stwx r4, r3, r0
-    li r4, 0x0
-    lwz r0, 0x0(r3)
-    cmpwi r0, 0x0
-    bne lbl_803252B0
-    lwz r0, 0x4(r3)
-    li r4, 0x1
-    cmpwi r0, 0x0
-    bne lbl_803252B0
-    lwz r0, 0x8(r3)
-    li r4, 0x2
-    cmpwi r0, 0x0
-    bne lbl_803252B0
-    lwz r0, 0xc(r3)
-    li r4, 0x3
-    cmpwi r0, 0x0
-    bne lbl_803252B0
-    li r4, 0x4
-lbl_803252B0:
-    cmpwi r4, 0x4
-    bne lbl_803252C0
-    li r3, 0x0
-    bl SIEnablePollingInterrupt
-lbl_803252C0:
-    mr r3, r31
-    bl OSRestoreInterrupts
-    li r3, 0x1
-    b lbl_803252E8
-lbl_803252D0:
-    addi r4, r4, 0x4
-    addi r5, r5, 0x1
-    bdnz lbl_8032524C
-    mr r3, r31
-    bl OSRestoreInterrupts
-    li r3, 0x0
-lbl_803252E8:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// SIInit
-// ----------------------------------------------------------------------------
-asm void SIInit() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lwz r0, Initialized_694_8049E40C
-    cmpwi r0, 0x0
-    bne lbl_803253B0
-    lwz r3, __SIVersion
-    bl OSRegisterVersion
-    lis r6, Packet_8046EFC8@ha
-    lis r4, Si_8038DB08@ha
-    li r7, -0x1
-    li r0, 0x0
-    addi r5, r6, Packet_8046EFC8@l
-    addi r4, r4, Si_8038DB08@l
-    stw r7, 0x60(r5)
-    li r3, 0x0
-    stw r7, 0x40(r5)
-    stw r7, 0x20(r5)
-    stw r7, Packet_8046EFC8@l(r6)
-    stw r0, 0x4(r4)
-    bl SISetSamplingRate
-    lis r3, 0xcd00
-lbl_80325358:
-    lwz r0, 0x6434(r3)
-    clrlwi. r0, r0, 31
-    bne lbl_80325358
-    lis r0, 0x8000
-    lis r3, 0xcd00
-    lis r4, SIInterruptHandler@ha
-    stw r0, 0x6434(r3)
-    addi r4, r4, SIInterruptHandler@l
-    li r3, 0x14
-    bl __OSSetInterruptHandler
-    li r3, 0x800
-    bl __OSUnmaskInterrupts
-    li r3, 0x0
-    bl SIGetType
-    li r3, 0x1
-    bl SIGetType
-    li r3, 0x2
-    bl SIGetType
-    li r3, 0x3
-    bl SIGetType
-    li r0, 0x1
-    stw r0, Initialized_694_8049E40C
-lbl_803253B0:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// __SITransfer
-// ----------------------------------------------------------------------------
-asm void __SITransfer() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_26
-    mr r27, r3
-    mr r28, r4
-    mr r29, r5
-    mr r26, r6
-    mr r30, r7
-    mr r31, r8
-    bl OSDisableInterrupts
-    lis r8, Si_8038DB08@ha
-    lwz r0, Si_8038DB08@l(r8)
-    cmpwi r0, -0x1
-    beq lbl_8032540C
-    bl OSRestoreInterrupts
-    li r3, 0x0
-    b lbl_80325558
-lbl_8032540C:
-    lis r7, 0xcd00
-    slwi r4, r27, 3
-    lis r5, 0xf00
-    lwz r9, 0x6438(r7)
-    sraw r5, r5, r4
-    addi r0, r29, 0x3
-    and r9, r9, r5
-    addi r6, r8, Si_8038DB08@l
-    stw r9, 0x6438(r7)
-    srwi. r4, r0, 2
-    li r5, 0x0
-    stw r27, Si_8038DB08@l(r8)
-    stw r31, 0x10(r6)
-    stw r30, 0x8(r6)
-    stw r26, 0xc(r6)
-    beq lbl_803254FC
-    cmplwi r4, 0x8
-    subi r6, r4, 0x8
-    ble lbl_803254C4
-    addi r0, r6, 0x7
-    mr r8, r28
-    srwi r0, r0, 3
-    addi r7, r7, 0x6400
-    mtctr r0
-    cmplwi r6, 0x0
-    ble lbl_803254C4
-lbl_80325474:
-    lwz r0, 0x0(r8)
-    addi r5, r5, 0x8
-    stw r0, 0x80(r7)
-    lwz r0, 0x4(r8)
-    stw r0, 0x84(r7)
-    lwz r0, 0x8(r8)
-    stw r0, 0x88(r7)
-    lwz r0, 0xc(r8)
-    stw r0, 0x8c(r7)
-    lwz r0, 0x10(r8)
-    stw r0, 0x90(r7)
-    lwz r0, 0x14(r8)
-    stw r0, 0x94(r7)
-    lwz r0, 0x18(r8)
-    stw r0, 0x98(r7)
-    lwz r0, 0x1c(r8)
-    addi r8, r8, 0x20
-    stw r0, 0x9c(r7)
-    addi r7, r7, 0x20
-    bdnz lbl_80325474
-lbl_803254C4:
-    slwi r7, r5, 2
-    lis r0, 0xcd00
-    add r6, r0, r7
-    subf r0, r5, r4
-    add r7, r28, r7
-    addi r6, r6, 0x6400
-    mtctr r0
-    cmplw r5, r4
-    bge lbl_803254FC
-lbl_803254E8:
-    lwz r0, 0x0(r7)
-    addi r7, r7, 0x4
-    stw r0, 0x80(r6)
-    addi r6, r6, 0x4
-    bdnz lbl_803254E8
-lbl_803254FC:
-    subi r4, r29, 0x80
-    subfic r0, r29, 0x80
-    nor r0, r4, r0
-    lis r9, 0xcd00
-    srawi r5, r0, 31
-    neg r6, r31
-    subi r4, r30, 0x80
-    subfic r0, r30, 0x80
-    nor r0, r4, r0
-    lwz r8, 0x6434(r9)
-    srawi r0, r0, 31
-    or r7, r6, r31
-    andc r4, r29, r5
-    oris r6, r8, 0x8000
-    rlwimi r6, r7, 31, 1, 1
-    andc r0, r30, r0
-    rlwimi r6, r4, 16, 9, 15
-    rlwimi r6, r0, 8, 17, 23
-    rlwimi r6, r27, 1, 29, 30
-    ori r0, r6, 0x1
-    stw r0, 0x6434(r9)
-    bl OSRestoreInterrupts
-    li r3, 0x1
-lbl_80325558:
-    addi r11, r1, 0x20
-    bl _restgpr_26
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// SIGetStatus
-// ----------------------------------------------------------------------------
-asm void SIGetStatus() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    bl OSDisableInterrupts
-    lis r4, 0xcd00
-    subfic r0, r30, 0x3
-    lwz r31, 0x6438(r4)
-    slwi r0, r0, 3
-    srw r31, r31, r0
-    rlwinm. r0, r31, 0, 28, 28
-    beq lbl_803255C8
-    lis r4, Type_8038DB20@ha
-    slwi r5, r30, 2
-    addi r4, r4, Type_8038DB20@l
-    lwzx r0, r4, r5
-    rlwinm. r0, r0, 0, 24, 24
-    bne lbl_803255C8
-    li r0, 0x8
-    stwx r0, r4, r5
-lbl_803255C8:
-    bl OSRestoreInterrupts
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// SISetCommand
-// ----------------------------------------------------------------------------
-asm void SISetCommand() {
+// asm_to_cpp: SISetCommand
+asm int SISetCommand() {
     nofralloc
     mulli r3, r3, 0xc
     lis r0, 0xcd00
@@ -877,256 +993,9 @@ asm void SISetCommand() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// SITransferCommands
-// ----------------------------------------------------------------------------
-asm void SITransferCommands() {
-    nofralloc
-    lis r0, 0x8000
-    lis r3, 0xcd00
-    stw r0, 0x6438(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// SISetXY
-// ----------------------------------------------------------------------------
-asm void SISetXY() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    slwi r0, r4, 8
-    stw r31, 0xc(r1)
-    slwi r31, r3, 16
-    or r31, r31, r0
-    bl OSDisableInterrupts
-    lis r5, Si_8038DB08@ha
-    lis r4, 0xcd00
-    addi r5, r5, Si_8038DB08@l
-    lwz r0, 0x4(r5)
-    rlwinm r0, r0, 0, 24, 5
-    or r31, r0, r31
-    stw r31, 0x4(r5)
-    stw r31, 0x6430(r4)
-    bl OSRestoreInterrupts
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// SIEnablePolling
-// ----------------------------------------------------------------------------
-asm void SIEnablePolling() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    cmpwi r3, 0x0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    bne lbl_80325694
-    lis r3, Si_8038DB08@ha
-    addi r3, r3, Si_8038DB08@l
-    lwz r3, 0x4(r3)
-    b lbl_803256DC
-lbl_80325694:
-    bl OSDisableInterrupts
-    srwi r31, r31, 24
-    lis r6, Si_8038DB08@ha
-    extrwi r8, r31, 4, 24
-    lis r4, 0xcd00
-    addi r6, r6, Si_8038DB08@l
-    lis r0, 0x8000
-    oris r7, r8, 0x3ff
-    lwz r5, 0x4(r6)
-    ori r7, r7, 0xfff0
-    and r31, r31, r7
-    andc r5, r5, r8
-    or r31, r5, r31
-    stw r31, 0x4(r6)
-    stw r0, 0x6438(r4)
-    stw r31, 0x6430(r4)
-    bl OSRestoreInterrupts
-    mr r3, r31
-lbl_803256DC:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// SIDisablePolling
-// ----------------------------------------------------------------------------
-asm void SIDisablePolling() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    cmpwi r3, 0x0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    bne lbl_8032571C
-    lis r3, Si_8038DB08@ha
-    addi r3, r3, Si_8038DB08@l
-    lwz r3, 0x4(r3)
-    b lbl_80325748
-lbl_8032571C:
-    bl OSDisableInterrupts
-    lis r6, Si_8038DB08@ha
-    rlwinm r0, r31, 8, 24, 27
-    addi r6, r6, Si_8038DB08@l
-    lis r4, 0xcd00
-    lwz r5, 0x4(r6)
-    andc r31, r5, r0
-    stw r31, 0x6430(r4)
-    stw r31, 0x4(r6)
-    bl OSRestoreInterrupts
-    mr r3, r31
-lbl_80325748:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// SIGetResponse
-// ----------------------------------------------------------------------------
-asm void SIGetResponse() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    stw r30, 0x18(r1)
-    mr r30, r4
-    stw r29, 0x14(r1)
-    mr r29, r3
-    stw r28, 0x10(r1)
-    bl OSDisableInterrupts
-    mr r31, r3
-    bl OSDisableInterrupts
-    lis r4, 0xcd00
-    subfic r0, r29, 0x3
-    lwz r28, 0x6438(r4)
-    slwi r0, r0, 3
-    srw r28, r28, r0
-    rlwinm. r0, r28, 0, 28, 28
-    beq lbl_803257C8
-    lis r4, Type_8038DB20@ha
-    slwi r5, r29, 2
-    addi r4, r4, Type_8038DB20@l
-    lwzx r0, r4, r5
-    rlwinm. r0, r0, 0, 24, 24
-    bne lbl_803257C8
-    li r0, 0x8
-    stwx r0, r4, r5
-lbl_803257C8:
-    bl OSRestoreInterrupts
-    rlwinm. r0, r28, 0, 26, 26
-    beq lbl_80325814
-    mulli r5, r29, 0xc
-    lis r0, 0xcd00
-    lis r4, lbl_8046F148@ha
-    lis r3, lbl_8046F168@ha
-    add r7, r0, r5
-    slwi r8, r29, 3
-    lwz r6, 0x6404(r7)
-    addi r4, r4, lbl_8046F148@l
-    add r5, r4, r8
-    slwi r0, r29, 2
-    stwx r6, r4, r8
-    addi r3, r3, lbl_8046F168@l
-    li r4, 0x1
-    lwz r6, 0x6408(r7)
-    stw r6, 0x4(r5)
-    stwx r4, r3, r0
-lbl_80325814:
-    lis r3, lbl_8046F168@ha
-    slwi r4, r29, 2
-    addi r3, r3, lbl_8046F168@l
-    li r0, 0x0
-    lwzx r28, r3, r4
-    cmpwi r28, 0x0
-    stwx r0, r3, r4
-    beq lbl_80325854
-    lis r3, lbl_8046F148@ha
-    slwi r4, r29, 3
-    addi r3, r3, lbl_8046F148@l
-    lwzx r0, r3, r4
-    add r3, r3, r4
-    stw r0, 0x0(r30)
-    lwz r0, 0x4(r3)
-    stw r0, 0x4(r30)
-lbl_80325854:
-    mr r3, r31
-    bl OSRestoreInterrupts
-    lwz r31, 0x1c(r1)
-    mr r3, r28
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r28, 0x10(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// AlarmHandler
-// ----------------------------------------------------------------------------
-asm void AlarmHandler() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    lis r6, lbl_8046F088@ha
-    lis r5, 0x2aab
-    stw r0, 0x14(r1)
-    addi r6, r6, lbl_8046F088@l
-    subf r0, r6, r3
-    subi r3, r5, 0x5555
-    mulhw r0, r3, r0
-    lis r4, Packet_8046EFC8@ha
-    stw r31, 0xc(r1)
-    addi r4, r4, Packet_8046EFC8@l
-    srawi r0, r0, 3
-    srwi r3, r0, 31
-    add r0, r0, r3
-    slwi r0, r0, 5
-    lwzx r3, r4, r0
-    add r31, r4, r0
-    cmpwi r3, -0x1
-    beq lbl_803258F8
-    lwz r4, 0x4(r31)
-    lwz r5, 0x8(r31)
-    lwz r6, 0xc(r31)
-    lwz r7, 0x10(r31)
-    lwz r8, 0x14(r31)
-    bl __SITransfer
-    cmpwi r3, 0x0
-    beq lbl_803258F8
-    li r0, -0x1
-    stw r0, 0x0(r31)
-lbl_803258F8:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// SITransfer
-// ----------------------------------------------------------------------------
-asm void SITransfer() {
+// asm_to_cpp: SITransfer
+asm BOOL SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr, u32 inSize,
+                SICallback callback, s64 wait) {
     nofralloc
     stwu r1, -0x40(r1)
     mflr r0
@@ -1228,3 +1097,79 @@ lbl_80325A60:
     blr
 }
 
+// asm_to_cpp: SITransferCommands
+asm int SITransferCommands() {
+    nofralloc
+    lis r0, 0x8000
+    lis r3, 0xcd00
+    stw r0, 0x6438(r3)
+    blr
+}
+
+// asm_to_cpp: SIUnregisterPollingHandler
+asm int SIUnregisterPollingHandler() {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    stw r0, 0x14(r1)
+    stw r31, 0xc(r1)
+    stw r30, 0x8(r1)
+    mr r30, r3
+    bl OSDisableInterrupts
+    lis r4, lbl_8046F188@ha
+    li r0, 0x4
+    mr r31, r3
+    li r5, 0x0
+    addi r4, r4, lbl_8046F188@l
+    mtctr r0
+lbl_8032524C:
+    lwz r0, 0x0(r4)
+    cmplw r0, r30
+    bne lbl_803252D0
+    lis r3, lbl_8046F188@ha
+    slwi r0, r5, 2
+    addi r3, r3, lbl_8046F188@l
+    li r4, 0x0
+    stwx r4, r3, r0
+    li r4, 0x0
+    lwz r0, 0x0(r3)
+    cmpwi r0, 0x0
+    bne lbl_803252B0
+    lwz r0, 0x4(r3)
+    li r4, 0x1
+    cmpwi r0, 0x0
+    bne lbl_803252B0
+    lwz r0, 0x8(r3)
+    li r4, 0x2
+    cmpwi r0, 0x0
+    bne lbl_803252B0
+    lwz r0, 0xc(r3)
+    li r4, 0x3
+    cmpwi r0, 0x0
+    bne lbl_803252B0
+    li r4, 0x4
+lbl_803252B0:
+    cmpwi r4, 0x4
+    bne lbl_803252C0
+    li r3, 0x0
+    bl SIEnablePollingInterrupt
+lbl_803252C0:
+    mr r3, r31
+    bl OSRestoreInterrupts
+    li r3, 0x1
+    b lbl_803252E8
+lbl_803252D0:
+    addi r4, r4, 0x4
+    addi r5, r5, 0x1
+    bdnz lbl_8032524C
+    mr r3, r31
+    bl OSRestoreInterrupts
+    li r3, 0x0
+lbl_803252E8:
+    lwz r0, 0x14(r1)
+    lwz r31, 0xc(r1)
+    lwz r30, 0x8(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
+}

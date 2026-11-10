@@ -1,96 +1,89 @@
-#include "types.h"
+#include <revolution/OS.h>
+#include <revolution/SI.h>
+#include <revolution/VI.h>
 
-// Translation unit: src/revolution/si/SISamplingRate.cpp
-// Total functions: 2
+typedef struct SIPollSetting {
+    struct {
+        u16 lines; // at 0x0
+        u8 times;  // at 0x2
+    } params[SI_MAX_SAMPLE_RATE + 1];
+} SIPollSetting;
 
-// Small Data symbols (@sda21)
-extern float SamplingRate_8049E418;
+static u32 SamplingRate = 0;
 
-// Global data symbols (@ha/@l)
-extern u8 XYNTSC_8038DB30[];
+static SIPollSetting XYNTSC = {
+    // clang-format off
+    246,  2, // 0 msec
+    14,  19, // 1 msec
+    30,   9, // 2 msec
+    44,   6, // 3 msec
+    52,   5, // 4 msec
+    65,   4, // 5 msec
+    87,   3, // 6 msec
+    87,   3, // 7 msec
+    87,   3, // 8 msec
+    131,  2, // 9 msec
+    131,  2, // 10 msec
+    131,  2  // 11 msec
+    // clang-format on
+};
 
-// Forward declarations
-extern void OSDisableInterrupts();
-extern void OSReport();
-extern void OSRestoreInterrupts();
-extern void SISetSamplingRate();
-extern void SISetXY();
-extern void VIGetTvFormat();
-extern void fn_803260C4();
+static SIPollSetting XYPAL = {
+    // clang-format off
+    296,  2, // 0 msec
+    15,  21, // 1 msec
+    29,  11, // 2 msec
+    45,   7, // 3 msec
+    52,   6, // 4 msec
+    63,   5, // 5 msec
+    78,   4, // 6 msec
+    104,  3, // 7 msec
+    104,  3, // 8 msec
+    104,  3, // 9 msec
+    104,  3, // 10 msec
+    156,  2  // 11 msec
+    // clang-format on
+};
 
-// ----------------------------------------------------------------------------
-// SISetSamplingRate
-// ----------------------------------------------------------------------------
-asm void SISetSamplingRate() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    cmplwi r3, 0xb
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    lis r31, XYNTSC_8038DB30@ha
-    addi r31, r31, XYNTSC_8038DB30@l
-    stw r30, 0x18(r1)
-    stw r29, 0x14(r1)
-    mr r29, r3
-    ble lbl_8032601C
-    li r29, 0xb
-lbl_8032601C:
-    bl OSDisableInterrupts
-    stw r29, SamplingRate_8049E418
-    mr r30, r3
-    bl VIGetTvFormat
-    cmpwi r3, 0x2
-    beq lbl_80326054
-    bge lbl_80326048
-    cmpwi r3, 0x0
-    beq lbl_80326054
-    bge lbl_8032605C
-    b lbl_80326064
-lbl_80326048:
-    cmpwi r3, 0x5
-    beq lbl_80326054
-    b lbl_80326064
-lbl_80326054:
-    addi r5, r31, 0x0
-    b lbl_80326078
-lbl_8032605C:
-    addi r5, r31, 0x30
-    b lbl_80326078
-lbl_80326064:
-    addi r3, r31, 0x60
-    opword 0x4CC63182
-    bl OSReport
-    li r29, 0x0
-    addi r5, r31, 0x0
-lbl_80326078:
-    lis r3, 0xcc00
-    slwi r0, r29, 2
-    lhz r4, 0x206c(r3)
-    add r3, r5, r0
-    lhzx r0, r5, r0
-    clrlwi r5, r4, 31
-    lbz r4, 0x2(r3)
-    addi r3, r5, 0x1
-    mullw r3, r3, r0
-    bl SISetXY
-    mr r3, r30
-    bl OSRestoreInterrupts
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+void SISetSamplingRate(u32 msec) {
+    BOOL enabled;
+    SIPollSetting* xy;
+    s32 m;
+
+    if (msec > SI_MAX_SAMPLE_RATE) {
+        msec = SI_MAX_SAMPLE_RATE;
+    }
+
+    enabled = OSDisableInterrupts();
+
+    SamplingRate = msec;
+
+    switch (VIGetTvFormat()) {
+    case VI_TVFORMAT_NTSC:
+    case VI_TVFORMAT_MPAL:
+    case VI_TVFORMAT_EURGB60:
+        xy = &XYNTSC;
+        break;
+    case VI_TVFORMAT_PAL:
+        xy = &XYPAL;
+        break;
+    default:
+        OSReport("SISetSamplingRate: unknown TV format. Use default.");
+        msec = 0;
+        xy = &XYNTSC;
+        break;
+    }
+
+    m = (VI_HW_REGS[VI_VICLK] & VI_VICLK_SPEED) != VI_VICLK_27MHZ ? 2 : 1;
+    SISetXY(m * xy->params[msec].lines, xy->params[msec].times);
+
+    OSRestoreInterrupts(enabled);
 }
 
-// ----------------------------------------------------------------------------
-// fn_803260C4
-// ----------------------------------------------------------------------------
-asm void fn_803260C4() {
-    nofralloc
-    lwz r3, SamplingRate_8049E418
-    b SISetSamplingRate
+void SIRefreshSamplingRate(void) {
+    SISetSamplingRate(SamplingRate);
 }
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+
 

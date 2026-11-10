@@ -1,408 +1,278 @@
-#include "types.h"
+#include <revolution/IPC.h>
+#include <revolution/OS.h>
 
-// Translation unit: src/revolution/ipc/memory.cpp
-// Total functions: 4
+#define IPC_HEAP_MAX 8
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_80463100[];
+enum {
+    IPC_HEAP_CHUNK_FREE = 0xBABE0000,
+    IPC_HEAP_CHUNK_USED = 0xBABE0001,
+    IPC_HEAP_CHUNK_FORALIGN = 0xBABE0002
+};
 
-// Forward declarations
-extern void OSDisableInterrupts();
-extern void OSRestoreInterrupts();
-extern void __iosAlloc();
-extern void iosAllocAligned();
-extern void iosCreateHeap();
-extern void iosFree();
+typedef struct IPCHeapChunk {
+    u32 magic;                 // at 0x0
+    u32 size;                  // at 0x4
+    struct IPCHeapChunk* prev; // at 0x8
+    struct IPCHeapChunk* next; // at 0xC
+} IPCHeapChunk;
 
-// ----------------------------------------------------------------------------
-// iosCreateHeap
-// ----------------------------------------------------------------------------
-// asm_to_cpp: iosCreateHeap
-asm void iosCreateHeap() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    li r31, -0x4
-    stw r30, 0x18(r1)
-    mr r30, r4
-    stw r29, 0x14(r1)
-    mr r29, r3
-    bl OSDisableInterrupts
-    clrlwi. r0, r29, 27
-    bne lbl_80307310
-    lis r4, lbl_80463100@ha
-    lwzu r0, lbl_80463100@l(r4)
-    li r31, 0x0
-    cmpwi r0, 0x0
-    beq lbl_803072BC
-    lwz r0, 0x10(r4)
-    li r31, 0x1
-    cmpwi r0, 0x0
-    beq lbl_803072BC
-    lwz r0, 0x20(r4)
-    li r31, 0x2
-    cmpwi r0, 0x0
-    beq lbl_803072BC
-    lwz r0, 0x30(r4)
-    li r31, 0x3
-    cmpwi r0, 0x0
-    beq lbl_803072BC
-    lwz r0, 0x40(r4)
-    li r31, 0x4
-    cmpwi r0, 0x0
-    beq lbl_803072BC
-    lwz r0, 0x50(r4)
-    li r31, 0x5
-    cmpwi r0, 0x0
-    beq lbl_803072BC
-    lwz r0, 0x60(r4)
-    li r31, 0x6
-    cmpwi r0, 0x0
-    beq lbl_803072BC
-    lwz r0, 0x70(r4)
-    li r31, 0x7
-    cmpwi r0, 0x0
-    beq lbl_803072BC
-    li r31, 0x8
-lbl_803072BC:
-    cmpwi r31, 0x8
-    bne lbl_803072CC
-    li r31, -0x5
-    b lbl_80307310
-lbl_803072CC:
-    lis r5, lbl_80463100@ha
-    slwi r0, r31, 4
-    addi r5, r5, lbl_80463100@l
-    lis r4, 0xbabe
-    add r6, r5, r0
-    li r0, 0x0
-    stw r29, 0x0(r6)
-    subi r5, r30, 0x10
-    stw r30, 0x8(r6)
-    stw r29, 0xc(r6)
-    stw r4, 0x0(r29)
-    lwz r4, 0xc(r6)
-    stw r5, 0x4(r4)
-    lwz r4, 0xc(r6)
-    stw r0, 0x8(r4)
-    lwz r4, 0xc(r6)
-    stw r0, 0xc(r4)
-lbl_80307310:
-    bl OSRestoreInterrupts
-    mr r3, r31
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+typedef struct IPCHeapDesc {
+    void* start;        // at 0x0
+    u32 WORD_0x4;       // at 0x4
+    u32 size;           // at 0x8
+    IPCHeapChunk* head; // at 0xC
+} IPCHeapDesc;
+
+static IPCHeapDesc __heaps[IPC_HEAP_MAX];
+
+static void __iosCoalesceChunk(IPCHeapChunk* chunk) {
+    IPCHeapChunk* next;
+
+    if (chunk == NULL) {
+        return;
+    }
+
+    if ((u8*)chunk->next != (u8*)chunk + chunk->size + sizeof(IPCHeapChunk)) {
+        return;
+    }
+
+    next = chunk->next;
+
+    chunk->next = next->next;
+    if (chunk->next != NULL) {
+        chunk->next->prev = chunk;
+    }
+
+    chunk->size += next->size + sizeof(IPCHeapChunk);
 }
 
-// ----------------------------------------------------------------------------
-// __iosAlloc
-// ----------------------------------------------------------------------------
-// asm_to_cpp: __iosAlloc
-asm void __iosAlloc() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    li r31, 0x0
-    stw r30, 0x18(r1)
-    mr r30, r5
-    stw r29, 0x14(r1)
-    mr r29, r4
-    stw r28, 0x10(r1)
-    mr r28, r3
-    bl OSDisableInterrupts
-    cmpwi r29, 0x0
-    beq lbl_80307510
-    cmpwi r30, 0x0
-    beq lbl_80307510
-    subi r0, r30, 0x1
-    and. r0, r30, r0
-    bne lbl_80307510
-    cmplwi r30, 0x20
-    bge lbl_8030738C
-    li r30, 0x20
-lbl_8030738C:
-    cmpwi r28, 0x0
-    addi r0, r29, 0x1f
-    clrrwi r29, r0, 5
-    blt lbl_803073BC
-    cmpwi r28, 0x8
-    bge lbl_803073BC
-    lis r4, lbl_80463100@ha
-    slwi r0, r28, 4
-    addi r4, r4, lbl_80463100@l
-    lwzux r0, r4, r0
-    cmpwi r0, 0x0
-    bne lbl_803073C4
-lbl_803073BC:
-    li r31, 0x0
-    b lbl_80307510
-lbl_803073C4:
-    lwz r8, 0xc(r4)
-    subi r6, r30, 0x1
-    li r5, 0x0
-    b lbl_80307428
-lbl_803073D4:
-    lwz r7, 0x4(r8)
-    addi r0, r8, 0x10
-    and r0, r0, r6
-    cmplw r7, r29
-    subf r0, r0, r30
-    and r0, r6, r0
-    bne lbl_80307400
-    cmpwi r0, 0x0
-    bne lbl_80307400
-    mr r5, r8
-    b lbl_80307430
-lbl_80307400:
-    add r0, r29, r0
-    cmplw r7, r0
-    blt lbl_80307424
-    cmpwi r5, 0x0
-    beq lbl_80307420
-    lwz r0, 0x4(r5)
-    cmplw r7, r0
-    bge lbl_80307424
-lbl_80307420:
-    mr r5, r8
-lbl_80307424:
-    lwz r8, 0xc(r8)
-lbl_80307428:
-    cmpwi r8, 0x0
-    bne lbl_803073D4
-lbl_80307430:
-    cmpwi r5, 0x0
-    beq lbl_80307510
-    subi r7, r30, 0x1
-    addi r0, r5, 0x10
-    and r0, r0, r7
-    lwz r6, 0x4(r5)
-    subf r0, r0, r30
-    and r8, r7, r0
-    add r7, r29, r8
-    addi r0, r7, 0x10
-    cmplw r6, r0
-    ble lbl_803074A4
-    add r6, r5, r29
-    lis r0, 0xbabe
-    add r9, r8, r6
-    stw r0, 0x10(r9)
-    lwz r0, 0x4(r5)
-    subf r0, r29, r0
-    subf r6, r8, r0
-    subi r0, r6, 0x10
-    stw r0, 0x14(r9)
-    lwz r6, 0xc(r5)
-    cmpwi r6, 0x0
-    stw r6, 0x1c(r9)
-    addi r9, r9, 0x10
-    beq lbl_8030749C
-    stw r9, 0x8(r6)
-lbl_8030749C:
-    stw r9, 0xc(r5)
-    stw r7, 0x4(r5)
-lbl_803074A4:
-    lis r6, 0xbabe
-    addi r0, r6, 0x1
-    stw r0, 0x0(r5)
-    lwz r6, 0x8(r5)
-    cmpwi r6, 0x0
-    beq lbl_803074C8
-    lwz r0, 0xc(r5)
-    stw r0, 0xc(r6)
-    b lbl_803074D0
-lbl_803074C8:
-    lwz r0, 0xc(r5)
-    stw r0, 0xc(r4)
-lbl_803074D0:
-    lwz r4, 0xc(r5)
-    cmpwi r4, 0x0
-    beq lbl_803074E4
-    lwz r0, 0x8(r5)
-    stw r0, 0x8(r4)
-lbl_803074E4:
-    li r0, 0x0
-    add r31, r5, r8
-    stw r0, 0xc(r5)
-    cmpwi r8, 0x0
-    addi r31, r31, 0x10
-    stw r0, 0x8(r5)
-    beq lbl_80307510
-    lis r4, 0xbabe
-    addi r0, r4, 0x2
-    stw r0, -0x10(r31)
-    stw r5, -0x8(r31)
-lbl_80307510:
-    bl OSRestoreInterrupts
-    mr r3, r31
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r28, 0x10(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+s32 iosCreateHeap(void* base, u32 size) {
+    s32 ret = IPC_RESULT_INVALID_INTERNAL;
+    BOOL enabled = OSDisableInterrupts();
+    IPCHeapDesc* desc;
+    s32 i;
+
+    if ((u32)base % 32 != 0) {
+        goto _exit;
+    }
+
+    for (i = 0; i < IPC_HEAP_MAX; i++) {
+        if (__heaps[i].start == NULL) {
+            break;
+        }
+    }
+
+    if (i == IPC_HEAP_MAX) {
+        ret = IPC_RESULT_CONN_MAX_INTERNAL;
+        goto _exit;
+    }
+
+    desc = &__heaps[i];
+    desc->start = base;
+    desc->size = size;
+    desc->head = (IPCHeapChunk*)base;
+
+    desc->head->magic = IPC_HEAP_CHUNK_FREE;
+    desc->head->size = size - sizeof(IPCHeapChunk);
+    desc->head->prev = NULL;
+    desc->head->next = NULL;
+
+    ret = i;
+
+_exit:
+    OSRestoreInterrupts(enabled);
+    return ret;
 }
 
-// ----------------------------------------------------------------------------
-// iosAllocAligned
-// ----------------------------------------------------------------------------
-// asm_to_cpp: iosAllocAligned
-asm void iosAllocAligned() {
-    nofralloc
-    b __iosAlloc
+void* __iosAlloc(s32 handle, u32 size, u32 align) {
+    BOOL enabled;
+    IPCHeapDesc* desc;
+    u8* block;
+    IPCHeapChunk* chunk;
+    IPCHeapChunk* best;
+    u8* bestMem;
+    u32 bestUnalign;
+
+    block = NULL;
+    enabled = OSDisableInterrupts();
+
+    if (size == 0 || align == 0) {
+        goto _exit;
+    }
+
+    if (align & (align - 1)) {
+        goto _exit;
+    }
+
+    if (align < 32) {
+        align = 32;
+    }
+
+    size = ROUND_UP(size, 32);
+
+    if (handle < 0 || handle >= IPC_HEAP_MAX || __heaps[handle].start == NULL) {
+        block = NULL;
+        goto _exit;
+    }
+
+    desc = &__heaps[handle];
+    best = NULL;
+
+    // Find chunk best fit for specified size
+    for (chunk = desc->head; chunk != NULL; chunk = chunk->next) {
+        u8* chunkMem = (u8*)chunk + sizeof(IPCHeapChunk);
+        u32 chunkUnalign =
+            (align - 1) & (align - ((u32)chunkMem & (align - 1)));
+
+        if (chunk->size == size && chunkUnalign == 0) {
+            best = chunk;
+            break;
+        }
+
+        if (chunk->size < size + chunkUnalign) {
+            continue;
+        }
+
+        if (best == NULL || chunk->size < best->size) {
+            best = chunk;
+        }
+    }
+
+    if (best == NULL) {
+        goto _exit;
+    }
+
+    bestMem = (u8*)best + sizeof(IPCHeapChunk);
+    bestUnalign = (align - 1) & (align - ((u32)bestMem & (align - 1)));
+
+    // Split off extra size that won't be used by this allocation
+    if (best->size > size + bestUnalign + sizeof(IPCHeapChunk)) {
+        IPCHeapChunk* rest = (IPCHeapChunk*)((u8*)best + size + bestUnalign +
+                                             sizeof(IPCHeapChunk));
+
+        rest->magic = IPC_HEAP_CHUNK_FREE;
+        rest->size = best->size - size - bestUnalign - sizeof(IPCHeapChunk);
+        rest->next = best->next;
+
+        if (rest->next != NULL) {
+            rest->next->prev = rest;
+        }
+
+        best->next = rest;
+        best->size = size + bestUnalign;
+    }
+
+    best->magic = IPC_HEAP_CHUNK_USED;
+
+    // Remove chunk from list
+    if (best->prev != NULL) {
+        best->prev->next = best->next;
+    } else {
+        desc->head = best->next;
+    }
+
+    if (best->next != NULL) {
+        best->next->prev = best->prev;
+    }
+
+    best->next = NULL;
+    best->prev = NULL;
+
+    // For unaligned chunks, create a header where one would normally be.
+    // To find the real chunk, you take the FORALIGN one and jump back one.
+    block = (u8*)best + bestUnalign + sizeof(IPCHeapChunk);
+    if (bestUnalign != 0) {
+        IPCHeapChunk* aligned = (IPCHeapChunk*)(block - sizeof(IPCHeapChunk));
+        aligned->magic = IPC_HEAP_CHUNK_FORALIGN;
+        aligned->prev = best;
+    }
+
+_exit:
+    OSRestoreInterrupts(enabled);
+    return block;
 }
 
-// ----------------------------------------------------------------------------
-// iosFree
-// ----------------------------------------------------------------------------
-// asm_to_cpp: iosFree
-asm void iosFree() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    li r31, -0x4
-    stw r30, 0x18(r1)
-    mr r30, r4
-    stw r29, 0x14(r1)
-    mr r29, r3
-    bl OSDisableInterrupts
-    cmpwi r30, 0x0
-    beq lbl_80307704
-    cmpwi r29, 0x0
-    blt lbl_80307598
-    cmpwi r29, 0x8
-    bge lbl_80307598
-    lis r4, lbl_80463100@ha
-    slwi r0, r29, 4
-    addi r4, r4, lbl_80463100@l
-    add r5, r4, r0
-    lwzx r4, r4, r0
-    cmpwi r4, 0x0
-    bne lbl_803075A0
-lbl_80307598:
-    li r31, -0x4
-    b lbl_80307704
-lbl_803075A0:
-    addi r0, r4, 0x10
-    cmplw r30, r0
-    blt lbl_80307704
-    lwz r0, 0x8(r5)
-    add r0, r4, r0
-    cmplw r30, r0
-    bgt lbl_80307704
-    lwz r4, -0x10(r30)
-    subi r6, r30, 0x10
-    addis r0, r4, 0x4542
-    cmplwi r0, 0x2
-    bne lbl_803075D4
-    lwz r6, 0x8(r6)
-lbl_803075D4:
-    lwz r4, 0x0(r6)
-    addis r0, r4, 0x4542
-    cmplwi r0, 0x1
-    bne lbl_80307704
-    lis r0, 0xbabe
-    stw r0, 0x0(r6)
-    lwz r4, 0xc(r5)
-    mr r7, r4
-    b lbl_80307610
-lbl_803075F8:
-    lwz r0, 0xc(r7)
-    cmpwi r0, 0x0
-    beq lbl_80307618
-    cmplw r0, r6
-    bgt lbl_80307618
-    mr r7, r0
-lbl_80307610:
-    cmpwi r7, 0x0
-    bne lbl_803075F8
-lbl_80307618:
-    cmpwi r7, 0x0
-    beq lbl_8030764C
-    cmplw r6, r7
-    ble lbl_8030764C
-    stw r7, 0x8(r6)
-    lwz r0, 0xc(r7)
-    stw r0, 0xc(r6)
-    stw r6, 0xc(r7)
-    lwz r4, 0xc(r6)
-    cmpwi r4, 0x0
-    beq lbl_8030766C
-    stw r6, 0x8(r4)
-    b lbl_8030766C
-lbl_8030764C:
-    stw r4, 0xc(r6)
-    li r0, 0x0
-    stw r6, 0xc(r5)
-    stw r0, 0x8(r6)
-    lwz r4, 0xc(r6)
-    cmpwi r4, 0x0
-    beq lbl_8030766C
-    stw r6, 0x8(r4)
-lbl_8030766C:
-    cmpwi r6, 0x0
-    beq lbl_803076B4
-    lwz r0, 0x4(r6)
-    lwz r5, 0xc(r6)
-    add r4, r6, r0
-    addi r0, r4, 0x10
-    cmplw r5, r0
-    bne lbl_803076B4
-    lwz r4, 0xc(r5)
-    cmpwi r4, 0x0
-    stw r4, 0xc(r6)
-    beq lbl_803076A0
-    stw r6, 0x8(r4)
-lbl_803076A0:
-    lwz r4, 0x4(r6)
-    lwz r0, 0x4(r5)
-    add r4, r0, r4
-    addi r0, r4, 0x10
-    stw r0, 0x4(r6)
-lbl_803076B4:
-    lwz r5, 0x8(r6)
-    cmpwi r5, 0x0
-    beq lbl_80307700
-    lwz r0, 0x4(r5)
-    lwz r6, 0xc(r5)
-    add r4, r5, r0
-    addi r0, r4, 0x10
-    cmplw r6, r0
-    bne lbl_80307700
-    lwz r4, 0xc(r6)
-    cmpwi r4, 0x0
-    stw r4, 0xc(r5)
-    beq lbl_803076EC
-    stw r5, 0x8(r4)
-lbl_803076EC:
-    lwz r4, 0x4(r5)
-    lwz r0, 0x4(r6)
-    add r4, r0, r4
-    addi r0, r4, 0x10
-    stw r0, 0x4(r5)
-lbl_80307700:
-    li r31, 0x0
-lbl_80307704:
-    bl OSRestoreInterrupts
-    mr r3, r31
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+void* iosAllocAligned(s32 handle, u32 size, u32 align) {
+    return __iosAlloc(handle, size, align);
 }
+
+s32 iosFree(s32 handle, void* block) {
+    IPCHeapChunk* chunk;
+    IPCHeapChunk* it;
+    IPCHeapDesc* desc;
+    BOOL enabled;
+    s32 ret;
+
+    ret = IPC_RESULT_INVALID_INTERNAL;
+    enabled = OSDisableInterrupts();
+
+    if (block == NULL) {
+        goto _exit;
+    }
+
+    if (handle < 0 || handle >= IPC_HEAP_MAX || __heaps[handle].start == NULL) {
+        ret = IPC_RESULT_INVALID_INTERNAL;
+        goto _exit;
+    }
+
+    desc = &__heaps[handle];
+
+    if ((u8*)block < (u8*)desc->start + sizeof(IPCHeapChunk)) {
+        goto _exit;
+    }
+
+    if ((u8*)block > (u8*)desc->start + desc->size) {
+        goto _exit;
+    }
+
+    chunk = (IPCHeapChunk*)((u8*)block - sizeof(IPCHeapChunk));
+
+    // Find *real* chunk from alignment helper
+    if (chunk->magic == IPC_HEAP_CHUNK_FORALIGN) {
+        chunk = chunk->prev;
+    }
+
+    if (chunk->magic != IPC_HEAP_CHUNK_USED) {
+        goto _exit;
+    }
+
+    chunk->magic = IPC_HEAP_CHUNK_FREE;
+
+    // Next chunk after freed
+    for (it = desc->head; it != NULL; it = it->next) {
+        if (it->next == NULL || it->next > chunk) {
+            break;
+        }
+    }
+
+    // Place chunk back in list
+    if (it != NULL && chunk > it) {
+        chunk->prev = it;
+        chunk->next = it->next;
+        it->next = chunk;
+
+        if (chunk->next != NULL) {
+            chunk->next->prev = chunk;
+        }
+    } else {
+        chunk->next = desc->head;
+        desc->head = chunk;
+        chunk->prev = NULL;
+
+        if (chunk->next != NULL) {
+            chunk->next->prev = chunk;
+        }
+    }
+
+    __iosCoalesceChunk(chunk);
+    __iosCoalesceChunk(chunk->prev);
+    ret = IPC_RESULT_OK;
+
+_exit:
+    OSRestoreInterrupts(enabled);
+    return ret;
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+
 

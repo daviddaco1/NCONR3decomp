@@ -60,7 +60,7 @@ extern "C" void dtor_80136CFC();
 extern "C" void fn_80211B50();
 extern "C" void fn_8021228C();
 extern "C" void fn_80212298();
-extern "C" void fn_8021D13C();
+extern "C" void __dt__Q34nw4r2ef16DrawStrategyImplFv();
 
 // ----------------------------------------------------------------------------
 // fn_80211B50
@@ -123,7 +123,7 @@ extern "C" asm void __dt__Q54nw4r3snd6detail8SeqSound11SeqLoadTaskFv() {
     mr r30, r3
     beq lbl_80211C28
     li r4, 0x0
-    bl fn_8021D13C
+    bl __dt__Q34nw4r2ef16DrawStrategyImplFv
     cmpwi r31, 0x0
     ble lbl_80211C28
     mr r3, r30
@@ -424,7 +424,7 @@ extern "C" asm void __dt__Q44nw4r3snd6detail8SeqSoundFv() {
     addic. r3, r3, 0x4ac
     beq lbl_80211FD4
     li r4, 0x0
-    bl fn_8021D13C
+    bl __dt__Q34nw4r2ef16DrawStrategyImplFv
 lbl_80211FD4:
     addi r3, r30, 0x10c
     li r4, -0x1

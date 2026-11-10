@@ -46,8 +46,36 @@ void gpiCallErrorCallback(GPConnection* connection, GPResult result,
   }
 }
 
-// gpiAddCallback: definicion C reemplazada por asm (ver abajo)
+GPResult gpiAddCallback(GPConnection* connection, GPICallback callback,
+                        void* arg, const struct GPIOperation_s* operation,
+                        int type) {
+  GPICallbackData* data;
+  GPIConnection* iconnection = (GPIConnection*)*connection;
 
+  // Allocate the callback data.
+  //////////////////////////////
+  data = (GPICallbackData*)gsimalloc(sizeof(GPICallbackData));
+  if (data == NULL)
+    Error(connection, GP_MEMORY_ERROR, "Out of memory.");
+  data->callback = callback;
+  data->arg = arg;
+  if (operation != NULL)
+    data->operationID = operation->id;
+  else
+    data->operationID = 0;
+  data->type = type;
+  data->pnext = NULL;
+
+  // Update the list.
+  ///////////////////
+  if (iconnection->callbackList == NULL)
+    iconnection->callbackList = data;
+  if (iconnection->lastCallback != NULL)
+    iconnection->lastCallback->pnext = data;
+  iconnection->lastCallback = data;
+
+  return GP_NO_ERROR;
+}
 
 static void gpiCallCallback(GPConnection* connection, GPICallbackData* data) {
   // Call the callback.
@@ -121,173 +149,78 @@ static void gpiCallCallback(GPConnection* connection, GPICallbackData* data) {
   freeclear(data);
 }
 
-// gpiProcessCallbacks: definicion C reemplazada por asm (ver abajo)
+GPResult gpiProcessCallbacks(GPConnection* connection,
+                             int blockingOperationID) {
+  GPIConnection* iconnection = (GPIConnection*)*connection;
+  GPICallbackData* list;
+  GPICallbackData* last;
+  GPICallbackData* pcurr;
+  GPICallbackData* pnext;
+  GPICallbackData* pprev;
 
+  if (blockingOperationID != 0) {
+    list = iconnection->callbackList;
+    last = iconnection->lastCallback;
+    iconnection->callbackList = NULL;
+    iconnection->lastCallback = NULL;
+
+    pprev = NULL;
+    for (pcurr = list; pcurr != NULL;) {
+      pnext = pcurr->pnext;
+
+      if ((pcurr->operationID == blockingOperationID) ||
+          (pcurr->type == GPI_ADD_ERROR)) {
+        // Take this one out of the list.
+        /////////////////////////////////
+        if (pprev != NULL)
+          pprev->pnext = pcurr->pnext;
+        else
+          list = pcurr->pnext;
+        if (last == pcurr)
+          last = pprev;
+
+        // Call the callback.
+        /////////////////////
+        gpiCallCallback(connection, pcurr);
+      } else {
+        pprev = pcurr;
+      }
+
+      pcurr = pnext;
+    }
+
+    // Were callbacks added within the callback?
+    ////////////////////////////////////////////
+    if (iconnection->callbackList != NULL) {
+      iconnection->lastCallback->pnext = list;
+      iconnection->lastCallback = last;
+    } else {
+      // Reset the list.
+      //////////////////
+      iconnection->callbackList = list;
+      iconnection->lastCallback = last;
+    }
+
+    return GP_NO_ERROR;
+  }
+
+  while (iconnection->callbackList != NULL) {
+    list = iconnection->callbackList;
+    iconnection->callbackList = NULL;
+    iconnection->lastCallback = NULL;
+
+    for (pcurr = list; pcurr != NULL; pcurr = pnext) {
+      pnext = pcurr->pnext;
+
+      // Call the callback.
+      /////////////////////
+      gpiCallCallback(connection, pcurr);
+    }
+  }
+
+  return GP_NO_ERROR;
+}
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-extern u8 lbl_80368C70[];
-extern void _restgpr_25();
-extern void _restgpr_26();
-extern void _savegpr_25();
-extern void _savegpr_26();
-extern void fn_80256C4C();
-extern void gpiSetErrorString();
 
-// asm_to_cpp: gpiAddCallback
-asm GPResult gpiAddCallback(GPConnection* connection, GPICallback callback,
-                        void* arg, const struct GPIOperation_s* operation,
-                        int type) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_26
-    lwz r31, 0x0(r3)
-    mr r26, r3
-    mr r27, r4
-    mr r28, r5
-    mr r29, r6
-    mr r30, r7
-    li r3, 0x18
-    bl fn_80256C4C
-    cmpwi r3, 0x0
-    bne lbl_8025C5BC
-    lis r4, lbl_80368C70@ha
-    mr r3, r26
-    addi r4, r4, lbl_80368C70@l
-    bl gpiSetErrorString
-    li r3, 0x1
-    b lbl_8025C620
-lbl_8025C5BC:
-    lwz r4, 0x0(r27)
-    cmpwi r29, 0x0
-    lwz r0, 0x4(r27)
-    stw r4, 0x0(r3)
-    stw r0, 0x4(r3)
-    stw r28, 0x8(r3)
-    beq lbl_8025C5E4
-    lwz r0, 0x18(r29)
-    stw r0, 0x10(r3)
-    b lbl_8025C5EC
-lbl_8025C5E4:
-    li r0, 0x0
-    stw r0, 0x10(r3)
-lbl_8025C5EC:
-    stw r30, 0xc(r3)
-    li r0, 0x0
-    stw r0, 0x14(r3)
-    lwz r0, 0x5dc(r31)
-    cmpwi r0, 0x0
-    bne lbl_8025C608
-    stw r3, 0x5dc(r31)
-lbl_8025C608:
-    lwz r4, 0x5e0(r31)
-    cmpwi r4, 0x0
-    beq lbl_8025C618
-    stw r3, 0x14(r4)
-lbl_8025C618:
-    stw r3, 0x5e0(r31)
-    li r3, 0x0
-lbl_8025C620:
-    addi r11, r1, 0x20
-    bl _restgpr_26
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
 
-// asm_to_cpp: gpiProcessCallbacks
-asm GPResult gpiProcessCallbacks(GPConnection* connection,
-                             int blockingOperationID) {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    addi r11, r1, 0x30
-    bl _savegpr_25
-    cmpwi r4, 0x0
-    lwz r30, 0x0(r3)
-    mr r25, r3
-    mr r26, r4
-    beq lbl_8025C9B8
-    lwz r29, 0x5dc(r30)
-    li r0, 0x0
-    lwz r28, 0x5e0(r30)
-    li r27, 0x0
-    mr r4, r29
-    stw r0, 0x5dc(r30)
-    stw r0, 0x5e0(r30)
-    b lbl_8025C984
-lbl_8025C934:
-    lwz r0, 0x10(r4)
-    lwz r31, 0x14(r4)
-    cmpw r0, r26
-    beq lbl_8025C950
-    lwz r0, 0xc(r4)
-    cmpwi r0, 0x1
-    bne lbl_8025C97C
-lbl_8025C950:
-    cmpwi r27, 0x0
-    beq lbl_8025C960
-    stw r31, 0x14(r27)
-    b lbl_8025C964
-lbl_8025C960:
-    mr r29, r31
-lbl_8025C964:
-    cmplw r28, r4
-    bne lbl_8025C970
-    mr r28, r27
-lbl_8025C970:
-    mr r3, r25
-    bl gpiCallCallback
-    b lbl_8025C980
-lbl_8025C97C:
-    mr r27, r4
-lbl_8025C980:
-    mr r4, r31
-lbl_8025C984:
-    cmpwi r4, 0x0
-    bne lbl_8025C934
-    lwz r0, 0x5dc(r30)
-    cmpwi r0, 0x0
-    beq lbl_8025C9A8
-    lwz r3, 0x5e0(r30)
-    stw r29, 0x14(r3)
-    stw r28, 0x5e0(r30)
-    b lbl_8025C9B0
-lbl_8025C9A8:
-    stw r29, 0x5dc(r30)
-    stw r28, 0x5e0(r30)
-lbl_8025C9B0:
-    li r3, 0x0
-    b lbl_8025C9F4
-lbl_8025C9B8:
-    li r31, 0x0
-    b lbl_8025C9E4
-lbl_8025C9C0:
-    stw r31, 0x5dc(r30)
-    stw r31, 0x5e0(r30)
-    b lbl_8025C9DC
-lbl_8025C9CC:
-    lwz r28, 0x14(r4)
-    mr r3, r25
-    bl gpiCallCallback
-    mr r4, r28
-lbl_8025C9DC:
-    cmpwi r4, 0x0
-    bne lbl_8025C9CC
-lbl_8025C9E4:
-    lwz r4, 0x5dc(r30)
-    cmpwi r4, 0x0
-    bne lbl_8025C9C0
-    li r3, 0x0
-lbl_8025C9F4:
-    addi r11, r1, 0x30
-    bl _restgpr_25
-    lwz r0, 0x34(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
-}

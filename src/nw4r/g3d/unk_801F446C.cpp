@@ -1,53 +1,97 @@
-#include "types.h"
+#include <nw4r/g3d.h>
 
-// Translation unit: src/nw4r/g3d/unk_801F446C.cpp
-// Total functions: 1
+#include <revolution/GX.h>
 
-// Forward declarations
-extern "C" void GXSetFog();
-extern "C" void GXSetFogRangeAdj();
-extern "C" void SetGP__Q34nw4r3g3d3FogCFv();
+namespace nw4r {
+namespace g3d {
 
-// ----------------------------------------------------------------------------
-// SetGP__Q34nw4r3g3d3FogCFv
-// ----------------------------------------------------------------------------
-extern "C" asm void SetGP__Q34nw4r3g3d3FogCFv() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    lwz r31, 0x0(r3)
-    cmpwi r31, 0x0
-    beq lbl_801F44E0
-    lwz r0, 0x0(r31)
-    cmpwi r0, 0x0
-    beq lbl_801F44A4
-    lbz r3, 0x18(r31)
-    addi r5, r31, 0x1c
-    lhz r4, 0x1a(r31)
-    bl GXSetFogRangeAdj
-lbl_801F44A4:
-    lbz r0, 0x14(r31)
-    addi r4, r1, 0x8
-    stb r0, 0x8(r1)
-    lbz r0, 0x15(r31)
-    stb r0, 0x9(r1)
-    lbz r0, 0x16(r31)
-    stb r0, 0xa(r1)
-    lbz r0, 0x17(r31)
-    stb r0, 0xb(r1)
-    lwz r3, 0x0(r31)
-    lfs f1, 0x4(r31)
-    lfs f2, 0x8(r31)
-    lfs f3, 0xc(r31)
-    lfs f4, 0x10(r31)
-    bl GXSetFog
-lbl_801F44E0:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+Fog::Fog(FogData* pData) : ResCommon(pData) {}
+
+void Fog::Init() {
+    if (!IsValid()) {
+        return;
+    }
+
+    FogData& r = ref();
+
+    r.type = GX_FOG_NONE;
+
+    r.startz = 0.0f;
+    r.endz = 0.0f;
+    r.nearz = 0.0f;
+    r.farz = 0.0f;
+
+    r.color.r = r.color.g = r.color.b = r.color.a = 0;
+
+    r.adjEnable = FALSE;
+    r.PADDING_0x19 = 0;
+
+    r.adjCenter = 0;
+    for (int i = 0; i < GX_FOG_ADJ_TABLE_SZ; i++) {
+        r.adjTable.r[i] = 0;
+    }
 }
+
+Fog Fog::CopyTo(register void* pDst) const {
+    if (pDst != NULL && IsValid()) {
+        register const FogData* pSrc = ptr();
+        register f64 work0, work1, work2, work3, work4, work5;
+
+        ASM (
+            lfd  work0, 0(pSrc)
+            stfd work0, 0(pDst)
+
+            lfd  work1, 8(pSrc)
+            stfd work1, 8(pDst)
+
+            lfd  work2, 16(pSrc)
+            stfd work2, 16(pDst)
+
+            lfd  work3, 24(pSrc)
+            stfd work3, 24(pDst)
+
+            lfd  work4, 32(pSrc)
+            stfd work4, 32(pDst)
+
+            lfd  work5, 40(pSrc)
+            stfd work5, 40(pDst)
+        )
+
+        return Fog(static_cast<FogData*>(pDst));
+    }
+
+    return Fog(NULL);
+}
+
+void Fog::SetFogRangeAdjParam(u16 width, u16 center,
+                              const math::MTX44& rProjMtx) {
+    if (!IsValid()) {
+        return;
+    }
+
+    FogData& r = ref();
+
+    r.adjCenter = center;
+    GXInitFogAdjTable(&r.adjTable, width, rProjMtx);
+}
+
+void Fog::SetGP() const {
+    if (!IsValid()) {
+        return;
+    }
+
+    const FogData& r = ref();
+
+    if (r.type != GX_FOG_NONE) {
+        GXSetFogRangeAdj(r.adjEnable, r.adjCenter, &r.adjTable);
+    }
+
+    GXSetFog(r.type, r.color, r.startz, r.endz, r.nearz, r.farz);
+}
+
+} // namespace g3d
+} // namespace nw4r
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+
 

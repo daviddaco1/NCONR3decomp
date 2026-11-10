@@ -4,12 +4,12 @@
 // Total functions: 1
 
 // Forward declarations
-extern "C" void fn_80222B20();
+extern "C" void DecodeDspAdpcm__Q34nw4r3snd6detailFP10_AXPBADPCMUc();
 
 // ----------------------------------------------------------------------------
-// fn_80222B20
+// DecodeDspAdpcm__Q34nw4r3snd6detailFP10_AXPBADPCMUc
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_80222B20() {
+extern "C" asm void DecodeDspAdpcm__Q34nw4r3snd6detailFP10_AXPBADPCMUc() {
     nofralloc
     lhz r7, 0x22(r3)
     clrlslwi r0, r4, 24, 12

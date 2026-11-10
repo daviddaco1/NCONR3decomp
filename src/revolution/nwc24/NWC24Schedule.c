@@ -63,6 +63,9 @@ s32 ExecResumeScheduler(void) {
 
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
+extern void NWC24IsMsgLibOpened();
+extern void NWC24IsMsgLibOpenedByTool();
+extern void NWC24IsMsgLibOpenBlocking();
 s32 ExecNoParamCommand(s32 *arg0, s32 arg1, s32 *arg2, M2C_UNK arg_sp0);
 s32 NWC24ResumeScheduler(void);
 s32 NWC24SuspendScheduler(void);
@@ -221,17 +224,17 @@ asm s32 fn_80334334(s32 arg0) {
     li r3, -0x1
     b lbl_803343A8
 lbl_80334370:
-    bl fn_80334098
+    bl NWC24IsMsgLibOpened
     cmpwi r3, 0x0
     bne lbl_80334388
-    bl fn_803340AC
+    bl NWC24IsMsgLibOpenedByTool
     cmpwi r3, 0x0
     beq lbl_80334390
 lbl_80334388:
     li r3, -0xa
     b lbl_803343A8
 lbl_80334390:
-    bl fn_803340C0
+    bl NWC24IsMsgLibOpenBlocking
     cmpwi r3, 0x0
     beq lbl_803343A4
     li r3, -0x1a
@@ -340,10 +343,10 @@ asm s32 NWC24iRequestGenerateUserId(s8 *arg0, s32 *arg1, s32 arg2, M2C_UNK arg_s
     li r3, -0x1
     b lbl_80334530
 lbl_8033450C:
-    bl fn_80334098
+    bl NWC24IsMsgLibOpened
     cmpwi r3, 0x0
     bne lbl_80334524
-    bl fn_803340AC
+    bl NWC24IsMsgLibOpenedByTool
     cmpwi r3, 0x0
     beq lbl_8033452C
 lbl_80334524:

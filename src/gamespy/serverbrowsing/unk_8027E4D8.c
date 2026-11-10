@@ -60,11 +60,11 @@ extern void detail_HoldSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHan
 extern void detail_PrepareSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPCQ44nw4r3snd14SoundStartable9StartInfo();
 extern void fn_8019B578();
 extern void fn_801A341C();
-extern void fn_80253528();
-extern void fn_802535C4();
-extern void fn_80253658();
-extern void fn_80253660();
-extern void fn_80253690();
+extern void ArrayNew();
+extern void ArrayFree();
+extern void ArrayLength();
+extern void ArrayNth();
+extern void ArrayAppend();
 extern void fn_80253E78();
 extern void fn_802557FC();
 extern void fn_80255E4C();
@@ -582,14 +582,14 @@ asm void fn_8027EA90() {
     stw r28, 0x10(r1)
     mr r28, r3
     lwz r3, 0x4(r3)
-    bl fn_80253658
+    bl ArrayLength
     mr r31, r3
     li r30, 0x0
     b lbl_8027EAEC
 lbl_8027EAC8:
     lwz r3, 0x4(r28)
     mr r4, r30
-    bl fn_80253660
+    bl ArrayNth
     lwz r0, 0x0(r3)
     cmplw r29, r0
     bne lbl_8027EAE8
@@ -626,7 +626,7 @@ asm void fn_8027EB18() {
     stw r29, 0x14(r1)
     mr r29, r3
     lwz r3, 0x4(r3)
-    bl fn_80253660
+    bl ArrayNth
     lwz r31, 0x0(r3)
     mr r3, r29
     lwz r12, 0x488(r29)
@@ -665,7 +665,7 @@ lbl_8027EB90:
 asm void fn_8027EBB0() {
     nofralloc
     lwz r3, 0x4(r3)
-    b fn_80253658
+    b ArrayLength
 }
 
 // ----------------------------------------------------------------------------
@@ -677,7 +677,7 @@ asm void fn_8027EBB8() {
     mflr r0
     stw r0, 0x14(r1)
     lwz r3, 0x4(r3)
-    bl fn_80253660
+    bl ArrayNth
     lwz r0, 0x14(r1)
     lwz r3, 0x0(r3)
     mtlr r0
@@ -699,14 +699,14 @@ asm void fn_8027EBE0() {
     stw r28, 0x10(r1)
     mr r28, r3
     lwz r3, 0x4(r3)
-    bl fn_80253658
+    bl ArrayLength
     mr r31, r3
     li r29, 0x0
     b lbl_8027EC50
 lbl_8027EC14:
     lwz r3, 0x4(r28)
     mr r4, r29
-    bl fn_80253660
+    bl ArrayNth
     lwz r4, 0x7d8(r28)
     lwz r30, 0x0(r3)
     cmpwi r4, 0x0
@@ -881,7 +881,7 @@ lbl_8027EE20:
     stw r0, 0x0(r3)
     li r3, 0x4
     li r5, 0x0
-    bl fn_80253528
+    bl ArrayNew
     li r31, 0x0
     stw r3, 0x4(r24)
     mr r3, r24
@@ -1105,7 +1105,7 @@ lbl_8027F110:
 lbl_8027F12C:
     lwz r3, 0x8(r26)
     mr r4, r31
-    bl fn_80253660
+    bl ArrayNth
     lwz r0, 0x0(r3)
     mr r3, r26
     stw r0, 0x18(r1)
@@ -1126,11 +1126,11 @@ lbl_8027F178:
     addi r31, r31, 0x1
 lbl_8027F17C:
     lwz r3, 0x8(r26)
-    bl fn_80253658
+    bl ArrayLength
     cmpw r31, r3
     blt lbl_8027F12C
     lwz r3, 0x8(r26)
-    bl fn_802535C4
+    bl ArrayFree
     stw r23, 0x8(r26)
 lbl_8027F198:
     stw r24, 0x484(r26)
@@ -1233,7 +1233,7 @@ lbl_8027F2E0:
 lbl_8027F304:
     lwz r3, 0x8(r26)
     mr r4, r23
-    bl fn_80253660
+    bl ArrayNth
     lwz r0, 0x0(r3)
     mr r3, r26
     stw r0, 0x10(r1)
@@ -1254,11 +1254,11 @@ lbl_8027F350:
     addi r23, r23, 0x1
 lbl_8027F354:
     lwz r3, 0x8(r26)
-    bl fn_80253658
+    bl ArrayLength
     cmpw r23, r3
     blt lbl_8027F304
     lwz r3, 0x8(r26)
-    bl fn_802535C4
+    bl ArrayFree
     li r0, 0x0
     stw r0, 0x8(r26)
 lbl_8027F374:
@@ -1577,7 +1577,7 @@ lbl_8027F7B8:
 lbl_8027F7DC:
     lwz r3, 0x8(r23)
     mr r4, r24
-    bl fn_80253660
+    bl ArrayNth
     lwz r0, 0x0(r3)
     mr r3, r23
     stw r0, 0x20(r1)
@@ -1598,11 +1598,11 @@ lbl_8027F828:
     addi r24, r24, 0x1
 lbl_8027F82C:
     lwz r3, 0x8(r23)
-    bl fn_80253658
+    bl ArrayLength
     cmpw r24, r3
     blt lbl_8027F7DC
     lwz r3, 0x8(r23)
-    bl fn_802535C4
+    bl ArrayFree
     li r0, 0x0
     stw r0, 0x8(r23)
 lbl_8027F84C:
@@ -1705,7 +1705,7 @@ lbl_8027F968:
 lbl_8027F98C:
     lwz r3, 0x8(r31)
     mr r4, r30
-    bl fn_80253660
+    bl ArrayNth
     lwz r0, 0x0(r3)
     mr r3, r31
     stw r0, 0x10(r1)
@@ -1726,11 +1726,11 @@ lbl_8027F9D8:
     addi r30, r30, 0x1
 lbl_8027F9DC:
     lwz r3, 0x8(r31)
-    bl fn_80253658
+    bl ArrayLength
     cmpw r30, r3
     blt lbl_8027F98C
     lwz r3, 0x8(r31)
-    bl fn_802535C4
+    bl ArrayFree
     li r0, 0x0
     stw r0, 0x8(r31)
 lbl_8027F9FC:
@@ -1813,7 +1813,7 @@ lbl_8027FAD8:
 lbl_8027FAFC:
     lwz r3, 0x8(r31)
     mr r4, r30
-    bl fn_80253660
+    bl ArrayNth
     lwz r0, 0x0(r3)
     mr r3, r31
     stw r0, 0x10(r1)
@@ -1834,11 +1834,11 @@ lbl_8027FB48:
     addi r30, r30, 0x1
 lbl_8027FB4C:
     lwz r3, 0x8(r31)
-    bl fn_80253658
+    bl ArrayLength
     cmpw r30, r3
     blt lbl_8027FAFC
     lwz r3, 0x8(r31)
-    bl fn_802535C4
+    bl ArrayFree
     li r0, 0x0
     stw r0, 0x8(r31)
 lbl_8027FB6C:
@@ -1874,14 +1874,14 @@ lbl_8027FBC8:
     li r0, 0x0
     lwz r3, 0x4(r31)
     stw r0, 0x480(r31)
-    bl fn_80253658
+    bl ArrayLength
     mr r30, r3
     li r28, 0x0
     b lbl_8027FC2C
 lbl_8027FBF0:
     lwz r3, 0x4(r31)
     mr r4, r28
-    bl fn_80253660
+    bl ArrayNth
     lwz r4, 0x7d8(r31)
     lwz r29, 0x0(r3)
     cmpwi r4, 0x0
@@ -1924,7 +1924,7 @@ lbl_8027FC78:
     lwz r3, 0x4(r31)
     cmpwi r3, 0x0
     beq lbl_8027FC90
-    bl fn_802535C4
+    bl ArrayFree
 lbl_8027FC90:
     li r0, 0x0
     stw r0, 0x4(r31)
@@ -2027,14 +2027,14 @@ asm void fn_8027FD90() {
     lwz r3, 0x8(r3)
     mr r28, r4
     mr r29, r5
-    bl fn_80253658
+    bl ArrayLength
     mr r31, r3
     li r30, 0x0
     b lbl_8027FEA4
 lbl_8027FDC4:
     lwz r3, 0x8(r27)
     mr r4, r30
-    bl fn_80253660
+    bl ArrayNth
     lwz r0, 0x4(r3)
     cmpwi r0, 0x1
     beq lbl_8027FDF8
@@ -2186,14 +2186,14 @@ lbl_8027FFB0:
     rlwinm. r0, r30, 0, 25, 25
     beq lbl_802800DC
     lwz r3, 0x8(r25)
-    bl fn_80253658
+    bl ArrayLength
     mr r23, r3
     li r22, 0x0
     b lbl_802800BC
 lbl_8027FFCC:
     lwz r3, 0x8(r25)
     mr r4, r22
-    bl fn_80253660
+    bl ArrayNth
     lwz r0, 0x4(r3)
     mr r24, r3
     cmpwi r0, 0x1
@@ -2436,7 +2436,7 @@ lbl_802802F0:
     mr r30, r3
     addi r4, r1, 0xc
     lwz r3, 0x4(r27)
-    bl fn_80253690
+    bl ArrayAppend
     lwz r12, 0x488(r27)
     mr r3, r27
     lwz r5, 0xc(r1)
@@ -2869,7 +2869,7 @@ lbl_80280958:
     li r3, 0x8
     li r5, 0x0
     stw r4, 0x484(r26)
-    bl fn_80253528
+    bl ArrayNew
     cmpwi r3, 0x0
     stw r3, 0x8(r26)
     bne lbl_80280994
@@ -2932,20 +2932,20 @@ lbl_80280A48:
     stw r0, 0x18(r1)
     addi r4, r1, 0x18
     lwz r3, 0x8(r26)
-    bl fn_80253690
+    bl ArrayAppend
     add r3, r19, r28
     addi r0, r19, 0x1
     addi r28, r3, 0x1
     subf r27, r0, r27
 lbl_80280A68:
     lwz r3, 0x8(r26)
-    bl fn_80253658
+    bl ArrayLength
     lwz r0, 0x484(r26)
     cmpw r0, r3
     bgt lbl_802809A4
 lbl_80280A7C:
     lwz r3, 0x8(r26)
-    bl fn_80253658
+    bl ArrayLength
     lwz r0, 0x484(r26)
     cmpw r0, r3
     bgt lbl_80280C30
@@ -3116,7 +3116,7 @@ asm void fn_80280C78() {
 lbl_80280CB4:
     lwz r3, 0x8(r27)
     mr r4, r26
-    bl fn_80253660
+    bl ArrayNth
     lwz r0, 0x0(r3)
     mr r3, r27
     stw r0, 0x10(r1)
@@ -3137,18 +3137,18 @@ lbl_80280D00:
     addi r26, r26, 0x1
 lbl_80280D04:
     lwz r3, 0x8(r27)
-    bl fn_80253658
+    bl ArrayLength
     cmpw r26, r3
     blt lbl_80280CB4
     lwz r3, 0x8(r27)
-    bl fn_802535C4
+    bl ArrayFree
     li r0, 0x0
     stw r0, 0x8(r27)
 lbl_80280D24:
     mr r4, r30
     li r3, 0x8
     li r5, 0x0
-    bl fn_80253528
+    bl ArrayNew
     cmpwi r3, 0x0
     stw r3, 0x8(r27)
     bne lbl_80280D48
@@ -3215,7 +3215,7 @@ lbl_80280E08:
     stw r0, 0x18(r1)
     addi r4, r1, 0x18
     lwz r3, 0x8(r27)
-    bl fn_80253690
+    bl ArrayAppend
     add r3, r25, r28
     addi r0, r25, 0x1
     addi r28, r3, 0x1
@@ -3398,14 +3398,14 @@ lbl_80281044:
     lhz r26, 0x8(r1)
     lwz r27, 0xc(r1)
     lwz r3, 0x4(r29)
-    bl fn_80253658
+    bl ArrayLength
     mr r28, r3
     li r25, 0x0
     b lbl_802810B8
 lbl_8028107C:
     lwz r3, 0x4(r29)
     mr r4, r25
-    bl fn_80253660
+    bl ArrayNth
     lwz r24, 0x0(r3)
     mr r3, r24
     bl SBServerGetPublicInetAddress
@@ -3431,7 +3431,7 @@ lbl_802810C4:
 lbl_802810D4:
     lwz r3, 0x4(r29)
     mr r4, r25
-    bl fn_80253660
+    bl ArrayNth
     lwz r24, 0x0(r3)
     addi r3, r1, 0x10
     addi r4, r30, 0x6
@@ -3550,14 +3550,14 @@ lbl_8028125C:
     lhz r29, 0x8(r1)
     lwz r30, 0x10(r1)
     lwz r3, 0x4(r24)
-    bl fn_80253658
+    bl ArrayLength
     mr r31, r3
     li r28, 0x0
     b lbl_802812B4
 lbl_80281278:
     lwz r3, 0x4(r24)
     mr r4, r28
-    bl fn_80253660
+    bl ArrayNth
     lwz r27, 0x0(r3)
     mr r3, r27
     bl SBServerGetPublicInetAddress
@@ -3591,7 +3591,7 @@ lbl_802812C0:
 lbl_802812F0:
     lwz r3, 0x4(r24)
     mr r4, r28
-    bl fn_80253660
+    bl ArrayNth
     lwz r27, 0x0(r3)
 lbl_80281300:
     mr r3, r24
@@ -3610,7 +3610,7 @@ lbl_80281328:
     stw r27, 0xc(r1)
     addi r4, r1, 0xc
     lwz r3, 0x4(r24)
-    bl fn_80253690
+    bl ArrayAppend
     lwz r12, 0x488(r24)
     mr r3, r24
     lwz r5, 0xc(r1)
@@ -3727,14 +3727,14 @@ lbl_8028149C:
     lhz r28, 0x8(r1)
     lwz r27, 0xc(r1)
     lwz r3, 0x4(r30)
-    bl fn_80253658
+    bl ArrayLength
     mr r31, r3
     li r26, 0x0
     b lbl_80281514
 lbl_802814D8:
     lwz r3, 0x4(r30)
     mr r4, r26
-    bl fn_80253660
+    bl ArrayNth
     lwz r29, 0x0(r3)
     mr r3, r29
     bl SBServerGetPublicInetAddress
@@ -3760,7 +3760,7 @@ lbl_80281520:
 lbl_80281530:
     lwz r3, 0x4(r30)
     mr r4, r26
-    bl fn_80253660
+    bl ArrayNth
     lwz r31, 0x0(r3)
     mr r3, r30
     lwz r12, 0x488(r30)
@@ -3882,7 +3882,7 @@ lbl_802816C4:
 lbl_802816E8:
     lwz r3, 0x8(r30)
     mr r4, r26
-    bl fn_80253660
+    bl ArrayNth
     lwz r0, 0x0(r3)
     mr r3, r30
     stw r0, 0x18(r1)
@@ -3903,11 +3903,11 @@ lbl_80281734:
     addi r26, r26, 0x1
 lbl_80281738:
     lwz r3, 0x8(r30)
-    bl fn_80253658
+    bl ArrayLength
     cmpw r26, r3
     blt lbl_802816E8
     lwz r3, 0x8(r30)
-    bl fn_802535C4
+    bl ArrayFree
     li r0, 0x0
     stw r0, 0x8(r30)
 lbl_80281758:
@@ -4045,7 +4045,7 @@ lbl_80281900:
 lbl_80281924:
     lwz r3, 0x8(r31)
     mr r4, r30
-    bl fn_80253660
+    bl ArrayNth
     lwz r0, 0x0(r3)
     mr r3, r31
     stw r0, 0x10(r1)
@@ -4066,11 +4066,11 @@ lbl_80281970:
     addi r30, r30, 0x1
 lbl_80281974:
     lwz r3, 0x8(r31)
-    bl fn_80253658
+    bl ArrayLength
     cmpw r30, r3
     blt lbl_80281924
     lwz r3, 0x8(r31)
-    bl fn_802535C4
+    bl ArrayFree
     li r0, 0x0
     stw r0, 0x8(r31)
 lbl_80281994:

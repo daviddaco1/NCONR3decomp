@@ -6,19 +6,19 @@ M2C_UNK memset();            /* extern */
 extern s16 lbl_80453A50;
 extern s16 lbl_80456740;
 
-void fn_802B6F60();
-void fn_802B6F8C();
+void btu_init_core();
+void BTE_Init();
 s32 fn_802B6FD8();
 void fn_802B70B8();
 
-void fn_802B6F60(s32 arg0) {
-    fn_802B1218();
+void btu_init_core(s32 arg0) {
+    btm_init();
     l2c_init();
     sdp_init();
     btm_discovery_db_init();
 }
 
-// fn_802B6F8C: definicion C reemplazada por asm (ver abajo)
+// BTE_Init: definicion C reemplazada por asm (ver abajo)
 
 
 // fn_802B6FD8: definicion C reemplazada por asm (ver abajo)
@@ -29,13 +29,13 @@ void fn_802B6F60(s32 arg0) {
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
 extern void SDP_AddUuidSequence();
-void fn_802B6F8C(void);
+void BTE_Init(void);
 s32 fn_802B6FD8(void);
 void fn_802B70B8(void);
 extern void gap_conn_init();
 
-// asm_to_cpp: fn_802B6F8C
-asm void fn_802B6F8C(void) {
+// asm_to_cpp: BTE_Init
+asm void BTE_Init(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0

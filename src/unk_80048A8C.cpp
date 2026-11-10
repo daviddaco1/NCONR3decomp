@@ -43,7 +43,7 @@ void fn_80048EF0(s8 *arg0, s8 arg1, s8 arg2, s8 arg3, s8 arg4);
 void fn_80170E84(s32 arg0, s8 *arg1);
 s8 * fn_80186808(s8 *arg0);
 s8 * fn_80186C78(s8 *arg0, s32 arg1, u32 arg2);
-u16 fn_8030C61C(s8 *arg0, u16 arg1);
+u16 MEMSetGroupIDForExpHeap(s8 *arg0, u16 arg1);
 s32 fn_8030CAF0();
 s32 fn_8030CB00();
 
@@ -84,7 +84,7 @@ lbl_80048AEC:
     lwz r3, 0x70(r30)
     li r4, 0xb
     clrlwi r4, r4, 16
-    bl fn_8030C61C
+    bl MEMSetGroupIDForExpHeap
     addi r3, r30, 0x60
     li r4, 0xb0
     bl fn_8030CAF0
@@ -123,7 +123,7 @@ lbl_80048B88:
     lwz r3, 0x70(r3)
     li r4, 0x0
     clrlwi r4, r4, 16
-    bl fn_8030C61C
+    bl MEMSetGroupIDForExpHeap
     li r3, 0x1
 lbl_80048BA4:
     mr r10, r31
@@ -235,7 +235,7 @@ asm void fn_80048D44(s8 *arg0, s32 arg1) {
     lwz r3, 0x70(r30)
     li r4, 0xb
     clrlwi r4, r4, 16
-    bl fn_8030C61C
+    bl MEMSetGroupIDForExpHeap
     addi r3, r30, 0x60
     bl fn_80048EE8
     addi r3, r30, 0x60
@@ -265,7 +265,7 @@ lbl_80048DF4:
     lwz r3, 0x70(r3)
     li r4, 0x0
     clrlwi r4, r4, 16
-    bl fn_8030C61C
+    bl MEMSetGroupIDForExpHeap
 lbl_80048E10:
     mr r10, r31
     addi r11, r10, 0x30

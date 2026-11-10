@@ -5,7 +5,7 @@
 #include <revolution/IPC.h>
 #include <revolution/OS.h>
 
-#include <string.h>
+#include <cstring>
 
 static OSInterruptHandler* InterruptHandlerTable;
 s64 __OSLastInterruptTime;
@@ -87,8 +87,37 @@ OSInterruptHandler __OSGetInterruptHandler(OSInterruptType type) {
     return InterruptHandlerTable[type];
 }
 
-// __OSInterruptInit: definicion C reemplazada por asm (ver abajo)
+void __OSInterruptInit(void) {
+    InterruptHandlerTable =
+        (OSInterruptHandler*)OSPhysicalToCached(OS_PHYS_INTR_HANDLER_TABLE);
+    memset(InterruptHandlerTable, 0, sizeof(OSInterruptHandler) * OS_INTR_MAX);
 
+    *(u32*)OSPhysicalToCached(OS_PHYS_PREV_INTR_MASK) = 0;
+    *(u32*)OSPhysicalToCached(OS_PHYS_CURRENT_INTR_MASK) = 0;
+
+    PI_HW_REGS[PI_INTMR] =
+        PI_INTMR_EXI | PI_INTMR_AI | PI_INTMR_DSP | PI_INTMR_MEM;
+
+    IPC_PPC_HW_REGS[IPC_PPCIRQMASK] = 0x40000000;
+
+    __OSMaskInterrupts(
+        OS_INTR_MASK(OS_INTR_MEM_0) | OS_INTR_MASK(OS_INTR_MEM_1) |
+        OS_INTR_MASK(OS_INTR_MEM_2) | OS_INTR_MASK(OS_INTR_MEM_3) |
+        OS_INTR_MASK(OS_INTR_MEM_ADDRESS) | OS_INTR_MASK(OS_INTR_DSP_AI) |
+        OS_INTR_MASK(OS_INTR_DSP_ARAM) | OS_INTR_MASK(OS_INTR_DSP_DSP) |
+        OS_INTR_MASK(OS_INTR_AI_AI) | OS_INTR_MASK(OS_INTR_EXI_0_EXI) |
+        OS_INTR_MASK(OS_INTR_EXI_0_TC) | OS_INTR_MASK(OS_INTR_EXI_0_EXT) |
+        OS_INTR_MASK(OS_INTR_EXI_1_EXI) | OS_INTR_MASK(OS_INTR_EXI_1_TC) |
+        OS_INTR_MASK(OS_INTR_EXI_1_EXT) | OS_INTR_MASK(OS_INTR_EXI_2_EXI) |
+        OS_INTR_MASK(OS_INTR_EXI_2_TC) | OS_INTR_MASK(OS_INTR_PI_CP) |
+        OS_INTR_MASK(OS_INTR_PI_PE_TOKEN) | OS_INTR_MASK(OS_INTR_PI_PE_FINISH) |
+        OS_INTR_MASK(OS_INTR_PI_SI) | OS_INTR_MASK(OS_INTR_PI_DI) |
+        OS_INTR_MASK(OS_INTR_PI_RSW) | OS_INTR_MASK(OS_INTR_PI_ERROR) |
+        OS_INTR_MASK(OS_INTR_PI_VI) | OS_INTR_MASK(OS_INTR_PI_DEBUG) |
+        OS_INTR_MASK(OS_INTR_PI_HSP) | OS_INTR_MASK(OS_INTR_PI_ACR));
+
+    __OSSetExceptionHandler(OS_ERR_EXT_INTERRUPT, ExternalInterruptHandler);
+}
 
 static u32 SetInterruptMask(u32 type, u32 mask) {
     u32 miMask;
@@ -298,14 +327,6 @@ static u32 SetInterruptMask(u32 type, u32 mask) {
     }
 }
 
-//unused
-void OSGetInterruptMask(){
-}
-
-//unused
-void OSSetInterruptMask(){
-}
-
 u32 __OSMaskInterrupts(u32 userMask) {
     BOOL enabled = OSDisableInterrupts();
     u32 prevMask = *(u32*)OSPhysicalToCached(OS_PHYS_PREV_INTR_MASK);
@@ -340,8 +361,175 @@ u32 __OSUnmaskInterrupts(u32 userMask) {
     return prevMask;
 }
 
-// __OSDispatchInterrupt: definicion C reemplazada por asm (ver abajo)
+void __OSDispatchInterrupt(u8 intr, OSContext* ctx) {
+    u32 intsr;
+    u32 mask, newMask;
+    u32 miCause;
+    u32 dspCause;
+    u32 exi0Cause, exi1Cause, exi2Cause;
+    u32 piMask;
 
+    intsr = PI_HW_REGS[PI_INTSR];
+    intsr &= ~PI_INTSR_RSWST;
+
+    piMask = PI_HW_REGS[PI_INTMR];
+    if (intsr == 0 || !(intsr & piMask)) {
+        OSLoadContext(ctx);
+    }
+
+    mask = 0;
+    newMask = 0;
+
+    /**
+     * MEM interrupts
+     */
+    if (intsr & PI_INTMR_MEM) {
+        miCause = MI_HW_REGS[MI_INTSR];
+        if (miCause & MI_INTSR_MEM0) {
+            mask |= OS_INTR_MASK(OS_INTR_MEM_0);
+        }
+        if (miCause & MI_INTSR_MEM1) {
+            mask |= OS_INTR_MASK(OS_INTR_MEM_1);
+        }
+        if (miCause & MI_INTSR_MEM2) {
+            mask |= OS_INTR_MASK(OS_INTR_MEM_2);
+        }
+        if (miCause & MI_INTSR_MEM3) {
+            mask |= OS_INTR_MASK(OS_INTR_MEM_3);
+        }
+        if (miCause & MI_INTSR_ADDR) {
+            mask |= OS_INTR_MASK(OS_INTR_MEM_ADDRESS);
+        }
+    }
+
+    /**
+     * DSP interrupts
+     */
+    if (intsr & PI_INTSR_DSP) {
+        dspCause = DSP_HW_REGS[DSP_CSR];
+        if (dspCause & DSP_CSR_AIDINT) {
+            mask |= OS_INTR_MASK(OS_INTR_DSP_AI);
+        }
+        if (dspCause & DSP_CSR_ARINT) {
+            mask |= OS_INTR_MASK(OS_INTR_DSP_ARAM);
+        }
+        if (dspCause & DSP_CSR_DSPINT) {
+            mask |= OS_INTR_MASK(OS_INTR_DSP_DSP);
+        }
+    }
+
+    /**
+     * AI interrupts
+     */
+    if ((intsr & PI_INTSR_AI) && (AI_HW_REGS[AI_AICR] & AI_AICR_AIINT)) {
+        mask |= OS_INTR_MASK(OS_INTR_AI_AI);
+    }
+
+    /**
+     * EXI interrupts
+     */
+    if (intsr & PI_INTSR_EXI) {
+        exi0Cause = EXI_CHAN_PARAMS[EXI_CHAN_0].cpr;
+        if (exi0Cause & EXI_CPR_EXIINT) {
+            mask |= OS_INTR_MASK(OS_INTR_EXI_0_EXI);
+        }
+        if (exi0Cause & EXI_CPR_TCINT) {
+            mask |= OS_INTR_MASK(OS_INTR_EXI_0_TC);
+        }
+        if (exi0Cause & EXI_CPR_EXTINT) {
+            mask |= OS_INTR_MASK(OS_INTR_EXI_0_EXT);
+        }
+
+        exi1Cause = EXI_CHAN_PARAMS[EXI_CHAN_1].cpr;
+        if (exi1Cause & EXI_CPR_EXIINT) {
+            mask |= OS_INTR_MASK(OS_INTR_EXI_1_EXI);
+        }
+        if (exi1Cause & EXI_CPR_TCINT) {
+            mask |= OS_INTR_MASK(OS_INTR_EXI_1_TC);
+        }
+        if (exi1Cause & EXI_CPR_EXTINT) {
+            mask |= OS_INTR_MASK(OS_INTR_EXI_1_EXT);
+        }
+
+        exi2Cause = EXI_CHAN_PARAMS[EXI_CHAN_2].cpr;
+        if (exi2Cause & EXI_CPR_EXIINT) {
+            mask |= OS_INTR_MASK(OS_INTR_EXI_2_EXI);
+        }
+        if (exi2Cause & EXI_CPR_TCINT) {
+            mask |= OS_INTR_MASK(OS_INTR_EXI_2_TC);
+        }
+    }
+
+    /**
+     * PI interrupts
+     */
+    if (intsr & PI_INTSR_HSP) {
+        mask |= OS_INTR_MASK(OS_INTR_PI_HSP);
+    }
+    if (intsr & PI_INTSR_DEBUG) {
+        mask |= OS_INTR_MASK(OS_INTR_PI_DEBUG);
+    }
+    if (intsr & PI_INTSR_PE_FINISH) {
+        mask |= OS_INTR_MASK(OS_INTR_PI_PE_FINISH);
+    }
+    if (intsr & PI_INTSR_PE_TOKEN) {
+        mask |= OS_INTR_MASK(OS_INTR_PI_PE_TOKEN);
+    }
+    if (intsr & PI_INTSR_VI) {
+        mask |= OS_INTR_MASK(OS_INTR_PI_VI);
+    }
+    if (intsr & PI_INTSR_SI) {
+        mask |= OS_INTR_MASK(OS_INTR_PI_SI);
+    }
+    if (intsr & PI_INTSR_DI) {
+        mask |= OS_INTR_MASK(OS_INTR_PI_DI);
+    }
+    if (intsr & PI_INTSR_RSW) {
+        mask |= OS_INTR_MASK(OS_INTR_PI_RSW);
+    }
+    if (intsr & PI_INTSR_CP) {
+        mask |= OS_INTR_MASK(OS_INTR_PI_CP);
+    }
+    if (intsr & PI_INTSR_ERROR) {
+        mask |= OS_INTR_MASK(OS_INTR_PI_ERROR);
+    }
+    if (intsr & PI_INTSR_ACR) {
+        mask |= OS_INTR_MASK(OS_INTR_PI_ACR);
+    }
+
+    newMask = mask & ~(*(u32*)OSPhysicalToCached(OS_PHYS_PREV_INTR_MASK) |
+                       *(u32*)OSPhysicalToCached(OS_PHYS_CURRENT_INTR_MASK));
+
+    if (newMask != 0) {
+        s16 type;
+        u32* pPrio;
+        OSInterruptHandler handler;
+
+        for (pPrio = InterruptPrioTable; TRUE; pPrio++) {
+            if (newMask & *pPrio) {
+                type = __cntlzw(newMask & *pPrio);
+                break;
+            }
+        }
+
+        handler = __OSGetInterruptHandler(type);
+        if (handler != NULL) {
+            if (type > OS_INTR_MEM_ADDRESS) {
+                __OSLastInterrupt = type;
+                __OSLastInterruptTime = OSGetTime();
+                __OSLastInterruptSrr0 = ctx->srr0;
+            }
+
+            OSDisableScheduler();
+            handler(type, ctx);
+            OSEnableScheduler();
+            __OSReschedule();
+            OSLoadContext(ctx);
+        }
+    }
+
+    OSLoadContext(ctx);
+}
 
 static asm void ExternalInterruptHandler(register u8 type,
                                          register OSContext* ctx) {
@@ -374,272 +562,5 @@ static asm void ExternalInterruptHandler(register u8 type,
 }
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-extern float InterruptHandlerTable_8049E310;
-extern u8 lbl_80381078[];
-extern void OSLoadContext();
-extern void __OSReschedule();
 
-// asm_to_cpp: __OSInterruptInit
-asm void __OSInterruptInit(void) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    li r4, 0x0
-    li r5, 0x80
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    lis r31, 0x8000
-    addi r3, r31, 0x3040
-    stw r30, 0x18(r1)
-    stw r29, 0x14(r1)
-    stw r3, InterruptHandlerTable_8049E310
-    bl memset
-    li r6, 0x0
-    li r5, 0xf0
-    stw r6, 0xc4(r31)
-    lis r4, 0xcc00
-    lis r0, 0x4000
-    lis r3, 0xcd00
-    stw r6, 0xc8(r31)
-    li r30, -0x10
-    stw r5, 0x3004(r4)
-    stw r0, 0x34(r3)
-    bl OSDisableInterrupts
-    lwz r0, 0xc4(r31)
-    mr r29, r3
-    lwz r4, 0xc8(r31)
-    or r30, r30, r0
-    nor r0, r0, r4
-    stw r30, 0xc4(r31)
-    clrrwi r3, r0, 4
-    or r30, r30, r4
-    b lbl_80319CDC
-lbl_80319CD4:
-    mr r4, r30
-    bl SetInterruptMask
-lbl_80319CDC:
-    cmpwi r3, 0x0
-    bne lbl_80319CD4
-    mr r3, r29
-    bl OSRestoreInterrupts
-    lis r4, ExternalInterruptHandler@ha
-    li r3, 0x4
-    addi r4, r4, ExternalInterruptHandler@l
-    bl __OSSetExceptionHandler
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
 
-// asm_to_cpp: __OSDispatchInterrupt
-asm void __OSDispatchInterrupt(u8 intr, OSContext* ctx) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    lis r3, 0xcc00
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    stw r30, 0x18(r1)
-    mr r30, r4
-    stw r29, 0x14(r1)
-    lwz r31, 0x3000(r3)
-    lwz r0, 0x3004(r3)
-    rlwinm. r31, r31, 0, 16, 14
-    beq lbl_8031A0AC
-    and. r0, r31, r0
-    bne lbl_8031A0B4
-lbl_8031A0AC:
-    mr r3, r30
-    bl OSLoadContext
-lbl_8031A0B4:
-    rlwinm. r0, r31, 0, 24, 24
-    li r0, 0x0
-    beq lbl_8031A104
-    lis r3, 0xcc00
-    lhz r4, 0x401e(r3)
-    clrlwi. r3, r4, 31
-    beq lbl_8031A0D4
-    oris r0, r0, 0x8000
-lbl_8031A0D4:
-    rlwinm. r3, r4, 0, 30, 30
-    beq lbl_8031A0E0
-    oris r0, r0, 0x4000
-lbl_8031A0E0:
-    rlwinm. r3, r4, 0, 29, 29
-    beq lbl_8031A0EC
-    oris r0, r0, 0x2000
-lbl_8031A0EC:
-    rlwinm. r3, r4, 0, 28, 28
-    beq lbl_8031A0F8
-    oris r0, r0, 0x1000
-lbl_8031A0F8:
-    rlwinm. r3, r4, 0, 27, 27
-    beq lbl_8031A104
-    oris r0, r0, 0x800
-lbl_8031A104:
-    rlwinm. r3, r31, 0, 25, 25
-    beq lbl_8031A138
-    lis r3, 0xcc00
-    lhz r4, 0x500a(r3)
-    rlwinm. r3, r4, 0, 28, 28
-    beq lbl_8031A120
-    oris r0, r0, 0x400
-lbl_8031A120:
-    rlwinm. r3, r4, 0, 26, 26
-    beq lbl_8031A12C
-    oris r0, r0, 0x200
-lbl_8031A12C:
-    rlwinm. r3, r4, 0, 24, 24
-    beq lbl_8031A138
-    oris r0, r0, 0x100
-lbl_8031A138:
-    rlwinm. r3, r31, 0, 26, 26
-    beq lbl_8031A154
-    lis r3, 0xcd00
-    lwz r3, 0x6c00(r3)
-    rlwinm. r3, r3, 0, 28, 28
-    beq lbl_8031A154
-    oris r0, r0, 0x80
-lbl_8031A154:
-    rlwinm. r3, r31, 0, 27, 27
-    beq lbl_8031A1D4
-    lis r3, 0xcd00
-    lwz r4, 0x6800(r3)
-    rlwinm. r3, r4, 0, 30, 30
-    beq lbl_8031A170
-    oris r0, r0, 0x40
-lbl_8031A170:
-    rlwinm. r3, r4, 0, 28, 28
-    beq lbl_8031A17C
-    oris r0, r0, 0x20
-lbl_8031A17C:
-    rlwinm. r3, r4, 0, 20, 20
-    beq lbl_8031A188
-    oris r0, r0, 0x10
-lbl_8031A188:
-    lis r3, 0xcd00
-    lwz r4, 0x6814(r3)
-    rlwinm. r3, r4, 0, 30, 30
-    beq lbl_8031A19C
-    oris r0, r0, 0x8
-lbl_8031A19C:
-    rlwinm. r3, r4, 0, 28, 28
-    beq lbl_8031A1A8
-    oris r0, r0, 0x4
-lbl_8031A1A8:
-    rlwinm. r3, r4, 0, 20, 20
-    beq lbl_8031A1B4
-    oris r0, r0, 0x2
-lbl_8031A1B4:
-    lis r3, 0xcd00
-    lwz r4, 0x6828(r3)
-    rlwinm. r3, r4, 0, 30, 30
-    beq lbl_8031A1C8
-    oris r0, r0, 0x1
-lbl_8031A1C8:
-    rlwinm. r3, r4, 0, 28, 28
-    beq lbl_8031A1D4
-    ori r0, r0, 0x8000
-lbl_8031A1D4:
-    rlwinm. r3, r31, 0, 18, 18
-    beq lbl_8031A1E0
-    ori r0, r0, 0x20
-lbl_8031A1E0:
-    rlwinm. r3, r31, 0, 19, 19
-    beq lbl_8031A1EC
-    ori r0, r0, 0x40
-lbl_8031A1EC:
-    rlwinm. r3, r31, 0, 21, 21
-    beq lbl_8031A1F8
-    ori r0, r0, 0x1000
-lbl_8031A1F8:
-    rlwinm. r3, r31, 0, 22, 22
-    beq lbl_8031A204
-    ori r0, r0, 0x2000
-lbl_8031A204:
-    rlwinm. r3, r31, 0, 23, 23
-    beq lbl_8031A210
-    ori r0, r0, 0x80
-lbl_8031A210:
-    rlwinm. r3, r31, 0, 28, 28
-    beq lbl_8031A21C
-    ori r0, r0, 0x800
-lbl_8031A21C:
-    rlwinm. r3, r31, 0, 29, 29
-    beq lbl_8031A228
-    ori r0, r0, 0x400
-lbl_8031A228:
-    rlwinm. r3, r31, 0, 30, 30
-    beq lbl_8031A234
-    ori r0, r0, 0x200
-lbl_8031A234:
-    rlwinm. r3, r31, 0, 20, 20
-    beq lbl_8031A240
-    ori r0, r0, 0x4000
-lbl_8031A240:
-    clrlwi. r3, r31, 31
-    beq lbl_8031A24C
-    ori r0, r0, 0x100
-lbl_8031A24C:
-    rlwinm. r3, r31, 0, 17, 17
-    beq lbl_8031A258
-    ori r0, r0, 0x10
-lbl_8031A258:
-    lis r3, 0x8000
-    lwz r4, 0xc4(r3)
-    lwz r3, 0xc8(r3)
-    or r3, r4, r3
-    andc. r3, r0, r3
-    beq lbl_8031A2F4
-    lis r4, lbl_80381078@ha
-    addi r4, r4, lbl_80381078@l
-lbl_8031A278:
-    lwz r0, 0x0(r4)
-    and. r0, r3, r0
-    beq lbl_8031A290
-    cntlzw r0, r0
-    extsh r29, r0
-    b lbl_8031A298
-lbl_8031A290:
-    addi r4, r4, 0x4
-    b lbl_8031A278
-lbl_8031A298:
-    lwz r3, InterruptHandlerTable_8049E310
-    slwi r0, r29, 2
-    lwzx r31, r3, r0
-    cmpwi r31, 0x0
-    beq lbl_8031A2F4
-    cmpwi r29, 0x4
-    ble lbl_8031A2CC
-    sth r29, __OSLastInterrupt
-    bl OSGetTime
-    stw r4, __OSLastInterruptTime+0x4
-    stw r3, __OSLastInterruptTime
-    lwz r0, 0x198(r30)
-    stw r0, __OSLastInterruptSrr0
-lbl_8031A2CC:
-    bl OSDisableScheduler
-    mr r12, r31
-    mr r3, r29
-    mr r4, r30
-    mtctr r12
-    bctrl
-    bl OSEnableScheduler
-    bl __OSReschedule
-    mr r3, r30
-    bl OSLoadContext
-lbl_8031A2F4:
-    mr r3, r30
-    bl OSLoadContext
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}

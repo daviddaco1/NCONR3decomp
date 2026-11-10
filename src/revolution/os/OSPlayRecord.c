@@ -56,15 +56,7 @@ static u32 RecordCheckSum(const OSPlayRecord* playRec) {
     return checksum;
 }
 
-//unused
-void __OSCreatePlayRecord(){
-}
-
 DECOMP_FORCEACTIVE(OSPlayRecord_c, PlayRecord);
-
-//unused
-void __OSReadPlayRecord(){
-}
 
 static void PlayRecordAlarmCallback(OSAlarm* alarm, OSContext* ctx) {
 #pragma unused(alarm)
@@ -241,14 +233,88 @@ static void PlayRecordCallback(s32 result, NANDCommandBlock* block) {
     PlayRecordLastError = error;
 }
 
-// __OSStartPlayRecord: definicion C reemplazada por asm (ver abajo)
+void __OSStartPlayRecord(void) {
+    if (NANDInit() == NAND_RESULT_OK) {
+        PlayRecordTerminate = FALSE;
+        PlayRecordGet = FALSE;
+        PlayRecordState = PLAY_RECORD_STATE_STARTED;
+        PlayRecordError = FALSE;
+        PlayRecordRetry = FALSE;
+        PlayRecordTerminated = FALSE;
+        PlayRecordLastError = NAND_RESULT_OK;
+        PlayRecordCallback(NAND_RESULT_OK, NULL);
+    }
+}
 
+void __OSStopPlayRecord(void) {
+    BOOL enabled;
+    s64 start;
 
-// __OSStopPlayRecord: definicion C reemplazada por asm (ver abajo)
+    enabled = OSDisableInterrupts();
 
+    PlayRecordTerminate = TRUE;
 
-//unused
-void __OSGetPlayRecordState(){
+    if (PlayRecordState == PLAY_RECORD_STATE_CLOSED ||
+        PlayRecordState == PLAY_RECORD_STATE_STARTED ||
+        PlayRecordState == PLAY_RECORD_STATE_STOPPED ||
+        PlayRecordState == PLAY_RECORD_STATE_TIMEOUT) {
+        OSRestoreInterrupts(enabled);
+    } else if (PlayRecordState == PLAY_RECORD_STATE_SET_ALARM) {
+        OSCancelAlarm(&PlayRecordAlarm);
+        OSRestoreInterrupts(enabled);
+        PlayRecord.stopTime = OSGetTime();
+        PlayRecord.checksum = RecordCheckSum(&PlayRecord);
+        NANDWrite(&FileInfo, &PlayRecord, sizeof(OSPlayRecord));
+        NANDClose(&FileInfo);
+    } else {
+        if (PlayRecordRetry) {
+            OSCancelAlarm(&PlayRecordAlarm);
+            OSRestoreInterrupts(enabled);
+        } else {
+            OSRestoreInterrupts(enabled);
+            start = OSGetTime();
+
+            while (TRUE) {
+                if (PlayRecordTerminated) {
+                    break;
+                }
+
+                if (OSGetTime() - start > OS_MSEC_TO_TICKS(500)) {
+                    PlayRecordState = PLAY_RECORD_STATE_TIMEOUT;
+                    return;
+                }
+            }
+        }
+
+        switch (PlayRecordState) {
+        case PLAY_RECORD_STATE_READ:
+        case PLAY_RECORD_STATE_SEEK:
+        case PLAY_RECORD_STATE_WRITE: {
+            NANDClose(&FileInfo);
+            break;
+        }
+
+        case PLAY_RECORD_STATE_OPEN: {
+            if (PlayRecordLastError == NAND_RESULT_OK && !PlayRecordRetry) {
+                NANDClose(&FileInfo);
+            }
+            break;
+        }
+
+        case PLAY_RECORD_STATE_CLOSE: {
+            if (PlayRecordRetry) {
+                NANDClose(&FileInfo);
+            }
+            break;
+        }
+
+        default: {
+            break;
+        }
+        }
+    }
+
+    PlayRecordState = PLAY_RECORD_STATE_STOPPED;
 }
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
@@ -264,13 +330,10 @@ extern float lbl_8049E394;
 extern u8 jumptable_8038D2D4[];
 extern u8 lbl_8038D2A8[];
 extern u8 lbl_80465B20[];
-extern void OSCancelAlarm();
-extern void PlayRecordCallback_8031EBA8();
-extern void _restgpr_26();
-extern void _savegpr_26();
+extern int PlayRecordCallback_8031EBA8();
 
 // asm_to_cpp: PlayRecordCallback_8031EBA8
-asm void PlayRecordCallback_8031EBA8() {
+asm int PlayRecordCallback_8031EBA8() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -596,173 +659,6 @@ lbl_8031F03C:
     lwz r31, 0x1c(r1)
     lwz r30, 0x18(r1)
     lwz r29, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// asm_to_cpp: __OSStartPlayRecord
-asm void __OSStartPlayRecord(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl NANDInit
-    cmpwi r3, 0x0
-    bne lbl_8031F09C
-    li r0, 0x0
-    li r3, 0x0
-    stw r0, PlayRecordTerminate_8049E380
-    li r4, 0x0
-    stw r0, PlayRecordGet_8049E378
-    stw r0, PlayRecordState_8049D228
-    stw r0, PlayRecordError_8049E37C
-    stw r0, PlayRecordRetry_8049E388
-    stw r0, PlayRecordTerminated_8049E384
-    stw r0, PlayRecordLastError_8049E38C
-    bl PlayRecordCallback_8031EBA8
-lbl_8031F09C:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// asm_to_cpp: __OSStopPlayRecord
-asm void __OSStopPlayRecord(void) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_26
-    lis r29, lbl_80465B20@ha
-    addi r29, r29, lbl_80465B20@l
-    bl OSDisableInterrupts
-    lwz r0, PlayRecordState_8049D228
-    li r4, 0x1
-    stw r4, PlayRecordTerminate_8049E380
-    mr r26, r3
-    cmpwi r0, 0x7
-    beq lbl_8031F0FC
-    cmpwi r0, 0x0
-    beq lbl_8031F0FC
-    cmpwi r0, 0x9
-    beq lbl_8031F0FC
-    cmpwi r0, 0x8
-    bne lbl_8031F108
-lbl_8031F0FC:
-    mr r3, r26
-    bl OSRestoreInterrupts
-    b lbl_8031F274
-lbl_8031F108:
-    cmpwi r0, 0x4
-    bne lbl_8031F170
-    addi r3, r29, 0x80
-    bl OSCancelAlarm
-    mr r3, r26
-    bl OSRestoreInterrupts
-    bl OSGetTime
-    addi r5, r29, 0x0
-    li r0, 0x1f
-    stw r4, 0x64(r5)
-    addi r6, r5, 0x4
-    li r4, 0x0
-    stw r3, 0x60(r5)
-    mtctr r0
-lbl_8031F140:
-    lwz r0, 0x0(r6)
-    addi r6, r6, 0x4
-    add r4, r4, r0
-    bdnz lbl_8031F140
-    stw r4, 0x0(r29)
-    addi r3, r29, 0xb0
-    addi r4, r29, 0x0
-    li r5, 0x80
-    bl NANDWrite
-    addi r3, r29, 0xb0
-    bl NANDClose
-    b lbl_8031F274
-lbl_8031F170:
-    lwz r0, PlayRecordRetry_8049E388
-    cmpwi r0, 0x0
-    beq lbl_8031F190
-    addi r3, r29, 0x80
-    bl OSCancelAlarm
-    mr r3, r26
-    bl OSRestoreInterrupts
-    b lbl_8031F204
-lbl_8031F190:
-    bl OSRestoreInterrupts
-    bl OSGetTime
-    lis r5, 0x1062
-    li r0, 0x0
-    mr r30, r4
-    mr r31, r3
-    addi r26, r5, 0x4dd3
-    xoris r28, r0, 0x8000
-    lis r27, 0x8000
-lbl_8031F1B4:
-    lwz r0, PlayRecordTerminated_8049E384
-    cmpwi r0, 0x0
-    bne lbl_8031F204
-    bl OSGetTime
-    lwz r0, 0xf8(r27)
-    subfc r4, r30, r4
-    subfe r3, r31, r3
-    srwi r0, r0, 2
-    mulhwu r0, r26, r0
-    xoris r3, r3, 0x8000
-    srwi r0, r0, 6
-    mulli r0, r0, 0x1f4
-    subfc r0, r4, r0
-    subfe r3, r3, r28
-    subfe r3, r28, r28
-    neg. r3, r3
-    beq lbl_8031F1B4
-    li r0, 0x8
-    stw r0, PlayRecordState_8049D228
-    b lbl_8031F27C
-lbl_8031F204:
-    lwz r0, PlayRecordState_8049D228
-    cmpwi r0, 0x4
-    beq lbl_8031F274
-    bge lbl_8031F224
-    cmpwi r0, 0x1
-    beq lbl_8031F23C
-    bge lbl_8031F230
-    b lbl_8031F274
-lbl_8031F224:
-    cmpwi r0, 0x6
-    beq lbl_8031F260
-    bge lbl_8031F274
-lbl_8031F230:
-    addi r3, r29, 0xb0
-    bl NANDClose
-    b lbl_8031F274
-lbl_8031F23C:
-    lwz r0, PlayRecordLastError_8049E38C
-    cmpwi r0, 0x0
-    bne lbl_8031F274
-    lwz r0, PlayRecordRetry_8049E388
-    cmpwi r0, 0x0
-    bne lbl_8031F274
-    addi r3, r29, 0xb0
-    bl NANDClose
-    b lbl_8031F274
-lbl_8031F260:
-    lwz r0, PlayRecordRetry_8049E388
-    cmpwi r0, 0x0
-    beq lbl_8031F274
-    addi r3, r29, 0xb0
-    bl NANDClose
-lbl_8031F274:
-    li r0, 0x9
-    stw r0, PlayRecordState_8049D228
-lbl_8031F27C:
-    addi r11, r1, 0x20
-    bl _restgpr_26
-    lwz r0, 0x24(r1)
     mtlr r0
     addi r1, r1, 0x20
     blr

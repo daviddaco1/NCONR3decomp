@@ -1,7 +1,3 @@
-/**
- * Based on ARC decompilation by riidefi
- */
-
 #include <revolution/DVD.h>
 #include <revolution/OS.h>
 
@@ -40,13 +36,22 @@ static u32 MaxEntryNum;
 OSThreadQueue __DVDThreadQueue;
 BOOL __DVDLongFileNameFlag = TRUE;
 
-static u32 currentDirectory = 0;
+static s32 currentDirectory;
 
 static void cbForReadAsync(s32 result, DVDCommandBlock* block);
 static void cbForReadSync(s32 result, DVDCommandBlock* block);
 
-// __DVDFSInit: definicion C reemplazada por asm (ver abajo)
+void __DVDFSInit(void) {
+    BootInfo = (OSBootInfo*)OSPhysicalToCached(OS_PHYS_BOOT_INFO);
+    FstStart = (const DVDNode*)BootInfo->fstStart;
 
+    if (FstStart != NULL) {
+        // Size of FST root
+        MaxEntryNum = FstStart->size;
+        // String table is placed after FST nodes
+        FstStringStart = (char*)&FstStart[MaxEntryNum];
+    }
+}
 
 static BOOL isSame(const char* lhs, const char* rhs) {
     while (*rhs != '\0') {
@@ -63,11 +68,8 @@ static BOOL isSame(const char* lhs, const char* rhs) {
 }
 
 // DVDConvertPathToEntrynum: definicion C reemplazada por asm (ver abajo)
+s32 DVDConvertPathToEntrynum(const char* path);
 
-
-//unused
-BOOL DVDEntrynumIsDir(){
-}
 
 BOOL DVDFastOpen(s32 entrynum, DVDFileInfo* info) {
     if (entrynum < 0 || entrynum >= MaxEntryNum ||
@@ -83,9 +85,30 @@ BOOL DVDFastOpen(s32 entrynum, DVDFileInfo* info) {
     return TRUE;
 }
 
+BOOL DVDOpen(const char* path, DVDFileInfo* info) {
+    s32 entrynum = DVDConvertPathToEntrynum(path);
 
-// DVDOpen: definicion C reemplazada por asm (ver abajo)
+    if (entrynum < 0) {
+        char dir[128];
+        DVDGetCurrentDir(dir, sizeof(dir));
 
+        OSReport("Warning: DVDOpen(): file '%s' was not found under %s.\n",
+                 path, dir);
+
+        return FALSE;
+    }
+
+    if (DVDNodeIsFolder(FstStart[entrynum])) {
+        return FALSE;
+    }
+
+    info->offset = FstStart[entrynum].offset >> __DVDLayoutFormat;
+    info->size = FstStart[entrynum].size;
+    info->callback = NULL;
+    info->block.state = DVD_STATE_IDLE;
+
+    return TRUE;
+}
 
 BOOL DVDClose(DVDFileInfo* info) {
     DVDCancel(&info->block);
@@ -141,13 +164,8 @@ static BOOL DVDConvertEntrynumToPath(s32 entrynum, char* string, u32 maxlen) {
     return TRUE;
 }
 
-//unused
 BOOL DVDGetCurrentDir(char* buffer, u32 maxlen) {
     return DVDConvertEntrynumToPath(currentDirectory, buffer, maxlen);
-}
-
-//unused
-void DVDChangeDir(){
 }
 
 BOOL DVDReadAsyncPrio(DVDFileInfo* info, void* dst, s32 size, s32 offset,
@@ -229,112 +247,19 @@ static void cbForReadSync(s32 result, DVDCommandBlock* block) {
     OSWakeupThread(&__DVDThreadQueue);
 }
 
-//unused
-void DVDSeekAsyncPrio(){
-}
-
-//unused
-void cbForSeekAsync(){
-}
-
-//unused
-void DVDSeekPrio(){
-}
-
-//unused
-void cbForSeekSync(){
-}
-
-//unused
-void DVDGetFileInfoStatus(){
-}
-
-//unused
-void DVDFastOpenDir(){
-}
-
-//unused
-BOOL DVDOpenDir(const char* dirName, DVDDir* dir) {
-}
-
-//unused
-BOOL DVDReadDir(DVDDir* dir, DVDDirEntry* dirent) {
-}
-
-BOOL DVDCloseDir(DVDDir* dir) {
-    return TRUE;
-}
-
-//unused
-void DVDRewindDir(){
-}
-
-//unused
-void DVDGetFSTLocation(){
-}
-
-u32 DVDGetTransferredSize(DVDCommandBlock* block){
-    s32 size;
-
-    switch(block->state){
-        case DVD_STATE_FATAL:
-        case DVD_STATE_IDLE:
-        case DVD_STATE_COVER_CLOSED:
-        case DVD_STATE_NO_DISK:
-        case DVD_STATE_COVER_OPENED:
-        case DVD_STATE_WRONG_DISK_ID:
-        case DVD_STATE_7:
-        case DVD_STATE_CANCELED:
-        case DVD_STATE_DISK_ERROR:
-        case DVD_STATE_MOTOR_STOPPED:
-        size = block->transferTotal;
-        break;
-        case DVD_STATE_WAITING:
-        size = 0;
-        break;
-        case DVD_STATE_BUSY:
-        size = block->transferTotal;
-        break;
-        default:
-        break;
-    }
-
-    return size;
-
-}
-
 // ---- Funciones aun sin C que matchee (asm generado) ----
-extern float BootInfo_8049E04C;
 extern float FstStart_8049E048;
 extern float FstStringStart_8049E044;
-extern float MaxEntryNum_8049E040;
 extern float lbl_8049CFF8;
 extern float lbl_8049E030;
 extern u8 lbl_8035FBD8[];
 extern u8 lbl_80378A28[];
-extern u8 lbl_80378AF0[];
+s32 DVDConvertPathToEntrynum(const char* path);
 extern void _restgpr_24();
 extern void _restgpr_27();
 extern void _savegpr_24();
 extern void _savegpr_27();
-extern void fn_802D0B90();
-
-// asm_to_cpp: __DVDFSInit
-asm void __DVDFSInit(void) {
-    nofralloc
-    lis r3, 0x8000
-    stw r3, BootInfo_8049E04C
-    lwz r4, 0x38(r3)
-    cmpwi r4, 0x0
-    stw r4, FstStart_8049E048
-    beqlr
-    lwz r3, 0x8(r4)
-    mulli r0, r3, 0xc
-    stw r3, MaxEntryNum_8049E040
-    add r0, r4, r0
-    stw r0, FstStringStart_8049E044
-    blr
-}
+extern int fn_802D0B90();
 
 // asm_to_cpp: DVDConvertPathToEntrynum
 asm s32 DVDConvertPathToEntrynum(const char* path) {
@@ -575,209 +500,8 @@ lbl_802D0840:
     blr
 }
 
-// asm_to_cpp: DVDOpen
-asm BOOL DVDOpen(const char* path, DVDFileInfo* info) {
-    nofralloc
-    stwu r1, -0xa0(r1)
-    mflr r0
-    stw r0, 0xa4(r1)
-    addi r11, r1, 0xa0
-    bl _savegpr_27
-    mr r28, r3
-    mr r27, r4
-    bl DVDConvertPathToEntrynum
-    cmpwi r3, 0x0
-    bge lbl_802D0B04
-    lwz r29, lbl_8049E030
-    cmpwi r29, 0x0
-    bne lbl_802D08FC
-    li r4, 0x0
-    b lbl_802D0A88
-lbl_802D08FC:
-    lwz r8, FstStart_8049E048
-    mulli r0, r29, 0xc
-    lwz r7, FstStringStart_8049E044
-    addi r6, r8, 0x4
-    lwzx r3, r6, r0
-    lwzx r0, r8, r0
-    cmpwi r3, 0x0
-    clrlwi r0, r0, 8
-    add r30, r7, r0
-    bne lbl_802D092C
-    li r4, 0x0
-    b lbl_802D0A2C
-lbl_802D092C:
-    mulli r0, r3, 0xc
-    lwzx r3, r6, r0
-    lwzx r0, r8, r0
-    cmpwi r3, 0x0
-    clrlwi r0, r0, 8
-    add r31, r7, r0
-    bne lbl_802D0950
-    li r4, 0x0
-    b lbl_802D09D0
-lbl_802D0950:
-    mulli r3, r3, 0xc
-    addi r4, r1, 0x8
-    li r5, 0x80
-    lwzx r0, r8, r3
-    lwzx r3, r6, r3
-    clrlwi r0, r0, 8
-    add r27, r7, r0
-    bl fn_802D0B90
-    cmplwi r3, 0x80
-    mr r4, r3
-    bne lbl_802D0980
-    b lbl_802D09D0
-lbl_802D0980:
-    addi r4, r3, 0x1
-    addi r5, r1, 0x8
-    li r0, 0x2f
-    stbx r0, r5, r3
-    subfic r6, r4, 0x80
-    mr r3, r6
-    add r5, r5, r4
-    b lbl_802D09B4
-lbl_802D09A0:
-    lbz r0, 0x0(r27)
-    subi r3, r3, 0x1
-    addi r27, r27, 0x1
-    stb r0, 0x0(r5)
-    addi r5, r5, 0x1
-lbl_802D09B4:
-    cmpwi r3, 0x0
-    beq lbl_802D09C8
-    lbz r0, 0x0(r27)
-    extsb. r0, r0
-    bne lbl_802D09A0
-lbl_802D09C8:
-    subf r0, r3, r6
-    add r4, r4, r0
-lbl_802D09D0:
-    cmplwi r4, 0x80
-    bne lbl_802D09DC
-    b lbl_802D0A2C
-lbl_802D09DC:
-    addi r5, r4, 0x1
-    addi r3, r1, 0x8
-    li r0, 0x2f
-    stbx r0, r3, r4
-    subfic r6, r5, 0x80
-    mr r4, r6
-    add r3, r3, r5
-    b lbl_802D0A10
-lbl_802D09FC:
-    lbz r0, 0x0(r31)
-    subi r4, r4, 0x1
-    addi r31, r31, 0x1
-    stb r0, 0x0(r3)
-    addi r3, r3, 0x1
-lbl_802D0A10:
-    cmpwi r4, 0x0
-    beq lbl_802D0A24
-    lbz r0, 0x0(r31)
-    extsb. r0, r0
-    bne lbl_802D09FC
-lbl_802D0A24:
-    subf r0, r4, r6
-    add r4, r5, r0
-lbl_802D0A2C:
-    cmplwi r4, 0x80
-    bne lbl_802D0A38
-    b lbl_802D0A88
-lbl_802D0A38:
-    addi r5, r4, 0x1
-    addi r3, r1, 0x8
-    li r0, 0x2f
-    stbx r0, r3, r4
-    subfic r6, r5, 0x80
-    mr r4, r6
-    add r3, r3, r5
-    b lbl_802D0A6C
-lbl_802D0A58:
-    lbz r0, 0x0(r30)
-    subi r4, r4, 0x1
-    addi r30, r30, 0x1
-    stb r0, 0x0(r3)
-    addi r3, r3, 0x1
-lbl_802D0A6C:
-    cmpwi r4, 0x0
-    beq lbl_802D0A80
-    lbz r0, 0x0(r30)
-    extsb. r0, r0
-    bne lbl_802D0A58
-lbl_802D0A80:
-    subf r0, r4, r6
-    add r4, r5, r0
-lbl_802D0A88:
-    cmplwi r4, 0x80
-    bne lbl_802D0A9C
-    li r0, 0x0
-    stb r0, 0x87(r1)
-    b lbl_802D0AE4
-lbl_802D0A9C:
-    mulli r0, r29, 0xc
-    lwz r3, FstStart_8049E048
-    lwzx r0, r3, r0
-    clrrwi. r0, r0, 24
-    beq lbl_802D0AD8
-    cmplwi r4, 0x7f
-    bne lbl_802D0AC8
-    addi r3, r1, 0x8
-    li r0, 0x0
-    stbx r0, r3, r4
-    b lbl_802D0AE4
-lbl_802D0AC8:
-    addi r3, r1, 0x8
-    li r0, 0x2f
-    stbx r0, r3, r4
-    addi r4, r4, 0x1
-lbl_802D0AD8:
-    addi r3, r1, 0x8
-    li r0, 0x0
-    stbx r0, r3, r4
-lbl_802D0AE4:
-    lis r3, lbl_80378AF0@ha
-    mr r4, r28
-    addi r3, r3, lbl_80378AF0@l
-    addi r5, r1, 0x8
-    opword 0x4CC63182
-    bl OSReport
-    li r3, 0x0
-    b lbl_802D0B54
-lbl_802D0B04:
-    mulli r6, r3, 0xc
-    lwz r3, FstStart_8049E048
-    lwzx r0, r3, r6
-    clrrwi. r0, r0, 24
-    beq lbl_802D0B20
-    li r3, 0x0
-    b lbl_802D0B54
-lbl_802D0B20:
-    add r3, r3, r6
-    lwz r4, __DVDLayoutFormat
-    lwz r5, 0x4(r3)
-    li r0, 0x0
-    li r3, 0x1
-    srw r4, r5, r4
-    stw r4, 0x30(r27)
-    lwz r4, FstStart_8049E048
-    add r4, r4, r6
-    lwz r4, 0x8(r4)
-    stw r4, 0x34(r27)
-    stw r0, 0x38(r27)
-    stw r0, 0xc(r27)
-lbl_802D0B54:
-    addi r11, r1, 0xa0
-    bl _restgpr_27
-    lwz r0, 0xa4(r1)
-    mtlr r0
-    addi r1, r1, 0xa0
-    blr
-}
-
 // asm_to_cpp: fn_802D0B90
-asm void fn_802D0B90() {
+asm int fn_802D0B90() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0

@@ -42,8 +42,8 @@ extern void bta_sys_pm_register();
 extern void bta_sys_sendmsg();
 extern void bta_sys_start_timer();
 extern void bta_sys_stop_timer();
-extern void fn_802A59E8();
-extern void fn_802A5A1C();
+extern void bdcpy();
+extern void bdcmp();
 extern void memcpy();
 extern void memset();
 
@@ -179,7 +179,7 @@ lbl_802A8C08:
     beq lbl_802A8C48
     mr r4, r28
     addi r3, r24, 0xb0
-    bl fn_802A5A1C
+    bl bdcmp
     cmpwi r3, 0x0
     bne lbl_802A8C48
     mr r3, r24
@@ -224,7 +224,7 @@ lbl_802A8C9C:
     bne lbl_802A8CD8
     mr r4, r28
     addi r3, r3, 0x1
-    bl fn_802A5A1C
+    bl bdcmp
     cmpwi r3, 0x0
     beq lbl_802A8CEC
 lbl_802A8CD8:
@@ -299,7 +299,7 @@ lbl_802A8DBC:
     stb r26, 0x7(r5)
     addi r3, r5, 0x1
     stb r27, 0x8(r5)
-    bl fn_802A59E8
+    bl bdcpy
     lbz r3, lbl_80453D18@l(r30)
     addi r0, r3, 0x1
     stb r0, lbl_80453D18@l(r30)
@@ -313,7 +313,7 @@ lbl_802A8DFC:
     mr r4, r28
     mulli r23, r0, 0xb
     add r3, r26, r23
-    bl fn_802A5A1C
+    bl bdcmp
     cmpwi r3, 0x0
     bne lbl_802A8E2C
     add r3, r26, r23
@@ -378,7 +378,7 @@ lbl_802A8ED0:
     mr r4, r20
     mulli r29, r0, 0xb
     add r3, r28, r29
-    bl fn_802A5A1C
+    bl bdcmp
     cmpwi r3, 0x0
     bne lbl_802A8EF8
     add r24, r28, r29
@@ -405,7 +405,7 @@ lbl_802A8F24:
     mr r4, r20
     add r3, r31, r29
     addi r3, r3, 0x1
-    bl fn_802A5A1C
+    bl bdcmp
     cmpwi r3, 0x0
     bne lbl_802A904C
     lwz r7, lbl_8049CF60
@@ -515,7 +515,7 @@ lbl_802A90AC:
     mr r4, r20
     stb r0, 0xb6(r3)
     addi r3, r3, 0xb0
-    bl fn_802A59E8
+    bl bdcpy
     lis r4, bta_dm_pm_timer_cback@ha
     add r3, r21, r22
     addi r4, r4, bta_dm_pm_timer_cback@l
@@ -624,7 +624,7 @@ asm void bta_dm_pm_btm_cback() {
     sth r29, 0x10(r3)
     stb r30, 0x12(r3)
     addi r3, r3, 0x8
-    bl fn_802A59E8
+    bl bdcpy
     mr r3, r31
     bl bta_sys_sendmsg
 lbl_802A9260:
@@ -698,7 +698,7 @@ lbl_802A9310:
     add r4, r4, r0
     addi r4, r4, 0xb0
     addi r3, r3, 0x8
-    bl fn_802A59E8
+    bl bdcpy
     mr r3, r31
     bl bta_sys_sendmsg
 lbl_802A9358:
@@ -732,7 +732,7 @@ lbl_802A9394:
     beq lbl_802A93D4
     addi r3, r29, 0xb0
     addi r4, r31, 0x8
-    bl fn_802A5A1C
+    bl bdcmp
     cmpwi r3, 0x0
     bne lbl_802A93D4
     mr r3, r29
@@ -763,7 +763,7 @@ lbl_802A940C:
     addi r4, r31, 0x8
     mulli r28, r0, 0xb
     add r3, r30, r28
-    bl fn_802A5A1C
+    bl bdcmp
     cmpwi r3, 0x0
     bne lbl_802A9454
     add r5, r30, r28

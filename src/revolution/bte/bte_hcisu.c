@@ -1,80 +1,58 @@
-#include "types.h"
-#include "m2c_macros.h"
-#include "m2c_protos.h"
+#include "bte.h"
 
-extern s8 *lbl_8049DFE8;
-extern s32 lbl_8049DFEC;
+#include <decomp.h> // int
 
-/*
-Decompilation failure in function bte_hcisu_send:
+#include "data_types.h" // UINT16
+#include "gki_target.h" // BTU_TASK
 
-Unable to determine jump table for bctr instruction at bte_hcisu.s line 16.
+#include "btu.h" // BTU_HCI_RCV_MBOX
+#include "gki.h"
+#include "hci.h"
 
-There must be a read of a variable before the instruction
-which has a name starting with with "jtbl"/"jpt_"/"lbl_"/"jumptable_".
-*/
+// NOTICE OF CHANGES: MWCC emits uninitialized .sbss objects in reverse
+// declaration order, so p_hcisu_cfg is declared before p_hcisu_if to
+// reproduce the retail .sbss layout (uusb_ppc.c's variables come first).
+tHCI_CFG *p_hcisu_cfg;
+tHCI_IF *p_hcisu_if;
 
-void bte_hcisu_task();
-void bta_ci_hci_msg_handler();
+void bte_hcisu_send(HC_BT_HDR *p_msg, UINT16 event)
+{
+	p_msg->event = event;
 
-void bte_hcisu_task(s32 arg0, s32 arg1) {
-    M2C_UNK (*temp_r12)(M2C_UNK, M2C_UNK, M2C_UNK);
-    M2C_UNK (*temp_r12_2)(s32);
-
-    if ((s8 *) lbl_8049DFE8 != NULL) {
-        temp_r12 = M2C_FIELD(lbl_8049DFE8, M2C_UNK (**)(M2C_UNK, M2C_UNK, M2C_UNK), 0);
-        if (temp_r12 != NULL) {
-            temp_r12(2, 1, 0x800);
-        }
-        temp_r12_2 = M2C_FIELD(lbl_8049DFE8, M2C_UNK (**)(s32), 4);
-        if (temp_r12_2 != NULL) {
-            temp_r12_2(lbl_8049DFEC);
-        }
-    }
+	if (p_hcisu_if)
+		(*p_hcisu_if->send)(p_msg);
+	else
+		GKI_freebuf(p_msg);
 }
 
-/*
-Decompilation failure in function bte_hcisu_close:
+void bte_hcisu_task(int param_1)
+{
+	if (p_hcisu_if)
+	{
+		if (p_hcisu_if->init)
+			(*p_hcisu_if->init)(2, 1, 0x800);
 
-Unable to determine jump table for bctr instruction at bte_hcisu.s line 61.
+		if (p_hcisu_if->open)
+			(*p_hcisu_if->open)(p_hcisu_cfg);
+	}
+}
 
-There must be a read of a variable before the instruction
-which has a name starting with with "jtbl"/"jpt_"/"lbl_"/"jumptable_".
-*/
+void bte_hcisu_close(void)
+{
+	if (p_hcisu_if)
+	{
+		if (p_hcisu_if->close)
+			(*p_hcisu_if->close)();
+	}
+}
 
-void bta_ci_hci_msg_handler(s32 arg0) {
-    GKI_send_msg(2U, 0U, arg0);
+void bta_ci_hci_msg_handler(void *p_data)
+{
+	HC_BT_HDR *p_msg = p_data;
+
+	GKI_send_msg(BTU_TASK, BTU_HCI_RCV_MBOX, p_msg);
 }
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-extern void GKI_freebuf();
-extern int bte_hcisu_close();
-extern int bte_hcisu_send();
 
-// asm_to_cpp: bte_hcisu_send
-asm int bte_hcisu_send() {
-    nofralloc
-    sth r4, 0x0(r3)
-    lwz r4, lbl_8049DFE8
-    cmpwi r4, 0x0
-    beq lbl_802A5214
-    lwz r12, 0xc(r4)
-    mtctr r12
-    bctr
-lbl_802A5214:
-    b GKI_freebuf
-}
 
-// asm_to_cpp: bte_hcisu_close
-asm int bte_hcisu_close() {
-    nofralloc
-    lwz r3, lbl_8049DFE8
-    cmpwi r3, 0x0
-    beqlr
-    lwz r12, 0x8(r3)
-    cmpwi r12, 0x0
-    beqlr
-    mtctr r12
-    bctr
-    blr
-}

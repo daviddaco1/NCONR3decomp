@@ -73,7 +73,7 @@ extern "C" void _savegpr_25();
 extern "C" void _savegpr_26();
 extern "C" void _savegpr_27();
 extern "C" void dtor_80136CFC();
-extern "C" void fn_80222B20();
+extern "C" void DecodeDspAdpcm__Q34nw4r3snd6detailFP10_AXPBADPCMUc();
 extern "C" void memcpy();
 extern "C" void memset();
 
@@ -2859,7 +2859,7 @@ lbl_80206920:
     clrlwi r0, r4, 28
 lbl_80206940:
     clrlwi r4, r0, 24
-    bl fn_80222B20
+    bl DecodeDspAdpcm__Q34nw4r3snd6detailFP10_AXPBADPCMUc
     addi r31, r31, 0x1
 lbl_8020694C:
     cmplw r31, r30

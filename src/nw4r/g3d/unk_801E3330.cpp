@@ -54,7 +54,7 @@ extern "C" void fn_801E3330();
 extern "C" void fn_801E37C4();
 extern "C" void fn_802E3FE8();
 extern "C" void fn_802E4654();
-extern "C" void fn_803153F0();
+extern "C" void LCQueueWait();
 extern "C" void log10();
 
 // ----------------------------------------------------------------------------
@@ -446,7 +446,7 @@ extern "C" asm void fn_801E37C4() {
     stw r0, 0x160(r1)
     bne lbl_801E385C
     li r3, 0x0
-    bl fn_803153F0
+    bl LCQueueWait
     bl PPCSync
 lbl_801E385C:
     li r16, 0x0

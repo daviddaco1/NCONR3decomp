@@ -155,7 +155,7 @@ extern "C" void fn_801BC544();
 extern "C" void fn_801BC894();
 extern "C" void fn_801BCED0();
 extern "C" void fn_801BD210();
-extern "C" void fn_8030D7E0();
+extern "C" void PSMTXMultVec();
 extern "C" void tan();
 
 // ----------------------------------------------------------------------------
@@ -347,7 +347,7 @@ lbl_801BA4C4:
     addi r3, r1, 0x98
     stfs f0, 0x24(r1)
     stfs f1, 0x28(r1)
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     lfs f1, 0x7c(r30)
     lfs f0, 0x20(r1)
     lfs f2, 0x0(r29)

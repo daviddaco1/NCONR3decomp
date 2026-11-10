@@ -119,8 +119,96 @@ asm void PSMTXConcat(const register Mtx mA, const register Mtx mB,
 void C_MTXConcatArray(){
 }
 
-// PSMTXConcatArray: definicion C reemplazada por asm (ver abajo)
+void PSMTXConcatArray(const register Mtx mtx1, const register Mtx mtx2,
+                      register Mtx mtx3, register u32 vv4) {
+    register f32 va0, va1, va2, va3, va4, va5;
+    register f32 vb0, vb1, vb2, vb3, vb4, vb5;
+    register f32 vd0, vd1, vd2, vd3, vd4, vd5;
+    register f32 u01;
+    register f32* u01Ptr = Unit01;
 
+    ASM (
+        psq_l va0, 0(mtx1), 0, 0
+        psq_l va1, 8(mtx1), 0, 0
+        psq_l va2, 16(mtx1), 0, 0
+        psq_l va3, 24(mtx1), 0, 0
+        subi vv4, vv4, 1
+        psq_l va4, 32(mtx1), 0, 0
+        psq_l va5, 40(mtx1), 0, 0
+        mtctr vv4
+        psq_l u01, 0(u01Ptr), 0, 0
+        psq_l vb0, 0(mtx2), 0, 0
+        psq_l vb2, 16(mtx2), 0, 0
+        ps_muls0 vd0, vb0, va0
+        ps_muls0 vd2, vb0, va2
+        ps_muls0 vd4, vb0, va4
+        psq_l vb4, 32(mtx2), 0, 0
+        ps_madds1 vd0, vb2, va0, vd0
+        ps_madds1 vd2, vb2, va2, vd2
+        ps_madds1 vd4, vb2, va4, vd4
+        psq_l vb1, 8(mtx2), 0, 0
+        ps_madds0 vd0, vb4, va1, vd0
+        ps_madds0 vd2, vb4, va3, vd2
+        ps_madds0 vd4, vb4, va5, vd4
+        psq_l vb3, 24(mtx2), 0, 0
+        psq_st vd0, 0(mtx3), 0, 0
+        ps_muls0 vd1, vb1, va0
+        ps_muls0 vd3, vb1, va2
+        ps_muls0 vd5, vb1, va4
+        psq_l vb5, 40(mtx2), 0, 0
+        psq_st vd2, 16(mtx3), 0, 0
+        ps_madds1 vd1, vb3, va0, vd1
+        ps_madds1 vd3, vb3, va2, vd3
+        ps_madds1 vd5, vb3, va4, vd5
+_loop:
+        addi mtx2, mtx2, sizeof(Mtx)
+        ps_madds0 vd1, vb5, va1, vd1
+        ps_madds0 vd3, vb5, va3, vd3
+        ps_madds0 vd5, vb5, va5, vd5
+        psq_l vb0, 0(mtx2), 0, 0
+        psq_st vd4, 32(mtx3), 0, 0
+        ps_madd vd1, u01, va1, vd1
+        ps_madd vd3, u01, va3, vd3
+        ps_madd vd5, u01, va5, vd5
+        psq_l vb2, 16(mtx2), 0, 0
+        psq_st vd1, 8(mtx3), 0, 0
+        ps_muls0 vd0, vb0, va0
+        ps_muls0 vd2, vb0, va2
+        ps_muls0 vd4, vb0, va4
+        psq_l vb4, 32(mtx2), 0, 0
+        psq_st vd3, 24(mtx3), 0, 0
+        ps_madds1 vd0, vb2, va0, vd0
+        ps_madds1 vd2, vb2, va2, vd2
+        ps_madds1 vd4, vb2, va4, vd4
+        psq_l vb1, 8(mtx2), 0, 0
+        psq_st vd5, 40(mtx3), 0, 0
+        addi mtx3, mtx3, sizeof(Mtx)
+        ps_madds0 vd0, vb4, va1, vd0
+        ps_madds0 vd2, vb4, va3, vd2
+        ps_madds0 vd4, vb4, va5, vd4
+        psq_l vb3, 24(mtx2), 0, 0
+        psq_st vd0, 0(mtx3), 0, 0
+        ps_muls0 vd1, vb1, va0
+        ps_muls0 vd3, vb1, va2
+        ps_muls0 vd5, vb1, va4
+        psq_l vb5, 40(mtx2), 0, 0
+        psq_st vd2, 16(mtx3), 0, 0
+        ps_madds1 vd1, vb3, va0, vd1
+        ps_madds1 vd3, vb3, va2, vd3
+        ps_madds1 vd5, vb3, va4, vd5
+        bdnz _loop
+        psq_st vd4, 32(mtx3), 0, 0
+        ps_madds0 vd1, vb5, va1, vd1
+        ps_madds0 vd3, vb5, va3, vd3
+        ps_madds0 vd5, vb5, va5, vd5
+        ps_madd vd1, u01, va1, vd1
+        ps_madd vd3, u01, va3, vd3
+        ps_madd vd5, u01, va5, vd5
+        psq_st vd1, 8(mtx3), 0, 0
+        psq_st vd3, 24(mtx3), 0, 0
+        psq_st vd5, 40(mtx3), 0, 0
+    )
+}
 
 //unused
 void C_MTXTranspose(){
@@ -230,25 +318,140 @@ loc0:
 void C_MTXRotRad(){
 }
 
-// PSMTXRotRad: definicion C reemplazada por asm (ver abajo)
-
+void PSMTXRotRad(Mtx m, char axis, f32 rad) {
+    f32 sinA, cosA;
+    sinA = sinf(rad);
+    cosA = cosf(rad);
+    PSMTXRotTrig(m, sinA, cosA, axis);
+}
 
 //unused
 void C_MTXRotTrig(){
 }
 
-// PSMTXRotTrig: definicion C reemplazada por asm (ver abajo)
+void PSMTXRotTrig(register Mtx m, register f32 sinA, register f32 cosA,
+                  register char arg2) {
+    register f32 fc0, fc1, nsinA;
+    register f32 fw0, fw1, fw2, fw3;
 
+    ASM (
+        frsp sinA, sinA
+        frsp cosA, cosA
+    )
+
+    fc0 = 0.0f;
+    fc1 = 1.0f;
+
+    ASM (
+        ori arg2, arg2, 0x20
+        ps_neg nsinA, sinA
+        cmplwi arg2, 'x'
+        beq loc0
+        cmplwi arg2, 'y'
+        beq loc1
+        cmplwi arg2, 'z'
+        beq loc2
+        b loc3
+loc0:
+        psq_st fc1, 0(m), 1, 0
+        psq_st fc0, 4(m), 0, 0
+        ps_merge00 fw0, sinA, cosA
+        psq_st fc0, 12(m), 0, 0
+        ps_merge00 fw1, cosA, nsinA
+        psq_st fc0, 28(m), 0, 0
+        psq_st fc0, 44(m), 1, 0
+        psq_st fw0, 36(m), 0, 0
+        psq_st fw1, 20(m), 0, 0
+        b loc3
+loc1:
+        ps_merge00 fw0, cosA, fc0
+        ps_merge00 fw1, fc0, fc1
+        psq_st fc0, 24(m), 0, 0
+        psq_st fw0, 0(m), 0, 0
+        ps_merge00 fw2, nsinA, fc0
+        ps_merge00 fw3, sinA, fc0
+        psq_st fw0, 40(m), 0, 0
+        psq_st fw1, 16(m), 0, 0
+        psq_st fw3, 8(m), 0, 0
+        psq_st fw2, 32(m), 0, 0
+        b loc3
+loc2:
+        psq_st fc0, 8(m), 0, 0
+        ps_merge00 fw0, sinA, cosA
+        ps_merge00 fw2, cosA, nsinA
+        psq_st fc0, 24(m), 0, 0
+        psq_st fc0, 32(m), 0, 0
+        ps_merge00 fw1, fc1, fc0
+        psq_st fw0, 16(m), 0, 0
+        psq_st fw2, 0(m), 0, 0
+        psq_st fw1, 40(m), 0, 0
+loc3:
+    )
+}
 
 //unused
 void C_MTXRotAxisRad(){
 }
 
-// __PSMTXRotAxisRadInternal: definicion C reemplazada por asm (ver abajo)
+void __PSMTXRotAxisRadInternal(register Mtx m, const register Vec* axis,
+                               register f32 sT, register f32 cT) {
+    register f32 tT, fc0;
+    register f32 tmp0, tmp1, tmp2, tmp3, tmp4;
+    register f32 tmp5, tmp6, tmp7, tmp8, tmp9;
 
+    tmp9 = 0.5f;
+    tmp8 = 3.0f;
 
-// PSMTXRotAxisRad: definicion C reemplazada por asm (ver abajo)
+    ASM (
+        frsp cT, cT
+        psq_l tmp0, 0(axis), 0, 0
+        frsp sT, sT
+        lfs tmp1, 8(axis)
+        ps_mul tmp2, tmp0, tmp0
+        fadds tmp7, tmp9, tmp9
+        ps_madd tmp3, tmp1, tmp1, tmp2
+        fsubs fc0, tmp9, tmp9
+        ps_sum0 tmp4, tmp3, tmp1, tmp2
+        fsubs tT, tmp7, cT
+        frsqrte tmp5, tmp4
+        fmuls tmp2, tmp5, tmp5
+        fmuls tmp3, tmp5, tmp9
+        fnmsubs tmp2, tmp2, tmp4, tmp8
+        fmuls tmp5, tmp2, tmp3
+        ps_merge00  cT, cT, cT
+        ps_muls0 tmp0, tmp0, tmp5
+        ps_muls0 tmp1, tmp1, tmp5
+        ps_muls0 tmp4, tmp0, tT
+        ps_muls0 tmp9, tmp0, sT
+        ps_muls0 tmp5, tmp1, tT
+        ps_muls1 tmp3, tmp4, tmp0
+        ps_muls0 tmp2, tmp4, tmp0
+        ps_muls0 tmp4, tmp4, tmp1
+        fnmsubs tmp6, tmp1, sT, tmp3
+        fmadds tmp7, tmp1, sT, tmp3
+        ps_neg tmp0, tmp9
+        ps_sum0 tmp8, tmp4, fc0, tmp9
+        ps_sum0 tmp2, tmp2, tmp6, cT
+        ps_sum1 tmp3, cT, tmp7, tmp3
+        ps_sum0 tmp6, tmp0, fc0, tmp4
+        psq_st tmp8, 8(m), 0, 0
+        ps_sum0 tmp0, tmp4, tmp4, tmp0
+        psq_st tmp2, 0(m), 0, 0
+        ps_muls0 tmp5, tmp5, tmp1
+        psq_st tmp3, 16(m), 0, 0
+        ps_sum1 tmp4, tmp9, tmp0, tmp4
+        psq_st tmp6, 24(m), 0, 0
+        ps_sum0 tmp5, tmp5, fc0, cT
+        psq_st tmp4, 32(m), 0, 0
+        psq_st tmp5, 40(m), 0, 0
+    )
+}
 
+void PSMTXRotAxisRad(Mtx m, const Vec* axis, f32 rad) {
+    f32 sinT = sinf(rad);
+    f32 cosT = cosf(rad);
+    __PSMTXRotAxisRadInternal(m, axis, sinT, cosT);
+}
 
 //unused
 void C_MTXTrans(){
@@ -366,8 +569,56 @@ asm void PSMTXScaleApply(const register Mtx src, register Mtx dst,
 void C_MTXQuat(){
 }
 
-// PSMTXQuat: definicion C reemplazada por asm (ver abajo)
+void PSMTXQuat(register Mtx m, const register Quaternion* q) {
+    register f32 c_zero, c_one, c_two, scale;
+    register f32 tmp0, tmp1, tmp2, tmp3, tmp4;
+    register f32 tmp5, tmp6, tmp7, tmp8, tmp9;
+    c_one = 1.0f;
 
+    ASM (
+        psq_l tmp0, 0(q), 0, 0
+        psq_l tmp1, 8(q), 0, 0
+
+        fsubs c_zero, c_one, c_one
+        fadds c_two, c_one, c_one
+
+        ps_mul tmp2, tmp0, tmp0
+        ps_merge10 tmp5, tmp0, tmp0
+        ps_madd tmp4, tmp1, tmp1, tmp2
+        ps_mul tmp3, tmp1, tmp1
+        ps_sum0 scale, tmp4, tmp4, tmp4
+        ps_muls1 tmp7, tmp5, tmp1
+        fres tmp9, scale
+        ps_sum1 tmp4, tmp3, tmp4, tmp2
+        ps_nmsub scale, scale, tmp9, c_two
+        ps_muls1 tmp6, tmp1, tmp1
+        ps_mul scale, tmp9, scale
+        ps_sum0 tmp2, tmp2, tmp2, tmp2
+        fmuls scale, scale, c_two
+        ps_madd tmp8, tmp0, tmp5, tmp6
+        ps_msub tmp6, tmp0, tmp5, tmp6
+        psq_st c_zero, 12(m), 1, 0
+        ps_nmsub tmp2, tmp2, scale, c_one
+        ps_nmsub tmp4, tmp4, scale, c_one
+        psq_st c_zero, 44(m), 1, 0
+        ps_mul tmp8, tmp8, scale
+        ps_mul tmp6, tmp6, scale
+        psq_st tmp2, 40(m), 1, 0
+        ps_madds0 tmp5, tmp0, tmp1, tmp7
+        ps_merge00 tmp1, tmp8, tmp4
+        ps_nmsub tmp7, tmp7, c_two, tmp5
+        ps_merge10 tmp0, tmp4, tmp6
+        psq_st tmp1, 16(m), 0, 0
+        ps_mul tmp5, tmp5, scale
+        ps_mul tmp7, tmp7, scale
+        psq_st tmp0,  0(m), 0, 0
+        psq_st tmp5,  8(m), 1, 0
+        ps_merge10 tmp3, tmp7, c_zero
+        ps_merge01 tmp9, tmp7, tmp5
+        psq_st tmp3, 24(m), 0, 0
+        psq_st tmp9, 32(m), 0, 0
+    )
+}
 
 //unused
 void C_MTXReflect(){
@@ -377,609 +628,101 @@ void C_MTXReflect(){
 void PSMTXReflect(){
 }
 
-// C_MTXLookAt: definicion C reemplazada por asm (ver abajo)
+void C_MTXLookAt(Mtx m, const Vec* camPos, const Vec* camUp, const Vec* target) {
+    Vec vLook, vRight, vUp;
 
+    vLook.x = camPos->x - target->x;
+    vLook.y = camPos->y - target->y;
+    vLook.z = camPos->z - target->z;
 
-// C_MTXLightFrustum: definicion C reemplazada por asm (ver abajo)
+    PSVECNormalize(&vLook, &vLook);
+    PSVECCrossProduct(camUp, &vLook, &vRight);
 
+    PSVECNormalize(&vRight, &vRight);
 
-// C_MTXLightPerspective: definicion C reemplazada por asm (ver abajo)
+    PSVECCrossProduct(&vLook, &vRight, &vUp);
+    
+    m[0][0] = vRight.x;
+    m[0][1] = vRight.y;
+    m[0][2] = vRight.z;
+    m[0][3] = -(camPos->x * vRight.x + camPos->y * vRight.y + camPos->z * vRight.z);
 
+    m[1][0] = vUp.x;
+    m[1][1] = vUp.y;
+    m[1][2] = vUp.z;
+    m[1][3] = -(camPos->x * vUp.x + camPos->y * vUp.y + camPos->z * vUp.z);
 
-// C_MTXLightOrtho: definicion C reemplazada por asm (ver abajo)
+    m[2][0] = vLook.x;
+    m[2][1] = vLook.y;
+    m[2][2] = vLook.z;
+    m[2][3] = -(camPos->x * vLook.x + camPos->y * vLook.y + camPos->z * vLook.z);
+}
 
+void C_MTXLightFrustum(Mtx m, f32 t, f32 b, f32 l, f32 r, f32 n,
+                       f32 scaleS, f32 scaleT, f32 transS, f32 transT) {
+    f32 tmp;
+    
+    tmp = 1.0f / (r - l);
+    m[0][0] = ((2 * n) * tmp) * scaleS;
+    m[0][1] = 0.0f;
+    m[0][2] = (((r + l) * tmp) * scaleS) - transS;
+    m[0][3] = 0.0f;
+
+    tmp = 1.0f / (t - b);
+    m[1][0] = 0.0f;
+    m[1][1] = ((2 * n) * tmp) * scaleT;
+    m[1][2] = (((t + b) * tmp) * scaleT) - transT;
+    m[1][3] = 0.0f;
+
+    m[2][0] = 0.0f;
+    m[2][1] = 0.0f;
+    m[2][2] = -1.0f;
+    m[2][3] = 0.0f;
+}
+
+void C_MTXLightPerspective(Mtx m, f32 fovY, f32 aspect, f32 scaleS, f32 scaleT,
+                           f32 transS, f32 transT) {
+    f32 angle = MTXDegToRad(fovY * 0.5f);
+    f32 cot = 1.0f / tanf(angle);
+
+    m[0][0] = (cot / aspect) * scaleS;
+    m[0][1] = 0.0f;
+    m[0][2] = -transS;
+    m[0][3] = 0.0f;
+
+    m[1][0] = 0.0f;
+    m[1][1] = cot * scaleT;
+    m[1][2] = -transT;
+    m[1][3] = 0.0f;
+
+    m[2][0] = 0.0f;
+    m[2][1] = 0.0f;
+    m[2][2] = -1.0f;
+    m[2][3] = 0.0f;
+}
+
+void C_MTXLightOrtho(Mtx m, f32 t, f32 b, f32 l, f32 r, f32 scaleS,
+                     f32 scaleT, f32 transS, f32 transT) {
+    f32 tmp;
+    
+    tmp = 1.0f / (r - l);
+    m[0][0] = (2.0f * tmp * scaleS);
+    m[0][1] = 0.0f;
+    m[0][2] = 0.0f;
+    m[0][3] = ((-(r + l) * tmp) * scaleS) + transS;
+
+    tmp = 1.0f / (t - b);
+    m[1][0] = 0.0f;
+    m[1][1] = (2.0f * tmp) * scaleT;
+    m[1][2] = 0.0f;
+    m[1][3] = ((-(t + b) * tmp) * scaleT) + transT;
+
+    m[2][0] = 0.0f;
+    m[2][1] = 0.0f;
+    m[2][2] = 0.0f;
+    m[2][3] = 1.0f;
+}
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-extern float lbl_8049D148;
-extern float lbl_804A2700;
-extern float lbl_804A2704;
-extern float lbl_804A2708;
-extern float lbl_804A270C;
-extern float lbl_804A2710;
-extern float lbl_804A2714;
-extern float lbl_804A2718;
-extern void fn_8030DE44();
-extern void fn_8030DEEC();
 
-// asm_to_cpp: PSMTXConcatArray
-asm void PSMTXConcatArray(const register Mtx mtx1, const register Mtx mtx2,
-                      register Mtx mtx3, register u32 vv4) {
-    nofralloc
-    stwu r1, -0x60(r1)
-    stfd f31, 0x50(r1)
-    opword 0xF3E10058
-    stfd f30, 0x40(r1)
-    opword 0xF3C10048
-    stfd f29, 0x30(r1)
-    opword 0xF3A10038
-    stfd f28, 0x20(r1)
-    opword 0xF3810028
-    stfd f27, 0x10(r1)
-    opword 0xF3610018
-    subi r0, r6, 0x1
-    opword 0xE0030000
-    opword 0xE0230008
-    la r6, lbl_8049D148
-    opword 0xE0430010
-    opword 0xE0630018
-    opword 0xE0830020
-    opword 0xE0A30028
-    mtctr r0
-    opword 0xE0C40000
-    opword 0xE0E40008
-    opword 0x11860018
-    opword 0xE1040010
-    opword 0x13E60098
-    opword 0xE1440020
-    opword 0x13A60118
-    opword 0xE1240018
-    opword 0x1188601E
-    opword 0xE3660000
-    opword 0x13E8F89E
-    opword 0xE1640028
-    opword 0x13A8E91E
-    opword 0x11A70018
-    opword 0x13C70098
-    opword 0x13870118
-    opword 0x118A605C
-    opword 0x13EAF8DC
-    opword 0x13AAE95C
-    opword 0x11A9681E
-    opword 0xF1850000
-    opword 0x13C9F09E
-    opword 0x1389E11E
-    opword 0xF3E50010
-lbl_8030CE1C:
-    opword 0x11AB685C
-    opword 0xE0C40030
-    opword 0x13CBF0DC
-    opword 0xF3A50020
-    opword 0x138BE15C
-    opword 0xE1040040
-    opword 0x11BB687A
-    opword 0xE1440050
-    opword 0x11860018
-    opword 0xE0E40038
-    opword 0x13E60098
-    opword 0xE1240048
-    opword 0xF1A50008
-    opword 0x13DBF0FA
-    opword 0x1188601E
-    opword 0xE1640058
-    opword 0x13A60118
-    addi r4, r4, 0x30
-    opword 0xF3C50018
-    opword 0x139BE17A
-    opword 0x13E8F89E
-    opword 0x13A8E91E
-    opword 0xF3850028
-    opword 0x118A605C
-    opword 0x11A70018
-    opword 0x13C70098
-    opword 0x13870118
-    opword 0xF1850030
-    opword 0x13EAF8DC
-    opword 0x13AAE95C
-    opword 0x11A9681E
-    opword 0xF3E50040
-    opword 0x13C9F09E
-    opword 0x1389E11E
-    addi r5, r5, 0x30
-    bdnz lbl_8030CE1C
-    opword 0x11AB685C
-    opword 0xF3A50020
-    opword 0x13CBF0DC
-    opword 0x138BE15C
-    opword 0x11BB687A
-    opword 0x13DBF0FA
-    opword 0x139BE17A
-    opword 0xF1A50008
-    opword 0xF3C50018
-    opword 0xF3850028
-    opword 0xE3E10058
-    lfd f31, 0x50(r1)
-    opword 0xE3C10048
-    lfd f30, 0x40(r1)
-    opword 0xE3A10038
-    lfd f29, 0x30(r1)
-    opword 0xE3810028
-    lfd f28, 0x20(r1)
-    opword 0xE3610018
-    lfd f27, 0x10(r1)
-    addi r1, r1, 0x60
-    blr
-}
 
-// asm_to_cpp: PSMTXRotRad
-asm void PSMTXRotRad(Mtx m, char axis, f32 rad) {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    stfd f31, 0x20(r1)
-    opword 0xF3E10028
-    stfd f30, 0x10(r1)
-    opword 0xF3C10018
-    fmr f30, f1
-    stw r31, 0xc(r1)
-    mr r31, r4
-    stw r30, 0x8(r1)
-    mr r30, r3
-    bl sin
-    frsp f31, f1
-    fmr f1, f30
-    bl cos
-    frsp f2, f1
-    mr r3, r30
-    fmr f1, f31
-    extsb r4, r31
-    bl PSMTXRotTrig
-    opword 0xE3E10028
-    lfd f31, 0x20(r1)
-    opword 0xE3C10018
-    lfd f30, 0x10(r1)
-    lwz r31, 0xc(r1)
-    lwz r0, 0x34(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
-}
-
-// asm_to_cpp: PSMTXRotTrig
-asm void PSMTXRotTrig(register Mtx m, register f32 sinA, register f32 cosA,
-                  register char arg2) {
-    nofralloc
-    frsp f5, f1
-    ori r0, r4, 0x20
-    frsp f4, f2
-    cmplwi r0, 0x78
-    lfs f0, lbl_804A2704
-    opword 0x10402850
-    lfs f1, lbl_804A2700
-    beq lbl_8030D0FC
-    cmplwi r0, 0x79
-    beq lbl_8030D124
-    cmplwi r0, 0x7a
-    beq lbl_8030D150
-    blr
-lbl_8030D0FC:
-    opword 0x10652420
-    opword 0xF0238000
-    opword 0x10241420
-    opword 0xF0030004
-    opword 0xF003000C
-    opword 0xF003001C
-    opword 0xF003802C
-    opword 0xF0630024
-    opword 0xF0230014
-    blr
-lbl_8030D124:
-    opword 0x10640420
-    opword 0xF0030018
-    opword 0x10200C20
-    opword 0x10420420
-    opword 0x10050420
-    opword 0xF0630000
-    opword 0xF0630028
-    opword 0xF0230010
-    opword 0xF0030008
-    opword 0xF0430020
-    blr
-lbl_8030D150:
-    opword 0x10652420
-    opword 0xF0030008
-    opword 0x10441420
-    opword 0x10210420
-    opword 0xF0030018
-    opword 0xF0030020
-    opword 0xF0630010
-    opword 0xF0430000
-    opword 0xF0230028
-    blr
-}
-
-// asm_to_cpp: __PSMTXRotAxisRadInternal
-asm void __PSMTXRotAxisRadInternal(register Mtx m, const register Vec* axis,
-                               register f32 sT, register f32 cT) {
-    nofralloc
-    opword 0xE0640000
-    frsp f11, f2
-    lfs f10, lbl_804A2708
-    frsp f12, f1
-    opword 0x108300F2
-    lfs f2, 0x8(r4)
-    fadds f8, f10, f10
-    lfs f9, lbl_804A270C
-    fsubs f1, f10, f10
-    opword 0x10A220BA
-    fsubs f0, f8, f11
-    opword 0x116B5C20
-    opword 0x10C52094
-    frsqrte f7, f6
-    fmuls f4, f7, f7
-    fmuls f5, f7, f10
-    fnmsubs f4, f4, f6, f9
-    fmuls f7, f4, f5
-    opword 0x106301D8
-    opword 0x104201D8
-    opword 0x10C30018
-    opword 0x10E20018
-    opword 0x11430318
-    opword 0x10A600DA
-    opword 0x108600D8
-    opword 0x10C60098
-    fnmsubs f0, f2, f12, f5
-    opword 0x10605050
-    fmadds f8, f2, f12, f5
-    opword 0x10845814
-    opword 0x10033054
-    opword 0x10E70098
-    opword 0x11265054
-    opword 0xF0830000
-    opword 0x10661994
-    opword 0x10AB2A16
-    opword 0xF0030018
-    opword 0x10E75854
-    opword 0x10CA30D6
-    opword 0xF1230008
-    opword 0xF0A30010
-    opword 0xF0C30020
-    opword 0xF0E30028
-    blr
-}
-
-// asm_to_cpp: PSMTXRotAxisRad
-asm void PSMTXRotAxisRad(Mtx m, const Vec* axis, f32 rad) {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    stfd f31, 0x20(r1)
-    opword 0xF3E10028
-    stfd f30, 0x10(r1)
-    opword 0xF3C10018
-    fmr f30, f1
-    stw r31, 0xc(r1)
-    mr r31, r4
-    stw r30, 0x8(r1)
-    mr r30, r3
-    bl sin
-    frsp f31, f1
-    fmr f1, f30
-    bl cos
-    frsp f2, f1
-    mr r3, r30
-    fmr f1, f31
-    mr r4, r31
-    bl __PSMTXRotAxisRadInternal
-    opword 0xE3E10028
-    lfd f31, 0x20(r1)
-    opword 0xE3C10018
-    lfd f30, 0x10(r1)
-    lwz r31, 0xc(r1)
-    lwz r0, 0x34(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
-}
-
-// asm_to_cpp: PSMTXQuat
-asm void PSMTXQuat(register Mtx m, const register Quaternion* q) {
-    nofralloc
-    opword 0xE0840000
-    opword 0xE0A40008
-    opword 0x10C40132
-    lfs f1, lbl_804A2700
-    opword 0x112424A0
-    fsubs f0, f1, f1
-    opword 0x1105317A
-    opword 0x1145015A
-    fadds f2, f1, f1
-    opword 0xF003800C
-    opword 0x10684214
-    opword 0x10E50172
-    opword 0xF003802C
-    opword 0x1184527A
-    fres f13, f3
-    opword 0x1063137C
-    opword 0x1169015A
-    opword 0x11445278
-    opword 0x106D00F2
-    opword 0x1124595C
-    opword 0x11073216
-    fmuls f3, f3, f2
-    opword 0x116B48BC
-    opword 0x10C63194
-    opword 0x112900F2
-    opword 0x116B00F2
-    opword 0x110808FC
-    opword 0x118C00F2
-    opword 0xF1238008
-    opword 0x114A00F2
-    opword 0x10EB04A0
-    opword 0x10AC4420
-    opword 0x108854A0
-    opword 0x11AB4C60
-    opword 0xF0E30018
-    opword 0x10C608FC
-    opword 0xF0A30010
-    opword 0xF0C38028
-    opword 0xF0830000
-    opword 0xF1A30020
-    blr
-}
-
-// asm_to_cpp: C_MTXLookAt
-asm void C_MTXLookAt(Mtx m, const Vec* camPos, const Vec* camUp, const Vec* target) {
-    nofralloc
-    stwu r1, -0x40(r1)
-    mflr r0
-    lfs f1, 0x0(r4)
-    stw r0, 0x44(r1)
-    lfs f0, 0x0(r6)
-    stw r31, 0x3c(r1)
-    mr r31, r5
-    fsubs f4, f1, f0
-    lfs f3, 0x4(r4)
-    stw r30, 0x38(r1)
-    mr r30, r4
-    lfs f2, 0x4(r6)
-    stw r29, 0x34(r1)
-    fsubs f2, f3, f2
-    lfs f1, 0x8(r4)
-    lfs f0, 0x8(r6)
-    mr r29, r3
-    addi r3, r1, 0x20
-    stfs f4, 0x20(r1)
-    fsubs f0, f1, f0
-    stfs f2, 0x24(r1)
-    mr r4, r3
-    stfs f0, 0x28(r1)
-    bl fn_8030DE44
-    mr r3, r31
-    addi r4, r1, 0x20
-    addi r5, r1, 0x14
-    bl fn_8030DEEC
-    addi r3, r1, 0x14
-    mr r4, r3
-    bl fn_8030DE44
-    addi r3, r1, 0x20
-    addi r4, r1, 0x14
-    addi r5, r1, 0x8
-    bl fn_8030DEEC
-    lfs f0, 0x14(r1)
-    lfs f4, 0x0(r30)
-    stfs f0, 0x0(r29)
-    lfs f3, 0x4(r30)
-    lfs f0, 0x18(r1)
-    lfs f5, 0x8(r30)
-    stfs f0, 0x4(r29)
-    lfs f0, 0x1c(r1)
-    stfs f0, 0x8(r29)
-    lfs f1, 0x14(r1)
-    lfs f0, 0x18(r1)
-    fmuls f1, f4, f1
-    lfs f2, 0x1c(r1)
-    fmuls f0, f3, f0
-    fmuls f2, f5, f2
-    fadds f0, f1, f0
-    fadds f0, f2, f0
-    fneg f0, f0
-    stfs f0, 0xc(r29)
-    lfs f0, 0x8(r1)
-    stfs f0, 0x10(r29)
-    lfs f0, 0xc(r1)
-    stfs f0, 0x14(r29)
-    lfs f0, 0x10(r1)
-    stfs f0, 0x18(r29)
-    lfs f1, 0x8(r1)
-    lfs f0, 0xc(r1)
-    lfs f2, 0x10(r1)
-    fmuls f1, f4, f1
-    fmuls f0, f3, f0
-    fmuls f2, f5, f2
-    fadds f0, f1, f0
-    fadds f0, f2, f0
-    fneg f0, f0
-    stfs f0, 0x1c(r29)
-    lfs f0, 0x20(r1)
-    stfs f0, 0x20(r29)
-    lfs f0, 0x24(r1)
-    stfs f0, 0x24(r29)
-    lfs f0, 0x28(r1)
-    stfs f0, 0x28(r29)
-    lfs f1, 0x20(r1)
-    lfs f0, 0x24(r1)
-    lfs f2, 0x28(r1)
-    fmuls f1, f4, f1
-    fmuls f0, f3, f0
-    fmuls f2, f5, f2
-    fadds f0, f1, f0
-    fadds f0, f2, f0
-    fneg f0, f0
-    stfs f0, 0x2c(r29)
-    lwz r31, 0x3c(r1)
-    lwz r30, 0x38(r1)
-    lwz r29, 0x34(r1)
-    lwz r0, 0x44(r1)
-    mtlr r0
-    addi r1, r1, 0x40
-    blr
-}
-
-// asm_to_cpp: C_MTXLightFrustum
-asm void C_MTXLightFrustum(Mtx m, f32 t, f32 b, f32 l, f32 r, f32 n,
-                       f32 scaleS, f32 scaleT, f32 transS, f32 transT) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    stfd f31, 0x10(r1)
-    opword 0xF3E10018
-    fsubs f0, f4, f3
-    lfs f10, lbl_804A2704
-    lfs f12, lbl_804A2700
-    fsubs f9, f1, f2
-    lfs f11, lbl_804A2710
-    fadds f3, f4, f3
-    fdivs f13, f12, f0
-    lfs f0, lbl_804A2714
-    lfs f31, 0x28(r1)
-    stfs f0, 0x28(r3)
-    stfs f10, 0x4(r3)
-    stfs f10, 0xc(r3)
-    fmuls f4, f11, f5
-    stfs f10, 0x10(r3)
-    fadds f0, f1, f2
-    fmuls f1, f13, f3
-    stfs f10, 0x1c(r3)
-    fdivs f5, f12, f9
-    stfs f10, 0x20(r3)
-    stfs f10, 0x24(r3)
-    stfs f10, 0x2c(r3)
-    fmuls f2, f6, f1
-    fmuls f0, f5, f0
-    fmuls f3, f4, f13
-    fmuls f1, f4, f5
-    fmuls f0, f7, f0
-    fmuls f3, f6, f3
-    fsubs f2, f2, f8
-    fmuls f1, f7, f1
-    fsubs f0, f0, f31
-    stfs f3, 0x0(r3)
-    stfs f2, 0x8(r3)
-    stfs f1, 0x14(r3)
-    stfs f0, 0x18(r3)
-    opword 0xE3E10018
-    lfd f31, 0x10(r1)
-    addi r1, r1, 0x20
-    blr
-}
-
-// asm_to_cpp: C_MTXLightPerspective
-asm void C_MTXLightPerspective(Mtx m, f32 fovY, f32 aspect, f32 scaleS, f32 scaleT,
-                           f32 transS, f32 transT) {
-    nofralloc
-    stwu r1, -0x60(r1)
-    mflr r0
-    stw r0, 0x64(r1)
-    stfd f31, 0x50(r1)
-    opword 0xF3E10058
-    stfd f30, 0x40(r1)
-    opword 0xF3C10048
-    stfd f29, 0x30(r1)
-    opword 0xF3A10038
-    stfd f28, 0x20(r1)
-    opword 0xF3810028
-    stfd f27, 0x10(r1)
-    opword 0xF3610018
-    fmr f27, f2
-    lfs f7, lbl_804A2708
-    fmr f28, f3
-    stw r31, 0xc(r1)
-    fmr f29, f4
-    fmuls f1, f7, f1
-    lfs f0, lbl_804A2718
-    fmr f30, f5
-    fmr f31, f6
-    mr r31, r3
-    fmuls f1, f0, f1
-    bl tan
-    frsp f5, f1
-    lfs f3, lbl_804A2704
-    lfs f4, lbl_804A2700
-    fneg f1, f31
-    lfs f0, lbl_804A2714
-    fneg f2, f30
-    fdivs f4, f4, f5
-    stfs f1, 0x18(r31)
-    stfs f0, 0x28(r31)
-    stfs f3, 0x4(r31)
-    stfs f2, 0x8(r31)
-    stfs f3, 0xc(r31)
-    fdivs f1, f4, f27
-    stfs f3, 0x10(r31)
-    stfs f3, 0x1c(r31)
-    stfs f3, 0x20(r31)
-    stfs f3, 0x24(r31)
-    stfs f3, 0x2c(r31)
-    fmuls f1, f28, f1
-    fmuls f0, f4, f29
-    stfs f1, 0x0(r31)
-    stfs f0, 0x14(r31)
-    opword 0xE3E10058
-    lfd f31, 0x50(r1)
-    opword 0xE3C10048
-    lfd f30, 0x40(r1)
-    opword 0xE3A10038
-    lfd f29, 0x30(r1)
-    opword 0xE3810028
-    lfd f28, 0x20(r1)
-    opword 0xE3610018
-    lfd f27, 0x10(r1)
-    lwz r31, 0xc(r1)
-    lwz r0, 0x64(r1)
-    mtlr r0
-    addi r1, r1, 0x60
-    blr
-}
-
-// asm_to_cpp: C_MTXLightOrtho
-asm void C_MTXLightOrtho(Mtx m, f32 t, f32 b, f32 l, f32 r, f32 scaleS,
-                     f32 scaleT, f32 transS, f32 transT) {
-    nofralloc
-    fsubs f11, f4, f3
-    lfs f9, lbl_804A2704
-    lfs f10, lbl_804A2700
-    fsubs f0, f1, f2
-    fadds f3, f4, f3
-    lfs f4, lbl_804A2710
-    fdivs f12, f10, f11
-    stfs f9, 0x4(r3)
-    stfs f9, 0x8(r3)
-    stfs f9, 0x10(r3)
-    stfs f9, 0x18(r3)
-    stfs f9, 0x20(r3)
-    fdivs f11, f10, f0
-    stfs f9, 0x24(r3)
-    stfs f9, 0x28(r3)
-    stfs f10, 0x2c(r3)
-    fadds f0, f1, f2
-    fneg f1, f3
-    fmuls f3, f4, f12
-    fneg f0, f0
-    fmuls f2, f12, f1
-    fmuls f1, f4, f11
-    fmuls f0, f11, f0
-    fmuls f2, f5, f2
-    fmuls f3, f3, f5
-    fmuls f0, f6, f0
-    fadds f2, f7, f2
-    fmuls f1, f1, f6
-    stfs f3, 0x0(r3)
-    fadds f0, f8, f0
-    stfs f2, 0xc(r3)
-    stfs f1, 0x14(r3)
-    stfs f0, 0x1c(r3)
-    blr
-}

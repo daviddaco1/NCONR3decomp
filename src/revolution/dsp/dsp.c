@@ -96,8 +96,23 @@ void DSPUnhalt(){
 void DSPGetDMAStatus(){
 }
 
-// DSPAddTask: definicion C reemplazada por asm (ver abajo)
+DSPTask* DSPAddTask(DSPTask* task) {
+    BOOL enabled;
 
+    enabled = OSDisableInterrupts();
+
+    __DSP_insert_task(task);
+    task->state = DSP_TASK_STATE_0;
+    task->flags = DSP_TASK_ACTIVE;
+
+    OSRestoreInterrupts(enabled);
+
+    if (task == __DSP_first_task) {
+        __DSP_boot_task(task);
+    }
+
+    return task;
+}
 
 DSPTask* DSPCancelTask(DSPTask* task){
     BOOL enabled;
@@ -139,40 +154,5 @@ DSPTask* DSPAssertTask(DSPTask* task) {
 }
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-extern float lbl_8049E028;
-extern void __DSP_boot_task();
-extern void __DSP_insert_task();
 
-// asm_to_cpp: DSPAddTask
-asm DSPTask* DSPAddTask(DSPTask* task) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    bl OSDisableInterrupts
-    mr r31, r3
-    mr r3, r30
-    bl __DSP_insert_task
-    li r3, 0x0
-    li r0, 0x1
-    stw r3, 0x0(r30)
-    mr r3, r31
-    stw r0, 0x8(r30)
-    bl OSRestoreInterrupts
-    lwz r0, lbl_8049E028
-    cmplw r30, r0
-    bne lbl_802CFB24
-    mr r3, r30
-    bl __DSP_boot_task
-lbl_802CFB24:
-    mr r3, r30
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
+

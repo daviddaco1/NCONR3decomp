@@ -105,7 +105,7 @@ extern "C" void fn_801D27F0();
 extern "C" void fn_801D2FDC();
 extern "C" void fn_801F140C();
 extern "C" void fn_801F1454();
-extern "C" void fn_801F50CC();
+extern "C" void CalcVtx__Q24nw4r3g3dFQ34nw4r3g3d6ResMdlPQ34nw4r3g3d9AnmObjShpPPQ34nw4r3g3d13ResVtxPosDataPPQ34nw4r3g3d13ResVtxNrmDataPPQ34nw4r3g3d13ResVtxClrData();
 extern "C" void fn_8030CAF0();
 
 // ----------------------------------------------------------------------------
@@ -2265,7 +2265,7 @@ lbl_801F3000:
     lwz r5, 0x178(r29)
     lwz r6, 0x17c(r29)
     lwz r7, 0x180(r29)
-    bl fn_801F50CC
+    bl CalcVtx__Q24nw4r3g3dFQ34nw4r3g3d6ResMdlPQ34nw4r3g3d9AnmObjShpPPQ34nw4r3g3d13ResVtxPosDataPPQ34nw4r3g3d13ResVtxNrmDataPPQ34nw4r3g3d13ResVtxClrData
     b lbl_801F303C
 lbl_801F302C:
     mr r3, r29

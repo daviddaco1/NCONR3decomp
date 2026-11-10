@@ -1,23 +1,142 @@
-#include "types.h"
+#include <nw4r/g3d.h>
+#include <nw4r/math.h>
 
-// Translation unit: src/nw4r/g3d/res/unk_801D4798.cpp
-// Total functions: 3
+namespace nw4r {
+namespace g3d {
 
-// Small Data symbols (@sda21)
+void ResNode::PatchChrAnmResult(ChrAnmResult* pResult) const {
+    if (!IsValid()) {
+        return;
+    }
+
+    const ResNodeData& r = ref();
+    u32 flags = pResult->flags;
+
+    if (flags & ChrAnmResult::FLAG_PATCH_SCALE) {
+        if (r.flags & ResNodeData::FLAG_SCALE_ONE) {
+            flags |=
+                ChrAnmResult::FLAG_SCALE_ONE | ChrAnmResult::FLAG_SCALE_UNIFORM;
+        } else {
+            if (r.flags & ResNodeData::FLAG_SCALE_UNIFORM) {
+                flags |= ChrAnmResult::FLAG_SCALE_UNIFORM;
+            }
+
+            pResult->s = static_cast<const math::VEC3&>(r.scale);
+        }
+    }
+
+    if (flags & ChrAnmResult::FLAG_PATCH_ROT) {
+        if (r.flags & ResNodeData::FLAG_ROT_ZERO) {
+            flags |= ChrAnmResult::FLAG_ROT_ZERO;
+        } else {
+            math::MTX34RotXYZDeg(&pResult->rt, r.rot.x, r.rot.y, r.rot.z);
+            flags &= ~ChrAnmResult::FLAG_ROT_ZERO;
+        }
+
+        flags |= ChrAnmResult::FLAG_ROT_RAW_FMT;
+    }
+
+    if (flags & ChrAnmResult::FLAG_PATCH_TRANS) {
+        if (r.flags & ResNodeData::FLAG_TRANS_ZERO) {
+            flags |= ChrAnmResult::FLAG_TRANS_ZERO;
+        } else {
+            flags &= ~ChrAnmResult::FLAG_TRANS_ZERO;
+
+            pResult->rt._03 = r.translate.x;
+            pResult->rt._13 = r.translate.y;
+            pResult->rt._23 = r.translate.z;
+        }
+    }
+
+    if ((flags & ChrAnmResult::FLAG_ROT_ZERO) &&
+        (flags & ChrAnmResult::FLAG_TRANS_ZERO)) {
+        flags |= ChrAnmResult::FLAG_ROT_TRANS_ZERO;
+
+        if (flags & ChrAnmResult::FLAG_SCALE_ONE) {
+            flags |= ChrAnmResult::FLAG_MTX_IDENT;
+        }
+    }
+
+    pResult->flags = flags & ~(ChrAnmResult::FLAG_PATCH_SCALE |
+                               ChrAnmResult::FLAG_PATCH_ROT |
+                               ChrAnmResult::FLAG_PATCH_TRANS);
+}
+
+void ResNode::CalcChrAnmResult(ChrAnmResult* pResult) const {
+    if (!IsValid()) {
+        return;
+    }
+
+    const ResNodeData& r = ref();
+    u32 flags = 0;
+
+    if (r.flags & ResNodeData::FLAG_SCALE_ONE) {
+        flags |=
+            ChrAnmResult::FLAG_SCALE_ONE | ChrAnmResult::FLAG_SCALE_UNIFORM;
+
+        pResult->s.z = 1.0f;
+        pResult->s.y = 1.0f;
+        pResult->s.x = 1.0f;
+    } else {
+        if (r.flags & ResNodeData::FLAG_SCALE_UNIFORM) {
+            flags |= ChrAnmResult::FLAG_SCALE_UNIFORM;
+        }
+
+        pResult->s = static_cast<const math::VEC3&>(r.scale);
+    }
+
+    if (r.flags & ResNodeData::FLAG_ROT_ZERO) {
+        PSMTXIdentity(pResult->rt);
+        flags |= ChrAnmResult::FLAG_ROT_ZERO;
+    } else {
+        pResult->rawR = math::VEC3(r.rot);
+        math::MTX34RotXYZDeg(&pResult->rt, r.rot.x, r.rot.y, r.rot.z);
+    }
+
+    if (r.flags & ResNodeData::FLAG_TRANS_ZERO) {
+        flags |= ChrAnmResult::FLAG_TRANS_ZERO;
+    } else {
+        pResult->rt._03 = r.translate.x;
+        pResult->rt._13 = r.translate.y;
+        pResult->rt._23 = r.translate.z;
+    }
+
+    if (flags & ChrAnmResult::FLAG_ROT_ZERO) {
+        if (flags & ChrAnmResult::FLAG_TRANS_ZERO) {
+            flags |= ChrAnmResult::FLAG_ROT_TRANS_ZERO;
+
+            if (flags & ChrAnmResult::FLAG_SCALE_ONE) {
+                flags |= ChrAnmResult::FLAG_MTX_IDENT;
+            }
+        }
+    }
+
+    flags |= ChrAnmResult::FLAG_ROT_RAW_FMT;
+    flags |= ChrAnmResult::FLAG_ANM_EXISTS;
+
+    if (r.flags & ResNodeData::FLAG_SSC_APPLY) {
+        flags |= ChrAnmResult::FLAG_SSC_APPLY;
+    }
+
+    if (r.flags & ResNodeData::FLAG_SSC_PARENT) {
+        flags |= ChrAnmResult::FLAG_SSC_PARENT;
+    }
+
+    pResult->flags = flags;
+}
+
+} // namespace g3d
+} // namespace nw4r
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern "C" float lbl_804A1BE8;
 extern "C" float lbl_804A1BEC;
 extern "C" float lbl_804A1BF0;
-
-// Forward declarations
 extern "C" void MTX34RotXYZFIdx__Q24nw4r4mathFPQ34nw4r4math5MTX34fff();
-extern "C" void PSMTXIdentity();
 extern "C" void fn_801D4798();
-extern "C" void fn_801D4934();
 extern "C" void fn_801D4A9C();
 
-// ----------------------------------------------------------------------------
-// fn_801D4798
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801D4798
 extern "C" asm void fn_801D4798() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -135,117 +254,7 @@ lbl_801D4918:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801D4934
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_801D4934() {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    stw r31, 0x2c(r1)
-    lwz r31, 0x0(r3)
-    stw r30, 0x28(r1)
-    cmpwi r31, 0x0
-    stw r29, 0x24(r1)
-    mr r29, r4
-    beq lbl_801D4A80
-    lwz r3, 0x14(r31)
-    li r30, 0x0
-    rlwinm. r0, r3, 0, 28, 28
-    beq lbl_801D4984
-    lfs f0, lbl_804A1BE8
-    ori r30, r30, 0x18
-    stfs f0, 0xc(r4)
-    stfs f0, 0x8(r4)
-    stfs f0, 0x4(r4)
-    b lbl_801D49A8
-lbl_801D4984:
-    rlwinm. r0, r3, 0, 27, 27
-    beq lbl_801D4990
-    ori r30, r30, 0x10
-lbl_801D4990:
-    lfs f0, 0x20(r31)
-    stfs f0, 0x4(r4)
-    lfs f0, 0x24(r31)
-    stfs f0, 0x8(r4)
-    lfs f0, 0x28(r31)
-    stfs f0, 0xc(r4)
-lbl_801D49A8:
-    lwz r0, 0x14(r31)
-    rlwinm. r0, r0, 0, 29, 29
-    beq lbl_801D49C4
-    addi r3, r4, 0x1c
-    bl PSMTXIdentity
-    ori r30, r30, 0x20
-    b lbl_801D4A0C
-lbl_801D49C4:
-    lfs f1, 0x2c(r31)
-    addi r3, r4, 0x1c
-    lfs f5, 0x30(r31)
-    lfs f4, 0x34(r31)
-    lfs f0, lbl_804A1BEC
-    stfs f1, 0x10(r4)
-    stfs f5, 0x14(r4)
-    stfs f4, 0x18(r4)
-    lfs f3, 0x34(r31)
-    lfs f2, 0x30(r31)
-    lfs f6, 0x2c(r31)
-    fmuls f3, f0, f3
-    stfs f1, 0x8(r1)
-    fmuls f2, f0, f2
-    fmuls f1, f0, f6
-    stfs f5, 0xc(r1)
-    stfs f4, 0x10(r1)
-    bl MTX34RotXYZFIdx__Q24nw4r4mathFPQ34nw4r4math5MTX34fff
-lbl_801D4A0C:
-    lwz r0, 0x14(r31)
-    rlwinm. r0, r0, 0, 30, 30
-    beq lbl_801D4A20
-    ori r30, r30, 0x40
-    b lbl_801D4A38
-lbl_801D4A20:
-    lfs f0, 0x38(r31)
-    stfs f0, 0x28(r29)
-    lfs f0, 0x3c(r31)
-    stfs f0, 0x38(r29)
-    lfs f0, 0x40(r31)
-    stfs f0, 0x48(r29)
-lbl_801D4A38:
-    rlwinm. r0, r30, 0, 26, 26
-    beq lbl_801D4A58
-    rlwinm. r0, r30, 0, 25, 25
-    beq lbl_801D4A58
-    ori r30, r30, 0x4
-    rlwinm. r0, r30, 0, 28, 28
-    beq lbl_801D4A58
-    ori r30, r30, 0x2
-lbl_801D4A58:
-    lwz r3, 0x14(r31)
-    oris r30, r30, 0x8000
-    ori r30, r30, 0x1
-    rlwinm. r0, r3, 0, 26, 26
-    beq lbl_801D4A70
-    ori r30, r30, 0x400
-lbl_801D4A70:
-    rlwinm. r0, r3, 0, 25, 25
-    beq lbl_801D4A7C
-    ori r30, r30, 0x800
-lbl_801D4A7C:
-    stw r30, 0x0(r29)
-lbl_801D4A80:
-    lwz r0, 0x34(r1)
-    lwz r31, 0x2c(r1)
-    lwz r30, 0x28(r1)
-    lwz r29, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_801D4A9C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801D4A9C
 extern "C" asm void fn_801D4A9C() {
     nofralloc
     lwz r3, 0x0(r3)
@@ -287,4 +296,3 @@ lbl_801D4B14:
     stfs f3, 0x40(r3)
     blr
 }
-

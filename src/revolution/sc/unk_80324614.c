@@ -1,47 +1,180 @@
-#include "types.h"
+#include <revolution/OS.h>
+#include <revolution/SC.h>
+#include <cstring>
 
-// Translation unit: src/revolution/sc/unk_80324614.cpp
-// Total functions: 9
+#define XOR_KEY 0x73B5DBFA
 
-// Small Data symbols (@sda21)
-extern float lbl_8049D368;
+typedef struct SCRegion {
+    s8 area;      // at 0x0
+    char name[4]; // at 0x1
+} SCRegion;
+
+static SCRegion ProductAreaAndStringTbl[] = {{SC_AREA_JPN, "JPN"},
+                                             {SC_AREA_USA, "USA"},
+                                             {SC_AREA_EUR, "EUR"},
+                                             {SC_AREA_AUS, "AUS"},
+                                             {SC_AREA_BRA, "BRA"},
+                                             {SC_AREA_TWN, "TWN"},
+                                             {SC_AREA_TWN, "ROC"},
+                                             {SC_AREA_KOR, "KOR"},
+                                             {SC_AREA_HKG, "HKG"},
+                                             {SC_AREA_ASI, "ASI"},
+                                             {SC_AREA_LTN, "LTN"},
+                                             {SC_AREA_SAF, "SAF"},
+                                             {-1, ""}};
+
+typedef struct SCGameRegion {
+    s8 region;    // at 0x0
+    char name[3]; // at 0x1
+} SCGameRegion;
+
+static SCGameRegion ProductGameRegionAndStringTbl[] = {
+    {SC_GAME_REGION_JP, "JP"},
+    {SC_GAME_REGION_US, "US"},
+    {SC_GAME_REGION_EU, "EU"},
+    {-1, ""}};
+
+BOOL __SCF1(const char* type, char* buf, u32 sz) {
+    u8 ptext;
+    BOOL found = FALSE;
+    u32 i;
+    const u8* settings = (const u8*)OSPhysicalToCached(OS_PHYS_SC_PRDINFO);
+    u32 key = XOR_KEY;
+    u32 typeOfs = 0;
+    u32 bufOfs = 0;
+
+    for (i = 0; i < SC_PRDINFO_SIZE; i++, key = key >> 31 | key << 1) {
+        ptext = settings[i];
+
+        if (ptext != 0x00) {
+            ptext ^= key;
+            if (type[typeOfs] == 0x00 && ptext == '=') {
+                found = TRUE;
+                break;
+            }
+
+            if (((ptext ^ type[typeOfs]) & 0xDF) == 0) {
+                typeOfs++;
+            } else {
+                typeOfs = 0;
+            }
+        }
+    }
+
+    if (found) {
+        for (i++; i < SC_PRDINFO_SIZE && bufOfs < sz; i++) {
+            key = key >> 31 | key << 1;
+            ptext = settings[i];
+
+            if (ptext != 0x00) {
+                ptext ^= key;
+                if (ptext == '\r' || ptext == '\n') {
+                    ptext = 0x00;
+                }
+            }
+
+            buf[bufOfs++] = ptext;
+
+            if (ptext == 0x00) {
+                return TRUE;
+            }
+        }
+    }
+
+    return FALSE;
+}
+
+BOOL SCGetProductAreaString(char* buf, u32 sz) {
+    return __SCF1("AREA", buf, sz);
+}
+
+s8 SCGetProductArea(void) {
+    s8 area;
+    char name[4];
+    SCRegion* iter = ProductAreaAndStringTbl;
+
+    if (SCGetProductAreaString(name, sizeof(name))) {
+        while ((area = iter->area) != -1) {
+            if (!strcmp(iter->name, name)) {
+                return area;
+            }
+            iter++;
+        }
+    }
+
+    return -1;
+}
+
+s8 SCGetProductGameRegion(void) {
+    s8 region;
+    char name[3];
+    SCGameRegion* iter = ProductGameRegionAndStringTbl;
+
+    if (__SCF1("GAME", name, sizeof(name))) {
+        while ((region = iter->region) != -1) {
+            if (!strcmp(iter->name, name)) {
+                return region;
+            }
+            iter++;
+        }
+    }
+
+    return -1;
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern float lbl_8049D370;
 extern float lbl_8049D378;
 extern float lbl_8049D380;
-extern float lbl_8049D384;
 extern float lbl_8049E400;
-
-// Global data symbols (@ha/@l)
 extern u8 Packet_8046EFC8[];
 extern u8 Si_8038DB08[];
 extern u8 lbl_8038DA30[];
-extern u8 lbl_8038DA60[];
-extern u8 lbl_8038DAA8[];
 extern u8 lbl_8046DFC0[];
-
-// Forward declarations
-extern void OSDisableInterrupts();
-extern void OSReport();
-extern void OSRestoreInterrupts();
-extern void SCFindByteArrayItem();
-extern void SCFindU32Item();
-extern void SIBusy();
-extern void SIIsChanBusy();
-extern void fn_80324614();
-extern void fn_80324704();
-extern void fn_80324754();
-extern void SCGetProductArea();
-extern void fn_80324944();
-extern void fn_80324980();
-extern void fn_803249E8();
+extern int SIBusy();
+extern int SIIsChanBusy();
+extern int fn_80324614();
+extern int fn_80324704();
+extern int fn_80324944();
+extern int fn_80324980();
 extern void memset();
 extern void sscanf();
-extern void strcmp();
 
-// ----------------------------------------------------------------------------
-// fn_80324614
-// ----------------------------------------------------------------------------
-asm void fn_80324614() {
+// asm_to_cpp: SIBusy
+asm int SIBusy() {
+    nofralloc
+    lis r3, Si_8038DB08@ha
+    lwz r4, Si_8038DB08@l(r3)
+    subfic r3, r4, -0x1
+    addi r0, r4, 0x1
+    or r0, r3, r0
+    srwi r3, r0, 31
+    blr
+}
+
+// asm_to_cpp: SIIsChanBusy
+asm int SIIsChanBusy() {
+    nofralloc
+    lis r4, Packet_8046EFC8@ha
+    slwi r0, r3, 5
+    addi r4, r4, Packet_8046EFC8@l
+    li r5, 0x0
+    lwzx r0, r4, r0
+    cmpwi r0, -0x1
+    bne lbl_80324AB4
+    lis r4, Si_8038DB08@ha
+    lwz r0, Si_8038DB08@l(r4)
+    cmpw r0, r3
+    bne lbl_80324AB8
+lbl_80324AB4:
+    li r5, 0x1
+lbl_80324AB8:
+    mr r3, r5
+    blr
+}
+
+// asm_to_cpp: fn_80324614
+asm int fn_80324614() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -110,10 +243,8 @@ lbl_803246E4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80324704
-// ----------------------------------------------------------------------------
-asm void fn_80324704() {
+// asm_to_cpp: fn_80324704
+asm int fn_80324704() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -138,165 +269,8 @@ lbl_8032473C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80324754
-// ----------------------------------------------------------------------------
-asm void fn_80324754() {
-    nofralloc
-    lis r6, 0x73b6
-    li r0, 0x80
-    subi r11, r6, 0x2406
-    li r9, 0x0
-    li r12, 0x0
-    li r6, 0x0
-    li r10, 0x0
-    mtctr r0
-lbl_80324774:
-    addis r8, r10, 0x8000
-    lbz r8, 0x3800(r8)
-    cmpwi r8, 0x0
-    beq lbl_803247C8
-    lbzx r7, r3, r12
-    xor r0, r8, r11
-    clrlwi r8, r0, 24
-    extsb. r0, r7
-    bne lbl_803247A8
-    cmplwi r8, 0x3d
-    bne lbl_803247A8
-    li r9, 0x1
-    b lbl_80324840
-lbl_803247A8:
-    extsb r7, r7
-    addi r0, r12, 0x1
-    xor r7, r8, r7
-    andi. r7, r7, 0xdf
-    cntlzw r7, r7
-    extrwi r7, r7, 1, 26
-    neg r7, r7
-    and r12, r0, r7
-lbl_803247C8:
-    addi r10, r10, 0x1
-    srwi r7, r11, 31
-    addis r8, r10, 0x8000
-    slwi r0, r11, 1
-    lbz r8, 0x3800(r8)
-    or r11, r7, r0
-    cmpwi r8, 0x0
-    beq lbl_8032482C
-    lbzx r7, r3, r12
-    xor r0, r8, r11
-    clrlwi r8, r0, 24
-    extsb. r0, r7
-    bne lbl_8032480C
-    cmplwi r8, 0x3d
-    bne lbl_8032480C
-    li r9, 0x1
-    b lbl_80324840
-lbl_8032480C:
-    extsb r7, r7
-    addi r0, r12, 0x1
-    xor r7, r8, r7
-    andi. r7, r7, 0xdf
-    cntlzw r7, r7
-    extrwi r7, r7, 1, 26
-    neg r7, r7
-    and r12, r0, r7
-lbl_8032482C:
-    srwi r7, r11, 31
-    slwi r0, r11, 1
-    or r11, r7, r0
-    addi r10, r10, 0x1
-    bdnz lbl_80324774
-lbl_80324840:
-    cmpwi r9, 0x0
-    beq lbl_803248B8
-    addi r10, r10, 0x1
-    b lbl_803248A8
-lbl_80324850:
-    addis r3, r10, 0x8000
-    srwi r7, r11, 31
-    lbz r3, 0x3800(r3)
-    slwi r0, r11, 1
-    or r11, r7, r0
-    cmpwi r3, 0x0
-    beq lbl_80324888
-    xor r0, r3, r11
-    clrlwi r3, r0, 24
-    cmplwi r3, 0xd
-    beq lbl_80324884
-    cmplwi r3, 0xa
-    bne lbl_80324888
-lbl_80324884:
-    li r3, 0x0
-lbl_80324888:
-    cmpwi r3, 0x0
-    stb r3, 0x0(r4)
-    addi r6, r6, 0x1
-    addi r4, r4, 0x1
-    bne lbl_803248A4
-    li r3, 0x1
-    blr
-lbl_803248A4:
-    addi r10, r10, 0x1
-lbl_803248A8:
-    cmplwi r10, 0x100
-    bge lbl_803248B8
-    cmplw r6, r5
-    blt lbl_80324850
-lbl_803248B8:
-    li r3, 0x0
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// SCGetProductArea
-// ----------------------------------------------------------------------------
-asm void SCGetProductArea() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    la r3, lbl_8049D368
-    li r5, 0x4
-    stw r0, 0x24(r1)
-    addi r4, r1, 0x8
-    stw r31, 0x1c(r1)
-    stw r30, 0x18(r1)
-    lis r30, lbl_8038DA60@ha
-    addi r30, r30, lbl_8038DA60@l
-    bl fn_80324754
-    cmpwi r3, 0x0
-    beq lbl_80324928
-    b lbl_80324918
-lbl_803248F8:
-    addi r3, r30, 0x1
-    addi r4, r1, 0x8
-    bl strcmp
-    cmpwi r3, 0x0
-    bne lbl_80324914
-    mr r3, r31
-    b lbl_8032492C
-lbl_80324914:
-    addi r30, r30, 0x5
-lbl_80324918:
-    lbz r31, 0x0(r30)
-    extsb r0, r31
-    cmpwi r0, -0x1
-    bne lbl_803248F8
-lbl_80324928:
-    li r3, -0x1
-lbl_8032492C:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_80324944
-// ----------------------------------------------------------------------------
-asm void fn_80324944() {
+// asm_to_cpp: fn_80324944
+asm int fn_80324944() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -304,7 +278,7 @@ asm void fn_80324944() {
     la r4, lbl_8049E400
     stw r0, 0x14(r1)
     li r5, 0x6
-    bl fn_80324754
+    bl __SCF1
     cmpwi r3, 0x0
     li r3, 0x0
     beq lbl_80324970
@@ -316,10 +290,8 @@ lbl_80324970:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80324980
-// ----------------------------------------------------------------------------
-asm void fn_80324980() {
+// asm_to_cpp: fn_80324980
+asm int fn_80324980() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -329,7 +301,7 @@ asm void fn_80324980() {
     stw r31, 0x1c(r1)
     mr r31, r3
     la r3, lbl_8049D378
-    bl fn_80324754
+    bl __SCF1
     cmpwi r3, 0x0
     beq lbl_803249D0
     mr r5, r31
@@ -350,86 +322,3 @@ lbl_803249D4:
     addi r1, r1, 0x20
     blr
 }
-
-// ----------------------------------------------------------------------------
-// fn_803249E8
-// ----------------------------------------------------------------------------
-asm void fn_803249E8() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    la r3, lbl_8049D384
-    li r5, 0x3
-    stw r0, 0x24(r1)
-    addi r4, r1, 0x8
-    stw r31, 0x1c(r1)
-    stw r30, 0x18(r1)
-    lis r30, lbl_8038DAA8@ha
-    addi r30, r30, lbl_8038DAA8@l
-    bl fn_80324754
-    cmpwi r3, 0x0
-    beq lbl_80324A50
-    b lbl_80324A40
-lbl_80324A20:
-    addi r3, r30, 0x1
-    addi r4, r1, 0x8
-    bl strcmp
-    cmpwi r3, 0x0
-    bne lbl_80324A3C
-    mr r3, r31
-    b lbl_80324A54
-lbl_80324A3C:
-    addi r30, r30, 0x4
-lbl_80324A40:
-    lbz r31, 0x0(r30)
-    extsb r0, r31
-    cmpwi r0, -0x1
-    bne lbl_80324A20
-lbl_80324A50:
-    li r3, -0x1
-lbl_80324A54:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// SIBusy
-// ----------------------------------------------------------------------------
-asm void SIBusy() {
-    nofralloc
-    lis r3, Si_8038DB08@ha
-    lwz r4, Si_8038DB08@l(r3)
-    subfic r3, r4, -0x1
-    addi r0, r4, 0x1
-    or r0, r3, r0
-    srwi r3, r0, 31
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// SIIsChanBusy
-// ----------------------------------------------------------------------------
-asm void SIIsChanBusy() {
-    nofralloc
-    lis r4, Packet_8046EFC8@ha
-    slwi r0, r3, 5
-    addi r4, r4, Packet_8046EFC8@l
-    li r5, 0x0
-    lwzx r0, r4, r0
-    cmpwi r0, -0x1
-    bne lbl_80324AB4
-    lis r4, Si_8038DB08@ha
-    lwz r0, Si_8038DB08@l(r4)
-    cmpw r0, r3
-    bne lbl_80324AB8
-lbl_80324AB4:
-    li r5, 0x1
-lbl_80324AB8:
-    mr r3, r5
-    blr
-}
-

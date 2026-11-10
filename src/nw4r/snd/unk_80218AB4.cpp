@@ -1,19 +1,101 @@
-#include "types.h"
+#include "nw4r/snd/snd_SoundStartable.h"
 
-// Translation unit: src/nw4r/snd/unk_80218AB4.cpp
-// Total functions: 5
+/* Original source:
+ * kiwi515/ogws
+ * src/nw4r/snd/snd_SoundStartable.cpp
+ */
 
-// Small Data symbols (@sda21)
+/*******************************************************************************
+ * headers
+ */
+
+#include "common.h" // u32
+
+#include "nw4r/snd/snd_BasicSound.h"
+#include "nw4r/snd/snd_SoundHandle.h"
+
+/*******************************************************************************
+ * functions
+ */
+
+namespace nw4r { namespace snd {
+
+SoundStartable::StartResult SoundStartable::detail_StartSound(
+	SoundHandle *handle, u32 soundId, const StartInfo *startInfo)
+{
+	StartResult result = detail_SetupSound(handle, soundId, false, startInfo);
+	if (result != START_SUCCESS)
+		return result;
+
+	handle->StartPrepared();
+	return START_SUCCESS;
+}
+
+SoundStartable::StartResult SoundStartable::detail_StartSound(
+	SoundHandle *pHandle, const char *label, const StartInfo *pStartInfo)
+{
+	u32 soundId = detail_ConvertLabelStringToSoundId(label);
+	if (soundId == -1)
+		return START_ERR_INVALID_LABEL_STRING;
+
+	return detail_StartSound(pHandle, soundId, pStartInfo);
+}
+
+SoundStartable::StartResult SoundStartable::detail_HoldSound(
+	SoundHandle *handle, u32 soundId, StartInfo const *startInfo)
+{
+	if (handle->IsAttachedSound() && soundId == handle->GetId())
+	{
+		handle->detail_GetAttachedSound()->SetAutoStopCounter(1);
+		return START_SUCCESS;
+	}
+
+	StartResult result = detail_SetupSound(handle, soundId, true, startInfo);
+	if (result != START_SUCCESS)
+		return result;
+
+	handle->StartPrepared();
+	handle->detail_GetAttachedSound()->SetAutoStopCounter(1);
+	return START_SUCCESS;
+}
+
+SoundStartable::StartResult SoundStartable::detail_HoldSound(
+	SoundHandle *pHandle, const char *label, const StartInfo *pStartInfo)
+{
+	u32 soundId = detail_ConvertLabelStringToSoundId(label);
+	if (soundId == -1)
+		return START_ERR_INVALID_LABEL_STRING;
+
+	return detail_HoldSound(pHandle, soundId, pStartInfo);
+}
+
+SoundStartable::StartResult SoundStartable::detail_PrepareSound(
+	SoundHandle *pHandle, u32 id,
+	const StartInfo *pStartInfo)
+{
+	return detail_SetupSound(pHandle, id, false, pStartInfo);
+}
+
+SoundStartable::StartResult SoundStartable::detail_PrepareSound(
+	SoundHandle *pHandle, const char *label,
+	const StartInfo *pStartInfo)
+{
+	u32 soundId = detail_ConvertLabelStringToSoundId(label);
+	if (soundId == -1)
+		return START_ERR_INVALID_LABEL_STRING;
+
+	return detail_PrepareSound(pHandle, soundId, pStartInfo);
+}
+
+}} // namespace nw4r::snd
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern "C" float lbl_8049C530;
 extern "C" float lbl_8049DA68;
 extern "C" float lbl_8049DA6C;
-
-// Global data symbols (@ha/@l)
 extern "C" u8 __dt__Q44nw4r3snd6detail10TaskThreadFv[];
 extern "C" u8 lbl_80404A00[];
 extern "C" u8 lbl_80404A10[];
-
-// Forward declarations
 extern "C" void AXGetMaxVoices();
 extern "C" void Create__Q44nw4r3snd6detail10TaskThreadFlPvUl();
 extern "C" void Create__Q44nw4r3snd6detail11SoundThreadFlPvUl();
@@ -37,54 +119,16 @@ extern "C" void Setup__Q44nw4r3snd6detail12VoiceManagerFPvUl();
 extern "C" void Setup__Q44nw4r3snd6detail14AxVoiceManagerFPvUl();
 extern "C" void Setup__Q44nw4r3snd6detail14ChannelManagerFPvUl();
 extern "C" void Setup__Q44nw4r3snd6detail20RemoteSpeakerManagerFv();
-extern "C" void StartPrepared__Q44nw4r3snd6detail10BasicSoundFv();
 extern "C" void __ct__Q44nw4r3snd6detail10TaskThreadFv();
 extern "C" void __register_global_object();
 extern "C" void _restgpr_26();
 extern "C" void _savegpr_26();
-extern "C" void fn_80218AB4();
 extern "C" void fn_80218B14();
 extern "C" void fn_80218B94();
 extern "C" void fn_80218D4C();
 extern "C" void fn_80218D54();
 
-// ----------------------------------------------------------------------------
-// fn_80218AB4
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_80218AB4() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    mr r7, r6
-    li r6, 0x0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r4
-    lwz r12, 0x0(r3)
-    lwz r12, 0xc(r12)
-    mtctr r12
-    bctrl
-    cmpwi r3, 0x0
-    beq lbl_80218AEC
-    b lbl_80218B00
-lbl_80218AEC:
-    lwz r3, 0x0(r31)
-    cmpwi r3, 0x0
-    beq lbl_80218AFC
-    bl StartPrepared__Q44nw4r3snd6detail10BasicSoundFv
-lbl_80218AFC:
-    li r3, 0x0
-lbl_80218B00:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_80218B14
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80218B14
 extern "C" asm void fn_80218B14() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -121,9 +165,7 @@ extern "C" asm void fn_80218B14() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80218B94
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80218B94
 extern "C" asm void fn_80218B94() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -246,18 +288,14 @@ lbl_80218D34:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80218D4C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80218D4C
 extern "C" asm void fn_80218D4C() {
     nofralloc
     lbz r3, lbl_8049DA68
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80218D54
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_80218D54
 extern "C" asm void fn_80218D54() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -279,4 +317,3 @@ extern "C" asm void fn_80218D54() {
     addi r1, r1, 0x10
     blr
 }
-

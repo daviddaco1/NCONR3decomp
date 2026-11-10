@@ -383,8 +383,8 @@ void gt2SetReceiveDump(GT2Socket socket, gt2DumpCallback callback) {
 }
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-s32 fn_80267CD4(s32 *arg0);
+s32 gt2GetIncomingBufferFreeSpace(s32 *arg0);
 
-s32 fn_80267CD4(s32 *arg0) {
+s32 gt2GetIncomingBufferFreeSpace(s32 *arg0) {
     return *(s32 *)((char *)arg0 + 0x48) - *(s32 *)((char *)arg0 + 0x4c);
 }

@@ -1,3181 +1,1566 @@
-#include "types.h"
+/******
+gstats.c
+GameSpy Stats/Tracking SDK
+GameSpy Persistent Storage SDK
 
-// Translation unit: src/gamespy/gstats/unk_80274A58.cpp
-// Total functions: 11
+Copyright 1999-2007 GameSpy Industries, Inc
 
-// Small Data symbols (@sda21)
-extern float lbl_8049CD80;
-extern float lbl_8049CD84;
-extern float lbl_8049CD88;
-extern float lbl_8049CD8C;
-extern float lbl_8049CD94;
-extern float lbl_8049CD98;
-extern float lbl_8049CD9C;
-extern float lbl_8049CDA4;
-extern float lbl_8049CDAC;
-extern float lbl_8049DBB8;
-extern float lbl_8049DC20;
-extern float lbl_8049DC24;
-extern float lbl_8049DC28;
-extern float lbl_8049DC2C;
-extern float lbl_8049DC30;
-extern float lbl_8049DC34;
-extern float lbl_8049DC38;
-extern float lbl_8049DC3C;
-extern float lbl_8049DC40;
-extern float lbl_8049DC44;
-extern float lbl_8049DC48;
-extern float lbl_8049DC4C;
-extern float lbl_804A2320;
-extern float lbl_804A2321;
-extern float lbl_804A2322;
-extern float lbl_804A2323;
-extern float lbl_804A2324;
-extern float lbl_804A2325;
-extern float lbl_804A2326;
-extern float lbl_804A2327;
+******
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_80341430[];
-extern u8 lbl_80341454[];
-extern u8 lbl_8036B230[];
-extern u8 lbl_8036B240[];
-extern u8 lbl_8036B2E0[];
-extern u8 lbl_8036B300[];
-extern u8 lbl_8036B30C[];
-extern u8 lbl_8036B338[];
-extern u8 lbl_8036B438[];
-extern u8 lbl_8036B478[];
-extern u8 lbl_8040B420[];
-extern u8 lbl_8040B520[];
-extern u8 lbl_8040B620[];
-extern u8 lbl_8040B630[];
+Please see the GameSpy Stats and Tracking SDK documentation for more info
 
-// Forward declarations
-extern void CallReqCallback();
-extern void CloseStatsConnection();
-extern void DoSend();
-extern void GOAGetLastError();
-extern void GSISocketSelect();
-extern void GenerateAuthA();
-extern void GetChallenge();
-extern void GetPersistDataValuesA();
-extern void GetPersistDataValuesModifiedA();
-extern void InitStatsAsync();
-extern void InitStatsConnection();
-extern void InitStatsThink();
-extern void IsStatsConnected();
-extern void MD5Digest();
-extern void PreAuthenticatePlayerPartner();
-extern void RecvSessionKey();
-extern void SetPersistDataHelper();
-extern void SetPersistDataValuesA();
-extern void _restgpr_14();
-extern void _restgpr_19();
-extern void _restgpr_20();
-extern void _restgpr_25();
-extern void _savegpr_14();
-extern void _savegpr_19();
-extern void _savegpr_20();
-extern void _savegpr_25();
-extern void closesocket();
-extern void connect();
-extern void current_time();
-extern void fn_80253528();
-extern void fn_802535C4();
-extern void fn_80253658();
-extern void fn_80253690();
-extern void fn_80255D78();
-extern void gsiInitializeCriticalSection();
-extern void gsiInterlockedIncrement();
-extern void gsifree();
-extern void gsimalloc();
-extern void gstats_get_sockaddrin();
-extern void inet_addr();
-extern void memset();
-extern void msleep();
-extern void recv();
-extern void shutdown();
-extern void socket();
-extern void sprintf();
-extern void strcat();
-extern void strcpy();
-extern void strlen();
-extern void strstr();
+******/
 
-// ----------------------------------------------------------------------------
-// GenerateAuthA
-// ----------------------------------------------------------------------------
-asm void GenerateAuthA() {
-    nofralloc
-    stwu r1, -0xa0(r1)
-    mflr r0
-    stw r0, 0xa4(r1)
-    stw r31, 0x9c(r1)
-    stw r30, 0x98(r1)
-    mr r30, r5
-    stw r29, 0x94(r1)
-    mr r29, r4
-    stw r28, 0x90(r1)
-    mr r28, r3
-    bl strlen
-    mr r31, r3
-    mr r3, r29
-    bl strlen
-    add r3, r3, r31
-    addi r0, r3, 0x14
-    cmplwi r0, 0x80
-    blt lbl_80274AB8
-    lis r4, lbl_8036B2E0@ha
-    mr r3, r30
-    addi r4, r4, lbl_8036B2E0@l
-    bl strcpy
-    mr r3, r30
-    b lbl_80274AEC
-lbl_80274AB8:
-    mr r5, r29
-    mr r6, r28
-    addi r3, r1, 0x8
-    la r4, lbl_8049CD8C
-    opword 0x4CC63182
-    bl sprintf
-    addi r3, r1, 0x8
-    bl strlen
-    mr r4, r3
-    mr r5, r30
-    addi r3, r1, 0x8
-    bl MD5Digest
-    mr r3, r30
-lbl_80274AEC:
-    lwz r0, 0xa4(r1)
-    lwz r31, 0x9c(r1)
-    lwz r30, 0x98(r1)
-    lwz r29, 0x94(r1)
-    lwz r28, 0x90(r1)
-    mtlr r0
-    addi r1, r1, 0xa0
-    blr
+/********
+INCLUDES
+********/
+// clang-format off
+#include "gstats.h"
+#include "gpersist.h"
+#include "../common/gsAvailable.h"
+#include "../darray.h"
+#include "../md5.h"
+// clang-format on
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/********
+TYPEDEFS
+********/
+struct statsgame_s {
+  int connid;
+  int sesskey;
+  int usebuckets;
+  bucketset_t buckets;
+  char challenge[9];
+  DArray playernums; // for player number translation
+  DArray teamnums;   // for team number translation
+  int totalplayers, totalteams;
+  gsi_time sttime;
+};
+
+typedef enum { rt_authcb, rt_datacb, rt_savecb, rt_profilecb } reqtype_t;
+typedef struct {
+  reqtype_t reqtype;
+  int localid;
+  int profileid;
+  persisttype_t pdtype;
+  int pdindex;
+  void* instance;
+  void* callback;
+
+} serverreq_t;
+
+/********
+PROTOTYPES
+********/
+static int ServerOpInt(statsgame_t game, char* name, BucketFunc func, int value,
+                       int index);
+static double ServerOpFloat(statsgame_t game, char* name, BucketFunc func,
+                            double value, int index);
+static char* ServerOpString(statsgame_t game, char* name, BucketFunc func,
+                            char* value, int index);
+
+static int TeamOpInt(statsgame_t game, char* name, BucketFunc func, int value,
+                     int index);
+static double TeamOpFloat(statsgame_t game, char* name, BucketFunc func,
+                          double value, int index);
+static char* TeamOpString(statsgame_t game, char* name, BucketFunc func,
+                          char* value, int index);
+
+static int PlayerOpInt(statsgame_t game, char* name, BucketFunc func, int value,
+                       int index);
+static double PlayerOpFloat(statsgame_t game, char* name, BucketFunc func,
+                            double value, int index);
+static char* PlayerOpString(statsgame_t game, char* name, BucketFunc func,
+                            char* value, int index);
+
+static char* CreateBucketSnapShot(bucketset_t buckets);
+
+#ifdef ALLOW_DISK
+static void CheckDiskFile();
+static void DiskWrite(char* line, int len);
+#endif
+static void InternalInit();
+static int SendChallengeResponse(const char* indata, int gameport);
+static int RecvSessionKey();
+static int DoSend(char* data, int len);
+static void xcode_buf(char* buf, int len);
+static int g_crc32(char* s, int len);
+static void create_challenge(int challenge, char chstr[9]);
+static char* value_for_key(const char* s, const char* key);
+static char* value_for_key_safe(const char* s, const char* key);
+static int get_sockaddrin(const char* host, int port, struct sockaddr_in* saddr,
+                          struct hostent** savehent);
+/**************
+PERSISTENT STORAGE PROTOTYPES
+**************/
+static void AddRequestCallback(reqtype_t reqtype, int localid, int profileid,
+                               persisttype_t pdtype, int pdindex,
+                               void* callback, void* instance);
+static void SendPlayerAuthRequest(char* data, int len, int localid,
+                                  PersAuthCallbackFn callback, void* instance);
+static void SendPlayerAuthRequest(char* data, int len, int localid,
+                                  PersAuthCallbackFn callback, void* instance);
+static int SocketReadable(SOCKET s);
+static char* FindFinal(char* buff, int len);
+static int FindRequest(reqtype_t reqtype, int localid, int profileid);
+static void ProcessPlayerAuth(const char* buf, int len);
+static void ProcessGetPid(const char* buf, int len);
+static void ProcessGetData(const char* buf, int len);
+static void ProcessSetData(const char* buf, int len);
+static void ProcessStatement(char* buff, int len);
+static int ProcessInBuffer(char* buff, int len);
+static void CallReqCallback(int reqindex, int success, time_t modified,
+                            char* data, int length);
+static void ClosePendingCallbacks();
+static void SetPersistDataHelper(int localid, int profileid, persisttype_t type,
+                                 int index, const char* data, int len,
+                                 PersDataSaveCallbackFn callback,
+                                 void* instance, int kvset);
+void GetPersistDataValuesA(int localid, int profileid, persisttype_t type,
+                           int index, char* keys, PersDataCallbackFn callback,
+                           void* instance);
+void GetPersistDataValuesModifiedA(int localid, int profileid,
+                                   persisttype_t type, int index,
+                                   time_t modifiedsince, char* keys,
+                                   PersDataCallbackFn callback, void* instance);
+
+/********
+DEFINES
+********/
+//#define SSHOST "207.199.80.230"
+#define SSHOST "gamestats." GSI_DOMAIN_NAME
+#define SSPORT 29920
+
+#define FIXGAME(g, r)                                                          \
+  if (g == NULL)                                                               \
+    g = g_statsgame;                                                           \
+  if (g == NULL)                                                               \
+    return r;
+#define DoFunc(f, g, n, v, t, r)                                               \
+  if (g == NULL)                                                               \
+    g = g_statsgame;                                                           \
+  if (!g)                                                                      \
+    r = v;                                                                     \
+  else {                                                                       \
+    r = f(g->buckets, n, v);                                                   \
+    if (!r)                                                                    \
+      r = BucketNew(g->buckets, n, t, v);                                      \
+  }
+#define DOXCODE(b, l, e)                                                       \
+  enc = e;                                                                     \
+  xcode_buf(b, l);
+
+/********
+VARS
+********/
+char gcd_gamename[256] = "";
+char gcd_secret_key[256] = "";
+static statsgame_t g_statsgame = NULL;
+static int connid = 0;
+static int sesskey = 0;
+static SOCKET sock = INVALID_SOCKET;
+/*	#define enc1 "GameSpy 3D"
+        #define enc2 "Industries"
+        #define enc3 "ProjectAphex"
+        #define STATSFILE "gstats.dat" */
+/* A couple vars to help avoid the string table */
+static char enc1[16] = {'\0', 'a', 'm', 'e', 'S', 'p', 'y', '3', 'D', '\0'};
+static char enc3[16] = {'\0', 'r', 'o', 'j', 'e', 'c', 't',
+                        'A',  'p', 'h', 'e', 'x', '\0'};
+
+#ifdef ALLOW_DISK
+static char statsfile[16] = {'\0', 's', 't', 'a', 't', 's',
+                             '.',  'd', 'a', 't', '\0'};
+static char enc2[16] = {'\0', 'n', 'd', 'u', 's', 't',
+                        'r',  'i', 'e', 's', '\0'};
+#endif
+
+static char finalstr[10] = {'\0', 'f', 'i', 'n', 'a', 'l', '\\', '\0'};
+static char* enc = enc1;
+static int internal_init = 0;
+static char* rcvbuffer = NULL;
+static int rcvmax = 0;
+static int rcvlen = 0;
+// Changed By Saad Nader, 09-16-2004
+// Due to confliction with MacOS X
+///////////////////////////////////////////
+static int stats_initstate = init_none;
+static int gameport = 0;
+
+static gsi_time initstart = 0;
+static gsi_time inittimeout = 20000; // 20 seconds
+
+char StatsServerHostname[64] = SSHOST;
+
+static DArray serverreqs = NULL; // for pre-authentication requests
+
+BucketFunc bucketfuncs[NUMOPS] = {BucketSet,  BucketAdd, BucketSub,
+                                  BucketMult, BucketDiv, BucketConcat,
+                                  BucketAvg};
+
+void* bopfuncs[][3] = {
+    {ServerOpInt, ServerOpFloat, ServerOpString},
+    {TeamOpInt, TeamOpFloat, TeamOpString},
+    {PlayerOpInt, PlayerOpFloat, PlayerOpString},
+};
+
+/****************************************************************************/
+/* PUBLIC FUNCTIONS */
+/****************************************************************************/
+#define RAWSIZE 128
+char* GenerateAuthA(const char* challenge, const char* password,
+                    char response[33]) {
+  char rawout[RAWSIZE];
+
+  /* check to make sure we weren't passed a huge pass/challenge */
+  if (strlen(password) + strlen(challenge) + 20 >= RAWSIZE) {
+    strcpy(response, "CD Key or challenge too long");
+    return response;
+  }
+
+  /* response = MD5(pass + challenge) */
+  sprintf(rawout, "%s%s", password, challenge);
+
+  /* do the response md5 */
+  MD5Digest((unsigned char*)rawout, strlen(rawout), response);
+  return response;
 }
 
-// ----------------------------------------------------------------------------
-// InitStatsAsync
-// ----------------------------------------------------------------------------
-asm void InitStatsAsync() {
-    nofralloc
-    stwu r1, -0xe0(r1)
-    mflr r0
-    stw r0, 0xe4(r1)
-    addi r11, r1, 0xe0
-    bl _savegpr_19
-    cmpwi r4, 0x0
-    lis r30, lbl_8036B230@ha
-    stw r3, lbl_8049DC40
-    addi r30, r30, lbl_8036B230@l
-    beq lbl_80274B38
-    stw r4, lbl_8049CD88
-lbl_80274B38:
-    lwz r0, lbl_8049DBB8
-    cmpwi r0, 0x1
-    beq lbl_80274B4C
-    li r3, 0x1
-    b lbl_80274EB4
-lbl_80274B4C:
-    lwz r0, lbl_8049DC2C
-    cmpwi r0, 0x0
-    bne lbl_80274B78
-    li r5, 0x1
-    li r4, 0x47
-    li r3, 0x50
-    li r0, 0x5c
-    stw r5, lbl_8049DC2C
-    stb r4, 0x0(r30)
-    stb r3, 0x10(r30)
-    stb r0, 0x20(r30)
-lbl_80274B78:
-    bl gsiInitializeCriticalSection
-    bl current_time
-    lwz r0, lbl_8049CD80
-    stw r3, lbl_8049DC28
-    cmpwi r0, -0x1
-    beq lbl_80274D80
-    beq lbl_80274BA8
-    mr r3, r0
-    li r4, 0x2
-    bl shutdown
-    lwz r3, lbl_8049CD80
-    bl closesocket
-lbl_80274BA8:
-    lwz r3, lbl_8049DC48
-    li r0, -0x1
-    stw r0, lbl_8049CD80
-    cmpwi r3, 0x0
-    beq lbl_80274D64
-    bl fn_80253658
-    lis r31, lbl_8036B478@ha
-    addi r28, r30, 0x10
-    subi r29, r3, 0x1
-    li r27, 0x3
-    addi r31, r31, lbl_8036B478@l
-    b lbl_80274D4C
-lbl_80274BD8:
-    lbz r19, 0x0(r31)
-    mr r3, r28
-    lbz r20, 0x1(r31)
-    addi r5, r1, 0x10
-    lbz r21, 0x2(r31)
-    li r4, 0x0
-    lbz r22, 0x3(r31)
-    lbz r23, 0x4(r31)
-    lbz r24, 0x5(r31)
-    lbz r25, 0x6(r31)
-    lbz r26, 0x7(r31)
-    lbz r12, 0x8(r31)
-    lbz r11, 0x9(r31)
-    lbz r10, 0xa(r31)
-    lbz r9, 0xb(r31)
-    lbz r8, 0xc(r31)
-    lbz r7, 0xd(r31)
-    lbz r6, 0xe(r31)
-    lbz r0, 0xf(r31)
-    stb r19, 0x10(r1)
-    stb r20, 0x11(r1)
-    stb r21, 0x12(r1)
-    stb r22, 0x13(r1)
-    stb r23, 0x14(r1)
-    stb r24, 0x15(r1)
-    stb r25, 0x16(r1)
-    stb r26, 0x17(r1)
-    stb r12, 0x18(r1)
-    stb r11, 0x19(r1)
-    stb r10, 0x1a(r1)
-    stb r9, 0x1b(r1)
-    stb r8, 0x1c(r1)
-    stb r7, 0x1d(r1)
-    stb r6, 0x1e(r1)
-    stb r0, 0x1f(r1)
-    stw r28, lbl_8049CD84
-    mtctr r27
-lbl_80274C6C:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x0(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x0(r5)
-    bne lbl_80274C90
-    mr r3, r28
-lbl_80274C90:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x1(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x1(r5)
-    bne lbl_80274CB4
-    mr r3, r28
-lbl_80274CB4:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x2(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x2(r5)
-    bne lbl_80274CD8
-    mr r3, r28
-lbl_80274CD8:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x3(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x3(r5)
-    bne lbl_80274CFC
-    mr r3, r28
-lbl_80274CFC:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x4(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x4(r5)
-    bne lbl_80274D20
-    mr r3, r28
-lbl_80274D20:
-    addi r5, r5, 0x5
-    addi r4, r4, 0x4
-    bdnz lbl_80274C6C
-    mr r3, r29
-    addi r7, r1, 0x10
-    li r4, 0x0
-    li r6, 0x0
-    li r5, 0x0
-    li r8, 0x0
-    bl CallReqCallback
-    subi r29, r29, 0x1
-lbl_80274D4C:
-    cmpwi r29, 0x0
-    bge lbl_80274BD8
-    lwz r3, lbl_8049DC48
-    bl fn_802535C4
-    li r0, 0x0
-    stw r0, lbl_8049DC48
-lbl_80274D64:
-    lwz r3, lbl_8049DC30
-    cmpwi r3, 0x0
-    beq lbl_80274D80
-    bl gsifree
-    li r0, 0x0
-    stw r0, lbl_8049DC30
-    stw r0, lbl_8049DC34
-lbl_80274D80:
-    li r0, 0x0
-    addi r3, r30, 0x30
-    stw r0, lbl_8049DC38
-    bl inet_addr
-    addis r0, r3, 0x1
-    cmplwi r0, 0xffff
-    bne lbl_80274DC8
-    lis r4, lbl_8040B420@ha
-    addi r3, r1, 0x20
-    addi r4, r4, lbl_8040B420@l
-    bl strcpy
-    addi r3, r1, 0x20
-    la r4, lbl_8049CD94
-    bl strcat
-    addi r3, r1, 0x20
-    addi r4, r30, 0x30
-    bl strcat
-    b lbl_80274DD4
-lbl_80274DC8:
-    addi r3, r1, 0x20
-    addi r4, r30, 0x30
-    bl strcpy
-lbl_80274DD4:
-    addi r3, r1, 0x20
-    addi r5, r1, 0x8
-    li r4, 0x74e0
-    li r6, 0x0
-    bl gstats_get_sockaddrin
-    cmpwi r3, 0x0
-    bne lbl_80274DF8
-    li r3, 0x2
-    b lbl_80274EB4
-lbl_80274DF8:
-    li r3, 0x2
-    li r4, 0x1
-    li r5, 0x6
-    bl socket
-    cmpwi r3, -0x1
-    stw r3, lbl_8049CD80
-    bne lbl_80274E1C
-    li r3, 0x1
-    b lbl_80274EB4
-lbl_80274E1C:
-    li r4, 0x0
-    bl fn_80255D78
-    lwz r3, lbl_8049CD80
-    addi r4, r1, 0x8
-    li r5, 0x8
-    bl connect
-    cmpwi r3, -0x1
-    bne lbl_80274E74
-    lwz r3, lbl_8049CD80
-    bl GOAGetLastError
-    cmpwi r3, -0x6
-    beq lbl_80274E74
-    cmpwi r3, -0x4c
-    beq lbl_80274E74
-    cmpwi r3, -0x1a
-    beq lbl_80274E74
-    li r0, 0x1
-    lwz r3, lbl_8049CD80
-    stw r0, lbl_8049DC3C
-    bl closesocket
-    li r3, 0x3
-    b lbl_80274EB4
-lbl_80274E74:
-    li r3, 0x40
-    bl gsimalloc
-    cmpwi r3, 0x0
-    stw r3, lbl_8049DC30
-    bne lbl_80274E90
-    li r3, 0x3
-    b lbl_80274EB4
-lbl_80274E90:
-    li r3, 0x40
-    li r0, 0x0
-    stw r3, lbl_8049DC34
-    stw r0, lbl_8049DC38
-    bl current_time
-    li r0, 0x2
-    stw r3, lbl_8049DC44
-    li r3, 0x6
-    stw r0, lbl_8049DC3C
-lbl_80274EB4:
-    addi r11, r1, 0xe0
-    bl _restgpr_19
-    lwz r0, 0xe4(r1)
-    mtlr r0
-    addi r1, r1, 0xe0
-    blr
+/****************************************************************************/
+int InitStatsAsync(int theGamePort, gsi_time theInitTimeout) {
+  struct sockaddr_in saddr;
+  char tempHostname[128];
+  int ret;
+
+  gameport = theGamePort;
+
+  if (theInitTimeout != 0)
+    inittimeout = theInitTimeout;
+
+  /* check if the backend is available */
+  if (__GSIACResult != GSIACAvailable)
+    return GE_NOSOCKET;
+
+  /* Init our hidden strings if needed */
+  if (!internal_init)
+    InternalInit();
+
+  SocketStartUp();
+  sesskey = (int)current_time();
+
+  /* Get connected */
+  if (sock != INVALID_SOCKET)
+    CloseStatsConnection();
+
+  rcvlen = 0; // make sure ther receive buffer is cleared
+
+  if (inet_addr(StatsServerHostname) == INADDR_NONE) {
+    strcpy(tempHostname, gcd_gamename);
+    strcat(tempHostname, ".");
+    strcat(tempHostname, StatsServerHostname);
+  } else
+    strcpy(tempHostname, StatsServerHostname); // it's already been resolved
+
+  if (get_sockaddrin(tempHostname, SSPORT, &saddr, NULL) == 0)
+    return GE_NODNS;
+
+#ifdef INSOCK
+  sock = socket(AF_INET, SOCK_STREAM, 0);
+#else
+  sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+#endif
+  if (sock == INVALID_SOCKET)
+    return GE_NOSOCKET;
+
+  SetSockBlocking(sock, 0);
+
+  ret = connect(sock, (struct sockaddr*)&saddr, sizeof(saddr));
+  if (gsiSocketIsError(ret)) {
+    int anError = GOAGetLastError(sock);
+    if ((anError != WSAEWOULDBLOCK) && (anError != WSAETIMEDOUT) &&
+        (anError != WSAEINPROGRESS)) {
+      stats_initstate = init_failed;
+      closesocket(sock);
+      return GE_NOCONNECT;
+    }
+  }
+
+  // allocate the recv buffer
+  rcvbuffer = gsimalloc(64);
+  if (rcvbuffer == NULL)
+    return GE_NOCONNECT; // add a new error code for out of mem?
+
+  rcvmax = 64;
+  rcvlen = 0;
+
+  initstart = current_time();
+  stats_initstate = init_connecting;
+  return GE_CONNECTING;
 }
 
-// ----------------------------------------------------------------------------
-// InitStatsThink
-// ----------------------------------------------------------------------------
-asm void InitStatsThink() {
-    nofralloc
-    stwu r1, -0x2f0(r1)
-    mflr r0
-    stw r0, 0x2f4(r1)
-    addi r11, r1, 0x2f0
-    bl _savegpr_14
-    lwz r0, lbl_8049DC3C
-    cmpwi r0, 0x3
-    beq lbl_8027539C
-    bge lbl_80274F00
-    cmpwi r0, 0x1
-    beq lbl_80274F10
-    bge lbl_80274F18
-    b lbl_80276424
-lbl_80274F00:
-    cmpwi r0, 0x5
-    beq lbl_8027641C
-    bge lbl_80276424
-    b lbl_80275F98
-lbl_80274F10:
-    li r3, 0x3
-    b lbl_80276428
-lbl_80274F18:
-    li r0, 0x0
-    lwz r3, lbl_8049CD80
-    stw r0, 0xc(r1)
-    addi r5, r1, 0xc
-    addi r6, r1, 0x8
-    li r4, 0x0
-    stw r0, 0x8(r1)
-    bl GSISocketSelect
-    cmpwi r3, -0x1
-    beq lbl_80274F54
-    cmpwi r3, 0x1
-    bne lbl_80275160
-    lwz r0, 0x8(r1)
-    cmpwi r0, 0x1
-    bne lbl_80275160
-lbl_80274F54:
-    lwz r3, lbl_8049CD80
-    li r0, 0x1
-    stw r0, lbl_8049DC3C
-    cmpwi r3, -0x1
-    beq lbl_80274F78
-    li r4, 0x2
-    bl shutdown
-    lwz r3, lbl_8049CD80
-    bl closesocket
-lbl_80274F78:
-    lwz r3, lbl_8049DC48
-    li r0, -0x1
-    stw r0, lbl_8049CD80
-    cmpwi r3, 0x0
-    beq lbl_80275138
-    bl fn_80253658
-    lis r16, lbl_8036B240@ha
-    lis r14, lbl_8036B478@ha
-    addi r16, r16, lbl_8036B240@l
-    subi r15, r3, 0x1
-    addi r14, r14, lbl_8036B478@l
-    li r17, 0x3
-    b lbl_80275120
-lbl_80274FAC:
-    lbz r25, 0x0(r14)
-    mr r3, r16
-    lbz r24, 0x1(r14)
-    addi r5, r1, 0x70
-    lbz r23, 0x2(r14)
-    li r4, 0x0
-    lbz r22, 0x3(r14)
-    lbz r21, 0x4(r14)
-    lbz r20, 0x5(r14)
-    lbz r19, 0x6(r14)
-    lbz r18, 0x7(r14)
-    lbz r12, 0x8(r14)
-    lbz r11, 0x9(r14)
-    lbz r10, 0xa(r14)
-    lbz r9, 0xb(r14)
-    lbz r8, 0xc(r14)
-    lbz r7, 0xd(r14)
-    lbz r6, 0xe(r14)
-    lbz r0, 0xf(r14)
-    stb r25, 0x70(r1)
-    stb r24, 0x71(r1)
-    stb r23, 0x72(r1)
-    stb r22, 0x73(r1)
-    stb r21, 0x74(r1)
-    stb r20, 0x75(r1)
-    stb r19, 0x76(r1)
-    stb r18, 0x77(r1)
-    stb r12, 0x78(r1)
-    stb r11, 0x79(r1)
-    stb r10, 0x7a(r1)
-    stb r9, 0x7b(r1)
-    stb r8, 0x7c(r1)
-    stb r7, 0x7d(r1)
-    stb r6, 0x7e(r1)
-    stb r0, 0x7f(r1)
-    stw r16, lbl_8049CD84
-    mtctr r17
-lbl_80275040:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x0(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x0(r5)
-    bne lbl_80275064
-    mr r3, r16
-lbl_80275064:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x1(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x1(r5)
-    bne lbl_80275088
-    mr r3, r16
-lbl_80275088:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x2(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x2(r5)
-    bne lbl_802750AC
-    mr r3, r16
-lbl_802750AC:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x3(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x3(r5)
-    bne lbl_802750D0
-    mr r3, r16
-lbl_802750D0:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x4(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x4(r5)
-    bne lbl_802750F4
-    mr r3, r16
-lbl_802750F4:
-    addi r5, r5, 0x5
-    addi r4, r4, 0x4
-    bdnz lbl_80275040
-    mr r3, r15
-    addi r7, r1, 0x70
-    li r4, 0x0
-    li r6, 0x0
-    li r5, 0x0
-    li r8, 0x0
-    bl CallReqCallback
-    subi r15, r15, 0x1
-lbl_80275120:
-    cmpwi r15, 0x0
-    bge lbl_80274FAC
-    lwz r3, lbl_8049DC48
-    bl fn_802535C4
-    li r0, 0x0
-    stw r0, lbl_8049DC48
-lbl_80275138:
-    lwz r3, lbl_8049DC30
-    cmpwi r3, 0x0
-    beq lbl_80275158
-    bl gsifree
-    li r0, 0x0
-    stw r0, lbl_8049DC30
-    stw r0, lbl_8049DC34
-    stw r0, lbl_8049DC38
-lbl_80275158:
-    li r3, 0x3
-    b lbl_80276428
-lbl_80275160:
-    cmpwi r3, 0x0
-    bne lbl_80275394
-    bl current_time
-    lwz r4, lbl_8049DC44
-    lwz r0, lbl_8049CD88
-    subf r3, r4, r3
-    cmplw r3, r0
-    ble lbl_8027538C
-    lwz r3, lbl_8049CD80
-    li r0, 0x1
-    stw r0, lbl_8049DC3C
-    cmpwi r3, -0x1
-    beq lbl_802751A4
-    li r4, 0x2
-    bl shutdown
-    lwz r3, lbl_8049CD80
-    bl closesocket
-lbl_802751A4:
-    lwz r3, lbl_8049DC48
-    li r0, -0x1
-    stw r0, lbl_8049CD80
-    cmpwi r3, 0x0
-    beq lbl_80275364
-    bl fn_80253658
-    lis r16, lbl_8036B240@ha
-    lis r14, lbl_8036B478@ha
-    addi r16, r16, lbl_8036B240@l
-    subi r15, r3, 0x1
-    addi r14, r14, lbl_8036B478@l
-    li r17, 0x3
-    b lbl_8027534C
-lbl_802751D8:
-    lbz r25, 0x0(r14)
-    mr r3, r16
-    lbz r24, 0x1(r14)
-    addi r5, r1, 0x60
-    lbz r23, 0x2(r14)
-    li r4, 0x0
-    lbz r22, 0x3(r14)
-    lbz r21, 0x4(r14)
-    lbz r20, 0x5(r14)
-    lbz r19, 0x6(r14)
-    lbz r18, 0x7(r14)
-    lbz r12, 0x8(r14)
-    lbz r11, 0x9(r14)
-    lbz r10, 0xa(r14)
-    lbz r9, 0xb(r14)
-    lbz r8, 0xc(r14)
-    lbz r7, 0xd(r14)
-    lbz r6, 0xe(r14)
-    lbz r0, 0xf(r14)
-    stb r25, 0x60(r1)
-    stb r24, 0x61(r1)
-    stb r23, 0x62(r1)
-    stb r22, 0x63(r1)
-    stb r21, 0x64(r1)
-    stb r20, 0x65(r1)
-    stb r19, 0x66(r1)
-    stb r18, 0x67(r1)
-    stb r12, 0x68(r1)
-    stb r11, 0x69(r1)
-    stb r10, 0x6a(r1)
-    stb r9, 0x6b(r1)
-    stb r8, 0x6c(r1)
-    stb r7, 0x6d(r1)
-    stb r6, 0x6e(r1)
-    stb r0, 0x6f(r1)
-    stw r16, lbl_8049CD84
-    mtctr r17
-lbl_8027526C:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x0(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x0(r5)
-    bne lbl_80275290
-    mr r3, r16
-lbl_80275290:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x1(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x1(r5)
-    bne lbl_802752B4
-    mr r3, r16
-lbl_802752B4:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x2(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x2(r5)
-    bne lbl_802752D8
-    mr r3, r16
-lbl_802752D8:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x3(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x3(r5)
-    bne lbl_802752FC
-    mr r3, r16
-lbl_802752FC:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x4(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x4(r5)
-    bne lbl_80275320
-    mr r3, r16
-lbl_80275320:
-    addi r5, r5, 0x5
-    addi r4, r4, 0x4
-    bdnz lbl_8027526C
-    mr r3, r15
-    addi r7, r1, 0x60
-    li r4, 0x0
-    li r6, 0x0
-    li r5, 0x0
-    li r8, 0x0
-    bl CallReqCallback
-    subi r15, r15, 0x1
-lbl_8027534C:
-    cmpwi r15, 0x0
-    bge lbl_802751D8
-    lwz r3, lbl_8049DC48
-    bl fn_802535C4
-    li r0, 0x0
-    stw r0, lbl_8049DC48
-lbl_80275364:
-    lwz r3, lbl_8049DC30
-    cmpwi r3, 0x0
-    beq lbl_80275384
-    bl gsifree
-    li r0, 0x0
-    stw r0, lbl_8049DC30
-    stw r0, lbl_8049DC34
-    stw r0, lbl_8049DC38
-lbl_80275384:
-    li r3, 0x7
-    b lbl_80276428
-lbl_8027538C:
-    li r3, 0x6
-    b lbl_80276428
-lbl_80275394:
-    li r0, 0x3
-    stw r0, lbl_8049DC3C
-lbl_8027539C:
-    lwz r3, lbl_8049CD80
-    bl gsiInterlockedIncrement
-    cmpwi r3, 0x0
-    bne lbl_802755D8
-    bl current_time
-    lwz r4, lbl_8049DC44
-    lwz r0, lbl_8049CD88
-    subf r3, r4, r3
-    cmplw r3, r0
-    ble lbl_802755D0
-    lwz r3, lbl_8049CD80
-    li r0, 0x1
-    stw r0, lbl_8049DC3C
-    cmpwi r3, -0x1
-    beq lbl_802753E8
-    li r4, 0x2
-    bl shutdown
-    lwz r3, lbl_8049CD80
-    bl closesocket
-lbl_802753E8:
-    lwz r3, lbl_8049DC48
-    li r0, -0x1
-    stw r0, lbl_8049CD80
-    cmpwi r3, 0x0
-    beq lbl_802755A8
-    bl fn_80253658
-    lis r16, lbl_8036B240@ha
-    lis r14, lbl_8036B478@ha
-    addi r16, r16, lbl_8036B240@l
-    subi r15, r3, 0x1
-    addi r14, r14, lbl_8036B478@l
-    li r17, 0x3
-    b lbl_80275590
-lbl_8027541C:
-    lbz r25, 0x0(r14)
-    mr r3, r16
-    lbz r24, 0x1(r14)
-    addi r5, r1, 0x50
-    lbz r23, 0x2(r14)
-    li r4, 0x0
-    lbz r22, 0x3(r14)
-    lbz r21, 0x4(r14)
-    lbz r20, 0x5(r14)
-    lbz r19, 0x6(r14)
-    lbz r18, 0x7(r14)
-    lbz r12, 0x8(r14)
-    lbz r11, 0x9(r14)
-    lbz r10, 0xa(r14)
-    lbz r9, 0xb(r14)
-    lbz r8, 0xc(r14)
-    lbz r7, 0xd(r14)
-    lbz r6, 0xe(r14)
-    lbz r0, 0xf(r14)
-    stb r25, 0x50(r1)
-    stb r24, 0x51(r1)
-    stb r23, 0x52(r1)
-    stb r22, 0x53(r1)
-    stb r21, 0x54(r1)
-    stb r20, 0x55(r1)
-    stb r19, 0x56(r1)
-    stb r18, 0x57(r1)
-    stb r12, 0x58(r1)
-    stb r11, 0x59(r1)
-    stb r10, 0x5a(r1)
-    stb r9, 0x5b(r1)
-    stb r8, 0x5c(r1)
-    stb r7, 0x5d(r1)
-    stb r6, 0x5e(r1)
-    stb r0, 0x5f(r1)
-    stw r16, lbl_8049CD84
-    mtctr r17
-lbl_802754B0:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x0(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x0(r5)
-    bne lbl_802754D4
-    mr r3, r16
-lbl_802754D4:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x1(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x1(r5)
-    bne lbl_802754F8
-    mr r3, r16
-lbl_802754F8:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x2(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x2(r5)
-    bne lbl_8027551C
-    mr r3, r16
-lbl_8027551C:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x3(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x3(r5)
-    bne lbl_80275540
-    mr r3, r16
-lbl_80275540:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x4(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x4(r5)
-    bne lbl_80275564
-    mr r3, r16
-lbl_80275564:
-    addi r5, r5, 0x5
-    addi r4, r4, 0x4
-    bdnz lbl_802754B0
-    mr r3, r15
-    addi r7, r1, 0x50
-    li r4, 0x0
-    li r6, 0x0
-    li r5, 0x0
-    li r8, 0x0
-    bl CallReqCallback
-    subi r15, r15, 0x1
-lbl_80275590:
-    cmpwi r15, 0x0
-    bge lbl_8027541C
-    lwz r3, lbl_8049DC48
-    bl fn_802535C4
-    li r0, 0x0
-    stw r0, lbl_8049DC48
-lbl_802755A8:
-    lwz r3, lbl_8049DC30
-    cmpwi r3, 0x0
-    beq lbl_802755C8
-    bl gsifree
-    li r0, 0x0
-    stw r0, lbl_8049DC30
-    stw r0, lbl_8049DC34
-    stw r0, lbl_8049DC38
-lbl_802755C8:
-    li r3, 0x7
-    b lbl_80276428
-lbl_802755D0:
-    li r3, 0x6
-    b lbl_80276428
-lbl_802755D8:
-    lwz r5, lbl_8049DC38
-    li r6, 0x0
-    lwz r4, lbl_8049DC30
-    lwz r0, lbl_8049DC34
-    add r4, r4, r5
-    lwz r3, lbl_8049CD80
-    subf r5, r5, r0
-    bl recv
-    cmpwi r3, -0x1
-    bne lbl_8027580C
-    lwz r3, lbl_8049CD80
-    li r0, 0x1
-    stw r0, lbl_8049DC3C
-    cmpwi r3, -0x1
-    beq lbl_80275624
-    li r4, 0x2
-    bl shutdown
-    lwz r3, lbl_8049CD80
-    bl closesocket
-lbl_80275624:
-    lwz r3, lbl_8049DC48
-    li r0, -0x1
-    stw r0, lbl_8049CD80
-    cmpwi r3, 0x0
-    beq lbl_802757E4
-    bl fn_80253658
-    lis r16, lbl_8036B240@ha
-    lis r14, lbl_8036B478@ha
-    addi r16, r16, lbl_8036B240@l
-    subi r15, r3, 0x1
-    addi r14, r14, lbl_8036B478@l
-    li r17, 0x3
-    b lbl_802757CC
-lbl_80275658:
-    lbz r25, 0x0(r14)
-    mr r3, r16
-    lbz r24, 0x1(r14)
-    addi r5, r1, 0x40
-    lbz r23, 0x2(r14)
-    li r4, 0x0
-    lbz r22, 0x3(r14)
-    lbz r21, 0x4(r14)
-    lbz r20, 0x5(r14)
-    lbz r19, 0x6(r14)
-    lbz r18, 0x7(r14)
-    lbz r12, 0x8(r14)
-    lbz r11, 0x9(r14)
-    lbz r10, 0xa(r14)
-    lbz r9, 0xb(r14)
-    lbz r8, 0xc(r14)
-    lbz r7, 0xd(r14)
-    lbz r6, 0xe(r14)
-    lbz r0, 0xf(r14)
-    stb r25, 0x40(r1)
-    stb r24, 0x41(r1)
-    stb r23, 0x42(r1)
-    stb r22, 0x43(r1)
-    stb r21, 0x44(r1)
-    stb r20, 0x45(r1)
-    stb r19, 0x46(r1)
-    stb r18, 0x47(r1)
-    stb r12, 0x48(r1)
-    stb r11, 0x49(r1)
-    stb r10, 0x4a(r1)
-    stb r9, 0x4b(r1)
-    stb r8, 0x4c(r1)
-    stb r7, 0x4d(r1)
-    stb r6, 0x4e(r1)
-    stb r0, 0x4f(r1)
-    stw r16, lbl_8049CD84
-    mtctr r17
-lbl_802756EC:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x0(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x0(r5)
-    bne lbl_80275710
-    mr r3, r16
-lbl_80275710:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x1(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x1(r5)
-    bne lbl_80275734
-    mr r3, r16
-lbl_80275734:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x2(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x2(r5)
-    bne lbl_80275758
-    mr r3, r16
-lbl_80275758:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x3(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x3(r5)
-    bne lbl_8027577C
-    mr r3, r16
-lbl_8027577C:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x4(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x4(r5)
-    bne lbl_802757A0
-    mr r3, r16
-lbl_802757A0:
-    addi r5, r5, 0x5
-    addi r4, r4, 0x4
-    bdnz lbl_802756EC
-    mr r3, r15
-    addi r7, r1, 0x40
-    li r4, 0x0
-    li r6, 0x0
-    li r5, 0x0
-    li r8, 0x0
-    bl CallReqCallback
-    subi r15, r15, 0x1
-lbl_802757CC:
-    cmpwi r15, 0x0
-    bge lbl_80275658
-    lwz r3, lbl_8049DC48
-    bl fn_802535C4
-    li r0, 0x0
-    stw r0, lbl_8049DC48
-lbl_802757E4:
-    lwz r3, lbl_8049DC30
-    cmpwi r3, 0x0
-    beq lbl_80275804
-    bl gsifree
-    li r0, 0x0
-    stw r0, lbl_8049DC30
-    stw r0, lbl_8049DC34
-    stw r0, lbl_8049DC38
-lbl_80275804:
-    li r3, 0x3
-    b lbl_80276428
-lbl_8027580C:
-    lwz r4, lbl_8049DC38
-    lwz r0, lbl_8049DC34
-    add r5, r4, r3
-    subf r0, r3, r0
-    stw r5, lbl_8049DC38
-    cmpwi r5, 0x26
-    stw r0, lbl_8049DC34
-    bge lbl_80275834
-    li r3, 0x6
-    b lbl_80276428
-lbl_80275834:
-    lwz r3, lbl_8049DC30
-    li r4, 0x0
-    lis r6, lbl_8036B230@ha
-    li r0, 0x4
-    stbx r4, r3, r5
-    addi r6, r6, lbl_8036B230@l
-    lwz r4, lbl_8049DC38
-    lwz r3, lbl_8049DC30
-    stw r0, lbl_8049DC3C
-    stw r6, lbl_8049CD84
-    mtctr r4
-    cmpwi r4, 0x0
-    ble lbl_80275890
-lbl_80275868:
-    lbz r4, 0x0(r3)
-    lbz r0, 0x0(r6)
-    xor r0, r4, r0
-    stb r0, 0x0(r3)
-    lbzu r0, 0x1(r6)
-    extsb. r0, r0
-    bne lbl_80275888
-    lwz r6, lbl_8049CD84
-lbl_80275888:
-    addi r3, r3, 0x1
-    bdnz lbl_80275868
-lbl_80275890:
-    lis r16, lbl_8036B30C@ha
-    lbzu r17, lbl_8036B30C@l(r16)
-    lis r3, lbl_8036B338@ha
-    addi r4, r1, 0x14f
-    lbz r15, 0x19(r16)
-    addi r3, r3, lbl_8036B338@l
-    lbz r0, 0x17(r16)
-    subi r3, r3, 0x1
-    stw r15, 0x298(r1)
-    lbz r15, 0x1a(r16)
-    stb r0, 0xbb(r1)
-    lwz r0, 0x298(r1)
-    stw r15, 0x254(r1)
-    lbz r15, 0x1b(r16)
-    stb r0, 0xbd(r1)
-    lwz r0, 0x254(r1)
-    stw r15, 0x258(r1)
-    lbz r15, 0x1c(r16)
-    stb r0, 0xbe(r1)
-    lwz r0, 0x258(r1)
-    stw r15, 0x25c(r1)
-    lbz r15, 0x1d(r16)
-    stb r0, 0xbf(r1)
-    lwz r0, 0x25c(r1)
-    stw r15, 0x260(r1)
-    lbz r15, 0x1e(r16)
-    stb r0, 0xc0(r1)
-    lwz r0, 0x260(r1)
-    stw r15, 0x264(r1)
-    lbz r15, 0x1f(r16)
-    stb r0, 0xc1(r1)
-    lwz r0, 0x264(r1)
-    stw r15, 0x268(r1)
-    lbz r15, 0x20(r16)
-    stb r0, 0xc2(r1)
-    lwz r0, 0x268(r1)
-    stw r15, 0x26c(r1)
-    lbz r15, 0x21(r16)
-    stb r0, 0xc3(r1)
-    lwz r0, 0x26c(r1)
-    stw r15, 0x270(r1)
-    lbz r15, 0x22(r16)
-    stb r0, 0xc4(r1)
-    lwz r0, 0x270(r1)
-    stw r15, 0x274(r1)
-    lbz r15, 0x23(r16)
-    stb r0, 0xc5(r1)
-    lwz r0, 0x274(r1)
-    stw r15, 0x278(r1)
-    lbz r15, 0x24(r16)
-    stb r0, 0xc6(r1)
-    lwz r0, 0x278(r1)
-    stw r15, 0x27c(r1)
-    lbz r15, 0x25(r16)
-    stb r0, 0xc7(r1)
-    lwz r0, 0x27c(r1)
-    stw r15, 0x280(r1)
-    lbz r15, 0x26(r16)
-    stb r0, 0xc8(r1)
-    lwz r0, 0x280(r1)
-    stw r15, 0x284(r1)
-    lbz r15, 0x27(r16)
-    stb r0, 0xc9(r1)
-    lwz r0, 0x284(r1)
-    stw r15, 0x288(r1)
-    lbz r15, 0x28(r16)
-    stb r0, 0xca(r1)
-    lwz r0, 0x288(r1)
-    stw r15, 0x28c(r1)
-    lbz r15, 0x29(r16)
-    stb r0, 0xcb(r1)
-    lwz r0, 0x28c(r1)
-    stw r15, 0x290(r1)
-    lbz r15, 0x2a(r16)
-    stb r0, 0xcc(r1)
-    lwz r0, 0x290(r1)
-    stw r15, 0x294(r1)
-    lbz r5, 0x16(r16)
-    stb r0, 0xcd(r1)
-    lwz r0, 0x294(r1)
-    lbz r31, 0x1(r16)
-    lbz r18, 0x2(r16)
-    lbz r19, 0x3(r16)
-    lbz r20, 0x4(r16)
-    lbz r21, 0x5(r16)
-    lbz r22, 0x6(r16)
-    lbz r23, 0x7(r16)
-    lbz r24, 0x8(r16)
-    lbz r25, 0x9(r16)
-    lbz r26, 0xa(r16)
-    lbz r27, 0xb(r16)
-    lbz r28, 0xc(r16)
-    lbz r29, 0xd(r16)
-    lbz r30, 0xe(r16)
-    lbz r12, 0xf(r16)
-    lbz r11, 0x10(r16)
-    lbz r10, 0x11(r16)
-    lbz r9, 0x12(r16)
-    lbz r8, 0x13(r16)
-    lbz r7, 0x14(r16)
-    lbz r6, 0x15(r16)
-    lbz r14, 0x18(r16)
-    lbz r15, 0x2b(r16)
-    lwz r16, lbl_8049DC40
-    stb r5, 0xba(r1)
-    lis r5, lbl_8036B300@ha
-    stb r0, 0xce(r1)
-    li r0, 0x63
-    stb r0, lbl_8036B300@l(r5)
-    li r0, 0x80
-    stb r31, 0xa5(r1)
-    lwz r31, lbl_8049DC30
-    stb r17, 0xa4(r1)
-    stw r16, 0x250(r1)
-    stb r18, 0xa6(r1)
-    stb r19, 0xa7(r1)
-    stb r20, 0xa8(r1)
-    stb r21, 0xa9(r1)
-    stb r22, 0xaa(r1)
-    stb r23, 0xab(r1)
-    stb r24, 0xac(r1)
-    stb r25, 0xad(r1)
-    stb r26, 0xae(r1)
-    stb r27, 0xaf(r1)
-    stb r28, 0xb0(r1)
-    stb r29, 0xb1(r1)
-    stb r30, 0xb2(r1)
-    stb r12, 0xb3(r1)
-    stb r11, 0xb4(r1)
-    stb r10, 0xb5(r1)
-    stb r9, 0xb6(r1)
-    stb r8, 0xb7(r1)
-    stb r7, 0xb8(r1)
-    stb r6, 0xb9(r1)
-    stb r14, 0xbc(r1)
-    stb r15, 0xcf(r1)
-    mtctr r0
-lbl_80275AB4:
-    lbz r5, 0x1(r3)
-    lbzu r0, 0x2(r3)
-    stb r5, 0x1(r4)
-    stbu r0, 0x2(r4)
-    bdnz lbl_80275AB4
-    lwz r0, lbl_8049DC4C
-    lis r4, lbl_8036B300@ha
-    addi r3, r1, 0x150
-    xori r0, r0, 0x1
-    addi r4, r4, lbl_8036B300@l
-    stw r0, lbl_8049DC4C
-    bl strcat
-    addi r3, r1, 0x150
-    la r4, lbl_8049CD98
-    bl strcat
-    mr r3, r31
-    addi r4, r1, 0x150
-    bl strstr
-    cmpwi r3, 0x0
-    mr r14, r3
-    bne lbl_80275B10
-    li r14, 0x0
-    b lbl_80275B64
-lbl_80275B10:
-    addi r3, r1, 0x150
-    bl strlen
-    lwz r0, lbl_8049DC4C
-    lis r4, lbl_8040B630@ha
-    addi r4, r4, lbl_8040B630@l
-    add r3, r14, r3
-    slwi r0, r0, 8
-    add r14, r4, r0
-    mr r4, r14
-    b lbl_80275B48
-lbl_80275B38:
-    lbz r0, 0x0(r3)
-    addi r3, r3, 0x1
-    stb r0, 0x0(r4)
-    addi r4, r4, 0x1
-lbl_80275B48:
-    lbz r0, 0x0(r3)
-    extsb. r0, r0
-    beq lbl_80275B5C
-    cmpwi r0, 0x5c
-    bne lbl_80275B38
-lbl_80275B5C:
-    li r0, 0x0
-    stb r0, 0x0(r4)
-lbl_80275B64:
-    cmpwi r14, 0x0
-    bne lbl_80275B7C
-    lwz r3, lbl_8049CD80
-    bl closesocket
-    li r15, 0x5
-    b lbl_80275D58
-lbl_80275B7C:
-    mr r3, r14
-    bl strlen
-    cmpwi cr6, r3, 0x0
-    li r5, 0x0
-    li r4, 0x0
-    ble cr6, lbl_80275CA0
-    cmpwi r3, 0x8
-    subi r8, r3, 0x8
-    ble lbl_80275C6C
-    li r7, 0x0
-    blt cr6, lbl_80275BBC
-    lis r6, 0x8000
-    subi r0, r6, 0x2
-    cmpw r3, r0
-    bgt lbl_80275BBC
-    li r7, 0x1
-lbl_80275BBC:
-    cmpwi r7, 0x0
-    beq lbl_80275C6C
-    addi r6, r8, 0x7
-    lis r7, 0x9cd0
-    srwi r6, r6, 3
-    subi r0, r7, 0x6ce7
-    mtctr r6
-    cmpwi r8, 0x0
-    ble lbl_80275C6C
-lbl_80275BE0:
-    mullw r7, r5, r0
-    add r12, r14, r4
-    lbzx r5, r14, r4
-    addi r4, r4, 0x8
-    lbz r6, 0x1(r12)
-    extsb r5, r5
-    add r7, r7, r5
-    lbz r5, 0x2(r12)
-    mullw r11, r7, r0
-    lbz r9, 0x3(r12)
-    lbz r8, 0x4(r12)
-    extsb r6, r6
-    extsb r10, r5
-    lbz r7, 0x5(r12)
-    add r5, r11, r6
-    lbz r6, 0x6(r12)
-    mullw r11, r5, r0
-    lbz r5, 0x7(r12)
-    extsb r9, r9
-    extsb r8, r8
-    extsb r7, r7
-    extsb r6, r6
-    add r10, r11, r10
-    extsb r5, r5
-    mullw r10, r10, r0
-    add r9, r10, r9
-    mullw r9, r9, r0
-    add r8, r9, r8
-    mullw r8, r8, r0
-    add r7, r8, r7
-    mullw r7, r7, r0
-    add r6, r7, r6
-    mullw r6, r6, r0
-    add r5, r6, r5
-    bdnz lbl_80275BE0
-lbl_80275C6C:
-    lis r6, 0x9cd0
-    subf r0, r4, r3
-    subi r7, r6, 0x6ce7
-    add r6, r14, r4
-    mtctr r0
-    cmpw r4, r3
-    bge lbl_80275CA0
-lbl_80275C88:
-    mullw r3, r5, r7
-    lbz r0, 0x0(r6)
-    addi r6, r6, 0x1
-    extsb r0, r0
-    add r5, r3, r0
-    bdnz lbl_80275C88
-lbl_80275CA0:
-    lis r6, lbl_8040B520@ha
-    addi r3, r1, 0xd0
-    la r4, lbl_8049CD9C
-    addi r6, r6, lbl_8040B520@l
-    opword 0x4CC63182
-    bl sprintf
-    mr r4, r3
-    addi r3, r1, 0xd0
-    addi r5, r1, 0x80
-    bl MD5Digest
-    lis r7, lbl_8036B240@ha
-    li r0, 0x2b
-    addi r7, r7, lbl_8036B240@l
-    addi r6, r1, 0xa4
-    stw r7, lbl_8049CD84
-    mr r5, r7
-    mtctr r0
-lbl_80275CE4:
-    lbz r0, 0x1(r5)
-    lbz r3, 0x0(r5)
-    addi r5, r5, 0x1
-    lbz r4, 0x0(r6)
-    extsb. r0, r0
-    xor r0, r4, r3
-    stb r0, 0x0(r6)
-    bne lbl_80275D08
-    mr r5, r7
-lbl_80275D08:
-    addi r6, r6, 0x1
-    bdnz lbl_80275CE4
-    lis r5, lbl_8040B420@ha
-    lwz r7, 0x250(r1)
-    addi r3, r1, 0xd0
-    addi r4, r1, 0xa4
-    addi r5, r5, lbl_8040B420@l
-    addi r6, r1, 0x80
-    opword 0x4CC63182
-    bl sprintf
-    mr r4, r3
-    addi r3, r1, 0xd0
-    bl DoSend
-    cmpwi r3, 0x0
-    bgt lbl_80275D54
-    lwz r3, lbl_8049CD80
-    bl closesocket
-    li r15, 0x3
-    b lbl_80275D58
-lbl_80275D54:
-    li r15, 0x0
-lbl_80275D58:
-    cmpwi r15, 0x0
-    beq lbl_80275F6C
-    lwz r3, lbl_8049CD80
-    li r0, 0x1
-    stw r0, lbl_8049DC3C
-    cmpwi r3, -0x1
-    beq lbl_80275D84
-    li r4, 0x2
-    bl shutdown
-    lwz r3, lbl_8049CD80
-    bl closesocket
-lbl_80275D84:
-    lwz r3, lbl_8049DC48
-    li r0, -0x1
-    stw r0, lbl_8049CD80
-    cmpwi r3, 0x0
-    beq lbl_80275F44
-    bl fn_80253658
-    lis r17, lbl_8036B240@ha
-    lis r14, lbl_8036B478@ha
-    addi r17, r17, lbl_8036B240@l
-    subi r16, r3, 0x1
-    addi r14, r14, lbl_8036B478@l
-    li r18, 0x3
-    b lbl_80275F2C
-lbl_80275DB8:
-    lbz r26, 0x0(r14)
-    mr r3, r17
-    lbz r25, 0x1(r14)
-    addi r5, r1, 0x30
-    lbz r24, 0x2(r14)
-    li r4, 0x0
-    lbz r23, 0x3(r14)
-    lbz r22, 0x4(r14)
-    lbz r21, 0x5(r14)
-    lbz r20, 0x6(r14)
-    lbz r19, 0x7(r14)
-    lbz r12, 0x8(r14)
-    lbz r11, 0x9(r14)
-    lbz r10, 0xa(r14)
-    lbz r9, 0xb(r14)
-    lbz r8, 0xc(r14)
-    lbz r7, 0xd(r14)
-    lbz r6, 0xe(r14)
-    lbz r0, 0xf(r14)
-    stb r26, 0x30(r1)
-    stb r25, 0x31(r1)
-    stb r24, 0x32(r1)
-    stb r23, 0x33(r1)
-    stb r22, 0x34(r1)
-    stb r21, 0x35(r1)
-    stb r20, 0x36(r1)
-    stb r19, 0x37(r1)
-    stb r12, 0x38(r1)
-    stb r11, 0x39(r1)
-    stb r10, 0x3a(r1)
-    stb r9, 0x3b(r1)
-    stb r8, 0x3c(r1)
-    stb r7, 0x3d(r1)
-    stb r6, 0x3e(r1)
-    stb r0, 0x3f(r1)
-    stw r17, lbl_8049CD84
-    mtctr r18
-lbl_80275E4C:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x0(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x0(r5)
-    bne lbl_80275E70
-    mr r3, r17
-lbl_80275E70:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x1(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x1(r5)
-    bne lbl_80275E94
-    mr r3, r17
-lbl_80275E94:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x2(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x2(r5)
-    bne lbl_80275EB8
-    mr r3, r17
-lbl_80275EB8:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x3(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x3(r5)
-    bne lbl_80275EDC
-    mr r3, r17
-lbl_80275EDC:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x4(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x4(r5)
-    bne lbl_80275F00
-    mr r3, r17
-lbl_80275F00:
-    addi r5, r5, 0x5
-    addi r4, r4, 0x4
-    bdnz lbl_80275E4C
-    mr r3, r16
-    addi r7, r1, 0x30
-    li r4, 0x0
-    li r6, 0x0
-    li r5, 0x0
-    li r8, 0x0
-    bl CallReqCallback
-    subi r16, r16, 0x1
-lbl_80275F2C:
-    cmpwi r16, 0x0
-    bge lbl_80275DB8
-    lwz r3, lbl_8049DC48
-    bl fn_802535C4
-    li r0, 0x0
-    stw r0, lbl_8049DC48
-lbl_80275F44:
-    lwz r3, lbl_8049DC30
-    cmpwi r3, 0x0
-    beq lbl_80275F64
-    bl gsifree
-    li r0, 0x0
-    stw r0, lbl_8049DC30
-    stw r0, lbl_8049DC34
-    stw r0, lbl_8049DC38
-lbl_80275F64:
-    mr r3, r15
-    b lbl_80276428
-lbl_80275F6C:
-    lwz r5, lbl_8049DC34
-    li r4, 0x4
-    lwz r3, lbl_8049DC38
-    li r0, 0x0
-    stw r4, lbl_8049DC3C
-    li r4, 0x0
-    add r5, r5, r3
-    lwz r3, lbl_8049DC30
-    stw r5, lbl_8049DC34
-    stw r0, lbl_8049DC38
-    bl memset
-lbl_80275F98:
-    lwz r3, lbl_8049CD80
-    bl gsiInterlockedIncrement
-    cmpwi r3, 0x0
-    bne lbl_802761D4
-    bl current_time
-    lwz r4, lbl_8049DC44
-    lwz r0, lbl_8049CD88
-    subf r3, r4, r3
-    cmplw r3, r0
-    ble lbl_802761CC
-    lwz r3, lbl_8049CD80
-    li r0, 0x1
-    stw r0, lbl_8049DC3C
-    cmpwi r3, -0x1
-    beq lbl_80275FE4
-    li r4, 0x2
-    bl shutdown
-    lwz r3, lbl_8049CD80
-    bl closesocket
-lbl_80275FE4:
-    lwz r3, lbl_8049DC48
-    li r0, -0x1
-    stw r0, lbl_8049CD80
-    cmpwi r3, 0x0
-    beq lbl_802761A4
-    bl fn_80253658
-    lis r16, lbl_8036B240@ha
-    lis r14, lbl_8036B478@ha
-    addi r16, r16, lbl_8036B240@l
-    subi r15, r3, 0x1
-    addi r14, r14, lbl_8036B478@l
-    li r17, 0x3
-    b lbl_8027618C
-lbl_80276018:
-    lbz r25, 0x0(r14)
-    mr r3, r16
-    lbz r24, 0x1(r14)
-    addi r5, r1, 0x20
-    lbz r23, 0x2(r14)
-    li r4, 0x0
-    lbz r22, 0x3(r14)
-    lbz r21, 0x4(r14)
-    lbz r20, 0x5(r14)
-    lbz r19, 0x6(r14)
-    lbz r18, 0x7(r14)
-    lbz r12, 0x8(r14)
-    lbz r11, 0x9(r14)
-    lbz r10, 0xa(r14)
-    lbz r9, 0xb(r14)
-    lbz r8, 0xc(r14)
-    lbz r7, 0xd(r14)
-    lbz r6, 0xe(r14)
-    lbz r0, 0xf(r14)
-    stb r25, 0x20(r1)
-    stb r24, 0x21(r1)
-    stb r23, 0x22(r1)
-    stb r22, 0x23(r1)
-    stb r21, 0x24(r1)
-    stb r20, 0x25(r1)
-    stb r19, 0x26(r1)
-    stb r18, 0x27(r1)
-    stb r12, 0x28(r1)
-    stb r11, 0x29(r1)
-    stb r10, 0x2a(r1)
-    stb r9, 0x2b(r1)
-    stb r8, 0x2c(r1)
-    stb r7, 0x2d(r1)
-    stb r6, 0x2e(r1)
-    stb r0, 0x2f(r1)
-    stw r16, lbl_8049CD84
-    mtctr r17
-lbl_802760AC:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x0(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x0(r5)
-    bne lbl_802760D0
-    mr r3, r16
-lbl_802760D0:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x1(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x1(r5)
-    bne lbl_802760F4
-    mr r3, r16
-lbl_802760F4:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x2(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x2(r5)
-    bne lbl_80276118
-    mr r3, r16
-lbl_80276118:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x3(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x3(r5)
-    bne lbl_8027613C
-    mr r3, r16
-lbl_8027613C:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x4(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x4(r5)
-    bne lbl_80276160
-    mr r3, r16
-lbl_80276160:
-    addi r5, r5, 0x5
-    addi r4, r4, 0x4
-    bdnz lbl_802760AC
-    mr r3, r15
-    addi r7, r1, 0x20
-    li r4, 0x0
-    li r6, 0x0
-    li r5, 0x0
-    li r8, 0x0
-    bl CallReqCallback
-    subi r15, r15, 0x1
-lbl_8027618C:
-    cmpwi r15, 0x0
-    bge lbl_80276018
-    lwz r3, lbl_8049DC48
-    bl fn_802535C4
-    li r0, 0x0
-    stw r0, lbl_8049DC48
-lbl_802761A4:
-    lwz r3, lbl_8049DC30
-    cmpwi r3, 0x0
-    beq lbl_802761C4
-    bl gsifree
-    li r0, 0x0
-    stw r0, lbl_8049DC30
-    stw r0, lbl_8049DC34
-    stw r0, lbl_8049DC38
-lbl_802761C4:
-    li r3, 0x7
-    b lbl_80276428
-lbl_802761CC:
-    li r3, 0x6
-    b lbl_80276428
-lbl_802761D4:
-    bl RecvSessionKey
-    cmpwi r3, 0x0
-    mr r17, r3
-    beq lbl_802763F0
-    lwz r3, lbl_8049CD80
-    li r0, 0x1
-    stw r0, lbl_8049DC3C
-    cmpwi r3, -0x1
-    beq lbl_80276208
-    li r4, 0x2
-    bl shutdown
-    lwz r3, lbl_8049CD80
-    bl closesocket
-lbl_80276208:
-    lwz r3, lbl_8049DC48
-    li r0, -0x1
-    stw r0, lbl_8049CD80
-    cmpwi r3, 0x0
-    beq lbl_802763C8
-    bl fn_80253658
-    lis r16, lbl_8036B240@ha
-    lis r14, lbl_8036B478@ha
-    addi r16, r16, lbl_8036B240@l
-    subi r15, r3, 0x1
-    addi r14, r14, lbl_8036B478@l
-    li r18, 0x3
-    b lbl_802763B0
-lbl_8027623C:
-    lbz r26, 0x0(r14)
-    mr r3, r16
-    lbz r25, 0x1(r14)
-    addi r5, r1, 0x10
-    lbz r24, 0x2(r14)
-    li r4, 0x0
-    lbz r23, 0x3(r14)
-    lbz r22, 0x4(r14)
-    lbz r21, 0x5(r14)
-    lbz r20, 0x6(r14)
-    lbz r19, 0x7(r14)
-    lbz r12, 0x8(r14)
-    lbz r11, 0x9(r14)
-    lbz r10, 0xa(r14)
-    lbz r9, 0xb(r14)
-    lbz r8, 0xc(r14)
-    lbz r7, 0xd(r14)
-    lbz r6, 0xe(r14)
-    lbz r0, 0xf(r14)
-    stb r26, 0x10(r1)
-    stb r25, 0x11(r1)
-    stb r24, 0x12(r1)
-    stb r23, 0x13(r1)
-    stb r22, 0x14(r1)
-    stb r21, 0x15(r1)
-    stb r20, 0x16(r1)
-    stb r19, 0x17(r1)
-    stb r12, 0x18(r1)
-    stb r11, 0x19(r1)
-    stb r10, 0x1a(r1)
-    stb r9, 0x1b(r1)
-    stb r8, 0x1c(r1)
-    stb r7, 0x1d(r1)
-    stb r6, 0x1e(r1)
-    stb r0, 0x1f(r1)
-    stw r16, lbl_8049CD84
-    mtctr r18
-lbl_802762D0:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x0(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x0(r5)
-    bne lbl_802762F4
-    mr r3, r16
-lbl_802762F4:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x1(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x1(r5)
-    bne lbl_80276318
-    mr r3, r16
-lbl_80276318:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x2(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x2(r5)
-    bne lbl_8027633C
-    mr r3, r16
-lbl_8027633C:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x3(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x3(r5)
-    bne lbl_80276360
-    mr r3, r16
-lbl_80276360:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x4(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x4(r5)
-    bne lbl_80276384
-    mr r3, r16
-lbl_80276384:
-    addi r5, r5, 0x5
-    addi r4, r4, 0x4
-    bdnz lbl_802762D0
-    mr r3, r15
-    addi r7, r1, 0x10
-    li r4, 0x0
-    li r6, 0x0
-    li r5, 0x0
-    li r8, 0x0
-    bl CallReqCallback
-    subi r15, r15, 0x1
-lbl_802763B0:
-    cmpwi r15, 0x0
-    bge lbl_8027623C
-    lwz r3, lbl_8049DC48
-    bl fn_802535C4
-    li r0, 0x0
-    stw r0, lbl_8049DC48
-lbl_802763C8:
-    lwz r3, lbl_8049DC30
-    cmpwi r3, 0x0
-    beq lbl_802763E8
-    bl gsifree
-    li r0, 0x0
-    stw r0, lbl_8049DC30
-    stw r0, lbl_8049DC34
-    stw r0, lbl_8049DC38
-lbl_802763E8:
-    mr r3, r17
-    b lbl_80276428
-lbl_802763F0:
-    lwz r6, lbl_8049DC34
-    li r0, 0x0
-    lwz r5, lbl_8049DC38
-    li r4, 0x0
-    lwz r3, lbl_8049DC30
-    add r5, r6, r5
-    stw r0, lbl_8049DC38
-    stw r5, lbl_8049DC34
-    bl memset
-    li r0, 0x5
-    stw r0, lbl_8049DC3C
-lbl_8027641C:
-    li r3, 0x0
-    b lbl_80276428
-lbl_80276424:
-    li r3, 0x3
-lbl_80276428:
-    addi r11, r1, 0x2f0
-    bl _restgpr_14
-    lwz r0, 0x2f4(r1)
-    mtlr r0
-    addi r1, r1, 0x2f0
-    blr
+/****************************************************************************/
+int InitStatsThink() {
+  switch (stats_initstate) {
+  case init_failed:
+    return GE_NOCONNECT;
+  case init_connecting: {
+    // Check if socket is writeable yet
+    int aWriteFlag = 0;
+    int aExceptFlag = 0;
+    int aResult = GSISocketSelect(sock, NULL, &aWriteFlag, &aExceptFlag);
+    if ((gsiSocketIsError(aResult)) ||      // socket error
+        (aResult == 1 && aExceptFlag == 1)) // exception
+    {
+      stats_initstate = init_failed;
+      CloseStatsConnection();
+      return GE_NOCONNECT;
+    } else if (aResult == 0) // no progress yet
+    {
+      // Should we continue to wait?
+      if (current_time() - initstart > inittimeout) {
+        stats_initstate = init_failed;
+        CloseStatsConnection();
+        return GE_TIMEDOUT;
+      } else
+        return GE_CONNECTING;
+    }
+
+    // Otherwise connected
+    assert(aResult == 1 && aWriteFlag == 1);
+    stats_initstate = init_awaitchallenge;
+    // fall through
+  }
+  case init_awaitchallenge: {
+    int ret = 0;
+
+    // Try to receive data
+    if (!CanReceiveOnSocket(sock)) {
+      // should we continue to wait?
+      if (current_time() - initstart > inittimeout) {
+        stats_initstate = init_failed;
+        CloseStatsConnection();
+        return GE_TIMEDOUT;
+      }
+      return GE_CONNECTING;
+    }
+
+    // Receive the 38 byte challenge
+    ret = recv(sock, rcvbuffer + rcvlen, rcvmax - rcvlen, 0);
+    if (gsiSocketIsError(ret)) {
+      stats_initstate = init_failed;
+      CloseStatsConnection();
+      return GE_NOCONNECT;
+    }
+    rcvlen += ret;
+    rcvmax -= ret;
+
+    // need at least 38 bytes
+    if (rcvlen < 38)
+      return GE_CONNECTING;
+
+    // Process challenge
+    rcvbuffer[rcvlen] = '\0';
+    stats_initstate = init_awaitsessionkey;
+
+    /* Decode it */
+    DOXCODE(rcvbuffer, rcvlen, enc1);
+    /* Send a response */
+    ret = SendChallengeResponse(rcvbuffer, gameport);
+    if (ret != GE_NOERROR) {
+      stats_initstate = init_failed;
+      CloseStatsConnection();
+      return ret;
+    }
+
+    stats_initstate = init_awaitsessionkey;
+
+    // clear receive buffer for next stage
+    rcvmax += rcvlen; // reclaim the used bytes as free space
+    rcvlen = 0;
+    memset(rcvbuffer, 0, (unsigned int)rcvmax);
+
+    // fall through
+  }
+  case init_awaitsessionkey: {
+    int ret = 0;
+
+    // Try to receive data
+    if (!CanReceiveOnSocket(sock)) {
+      // should we continue to wait?
+      if (current_time() - initstart > inittimeout) {
+        stats_initstate = init_failed;
+        CloseStatsConnection();
+        return GE_TIMEDOUT;
+      }
+      return GE_CONNECTING;
+    }
+
+    ret = RecvSessionKey();
+    if (ret != GE_NOERROR) {
+      stats_initstate = init_failed;
+      CloseStatsConnection();
+      return ret;
+    }
+
+    // Init complete
+    // Clear the receive buffer
+    rcvmax += rcvlen;
+    rcvlen = 0;
+    memset(rcvbuffer, 0, (unsigned int)rcvmax);
+
+#ifdef ALLOW_DISK
+    /* Check for old data */
+    CheckDiskFile();
+#endif
+
+    stats_initstate = init_complete;
+
+    // fall through
+  }
+  case init_complete:
+    return GE_NOERROR;
+
+  default:
+    return GE_NOCONNECT;
+  };
 }
 
-// ----------------------------------------------------------------------------
-// InitStatsConnection
-// ----------------------------------------------------------------------------
-asm void InitStatsConnection() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    li r4, 0x0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    bl InitStatsAsync
-    mr r31, r3
-    b lbl_80276470
-lbl_80276460:
-    bl InitStatsThink
-    mr r31, r3
-    li r3, 0x5
-    bl msleep
-lbl_80276470:
-    cmpwi r31, 0x6
-    beq lbl_80276460
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+/****************************************************************************/
+// Blocking version of InitStatsAsync, for backwards compatability
+int InitStatsConnection(int gameport) {
+  int aResult = InitStatsAsync(gameport, 0);
+  while (aResult == GE_CONNECTING) {
+    aResult = InitStatsThink();
+    msleep(5);
+  }
+  return aResult;
 }
 
-// ----------------------------------------------------------------------------
-// CloseStatsConnection
-// ----------------------------------------------------------------------------
-asm void CloseStatsConnection() {
-    nofralloc
-    stwu r1, -0x50(r1)
-    mflr r0
-    stw r0, 0x54(r1)
-    addi r11, r1, 0x50
-    bl _savegpr_20
-    lwz r3, lbl_8049CD80
-    cmpwi r3, -0x1
-    beq lbl_802764C0
-    li r4, 0x2
-    bl shutdown
-    lwz r3, lbl_8049CD80
-    bl closesocket
-lbl_802764C0:
-    lwz r3, lbl_8049DC48
-    li r0, -0x1
-    stw r0, lbl_8049CD80
-    cmpwi r3, 0x0
-    beq lbl_80276680
-    bl fn_80253658
-    lis r29, lbl_8036B240@ha
-    lis r31, lbl_8036B478@ha
-    addi r29, r29, lbl_8036B240@l
-    subi r30, r3, 0x1
-    addi r31, r31, lbl_8036B478@l
-    li r28, 0x3
-    b lbl_80276668
-lbl_802764F4:
-    lbz r20, 0x0(r31)
-    mr r4, r29
-    lbz r21, 0x1(r31)
-    addi r5, r1, 0x8
-    lbz r22, 0x2(r31)
-    li r3, 0x0
-    lbz r23, 0x3(r31)
-    lbz r24, 0x4(r31)
-    lbz r25, 0x5(r31)
-    lbz r26, 0x6(r31)
-    lbz r27, 0x7(r31)
-    lbz r12, 0x8(r31)
-    lbz r11, 0x9(r31)
-    lbz r10, 0xa(r31)
-    lbz r9, 0xb(r31)
-    lbz r8, 0xc(r31)
-    lbz r7, 0xd(r31)
-    lbz r6, 0xe(r31)
-    lbz r0, 0xf(r31)
-    stb r20, 0x8(r1)
-    stb r21, 0x9(r1)
-    stb r22, 0xa(r1)
-    stb r23, 0xb(r1)
-    stb r24, 0xc(r1)
-    stb r25, 0xd(r1)
-    stb r26, 0xe(r1)
-    stb r27, 0xf(r1)
-    stb r12, 0x10(r1)
-    stb r11, 0x11(r1)
-    stb r10, 0x12(r1)
-    stb r9, 0x13(r1)
-    stb r8, 0x14(r1)
-    stb r7, 0x15(r1)
-    stb r6, 0x16(r1)
-    stb r0, 0x17(r1)
-    stw r29, lbl_8049CD84
-    mtctr r28
-lbl_80276588:
-    lbz r0, 0x1(r4)
-    lbz r6, 0x0(r4)
-    addi r4, r4, 0x1
-    lbz r7, 0x0(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x0(r5)
-    bne lbl_802765AC
-    mr r4, r29
-lbl_802765AC:
-    lbz r0, 0x1(r4)
-    lbz r6, 0x0(r4)
-    addi r4, r4, 0x1
-    lbz r7, 0x1(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x1(r5)
-    bne lbl_802765D0
-    mr r4, r29
-lbl_802765D0:
-    lbz r0, 0x1(r4)
-    lbz r6, 0x0(r4)
-    addi r4, r4, 0x1
-    lbz r7, 0x2(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x2(r5)
-    bne lbl_802765F4
-    mr r4, r29
-lbl_802765F4:
-    lbz r0, 0x1(r4)
-    lbz r6, 0x0(r4)
-    addi r4, r4, 0x1
-    lbz r7, 0x3(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x3(r5)
-    bne lbl_80276618
-    mr r4, r29
-lbl_80276618:
-    lbz r0, 0x1(r4)
-    lbz r6, 0x0(r4)
-    addi r4, r4, 0x1
-    lbz r7, 0x4(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x4(r5)
-    bne lbl_8027663C
-    mr r4, r29
-lbl_8027663C:
-    addi r5, r5, 0x5
-    addi r3, r3, 0x4
-    bdnz lbl_80276588
-    mr r3, r30
-    addi r7, r1, 0x8
-    li r4, 0x0
-    li r6, 0x0
-    li r5, 0x0
-    li r8, 0x0
-    bl CallReqCallback
-    subi r30, r30, 0x1
-lbl_80276668:
-    cmpwi r30, 0x0
-    bge lbl_802764F4
-    lwz r3, lbl_8049DC48
-    bl fn_802535C4
-    li r0, 0x0
-    stw r0, lbl_8049DC48
-lbl_80276680:
-    lwz r3, lbl_8049DC30
-    cmpwi r3, 0x0
-    beq lbl_802766A0
-    bl gsifree
-    li r0, 0x0
-    stw r0, lbl_8049DC30
-    stw r0, lbl_8049DC34
-    stw r0, lbl_8049DC38
-lbl_802766A0:
-    addi r11, r1, 0x50
-    bl _restgpr_20
-    lwz r0, 0x54(r1)
-    mtlr r0
-    addi r1, r1, 0x50
-    blr
+/****************************************************************************/
+void CloseStatsConnection() {
+  if (sock != INVALID_SOCKET) {
+    shutdown(sock, 2);
+    closesocket(sock);
+  }
+  sock = INVALID_SOCKET;
+  // call any pending callbacks with the data as lost
+  ClosePendingCallbacks();
+  if (rcvbuffer != NULL) {
+    gsifree(rcvbuffer);
+    rcvbuffer = NULL;
+    rcvmax = 0;
+    rcvlen = 0;
+  }
 }
 
-// ----------------------------------------------------------------------------
-// IsStatsConnected
-// ----------------------------------------------------------------------------
-asm void IsStatsConnected() {
-    nofralloc
-    lwz r4, lbl_8049CD80
-    subfic r3, r4, -0x1
-    addi r0, r4, 0x1
-    or r0, r3, r0
-    srwi r3, r0, 31
-    blr
+/****************************************************************************/
+int IsStatsConnected() { return (sock != INVALID_SOCKET); }
+
+/****************************************************************************/
+#define CHALLENGEXOR 0x38F371E6
+char* GetChallenge(statsgame_t game) {
+  static char challenge[9];
+  if (game == NULL)
+    game = g_statsgame;
+  if (game == NULL) {
+    create_challenge(connid ^ CHALLENGEXOR, challenge);
+    return challenge;
+  }
+  return game->challenge;
 }
 
-// ----------------------------------------------------------------------------
-// GetChallenge
-// ----------------------------------------------------------------------------
-asm void GetChallenge() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    cmpwi r3, 0x0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    bne lbl_802766EC
-    lwz r3, lbl_8049DC20
-lbl_802766EC:
-    cmpwi r3, 0x0
-    bne lbl_80276750
-    lwz r0, lbl_8049DC24
-    lis r3, lbl_8040B620@ha
-    addi r31, r3, lbl_8040B620@l
-    la r4, lbl_8049CDA4
-    xoris r5, r0, 0x38f3
-    mr r3, r31
-    xori r5, r5, 0x71e6
-    opword 0x4CC63182
-    bl sprintf
-    mr r4, r31
-    b lbl_80276738
-lbl_80276720:
-    extsb r3, r3
-    subf r0, r4, r31
-    add r3, r3, r0
-    addi r0, r3, 0x11
-    stb r0, 0x0(r31)
-    addi r31, r31, 0x1
-lbl_80276738:
-    lbz r3, 0x0(r31)
-    extsb. r0, r3
-    bne lbl_80276720
-    lis r3, lbl_8040B620@ha
-    addi r3, r3, lbl_8040B620@l
-    b lbl_80276754
-lbl_80276750:
-    addi r3, r3, 0x10
-lbl_80276754:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+/****************************************************************************/
+statsgame_t NewGame(int usebuckets) {
+  statsgame_t game = (statsgame_t)gsimalloc(sizeof(struct statsgame_s));
+  char data[256];
+  int len;
+
+  if (!internal_init)
+    InternalInit();
+  game->connid = connid;
+  game->sesskey = sesskey++;
+  game->buckets = NULL;
+  game->playernums = NULL;
+  game->teamnums = NULL;
+  game->usebuckets = usebuckets;
+  /* If connected, try to send */
+  if (sock != INVALID_SOCKET) {
+    char respformat[] =
+        "\xC\x1C\xA\x1D\x2\x2\x19\x24\x2C\x34\x6\x17\x3E\x1C\x6\xE\x39\x46\x10"
+        "\x1D\x3\xD\x16\xB\x3B\x17\x16\x36\x40\x7";
+    //"\newgame\\connid\%d\sesskey\%d"
+    DOXCODE(respformat, sizeof(respformat) - 1, enc3);
+    len = sprintf(data, respformat, game->connid, game->sesskey);
+    len = DoSend(data, len);
+    if (len <= 0) {
+      CloseStatsConnection();
+    }
+    create_challenge(game->connid ^ CHALLENGEXOR, game->challenge);
+  }
+  /* If send failed then write to disk */
+  if (sock == INVALID_SOCKET) {
+#ifdef ALLOW_DISK
+    char respformat[] =
+        "\xC\x1C\xA\x1D\x2\x2\x19\x24\x2C\x34\x16\x1D\x23\x1\x4\xF\x1C\x3F\x51"
+        "\x25\x2C\xB\xD\x19\x3C\x1E\xA\x4\x2\x6\x28\x64\x14";
+    // "\newgame\\sesskey\%d\challenge\%d";
+
+    DOXCODE(respformat, sizeof(respformat) - 1, enc3);
+    len =
+        sprintf(data, respformat, game->sesskey, game->sesskey ^ CHALLENGEXOR);
+    DiskWrite(data, len);
+    game->connid = 0;
+    create_challenge(game->sesskey ^ CHALLENGEXOR, game->challenge);
+
+#else
+    gsifree(game);
+    game = NULL;
+#endif
+  }
+
+  if (game && game->usebuckets) {
+    game->buckets = NewBucketSet();
+    game->playernums = ArrayNew(sizeof(int), 32, NULL);
+    game->teamnums = ArrayNew(sizeof(int), 2, NULL);
+    game->totalplayers = game->totalteams = 0;
+  }
+  if (game)
+    game->sttime = current_time();
+  g_statsgame = game;
+  return game;
 }
 
-// ----------------------------------------------------------------------------
-// PreAuthenticatePlayerPartner
-// ----------------------------------------------------------------------------
-asm void PreAuthenticatePlayerPartner() {
-    nofralloc
-    stwu r1, -0x200(r1)
-    mflr r0
-    stw r0, 0x204(r1)
-    addi r11, r1, 0x200
-    bl _savegpr_14
-    lis r8, lbl_80341430@ha
-    lbzu r0, lbl_80341430@l(r8)
-    mr r29, r3
-    stw r5, 0x8(r1)
-    lbz r3, 0x17(r8)
-    mr r30, r6
-    stw r0, 0x170(r1)
-    mr r31, r7
-    lbz r0, 0x1(r8)
-    lis r9, lbl_8036B240@ha
-    addi r9, r9, lbl_8036B240@l
-    lbz r18, 0x6(r8)
-    stw r0, 0x174(r1)
-    mr r15, r9
-    lbz r0, 0x2(r8)
-    addi r16, r1, 0x4c
-    lbz r19, 0x7(r8)
-    li r17, 0x0
-    stw r0, 0x178(r1)
-    lbz r0, 0x3(r8)
-    lbz r20, 0x8(r8)
-    stw r0, 0x17c(r1)
-    lbz r0, 0x4(r8)
-    lbz r21, 0x9(r8)
-    stw r0, 0x180(r1)
-    lbz r0, 0x5(r8)
-    lbz r22, 0xa(r8)
-    stw r0, 0x184(r1)
-    lbz r0, 0x19(r8)
-    lbz r23, 0xb(r8)
-    stw r0, 0x1ac(r1)
-    lbz r0, 0x1a(r8)
-    stb r3, 0x63(r1)
-    lwz r3, 0x1ac(r1)
-    stw r0, 0x188(r1)
-    lbz r0, 0x1b(r8)
-    stb r3, 0x65(r1)
-    lwz r3, 0x188(r1)
-    stw r0, 0x18c(r1)
-    lbz r0, 0x1c(r8)
-    stb r3, 0x66(r1)
-    lwz r3, 0x18c(r1)
-    stw r0, 0x190(r1)
-    lbz r0, 0x1d(r8)
-    stb r3, 0x67(r1)
-    lwz r3, 0x190(r1)
-    stw r0, 0x194(r1)
-    lbz r0, 0x1e(r8)
-    lbz r24, 0xc(r8)
-    stw r0, 0x198(r1)
-    lbz r0, 0x1f(r8)
-    lbz r25, 0xd(r8)
-    stw r0, 0x19c(r1)
-    lbz r0, 0x20(r8)
-    lbz r26, 0xe(r8)
-    stw r0, 0x1a0(r1)
-    lbz r0, 0x21(r8)
-    lbz r27, 0xf(r8)
-    stw r0, 0x1a4(r1)
-    lbz r0, 0x22(r8)
-    lbz r28, 0x10(r8)
-    lbz r12, 0x11(r8)
-    lbz r11, 0x12(r8)
-    lbz r10, 0x13(r8)
-    lbz r7, 0x14(r8)
-    lbz r6, 0x15(r8)
-    lbz r5, 0x16(r8)
-    lbz r14, 0x18(r8)
-    stw r0, 0x1a8(r1)
-    lbz r0, 0x23(r8)
-    lwz r8, 0x170(r1)
-    stb r3, 0x68(r1)
-    lwz r3, 0x194(r1)
-    stb r8, 0x4c(r1)
-    lwz r8, 0x174(r1)
-    stb r3, 0x69(r1)
-    lwz r3, 0x198(r1)
-    stb r8, 0x4d(r1)
-    lwz r8, 0x178(r1)
-    stb r3, 0x6a(r1)
-    lwz r3, 0x19c(r1)
-    stb r8, 0x4e(r1)
-    lwz r8, 0x17c(r1)
-    stb r3, 0x6b(r1)
-    lwz r3, 0x1a0(r1)
-    stb r8, 0x4f(r1)
-    lwz r8, 0x180(r1)
-    stb r3, 0x6c(r1)
-    lwz r3, 0x1a4(r1)
-    stb r8, 0x50(r1)
-    lwz r8, 0x184(r1)
-    stb r3, 0x6d(r1)
-    lwz r3, 0x1a8(r1)
-    stb r0, 0x6f(r1)
-    li r0, 0x7
-    stb r8, 0x51(r1)
-    stb r18, 0x52(r1)
-    stb r19, 0x53(r1)
-    stb r20, 0x54(r1)
-    stb r21, 0x55(r1)
-    stb r22, 0x56(r1)
-    stb r23, 0x57(r1)
-    stb r24, 0x58(r1)
-    stb r25, 0x59(r1)
-    stb r26, 0x5a(r1)
-    stb r27, 0x5b(r1)
-    stb r28, 0x5c(r1)
-    stb r12, 0x5d(r1)
-    stb r11, 0x5e(r1)
-    stb r10, 0x5f(r1)
-    stb r7, 0x60(r1)
-    stb r6, 0x61(r1)
-    stb r5, 0x62(r1)
-    stb r14, 0x64(r1)
-    stb r3, 0x6e(r1)
-    stw r9, lbl_8049CD84
-    mtctr r0
-lbl_80276950:
-    lbz r0, 0x1(r9)
-    lbz r3, 0x0(r9)
-    addi r9, r9, 0x1
-    lbz r5, 0x0(r16)
-    extsb. r0, r0
-    xor r0, r5, r3
-    stb r0, 0x0(r16)
-    bne lbl_80276974
-    mr r9, r15
-lbl_80276974:
-    lbz r0, 0x1(r9)
-    lbz r3, 0x0(r9)
-    addi r9, r9, 0x1
-    lbz r5, 0x1(r16)
-    extsb. r0, r0
-    xor r0, r5, r3
-    stb r0, 0x1(r16)
-    bne lbl_80276998
-    mr r9, r15
-lbl_80276998:
-    lbz r0, 0x1(r9)
-    lbz r3, 0x0(r9)
-    addi r9, r9, 0x1
-    lbz r5, 0x2(r16)
-    extsb. r0, r0
-    xor r0, r5, r3
-    stb r0, 0x2(r16)
-    bne lbl_802769BC
-    mr r9, r15
-lbl_802769BC:
-    lbz r0, 0x1(r9)
-    lbz r3, 0x0(r9)
-    addi r9, r9, 0x1
-    lbz r5, 0x3(r16)
-    extsb. r0, r0
-    xor r0, r5, r3
-    stb r0, 0x3(r16)
-    bne lbl_802769E0
-    mr r9, r15
-lbl_802769E0:
-    lbz r0, 0x1(r9)
-    lbz r3, 0x0(r9)
-    addi r9, r9, 0x1
-    lbz r5, 0x4(r16)
-    extsb. r0, r0
-    xor r0, r5, r3
-    stb r0, 0x4(r16)
-    bne lbl_80276A04
-    mr r9, r15
-lbl_80276A04:
-    addi r16, r16, 0x5
-    addi r17, r17, 0x4
-    bdnz lbl_80276950
-    lwz r6, 0x8(r1)
-    mr r5, r4
-    mr r7, r29
-    addi r3, r1, 0x70
-    addi r4, r1, 0x4c
-    opword 0x4CC63182
-    bl sprintf
-    lis r20, lbl_8036B438@ha
-    lbzu r19, lbl_8036B438@l(r20)
-    lwz r0, lbl_8049CD80
-    li r21, 0x0
-    lbz r18, 0x1(r20)
-    cmpwi r0, -0x1
-    lbz r17, 0x2(r20)
-    lbz r16, 0x3(r20)
-    lbz r15, 0x4(r20)
-    lbz r14, 0x5(r20)
-    lbz r12, 0x6(r20)
-    lbz r11, 0x7(r20)
-    lbz r10, 0x8(r20)
-    lbz r9, 0x9(r20)
-    lbz r8, 0xa(r20)
-    lbz r7, 0xb(r20)
-    lbz r6, 0xc(r20)
-    lbz r5, 0xd(r20)
-    lbz r4, 0xe(r20)
-    lbz r0, 0xf(r20)
-    stb r19, 0x10(r1)
-    stb r18, 0x11(r1)
-    stb r17, 0x12(r1)
-    stb r16, 0x13(r1)
-    stb r15, 0x14(r1)
-    stb r14, 0x15(r1)
-    stb r12, 0x16(r1)
-    stb r11, 0x17(r1)
-    stb r10, 0x18(r1)
-    stb r9, 0x19(r1)
-    stb r8, 0x1a(r1)
-    stb r7, 0x1b(r1)
-    stb r6, 0x1c(r1)
-    stb r5, 0x1d(r1)
-    stb r4, 0x1e(r1)
-    stb r0, 0x1f(r1)
-    beq lbl_80276AD0
-    mr r4, r3
-    addi r3, r1, 0x70
-    bl DoSend
-    mr r21, r3
-lbl_80276AD0:
-    cmpwi r21, 0x0
-    bgt lbl_80276DE0
-    lwz r3, lbl_8049CD80
-    cmpwi r3, -0x1
-    beq lbl_80276AF4
-    li r4, 0x2
-    bl shutdown
-    lwz r3, lbl_8049CD80
-    bl closesocket
-lbl_80276AF4:
-    lwz r3, lbl_8049DC48
-    li r0, -0x1
-    stw r0, lbl_8049CD80
-    cmpwi r3, 0x0
-    beq lbl_80276CB4
-    bl fn_80253658
-    lis r16, lbl_8036B240@ha
-    lis r14, lbl_8036B478@ha
-    addi r16, r16, lbl_8036B240@l
-    subi r15, r3, 0x1
-    addi r14, r14, lbl_8036B478@l
-    li r17, 0x3
-    b lbl_80276C9C
-lbl_80276B28:
-    lbz r25, 0x0(r14)
-    mr r4, r16
-    lbz r24, 0x1(r14)
-    addi r5, r1, 0x20
-    lbz r23, 0x2(r14)
-    li r3, 0x0
-    lbz r22, 0x3(r14)
-    lbz r21, 0x4(r14)
-    lbz r20, 0x5(r14)
-    lbz r19, 0x6(r14)
-    lbz r18, 0x7(r14)
-    lbz r12, 0x8(r14)
-    lbz r11, 0x9(r14)
-    lbz r10, 0xa(r14)
-    lbz r9, 0xb(r14)
-    lbz r8, 0xc(r14)
-    lbz r7, 0xd(r14)
-    lbz r6, 0xe(r14)
-    lbz r0, 0xf(r14)
-    stb r25, 0x20(r1)
-    stb r24, 0x21(r1)
-    stb r23, 0x22(r1)
-    stb r22, 0x23(r1)
-    stb r21, 0x24(r1)
-    stb r20, 0x25(r1)
-    stb r19, 0x26(r1)
-    stb r18, 0x27(r1)
-    stb r12, 0x28(r1)
-    stb r11, 0x29(r1)
-    stb r10, 0x2a(r1)
-    stb r9, 0x2b(r1)
-    stb r8, 0x2c(r1)
-    stb r7, 0x2d(r1)
-    stb r6, 0x2e(r1)
-    stb r0, 0x2f(r1)
-    stw r16, lbl_8049CD84
-    mtctr r17
-lbl_80276BBC:
-    lbz r0, 0x1(r4)
-    lbz r6, 0x0(r4)
-    addi r4, r4, 0x1
-    lbz r7, 0x0(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x0(r5)
-    bne lbl_80276BE0
-    mr r4, r16
-lbl_80276BE0:
-    lbz r0, 0x1(r4)
-    lbz r6, 0x0(r4)
-    addi r4, r4, 0x1
-    lbz r7, 0x1(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x1(r5)
-    bne lbl_80276C04
-    mr r4, r16
-lbl_80276C04:
-    lbz r0, 0x1(r4)
-    lbz r6, 0x0(r4)
-    addi r4, r4, 0x1
-    lbz r7, 0x2(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x2(r5)
-    bne lbl_80276C28
-    mr r4, r16
-lbl_80276C28:
-    lbz r0, 0x1(r4)
-    lbz r6, 0x0(r4)
-    addi r4, r4, 0x1
-    lbz r7, 0x3(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x3(r5)
-    bne lbl_80276C4C
-    mr r4, r16
-lbl_80276C4C:
-    lbz r0, 0x1(r4)
-    lbz r6, 0x0(r4)
-    addi r4, r4, 0x1
-    lbz r7, 0x4(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x4(r5)
-    bne lbl_80276C70
-    mr r4, r16
-lbl_80276C70:
-    addi r5, r5, 0x5
-    addi r3, r3, 0x4
-    bdnz lbl_80276BBC
-    mr r3, r15
-    addi r7, r1, 0x20
-    li r4, 0x0
-    li r6, 0x0
-    li r5, 0x0
-    li r8, 0x0
-    bl CallReqCallback
-    subi r15, r15, 0x1
-lbl_80276C9C:
-    cmpwi r15, 0x0
-    bge lbl_80276B28
-    lwz r3, lbl_8049DC48
-    bl fn_802535C4
-    li r0, 0x0
-    stw r0, lbl_8049DC48
-lbl_80276CB4:
-    lwz r3, lbl_8049DC30
-    cmpwi r3, 0x0
-    beq lbl_80276CD4
-    bl gsifree
-    li r0, 0x0
-    stw r0, lbl_8049DC30
-    stw r0, lbl_8049DC34
-    stw r0, lbl_8049DC38
-lbl_80276CD4:
-    lis r6, lbl_8036B240@ha
-    li r0, 0x3
-    addi r6, r6, lbl_8036B240@l
-    addi r7, r1, 0x10
-    stw r6, lbl_8049CD84
-    mr r8, r6
-    li r5, 0x0
-    mtctr r0
-lbl_80276CF4:
-    lbz r0, 0x1(r6)
-    lbz r3, 0x0(r6)
-    addi r6, r6, 0x1
-    lbz r4, 0x0(r7)
-    extsb. r0, r0
-    xor r0, r4, r3
-    stb r0, 0x0(r7)
-    bne lbl_80276D18
-    mr r6, r8
-lbl_80276D18:
-    lbz r0, 0x1(r6)
-    lbz r3, 0x0(r6)
-    addi r6, r6, 0x1
-    lbz r4, 0x1(r7)
-    extsb. r0, r0
-    xor r0, r4, r3
-    stb r0, 0x1(r7)
-    bne lbl_80276D3C
-    mr r6, r8
-lbl_80276D3C:
-    lbz r0, 0x1(r6)
-    lbz r3, 0x0(r6)
-    addi r6, r6, 0x1
-    lbz r4, 0x2(r7)
-    extsb. r0, r0
-    xor r0, r4, r3
-    stb r0, 0x2(r7)
-    bne lbl_80276D60
-    mr r6, r8
-lbl_80276D60:
-    lbz r0, 0x1(r6)
-    lbz r3, 0x0(r6)
-    addi r6, r6, 0x1
-    lbz r4, 0x3(r7)
-    extsb. r0, r0
-    xor r0, r4, r3
-    stb r0, 0x3(r7)
-    bne lbl_80276D84
-    mr r6, r8
-lbl_80276D84:
-    lbz r0, 0x1(r6)
-    lbz r3, 0x0(r6)
-    addi r6, r6, 0x1
-    lbz r4, 0x4(r7)
-    extsb. r0, r0
-    xor r0, r4, r3
-    stb r0, 0x4(r7)
-    bne lbl_80276DA8
-    mr r6, r8
-lbl_80276DA8:
-    addi r7, r7, 0x5
-    addi r5, r5, 0x4
-    bdnz lbl_80276CF4
-    cmpwi r30, 0x0
-    beq lbl_80276E2C
-    mr r12, r30
-    mr r3, r29
-    mr r7, r31
-    addi r6, r1, 0x10
-    li r4, 0x0
-    li r5, 0x0
-    mtctr r12
-    bctrl
-    b lbl_80276E2C
-lbl_80276DE0:
-    lwz r0, lbl_8049DC48
-    li r3, 0x0
-    stw r30, 0x48(r1)
-    cmpwi r0, 0x0
-    stw r31, 0x44(r1)
-    stw r29, 0x34(r1)
-    stw r3, 0x30(r1)
-    stw r3, 0x38(r1)
-    stw r3, 0x3c(r1)
-    stw r3, 0x40(r1)
-    bne lbl_80276E20
-    li r3, 0x1c
-    li r4, 0x2
-    li r5, 0x0
-    bl fn_80253528
-    stw r3, lbl_8049DC48
-lbl_80276E20:
-    lwz r3, lbl_8049DC48
-    addi r4, r1, 0x30
-    bl fn_80253690
-lbl_80276E2C:
-    addi r11, r1, 0x200
-    bl _restgpr_14
-    lwz r0, 0x204(r1)
-    mtlr r0
-    addi r1, r1, 0x200
-    blr
+/****************************************************************************/
+void FreeGame(statsgame_t game) {
+  if (!game || game == g_statsgame) {
+    game = g_statsgame;
+    g_statsgame = NULL;
+  }
+  if (!game)
+    return;
+  if (game->usebuckets) {
+    if (game->buckets != NULL)
+      FreeBucketSet(game->buckets);
+    if (game->playernums != NULL)
+      ArrayFree(game->playernums);
+    if (game->teamnums != NULL)
+      ArrayFree(game->teamnums);
+  }
+  gsifree(game);
 }
 
-// ----------------------------------------------------------------------------
-// GetPersistDataValuesModifiedA
-// ----------------------------------------------------------------------------
-asm void GetPersistDataValuesModifiedA() {
-    nofralloc
-    stwu r1, -0x440(r1)
-    mflr r0
-    stw r0, 0x444(r1)
-    addi r11, r1, 0x440
-    bl _savegpr_14
-    lis r11, lbl_80341454@ha
-    lbzu r0, lbl_80341454@l(r11)
-    mr r25, r3
-    mr r26, r4
-    stw r0, 0x380(r1)
-    mr r27, r5
-    lbz r0, 0x1(r11)
-    mr r28, r6
-    lbz r3, 0x18(r11)
-    mr r30, r7
-    stw r0, 0x384(r1)
-    mr r29, r8
-    lbz r0, 0x2(r11)
-    mr r31, r10
-    lbz r15, 0x7(r11)
-    stw r0, 0x388(r1)
-    lbz r0, 0x3(r11)
-    lbz r16, 0x8(r11)
-    stw r0, 0x38c(r1)
-    lbz r0, 0x4(r11)
-    lbz r17, 0x9(r11)
-    stw r0, 0x390(r1)
-    lbz r0, 0x5(r11)
-    lbz r18, 0xa(r11)
-    stw r0, 0x394(r1)
-    lbz r0, 0x6(r11)
-    lbz r19, 0xb(r11)
-    stw r0, 0x398(r1)
-    lbz r0, 0x1a(r11)
-    lbz r20, 0xc(r11)
-    stw r0, 0x3f0(r1)
-    lbz r0, 0x1b(r11)
-    stb r3, 0x64(r1)
-    lwz r3, 0x3f0(r1)
-    stw r0, 0x39c(r1)
-    lbz r0, 0x1c(r11)
-    stb r3, 0x66(r1)
-    lwz r3, 0x39c(r1)
-    stw r0, 0x3a0(r1)
-    lbz r0, 0x1d(r11)
-    stb r3, 0x67(r1)
-    lwz r3, 0x3a0(r1)
-    stw r0, 0x3a4(r1)
-    lbz r0, 0x1e(r11)
-    stb r3, 0x68(r1)
-    lwz r3, 0x3a4(r1)
-    stw r0, 0x3a8(r1)
-    lbz r0, 0x1f(r11)
-    stb r3, 0x69(r1)
-    lwz r3, 0x3a8(r1)
-    stw r0, 0x3ac(r1)
-    lbz r0, 0x20(r11)
-    stb r3, 0x6a(r1)
-    lwz r3, 0x3ac(r1)
-    stw r0, 0x3b0(r1)
-    lbz r0, 0x21(r11)
-    stb r3, 0x6b(r1)
-    lwz r3, 0x3b0(r1)
-    stw r0, 0x3b4(r1)
-    lbz r0, 0x22(r11)
-    stb r3, 0x6c(r1)
-    lwz r3, 0x3b4(r1)
-    stw r0, 0x3b8(r1)
-    lbz r0, 0x23(r11)
-    stb r3, 0x6d(r1)
-    lwz r3, 0x3b8(r1)
-    stw r0, 0x3bc(r1)
-    lbz r0, 0x24(r11)
-    stb r3, 0x6e(r1)
-    lwz r3, 0x3bc(r1)
-    stw r0, 0x3c0(r1)
-    lbz r0, 0x25(r11)
-    stb r3, 0x6f(r1)
-    lwz r3, 0x3c0(r1)
-    stw r0, 0x3c4(r1)
-    lbz r0, 0x26(r11)
-    stb r3, 0x70(r1)
-    lwz r3, 0x3c4(r1)
-    stw r0, 0x3c8(r1)
-    lbz r0, 0x27(r11)
-    stb r3, 0x71(r1)
-    lwz r3, 0x3c8(r1)
-    stw r0, 0x3cc(r1)
-    lbz r0, 0x28(r11)
-    stb r3, 0x72(r1)
-    lwz r3, 0x3cc(r1)
-    stw r0, 0x3d0(r1)
-    lbz r0, 0x29(r11)
-    stb r3, 0x73(r1)
-    lwz r3, 0x3d0(r1)
-    stw r0, 0x3d4(r1)
-    lbz r0, 0x2a(r11)
-    lbz r21, 0xd(r11)
-    stw r0, 0x3d8(r1)
-    lbz r0, 0x2b(r11)
-    lbz r22, 0xe(r11)
-    stw r0, 0x3dc(r1)
-    lbz r0, 0x2c(r11)
-    lbz r23, 0xf(r11)
-    stw r0, 0x3e0(r1)
-    lbz r0, 0x2d(r11)
-    lbz r24, 0x10(r11)
-    stw r0, 0x3e4(r1)
-    lbz r0, 0x2e(r11)
-    lbz r12, 0x11(r11)
-    stw r0, 0x3e8(r1)
-    lbz r0, 0x2f(r11)
-    lbz r10, 0x12(r11)
-    lbz r8, 0x13(r11)
-    lbz r7, 0x14(r11)
-    lbz r6, 0x15(r11)
-    lbz r5, 0x16(r11)
-    lbz r4, 0x17(r11)
-    lbz r14, 0x19(r11)
-    stw r0, 0x3ec(r1)
-    lbz r0, 0x30(r11)
-    lwz r11, 0x380(r1)
-    stb r3, 0x74(r1)
-    lwz r3, 0x3d4(r1)
-    stb r11, 0x4c(r1)
-    lwz r11, 0x384(r1)
-    stb r3, 0x75(r1)
-    lwz r3, 0x3d8(r1)
-    stb r11, 0x4d(r1)
-    lwz r11, 0x388(r1)
-    stb r3, 0x76(r1)
-    lwz r3, 0x3dc(r1)
-    stb r11, 0x4e(r1)
-    lwz r11, 0x38c(r1)
-    stb r3, 0x77(r1)
-    lwz r3, 0x3e0(r1)
-    stb r11, 0x4f(r1)
-    lwz r11, 0x390(r1)
-    stb r3, 0x78(r1)
-    lwz r3, 0x3e4(r1)
-    stb r11, 0x50(r1)
-    lwz r11, 0x394(r1)
-    stb r3, 0x79(r1)
-    lwz r3, 0x3e8(r1)
-    stb r11, 0x51(r1)
-    lwz r11, 0x398(r1)
-    stb r3, 0x7a(r1)
-    lwz r3, 0x3ec(r1)
-    stb r11, 0x52(r1)
-    stb r15, 0x53(r1)
-    stb r16, 0x54(r1)
-    stb r17, 0x55(r1)
-    stb r18, 0x56(r1)
-    stb r19, 0x57(r1)
-    stb r20, 0x58(r1)
-    stb r21, 0x59(r1)
-    stb r22, 0x5a(r1)
-    stb r23, 0x5b(r1)
-    stb r24, 0x5c(r1)
-    stb r12, 0x5d(r1)
-    stb r10, 0x5e(r1)
-    stb r8, 0x5f(r1)
-    stb r7, 0x60(r1)
-    stb r6, 0x61(r1)
-    stb r5, 0x62(r1)
-    stb r4, 0x63(r1)
-    stb r14, 0x65(r1)
-    stb r3, 0x7b(r1)
-    stb r0, 0x7c(r1)
-    lbz r11, lbl_804A2320
-    lis r12, lbl_8036B240@ha
-    addi r12, r12, lbl_8036B240@l
-    lbz r10, lbl_804A2321
-    lbz r8, lbl_804A2322
-    li r0, 0xc
-    lbz r7, lbl_804A2323
-    mr r16, r12
-    lbz r6, lbl_804A2324
-    addi r15, r1, 0x4c
-    lbz r5, lbl_804A2325
-    li r14, 0x0
-    lbz r4, lbl_804A2326
-    lbz r3, lbl_804A2327
-    stb r11, 0x18(r1)
-    stb r10, 0x19(r1)
-    stb r8, 0x1a(r1)
-    stb r7, 0x1b(r1)
-    stb r6, 0x1c(r1)
-    stb r5, 0x1d(r1)
-    stb r4, 0x1e(r1)
-    stb r3, 0x1f(r1)
-    stw r12, lbl_8049CD84
-    mtctr r0
-lbl_80277148:
-    lbz r0, 0x1(r12)
-    lbz r3, 0x0(r12)
-    addi r12, r12, 0x1
-    lbz r4, 0x0(r15)
-    extsb. r0, r0
-    xor r0, r4, r3
-    stb r0, 0x0(r15)
-    bne lbl_8027716C
-    mr r12, r16
-lbl_8027716C:
-    lbz r0, 0x1(r12)
-    lbz r3, 0x0(r12)
-    addi r12, r12, 0x1
-    lbz r4, 0x1(r15)
-    extsb. r0, r0
-    xor r0, r4, r3
-    stb r0, 0x1(r15)
-    bne lbl_80277190
-    mr r12, r16
-lbl_80277190:
-    lbz r0, 0x1(r12)
-    lbz r3, 0x0(r12)
-    addi r12, r12, 0x1
-    lbz r4, 0x2(r15)
-    extsb. r0, r0
-    xor r0, r4, r3
-    stb r0, 0x2(r15)
-    bne lbl_802771B4
-    mr r12, r16
-lbl_802771B4:
-    lbz r0, 0x1(r12)
-    lbz r3, 0x0(r12)
-    addi r12, r12, 0x1
-    lbz r4, 0x3(r15)
-    extsb. r0, r0
-    xor r0, r4, r3
-    stb r0, 0x3(r15)
-    bne lbl_802771D8
-    mr r12, r16
-lbl_802771D8:
-    addi r15, r15, 0x4
-    addi r14, r14, 0x3
-    bdnz lbl_80277148
-    mr r4, r9
-    addi r3, r1, 0x80
-    bl strcpy
-    addi r5, r1, 0x80
-    li r3, 0x1
-    b lbl_80277210
-lbl_802771FC:
-    extsb r0, r4
-    cmpwi r0, 0x5c
-    bne lbl_8027720C
-    stb r3, 0x0(r5)
-lbl_8027720C:
-    addi r5, r5, 0x1
-lbl_80277210:
-    lbz r4, 0x0(r5)
-    extsb. r0, r4
-    bne lbl_802771FC
-    mr r5, r26
-    mr r6, r27
-    mr r7, r28
-    mr r9, r25
-    addi r3, r1, 0x180
-    addi r4, r1, 0x4c
-    addi r8, r1, 0x80
-    opword 0x4CC63182
-    bl sprintf
-    or. r0, r29, r30
-    mr r14, r3
-    beq lbl_8027726C
-    addi r3, r1, 0x180
-    mr r6, r29
-    mr r5, r30
-    addi r4, r1, 0x18
-    add r3, r3, r14
-    opword 0x4CC63182
-    bl sprintf
-    add r14, r14, r3
-lbl_8027726C:
-    lwz r0, lbl_8049CD80
-    cmpwi r0, -0x1
-    beq lbl_80277288
-    mr r4, r14
-    addi r3, r1, 0x180
-    bl DoSend
-    mr r14, r3
-lbl_80277288:
-    cmpwi r14, 0x0
-    bgt lbl_802774D8
-    lwz r3, lbl_8049CD80
-    cmpwi r3, -0x1
-    beq lbl_802772AC
-    li r4, 0x2
-    bl shutdown
-    lwz r3, lbl_8049CD80
-    bl closesocket
-lbl_802772AC:
-    lwz r3, lbl_8049DC48
-    li r0, -0x1
-    stw r0, lbl_8049CD80
-    cmpwi r3, 0x0
-    beq lbl_8027746C
-    bl fn_80253658
-    lis r16, lbl_8036B240@ha
-    lis r14, lbl_8036B478@ha
-    addi r16, r16, lbl_8036B240@l
-    subi r15, r3, 0x1
-    addi r14, r14, lbl_8036B478@l
-    li r17, 0x3
-    b lbl_80277454
-lbl_802772E0:
-    lbz r29, 0x0(r14)
-    mr r3, r16
-    lbz r24, 0x1(r14)
-    addi r5, r1, 0x20
-    lbz r23, 0x2(r14)
-    li r4, 0x0
-    lbz r22, 0x3(r14)
-    lbz r21, 0x4(r14)
-    lbz r20, 0x5(r14)
-    lbz r19, 0x6(r14)
-    lbz r18, 0x7(r14)
-    lbz r12, 0x8(r14)
-    lbz r11, 0x9(r14)
-    lbz r10, 0xa(r14)
-    lbz r9, 0xb(r14)
-    lbz r8, 0xc(r14)
-    lbz r7, 0xd(r14)
-    lbz r6, 0xe(r14)
-    lbz r0, 0xf(r14)
-    stb r29, 0x20(r1)
-    stb r24, 0x21(r1)
-    stb r23, 0x22(r1)
-    stb r22, 0x23(r1)
-    stb r21, 0x24(r1)
-    stb r20, 0x25(r1)
-    stb r19, 0x26(r1)
-    stb r18, 0x27(r1)
-    stb r12, 0x28(r1)
-    stb r11, 0x29(r1)
-    stb r10, 0x2a(r1)
-    stb r9, 0x2b(r1)
-    stb r8, 0x2c(r1)
-    stb r7, 0x2d(r1)
-    stb r6, 0x2e(r1)
-    stb r0, 0x2f(r1)
-    stw r16, lbl_8049CD84
-    mtctr r17
-lbl_80277374:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x0(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x0(r5)
-    bne lbl_80277398
-    mr r3, r16
-lbl_80277398:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x1(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x1(r5)
-    bne lbl_802773BC
-    mr r3, r16
-lbl_802773BC:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x2(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x2(r5)
-    bne lbl_802773E0
-    mr r3, r16
-lbl_802773E0:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x3(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x3(r5)
-    bne lbl_80277404
-    mr r3, r16
-lbl_80277404:
-    lbz r0, 0x1(r3)
-    lbz r6, 0x0(r3)
-    addi r3, r3, 0x1
-    lbz r7, 0x4(r5)
-    extsb. r0, r0
-    xor r0, r7, r6
-    stb r0, 0x4(r5)
-    bne lbl_80277428
-    mr r3, r16
-lbl_80277428:
-    addi r5, r5, 0x5
-    addi r4, r4, 0x4
-    bdnz lbl_80277374
-    mr r3, r15
-    addi r7, r1, 0x20
-    li r4, 0x0
-    li r6, 0x0
-    li r5, 0x0
-    li r8, 0x0
-    bl CallReqCallback
-    subi r15, r15, 0x1
-lbl_80277454:
-    cmpwi r15, 0x0
-    bge lbl_802772E0
-    lwz r3, lbl_8049DC48
-    bl fn_802535C4
-    li r0, 0x0
-    stw r0, lbl_8049DC48
-lbl_8027746C:
-    lwz r3, lbl_8049DC30
-    cmpwi r3, 0x0
-    beq lbl_8027748C
-    bl gsifree
-    li r0, 0x0
-    stw r0, lbl_8049DC30
-    stw r0, lbl_8049DC34
-    stw r0, lbl_8049DC38
-lbl_8027748C:
-    cmpwi r31, 0x0
-    beq lbl_80277528
-    la r3, lbl_8049CDAC
-    li r0, 0x0
-    stw r3, 0x8(r1)
-    mr r12, r31
-    mr r3, r25
-    mr r4, r26
-    stw r0, 0xc(r1)
-    mr r5, r27
-    lwz r0, 0x448(r1)
-    mr r6, r28
-    li r7, 0x0
-    li r10, 0x0
-    stw r0, 0x10(r1)
-    li r9, 0x0
-    mtctr r12
-    bctrl
-    b lbl_80277528
-lbl_802774D8:
-    lwz r0, lbl_8049DC48
-    li r3, 0x1
-    stw r31, 0x48(r1)
-    cmpwi r0, 0x0
-    lwz r0, 0x448(r1)
-    stw r25, 0x34(r1)
-    stw r0, 0x44(r1)
-    stw r3, 0x30(r1)
-    stw r26, 0x38(r1)
-    stw r27, 0x3c(r1)
-    stw r28, 0x40(r1)
-    bne lbl_8027751C
-    li r3, 0x1c
-    li r4, 0x2
-    li r5, 0x0
-    bl fn_80253528
-    stw r3, lbl_8049DC48
-lbl_8027751C:
-    lwz r3, lbl_8049DC48
-    addi r4, r1, 0x30
-    bl fn_80253690
-lbl_80277528:
-    addi r11, r1, 0x440
-    bl _restgpr_14
-    lwz r0, 0x444(r1)
-    mtlr r0
-    addi r1, r1, 0x440
-    blr
+/****************************************************************************/
+int SendGameSnapShotA(statsgame_t game, const char* snapshot, int final) {
+  int snaplen;
+  int len;
+  int ret = GE_NOERROR;
+  char* snapcopy;
+  char* data;
+  FIXGAME(game, GE_DATAERROR);
+
+  /* If using buckets, get the data out of the buckets */
+  if (game->usebuckets)
+    snapcopy = CreateBucketSnapShot(game->buckets);
+  else
+    snapcopy = goastrdup(snapshot);
+  snaplen = (int)strlen(snapcopy);
+
+  data = (char*)gsimalloc((unsigned int)snaplen + 256);
+
+  /* Escape the data */
+  while (snaplen--)
+    if (snapcopy[snaplen] == '\\')
+      snapcopy[snaplen] = '\x1';
+
+  /* If connected, try to send it */
+  if (sock != INVALID_SOCKET) {
+    // Updated response format to contain connid
+    // char respformat[] =
+    // "\xC\x7\x1F\xE\x2\x2\x19\x24\x2C\x34\x16\x1D\x23\x1\x4\xF\x1C\x3F\x51\x25\x2C\xC\xA\x16\x35\x2E\x4A\xE\x39\x4\x15\x2C\x15\xC\x4\xC\x31\x2E\x4A\x19";
+    char respformat[] =
+        "\xC\x7\x1F\xE\x2\x2\x19\x24\x2C\x34\x16\x1D\x23\x1\x4\xF\x1C\x3F\x51"
+        "\x25\x2C\xB\xA\x16\x3E\x1B\xB\x36\x40\x7\x28\x25\x1F\x6\x00\x24\x75"
+        "\x16\x33\xD\x4\xE\x11\x25\x11\x1C\x4\x24\x75\x1";
+    //	"\updgame\\sesskey\%d\done\%d\gamedata\%s"
+    // The above string is now:
+    // "\updgame\\sesskey\%d\connid\%d\done\%d\gamedata\%s"
+    DOXCODE(respformat, sizeof(respformat) - 1, enc3);
+    len =
+        sprintf(data, respformat, game->sesskey, game->connid, final, snapcopy);
+    snaplen = DoSend(data, len);
+    /* If the send failed, close the socket */
+    if (snaplen <= 0) {
+      CloseStatsConnection();
+    }
+  }
+  /* If not connected, or send failed, return error or log to disk */
+  if (sock == INVALID_SOCKET) {
+#ifdef ALLOW_DISK
+    char respformat[] =
+        "\xC\x7\x1F\xE\x2\x2\x19\x24\x2C\x34\x16\x1D\x23\x1\x4\xF\x1C\x3F\x51"
+        "\x25\x2C\xB\xA\x16\x3E\x1B\xB\x36\x40\x7\x28\x25\x1F\x6\x0\x24\x75\x16"
+        "\x33\xD\x4\xE\x11\x25\x11\x1C\x4\x24\x75\x1\x33\xE\x9\x3F\x45";
+    //"\updgame\\sesskey\%d\connid\%d\done\%d\gamedata\%s\dl\1"
+    DOXCODE(respformat, sizeof(respformat) - 1, enc3);
+    len =
+        sprintf(data, respformat, game->sesskey, game->connid, final, snapcopy);
+    DiskWrite(data, len);
+#else
+    ret = GE_NOCONNECT;
+#endif
+  }
+  gsifree(snapcopy);
+  gsifree(data);
+  return ret;
 }
 
-// ----------------------------------------------------------------------------
-// GetPersistDataValuesA
-// ----------------------------------------------------------------------------
-asm void GetPersistDataValuesA() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    mr r10, r8
-    li r8, 0x0
-    stw r0, 0x14(r1)
-    stw r9, 0x8(r1)
-    mr r9, r7
-    li r7, 0x0
-    bl GetPersistDataValuesModifiedA
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+/****************************************************************************/
+void NewPlayerA(statsgame_t game, int pnum, char* name) {
+  int i = -1;
+  FIXGAME(game, ;)
+  while (pnum >= ArrayLength(game->playernums))
+    ArrayAppend(game->playernums, &i);
+  i = game->totalplayers++;
+  /* update the pnum array */
+  ArrayReplaceAt(game->playernums, &i, pnum);
+  BucketIntOp(game, "ctime", bo_set,
+              (int)(current_time() - game->sttime) / 1000, bl_player, pnum);
+  BucketStringOp(game, "player", bo_set, name, bl_player, pnum);
 }
 
-// ----------------------------------------------------------------------------
-// SetPersistDataValuesA
-// ----------------------------------------------------------------------------
-asm void SetPersistDataValuesA() {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    addi r11, r1, 0x30
-    bl _savegpr_25
-    mr r29, r7
-    mr r25, r3
-    mr r26, r4
-    mr r27, r5
-    mr r28, r6
-    mr r30, r8
-    mr r31, r9
-    mr r3, r29
-    bl strlen
-    li r0, 0x1
-    mr r8, r3
-    stw r0, 0x8(r1)
-    mr r3, r25
-    mr r4, r26
-    mr r5, r27
-    mr r6, r28
-    mr r7, r29
-    mr r9, r30
-    mr r10, r31
-    addi r8, r8, 0x1
-    bl SetPersistDataHelper
-    addi r11, r1, 0x30
-    bl _restgpr_25
-    lwz r0, 0x34(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
+/****************************************************************************/
+void RemovePlayer(statsgame_t game, int pnum) {
+  FIXGAME(game, ;);
+  BucketIntOp(game, "dtime", bo_set,
+              (int)(current_time() - game->sttime) / 1000, bl_player, pnum);
 }
+
+/****************************************************************************/
+void NewTeamA(statsgame_t game, int tnum, char* name) {
+  int i = -1;
+  FIXGAME(game, ;)
+  while (tnum >= ArrayLength(game->teamnums))
+    ArrayAppend(game->teamnums, &i);
+  i = game->totalteams++;
+  /* update the tnum array */
+  ArrayReplaceAt(game->teamnums, &i, tnum);
+  BucketIntOp(game, "ctime", bo_set,
+              (int)(current_time() - game->sttime) / 1000, bl_team, tnum);
+  BucketStringOp(game, "team", bo_set, name, bl_team, tnum);
+}
+
+/****************************************************************************/
+void RemoveTeam(statsgame_t game, int tnum) {
+  FIXGAME(game, ;);
+  BucketIntOp(game, "dtime", bo_set,
+              (int)(current_time() - game->sttime) / 1000, bl_team, tnum);
+}
+
+/****************************************************************************
+ * PERSISTENT STORAGE FUNCTIONS
+ ****************************************************************************/
+
+/****************************************************************************/
+void PreAuthenticatePlayerPartner(int localid, const char* authtoken,
+                                  const char* challengeresponse,
+                                  PersAuthCallbackFn callback, void* instance) {
+  char respformat[] =
+      "\xC\x13\x1A\x1E\xD\x13\x28\x1D\x11\x1D\x11\x10\x24\x1D\x04\x0F\x0B\x3F"
+      "\x51\x32\x2C\x1A\x00\x0B\x20\x2E\x4A\x19\x39\x0F\x1D\x25\x2C\x4D\x01";
+  //\authp\\authtoken\%s\resp\%s\lid\%d";
+  int len;
+  char data[256];
+
+  DOXCODE(respformat, sizeof(respformat) - 1, enc3);
+  len = sprintf(data, respformat, authtoken, challengeresponse, localid);
+
+  SendPlayerAuthRequest(data, len, localid, callback, instance);
+}
+
+/****************************************************************************/
+void PreAuthenticatePlayerPM(int localid, int profileid,
+                             const char* challengeresponse,
+                             PersAuthCallbackFn callback, void* instance) {
+  char respformat[] = "\xC\x13\x1A\x1E\xD\x13\x28\x1D\x0\x1\x1\x24\x75\x16\x33"
+                      "\x18\x0\x10\x4\x1D\x55\x1B\x39\x14\x39\x16\x33\x4F\x1";
+  //\authp\\pid\%d\resp\%s\lid\%d
+  int len;
+  char data[256];
+
+  DOXCODE(respformat, sizeof(respformat) - 1, enc3);
+  len = sprintf(data, respformat, profileid, challengeresponse, localid);
+
+  SendPlayerAuthRequest(data, len, localid, callback, instance);
+}
+
+/****************************************************************************/
+void PreAuthenticatePlayerCDA(int localid, const char* nick,
+                              const char* keyhash,
+                              const char* challengeresponse,
+                              PersAuthCallbackFn callback, void* instance) {
+  char respformat[] = "\xC\x13\x1A\x1E\xD\x13\x28\x1D\x1E\x1\x6\x13\xC\x57\x1C"
+                      "\x36\xE\x6\xD\x29\x11\x1B\xD\x24\x75\x1\x33\x18\x0\x10"
+                      "\x4\x1D\x55\x1B\x39\x14\x39\x16\x33\x4F\x1";
+  //\authp\\nick\%s\keyhash\%s\resp\%s\lid\%d
+  int len;
+  char data[256];
+
+  DOXCODE(respformat, sizeof(respformat) - 1, enc3);
+  len = sprintf(data, respformat, nick, keyhash, challengeresponse, localid);
+
+  SendPlayerAuthRequest(data, len, localid, callback, instance);
+}
+
+/****************************************************************************/
+void GetProfileIDFromCDA(int localid, const char* nick, const char* keyhash,
+                         ProfileCallbackFn callback, void* instance) {
+  char respformat[] =
+      "\xC\x15\xA\x1E\x15\xA\x10\x1D\x2C\x6\xC\x1B\x3B\x2E\x4A\x19\x39\x8\x11"
+      "\x38\x18\x9\x16\x10\xC\x57\x1C\x36\x9\xA\x10\x1D\x55\xC";
+  //\getpid\\nick\%s\keyhash\%s\lid\%d
+  int len;
+  char data[512];
+  DOXCODE(respformat, sizeof(respformat) - 1, enc3);
+  len = sprintf(data, respformat, nick, keyhash, localid);
+
+  if (sock != INVALID_SOCKET)
+    len = DoSend(data, len);
+
+  /* If the send failed, close the socket */
+  if (len <= 0) {
+    CloseStatsConnection();
+    if (callback)
+      callback(0, -1, 0, instance);
+  } else { /* set up the callback */
+    AddRequestCallback(rt_profilecb, localid, 0, (persisttype_t)0, 0, callback,
+                       instance);
+  }
+}
+
+/****************************************************************************/
+void GetPersistData(int localid, int profileid, persisttype_t type, int index,
+                    PersDataCallbackFn callback, void* instance) {
+  GetPersistDataValuesModifiedA(localid, profileid, type, index, 0, "",
+                                callback, instance);
+}
+
+void GetPersistDataModified(int localid, int profileid, persisttype_t type,
+                            int index, time_t modifiedsince,
+                            PersDataCallbackFn callback, void* instance) {
+  GetPersistDataValuesModifiedA(localid, profileid, type, index, modifiedsince,
+                                "", callback, instance);
+}
+
+/****************************************************************************/
+void SetPersistData(int localid, int profileid, persisttype_t type, int index,
+                    const char* data, int len, PersDataSaveCallbackFn callback,
+                    void* instance) {
+  SetPersistDataHelper(localid, profileid, type, index, data, len, callback,
+                       instance, 0);
+}
+
+/****************************************************************************/
+void GetPersistDataValuesModifiedA(int localid, int profileid,
+                                   persisttype_t type, int index,
+                                   time_t modifiedsince, char* keys,
+                                   PersDataCallbackFn callback,
+                                   void* instance) {
+  char respformat[] =
+      "\xC\x15\xA\x1E\x15\x7\x28\x1D\x0\x1\x1\x24\x75\x16\x33\x1A\x11\x1A\x4"
+      "\x24\x2C\x4D\x1\x24\x34\x1B\x1\xE\x0\x1B\x28\x64\x14\x34\xE\x1D\x29\x1"
+      "\x33\x4F\x16\x3F\x18\x28\x14\x34\x40\x1C";
+  char modformat[] = {'\\', 'm', 'o', 'd', '\\', '%', 'd', '\0'}; //\\mod\\%d
+  //\getpd\\pid\%d\ptype\%d\dindex\%d\keys\%s\lid\%d
+  int len;
+  char data[512];
+  char tempkeys[256];
+  char* p;
+
+  DOXCODE(respformat, sizeof(respformat) - 1, enc3);
+  strcpy(tempkeys, keys);
+  // replace the \ chars with #1
+  for (p = tempkeys; *p != 0; p++)
+    if (*p == '\\')
+      *p = '\x1';
+
+  len = sprintf(data, respformat, profileid, type, index, tempkeys, localid);
+  if (modifiedsince != 0) // append it
+  {
+    len += sprintf(data + len, modformat, modifiedsince);
+  }
+
+  if (sock != INVALID_SOCKET)
+    len = DoSend(data, len);
+
+  /* If the send failed, close the socket */
+  if (len <= 0) {
+    CloseStatsConnection();
+    if (callback)
+      callback(localid, profileid, type, index, 0, 0, "", 0, instance);
+  } else { /* set up the callback */
+    AddRequestCallback(rt_datacb, localid, profileid, type, index, callback,
+                       instance);
+  }
+}
+
+void GetPersistDataValuesA(int localid, int profileid, persisttype_t type,
+                           int index, char* keys, PersDataCallbackFn callback,
+                           void* instance) {
+  GetPersistDataValuesModifiedA(localid, profileid, type, index, 0, keys,
+                                callback, instance);
+}
+
+/****************************************************************************/
+void SetPersistDataValuesA(int localid, int profileid, persisttype_t type,
+                           int index, const char* keyvalues,
+                           PersDataSaveCallbackFn callback, void* instance) {
+  SetPersistDataHelper(localid, profileid, type, index, keyvalues,
+                       (int)strlen(keyvalues) + 1, callback, instance, 1);
+}
+
+/****************************************************************************/
+int PersistThink() {
+  int len;
+  int processed;
+
+  if (sock == INVALID_SOCKET)
+    return 0;
+
+  if (stats_initstate != init_complete)
+    return 0;
+
+  while (SocketReadable(sock)) {
+    if (rcvmax - rcvlen <
+        128) // make sure there are at least 128 bytes gsifree in the buffer
+    {
+      if (rcvmax < 256)
+        rcvmax = 256;
+      else
+        rcvmax *= 2;
+      rcvbuffer = gsirealloc(rcvbuffer, (unsigned int)(rcvmax + 1));
+      if (rcvbuffer == NULL)
+        return 0; // errcon
+    }
+    len = recv(sock, rcvbuffer + rcvlen, rcvmax - rcvlen, 0);
+    if (len <= 0) // lost the connection
+    {
+      CloseStatsConnection();
+      return 0;
+    }
+    rcvlen += len;
+    rcvbuffer[rcvlen] = 0;
+
+    processed = ProcessInBuffer(rcvbuffer, rcvlen);
+    if (processed == rcvlen) // then we can just zero it
+      rcvlen = 0;
+    else {
+      // shift the remaining data down
+      memmove(rcvbuffer, rcvbuffer + processed,
+              (unsigned int)(rcvlen - processed));
+      rcvlen -= processed;
+    }
+  }
+  if (sock == INVALID_SOCKET)
+    return 0;
+  else
+    return 1;
+}
+
+/****************************************************************************/
+int StatsThink() { return PersistThink(); }
+
+/****************************************************************************
+ * UTILITY FUNCTIONS
+ ****************************************************************************/
+
+void InternalInit() {
+  internal_init = 1;
+  enc1[0] = 'G';
+  enc3[0] = 'P';
+  finalstr[0] = '\\';
+
+#ifdef ALLOW_DISK
+  statsfile[0] = 'g';
+  enc2[0] = 'I';
+#endif
+}
+
+static int SendChallengeResponse(const char* indata, int gameport) {
+  static char challengestr[] = {'\0', 'h', 'a', 'l', 'l',
+                                'e',  'n', 'g', 'e', '\0'};
+  char* challenge;
+  char resp[128];
+  char md5val[33];
+
+  /* make this harder to find in the string table */
+  char respformat[] = "\xC\x13\x1A\x1E\xD\x3F\x28\x26\x11\x5\x0\x16\x31\x1F\xA"
+                      "\x36\x40\x10\x28\x33\x15\x1B\x15\x17\x3E\x1\xA\x36\x40"
+                      "\x10\x28\x31\x1F\x1A\x11\x24\x75\x16\x33\x3\x1\x3F\x45";
+  /*  \auth\\gamename\%s\response\%s\port\%d\id\1 */
+  int len;
+
+  challengestr[0] = 'c';
+  challenge = value_for_key(indata, challengestr);
+  if (challenge == NULL) {
+    closesocket(sock);
+    return GE_DATAERROR;
+  }
+
+  len = sprintf(resp, "%d%s", g_crc32(challenge, (int)strlen(challenge)),
+                gcd_secret_key);
+
+  MD5Digest((unsigned char*)resp, (unsigned int)len, md5val);
+  DOXCODE(respformat, sizeof(respformat) - 1, enc3);
+  len = sprintf(resp, respformat, gcd_gamename, md5val, gameport);
+
+  if (DoSend(resp, len) <= 0) {
+    closesocket(sock);
+    return GE_NOCONNECT;
+  }
+
+  return GE_NOERROR;
+}
+
+// 09-13-2004 BED Unused parameter removed
+static int RecvSessionKey() {
+  /* get the response */
+  static char sesskeystr[] = {'\0', 'e', 's', 's', 'k', 'e', 'y', '\0'};
+  char resp[128];
+  char* stext;
+  int len = (int)recv(sock, resp, 128, 0);
+  if (gsiSocketIsError(len)) {
+    int anError = GOAGetLastError(sock);
+    closesocket(sock);
+
+    if ((anError != WSAEWOULDBLOCK) && (anError != WSAETIMEDOUT) &&
+        (anError != WSAEINPROGRESS))
+      return GE_NOCONNECT;
+    else
+      return GE_DATAERROR; // temp fix in case len == -1, SOCKET_ERROR
+  }
+
+  resp[len] = 0;
+  DOXCODE(resp, len, enc1);
+  sesskeystr[0] = 's';
+  stext = value_for_key(resp, sesskeystr);
+  if (stext == NULL) {
+    closesocket(sock);
+    return GE_DATAERROR;
+  } else
+    connid = atoi(stext);
+
+  return GE_NOERROR;
+}
+
+static int DoSend(char* data, int len) {
+  int sent = 0;
+
+  DOXCODE(data, len, enc1);
+  strcpy(data + len, finalstr);
+
+  // Loop to make sure async send goes through!
+  while (sent < (len + 7)) {
+    // Send remaining data
+    int ret = send(sock, (data + sent), (len + 7 - sent), 0);
+    if (gsiSocketIsError(ret)) {
+      int anError = GOAGetLastError(sock);
+      if ((anError != WSAEWOULDBLOCK) && (anError != WSAETIMEDOUT) &&
+          (anError != WSAEINPROGRESS))
+        return anError;
+    } else if (ret == 0) {
+      // socket was closed
+      return -1;
+    } else
+      sent += ret;
+  };
+
+  return sent;
+}
+
+#ifdef ALLOW_DISK
+/* Note: lots of this is byte order and type size specific, but it shouldn't
+matter since the data is read/written always on the same machine */
+#define DISKLENXOR 0x70F33A5F
+static void CheckDiskFile() {
+  FILE* f;
+  char* line;
+  char* alldata;
+  int len, check, alllen, fsize;
+  char filemode[3];
+  /* hide our file access from the string table */
+  filemode[0] = 'r';
+  filemode[1] = 'b';
+  filemode[2] = 0;
+  f = fopen(statsfile, filemode);
+  if (!f)
+    return;
+  /* get the size */
+  fseek(f, 0, SEEK_END);
+  fsize = ftell(f);
+  fseek(f, 0, SEEK_SET);
+  /* make room for the whole thing */
+  alldata = (char*)gsimalloc(fsize + 2);
+  alldata[0] = 0;
+  alllen = 0;
+  while (!feof(f) && !ferror(f)) {
+    /* read the check and line values */
+    if (fread(&check, sizeof(check), 1, f) == 0 ||
+        fread(&len, sizeof(len), 1, f) == 0)
+      break;
+    len ^= DISKLENXOR;
+    line = (char*)gsimalloc(len + 1);
+    /* read the data */
+    if (fread(line, 1, len, f) != (size_t)len)
+      break;
+    line[len] = 0;
+    /* decode for checking */
+    DOXCODE(line, len, enc2);
+    /* double "check" */
+    if (check != g_crc32(line, len)) {
+      gsifree(line);
+      break;
+    }
+    /* encode for xmission */
+    DOXCODE(line, len, enc1);
+    memcpy(alldata + alllen, line, len);
+    alllen += len;
+    memcpy(alldata + alllen, finalstr, 7);
+    alllen += 7;
+    gsifree(line);
+  }
+  fclose(f);
+  /* try to send */
+  len = send(sock, alldata, alllen, 0);
+  if (len <= 0) {
+    closesocket(sock);
+    sock = INVALID_SOCKET;
+  } else
+    remove(statsfile);
+}
+
+static void DiskWrite(char* line, int len) {
+  FILE* f;
+  int check;
+  int temp;
+  char filemode[3];
+  /* hide our file access from the string table */
+  filemode[0] = 'a';
+  filemode[1] = 'b';
+  filemode[2] = 0;
+  f = fopen(statsfile, filemode);
+  if (!f)
+    return;
+  check = g_crc32(line, len);
+  fwrite(&check, sizeof(check), 1, f);
+  temp = len ^ DISKLENXOR;
+  fwrite(&temp, sizeof(temp), 1, f);
+  DOXCODE(line, len, enc2);
+  fwrite(line, 1, len, f);
+  fclose(f);
+}
+
+#endif /* ALLOW_DISK */
+
+/* simple xor encoding */
+static void xcode_buf(char* buf, int len) {
+  int i;
+  char* pos = enc;
+
+  for (i = 0; i < len; i++) {
+    buf[i] ^= *pos++;
+    if (*pos == 0)
+      pos = enc;
+  }
+}
+
+#define MULTIPLIER -1664117991
+static int g_crc32(char* s, int len) {
+  int i;
+  int hashcode = 0;
+
+  for (i = 0; i < len; i++)
+    hashcode = hashcode * MULTIPLIER + s[i];
+  return hashcode;
+}
+
+static void create_challenge(int challenge, char chstr[9]) {
+  char* p = chstr;
+  sprintf(chstr, "%08x", challenge);
+
+  while (*p != 0) {
+    *p = (char)((*p) + ('A' - '0') + (p - chstr));
+    p++;
+  }
+}
+
+/* value_for_key: this returns a value for a certain key in s, where s is a
+string containing key\value pairs. If the key does not exist, it returns  NULL.
+Note: the value is stored in a common buffer. If you want to keep it, make a
+copy! */
+static char* value_for_key(const char* s, const char* key) {
+  static int valueindex;
+  char *pos, *pos2;
+  char keyspec[256] = "\\";
+  static char value[2][256];
+
+  valueindex ^= 1;
+  strcat(keyspec, key);
+  strcat(keyspec, "\\");
+  pos = strstr(s, keyspec);
+  if (!pos)
+    return NULL;
+  pos += strlen(keyspec);
+  pos2 = value[valueindex];
+  while (*pos && *pos != '\\')
+    *pos2++ = *pos++;
+  *pos2 = '\0';
+  return value[valueindex];
+}
+
+/* like value_for_key, but returns an empty string instead of NULL in the
+ * not-found case */
+static char* value_for_key_safe(const char* s, const char* key) {
+  char* temp;
+
+  temp = value_for_key(s, key);
+  if (!temp)
+    return "";
+  else
+    return temp;
+}
+
+/* Return a sockaddrin for the given host (numeric or DNS) and port)
+Returns the hostent in savehent if it is not NULL */
+static int get_sockaddrin(const char* host, int port, struct sockaddr_in* saddr,
+                          struct hostent** savehent) {
+  struct hostent* hent = NULL;
+
+  memset(saddr, 0, sizeof(struct sockaddr_in));
+  saddr->sin_family = AF_INET;
+  saddr->sin_port = htons((unsigned short)port);
+  if (host == NULL)
+    saddr->sin_addr.s_addr = INADDR_ANY;
+  else
+    saddr->sin_addr.s_addr = inet_addr(host);
+
+  if (saddr->sin_addr.s_addr == INADDR_NONE) {
+    hent = gethostbyname(host);
+    if (!hent)
+      return 0;
+    saddr->sin_addr.s_addr = *(unsigned int*)hent->h_addr_list[0];
+  }
+  if (savehent != NULL)
+    *savehent = hent;
+  return 1;
+}
+
+/* adds a request callback to the list */
+static void AddRequestCallback(reqtype_t reqtype, int localid, int profileid,
+                               persisttype_t pdtype, int pdindex,
+                               void* callback, void* instance) {
+  serverreq_t req;
+
+  req.callback = callback;
+  req.instance = instance;
+  req.localid = localid;
+  req.reqtype = reqtype;
+  req.profileid = profileid;
+  req.pdtype = pdtype;
+  req.pdindex = pdindex;
+  if (serverreqs == NULL) // create the callback array
+  {
+    serverreqs = ArrayNew(sizeof(serverreq_t), 2, NULL);
+  }
+  ArrayAppend(serverreqs, &req);
+}
+
+/* sends the player authentication request (GP or CD) */
+static void SendPlayerAuthRequest(char* data, int len, int localid,
+                                  PersAuthCallbackFn callback, void* instance) {
+  int sentlen = 0;
+  char connerror[] = "\x13\x1D\x1\x4\x0\x0\x0\x28\x1F\x6\x45\x34\x3F\x1\x1B";
+  //"Connection Lost"
+
+  if (sock != INVALID_SOCKET)
+    sentlen = DoSend(data, len);
+
+  /* If the send failed, close the socket */
+  if (sentlen <= 0) {
+    CloseStatsConnection();
+    DOXCODE(connerror, sizeof(connerror) - 1, enc3);
+    if (callback) {
+      callback(localid, 0, 0, connerror, instance);
+    }
+  } else { /* set up the callback */
+    AddRequestCallback(rt_authcb, localid, 0, (persisttype_t)0, 0, callback,
+                       instance);
+  }
+}
+
+/* send a set request, if kvset, then only those keys/values will bet updated */
+static void SetPersistDataHelper(int localid, int profileid, persisttype_t type,
+                                 int index, const char* data, int len,
+                                 PersDataSaveCallbackFn callback,
+                                 void* instance, int kvset) {
+  char respformat[] =
+      "\xC\x1\xA\x1E\x15\x7\x28\x1D\x0\x1\x1\x24\x75\x16\x33\x1A\x11\x1A\x4\x24"
+      "\x2C\x4D\x1\x24\x34\x1B\x1\xE\x0\x1B\x28\x64\x14\x34\xE\xE\xC\x57\xB\x36"
+      "\x9\xA\x10\x1D\x55\xC\x39\x14\x35\x1C\x8\x1E\xD\x3F\x51\x25\x2C\xC\x4\xC"
+      "\x31\x2E";
+  //\setpd\\pid\%d\ptype\%d\dindex\%d\kv\%d\lid\%d\length\%d\data\ --
+  int tlen;
+  char tdata[512];
+  char* senddata;
+
+  DOXCODE(respformat, sizeof(respformat) - 1, enc3);
+
+  if (type == pd_private_ro ||
+      type ==
+          pd_public_ro) { // can't set read-only types, check that client side
+    if (callback)
+      callback(localid, profileid, type, index, 0, 0, instance);
+    return;
+  }
+
+  tlen =
+      sprintf(tdata, respformat, profileid, type, index, kvset, localid, len);
+  if (tlen + len < 480) // we have enough room to put it in the data block
+  {
+    memcpy(tdata + tlen, data, (unsigned int)len);
+    senddata = tdata;
+
+  } else // need to alloc a temp buffer
+  {
+    senddata = (char*)gsimalloc((unsigned int)(len + tlen + 256));
+    memcpy(senddata, tdata, (unsigned int)tlen);
+    memcpy(senddata + tlen, data, (unsigned int)len);
+  }
+
+  if (sock != INVALID_SOCKET)
+    tlen = DoSend(senddata, tlen + len);
+
+  /* If the send failed, close the socket */
+  if (tlen <= 0) {
+    CloseStatsConnection();
+    if (callback)
+      callback(localid, profileid, type, index, 0, 0, instance);
+  } else { /* set up the callback */
+    AddRequestCallback(rt_savecb, localid, profileid, type, index, callback,
+                       instance);
+  }
+  if (senddata != tdata) // if we alloc'd before sending
+    gsifree(senddata);
+}
+
+/* returns 1 if the socket is readable, 0 otherwise */
+static int SocketReadable(SOCKET s) {
+  return CanReceiveOnSocket(s);
+  /*
+          fd_set set;
+          struct timeval tv = {0,0};
+          int n;
+
+          if (s == INVALID_SOCKET)
+                  return 0;
+
+          FD_ZERO(&set);
+          FD_SET(s, &set);
+
+          n = select(FD_SETSIZE, &set, NULL, NULL, &tv);
+
+          return n;
+  */
+}
+
+/* find the \final\ string */
+static char* FindFinal(char* buff, int len) {
+  char* pos = buff;
+
+  while (pos - buff < len - 6) {
+    if (pos[0] == '\\' && pos[1] == 'f' && pos[2] == 'i' && pos[3] == 'n' &&
+        pos[4] == 'a' && pos[5] == 'l' && pos[6] == '\\') {
+      return pos;
+    } else
+      pos++;
+  }
+  return NULL;
+}
+
+/* find the request in the callback list */
+static int FindRequest(reqtype_t reqtype, int localid, int profileid) {
+  int i;
+  serverreq_t* req;
+
+  if (serverreqs == NULL)
+    return -1;
+  for (i = 0; i < ArrayLength(serverreqs); i++) {
+    req = (serverreq_t*)ArrayNth(serverreqs, i);
+    if (req->reqtype == reqtype && req->localid == localid &&
+        req->profileid == profileid)
+      return i;
+  }
+  return -1;
+}
+
+/* process the playerauth result */
+static void ProcessPlayerAuth(const char* buf, int len) {
+  // \\pauthr\\100000\\lid\\1
+  int reqindex;
+  char* errmsg;
+  int pid;
+  int lid;
+  pid = atoi(value_for_key_safe(buf, "pauthr"));
+  lid = atoi(value_for_key_safe(buf, "lid"));
+  errmsg = value_for_key_safe(buf, "errmsg");
+  reqindex = FindRequest(rt_authcb, lid, 0);
+  if (reqindex == -1)
+    return;
+  ((serverreq_t*)ArrayNth(serverreqs, reqindex))->profileid = pid;
+  CallReqCallback(reqindex, (pid > 0), 0, errmsg, 0);
+
+  GSI_UNUSED(len);
+}
+
+/* process the get profileid result */
+static void ProcessGetPid(const char* buf, int len) {
+  // \\getpidr\\100000\\lid\\1
+  int reqindex;
+  int pid;
+  int lid;
+  pid = atoi(value_for_key_safe(buf, "getpidr"));
+  lid = atoi(value_for_key_safe(buf, "lid"));
+  reqindex = FindRequest(rt_profilecb, lid, 0);
+  if (reqindex == -1)
+    return;
+  ((serverreq_t*)ArrayNth(serverreqs, reqindex))->profileid = pid;
+  CallReqCallback(reqindex, (pid > 0), 0, NULL, 0);
+
+  GSI_UNUSED(len);
+}
+
+/* process the get data result */
+static void ProcessGetData(const char* buf, int len) {
+  // \\getpdr\\1\\lid\\1\\mod\\1234\\length\\5\\data\\mydata\\final
+  int reqindex;
+  int pid;
+  int lid;
+  int success;
+  int length;
+  time_t modified;
+  char* data;
+  success = atoi(value_for_key_safe(buf, "getpdr"));
+  lid = atoi(value_for_key_safe(buf, "lid"));
+  pid = atoi(value_for_key_safe(buf, "pid"));
+  modified = atoi(value_for_key_safe(buf, "mod"));
+  reqindex = FindRequest(rt_datacb, lid, pid);
+  if (reqindex == -1)
+    return;
+  length = atoi(value_for_key_safe(buf, "length"));
+  data = strstr(buf, "\\data\\");
+  if (!data) {
+    length = 0;
+    data = "";
+  } else
+    data += 6; // skip the key
+  CallReqCallback(reqindex, success, modified, data, length);
+
+  GSI_UNUSED(len);
+}
+
+/* process the set data result */
+static void ProcessSetData(const char* buf, int len) {
+  // \\setpdr\\1\\lid\\2\\pid\\100000\\mod\\12345
+  int reqindex;
+  int pid;
+  int lid;
+  int success;
+  int modified;
+  success = atoi(value_for_key_safe(buf, "setpdr"));
+  pid = atoi(value_for_key_safe(buf, "pid"));
+  lid = atoi(value_for_key_safe(buf, "lid"));
+  modified = atoi(value_for_key_safe(buf, "mod"));
+  reqindex = FindRequest(rt_savecb, lid, pid);
+  if (reqindex == -1)
+    return;
+  CallReqCallback(reqindex, success, modified, NULL, 0);
+
+  GSI_UNUSED(len);
+}
+
+/* process a single statement */
+static void ProcessStatement(char* buff, int len) {
+  // determine the type
+
+  buff[len] = 0;
+  //	printf("GOT: %s\n",buff);
+  if (strncmp(buff, "\\pauthr\\", 8) == 0) {
+    ProcessPlayerAuth(buff, len);
+  } else if (strncmp(buff, "\\getpidr\\", 9) == 0) {
+    ProcessGetPid(buff, len);
+  } else if (strncmp(buff, "\\getpidr\\", 9) == 0) {
+    ProcessGetPid(buff, len);
+  } else if (strncmp(buff, "\\getpdr\\", 8) == 0) {
+    ProcessGetData(buff, len);
+  } else if (strncmp(buff, "\\setpdr\\", 8) == 0) {
+    ProcessSetData(buff, len);
+  }
+}
+
+/* processes statements in the buffer and returns amount processed */
+// 09-13-2004 BED Modified loop to silence compiler warning
+static int ProcessInBuffer(char* buff, int len) {
+  char* pos;
+  int oldlen = len;
+
+  pos = FindFinal(buff, len);
+  // while (len > 0 && (pos = FindFinal(buff, len)))
+  while ((len > 0) && (pos != NULL)) {
+    DOXCODE(buff, pos - buff, enc1);
+    ProcessStatement(buff, pos - buff);
+    len -= (pos - buff) + 7;
+    buff = pos + 7; // skip the final
+    if (len > 0)
+      pos = FindFinal(buff, len);
+  }
+  return oldlen - len; // amount processed
+}
+
+/* call a single callback function */
+static void CallReqCallback(int reqindex, int success, time_t modified,
+                            char* data, int length) {
+  serverreq_t* req;
+  if (reqindex < 0 || reqindex >= ArrayLength(serverreqs))
+    return;
+  req = (serverreq_t*)ArrayNth(serverreqs, reqindex);
+  if (req->callback)
+    switch (req->reqtype) {
+    case rt_authcb:
+      ((PersAuthCallbackFn)req->callback)(req->localid, req->profileid, success,
+                                          data, req->instance);
+      break;
+    case rt_datacb:
+      ((PersDataCallbackFn)req->callback)(
+          req->localid, req->profileid, req->pdtype, req->pdindex, success,
+          modified, data, length, req->instance);
+      break;
+    case rt_savecb:
+      ((PersDataSaveCallbackFn)req->callback)(req->localid, req->profileid,
+                                              req->pdtype, req->pdindex,
+                                              success, modified, req->instance);
+      break;
+    case rt_profilecb:
+      ((ProfileCallbackFn)req->callback)(req->localid, req->profileid, success,
+                                         req->instance);
+      break;
+    }
+  ArrayDeleteAt(serverreqs, reqindex);
+}
+
+/* if we get disconnected while callbacks are still pending, make sure we
+call all of them, with a success of 0 */
+static void ClosePendingCallbacks() {
+  int i;
+
+  if (serverreqs == NULL)
+    return;
+  for (i = ArrayLength(serverreqs) - 1; i >= 0; i--) {
+    char connerror[] = "\x13\x1D\x1\x4\x0\x0\x0\x28\x1F\x6\x45\x34\x3F\x1\x1B";
+    //"Connection Lost"
+    DOXCODE(connerror, sizeof(connerror) - 1, enc3);
+
+    CallReqCallback(i, 0, 0, connerror, 0);
+  }
+  ArrayFree(serverreqs);
+  serverreqs = NULL;
+}
+
+/****************************************************************************/
+/* BUCKET FUNCTIONS */
+/****************************************************************************/
+int GetTeamIndex(statsgame_t game, int tnum) {
+  FIXGAME(game, tnum);
+  return *(int*)ArrayNth(game->teamnums, tnum);
+}
+int GetPlayerIndex(statsgame_t game, int pnum) {
+  FIXGAME(game, pnum);
+  return *(int*)ArrayNth(game->playernums, pnum);
+}
+
+static int ServerOpInt(statsgame_t game, char* name, BucketFunc func, int value,
+                       int index) {
+  int* ret;
+  DoFunc(func, game, name, &value, bt_int, ret);
+
+  GSI_UNUSED(index);
+  return *(int*)ret;
+}
+static double ServerOpFloat(statsgame_t game, char* name, BucketFunc func,
+                            double value, int index) {
+  double* ret;
+  DoFunc(func, game, name, &value, bt_float, ret);
+
+  GSI_UNUSED(index);
+  return *(double*)ret;
+}
+static char* ServerOpString(statsgame_t game, char* name, BucketFunc func,
+                            char* value, int index) {
+  char* ret;
+  DoFunc(func, game, name, value, bt_string, ret);
+
+  GSI_UNUSED(index);
+  return ret;
+}
+
+static int TeamOpInt(statsgame_t game, char* name, BucketFunc func, int value,
+                     int index) {
+  char fullname[64];
+  sprintf(fullname, "%s_t%d", name, GetTeamIndex(game, index));
+  return ServerOpInt(game, fullname, func, value, index);
+}
+static double TeamOpFloat(statsgame_t game, char* name, BucketFunc func,
+                          double value, int index) {
+  char fullname[64];
+  sprintf(fullname, "%s_t%d", name, GetTeamIndex(game, index));
+  return ServerOpFloat(game, fullname, func, value, index);
+}
+static char* TeamOpString(statsgame_t game, char* name, BucketFunc func,
+                          char* value, int index) {
+  char fullname[64];
+  sprintf(fullname, "%s_t%d", name, GetTeamIndex(game, index));
+  return ServerOpString(game, fullname, func, value, index);
+}
+
+static int PlayerOpInt(statsgame_t game, char* name, BucketFunc func, int value,
+                       int index) {
+  char fullname[64];
+  sprintf(fullname, "%s_%d", name, GetPlayerIndex(game, index));
+  return ServerOpInt(game, fullname, func, value, index);
+}
+static double PlayerOpFloat(statsgame_t game, char* name, BucketFunc func,
+                            double value, int index) {
+  char fullname[64];
+  sprintf(fullname, "%s_%d", name, GetPlayerIndex(game, index));
+  return ServerOpFloat(game, fullname, func, value, index);
+}
+static char* PlayerOpString(statsgame_t game, char* name, BucketFunc func,
+                            char* value, int index) {
+  char fullname[64];
+  sprintf(fullname, "%s_%d", name, GetPlayerIndex(game, index));
+  return ServerOpString(game, fullname, func, value, index);
+}
+
+static char* CreateBucketSnapShot(bucketset_t buckets) {
+  return DumpBucketSet(buckets);
+}
+
+#ifdef __cplusplus
+}
+#endif
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+
 

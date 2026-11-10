@@ -1,45 +1,234 @@
-#include "types.h"
+#include <revolution/NWC24.h>
+#include <revolution/NWC24/NWC24Internal.h>
+#include <revolution/SC.h>
 
-// Translation unit: src/revolution/nwc24/unk_80334850.cpp
-// Total functions: 4
+#include <cstring>
 
-// Small Data symbols (@sda21)
-extern float lbl_8049E590;
+#define CHECK_CALLING_STATUS() CheckCallingStatus(__FUNCTION__)
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_803422F8[];
-extern u8 lbl_8038EDE8[];
-extern u8 lbl_8038EDFC[];
-extern u8 lbl_80470220[];
+#define NWC24_TIME_DEVICE "/dev/net/kd/time"
+
+enum {
+    NWC24_IOCTL_SET_RTC_COUNTER = 23,
+    NWC24_IOCTL_GET_TIME_DIFFERENCE = 24,
+};
+
+#pragma pack(push, 1)
+typedef struct CommonBuffer {
+    u32 rtc;   // at 0x0
+    u32 flags; // at 0x4
+    u8 padding[32 - 0x8];
+} CommonBuffer;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct CommonResult {
+    s32 result; // at 0x0
+    s64 diff;   // at 0x4
+    u8 padding[32 - 0xC];
+} CommonResult;
+#pragma pack(pop)
+
+static BOOL nwc24TimeInitialized = FALSE;
+static u32 nwc24TimeRtc = 0;
+static s64 nwc24TimeDifference = 0;
+
+static CommonResult nwc24TimeCommonResult ALIGN(32);
+static CommonBuffer nwc24TimeCommonBuffer ALIGN(32);
+static OSMutex nwc24TimeCommandMutex ALIGN(32);
+
+// Unused from NWC24iStrTime, but pooled in
+static u8 buf[128];
+DECOMP_FORCEACTIVE(NWC24Time_c, buf);
 
 // Forward declarations
-extern void NWC24iCloseResourceManager();
-extern void NWC24iIoctlResourceManager();
-extern void NWC24iOpenResourceManager();
-extern void NWC24iSynchronizeRtcCounter();
-extern void OSDisableInterrupts();
-extern void OSGetTime();
-extern void OSInitMutex();
-extern void OSLockMutex();
-extern void OSRestoreInterrupts();
-extern void OSUnlockMutex();
-extern void SCCheckStatus();
-extern void SCGetCounterBias();
-extern void __div2i();
-extern void __shl2i();
-extern void _restgpr_27();
-extern void _savegpr_27();
-extern void fn_80194250();
-extern void fn_8031C81C();
-extern void fn_80334850();
-extern void fn_803348E8();
-extern void fn_80334B6C();
-extern void memset();
+static NWC24Err GetRTC(u32* pRTC);
+static NWC24Err CheckCallingStatus(const char* pUser);
+static void InitMutex(void);
+static void LockRight(void);
+static void UnlockRight(void);
 
-// ----------------------------------------------------------------------------
-// fn_80334850
-// ----------------------------------------------------------------------------
-asm void fn_80334850() {
+NWC24Err NWC24iGetUniversalTime(s64* pTime) {
+    static s64 whenCached = 0;
+    NWC24Err result;
+
+    if (pTime == NULL) {
+        nwc24TimeDifference = 0;
+        return NWC24_ERR_INVALID_VALUE;
+    }
+
+    if (whenCached == 0 ||
+        whenCached + OS_SEC_TO_TICKS(1) <= __OSGetSystemTime() ||
+        nwc24TimeRtc == 0) {
+
+        result = NWC24iGetTimeDifference(&nwc24TimeDifference);
+        if (result < 0) {
+            return result;
+        }
+
+        result = GetRTC(&nwc24TimeRtc);
+        if (result != NWC24_OK) {
+            return result;
+        }
+
+        whenCached = __OSGetSystemTime();
+    }
+
+    *pTime = nwc24TimeDifference + nwc24TimeRtc;
+    return NWC24_OK;
+}
+
+NWC24Err NWC24iGetTimeDifference(s64* pTimeDiff) {
+    s32 fd;
+    NWC24Err result;
+    NWC24Err close;
+
+    result = CHECK_CALLING_STATUS();
+    if (result < 0) {
+        return result;
+    }
+
+    LockRight();
+    {
+        result = NWC24_OPEN_DEVICE(NWC24_TIME_DEVICE, &fd, IPC_OPEN_NONE);
+
+        if (result >= 0) {
+            result = NWC24_IOCTL_DEVICE(             //
+                fd, NWC24_IOCTL_GET_TIME_DIFFERENCE, //
+                NULL, 0,                             //
+                &nwc24TimeCommonResult, sizeof(CommonResult));
+
+            if (result >= 0) {
+                result = nwc24TimeCommonResult.result;
+
+                // Cast is necessary
+                if (result == 0 && pTimeDiff != (void*)NULL) {
+                    *pTimeDiff = nwc24TimeCommonResult.diff;
+                }
+            }
+
+            close = NWC24_CLOSE_DEVICE(fd);
+            if (result >= 0) {
+                result = close;
+            }
+        }
+    }
+    UnlockRight();
+
+    return result;
+}
+
+NWC24Err NWC24iSetRtcCounter(u32 rtc, u32 flags) {
+    s32 fd;
+    NWC24Err result;
+    NWC24Err close;
+
+    result = CHECK_CALLING_STATUS();
+    if (result < 0) {
+        return result;
+    }
+
+    LockRight();
+    {
+        result = NWC24_OPEN_DEVICE(NWC24_TIME_DEVICE, &fd, IPC_OPEN_NONE);
+
+        if (result >= 0) {
+            nwc24TimeCommonBuffer.rtc = rtc;
+            nwc24TimeCommonBuffer.flags = flags;
+
+            result = NWC24_IOCTL_DEVICE(                      //
+                fd, NWC24_IOCTL_SET_RTC_COUNTER,              //
+                &nwc24TimeCommonBuffer, sizeof(CommonBuffer), //
+                &nwc24TimeCommonResult, sizeof(CommonResult));
+
+            if (result >= 0) {
+                result = nwc24TimeCommonResult.result;
+            }
+
+            close = NWC24_CLOSE_DEVICE(fd);
+            if (result >= 0) {
+                result = close;
+            }
+        }
+    }
+    UnlockRight();
+
+    return result;
+}
+
+NWC24Err NWC24iSynchronizeRtcCounter(BOOL forceSave) {
+    u32 rtc;
+    NWC24Err result;
+
+    result = GetRTC(&rtc);
+    if (result != NWC24_OK) {
+        return result;
+    }
+
+    return NWC24iSetRtcCounter(rtc, forceSave ? 1 : 0);
+}
+
+static NWC24Err GetRTC(u32* pRTC) {
+    u32 status;
+
+    do {
+        status = SCCheckStatus();
+
+        if (status == SC_STATUS_FATAL) {
+            return NWC24_ERR_FATAL;
+        }
+    } while (status != SC_STATUS_OK);
+
+    *pRTC = OS_TICKS_TO_SEC(OSGetTime()) - SCGetCounterBias();
+    return NWC24_OK;
+}
+
+static NWC24Err CheckCallingStatus(const char* pUser) {
+#pragma unused(pUser)
+
+    if (OSGetCurrentThread() == NULL) {
+        return NWC24_ERR_FATAL;
+    }
+
+    return NWC24_OK;
+}
+
+static void InitMutex(void) {
+    BOOL enabled = OSDisableInterrupts();
+
+    if (!nwc24TimeInitialized) {
+        OSInitMutex(&nwc24TimeCommandMutex);
+
+        memset(&nwc24TimeCommonBuffer, 0, sizeof(CommonBuffer));
+        memset(&nwc24TimeCommonResult, 0, sizeof(CommonResult));
+
+        nwc24TimeInitialized = TRUE;
+    }
+
+    OSRestoreInterrupts(enabled);
+}
+
+static void LockRight(void) {
+    if (!nwc24TimeInitialized) {
+        InitMutex();
+    }
+
+    OSLockMutex(&nwc24TimeCommandMutex);
+}
+
+static void UnlockRight(void) {
+    OSUnlockMutex(&nwc24TimeCommandMutex);
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+extern u8 lbl_803422F8[];
+extern void __shl2i();
+extern void __shr2u();
+extern int fn_80334850();
+extern int fn_803348E8();
+
+// asm_to_cpp: fn_80334850
+asm int fn_80334850() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -56,7 +245,7 @@ lbl_80334878:
     mr r3, r31
     mr r4, r30
     subfic r5, r0, 0x35
-    bl fn_80194250
+    bl __shr2u
     clrlwi. r0, r4, 31
     beq lbl_803348AC
     subfic r5, r29, 0x2a
@@ -85,10 +274,8 @@ lbl_803348CC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_803348E8
-// ----------------------------------------------------------------------------
-asm void fn_803348E8() {
+// asm_to_cpp: fn_803348E8
+asm int fn_803348E8() {
     nofralloc
     li r9, -0x1
     lis r7, 0x20
@@ -252,150 +439,3 @@ asm void fn_803348E8() {
     addi r1, r1, 0x20
     blr
 }
-
-// ----------------------------------------------------------------------------
-// fn_80334B6C
-// ----------------------------------------------------------------------------
-asm void fn_80334B6C() {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    addi r11, r1, 0x30
-    bl _savegpr_27
-    lis r30, lbl_80470220@ha
-    mr r27, r3
-    mr r28, r4
-    addi r30, r30, lbl_80470220@l
-    bl fn_8031C81C
-    cmpwi r3, 0x0
-    bne lbl_80334BA4
-    li r3, -0x1
-    b lbl_80334BA8
-lbl_80334BA4:
-    li r3, 0x0
-lbl_80334BA8:
-    cmpwi r3, 0x0
-    bge lbl_80334BB4
-    b lbl_80334C9C
-lbl_80334BB4:
-    lwz r0, lbl_8049E590
-    cmpwi r0, 0x0
-    bne lbl_80334C0C
-    bl OSDisableInterrupts
-    lwz r0, lbl_8049E590
-    mr r31, r3
-    cmpwi r0, 0x0
-    bne lbl_80334C04
-    addi r3, r30, 0x80
-    bl OSInitMutex
-    addi r3, r30, 0xa0
-    li r4, 0x0
-    li r5, 0x20
-    bl memset
-    addi r3, r30, 0xc0
-    li r4, 0x0
-    li r5, 0x20
-    bl memset
-    li r0, 0x1
-    stw r0, lbl_8049E590
-lbl_80334C04:
-    mr r3, r31
-    bl OSRestoreInterrupts
-lbl_80334C0C:
-    addi r3, r30, 0x80
-    bl OSLockMutex
-    lis r31, lbl_8038EDFC@ha
-    lis r4, lbl_8038EDE8@ha
-    addi r3, r31, lbl_8038EDFC@l
-    addi r5, r1, 0x8
-    addi r4, r4, lbl_8038EDE8@l
-    li r6, 0x0
-    bl NWC24iOpenResourceManager
-    cmpwi r3, 0x0
-    mr r29, r3
-    blt lbl_80334C90
-    addi r6, r30, 0xa0
-    stw r27, 0xa0(r30)
-    lwz r4, 0x8(r1)
-    addi r3, r31, lbl_8038EDFC@l
-    stw r28, 0x4(r6)
-    addi r8, r30, 0xc0
-    li r5, 0x17
-    li r7, 0x20
-    li r9, 0x20
-    bl NWC24iIoctlResourceManager
-    cmpwi r3, 0x0
-    mr r29, r3
-    blt lbl_80334C74
-    lwz r29, 0xc0(r30)
-lbl_80334C74:
-    lis r3, lbl_8038EDFC@ha
-    lwz r4, 0x8(r1)
-    addi r3, r3, lbl_8038EDFC@l
-    bl NWC24iCloseResourceManager
-    cmpwi r29, 0x0
-    blt lbl_80334C90
-    mr r29, r3
-lbl_80334C90:
-    addi r3, r30, 0x80
-    bl OSUnlockMutex
-    mr r3, r29
-lbl_80334C9C:
-    addi r11, r1, 0x30
-    bl _restgpr_27
-    lwz r0, 0x34(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// NWC24iSynchronizeRtcCounter
-// ----------------------------------------------------------------------------
-asm void NWC24iSynchronizeRtcCounter() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-lbl_80334CCC:
-    bl SCCheckStatus
-    cmplwi r3, 0x2
-    bne lbl_80334CE0
-    li r3, -0x1
-    b lbl_80334D10
-lbl_80334CE0:
-    cmpwi r3, 0x0
-    bne lbl_80334CCC
-    bl SCGetCounterBias
-    mr r31, r3
-    bl OSGetTime
-    lis r6, 0x8000
-    li r5, 0x0
-    lwz r0, 0xf8(r6)
-    srwi r6, r0, 2
-    bl __div2i
-    subfc r31, r31, r4
-    li r3, 0x0
-lbl_80334D10:
-    cmpwi r3, 0x0
-    beq lbl_80334D1C
-    b lbl_80334D30
-lbl_80334D1C:
-    neg r0, r30
-    mr r3, r31
-    or r0, r0, r30
-    srwi r4, r0, 31
-    bl fn_80334B6C
-lbl_80334D30:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-

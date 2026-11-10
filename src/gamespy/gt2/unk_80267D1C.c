@@ -12,7 +12,7 @@ extern u8 lbl_8040A280[];
 
 // Forward declarations
 extern void GOAGetLastError();
-extern void fn_80267074();
+extern void gti2DumpCallback();
 extern void _restgpr_24();
 extern void _restgpr_25();
 extern void _restgpr_26();
@@ -22,10 +22,10 @@ extern void _savegpr_25();
 extern void _savegpr_26();
 extern void _savegpr_27();
 extern void detail_HoldSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandlePCcPCQ44nw4r3snd14SoundStartable9StartInfo();
-extern void fn_80253658();
-extern void fn_80253660();
-extern void fn_80253690();
-extern void fn_802537B4();
+extern void ArrayLength();
+extern void ArrayNth();
+extern void ArrayAppend();
+extern void ArrayInsertSorted();
 extern void fn_80255E4C();
 extern void fn_802565F0();
 extern void fn_80256C70();
@@ -96,7 +96,7 @@ asm void fn_80267D1C() {
     stw r28, 0x10(r1)
     mr r28, r3
     lwz r3, 0x60(r3)
-    bl fn_80253658
+    bl ArrayLength
     cmpwi r3, 0x0
     mr r31, r3
     bne lbl_80267D5C
@@ -108,7 +108,7 @@ lbl_80267D5C:
 lbl_80267D64:
     lwz r3, 0x60(r28)
     mr r4, r30
-    bl fn_80253660
+    bl ArrayNth
     lhz r0, 0x8(r3)
     subf r0, r29, r0
     extsh. r0, r0
@@ -132,7 +132,7 @@ lbl_80267DAC:
     subi r30, r30, 0x1
     bne lbl_80267DA0
     lwz r3, 0x60(r28)
-    bl fn_80253658
+    bl ArrayLength
     cmpwi r3, 0x0
     mr r31, r3
     bne lbl_80267DDC
@@ -143,14 +143,14 @@ lbl_80267DAC:
 lbl_80267DDC:
     lwz r3, 0x60(r28)
     li r4, 0x0
-    bl fn_80253660
+    bl ArrayNth
     lwz r29, 0x0(r3)
     li r30, 0x0
     b lbl_80267E10
 lbl_80267DF4:
     lwz r3, 0x60(r28)
     mr r4, r30
-    bl fn_80253660
+    bl ArrayNth
     lwz r0, 0x0(r3)
     addi r30, r30, 0x1
     subf r0, r29, r0
@@ -362,11 +362,11 @@ lbl_802680B4:
     addi r3, r31, 0x50
     bl gti2BufferWriteData
     lwz r3, 0x60(r31)
-    bl fn_80253658
+    bl ArrayLength
     mr r4, r3
     lwz r3, 0x60(r31)
     subi r4, r4, 0x1
-    bl fn_80253660
+    bl ArrayNth
     mr r5, r3
     lwz r0, 0x0(r3)
     lwz r4, 0x50(r31)
@@ -701,7 +701,7 @@ lbl_80268550:
     b lbl_802685C8
 lbl_80268560:
     lwz r3, 0x9c(r3)
-    bl fn_80253658
+    bl ArrayLength
     cmpwi r3, 0x0
     beq lbl_802685A0
     mr r3, r30
@@ -869,11 +869,11 @@ lbl_8026878C:
     li r5, 0x20
     bl gti2BufferWriteData
     lwz r3, 0x60(r30)
-    bl fn_80253658
+    bl ArrayLength
     mr r4, r3
     lwz r3, 0x60(r30)
     subi r4, r4, 0x1
-    bl fn_80253660
+    bl ArrayNth
     mr r5, r3
     lwz r0, 0x0(r3)
     lwz r4, 0x50(r30)
@@ -1232,14 +1232,14 @@ asm void fn_80268C58() {
     mr r26, r6
     mr r27, r7
     mr r31, r8
-    bl fn_80253658
+    bl ArrayLength
     mr r29, r3
     li r28, 0x0
     b lbl_80268CD0
 lbl_80268C98:
     lwz r3, 0x5c(r30)
     mr r4, r28
-    bl fn_80253660
+    bl ArrayNth
     lhz r0, 0xc(r3)
     cmplw r0, r25
     bne lbl_80268CC0
@@ -1274,9 +1274,9 @@ lbl_80268CF8:
     stw r24, 0x10(r1)
     sth r25, 0x14(r1)
     lwz r3, 0x5c(r30)
-    bl fn_802537B4
+    bl ArrayInsertSorted
     lwz r3, 0x5c(r30)
-    bl fn_80253658
+    bl ArrayLength
     addi r0, r29, 0x1
     cmpw r0, r3
     beq lbl_80268D44
@@ -1303,13 +1303,13 @@ lbl_80268D44:
 lbl_80268D80:
     lwz r3, 0x5c(r30)
     mr r4, r29
-    bl fn_80253660
+    bl ArrayNth
     lhz r0, 0xc(r3)
     cmplw r0, r25
     bne lbl_80268DE0
     lwz r3, 0x5c(r30)
     subi r4, r29, 0x1
-    bl fn_80253660
+    bl ArrayNth
     lhz r3, 0xc(r3)
     subf r0, r3, r25
     clrlwi r0, r0, 16
@@ -1459,13 +1459,13 @@ lbl_80268F80:
     b lbl_8026923C
 lbl_80268FA4:
     lwz r3, 0x5c(r30)
-    bl fn_80253658
+    bl ArrayLength
     subi r26, r3, 0x1
     b lbl_80269088
 lbl_80268FB4:
     lwz r3, 0x5c(r30)
     mr r4, r26
-    bl fn_80253660
+    bl ArrayNth
     lhz r4, 0xc(r3)
     mr r31, r3
     lhz r0, 0x66(r30)
@@ -1490,14 +1490,14 @@ lbl_80269000:
     lwz r3, 0x5c(r30)
     bl detail_HoldSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandlePCcPCQ44nw4r3snd14SoundStartable9StartInfo
     lwz r3, 0x5c(r30)
-    bl fn_80253658
+    bl ArrayLength
     mr r31, r3
     li r26, 0x0
     b lbl_80269068
 lbl_8026902C:
     lwz r3, 0x5c(r30)
     mr r4, r26
-    bl fn_80253660
+    bl ArrayNth
     lwz r0, 0x0(r3)
     cmpw r0, r29
     ble lbl_80269064
@@ -1726,14 +1726,14 @@ lbl_80269328:
     b lbl_80269424
 lbl_80269338:
     lwz r3, 0x60(r3)
-    bl fn_80253658
+    bl ArrayLength
     mr r30, r3
     li r27, 0x0
     b lbl_80269418
 lbl_8026934C:
     lwz r3, 0x60(r26)
     mr r4, r27
-    bl fn_80253660
+    bl ArrayNth
     lhz r4, 0x8(r3)
     mr r31, r3
     subf r0, r29, r4
@@ -2042,7 +2042,7 @@ asm void fn_80269704() {
     mr r9, r28
     li r7, 0x0
     li r10, 0x0
-    bl fn_80267074
+    bl gti2DumpCallback
     cmpwi r3, 0x0
     bne lbl_80269788
     li r3, 0x0
@@ -2272,7 +2272,7 @@ lbl_80269AA4:
     b lbl_80269B18
 lbl_80269AB8:
     lwz r3, 0x9c(r31)
-    bl fn_80253658
+    bl ArrayLength
     cmpwi r3, 0x0
     beq lbl_80269AF8
     mr r3, r31
@@ -2362,7 +2362,7 @@ asm void fn_80269B90() {
     li r8, 0x0
     li r9, 0x0
     li r10, 0x0
-    bl fn_80267074
+    bl gti2DumpCallback
     cmpwi r3, 0x0
     bne lbl_80269C00
     li r3, 0x0
@@ -2519,7 +2519,7 @@ asm void fn_80269DA8() {
     li r7, 0x1
     li r8, 0x0
     li r9, 0x0
-    bl fn_80267074
+    bl gti2DumpCallback
     cmpwi r3, 0x0
     bne lbl_80269E14
     li r3, 0x0
@@ -2648,7 +2648,7 @@ lbl_80269F68:
     li r8, 0x0
     li r9, 0x0
     li r10, 0x0
-    bl fn_80267074
+    bl gti2DumpCallback
     cmpwi r3, 0x0
     bne lbl_80269FD4
     li r0, 0x0
@@ -2867,13 +2867,13 @@ lbl_8026A288:
     bl fn_802565F0
     stw r3, 0x2c(r1)
     lwz r3, 0x60(r30)
-    bl fn_80253658
+    bl ArrayLength
     mr r29, r3
     lwz r3, 0x60(r30)
     addi r4, r1, 0x20
-    bl fn_80253690
+    bl ArrayAppend
     lwz r3, 0x60(r30)
-    bl fn_80253658
+    bl ArrayLength
     addi r0, r29, 0x1
     subf r0, r0, r3
     cntlzw r0, r0
@@ -3036,11 +3036,11 @@ lbl_8026A4F8:
     li r5, 0x20
     bl gti2BufferWriteData
     lwz r3, 0x60(r30)
-    bl fn_80253658
+    bl ArrayLength
     mr r4, r3
     lwz r3, 0x60(r30)
     subi r4, r4, 0x1
-    bl fn_80253660
+    bl ArrayNth
     mr r5, r3
     lwz r0, 0x0(r3)
     lwz r4, 0x50(r30)
@@ -3100,11 +3100,11 @@ lbl_8026A5C0:
     b lbl_8026A638
 lbl_8026A5D4:
     lwz r3, 0x60(r31)
-    bl fn_80253658
+    bl ArrayLength
     mr r4, r3
     lwz r3, 0x60(r31)
     subi r4, r4, 0x1
-    bl fn_80253660
+    bl ArrayNth
     mr r5, r3
     lwz r0, 0x0(r3)
     lwz r4, 0x50(r31)
@@ -3172,11 +3172,11 @@ lbl_8026A6B0:
     addi r3, r29, 0x50
     bl gti2BufferWriteData
     lwz r3, 0x60(r29)
-    bl fn_80253658
+    bl ArrayLength
     mr r4, r3
     lwz r3, 0x60(r29)
     subi r4, r4, 0x1
-    bl fn_80253660
+    bl ArrayNth
     mr r5, r3
     lwz r0, 0x0(r3)
     lwz r4, 0x50(r29)
@@ -3237,11 +3237,11 @@ lbl_8026A77C:
     b lbl_8026A7F4
 lbl_8026A790:
     lwz r3, 0x60(r31)
-    bl fn_80253658
+    bl ArrayLength
     mr r4, r3
     lwz r3, 0x60(r31)
     subi r4, r4, 0x1
-    bl fn_80253660
+    bl ArrayNth
     mr r5, r3
     lwz r0, 0x0(r3)
     lwz r4, 0x50(r31)
@@ -3300,11 +3300,11 @@ lbl_8026A844:
     b lbl_8026A8BC
 lbl_8026A858:
     lwz r3, 0x60(r31)
-    bl fn_80253658
+    bl ArrayLength
     mr r4, r3
     lwz r3, 0x60(r31)
     subi r4, r4, 0x1
-    bl fn_80253660
+    bl ArrayNth
     mr r5, r3
     lwz r0, 0x0(r3)
     lwz r4, 0x50(r31)
@@ -3702,11 +3702,11 @@ lbl_8026AD88:
     addi r3, r29, 0x50
     bl gti2BufferWriteData
     lwz r3, 0x60(r29)
-    bl fn_80253658
+    bl ArrayLength
     mr r4, r3
     lwz r3, 0x60(r29)
     subi r4, r4, 0x1
-    bl fn_80253660
+    bl ArrayNth
     mr r5, r3
     lwz r0, 0x0(r3)
     lwz r4, 0x50(r29)

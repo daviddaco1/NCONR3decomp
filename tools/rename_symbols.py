@@ -34,19 +34,21 @@ def main():
     if pat:
         open(sym_path, 'w', newline='').write(
             re.sub(r'^(\S+)(?= = )', lambda m: ren.get(m.group(1), m.group(1)), syms, flags=re.M))
-        for d, _, fs in os.walk('src'):
-            for f in fs:
-                p = os.path.join(d, f)
-                t = open(p, newline='', errors='surrogateescape').read()
-                if asm_only and not (f.endswith('.s') or '// Translation unit:' in t[:400]):
-                    k = t.find(MIX_MARK)
-                    if k < 0:
-                        continue
-                    n = t[:k] + pat.sub(lambda m: ren[m.group(1)], t[k:])
-                else:
-                    n = pat.sub(lambda m: ren[m.group(1)], t)
-                if n != t:
-                    open(p, 'w', newline='', errors='surrogateescape').write(n)
+        files = [os.path.join(d, f) for d, _, fs in os.walk('src') for f in fs]
+        if not asm_only:  # prototipos de m2c que usan los C generados
+            files.append(os.path.join('include', 'm2c_protos.h'))
+        for p in files:
+            f = os.path.basename(p)
+            t = open(p, newline='', errors='surrogateescape').read()
+            if asm_only and not (f.endswith('.s') or '// Translation unit:' in t[:400]):
+                k = t.find(MIX_MARK)
+                if k < 0:
+                    continue
+                n = t[:k] + pat.sub(lambda m: ren[m.group(1)], t[k:])
+            else:
+                n = pat.sub(lambda m: ren[m.group(1)], t)
+            if n != t:
+                open(p, 'w', newline='', errors='surrogateescape').write(n)
     print(f'renombrados {len(ren)}, salteados {len(skipped)}')
     for o, n in skipped:
         print('  saltea', o, n)

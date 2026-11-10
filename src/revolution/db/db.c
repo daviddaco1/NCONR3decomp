@@ -5,11 +5,11 @@
 BOOL DBVerbose;
 OSDebugInterface* __DBInterface;
 
-// DBInit: definicion C reemplazada por asm (ver abajo)
-
-
-//unused
-void DBIsDebuggerPresent(){
+void DBInit(void) {
+    __DBInterface =
+        (OSDebugInterface*)OSPhysicalToCached(OS_PHYS_DEBUG_INTERFACE);
+    __DBInterface->exceptionHook = OSCachedToPhysical(__DBExceptionDestination);
+    DBVerbose = TRUE;
 }
 
 void __DBExceptionDestinationAux(void) {
@@ -37,14 +37,6 @@ BOOL __DBIsExceptionMarked(u8 exc) {
     return __DBInterface->exceptionMask & (1 << exc);
 }
 
-//unused
-void __DBMarkException(){
-}
-
-//unused
-void __DBSetPresent(){
-}
-
 void DBPrintf(const char* msg, ...) {
 #pragma unused(msg)
 }
@@ -52,17 +44,3 @@ void DBPrintf(const char* msg, ...) {
 // ---- Funciones aun sin C que matchee (asm generado) ----
 
 
-// asm_to_cpp: DBInit
-asm void DBInit(void) {
-    nofralloc
-    lis r4, 0x8000
-    lis r3, __DBExceptionDestination@ha
-    addi r5, r4, 0x40
-    li r0, 0x1
-    addi r3, r3, __DBExceptionDestination@l
-    stw r5, __DBInterface
-    addis r3, r3, 0x8000
-    stw r3, 0x48(r4)
-    stw r0, DBVerbose
-    blr
-}

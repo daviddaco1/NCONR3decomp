@@ -1,30 +1,92 @@
-#include "types.h"
+#include <nw4r/g3d.h>
 
-// Translation unit: src/nw4r/g3d/unk_801F3CE4.cpp
-// Total functions: 4
+namespace nw4r {
+namespace g3d {
 
-// Small Data symbols (@sda21)
+NW4R_G3D_RTTI_DEF(ScnProc);
+
+ScnProc* ScnProc::Construct(MEMAllocator* pAllocator, u32* pSize,
+                            DrawProc pProc, bool opa, bool xlu,
+                            u32 userDataSize) {
+    ScnProc* pScnProc = NULL;
+    u32 scnProcSize = sizeof(ScnProc);
+
+    userDataSize = align4(userDataSize);
+    u32 userDataOfs = align4(scnProcSize);
+
+    u32 size = align4(userDataOfs + userDataSize);
+    if (pSize != NULL) {
+        *pSize = size;
+    }
+
+    if (pAllocator != NULL) {
+        u8* pBuffer = reinterpret_cast<u8*>(Alloc(pAllocator, size));
+
+        if (pBuffer != NULL) {
+            void* pUserData = userDataSize != 0 ? pBuffer + userDataOfs : NULL;
+
+            pScnProc =
+                new (pBuffer) ScnProc(pAllocator, pProc, pUserData, opa, xlu);
+        }
+    }
+
+    return pScnProc;
+}
+
+void ScnProc::G3dProc(u32 task, u32 param, void* pInfo) {
+    if (IsG3dProcDisabled(task)) {
+        return;
+    }
+
+    switch (task) {
+    case G3DPROC_GATHER_SCNOBJ: {
+        IScnObjGather* pCollection = static_cast<IScnObjGather*>(pInfo);
+        pCollection->Add(this, (mFlag & SCNPROCFLAG_DRAW_OPA) ? true : false,
+                         (mFlag & SCNPROCFLAG_DRAW_XLU) ? true : false);
+        break;
+    }
+
+    case G3DPROC_DRAW_OPA: {
+        if (mpDrawProc != NULL) {
+            G3DState::Invalidate();
+            mpDrawProc(this, true);
+        }
+        break;
+    }
+
+    case G3DPROC_DRAW_XLU: {
+        if (mpDrawProc != NULL) {
+            G3DState::Invalidate();
+            mpDrawProc(this, false);
+        }
+        break;
+    }
+
+    default: {
+        DefG3dProcScnLeaf(task, param, pInfo);
+    }
+    }
+}
+
+} // namespace g3d
+} // namespace nw4r
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern "C" float lbl_8049C500;
-
-// Global data symbols (@ha/@l)
 extern "C" u8 lbl_8037ADA8[];
 extern "C" u8 lbl_8037ADE4[];
 extern "C" u8 lbl_8037AE20[];
 extern "C" u8 lbl_8037AE5C[];
-
-// Forward declarations
 extern "C" void ApplyClrAnmResult__Q24nw4r3g3dFQ34nw4r3g3d10ResMatChanQ34nw4r3g3d14ResMatTevColorPCQ34nw4r3g3d12ClrAnmResult();
 extern "C" void ApplyTexPatAnmResult__Q24nw4r3g3dFQ34nw4r3g3d9ResTexObjQ34nw4r3g3d10ResTlutObjPCQ34nw4r3g3d15TexPatAnmResult();
 extern "C" void ApplyTexSrtAnmResult__Q24nw4r3g3dFQ34nw4r3g3d9ResTexSrtQ34nw4r3g3d20ResMatIndMtxAndScalePCQ34nw4r3g3d15TexSrtAnmResult();
 extern "C" void DCStore__Q34nw4r3g3d14ResMatTevColorFb();
 extern "C" void DCStore__Q34nw4r3g3d20ResMatIndMtxAndScaleFb();
-extern "C" void DefG3dProcScnLeaf__Q34nw4r3g3d7ScnLeafFUlUlPv();
 extern "C" void Disable__Q34nw4r2ut2LCFv();
 extern "C" void Enable__Q34nw4r2ut2LCFv();
-extern "C" void GetResNodeNumEntries__Q34nw4r3g3d6ResMdlCFv();
-extern "C" void GetResNode__Q34nw4r3g3d6ResMdlCFUl();
+extern "C" void GetResMatNumEntries__Q34nw4r3g3d6ResMdlCFv();
+extern "C" void GetResMat__Q34nw4r3g3d6ResMdlCFUl();
 extern "C" void Invalidate__Q34nw4r3g3d8G3DStateFUl();
-extern "C" void OSRegisterVersion();
 extern "C" void SetRenderModeObj__Q34nw4r3g3d8G3DStateFRC16_GXRenderModeObj();
 extern "C" void TestExistence__Q34nw4r3g3d12AnmObjMatClrCFUl();
 extern "C" void TestExistence__Q34nw4r3g3d12AnmObjTexPatCFUl();
@@ -35,11 +97,8 @@ extern "C" void _savegpr_14();
 extern "C" void fn_801F3CE4();
 extern "C" void fn_801F40F4();
 extern "C" void fn_801F41E8();
-extern "C" void fn_801F41F0();
 
-// ----------------------------------------------------------------------------
-// fn_801F3CE4
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801F3CE4
 extern "C" asm void fn_801F3CE4() {
     nofralloc
     stwu r1, -0x210(r1)
@@ -51,7 +110,7 @@ extern "C" asm void fn_801F3CE4() {
     mr r16, r4
     mr r17, r5
     mr r18, r6
-    bl GetResNodeNumEntries__Q34nw4r3g3d6ResMdlCFv
+    bl GetResMatNumEntries__Q34nw4r3g3d6ResMdlCFv
     addi r27, r1, 0xa8
     addi r0, r1, 0x8c
     subf r4, r0, r27
@@ -83,7 +142,7 @@ extern "C" asm void fn_801F3CE4() {
 lbl_801F3D7C:
     mr r3, r15
     mr r4, r19
-    bl GetResNode__Q34nw4r3g3d6ResMdlCFUl
+    bl GetResMat__Q34nw4r3g3d6ResMdlCFUl
     cmpwi r16, 0x0
     mr r31, r3
     beq lbl_801F3FC4
@@ -329,9 +388,7 @@ lbl_801F40D0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801F40F4
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801F40F4
 extern "C" asm void fn_801F40F4() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -406,93 +463,9 @@ lbl_801F41D0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801F41E8
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801F41E8
 extern "C" asm void fn_801F41E8() {
     nofralloc
     li r3, 0x7ff
     b Invalidate__Q34nw4r3g3d8G3DStateFUl
 }
-
-// ----------------------------------------------------------------------------
-// fn_801F41F0
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_801F41F0() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    cmplwi r4, 0x9
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    bge lbl_801F422C
-    subi r7, r4, 0x1
-    li r8, 0x1
-    lwz r0, 0xcc(r3)
-    slw r7, r8, r7
-    and. r0, r7, r0
-    beq lbl_801F422C
-    li r0, 0x1
-    b lbl_801F4230
-lbl_801F422C:
-    li r0, 0x0
-lbl_801F4230:
-    cmpwi r0, 0x0
-    bne lbl_801F42E4
-    cmpwi r4, 0x6
-    beq lbl_801F4284
-    bge lbl_801F4250
-    cmpwi r4, 0x5
-    bge lbl_801F425C
-    b lbl_801F42DC
-lbl_801F4250:
-    cmpwi r4, 0x8
-    bge lbl_801F42DC
-    b lbl_801F42B0
-lbl_801F425C:
-    lwz r12, 0x0(r6)
-    mr r3, r6
-    lwz r0, 0xe8(r31)
-    mr r4, r31
-    lwz r12, 0xc(r12)
-    extrwi r6, r0, 1, 30
-    clrlwi r5, r0, 31
-    mtctr r12
-    bctrl
-    b lbl_801F42E4
-lbl_801F4284:
-    lwz r0, 0xec(r3)
-    cmpwi r0, 0x0
-    beq lbl_801F42E4
-    li r3, 0x7ff
-    bl Invalidate__Q34nw4r3g3d8G3DStateFUl
-    lwz r12, 0xec(r31)
-    mr r3, r31
-    li r4, 0x1
-    mtctr r12
-    bctrl
-    b lbl_801F42E4
-lbl_801F42B0:
-    lwz r0, 0xec(r3)
-    cmpwi r0, 0x0
-    beq lbl_801F42E4
-    li r3, 0x7ff
-    bl Invalidate__Q34nw4r3g3d8G3DStateFUl
-    lwz r12, 0xec(r31)
-    mr r3, r31
-    li r4, 0x0
-    mtctr r12
-    bctrl
-    b lbl_801F42E4
-lbl_801F42DC:
-    mr r3, r31
-    bl DefG3dProcScnLeaf__Q34nw4r3g3d7ScnLeafFUlUlPv
-lbl_801F42E4:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-

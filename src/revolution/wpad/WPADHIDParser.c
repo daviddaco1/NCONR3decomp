@@ -125,6 +125,7 @@ void __a1_unused_report(void) {
 }
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
+extern void WPADiSendReadData();
 extern float __OSInIPL;
 extern float lbl_804A23F8;
 extern float lbl_804A2408;
@@ -234,7 +235,7 @@ lbl_8028EEB4:
     addi r6, r31, 0xfa
     addi r7, r30, __wpadAbortInitExtension@l
     li r5, 0x6
-    bl fn_8028EC4C
+    bl WPADiSendReadData
     b lbl_8028EFA4
 lbl_8028EF4C:
     li r4, 0xfc
@@ -1652,7 +1653,7 @@ lbl_802903CC:
     mr r3, r27
     addi r4, r28, 0x934
     li r5, 0x20
-    bl fn_8028EC4C
+    bl WPADiSendReadData
     b lbl_80290404
 lbl_802903EC:
     li r3, 0xfc
@@ -1997,7 +1998,7 @@ lbl_80290818:
     addi r6, r27, 0xfa
     addi r7, r23, __wpadAbortInitExtension@l
     li r5, 0x6
-    bl fn_8028EC4C
+    bl WPADiSendReadData
     li r0, 0xff
     cmpwi r20, 0x0
     stb r0, 0x8c1(r29)

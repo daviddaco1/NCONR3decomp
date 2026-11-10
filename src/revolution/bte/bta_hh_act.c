@@ -161,7 +161,7 @@ extern void bta_sys_conn_open();
 extern void bta_sys_sendmsg();
 extern void fn_8029ABA4();
 extern void fn_8029ABB4();
-extern void fn_802A59E8();
+extern void bdcpy();
 extern void memcpy();
 
 // asm_to_cpp: bta_hh_api_enable
@@ -615,7 +615,7 @@ lbl_802A9AC0:
     addi r3, r1, 0x8
     addi r4, r29, 0x8
     stb r0, 0xf(r1)
-    bl fn_802A59E8
+    bl bdcpy
     lbz r31, 0x0(r30)
     cmpwi r31, 0x0
     bne lbl_802A9B54
@@ -749,7 +749,7 @@ lbl_802A9C84:
     stb r30, 0xf(r1)
     addi r3, r1, 0x8
     addi r4, r29, 0x8
-    bl fn_802A59E8
+    bl bdcpy
     lis r31, lbl_80453D48@ha
     addi r31, r31, lbl_80453D48@l
     lbz r3, 0x22d(r31)
@@ -851,7 +851,7 @@ lbl_802A9DE8:
     bl memset
     addi r3, r1, 0x10
     addi r4, r30, 0x8
-    bl fn_802A59E8
+    bl bdcpy
     mr r3, r30
     addi r4, r1, 0x8
     bl bta_hh_start_sdp
@@ -1001,7 +1001,7 @@ lbl_802AA054:
     addi r4, r31, 0x8
     lbz r0, 0x16(r31)
     stb r0, 0x17(r1)
-    bl fn_802A59E8
+    bl bdcpy
     lis r5, lbl_80453D48@ha
     addi r4, r1, 0x10
     addi r5, r5, lbl_80453D48@l
@@ -1222,7 +1222,7 @@ lbl_802AA36C:
     stb r0, 0x16(r1)
     addi r3, r1, 0x10
     addi r4, r31, 0x8
-    bl fn_802A59E8
+    bl bdcpy
     lbz r3, 0x16(r31)
     bl HID_HostCloseDev
     lis r5, lbl_80453D48@ha
@@ -1358,7 +1358,7 @@ asm void bta_hh_maint_dev_act(s8 *arg0, s8 *arg1) {
 lbl_802AA54C:
     addi r3, r1, 0x10
     addi r4, r4, 0x8
-    bl fn_802A59E8
+    bl bdcpy
     lbz r3, 0x16(r30)
     cmplwi r3, 0xff
     bne lbl_802AA5C0
@@ -1397,7 +1397,7 @@ lbl_802AA5D4:
     addi r3, r1, 0x10
     addi r4, r30, 0x8
     stb r0, 0x17(r1)
-    bl fn_802A59E8
+    bl bdcpy
     lbz r0, 0x1c(r30)
     cmplwi r0, 0x3
     beq lbl_802AA634

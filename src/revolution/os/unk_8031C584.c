@@ -249,7 +249,7 @@ extern void _restgpr_20();
 extern void _restgpr_26();
 extern void _savegpr_20();
 extern void _savegpr_26();
-extern void fn_8031474C();
+extern void __OSSetInternalAlarmUserData();
 s32 fn_8031C934(s8 *arg0);
 s8 *fn_8031C970(s8 *arg0, s32 arg1);
 void fn_8031CB24();
@@ -1813,7 +1813,7 @@ lbl_8031DB30:
     bl OSCreateAlarm
     mr r4, r31
     addi r3, r1, 0x8
-    bl fn_8031474C
+    bl __OSSetInternalAlarmUserData
     lis r7, fn_8031DA6C@ha
     mr r6, r28
     mr r5, r29

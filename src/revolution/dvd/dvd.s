@@ -5031,7 +5031,7 @@
 .endfn DVDCancelAsync
 
 # .text:0x464C | 0x802D55B4 | size: 0xDC
-.fn fn_802D55B4, global
+.fn DVDCancel, global
 /* 802D55B4 002C1A14  94 21 FF F0 */	stwu r1, -0x10(r1)
 /* 802D55B8 002C1A18  7C 08 02 A6 */	mflr r0
 /* 802D55BC 002C1A1C  3C 80 80 2D */	lis r4, cbForCancelSync@ha
@@ -5092,7 +5092,7 @@
 /* 802D5684 002C1AE4  7C 08 03 A6 */	mtlr r0
 /* 802D5688 002C1AE8  38 21 00 10 */	addi r1, r1, 0x10
 /* 802D568C 002C1AEC  4E 80 00 20 */	blr
-.endfn fn_802D55B4
+.endfn DVDCancel
 
 # .text:0x4728 | 0x802D5690 | size: 0x8
 .fn cbForCancelSync, global
@@ -5171,7 +5171,7 @@
 .endfn __DVDGetCoverStatus
 
 # .text:0x4808 | 0x802D5770 | size: 0x44
-.fn fn_802D5770, global
+.fn __DVDResetWithNoSpinup, global
 /* 802D5770 002C1BD0  94 21 FF F0 */	stwu r1, -0x10(r1)
 /* 802D5774 002C1BD4  7C 08 02 A6 */	mflr r0
 /* 802D5778 002C1BD8  38 60 00 00 */	li r3, 0x0
@@ -5190,7 +5190,7 @@
 /* 802D57A8 002C1C08  7C 08 03 A6 */	mtlr r0
 /* 802D57AC 002C1C0C  38 21 00 10 */	addi r1, r1, 0x10
 /* 802D57B0 002C1C10  4E 80 00 20 */	blr
-.endfn fn_802D5770
+.endfn __DVDResetWithNoSpinup
 
 # .text:0x484C | 0x802D57B4 | size: 0x11C
 .fn __DVDPrepareResetAsync, global

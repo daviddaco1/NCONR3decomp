@@ -223,7 +223,7 @@ extern "C" void __ct__Q34nw4r2ut19DvdLockedFileStreamFl();
 extern "C" void __dt__Q34nw4r3snd12SoundArchiveFv();
 extern "C" void __dt__Q34nw4r3snd15DvdSoundArchiveFv();
 extern "C" void dtor_80136CFC();
-extern "C" void fn_8020BC8C();
+extern "C" void Seek__Q44nw4r3snd15DvdSoundArchive13DvdFileStreamFlUl();
 extern "C" u32 fn_8020BD14();
 extern "C" u32 fn_8020BD1C();
 extern "C" u32 fn_8020BD24();
@@ -231,7 +231,7 @@ extern "C" u32 fn_8020BD2C();
 extern "C" u32 fn_8020BD34();
 extern "C" u32 fn_8020BD3C();
 extern "C" u32 fn_8020BD44();
-extern "C" u8 fn_8020BD4C(const u8 *self);
+extern "C" u8 IsBusy__Q34nw4r2ut13DvdFileStreamCFv(const u8 *self);
 extern "C" u32 fn_8020BD54();
 extern "C" u32 fn_8020BD5C();
 extern "C" u32 fn_8020BD64();
@@ -510,8 +510,8 @@ lbl_8020BB2C:
     blr
 }
 
-// asm_to_cpp: fn_8020BC8C
-extern "C" asm void fn_8020BC8C() {
+// asm_to_cpp: Seek__Q44nw4r3snd15DvdSoundArchive13DvdFileStreamFlUl
+extern "C" asm void Seek__Q44nw4r3snd15DvdSoundArchive13DvdFileStreamFlUl() {
     nofralloc
     cmpwi r5, 0x1
     beq lbl_8020BCBC
@@ -584,7 +584,7 @@ extern "C" u32 fn_8020BD44() {
     return 1;
 }
 
-extern "C" u8 fn_8020BD4C(const u8 *self) {
+extern "C" u8 IsBusy__Q34nw4r2ut13DvdFileStreamCFv(const u8 *self) {
     return self[0x6C];
 }
 

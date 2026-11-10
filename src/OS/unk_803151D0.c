@@ -1,58 +1,225 @@
-#include "types.h"
+#include <revolution/BASE.h>
+#include <revolution/DB.h>
+#include <revolution/OS.h>
 
-// Translation unit: src/OS/unk_803151D0.cpp
-// Total functions: 10
-
-// Global data symbols (@ha/@l)
-extern u8 at_878_8037FDC0[];
-
-// Forward declarations
-extern void DBPrintf();
-extern void DCEnable();
-extern void DMAErrorHandler();
-extern void ICEnable();
-extern void LCDisable();
-extern void OSDisableInterrupts();
-extern void OSDumpContext();
-extern void OSReport();
-extern void OSRestoreInterrupts();
-extern void OSSetErrorHandler();
-extern void PPCHalt();
-extern void PPCMfhid0();
-extern void PPCMfhid2();
-extern void PPCMfl2cr();
-extern void PPCMfmsr();
-extern void PPCMthid2();
-extern void PPCMtl2cr();
-extern void PPCMtmsr();
-extern void __OSCacheInit();
-extern void fn_803151D0();
-extern void fn_8031529C();
-extern void fn_803152FC();
-extern void fn_80315320();
-extern void fn_80315344();
-extern void fn_803153E4();
-extern void fn_803153F0();
-
-// ----------------------------------------------------------------------------
-// fn_803151D0
-// ----------------------------------------------------------------------------
-asm void fn_803151D0() {
+asm void DCEnable(void) {
+    // clang-format off
     nofralloc
+    
+    sync
+    mfhid0 r3
+    ori r3, r3, 0x4000
+    mthid0 r3
+
+    blr
+    // clang-format on
+}
+
+asm void DCInvalidateRange(register const void* buf, register u32 len) {
+    // clang-format off
+    nofralloc
+    
+    cmplwi len, 0
+    blelr 
+
+    clrlwi r5, buf, 27
+    add len, len, r5
+    addi len, len, 31
+    srwi len, len, 5
+    mtctr len
+
+do_invalidate:
+    dcbi 0, buf
+    addi buf, buf, 32
+    bdnz do_invalidate
+
+    blr
+    // clang-format on
+}
+
+asm void DCFlushRange(register const void* buf, register u32 len) {
+    // clang-format off
+    nofralloc
+    
+    cmplwi len, 0
+    blelr 
+
+    clrlwi r5, buf, 27
+    add len, len, r5
+    addi len, len, 31
+    srwi len, len, 5
+    mtctr len
+
+do_flush:
+    dcbf 0, buf
+    addi buf, buf, 32
+    bdnz do_flush
+    sc
+
+    blr
+    // clang-format on
+}
+
+asm void DCStoreRange(register const void* buf, register u32 len) {
+    // clang-format off
+    nofralloc
+    
+    cmplwi len, 0
+    blelr 
+
+    clrlwi r5, buf, 27
+    add len, len, r5
+    addi len, len, 31
+    srwi len, len, 5
+    mtctr len
+
+do_store:
+    dcbst 0, buf
+    addi buf, buf, 32
+    bdnz do_store
+    sc
+
+    blr
+    // clang-format on
+}
+
+asm void DCFlushRangeNoSync(register const void* buf, register u32 len) {
+    // clang-format off
+    nofralloc
+    
+    cmplwi len, 0
+    blelr 
+
+    clrlwi r5, buf, 27
+    add len, len, r5
+    addi len, len, 31
+    srwi len, len, 5
+    mtctr len
+
+do_flush:
+    dcbf 0, buf
+    addi buf, buf, 32
+    bdnz do_flush
+
+    blr
+    // clang-format on
+}
+
+asm void DCStoreRangeNoSync(register const void* buf, register u32 len) {
+    // clang-format off
+    nofralloc
+    
+    cmplwi len, 0
+    blelr 
+
+    clrlwi r5, buf, 27
+    add len, len, r5
+    addi len, len, 31
+    srwi len, len, 5
+    mtctr len
+
+do_store:
+    dcbst 0, buf
+    addi buf, buf, 32
+    bdnz do_store
+
+    blr
+    // clang-format on
+}
+
+asm void DCZeroRange(register const void* buf, register u32 len) {
+    // clang-format off
+    nofralloc
+    
+    cmplwi len, 0
+    blelr 
+
+    clrlwi r5, buf, 27
+    add len, len, r5
+    addi len, len, 31
+    srwi len, len, 5
+    mtctr len
+
+do_zero:
+    dcbz 0, buf
+    addi buf, buf, 32
+    bdnz do_zero
+
+    blr
+    // clang-format on
+}
+
+asm void ICInvalidateRange(register const void* buf, register u32 len) {
+    // clang-format off
+    nofralloc
+    
+    cmplwi len, 0
+    blelr 
+
+    clrlwi r5, buf, 27
+    add len, len, r5
+    addi len, len, 31
+    srwi len, len, 5
+    mtctr len
+
+do_invalidate:
+    icbi 0, buf
+    addi buf, buf, 32
+    bdnz do_invalidate
+    
+    sync
+    isync
+
+    blr
+    // clang-format on
+}
+
+asm void ICFlashInvalidate(void) {
+    // clang-format off
+    nofralloc
+    
+    mfhid0 r3
+    ori r3, r3, 0x800
+    mthid0 r3
+
+    blr
+    // clang-format on
+}
+
+asm void ICEnable(void) {
+    // clang-format off
+    nofralloc
+
+    isync
+    mfhid0 r3
+    ori r3, r3, 0x8000
+    mthid0 r3
+
+    blr
+    // clang-format on
+}
+
+static asm void __LCEnable(void) {
+    // clang-format off
+    nofralloc
+
     mfmsr r5
     ori r5, r5, 0x1000
     mtmsr r5
-    lis r3, 0x8000
-    li r4, 0x400
+
+    lis r3, 0x80000000@h
+    li r4, 1024
     mtctr r4
-lbl_803151E8:
-    dcbt r0, r3
-    dcbst r0, r3
-    addi r3, r3, 0x20
-    bdnz lbl_803151E8
-    mfspr r4, 920
-    oris r4, r4, 0x100f
-    mtspr 920, r4
+do_store:
+    dcbt 0, r3
+    dcbst 0, r3
+    addi r3, r3, 32
+    bdnz do_store
+
+    mfspr r4, 0x398
+    oris r4, r4, 0x100F
+    mtspr 0x398, r4
+    
     nop
     nop
     nop
@@ -65,20 +232,23 @@ lbl_803151E8:
     nop
     nop
     nop
-    lis r3, 0xe000
-    ori r3, r3, 0x2
+    
+    lis r3, 0xE0000002@h
+    ori r3, r3, 0xE0000002@l
     mtdbatl 3, r3
-    ori r3, r3, 0x1fe
+    ori r3, r3, 0x1FE
     mtdbatu 3, r3
     isync
-    lis r3, 0xe000
-    li r6, 0x200
+
+    lis r3, 0xE0000000@h
+    li r6, 512
     mtctr r6
-    li r6, 0x0
-lbl_8031525C:
+    li r6, 0
+do_load:
     dcbz_l r6, r3
-    addi r3, r3, 0x20
-    bdnz lbl_8031525C
+    addi r3, r3, 32
+    bdnz do_load
+    
     nop
     nop
     nop
@@ -91,336 +261,217 @@ lbl_8031525C:
     nop
     nop
     nop
+    
     blr
+    // clang-format on
 }
 
-// ----------------------------------------------------------------------------
-// fn_8031529C
-// ----------------------------------------------------------------------------
-asm void fn_8031529C() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    bl OSDisableInterrupts
-    mr r31, r3
-    bl fn_803151D0
-    mr r3, r31
-    bl OSRestoreInterrupts
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void LCEnable(void) {
+    BOOL enabled = OSDisableInterrupts();
+    __LCEnable();
+    OSRestoreInterrupts(enabled);
 }
 
-// ----------------------------------------------------------------------------
-// LCDisable
-// ----------------------------------------------------------------------------
-asm void LCDisable() {
+asm void LCDisable(void) {
+    // clang-format off
     nofralloc
-    lis r3, 0xe000
-    li r4, 0x200
+    
+    lis r3, 0xE0000000@ha
+    li r4, 512
     mtctr r4
-lbl_803152E0:
-    dcbi r0, r3
-    addi r3, r3, 0x20
-    bdnz lbl_803152E0
-    mfspr r4, 920
+do_invalidate:
+    dcbi 0, r3
+    addi r3, r3, 32
+    bdnz do_invalidate
+    
+    mfspr r4, 0x398
     rlwinm r4, r4, 0, 4, 2
-    mtspr 920, r4
+    mtspr 0x398, r4
+
     blr
+    // clang-format on
 }
 
-// ----------------------------------------------------------------------------
-// fn_803152FC
-// ----------------------------------------------------------------------------
-asm void fn_803152FC() {
+asm void LCLoadBlocks(register void* dst, register const void* src,
+                      register u32 blocks) {
+    // clang-format off
     nofralloc
-    extrwi r6, r5, 5, 25
-    clrlwi r4, r4, 3
-    or r6, r6, r4
+
+    rlwinm r6, blocks, 30, 27, 31
+    clrlwi src, src, 3
+    or r6, r6, src
     mtspr DMA_U, r6
-    clrlslwi r6, r5, 30, 2
-    or r6, r6, r3
+    rlwinm r6, blocks, 2, 28, 29
+    or r6, r6, dst
     ori r6, r6, 0x12
     mtspr DMA_L, r6
+
     blr
+    // clang-format on
 }
 
-// ----------------------------------------------------------------------------
-// fn_80315320
-// ----------------------------------------------------------------------------
-asm void fn_80315320() {
+asm void LCStoreBlocks(register void* dst, register const void* src,
+                       register u32 blocks){
+    // clang-format off
     nofralloc
-    extrwi r6, r5, 5, 25
-    clrlwi r3, r3, 3
-    or r6, r6, r3
+
+    rlwinm r6, blocks, 30, 27, 31
+    clrlwi dst, dst, 3
+    or r6, r6, dst
     mtspr DMA_U, r6
-    clrlslwi r6, r5, 30, 2
-    or r6, r6, r4
+    rlwinm r6, blocks, 2, 28, 29
+    or r6, r6, src
     ori r6, r6, 0x2
     mtspr DMA_L, r6
+
     blr
+    // clang-format on
 }
 
-// ----------------------------------------------------------------------------
-// fn_80315344
-// ----------------------------------------------------------------------------
-asm void fn_80315344() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r0, r5, 0x1f
-    stw r31, 0x1c(r1)
-    srwi r31, r0, 5
-    addi r0, r31, 0x7f
-    stw r30, 0x18(r1)
-    srwi r30, r0, 7
-    stw r29, 0x14(r1)
-    mr r29, r4
-    stw r28, 0x10(r1)
-    mr r28, r3
-    b lbl_803153B8
-lbl_8031537C:
-    cmplwi r31, 0x80
-    bge lbl_8031539C
-    mr r3, r28
-    mr r4, r29
-    mr r5, r31
-    bl fn_80315320
-    li r31, 0x0
-    b lbl_803153B8
-lbl_8031539C:
-    mr r3, r28
-    mr r4, r29
-    li r5, 0x0
-    bl fn_80315320
-    subi r31, r31, 0x80
-    addi r28, r28, 0x1000
-    addi r29, r29, 0x1000
-lbl_803153B8:
-    cmpwi r31, 0x0
-    bne lbl_8031537C
-    mr r3, r30
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r28, 0x10(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+u32 LCStoreData(void* dst, const void* src, u32 len) {
+    u32 blocks = (len + 31) / 32;
+    u32 ret = (blocks + 127) / 128;
+
+    while (blocks > 0) {
+        if (blocks < 128) {
+            LCStoreBlocks(dst, src, blocks);
+            blocks = 0;
+        } else {
+            LCStoreBlocks(dst, src, 0);
+            blocks -= 128;
+
+            dst = (u8*)dst + 0x1000;
+            src = (u8*)src + 0x1000;
+        }
+    }
+
+    return ret;
 }
 
-// ----------------------------------------------------------------------------
-// fn_803153E4
-// ----------------------------------------------------------------------------
-asm void fn_803153E4() {
+asm u32 LCQueueLength(void) {
+    // clang-format off
     nofralloc
-    mfspr r4, 920
-    extrwi r3, r4, 4, 4
+
+    mfspr r4, 0x398
+    rlwinm r3, r4, 8, 28, 31
+
     blr
+    // clang-format on
 }
 
-// ----------------------------------------------------------------------------
-// fn_803153F0
-// ----------------------------------------------------------------------------
-asm void fn_803153F0() {
+asm void LCQueueWait(register u32 n) {
+    // clang-format off
     nofralloc
-    mfspr r4, 920
-    extrwi r4, r4, 4, 4
-    cmpw r4, r3
-    bgt fn_803153F0
+
+    mfspr r4, 0x398
+    rlwinm r4, r4, 8, 28, 31
+    cmpw r4, n
+    bgt LCQueueWait
+
     blr
+    // clang-format on
 }
 
-// ----------------------------------------------------------------------------
-// DMAErrorHandler
-// ----------------------------------------------------------------------------
-asm void DMAErrorHandler() {
-    nofralloc
-    stwu r1, -0x80(r1)
-    mflr r0
-    stw r0, 0x84(r1)
-    stw r31, 0x7c(r1)
-    stw r30, 0x78(r1)
-    stw r29, 0x74(r1)
-    mr r29, r4
-    bne cr1, lbl_80315444
-    stfd f1, 0x28(r1)
-    stfd f2, 0x30(r1)
-    stfd f3, 0x38(r1)
-    stfd f4, 0x40(r1)
-    stfd f5, 0x48(r1)
-    stfd f6, 0x50(r1)
-    stfd f7, 0x58(r1)
-    stfd f8, 0x60(r1)
-lbl_80315444:
-    lis r31, at_878_8037FDC0@ha
-    stw r3, 0x8(r1)
-    addi r31, r31, at_878_8037FDC0@l
-    stw r4, 0xc(r1)
-    stw r5, 0x10(r1)
-    stw r6, 0x14(r1)
-    stw r7, 0x18(r1)
-    stw r8, 0x1c(r1)
-    stw r9, 0x20(r1)
-    stw r10, 0x24(r1)
-    bl PPCMfhid2
-    mr r30, r3
-    addi r3, r31, 0x30
-    opword 0x4CC63182
-    bl OSReport
-    lwz r5, 0x19c(r29)
-    mr r4, r30
-    addi r3, r31, 0x48
-    opword 0x4CC63182
-    bl OSReport
-    rlwinm. r0, r30, 0, 8, 11
-    beq lbl_803154A8
-    lwz r0, 0x19c(r29)
-    rlwinm. r0, r0, 0, 10, 10
-    bne lbl_803154C0
-lbl_803154A8:
-    addi r3, r31, 0x68
-    opword 0x4CC63182
-    bl OSReport
-    mr r3, r29
-    bl OSDumpContext
-    bl PPCHalt
-lbl_803154C0:
-    addi r3, r31, 0x98
-    opword 0x4CC63182
-    bl OSReport
-    addi r3, r31, 0xd4
-    opword 0x4CC63182
-    bl OSReport
-    rlwinm. r0, r30, 0, 8, 8
-    beq lbl_803154EC
-    addi r3, r31, 0x10c
-    opword 0x4CC63182
-    bl OSReport
-lbl_803154EC:
-    rlwinm. r0, r30, 0, 9, 9
-    beq lbl_80315500
-    addi r3, r31, 0x14c
-    opword 0x4CC63182
-    bl OSReport
-lbl_80315500:
-    rlwinm. r0, r30, 0, 10, 10
-    beq lbl_80315514
-    addi r3, r31, 0x178
-    opword 0x4CC63182
-    bl OSReport
-lbl_80315514:
-    rlwinm. r0, r30, 0, 11, 11
-    beq lbl_80315528
-    addi r3, r31, 0x198
-    opword 0x4CC63182
-    bl OSReport
-lbl_80315528:
-    mr r3, r30
-    bl PPCMthid2
-    lwz r0, 0x84(r1)
-    lwz r31, 0x7c(r1)
-    lwz r30, 0x78(r1)
-    lwz r29, 0x74(r1)
-    mtlr r0
-    addi r1, r1, 0x80
-    blr
+static void L2Init(void) {
+    u32 msr;
+
+    msr = PPCMfmsr();
+    __sync();
+    PPCMtmsr(MSR_IR | MSR_DR);
+    __sync();
+
+    L2Disable();
+    L2GlobalInvalidate();
+    PPCMtmsr(msr);
 }
 
-// ----------------------------------------------------------------------------
-// __OSCacheInit
-// ----------------------------------------------------------------------------
-asm void __OSCacheInit() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    lis r31, at_878_8037FDC0@ha
-    addi r31, r31, at_878_8037FDC0@l
-    stw r30, 0x8(r1)
-    bl PPCMfhid0
-    rlwinm. r0, r3, 0, 16, 16
-    bne lbl_80315584
-    bl ICEnable
-    addi r3, r31, 0x1b4
-    opword 0x4CC63182
-    bl DBPrintf
-lbl_80315584:
-    bl PPCMfhid0
-    rlwinm. r0, r3, 0, 17, 17
-    bne lbl_803155A0
-    bl DCEnable
-    addi r3, r31, 0x1d0
-    opword 0x4CC63182
-    bl DBPrintf
-lbl_803155A0:
-    bl PPCMfl2cr
-    clrrwi. r0, r3, 31
-    bne lbl_80315650
-    bl PPCMfmsr
-    mr r30, r3
-    sync
-    li r3, 0x30
-    bl PPCMtmsr
-    sync
-    sync
-    bl PPCMfl2cr
-    clrlwi r3, r3, 1
-    bl PPCMtl2cr
-    sync
-    sync
-    bl PPCMfl2cr
-    clrlwi r3, r3, 1
-    bl PPCMtl2cr
-    sync
-    bl PPCMfl2cr
-    oris r3, r3, 0x20
-    bl PPCMtl2cr
-lbl_803155F8:
-    bl PPCMfl2cr
-    clrlwi. r0, r3, 31
-    bne lbl_803155F8
-    bl PPCMfl2cr
-    rlwinm r3, r3, 0, 11, 9
-    bl PPCMtl2cr
-    b lbl_80315620
-lbl_80315614:
-    addi r3, r31, 0x0
-    opword 0x4CC63182
-    bl DBPrintf
-lbl_80315620:
-    bl PPCMfl2cr
-    clrlwi. r0, r3, 31
-    bne lbl_80315614
-    mr r3, r30
-    bl PPCMtmsr
-    bl PPCMfl2cr
-    oris r0, r3, 0x8000
-    rlwinm r3, r0, 0, 11, 9
-    bl PPCMtl2cr
-    addi r3, r31, 0x1ec
-    opword 0x4CC63182
-    bl DBPrintf
-lbl_80315650:
-    lis r4, DMAErrorHandler@ha
-    li r3, 0x1
-    addi r4, r4, DMAErrorHandler@l
-    bl OSSetErrorHandler
-    addi r3, r31, 0x204
-    opword 0x4CC63182
-    bl DBPrintf
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void L2Enable(void) {
+    u32 l2cr = PPCMfl2cr();
+    PPCMtl2cr((l2cr | L2CR_L2E) & ~L2CR_L2I);
 }
+
+void L2Disable(void) {
+    u32 l2cr;
+
+    __sync();
+    l2cr = PPCMfl2cr();
+    PPCMtl2cr(l2cr & ~L2CR_L2E);
+    __sync();
+}
+
+void L2GlobalInvalidate(void) {
+    u32 l2cr;
+
+    L2Disable();
+
+    l2cr = PPCMfl2cr();
+    PPCMtl2cr(l2cr | L2CR_L2I);
+
+    while (PPCMfl2cr() & L2CR_L2IP) {
+    }
+
+    l2cr = PPCMfl2cr();
+    PPCMtl2cr(l2cr & ~L2CR_L2I);
+
+    while (PPCMfl2cr() & L2CR_L2IP) {
+        DBPrintf(">>> L2 INVALIDATE : SHOULD NEVER HAPPEN\n");
+    }
+}
+
+void DMAErrorHandler(u8 error, OSContext* ctx, u32 dsisr, u32 dar, ...) {
+    u32 hid2 = PPCMfhid2();
+
+    OSReport("Machine check received\n");
+    OSReport("HID2 = 0x%x   SRR1 = 0x%x\n", hid2, ctx->srr1);
+
+    if (!(hid2 & (HID2_DCHERR | HID2_DNCERR | HID2_DCMERR | HID2_DQOERR)) ||
+        !(ctx->srr1 & 0x200000)) {
+        OSReport("Machine check was not DMA/locked cache related\n");
+        OSDumpContext(ctx);
+        PPCHalt();
+    }
+
+    OSReport("DMAErrorHandler(): An error occurred while processing DMA.\n");
+    OSReport("The following errors have been detected and cleared :\n");
+
+    if (hid2 & HID2_DCHERR) {
+        OSReport(
+            "\t- Requested a locked cache tag that was already in the cache\n");
+    }
+    if (hid2 & HID2_DNCERR) {
+        OSReport("\t- DMA attempted to access normal cache\n");
+    }
+    if (hid2 & HID2_DCMERR) {
+        OSReport("\t- DMA missed in data cache\n");
+    }
+    if (hid2 & HID2_DQOERR) {
+        OSReport("\t- DMA queue overflowed\n");
+    }
+
+    PPCMthid2(hid2);
+}
+
+void __OSCacheInit(void) {
+    if (!(PPCMfhid0() & HID0_ICE)) {
+        ICEnable();
+        DBPrintf("L1 i-caches initialized\n");
+    }
+
+    if (!(PPCMfhid0() & HID0_DCE)) {
+        DCEnable();
+        DBPrintf("L1 d-caches initialized\n");
+    }
+
+    if (!(PPCMfl2cr() & L2CR_L2E)) {
+        L2Init();
+        L2Enable();
+        DBPrintf("L2 cache initialized\n");
+    }
+
+    OSSetErrorHandler(OS_ERR_MACHINE_CHECK, DMAErrorHandler);
+    DBPrintf("Locked cache machine check handler installed\n");
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+
 

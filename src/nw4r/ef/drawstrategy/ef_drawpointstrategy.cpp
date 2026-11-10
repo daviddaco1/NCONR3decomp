@@ -114,7 +114,6 @@ extern "C" void fn_801B9B90();
 extern "C" void fn_801BF1AC();
 extern "C" void fn_801BF940();
 extern "C" void fn_801C63E4();
-extern "C" void fn_8030D7E0();
 
 // asm_to_cpp: fn_801C63E4
 extern "C" asm void fn_801C63E4() {
@@ -218,7 +217,7 @@ lbl_801C655C:
     mr r3, r28
     addi r4, r28, 0x8c
     addi r5, r1, 0xc
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0xc
     mr r4, r3
     bl fn_801B9B90

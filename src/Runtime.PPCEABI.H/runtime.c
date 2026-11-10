@@ -1172,10 +1172,10 @@ func_end:
 #endif
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-extern void fn_80194250();
+extern void __shr2u();
 
-// asm_to_cpp: fn_80194250
-asm void fn_80194250() {
+// asm_to_cpp: __shr2u
+asm void __shr2u() {
     nofralloc
     subfic r8, r5, 0x20
     subic r9, r5, 0x20

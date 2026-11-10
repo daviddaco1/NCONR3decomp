@@ -418,7 +418,7 @@ extern void _restgpr_23();
 extern void _restgpr_26();
 extern void _savegpr_23();
 extern void _savegpr_26();
-extern void fn_802535C4(void *);
+extern void ArrayFree(void *);
 extern void fn_80255E4C();
 extern HOSTENT *fn_80255EDC(void);
 extern int fn_802560A8(IN_ADDR *);
@@ -686,7 +686,7 @@ lbl_8027A464:
 
 void fn_8027A740(void) {
     if (lbl_8049DC70 != 0) {
-        fn_802535C4(lbl_8049DC70);
+        ArrayFree(lbl_8049DC70);
         lbl_8049DC70 = 0;
     }
 }

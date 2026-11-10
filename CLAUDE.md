@@ -117,6 +117,12 @@ locales en `project.py`: `progress_report_hook` y columna asm en `print_category
   `rename_symbols.py`, que actualiza ambos.
 - Verificación: `check_workspace.py` (coherencia configure/objdiff/build/report; `--clean` borra
   `.o` huérfanos).
+- Permutador C++: `m2c_permute.py` (mutaciones sobre el C de M2C_TX, `--triage`, `--apply` seguro).
+- Contexto m2c: `m2c_ctx_fargs.py` (floats que m2c no ve en código paired-single, aridad exacta de
+  hojas/thunks, retorno s32/f32; correr después de `m2c_context.py`).
+- Importar C externo: `import_scan.py` (compila fuentes de otros decomps y empareja funciones con
+  el asm **por contenido**, también las `fn_*`), `adopt_import.py` (renombra y adopta por TU con
+  verificación y reversión; `--allow-loss`), `fix_mixed_decls.py` (repara mixtos tras renombrar).
 - Asm/C: `asm_to_cpp.py` (asm dtk → asm inline mwcc), `try_import.py` (probar C importado por
   TU y compilador), `mix_asm.py` (arma mixtos), `gen_eye_stub.py`, `list_unmatched.py`.
 - **Game code = C++** (incluso los `.c` del DOL: RTTI y llamadas virtuales lo prueban, ver fase
@@ -167,6 +173,17 @@ locales en `project.py`: `progress_report_hook` y columna asm en `print_category
     Con `src_dir="libs"`, el nombre base del fuente debe coincidir con el del split (gotcha 2); si
     no, renombrar el split con `rename_tu.py`.
 
+13. El compilador del SDK varía por TU: probar `Wii/1.0`, `GC/3.0a5.2` y `GC/3.0a5` (dvd pasó de
+    2.4 KB a 17.5 KB de C solo cambiando a `GC/3.0a5.2`). `import_scan.py` prueba varios.
+14. Pasadas automáticas: `m2c_cpp.py` (fase 3) regenera de forma incremental (conserva structs,
+    typedefs, pragmas de región, externs y C existente; acepta por TU solo sin regresión y con C
+    nuevo; backup en `build/m2c_cpp_backup/`) y `m2c_pass.py` restaura byte a byte lo que toca
+    (backup en `build/m2c_pass_backup/`). Aun así, comparar función por función (por
+    `virtual_address`) contra el `report.json` previo después de cada pasada. No adoptar C en TUs
+    con `source="x.s"` (gotcha 8). Escribir archivos restaurados en binario (CRLF).
+15. Worktrees: copiar `build/{compilers,tools,binutils}`, nunca junction (ninja los re-descarga
+    dentro y pisa los del checkout principal). `orig/RNEPDA` sí puede ser junction.
+
 ## Archivos que nunca se borran
 
 `src/`, `include/`, `libs/`, `config/RNEPDA/` (`splits.txt`, `symbols.txt`, `build.sha1`,
@@ -193,18 +210,21 @@ Lo descartable va en `scratch/` desde el principio. Para limpiar: `python tools/
 
 ## Estado (actualizar al cerrar una etapa)
 
-- Auditoría de la fase 1 (2026-11-04), verificada desde cero (`build/RNEPDA/src/` borrado):
-  **C real 23.52%** (776,108 / 3,299,164 bytes; 5,426 / 11,292 funciones). Game Code 9.73%
-  (151,832 / 1,561,180), SDK 35.92% (624,276 / 1,737,984). Asm 68.28% (2,252,672 bytes). Matching
-  crudo C+asm **91.80%** (3,028,780 bytes, 10,242 funciones): faltan ~270 KB en unidades de `libs/`
-  con C parcial (gotcha 12). El 26.08% anterior estaba inflado por `.o` viejos y por asm generado
-  sin marcar. Datos 0% (sin splits de datos). Cifras vivas: `python configure.py progress`.
-- `.text` 100% splitteado. TUs `unk_<addr>` = fronteras sin nombre real (los huecos grandes, como
-  `dwc/unk_8022813C.c`, pueden contener varios archivos). Funciones del juego siguen como `fn_*`.
-- Patrón de vtables en offset 0x4 resuelto: herencia de base sin virtuales con 4 bytes de datos (`struct Base { int x; };`).
-- Siguiente: devolver el matching crudo al 100% pasando las ~160 unidades parciales a mixtos
-  (`mix_asm.py`); después, ampliar clases C++ con `virtual` modeladas, ajuste manual de casi-matches (`fn_diff.py`) y splits de datos
-  por TU (habilitan enlazar y arreglan funciones casi idénticas por offsets de strings).
+- Fase 3 (2026-11-06), verificada: **C real 30.37%** (1,001,992 / 3,299,164 bytes; 6,240
+  funciones). Game Code 16.42%, SDK 42.90%. Matching crudo 93.79%. `build.sha1` OK.
+  Contexto de m2c: `tools/m2c_context.py` y luego `tools/m2c_ctx_fargs.py` (agrega firmas de las
+  funciones que m2c no descompila y corrige aridad/floats/retorno).
+- Game code: flags `-fp_contract off` (verificado: 0 fmadds en el juego). Pipeline:
+  `python tools/m2c_context.py && python tools/m2c_ctx_fargs.py` y
+  `M2C_TX=1 python tools/m2c_cpp.py --game` (incremental, idempotente, acepta por TU sin
+  regresiones). Reglas de matching (structs por campo, tablas `.sdata2`, inline de llamadas y
+  lecturas, pila alineada con locales en orden descendente, switch irregular, dont_inline) en la
+  bitácora, entrada "variante M2C_TX".
+- `build/tools/dtk.exe` es el v1.8.3 stock (sirve con `symbols.txt` completo); reconstruir el
+  parcheado con `scratch/fase3/build_dtk_patched.sh` (requiere autorización).
+- `.text` 100% splitteado. Funciones del juego siguen como `fn_*`. Datos 0% (sin splits de datos).
+- Siguiente: errores de compilación de m2c restantes (aritmética de punteros, aridad contexto vs
+  firma propia), diferencias de marco en funciones con bucles (eye), SDK (790 KB asm).
 
 Historial ronda por ronda en [`docs/decompilation_log.md`](docs/decompilation_log.md);
 actualizarlo al cerrar cada sesión.

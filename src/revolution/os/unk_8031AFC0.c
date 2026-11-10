@@ -96,6 +96,7 @@ void fn_8031B9D4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
 
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
+extern void OSGetAppType();
 extern float lbl_8049D210;
 extern u8 at_2083_803810B8[];
 extern u8 at_2131_80381124[];
@@ -482,7 +483,7 @@ asm void fn_8031B498() {
     stw r31, 0xc(r1)
     stw r30, 0x8(r1)
     mr r30, r3
-    bl fn_80313F50
+    bl OSGetAppType
     mr r31, r3
     bl __OSStopPlayRecord
     bl __OSUnRegisterStateEvent

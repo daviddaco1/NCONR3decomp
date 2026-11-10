@@ -1,184 +1,508 @@
-#include "types.h"
+#include <revolution/FS.h>
+#include <revolution/NAND.h>
 
-// Translation unit: src/revolution/nand/nand.cpp
-// Total functions: 29
+#include <cstdio>
+#include <cstring>
 
-// Small Data symbols (@sda21)
-extern float lbl_8049D150;
-extern float lbl_8049D154;
+static void nandSplitPerm(u8 perm, u32* ownerPerm, u32* groupPerm,
+                          u32* otherPerm) DECOMP_DONT_INLINE;
+static void nandGetStatusCallback(s32 result, void* arg);
+static void nandGetFileStatusAsyncCallback(s32 result, void* arg);
+static BOOL nandInspectPermission(u8 perm);
 
-// Global data symbols (@ha/@l)
-extern u8 nandCallback[];
+static s32 nandCreate(const char* path, u8 perm, u8 attr,
+                      NANDCommandBlock* block, BOOL async, BOOL priv) {
+    char absPath[64];
+    u32 ownerPerm, groupPerm, otherPerm;
 
-// Forward declarations
-extern void ISFS_CreateDir();
-extern void ISFS_CreateDirAsync();
-extern void ISFS_Delete();
-extern void ISFS_DeleteAsync();
-extern void ISFS_GetAttr();
-extern void ISFS_GetAttrAsync();
-extern void ISFS_Read();
-extern void ISFS_ReadAsync();
-extern void ISFS_ReadDir();
-extern void ISFS_ReadDirAsync();
-extern void ISFS_Rename();
-extern void ISFS_RenameAsync();
-extern void ISFS_Seek();
-extern void ISFS_SeekAsync();
-extern void ISFS_Write();
-extern void ISFS_WriteAsync();
-extern void NANDDelete();
-extern void NANDDeleteAsync();
-extern void NANDMove();
-extern void NANDMoveAsync();
-extern void NANDPrivateCreateDir();
-extern void NANDPrivateCreateDirAsync();
-extern void NANDPrivateDelete();
-extern void NANDPrivateDeleteAsync();
-extern void NANDPrivateGetStatus();
-extern void NANDPrivateGetStatusAsync();
-extern void NANDRead();
-extern void NANDReadAsync();
-extern void NANDReadDirAsync();
-extern void NANDSeek();
-extern void NANDSeekAsync();
-extern void NANDTellAsync();
-extern void NANDWrite();
-extern void NANDWriteAsync();
+    MEMCLR(&absPath);
+
+    ownerPerm = 0;
+    groupPerm = 0;
+    otherPerm = 0;
+
+    nandGenerateAbsPath(absPath, path);
+
+    if (!priv && nandIsPrivatePath(absPath)) {
+        return IPC_RESULT_ACCESS;
+    }
+
+    if (!nandInspectPermission(perm)) {
+        return IPC_RESULT_INVALID;
+    }
+
+    nandSplitPerm(perm, &ownerPerm, &groupPerm, &otherPerm);
+
+    if (async) {
+        return ISFS_CreateFileAsync(absPath, attr, ownerPerm, groupPerm,
+                                    otherPerm, nandCallback, block);
+    } else {
+        return ISFS_CreateFile(absPath, attr, ownerPerm, groupPerm, otherPerm);
+    }
+}
+
+s32 NANDCreate(const char* path, u8 perm, u8 attr) {
+    if (!nandIsInitialized()) {
+        return NAND_RESULT_FATAL_ERROR;
+    }
+
+    return nandConvertErrorCode(
+        nandCreate(path, perm, attr, NULL, FALSE, FALSE));
+}
+
+s32 NANDPrivateCreate(const char* path, u8 perm, u8 attr) {
+    if (!nandIsInitialized()) {
+        return NAND_RESULT_FATAL_ERROR;
+    }
+
+    return nandConvertErrorCode(
+        nandCreate(path, perm, attr, NULL, FALSE, TRUE));
+}
+
+s32 NANDPrivateCreateAsync(const char* path, u8 perm, u8 attr,
+                           NANDAsyncCallback callback,
+                           NANDCommandBlock* block) {
+    if (!nandIsInitialized()) {
+        return NAND_RESULT_FATAL_ERROR;
+    }
+
+    block->callback = callback;
+    return nandConvertErrorCode(
+        nandCreate(path, perm, attr, block, TRUE, TRUE));
+}
+
+static s32 nandDelete(const char* path, NANDCommandBlock* block, BOOL async,
+                      BOOL priv) {
+    char absPath[64];
+
+    MEMCLR(&absPath);
+    nandGenerateAbsPath(absPath, path);
+
+    if (!priv && nandIsPrivatePath(absPath)) {
+        return IPC_RESULT_ACCESS;
+    }
+
+    if (async) {
+        return ISFS_DeleteAsync(absPath, nandCallback, block);
+    } else {
+        return ISFS_Delete(absPath);
+    }
+}
+
+s32 NANDDelete(const char* path) {
+    if (!nandIsInitialized()) {
+        return NAND_RESULT_FATAL_ERROR;
+    }
+
+    return nandConvertErrorCode(nandDelete(path, NULL, FALSE, FALSE));
+}
+
+s32 NANDPrivateDelete(const char* path) {
+    if (!nandIsInitialized()) {
+        return NAND_RESULT_FATAL_ERROR;
+    }
+
+    return nandConvertErrorCode(nandDelete(path, NULL, FALSE, TRUE));
+}
+
+s32 NANDPrivateDeleteAsync(const char* path, NANDAsyncCallback callback,
+                           NANDCommandBlock* block) {
+    if (!nandIsInitialized()) {
+        return NAND_RESULT_FATAL_ERROR;
+    }
+
+    block->callback = callback;
+    return nandConvertErrorCode(nandDelete(path, block, TRUE, TRUE));
+}
+
+s32 NANDRead(NANDFileInfo* info, void* buf, u32 len) {
+    if (!nandIsInitialized()) {
+        return NAND_RESULT_FATAL_ERROR;
+    }
+
+    return nandConvertErrorCode(ISFS_Read(info->fd, buf, len));
+}
+
+s32 NANDReadAsync(NANDFileInfo* info, void* buf, u32 len,
+                  NANDAsyncCallback callback, NANDCommandBlock* block) {
+    if (!nandIsInitialized()) {
+        return NAND_RESULT_FATAL_ERROR;
+    }
+
+    block->callback = callback;
+    return nandConvertErrorCode(
+        ISFS_ReadAsync(info->fd, buf, len, nandCallback, block));
+}
+
+// NANDWrite: definicion C reemplazada por asm (ver abajo)
+s32 NANDWrite(NANDFileInfo* info, const void* buf, u32 len);
+
+
+// NANDWriteAsync: definicion C reemplazada por asm (ver abajo)
+s32 NANDWriteAsync(NANDFileInfo* info, const void* buf, u32 len,
+                   NANDAsyncCallback callback, NANDCommandBlock* block);
+
+
+static s32 nandSeek(s32 fd, s32 offset, NANDSeekMode whence,
+                    NANDCommandBlock* block, BOOL async) {
+    IPCSeekMode mode = (IPCSeekMode)-1;
+
+    switch (whence) {
+    case NAND_SEEK_BEG:
+        mode = IPC_SEEK_BEG;
+        break;
+    case NAND_SEEK_CUR:
+        mode = IPC_SEEK_CUR;
+        break;
+    case NAND_SEEK_END:
+        mode = IPC_SEEK_END;
+        break;
+    }
+
+    if (async) {
+        return ISFS_SeekAsync(fd, offset, mode, nandCallback, block);
+    } else {
+        return ISFS_Seek(fd, offset, mode);
+    }
+}
+
+s32 NANDSeek(NANDFileInfo* info, s32 offset, NANDSeekMode whence) {
+    if (!nandIsInitialized()) {
+        return NAND_RESULT_FATAL_ERROR;
+    }
+
+    return nandConvertErrorCode(
+        nandSeek(info->fd, offset, whence, NULL, FALSE));
+}
+
+s32 NANDSeekAsync(NANDFileInfo* info, s32 offset, NANDSeekMode whence,
+                  NANDAsyncCallback callback, NANDCommandBlock* block) {
+    if (!nandIsInitialized()) {
+        return NAND_RESULT_FATAL_ERROR;
+    }
+
+    block->callback = callback;
+    return nandConvertErrorCode(
+        nandSeek(info->fd, offset, whence, block, TRUE));
+}
+
+static s32 nandCreateDir(const char* path, u8 perm, u8 attr,
+                         NANDCommandBlock* block, BOOL async, BOOL priv) {
+    char absPath[64];
+    u32 ownerPerm, groupPerm, otherPerm;
+
+    MEMCLR(&absPath);
+    nandGenerateAbsPath(absPath, path);
+
+    if (!priv && nandIsPrivatePath(absPath)) {
+        return IPC_RESULT_ACCESS;
+    }
+
+    if (!nandInspectPermission(perm)) {
+        return IPC_RESULT_INVALID;
+    }
+
+    ownerPerm = 0;
+    groupPerm = 0;
+    otherPerm = 0;
+    nandSplitPerm(perm, &ownerPerm, &groupPerm, &otherPerm);
+
+    if (async) {
+        return ISFS_CreateDirAsync(absPath, attr, ownerPerm, groupPerm,
+                                   otherPerm, nandCallback, block);
+    } else {
+        return ISFS_CreateDir(absPath, attr, ownerPerm, groupPerm, otherPerm);
+    }
+}
+
+// NANDPrivateCreateDir: definicion C reemplazada por asm (ver abajo)
+s32 NANDPrivateCreateDir(const char* path, u8 perm, u8 attr);
+
+
+// NANDPrivateCreateDirAsync: definicion C reemplazada por asm (ver abajo)
+s32 NANDPrivateCreateDirAsync(const char* path, u8 perm, u8 attr,
+                              NANDAsyncCallback callback,
+                              NANDCommandBlock* block);
+
+
+static s32 nandMove(const char* from, const char* to, NANDCommandBlock* block,
+                    BOOL async, BOOL priv) {
+    char absPathFrom[64];
+    char absPathTo[64];
+    char relativeName[13];
+
+    MEMCLR(&absPathFrom);
+    MEMCLR(&absPathTo);
+    MEMCLR(&relativeName);
+
+    relativeName[12] = '\0';
+
+    nandGenerateAbsPath(absPathFrom, from);
+    nandGetRelativeName(relativeName, absPathFrom);
+    nandGenerateAbsPath(absPathTo, to);
+
+    if (strcmp(absPathTo, "/") == 0) {
+        sprintf(absPathTo, "/%s", relativeName);
+    } else {
+        strcat(absPathTo, "/");
+        strcat(absPathTo, relativeName);
+    }
+
+    if (!priv &&
+        (nandIsPrivatePath(absPathFrom) || nandIsPrivatePath(absPathTo))) {
+        return IPC_RESULT_ACCESS;
+    }
+
+    if (async) {
+        return ISFS_RenameAsync(absPathFrom, absPathTo, nandCallback, block);
+    } else {
+        return ISFS_Rename(absPathFrom, absPathTo);
+    }
+}
+
+s32 NANDMove(const char* from, const char* to) {
+    if (!nandIsInitialized()) {
+        return NAND_RESULT_FATAL_ERROR;
+    }
+
+    return nandConvertErrorCode(nandMove(from, to, NULL, FALSE, FALSE));
+}
+
+static s32 nandGetFileStatus(s32 fd, u32* lengthOut, u32* positionOut) {
+    FSFileStats stats;
+    s32 result;
+
+    result = ISFS_GetFileStats(fd, &stats);
+    if (result == IPC_RESULT_OK) {
+        if (lengthOut != NULL) {
+            *lengthOut = stats.length;
+        }
+
+        if (positionOut != NULL) {
+            *positionOut = stats.position;
+        }
+    }
+
+    return result;
+}
+
+s32 NANDGetLength(NANDFileInfo* info, u32* length) {
+    if (!nandIsInitialized()) {
+        return NAND_RESULT_FATAL_ERROR;
+    }
+
+    return nandConvertErrorCode(nandGetFileStatus(info->fd, length, NULL));
+}
+
+static s32 nandGetFileStatusAsync(s32 fd, NANDCommandBlock* block) {
+    // Work buffer???
+    return ISFS_GetFileStatsAsync(fd,
+                                  (FSFileStats*)ROUND_UP_PTR(block->path, 32),
+                                  nandGetFileStatusAsyncCallback, block);
+}
+
+static void nandGetFileStatusAsyncCallback(s32 result, void* arg) {
+    // Implicit cast required
+    NANDCommandBlock* block = arg;
+    // Work buffer???
+    FSFileStats* stats = (FSFileStats*)ROUND_UP_PTR(block->path, 32);
+
+    if (result == IPC_RESULT_OK) {
+        if (block->length != NULL) {
+            *block->length = stats->length;
+        }
+
+        if (block->position != NULL) {
+            *block->position = stats->position;
+        }
+    }
+
+    block->callback(nandConvertErrorCode(result), arg);
+}
+
+s32 NANDGetLengthAsync(NANDFileInfo* info, u32* lengthOut,
+                       NANDAsyncCallback callback, NANDCommandBlock* block) {
+    if (!nandIsInitialized()) {
+        return NAND_RESULT_FATAL_ERROR;
+    }
+
+    block->callback = callback;
+    block->length = lengthOut;
+    block->position = NULL;
+    return nandConvertErrorCode(nandGetFileStatusAsync(info->fd, block));
+}
+
+static void nandComposePerm(u8* out, u32 ownerPerm, u32 groupPerm,
+                            u32 otherPerm) DECOMP_DONT_INLINE {
+    u32 perm = 0;
+
+    if (ownerPerm & NAND_ACCESS_READ) {
+        perm |= NAND_PERM_RUSR;
+    }
+
+    if (ownerPerm & NAND_ACCESS_WRITE) {
+        perm |= NAND_PERM_WUSR;
+    }
+
+    if (groupPerm & NAND_ACCESS_READ) {
+        perm |= NAND_PERM_RGRP;
+    }
+
+    if (groupPerm & NAND_ACCESS_WRITE) {
+        perm |= NAND_PERM_WGRP;
+    }
+
+    if (otherPerm & NAND_ACCESS_READ) {
+        perm |= NAND_PERM_ROTH;
+    }
+
+    if (otherPerm & NAND_ACCESS_WRITE) {
+        perm |= NAND_PERM_WOTH;
+    }
+
+    *out = perm;
+}
+
+static void nandSplitPerm(u8 perm, u32* ownerPerm, u32* groupPerm,
+                          u32* otherPerm) {
+    *ownerPerm = 0;
+    *groupPerm = 0;
+    *otherPerm = 0;
+
+    if (perm & NAND_PERM_RUSR) {
+        *ownerPerm |= NAND_ACCESS_READ;
+    }
+
+    if (perm & NAND_PERM_WUSR) {
+        *ownerPerm |= NAND_ACCESS_WRITE;
+    }
+
+    if (perm & NAND_PERM_RGRP) {
+        *groupPerm |= NAND_ACCESS_READ;
+    }
+
+    if (perm & NAND_PERM_WGRP) {
+        *groupPerm |= NAND_ACCESS_WRITE;
+    }
+
+    if (perm & NAND_PERM_ROTH) {
+        *otherPerm |= NAND_ACCESS_READ;
+    }
+
+    if (perm & NAND_PERM_WOTH) {
+        *otherPerm |= NAND_ACCESS_WRITE;
+    }
+}
+
+static s32 nandGetStatus(const char* path, NANDStatus* status,
+                         NANDCommandBlock* block, BOOL async, BOOL priv) {
+    s32 result;
+    u32 attr;
+    u32 ownerPerm, groupPerm, otherPerm;
+    char absPath[64];
+
+    MEMCLR(&absPath);
+    nandGenerateAbsPath(absPath, path);
+
+    if (!priv && nandIsUnderPrivatePath(absPath)) {
+        return IPC_RESULT_ACCESS;
+    }
+
+    if (async) {
+        return ISFS_GetAttrAsync(absPath, &status->ownerId, &status->groupId,
+                                 &block->attr, &block->ownerPerm,
+                                 &block->groupPerm, &block->otherPerm,
+                                 nandGetStatusCallback, block);
+    } else {
+        attr = 0;
+        ownerPerm = 0;
+        groupPerm = 0;
+        otherPerm = 0;
+
+        result = ISFS_GetAttr(absPath, &status->ownerId, &status->groupId,
+                              &attr, &ownerPerm, &groupPerm, &otherPerm);
+
+        if (result == IPC_RESULT_OK) {
+            nandComposePerm(&status->perm, ownerPerm, groupPerm, otherPerm);
+            status->attr = attr;
+        }
+
+        return result;
+    }
+}
+
+static void nandGetStatusCallback(s32 result, void* arg) {
+    NANDCommandBlock* block = (NANDCommandBlock*)arg;
+    NANDStatus* status;
+
+    if (result == IPC_RESULT_OK) {
+        status = block->status;
+        status->attr = block->attr;
+        nandComposePerm(&status->perm, block->ownerPerm, block->groupPerm,
+                        block->otherPerm);
+    }
+
+    block->callback(nandConvertErrorCode(result), block);
+}
+
+s32 NANDGetStatus(const char* path, NANDStatus* status) {
+    if (!nandIsInitialized()) {
+        return NAND_RESULT_FATAL_ERROR;
+    }
+
+    return nandConvertErrorCode(
+        nandGetStatus(path, status, NULL, FALSE, FALSE));
+}
+
+s32 NANDPrivateGetStatusAsync(const char* path, NANDStatus* status,
+                              NANDAsyncCallback callback,
+                              NANDCommandBlock* block) {
+    if (!nandIsInitialized()) {
+        return NAND_RESULT_FATAL_ERROR;
+    }
+
+    block->callback = callback;
+    block->status = status;
+    return nandConvertErrorCode(nandGetStatus(path, status, block, TRUE, TRUE));
+}
+
+void NANDSetUserData(NANDCommandBlock* block, void* data) {
+    block->userData = data;
+}
+
+void* NANDGetUserData(NANDCommandBlock* block) {
+    return block->userData;
+}
+
+static BOOL nandInspectPermission(u8 perm) {
+    return perm & NAND_PERM_RUSR;
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+extern int NANDDeleteAsync();
+extern int NANDMoveAsync();
+s32 NANDPrivateCreateDir(const char* path, u8 perm, u8 attr);
+s32 NANDPrivateCreateDirAsync(const char* path, u8 perm, u8 attr,
+                              NANDAsyncCallback callback,
+                              NANDCommandBlock* block);
+s32 NANDPrivateGetStatus(const char* path, NANDStatus* status);
+extern int NANDReadDirAsync();
+extern int NANDTellAsync();
+s32 NANDWrite(NANDFileInfo* info, const void* buf, u32 len);
+s32 NANDWriteAsync(NANDFileInfo* info, const void* buf, u32 len,
+                   NANDAsyncCallback callback, NANDCommandBlock* block);
 extern void _restgpr_27();
 extern void _savegpr_27();
 extern void fn_802DBB9C();
 extern void fn_802DBC70();
-extern void fn_8030EC80();
-extern void fn_8030F048();
-extern void fn_8030F3DC();
-extern void fn_8030F458();
-extern void fn_8030F7DC();
-extern void nandComposePerm();
-extern void nandConvertErrorCode();
-extern void nandCreateDir();
-extern void nandGenerateAbsPath();
-extern void nandGetRelativeName();
-extern void nandGetStatus();
-extern void nandGetStatusCallback();
-extern void nandIsInitialized();
-extern void nandIsPrivatePath();
-extern void nandIsUnderPrivatePath();
-extern void nandMove();
-extern void nandSplitPerm();
-extern void sprintf();
-extern void strcat();
-extern void strcmp();
+extern int fn_8030EC80();
+extern int fn_8030F048();
+extern int fn_8030F3DC();
+extern int fn_8030F458();
+extern int fn_8030F7DC();
 
-// ----------------------------------------------------------------------------
-// NANDDelete
-// ----------------------------------------------------------------------------
-// asm_to_cpp: NANDDelete
-asm void NANDDelete() {
-    nofralloc
-    stwu r1, -0x50(r1)
-    mflr r0
-    stw r0, 0x54(r1)
-    stw r31, 0x4c(r1)
-    mr r31, r3
-    bl nandIsInitialized
-    cmpwi r3, 0x0
-    bne lbl_8030E6B8
-    li r3, -0x80
-    b lbl_8030E72C
-lbl_8030E6B8:
-    li r0, 0x0
-    mr r4, r31
-    stw r0, 0x8(r1)
-    addi r3, r1, 0x8
-    stw r0, 0xc(r1)
-    stw r0, 0x10(r1)
-    stw r0, 0x14(r1)
-    stw r0, 0x18(r1)
-    stw r0, 0x1c(r1)
-    stw r0, 0x20(r1)
-    stw r0, 0x24(r1)
-    stw r0, 0x28(r1)
-    stw r0, 0x2c(r1)
-    stw r0, 0x30(r1)
-    stw r0, 0x34(r1)
-    stw r0, 0x38(r1)
-    stw r0, 0x3c(r1)
-    stw r0, 0x40(r1)
-    stw r0, 0x44(r1)
-    bl nandGenerateAbsPath
-    addi r3, r1, 0x8
-    bl nandIsPrivatePath
-    cmpwi r3, 0x0
-    beq lbl_8030E720
-    li r3, -0x66
-    b lbl_8030E728
-lbl_8030E720:
-    addi r3, r1, 0x8
-    bl ISFS_Delete
-lbl_8030E728:
-    bl nandConvertErrorCode
-lbl_8030E72C:
-    lwz r0, 0x54(r1)
-    lwz r31, 0x4c(r1)
-    mtlr r0
-    addi r1, r1, 0x50
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// NANDPrivateDelete
-// ----------------------------------------------------------------------------
-// asm_to_cpp: NANDPrivateDelete
-asm void NANDPrivateDelete() {
-    nofralloc
-    stwu r1, -0x50(r1)
-    mflr r0
-    stw r0, 0x54(r1)
-    stw r31, 0x4c(r1)
-    mr r31, r3
-    bl nandIsInitialized
-    cmpwi r3, 0x0
-    bne lbl_8030E768
-    li r3, -0x80
-    b lbl_8030E7C4
-lbl_8030E768:
-    li r0, 0x0
-    mr r4, r31
-    stw r0, 0x8(r1)
-    addi r3, r1, 0x8
-    stw r0, 0xc(r1)
-    stw r0, 0x10(r1)
-    stw r0, 0x14(r1)
-    stw r0, 0x18(r1)
-    stw r0, 0x1c(r1)
-    stw r0, 0x20(r1)
-    stw r0, 0x24(r1)
-    stw r0, 0x28(r1)
-    stw r0, 0x2c(r1)
-    stw r0, 0x30(r1)
-    stw r0, 0x34(r1)
-    stw r0, 0x38(r1)
-    stw r0, 0x3c(r1)
-    stw r0, 0x40(r1)
-    stw r0, 0x44(r1)
-    bl nandGenerateAbsPath
-    addi r3, r1, 0x8
-    bl ISFS_Delete
-    bl nandConvertErrorCode
-lbl_8030E7C4:
-    lwz r0, 0x54(r1)
-    lwz r31, 0x4c(r1)
-    mtlr r0
-    addi r1, r1, 0x50
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// NANDDeleteAsync
-// ----------------------------------------------------------------------------
 // asm_to_cpp: NANDDeleteAsync
-asm void NANDDeleteAsync() {
+asm int NANDDeleteAsync() {
     nofralloc
     stwu r1, -0x60(r1)
     mflr r0
@@ -240,69 +564,47 @@ lbl_8030E894:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// NANDPrivateDeleteAsync
-// ----------------------------------------------------------------------------
-// asm_to_cpp: NANDPrivateDeleteAsync
-asm void NANDPrivateDeleteAsync() {
+// asm_to_cpp: NANDMoveAsync
+asm int NANDMoveAsync() {
     nofralloc
-    stwu r1, -0x60(r1)
+    stwu r1, -0x20(r1)
     mflr r0
-    stw r0, 0x64(r1)
-    stw r31, 0x5c(r1)
-    mr r31, r5
-    stw r30, 0x58(r1)
-    mr r30, r4
-    stw r29, 0x54(r1)
-    mr r29, r3
+    stw r0, 0x24(r1)
+    stw r31, 0x1c(r1)
+    mr r31, r6
+    stw r30, 0x18(r1)
+    mr r30, r5
+    stw r29, 0x14(r1)
+    mr r29, r4
+    stw r28, 0x10(r1)
+    mr r28, r3
     bl nandIsInitialized
     cmpwi r3, 0x0
-    bne lbl_8030E8E8
+    bne lbl_8030F30C
     li r3, -0x80
-    b lbl_8030E954
-lbl_8030E8E8:
+    b lbl_8030F32C
+lbl_8030F30C:
     stw r30, 0x4(r31)
-    li r0, 0x0
+    mr r3, r28
     mr r4, r29
-    addi r3, r1, 0x8
-    stw r0, 0x8(r1)
-    stw r0, 0xc(r1)
-    stw r0, 0x10(r1)
-    stw r0, 0x14(r1)
-    stw r0, 0x18(r1)
-    stw r0, 0x1c(r1)
-    stw r0, 0x20(r1)
-    stw r0, 0x24(r1)
-    stw r0, 0x28(r1)
-    stw r0, 0x2c(r1)
-    stw r0, 0x30(r1)
-    stw r0, 0x34(r1)
-    stw r0, 0x38(r1)
-    stw r0, 0x3c(r1)
-    stw r0, 0x40(r1)
-    stw r0, 0x44(r1)
-    bl nandGenerateAbsPath
-    lis r4, nandCallback@ha
     mr r5, r31
-    addi r3, r1, 0x8
-    addi r4, r4, nandCallback@l
-    bl ISFS_DeleteAsync
+    li r6, 0x1
+    li r7, 0x0
+    bl nandMove
     bl nandConvertErrorCode
-lbl_8030E954:
-    lwz r0, 0x64(r1)
-    lwz r31, 0x5c(r1)
-    lwz r30, 0x58(r1)
-    lwz r29, 0x54(r1)
+lbl_8030F32C:
+    lwz r0, 0x24(r1)
+    lwz r31, 0x1c(r1)
+    lwz r30, 0x18(r1)
+    lwz r29, 0x14(r1)
+    lwz r28, 0x10(r1)
     mtlr r0
-    addi r1, r1, 0x60
+    addi r1, r1, 0x20
     blr
 }
 
-// ----------------------------------------------------------------------------
-// NANDRead
-// ----------------------------------------------------------------------------
-// asm_to_cpp: NANDRead
-asm void NANDRead() {
+// asm_to_cpp: NANDPrivateCreateDir
+asm s32 NANDPrivateCreateDir(const char* path, u8 perm, u8 attr) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -315,16 +617,19 @@ asm void NANDRead() {
     mr r29, r3
     bl nandIsInitialized
     cmpwi r3, 0x0
-    beq lbl_8030E9B8
-    lwz r3, 0x0(r29)
+    beq lbl_8030EFB0
+    mr r3, r29
     mr r4, r30
     mr r5, r31
-    bl ISFS_Read
+    li r6, 0x0
+    li r7, 0x0
+    li r8, 0x0
+    bl nandCreateDir
     bl nandConvertErrorCode
-    b lbl_8030E9BC
-lbl_8030E9B8:
+    b lbl_8030EFB4
+lbl_8030EFB0:
     li r3, -0x80
-lbl_8030E9BC:
+lbl_8030EFB4:
     lwz r0, 0x24(r1)
     lwz r31, 0x1c(r1)
     lwz r30, 0x18(r1)
@@ -334,11 +639,10 @@ lbl_8030E9BC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// NANDReadAsync
-// ----------------------------------------------------------------------------
-// asm_to_cpp: NANDReadAsync
-asm void NANDReadAsync() {
+// asm_to_cpp: NANDPrivateCreateDirAsync
+asm s32 NANDPrivateCreateDirAsync(const char* path, u8 perm, u8 attr,
+                              NANDAsyncCallback callback,
+                              NANDCommandBlock* block) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -352,20 +656,20 @@ asm void NANDReadAsync() {
     mr r31, r7
     bl nandIsInitialized
     cmpwi r3, 0x0
-    bne lbl_8030EA14
+    bne lbl_8030F00C
     li r3, -0x80
-    b lbl_8030EA38
-lbl_8030EA14:
+    b lbl_8030F030
+lbl_8030F00C:
     stw r30, 0x4(r31)
-    lis r6, nandCallback@ha
+    mr r3, r27
     mr r4, r28
     mr r5, r29
-    lwz r3, 0x0(r27)
-    mr r7, r31
-    addi r6, r6, nandCallback@l
-    bl ISFS_ReadAsync
+    mr r6, r31
+    li r7, 0x1
+    li r8, 0x0
+    bl nandCreateDir
     bl nandConvertErrorCode
-lbl_8030EA38:
+lbl_8030F030:
     addi r11, r1, 0x20
     bl _restgpr_27
     lwz r0, 0x24(r1)
@@ -374,265 +678,40 @@ lbl_8030EA38:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// NANDWrite
-// ----------------------------------------------------------------------------
-// asm_to_cpp: NANDWrite
-asm void NANDWrite() {
+// asm_to_cpp: NANDPrivateGetStatus
+asm s32 NANDPrivateGetStatus(const char* path, NANDStatus* status) {
     nofralloc
-    stwu r1, -0x20(r1)
+    stwu r1, -0x10(r1)
     mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r5
-    stw r30, 0x18(r1)
-    mr r30, r4
-    stw r29, 0x14(r1)
-    mr r29, r3
-    bl nandIsInitialized
-    cmpwi r3, 0x0
-    beq lbl_8030EA98
-    lwz r3, 0x0(r29)
-    mr r4, r30
-    mr r5, r31
-    bl ISFS_Write
-    bl nandConvertErrorCode
-    b lbl_8030EA9C
-lbl_8030EA98:
-    li r3, -0x80
-lbl_8030EA9C:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// NANDWriteAsync
-// ----------------------------------------------------------------------------
-// asm_to_cpp: NANDWriteAsync
-asm void NANDWriteAsync() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_27
-    mr r27, r3
-    mr r28, r4
-    mr r29, r5
-    mr r30, r6
-    mr r31, r7
-    bl nandIsInitialized
-    cmpwi r3, 0x0
-    bne lbl_8030EAF4
-    li r3, -0x80
-    b lbl_8030EB18
-lbl_8030EAF4:
-    stw r30, 0x4(r31)
-    lis r6, nandCallback@ha
-    mr r4, r28
-    mr r5, r29
-    lwz r3, 0x0(r27)
-    mr r7, r31
-    addi r6, r6, nandCallback@l
-    bl ISFS_WriteAsync
-    bl nandConvertErrorCode
-lbl_8030EB18:
-    addi r11, r1, 0x20
-    bl _restgpr_27
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// NANDSeek
-// ----------------------------------------------------------------------------
-// asm_to_cpp: NANDSeek
-asm void NANDSeek() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r5
-    stw r30, 0x18(r1)
-    mr r30, r4
-    stw r29, 0x14(r1)
-    mr r29, r3
-    bl nandIsInitialized
-    cmpwi r3, 0x0
-    bne lbl_8030EB68
-    li r3, -0x80
-    b lbl_8030EBB4
-lbl_8030EB68:
-    cmpwi r31, 0x1
-    lwz r3, 0x0(r29)
-    li r5, -0x1
-    beq lbl_8030EB9C
-    bge lbl_8030EB88
-    cmpwi r31, 0x0
-    bge lbl_8030EB94
-    b lbl_8030EBA8
-lbl_8030EB88:
-    cmpwi r31, 0x3
-    bge lbl_8030EBA8
-    b lbl_8030EBA4
-lbl_8030EB94:
-    li r5, 0x0
-    b lbl_8030EBA8
-lbl_8030EB9C:
-    li r5, 0x1
-    b lbl_8030EBA8
-lbl_8030EBA4:
-    li r5, 0x2
-lbl_8030EBA8:
-    mr r4, r30
-    bl ISFS_Seek
-    bl nandConvertErrorCode
-lbl_8030EBB4:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// NANDSeekAsync
-// ----------------------------------------------------------------------------
-// asm_to_cpp: NANDSeekAsync
-asm void NANDSeekAsync() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_27
-    mr r27, r3
-    mr r28, r4
-    mr r29, r5
-    mr r30, r6
-    mr r31, r7
-    bl nandIsInitialized
-    cmpwi r3, 0x0
-    bne lbl_8030EC0C
-    li r3, -0x80
-    b lbl_8030EC68
-lbl_8030EC0C:
-    stw r30, 0x4(r31)
-    cmpwi r29, 0x1
-    li r5, -0x1
-    lwz r3, 0x0(r27)
-    beq lbl_8030EC44
-    bge lbl_8030EC30
-    cmpwi r29, 0x0
-    bge lbl_8030EC3C
-    b lbl_8030EC50
-lbl_8030EC30:
-    cmpwi r29, 0x3
-    bge lbl_8030EC50
-    b lbl_8030EC4C
-lbl_8030EC3C:
-    li r5, 0x0
-    b lbl_8030EC50
-lbl_8030EC44:
-    li r5, 0x1
-    b lbl_8030EC50
-lbl_8030EC4C:
-    li r5, 0x2
-lbl_8030EC50:
-    lis r6, nandCallback@ha
-    mr r4, r28
-    mr r7, r31
-    addi r6, r6, nandCallback@l
-    bl ISFS_SeekAsync
-    bl nandConvertErrorCode
-lbl_8030EC68:
-    addi r11, r1, 0x20
-    bl _restgpr_27
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8030EC80
-// ----------------------------------------------------------------------------
-// asm_to_cpp: fn_8030EC80
-asm void fn_8030EC80() {
-    nofralloc
-    stwu r1, -0x60(r1)
-    mflr r0
-    stw r0, 0x64(r1)
-    stw r31, 0x5c(r1)
-    mr r31, r5
-    stw r30, 0x58(r1)
-    mr r30, r4
-    stw r29, 0x54(r1)
-    mr r29, r3
-    bl nandIsInitialized
-    cmpwi r3, 0x0
-    bne lbl_8030ECB8
-    li r3, -0x80
-    b lbl_8030ED34
-lbl_8030ECB8:
-    li r0, 0x0
-    mr r4, r29
-    stw r0, 0x8(r1)
-    addi r3, r1, 0x8
-    stw r0, 0xc(r1)
-    stw r0, 0x10(r1)
     stw r0, 0x14(r1)
-    stw r0, 0x18(r1)
-    stw r0, 0x1c(r1)
-    stw r0, 0x20(r1)
-    stw r0, 0x24(r1)
-    stw r0, 0x28(r1)
-    stw r0, 0x2c(r1)
-    stw r0, 0x30(r1)
-    stw r0, 0x34(r1)
-    stw r0, 0x38(r1)
-    stw r0, 0x3c(r1)
-    stw r0, 0x40(r1)
-    stw r0, 0x44(r1)
-    bl nandGenerateAbsPath
-    addi r3, r1, 0x8
-    bl nandIsPrivatePath
+    stw r31, 0xc(r1)
+    mr r31, r4
+    stw r30, 0x8(r1)
+    mr r30, r3
+    bl nandIsInitialized
     cmpwi r3, 0x0
-    beq lbl_8030ED20
-    li r3, -0x66
-    b lbl_8030ED30
-lbl_8030ED20:
-    mr r4, r30
-    mr r5, r31
-    addi r3, r1, 0x8
-    bl ISFS_ReadDir
-lbl_8030ED30:
+    beq lbl_8030F7C0
+    mr r3, r30
+    mr r4, r31
+    li r5, 0x0
+    li r6, 0x0
+    li r7, 0x0
+    bl nandGetStatus
     bl nandConvertErrorCode
-lbl_8030ED34:
-    lwz r0, 0x64(r1)
-    lwz r31, 0x5c(r1)
-    lwz r30, 0x58(r1)
-    lwz r29, 0x54(r1)
+    b lbl_8030F7C4
+lbl_8030F7C0:
+    li r3, -0x80
+lbl_8030F7C4:
+    lwz r0, 0x14(r1)
+    lwz r31, 0xc(r1)
+    lwz r30, 0x8(r1)
     mtlr r0
-    addi r1, r1, 0x60
+    addi r1, r1, 0x10
     blr
 }
 
-// ----------------------------------------------------------------------------
-// NANDReadDirAsync
-// ----------------------------------------------------------------------------
 // asm_to_cpp: NANDReadDirAsync
-asm void NANDReadDirAsync() {
+asm int NANDReadDirAsync() {
     nofralloc
     stwu r1, -0x60(r1)
     mflr r0
@@ -696,414 +775,8 @@ lbl_8030EE18:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// nandCreateDir
-// ----------------------------------------------------------------------------
-// asm_to_cpp: nandCreateDir
-asm void nandCreateDir() {
-    nofralloc
-    stwu r1, -0x70(r1)
-    mflr r0
-    stw r0, 0x74(r1)
-    addi r11, r1, 0x70
-    bl _savegpr_27
-    li r0, 0x0
-    mr r27, r4
-    stw r0, 0x18(r1)
-    mr r4, r3
-    mr r28, r5
-    mr r29, r6
-    stw r0, 0x1c(r1)
-    mr r30, r7
-    mr r31, r8
-    addi r3, r1, 0x18
-    stw r0, 0x20(r1)
-    stw r0, 0x24(r1)
-    stw r0, 0x28(r1)
-    stw r0, 0x2c(r1)
-    stw r0, 0x30(r1)
-    stw r0, 0x34(r1)
-    stw r0, 0x38(r1)
-    stw r0, 0x3c(r1)
-    stw r0, 0x40(r1)
-    stw r0, 0x44(r1)
-    stw r0, 0x48(r1)
-    stw r0, 0x4c(r1)
-    stw r0, 0x50(r1)
-    stw r0, 0x54(r1)
-    bl nandGenerateAbsPath
-    cmpwi r31, 0x0
-    bne lbl_8030EEC8
-    addi r3, r1, 0x18
-    bl nandIsPrivatePath
-    cmpwi r3, 0x0
-    beq lbl_8030EEC8
-    li r3, -0x66
-    b lbl_8030EF44
-lbl_8030EEC8:
-    rlwinm. r0, r27, 0, 27, 27
-    bne lbl_8030EED8
-    li r3, -0x65
-    b lbl_8030EF44
-lbl_8030EED8:
-    li r0, 0x0
-    mr r3, r27
-    stw r0, 0x10(r1)
-    addi r4, r1, 0x10
-    addi r5, r1, 0xc
-    addi r6, r1, 0x8
-    stw r0, 0xc(r1)
-    stw r0, 0x8(r1)
-    bl nandSplitPerm
-    cmpwi r30, 0x0
-    beq lbl_8030EF2C
-    lis r8, nandCallback@ha
-    lwz r5, 0x10(r1)
-    lwz r6, 0xc(r1)
-    mr r4, r28
-    lwz r7, 0x8(r1)
-    mr r9, r29
-    addi r3, r1, 0x18
-    addi r8, r8, nandCallback@l
-    bl ISFS_CreateDirAsync
-    b lbl_8030EF44
-lbl_8030EF2C:
-    lwz r5, 0x10(r1)
-    mr r4, r28
-    lwz r6, 0xc(r1)
-    addi r3, r1, 0x18
-    lwz r7, 0x8(r1)
-    bl ISFS_CreateDir
-lbl_8030EF44:
-    addi r11, r1, 0x70
-    bl _restgpr_27
-    lwz r0, 0x74(r1)
-    mtlr r0
-    addi r1, r1, 0x70
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// NANDPrivateCreateDir
-// ----------------------------------------------------------------------------
-// asm_to_cpp: NANDPrivateCreateDir
-asm void NANDPrivateCreateDir() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r5
-    stw r30, 0x18(r1)
-    mr r30, r4
-    stw r29, 0x14(r1)
-    mr r29, r3
-    bl nandIsInitialized
-    cmpwi r3, 0x0
-    beq lbl_8030EFB0
-    mr r3, r29
-    mr r4, r30
-    mr r5, r31
-    li r6, 0x0
-    li r7, 0x0
-    li r8, 0x0
-    bl nandCreateDir
-    bl nandConvertErrorCode
-    b lbl_8030EFB4
-lbl_8030EFB0:
-    li r3, -0x80
-lbl_8030EFB4:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// NANDPrivateCreateDirAsync
-// ----------------------------------------------------------------------------
-// asm_to_cpp: NANDPrivateCreateDirAsync
-asm void NANDPrivateCreateDirAsync() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_27
-    mr r27, r3
-    mr r28, r4
-    mr r29, r5
-    mr r30, r6
-    mr r31, r7
-    bl nandIsInitialized
-    cmpwi r3, 0x0
-    bne lbl_8030F00C
-    li r3, -0x80
-    b lbl_8030F030
-lbl_8030F00C:
-    stw r30, 0x4(r31)
-    mr r3, r27
-    mr r4, r28
-    mr r5, r29
-    mr r6, r31
-    li r7, 0x1
-    li r8, 0x0
-    bl nandCreateDir
-    bl nandConvertErrorCode
-lbl_8030F030:
-    addi r11, r1, 0x20
-    bl _restgpr_27
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8030F048
-// ----------------------------------------------------------------------------
-// asm_to_cpp: fn_8030F048
-asm void fn_8030F048() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_27
-    mr r27, r3
-    mr r28, r4
-    mr r29, r5
-    mr r30, r6
-    mr r31, r7
-    bl nandIsInitialized
-    cmpwi r3, 0x0
-    bne lbl_8030F084
-    li r3, -0x80
-    b lbl_8030F0A8
-lbl_8030F084:
-    stw r30, 0x4(r31)
-    mr r3, r27
-    mr r4, r28
-    mr r5, r29
-    mr r6, r31
-    li r7, 0x1
-    li r8, 0x1
-    bl nandCreateDir
-    bl nandConvertErrorCode
-lbl_8030F0A8:
-    addi r11, r1, 0x20
-    bl _restgpr_27
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// nandMove
-// ----------------------------------------------------------------------------
-// asm_to_cpp: nandMove
-asm void nandMove() {
-    nofralloc
-    stwu r1, -0xb0(r1)
-    mflr r0
-    stw r0, 0xb4(r1)
-    li r0, 0x0
-    stw r31, 0xac(r1)
-    mr r31, r7
-    stw r30, 0xa8(r1)
-    mr r30, r6
-    stw r29, 0xa4(r1)
-    mr r29, r5
-    stw r28, 0xa0(r1)
-    mr r28, r4
-    mr r4, r3
-    addi r3, r1, 0x58
-    stw r0, 0x58(r1)
-    stw r0, 0x5c(r1)
-    stw r0, 0x60(r1)
-    stw r0, 0x64(r1)
-    stw r0, 0x68(r1)
-    stw r0, 0x6c(r1)
-    stw r0, 0x70(r1)
-    stw r0, 0x74(r1)
-    stw r0, 0x78(r1)
-    stw r0, 0x7c(r1)
-    stw r0, 0x80(r1)
-    stw r0, 0x84(r1)
-    stw r0, 0x88(r1)
-    stw r0, 0x8c(r1)
-    stw r0, 0x90(r1)
-    stw r0, 0x94(r1)
-    stw r0, 0x18(r1)
-    stw r0, 0x1c(r1)
-    stw r0, 0x20(r1)
-    stw r0, 0x24(r1)
-    stw r0, 0x28(r1)
-    stw r0, 0x2c(r1)
-    stw r0, 0x30(r1)
-    stw r0, 0x34(r1)
-    stw r0, 0x38(r1)
-    stw r0, 0x3c(r1)
-    stw r0, 0x40(r1)
-    stw r0, 0x44(r1)
-    stw r0, 0x48(r1)
-    stw r0, 0x4c(r1)
-    stw r0, 0x50(r1)
-    stw r0, 0x54(r1)
-    stw r0, 0x8(r1)
-    stw r0, 0xc(r1)
-    stw r0, 0x10(r1)
-    stb r0, 0x14(r1)
-    bl nandGenerateAbsPath
-    addi r3, r1, 0x8
-    addi r4, r1, 0x58
-    bl nandGetRelativeName
-    mr r4, r28
-    addi r3, r1, 0x18
-    bl nandGenerateAbsPath
-    addi r3, r1, 0x18
-    la r4, lbl_8049D150
-    bl strcmp
-    cmpwi r3, 0x0
-    bne lbl_8030F1D0
-    addi r3, r1, 0x18
-    addi r5, r1, 0x8
-    la r4, lbl_8049D154
-    opword 0x4CC63182
-    bl sprintf
-    b lbl_8030F1E8
-lbl_8030F1D0:
-    addi r3, r1, 0x18
-    la r4, lbl_8049D150
-    bl strcat
-    addi r3, r1, 0x18
-    addi r4, r1, 0x8
-    bl strcat
-lbl_8030F1E8:
-    cmpwi r31, 0x0
-    bne lbl_8030F218
-    addi r3, r1, 0x58
-    bl nandIsPrivatePath
-    cmpwi r3, 0x0
-    bne lbl_8030F210
-    addi r3, r1, 0x18
-    bl nandIsPrivatePath
-    cmpwi r3, 0x0
-    beq lbl_8030F218
-lbl_8030F210:
-    li r3, -0x66
-    b lbl_8030F248
-lbl_8030F218:
-    cmpwi r30, 0x0
-    beq lbl_8030F23C
-    lis r5, nandCallback@ha
-    mr r6, r29
-    addi r3, r1, 0x58
-    addi r4, r1, 0x18
-    addi r5, r5, nandCallback@l
-    bl ISFS_RenameAsync
-    b lbl_8030F248
-lbl_8030F23C:
-    addi r3, r1, 0x58
-    addi r4, r1, 0x18
-    bl ISFS_Rename
-lbl_8030F248:
-    lwz r0, 0xb4(r1)
-    lwz r31, 0xac(r1)
-    lwz r30, 0xa8(r1)
-    lwz r29, 0xa4(r1)
-    lwz r28, 0xa0(r1)
-    mtlr r0
-    addi r1, r1, 0xb0
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// NANDMove
-// ----------------------------------------------------------------------------
-// asm_to_cpp: NANDMove
-asm void NANDMove() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r4
-    stw r30, 0x8(r1)
-    mr r30, r3
-    bl nandIsInitialized
-    cmpwi r3, 0x0
-    beq lbl_8030F2B0
-    mr r3, r30
-    mr r4, r31
-    li r5, 0x0
-    li r6, 0x0
-    li r7, 0x0
-    bl nandMove
-    bl nandConvertErrorCode
-    b lbl_8030F2B4
-lbl_8030F2B0:
-    li r3, -0x80
-lbl_8030F2B4:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// NANDMoveAsync
-// ----------------------------------------------------------------------------
-// asm_to_cpp: NANDMoveAsync
-asm void NANDMoveAsync() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r6
-    stw r30, 0x18(r1)
-    mr r30, r5
-    stw r29, 0x14(r1)
-    mr r29, r4
-    stw r28, 0x10(r1)
-    mr r28, r3
-    bl nandIsInitialized
-    cmpwi r3, 0x0
-    bne lbl_8030F30C
-    li r3, -0x80
-    b lbl_8030F32C
-lbl_8030F30C:
-    stw r30, 0x4(r31)
-    mr r3, r28
-    mr r4, r29
-    mr r5, r31
-    li r6, 0x1
-    li r7, 0x0
-    bl nandMove
-    bl nandConvertErrorCode
-lbl_8030F32C:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r28, 0x10(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// NANDTellAsync
-// ----------------------------------------------------------------------------
 // asm_to_cpp: NANDTellAsync
-asm void NANDTellAsync() {
+asm int NANDTellAsync() {
     nofralloc
     clrlwi r11, r1, 27
     mr r12, r1
@@ -1147,11 +820,177 @@ lbl_8030F3C0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8030F3DC
-// ----------------------------------------------------------------------------
+// asm_to_cpp: NANDWrite
+asm s32 NANDWrite(NANDFileInfo* info, const void* buf, u32 len) {
+    nofralloc
+    stwu r1, -0x20(r1)
+    mflr r0
+    stw r0, 0x24(r1)
+    stw r31, 0x1c(r1)
+    mr r31, r5
+    stw r30, 0x18(r1)
+    mr r30, r4
+    stw r29, 0x14(r1)
+    mr r29, r3
+    bl nandIsInitialized
+    cmpwi r3, 0x0
+    beq lbl_8030EA98
+    lwz r3, 0x0(r29)
+    mr r4, r30
+    mr r5, r31
+    bl ISFS_Write
+    bl nandConvertErrorCode
+    b lbl_8030EA9C
+lbl_8030EA98:
+    li r3, -0x80
+lbl_8030EA9C:
+    lwz r0, 0x24(r1)
+    lwz r31, 0x1c(r1)
+    lwz r30, 0x18(r1)
+    lwz r29, 0x14(r1)
+    mtlr r0
+    addi r1, r1, 0x20
+    blr
+}
+
+// asm_to_cpp: NANDWriteAsync
+asm s32 NANDWriteAsync(NANDFileInfo* info, const void* buf, u32 len,
+                   NANDAsyncCallback callback, NANDCommandBlock* block) {
+    nofralloc
+    stwu r1, -0x20(r1)
+    mflr r0
+    stw r0, 0x24(r1)
+    addi r11, r1, 0x20
+    bl _savegpr_27
+    mr r27, r3
+    mr r28, r4
+    mr r29, r5
+    mr r30, r6
+    mr r31, r7
+    bl nandIsInitialized
+    cmpwi r3, 0x0
+    bne lbl_8030EAF4
+    li r3, -0x80
+    b lbl_8030EB18
+lbl_8030EAF4:
+    stw r30, 0x4(r31)
+    lis r6, nandCallback@ha
+    mr r4, r28
+    mr r5, r29
+    lwz r3, 0x0(r27)
+    mr r7, r31
+    addi r6, r6, nandCallback@l
+    bl ISFS_WriteAsync
+    bl nandConvertErrorCode
+lbl_8030EB18:
+    addi r11, r1, 0x20
+    bl _restgpr_27
+    lwz r0, 0x24(r1)
+    mtlr r0
+    addi r1, r1, 0x20
+    blr
+}
+
+// asm_to_cpp: fn_8030EC80
+asm int fn_8030EC80() {
+    nofralloc
+    stwu r1, -0x60(r1)
+    mflr r0
+    stw r0, 0x64(r1)
+    stw r31, 0x5c(r1)
+    mr r31, r5
+    stw r30, 0x58(r1)
+    mr r30, r4
+    stw r29, 0x54(r1)
+    mr r29, r3
+    bl nandIsInitialized
+    cmpwi r3, 0x0
+    bne lbl_8030ECB8
+    li r3, -0x80
+    b lbl_8030ED34
+lbl_8030ECB8:
+    li r0, 0x0
+    mr r4, r29
+    stw r0, 0x8(r1)
+    addi r3, r1, 0x8
+    stw r0, 0xc(r1)
+    stw r0, 0x10(r1)
+    stw r0, 0x14(r1)
+    stw r0, 0x18(r1)
+    stw r0, 0x1c(r1)
+    stw r0, 0x20(r1)
+    stw r0, 0x24(r1)
+    stw r0, 0x28(r1)
+    stw r0, 0x2c(r1)
+    stw r0, 0x30(r1)
+    stw r0, 0x34(r1)
+    stw r0, 0x38(r1)
+    stw r0, 0x3c(r1)
+    stw r0, 0x40(r1)
+    stw r0, 0x44(r1)
+    bl nandGenerateAbsPath
+    addi r3, r1, 0x8
+    bl nandIsPrivatePath
+    cmpwi r3, 0x0
+    beq lbl_8030ED20
+    li r3, -0x66
+    b lbl_8030ED30
+lbl_8030ED20:
+    mr r4, r30
+    mr r5, r31
+    addi r3, r1, 0x8
+    bl ISFS_ReadDir
+lbl_8030ED30:
+    bl nandConvertErrorCode
+lbl_8030ED34:
+    lwz r0, 0x64(r1)
+    lwz r31, 0x5c(r1)
+    lwz r30, 0x58(r1)
+    lwz r29, 0x54(r1)
+    mtlr r0
+    addi r1, r1, 0x60
+    blr
+}
+
+// asm_to_cpp: fn_8030F048
+asm int fn_8030F048() {
+    nofralloc
+    stwu r1, -0x20(r1)
+    mflr r0
+    stw r0, 0x24(r1)
+    addi r11, r1, 0x20
+    bl _savegpr_27
+    mr r27, r3
+    mr r28, r4
+    mr r29, r5
+    mr r30, r6
+    mr r31, r7
+    bl nandIsInitialized
+    cmpwi r3, 0x0
+    bne lbl_8030F084
+    li r3, -0x80
+    b lbl_8030F0A8
+lbl_8030F084:
+    stw r30, 0x4(r31)
+    mr r3, r27
+    mr r4, r28
+    mr r5, r29
+    mr r6, r31
+    li r7, 0x1
+    li r8, 0x1
+    bl nandCreateDir
+    bl nandConvertErrorCode
+lbl_8030F0A8:
+    addi r11, r1, 0x20
+    bl _restgpr_27
+    lwz r0, 0x24(r1)
+    mtlr r0
+    addi r1, r1, 0x20
+    blr
+}
+
 // asm_to_cpp: fn_8030F3DC
-asm void fn_8030F3DC() {
+asm int fn_8030F3DC() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -1188,11 +1027,8 @@ lbl_8030F440:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8030F458
-// ----------------------------------------------------------------------------
 // asm_to_cpp: fn_8030F458
-asm void fn_8030F458() {
+asm int fn_8030F458() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1228,264 +1064,8 @@ lbl_8030F4A8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// nandComposePerm
-// ----------------------------------------------------------------------------
-// asm_to_cpp: nandComposePerm
-asm void nandComposePerm() {
-    nofralloc
-    clrlwi. r0, r4, 31
-    li r7, 0x0
-    beq lbl_8030F4E0
-    ori r7, r7, 0x10
-lbl_8030F4E0:
-    rlwinm. r0, r4, 0, 30, 30
-    beq lbl_8030F4EC
-    ori r7, r7, 0x20
-lbl_8030F4EC:
-    clrlwi. r0, r5, 31
-    beq lbl_8030F4F8
-    ori r7, r7, 0x4
-lbl_8030F4F8:
-    rlwinm. r0, r5, 0, 30, 30
-    beq lbl_8030F504
-    ori r7, r7, 0x8
-lbl_8030F504:
-    clrlwi. r0, r6, 31
-    beq lbl_8030F510
-    ori r7, r7, 0x1
-lbl_8030F510:
-    rlwinm. r0, r6, 0, 30, 30
-    beq lbl_8030F51C
-    ori r7, r7, 0x2
-lbl_8030F51C:
-    stb r7, 0x0(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// nandSplitPerm
-// ----------------------------------------------------------------------------
-// asm_to_cpp: nandSplitPerm
-asm void nandSplitPerm() {
-    nofralloc
-    li r7, 0x0
-    rlwinm. r0, r3, 0, 27, 27
-    stw r7, 0x0(r4)
-    stw r7, 0x0(r5)
-    stw r7, 0x0(r6)
-    beq lbl_8030F548
-    lwz r0, 0x0(r4)
-    ori r0, r0, 0x1
-    stw r0, 0x0(r4)
-lbl_8030F548:
-    rlwinm. r0, r3, 0, 26, 26
-    beq lbl_8030F55C
-    lwz r0, 0x0(r4)
-    ori r0, r0, 0x2
-    stw r0, 0x0(r4)
-lbl_8030F55C:
-    rlwinm. r0, r3, 0, 29, 29
-    beq lbl_8030F570
-    lwz r0, 0x0(r5)
-    ori r0, r0, 0x1
-    stw r0, 0x0(r5)
-lbl_8030F570:
-    rlwinm. r0, r3, 0, 28, 28
-    beq lbl_8030F584
-    lwz r0, 0x0(r5)
-    ori r0, r0, 0x2
-    stw r0, 0x0(r5)
-lbl_8030F584:
-    clrlwi. r0, r3, 31
-    beq lbl_8030F598
-    lwz r0, 0x0(r6)
-    ori r0, r0, 0x1
-    stw r0, 0x0(r6)
-lbl_8030F598:
-    rlwinm. r0, r3, 0, 30, 30
-    beqlr
-    lwz r0, 0x0(r6)
-    ori r0, r0, 0x2
-    stw r0, 0x0(r6)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// nandGetStatus
-// ----------------------------------------------------------------------------
-// asm_to_cpp: nandGetStatus
-asm void nandGetStatus() {
-    nofralloc
-    stwu r1, -0x70(r1)
-    mflr r0
-    stw r0, 0x74(r1)
-    li r0, 0x0
-    stw r31, 0x6c(r1)
-    mr r31, r7
-    stw r30, 0x68(r1)
-    mr r30, r6
-    stw r29, 0x64(r1)
-    mr r29, r5
-    stw r28, 0x60(r1)
-    mr r28, r4
-    mr r4, r3
-    addi r3, r1, 0x20
-    stw r0, 0x20(r1)
-    stw r0, 0x24(r1)
-    stw r0, 0x28(r1)
-    stw r0, 0x2c(r1)
-    stw r0, 0x30(r1)
-    stw r0, 0x34(r1)
-    stw r0, 0x38(r1)
-    stw r0, 0x3c(r1)
-    stw r0, 0x40(r1)
-    stw r0, 0x44(r1)
-    stw r0, 0x48(r1)
-    stw r0, 0x4c(r1)
-    stw r0, 0x50(r1)
-    stw r0, 0x54(r1)
-    stw r0, 0x58(r1)
-    stw r0, 0x5c(r1)
-    bl nandGenerateAbsPath
-    cmpwi r31, 0x0
-    bne lbl_8030F64C
-    addi r3, r1, 0x20
-    bl nandIsUnderPrivatePath
-    cmpwi r3, 0x0
-    beq lbl_8030F64C
-    li r3, -0x66
-    b lbl_8030F6E4
-lbl_8030F64C:
-    cmpwi r30, 0x0
-    beq lbl_8030F684
-    lis r10, nandGetStatusCallback@ha
-    stw r29, 0x8(r1)
-    mr r4, r28
-    addi r3, r1, 0x20
-    addi r5, r28, 0x4
-    addi r6, r29, 0x20
-    addi r7, r29, 0x24
-    addi r8, r29, 0x28
-    addi r9, r29, 0x2c
-    addi r10, r10, nandGetStatusCallback@l
-    bl ISFS_GetAttrAsync
-    b lbl_8030F6E4
-lbl_8030F684:
-    li r0, 0x0
-    mr r4, r28
-    stw r0, 0x1c(r1)
-    addi r3, r1, 0x20
-    addi r5, r28, 0x4
-    addi r6, r1, 0x1c
-    stw r0, 0x18(r1)
-    addi r7, r1, 0x18
-    addi r8, r1, 0x14
-    addi r9, r1, 0x10
-    stw r0, 0x14(r1)
-    stw r0, 0x10(r1)
-    bl ISFS_GetAttr
-    cmpwi r3, 0x0
-    mr r31, r3
-    bne lbl_8030F6E0
-    lwz r4, 0x18(r1)
-    addi r3, r28, 0x7
-    lwz r5, 0x14(r1)
-    lwz r6, 0x10(r1)
-    bl nandComposePerm
-    lwz r0, 0x1c(r1)
-    stb r0, 0x6(r28)
-lbl_8030F6E0:
-    mr r3, r31
-lbl_8030F6E4:
-    lwz r0, 0x74(r1)
-    lwz r31, 0x6c(r1)
-    lwz r30, 0x68(r1)
-    lwz r29, 0x64(r1)
-    lwz r28, 0x60(r1)
-    mtlr r0
-    addi r1, r1, 0x70
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// nandGetStatusCallback
-// ----------------------------------------------------------------------------
-// asm_to_cpp: nandGetStatusCallback
-asm void nandGetStatusCallback() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    cmpwi r3, 0x0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r4
-    stw r30, 0x8(r1)
-    mr r30, r3
-    bne lbl_8030F748
-    lwz r5, 0x14(r4)
-    lwz r0, 0x20(r4)
-    addi r3, r5, 0x7
-    stb r0, 0x6(r5)
-    lwz r4, 0x24(r4)
-    lwz r5, 0x28(r31)
-    lwz r6, 0x2c(r31)
-    bl nandComposePerm
-lbl_8030F748:
-    mr r3, r30
-    bl nandConvertErrorCode
-    lwz r12, 0x4(r31)
-    mr r4, r31
-    mtctr r12
-    bctrl
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// NANDPrivateGetStatus
-// ----------------------------------------------------------------------------
-// asm_to_cpp: NANDPrivateGetStatus
-asm void NANDPrivateGetStatus() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r4
-    stw r30, 0x8(r1)
-    mr r30, r3
-    bl nandIsInitialized
-    cmpwi r3, 0x0
-    beq lbl_8030F7C0
-    mr r3, r30
-    mr r4, r31
-    li r5, 0x0
-    li r6, 0x0
-    li r7, 0x0
-    bl nandGetStatus
-    bl nandConvertErrorCode
-    b lbl_8030F7C4
-lbl_8030F7C0:
-    li r3, -0x80
-lbl_8030F7C4:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8030F7DC
-// ----------------------------------------------------------------------------
 // asm_to_cpp: fn_8030F7DC
-asm void fn_8030F7DC() {
+asm int fn_8030F7DC() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -1515,47 +1095,3 @@ lbl_8030F828:
     addi r1, r1, 0x10
     blr
 }
-
-// ----------------------------------------------------------------------------
-// NANDPrivateGetStatusAsync
-// ----------------------------------------------------------------------------
-// asm_to_cpp: NANDPrivateGetStatusAsync
-asm void NANDPrivateGetStatusAsync() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r6
-    stw r30, 0x18(r1)
-    mr r30, r5
-    stw r29, 0x14(r1)
-    mr r29, r4
-    stw r28, 0x10(r1)
-    mr r28, r3
-    bl nandIsInitialized
-    cmpwi r3, 0x0
-    bne lbl_8030F880
-    li r3, -0x80
-    b lbl_8030F8A4
-lbl_8030F880:
-    stw r30, 0x4(r31)
-    mr r3, r28
-    mr r4, r29
-    mr r5, r31
-    stw r29, 0x14(r31)
-    li r6, 0x1
-    li r7, 0x1
-    bl nandGetStatus
-    bl nandConvertErrorCode
-lbl_8030F8A4:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r28, 0x10(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-

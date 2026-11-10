@@ -61,7 +61,7 @@ extern void _savegpr_26();
 extern void _savegpr_27();
 extern void fn_802E10A8();
 extern void fn_802E1104();
-extern void fn_802E1844();
+extern void __GXSetDirtyState();
 extern void fn_802E51B0();
 
 // asm_to_cpp: fn_802E51B0
@@ -81,7 +81,7 @@ asm void fn_802E51B0() {
     addi r29, r31, 0x0
     cmpwi r0, 0x0
     beq lbl_802E51EC
-    bl fn_802E1844
+    bl __GXSetDirtyState
 lbl_802E51EC:
     lbz r0, 0x5f9(r30)
     cmpwi r0, 0x0

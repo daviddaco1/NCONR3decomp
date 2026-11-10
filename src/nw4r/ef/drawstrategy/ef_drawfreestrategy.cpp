@@ -218,7 +218,6 @@ extern "C" void fn_801BF1AC();
 extern "C" void fn_801BF940();
 extern "C" void fn_801C5424();
 extern "C" void fn_801C555C();
-extern "C" void fn_8030D7E0();
 
 // asm_to_cpp: fn_801C5424
 extern "C" asm void fn_801C5424() {
@@ -233,19 +232,19 @@ extern "C" asm void fn_801C5424() {
     mr r30, r4
     stw r29, 0x44(r1)
     mr r29, r3
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     mr r3, r29
     addi r4, r30, 0xc
     addi r5, r1, 0x20
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     mr r3, r29
     addi r4, r30, 0x18
     addi r5, r1, 0x14
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     mr r3, r29
     addi r4, r30, 0x24
     addi r5, r1, 0x8
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
@@ -438,7 +437,7 @@ lbl_801C5740:
     mr r3, r25
     addi r5, r1, 0x2c
     addi r4, r25, 0x8c
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0x2c
     mr r4, r3
     bl fn_801B9B90

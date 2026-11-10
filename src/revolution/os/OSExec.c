@@ -176,7 +176,7 @@ extern void _savegpr_25();
 extern void callback();
 extern void fn_802D7A9C();
 extern void fn_802D926C();
-extern void fn_803150C4();
+extern void DCStoreRange();
 extern void fn_80316B20();
 extern void fn_80317288();
 extern void fn_8031ABB0();
@@ -886,7 +886,7 @@ lbl_80316FE0:
     lwz r29, 0x311c(r5)
     addi r3, r5, 0x3100
     lwz r28, 0x3120(r5)
-    bl fn_803150C4
+    bl DCStoreRange
     mr r4, r23
     mr r3, r24
     mr r5, r25

@@ -115,7 +115,7 @@ extern void _savegpr_25();
 extern void _savegpr_26();
 extern void _savegpr_27();
 extern void fn_8019AFCC();
-extern void fn_803150C4();
+extern void DCStoreRange();
 extern void fn_8031AFC0();
 extern void fn_8031AFC4();
 extern void fn_8031C81C();
@@ -132,7 +132,7 @@ extern void fn_8032B7B0();
 extern void fn_8032B8A0();
 extern void fn_8032BB18();
 extern void fn_8032BB98();
-extern void fn_8032BD10();
+extern void NWC24GetErrorCode();
 extern void fn_8032BD18();
 extern void fn_8032BD1C();
 extern void fn_8032C0C4();
@@ -288,10 +288,10 @@ extern void fn_80333E70();
 extern void fn_80333E80();
 extern void fn_80333E98();
 extern void fn_80333EF8();
-extern void fn_80334060();
-extern void fn_80334098();
-extern void fn_803340AC();
-extern void fn_803340C0();
+extern void NWC24iRegister();
+extern void NWC24IsMsgLibOpened();
+extern void NWC24IsMsgLibOpenedByTool();
+extern void NWC24IsMsgLibOpenBlocking();
 extern void fn_803340D4();
 extern void fn_80334850();
 extern void fn_803360B0();
@@ -1326,9 +1326,9 @@ lbl_8032BD00:
 }
 
 // ----------------------------------------------------------------------------
-// fn_8032BD10
+// NWC24GetErrorCode
 // ----------------------------------------------------------------------------
-asm void fn_8032BD10() {
+asm void NWC24GetErrorCode() {
     nofralloc
     lwz r3, lbl_8049D3C0
     blr
@@ -11555,10 +11555,10 @@ asm void fn_80333EF8() {
     li r31, 0x0
     stw r30, 0x18(r1)
     mr r30, r3
-    bl fn_80334098
+    bl NWC24IsMsgLibOpened
     cmpwi r3, 0x0
     bne lbl_80333F2C
-    bl fn_803340AC
+    bl NWC24IsMsgLibOpenedByTool
     cmpwi r3, 0x0
     beq lbl_80333F44
 lbl_80333F2C:
@@ -11620,7 +11620,7 @@ lbl_80333FB4:
     li r4, 0x20
     stw r6, 0x31c4(r5)
     stw r0, 0x31c0(r5)
-    bl fn_803150C4
+    bl DCStoreRange
 lbl_80333FFC:
     li r3, 0x0
     bl fn_803340D4
@@ -11656,9 +11656,9 @@ lbl_80334048:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80334060
+// NWC24iRegister
 // ----------------------------------------------------------------------------
-asm void fn_80334060() {
+asm void NWC24iRegister() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -11678,9 +11678,9 @@ lbl_80334088:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80334098
+// NWC24IsMsgLibOpened
 // ----------------------------------------------------------------------------
-asm void fn_80334098() {
+asm void NWC24IsMsgLibOpened() {
     nofralloc
     lwz r3, lbl_8049E578
     subi r0, r3, 0x1
@@ -11690,9 +11690,9 @@ asm void fn_80334098() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_803340AC
+// NWC24IsMsgLibOpenedByTool
 // ----------------------------------------------------------------------------
-asm void fn_803340AC() {
+asm void NWC24IsMsgLibOpenedByTool() {
     nofralloc
     lwz r3, lbl_8049E578
     subi r0, r3, 0x2
@@ -11702,9 +11702,9 @@ asm void fn_803340AC() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_803340C0
+// NWC24IsMsgLibOpenBlocking
 // ----------------------------------------------------------------------------
-asm void fn_803340C0() {
+asm void NWC24IsMsgLibOpenBlocking() {
     nofralloc
     lwz r3, lbl_8049E578
     subi r0, r3, 0x3

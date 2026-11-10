@@ -315,9 +315,9 @@ extern "C" void PPCSync();
 extern "C" void fn_801D1E58();
 extern "C" void fn_801D2798();
 extern "C" void fn_801D27F0();
-extern "C" void fn_801DF830();
-extern "C" void fn_803150C4();
-extern "C" void fn_80315120();
+extern "C" void Copy32ByteBlocks__Q34nw4r3g3d6detailFPvPCvUl();
+extern "C" void DCStoreRange();
+extern "C" void DCStoreRangeNoSync();
 
 // asm_to_cpp: fn_801D1E58
 extern "C" asm void fn_801D1E58() {
@@ -413,14 +413,14 @@ extern "C" asm void fn_801D27F0() {
     lwz r31, 0x0(r3)
     mr r3, r30
     mr r4, r31
-    bl fn_801DF830
+    bl Copy32ByteBlocks__Q34nw4r3g3d6detailFPvPCvUl
     lwz r0, 0x4(r30)
     subf r4, r31, r30
     mr r3, r30
     subf r0, r4, r0
     stw r0, 0x4(r30)
     lwz r4, 0x0(r30)
-    bl fn_80315120
+    bl DCStoreRangeNoSync
     mr r3, r30
     lwz r31, 0xc(r1)
     lwz r30, 0x8(r1)
@@ -437,7 +437,7 @@ extern "C" asm void DCStore__Q34nw4r3g3d6ResShpFb() {
     cmpwi r4, 0x0
     lwz r4, 0x0(r3)
     beq lbl_801D2868
-    b fn_803150C4
+    b DCStoreRange
 lbl_801D2868:
-    b fn_80315120
+    b DCStoreRangeNoSync
 }

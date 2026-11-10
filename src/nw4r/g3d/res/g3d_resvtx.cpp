@@ -167,8 +167,8 @@ void ResVtxTexCoord::DCStore(bool sync) {
 extern "C" void DCStore__Q34nw4r3g3d12ResVtxFurPosFb();
 extern "C" void DCStore__Q34nw4r3g3d12ResVtxFurVecFb();
 extern "C" void SetArray__Q34nw4r3g3d12ResVtxFurPosFUs();
-extern "C" void fn_803150C4();
-extern "C" void fn_80315120();
+extern "C" void DCStoreRange();
+extern "C" void DCStoreRangeNoSync();
 
 // asm_to_cpp: SetArray__Q34nw4r3g3d12ResVtxFurPosFUs
 extern "C" asm void SetArray__Q34nw4r3g3d12ResVtxFurPosFUs() {
@@ -215,9 +215,9 @@ extern "C" asm void DCStore__Q34nw4r3g3d12ResVtxFurVecFb() {
     cmpwi r4, 0x0
     lwz r4, 0x0(r3)
     beq lbl_801D4598
-    b fn_803150C4
+    b DCStoreRange
 lbl_801D4598:
-    b fn_80315120
+    b DCStoreRangeNoSync
 }
 
 // asm_to_cpp: DCStore__Q34nw4r3g3d12ResVtxFurPosFb
@@ -227,7 +227,7 @@ extern "C" asm void DCStore__Q34nw4r3g3d12ResVtxFurPosFb() {
     cmpwi r4, 0x0
     lwz r4, 0x0(r3)
     beq lbl_801D45B0
-    b fn_803150C4
+    b DCStoreRange
 lbl_801D45B0:
-    b fn_80315120
+    b DCStoreRangeNoSync
 }

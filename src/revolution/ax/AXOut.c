@@ -209,9 +209,9 @@ extern void __AXPrintStudio();
 extern void __AXProcessAux();
 extern void __AXServiceCallbackStack();
 extern void __AXSyncPBs();
-extern void fn_8029C960();
-extern void fn_8029C990();
-extern void fn_8029EE28();
+extern void __AXGetCommandListAddress();
+extern void __AXNextFrame();
+extern void __AXGetCurrentProfile();
 extern void fn_8031D978();
 
 // asm_to_cpp: __AXOutNewFrame
@@ -244,7 +244,7 @@ lbl_8029D450:
     bl __AXSyncPBs
 lbl_8029D458:
     bl __AXPrintStudio
-    bl fn_8029C960
+    bl __AXGetCommandListAddress
     lis r4, 0xbabe
     mr r29, r3
     addi r3, r4, 0x80
@@ -314,7 +314,7 @@ lbl_8029D544:
     mulli r0, r0, 0x180
     addi r5, r1, 0x8
     add r4, r29, r0
-    bl fn_8029C990
+    bl __AXNextFrame
     lwz r3, lbl_8049DF48
     lwz r0, lbl_8049DF20
     addi r3, r3, 0x1
@@ -346,7 +346,7 @@ lbl_8029D5C0:
     stw r3, 0x28(r29)
     bl __AXGetNumVoices
     stw r3, 0x30(r29)
-    bl fn_8029EE28
+    bl __AXGetCurrentProfile
     cmpwi r3, 0x0
     beq lbl_8029D638
     li r0, 0x7
@@ -552,14 +552,14 @@ lbl_8029D930:
     addi r3, r31, 0x5e0
     addi r4, r4, 0x300
     addi r5, r1, 0x8
-    bl fn_8029C990
+    bl __AXNextFrame
     b lbl_8029D9E8
 lbl_8029D9D4:
     addi r4, r31, 0x8e0
     addi r3, r31, 0x5e0
     addi r4, r4, 0x180
     addi r5, r1, 0x8
-    bl fn_8029C990
+    bl __AXNextFrame
 lbl_8029D9E8:
     lwz r0, lbl_8049DF20
     li r4, 0x1

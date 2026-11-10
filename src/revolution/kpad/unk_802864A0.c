@@ -224,7 +224,7 @@ extern void fn_802898E4();
 extern void fn_8028A1D8();
 extern void fn_8028A2F8();
 extern void fn_8028A7AC();
-extern void fn_8028A7FC();
+extern void WPADGetAccGravityUnit();
 extern void fn_8028A8D4();
 extern void fn_8028A8F8();
 extern void fn_8028A9B8();
@@ -234,18 +234,18 @@ extern void fn_8028AB54();
 extern void fn_8028ABB0();
 extern void fn_8028ABF4();
 extern void fn_8028ACAC();
-extern void fn_8028AD00();
+extern void WPADGetInfoAsync();
 extern void fn_8028AF20();
 extern void fn_8028AFEC();
 extern void fn_8028B020();
-extern void fn_8028B054();
+extern void WPADControlLed();
 extern void fn_8028B23C();
 extern void fn_8028B2E8();
 extern void fn_8028B380();
 extern void fn_8028B4DC();
 extern void fn_8028B5FC();
 extern void fn_8028B6F8();
-extern void fn_8028B73C();
+extern void WPADControlSpeaker();
 extern void fn_8028CD58();
 extern void fn_8028CD8C();
 extern void fn_8028CDDC();
@@ -262,7 +262,7 @@ extern void fn_8028E5DC();
 extern void fn_8028E678();
 extern void fn_8028E8E0();
 extern void fn_8028EA94();
-extern void fn_8028EC4C();
+extern void WPADiSendReadData();
 extern void fn_8028EDF8();
 extern void fn_8028EE58();
 extern void fn_8029419C();
@@ -289,8 +289,8 @@ extern void fn_8029A438();
 extern void fn_8029A480();
 extern void fn_8029A4F4();
 extern void fn_8029A548();
-extern void fn_80313ECC();
-extern void fn_80313F50();
+extern void OSGetAppGamename();
+extern void OSGetAppType();
 extern void fn_803248C0();
 extern void memcmp();
 extern void memcpy();
@@ -3844,9 +3844,9 @@ lbl_80289478:
     blt lbl_80289478
     li r0, 0x5
     stb r0, lbl_8049DDF6
-    bl fn_80313ECC
+    bl OSGetAppGamename
     stw r3, lbl_8049DDF8
-    bl fn_80313F50
+    bl OSGetAppType
     stb r3, lbl_8049DDFC
     bl SCGetBtDpdSensibility
     clrlwi r0, r3, 24
@@ -5247,9 +5247,9 @@ lbl_8028A7EC:
 }
 
 // ----------------------------------------------------------------------------
-// fn_8028A7FC
+// WPADGetAccGravityUnit
 // ----------------------------------------------------------------------------
-asm void fn_8028A7FC() {
+asm void WPADGetAccGravityUnit() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -5371,7 +5371,7 @@ lbl_8028A978:
     mr r3, r28
     addi r5, r5, fn_8028A8D4@l
     li r4, 0x0
-    bl fn_8028B054
+    bl WPADControlLed
 lbl_8028A998:
     lwz r0, 0x24(r1)
     lwz r31, 0x1c(r1)
@@ -5654,9 +5654,9 @@ lbl_8028ACE0:
 }
 
 // ----------------------------------------------------------------------------
-// fn_8028AD00
+// WPADGetInfoAsync
 // ----------------------------------------------------------------------------
-asm void fn_8028AD00() {
+asm void WPADGetInfoAsync() {
     nofralloc
     stwu r1, -0x90(r1)
     mflr r0
@@ -5910,9 +5910,9 @@ asm void fn_8028B020() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_8028B054
+// WPADControlLed
 // ----------------------------------------------------------------------------
-asm void fn_8028B054() {
+asm void WPADControlLed() {
     nofralloc
     stwu r1, -0x80(r1)
     mflr r0
@@ -6429,9 +6429,9 @@ asm void fn_8028B6F8() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_8028B73C
+// WPADControlSpeaker
 // ----------------------------------------------------------------------------
-asm void fn_8028B73C() {
+asm void WPADControlSpeaker() {
     nofralloc
     stwu r1, -0x600(r1)
     mflr r0
@@ -10103,9 +10103,9 @@ lbl_8028EC30:
 }
 
 // ----------------------------------------------------------------------------
-// fn_8028EC4C
+// WPADiSendReadData
 // ----------------------------------------------------------------------------
-asm void fn_8028EC4C() {
+asm void WPADiSendReadData() {
     nofralloc
     stwu r1, -0x80(r1)
     mflr r0

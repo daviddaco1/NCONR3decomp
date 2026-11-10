@@ -1009,6 +1009,7 @@ extern "C" float lbl_804A1A90;
 extern "C" float lbl_804A1A98;
 extern "C" u8 lbl_803E6550[];
 extern "C" void FrSqrt__Q24nw4r4mathFf();
+extern "C" void GetNextDrawParticle_YoungersFirst__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r2ef15ParticleManagerPQ34nw4r2ef8Particle();
 extern "C" void VEC3TransformNormal__Q24nw4r4mathFPQ34nw4r4math4VEC3PCQ34nw4r4math5MTX34PCQ34nw4r4math4VEC3();
 extern "C" void _restgpr_15();
 extern "C" void _restgpr_25();
@@ -1020,7 +1021,7 @@ extern "C" void dtor_80136CFC();
 extern "C" void fn_801ACC48();
 extern "C" void fn_801B60F0();
 extern "C" void fn_801B7FB8();
-extern "C" void Draw_ModifyColor__Q34nw4r2ef15ParticleManagerFPQ34nw4r2ef8ParticleP8_GXColorP8_GXColor();
+extern "C" void fn_801B823C();
 extern "C" void fn_801B9C64();
 extern "C" void fn_801BF1AC();
 extern "C" void fn_801BF28C();
@@ -1033,11 +1034,9 @@ extern "C" void fn_801C0DA4();
 extern "C" void fn_801C0DC8();
 extern "C" void fn_801C0DF8();
 extern "C" void fn_801C0E40();
-extern "C" void fn_801C0E70();
 extern "C" void fn_801C0E98();
 extern "C" void fn_801C10B4();
 extern "C" void fn_801C10F4();
-extern "C" void fn_802E1DE4();
 extern "C" void fn_802E3F80();
 extern "C" void fn_802E3FE8();
 extern "C" void fn_802E413C();
@@ -1056,7 +1055,6 @@ extern "C" void fn_802E4750();
 extern "C" void fn_802E4808();
 extern "C" void fn_802E48CC();
 extern "C" void fn_802E4A28();
-extern "C" void fn_8030D7E0();
 
 // asm_to_cpp: fn_801BF1AC
 extern "C" asm void fn_801BF1AC() {
@@ -1275,7 +1273,7 @@ lbl_801BF4A4:
     li r3, 0x0
     bl GXSetCullMode
     li r3, 0x0
-    bl fn_802E1DE4
+    bl GXSetCoPlanar
     lbz r3, 0x5c(r30)
     lbz r4, 0x5d(r30)
     lbz r5, 0x5e(r30)
@@ -2236,7 +2234,7 @@ lbl_801C017C:
     mr r4, r29
     addi r5, r25, 0xc0
     addi r6, r25, 0xc4
-    bl Draw_ModifyColor__Q34nw4r2ef15ParticleManagerFPQ34nw4r2ef8ParticleP8_GXColorP8_GXColor
+    bl fn_801B823C
 lbl_801C018C:
     lbz r0, 0xba(r25)
     cmpwi r0, 0x0
@@ -2255,7 +2253,7 @@ lbl_801C01BC:
     mr r4, r29
     addi r5, r25, 0xc8
     addi r6, r25, 0xcc
-    bl Draw_ModifyColor__Q34nw4r2ef15ParticleManagerFPQ34nw4r2ef8ParticleP8_GXColorP8_GXColor
+    bl fn_801B823C
 lbl_801C01D0:
     mr r30, r25
     li r29, 0x0
@@ -3100,8 +3098,8 @@ extern "C" asm void fn_801C0DA4() {
     beq lbl_801C0DB0
     b lbl_801C0DBC
 lbl_801C0DB0:
-    lis r3, fn_801C0E70@ha
-    addi r3, r3, fn_801C0E70@l
+    lis r3, GetNextDrawParticle_YoungersFirst__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r2ef15ParticleManagerPQ34nw4r2ef8Particle@ha
+    addi r3, r3, GetNextDrawParticle_YoungersFirst__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r2ef15ParticleManagerPQ34nw4r2ef8Particle@l
     blr
 lbl_801C0DBC:
     lis r3, fn_801C0E40@ha
@@ -3173,23 +3171,6 @@ lbl_801C0E58:
     lwz r0, 0xc(r3)
     cmpwi r0, 0x1
     bne lbl_801C0E50
-    blr
-}
-
-// asm_to_cpp: fn_801C0E70
-extern "C" asm void fn_801C0E70() {
-    nofralloc
-    lhz r5, 0x42(r3)
-    lwzx r3, r4, r5
-    b lbl_801C0E80
-lbl_801C0E7C:
-    lwzx r3, r3, r5
-lbl_801C0E80:
-    cmpwi r3, 0x0
-    beqlr
-    lwz r0, 0xc(r3)
-    cmpwi r0, 0x1
-    bne lbl_801C0E7C
     blr
 }
 
@@ -3270,7 +3251,7 @@ lbl_801C0F78:
     stfs f1, 0x2c(r1)
     stfs f2, 0x30(r1)
     stfs f3, 0x34(r1)
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     lfs f0, 0x2c(r1)
     stfs f0, 0xa4(r30)
     lfs f0, 0x30(r1)

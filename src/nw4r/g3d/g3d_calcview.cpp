@@ -44,8 +44,8 @@ extern "C" void fn_801E4E98();
 extern "C" void fn_801E5178();
 extern "C" void fn_8030DE44();
 extern "C" void fn_8030DEEC();
-extern "C" void fn_803153E4();
-extern "C" void fn_803153F0();
+extern "C" void LCQueueLength();
+extern "C" void LCQueueWait();
 extern "C" void fn_8031CDB4();
 
 // ----------------------------------------------------------------------------
@@ -1779,7 +1779,7 @@ lbl_801E58A0:
     bl GetBillboardMtxTemporary__Q44nw4r3g3d6detail7workmemFv
     mr r29, r3
     li r3, 0x0
-    bl fn_803153F0
+    bl LCQueueWait
     lwz r0, 0xc(r1)
     lis r30, lbl_8033C670@ha
     lfs f31, lbl_804A1DA0
@@ -1814,7 +1814,7 @@ lbl_801E5908:
     stw r0, 0x50(r1)
 lbl_801E5928:
     lwz r3, 0x58(r1)
-    bl fn_803153F0
+    bl LCQueueWait
     cmplwi r20, 0x1
     ble lbl_801E5950
     lwz r4, 0x78(r1)
@@ -2129,7 +2129,7 @@ lbl_801E5D94:
     bl GetBillboardMtxTemporary__Q44nw4r3g3d6detail7workmemFv
     mr r29, r3
     li r3, 0x0
-    bl fn_803153F0
+    bl LCQueueWait
     lwz r0, 0x14(r1)
     mr r4, r15
     lis r3, 0xe000
@@ -2146,13 +2146,13 @@ lbl_801E5DC0:
 lbl_801E5DD4:
     bl fn_8031CDB4
 lbl_801E5DD8:
-    bl fn_803153E4
+    bl LCQueueLength
     cmpwi r3, 0x0
     bne lbl_801E5DD4
     b lbl_801E5DF0
 lbl_801E5DE8:
     li r3, 0x0
-    bl fn_803153F0
+    bl LCQueueWait
 lbl_801E5DF0:
     lwz r0, 0xc(r1)
     lis r30, lbl_8033C670@ha
@@ -2190,7 +2190,7 @@ lbl_801E5E50:
     stw r0, 0x50(r1)
 lbl_801E5E70:
     lwz r3, 0x58(r1)
-    bl fn_803153F0
+    bl LCQueueWait
     lwz r0, 0x14(r1)
     addi r3, r21, 0x28
     cmplw r3, r0

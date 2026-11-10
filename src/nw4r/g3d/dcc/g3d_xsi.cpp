@@ -319,8 +319,57 @@ bool CalcTexMtx_Xsi(math::MTX34 *pMtx, bool set, const TexSrt &rSrt, TexSrt::Fla
     return true;
 }
 
-// CalcWorldMtx_Xsi__Q44nw4r3g3d6detail3dccFPQ34nw4r4math5MTX34PQ34nw4r4math4VEC3PCQ34nw4r4math5MTX34PCQ34nw4r4math4VEC3UlPCQ34nw4r3g3d12ChrAnmResult: definicion C reemplazada por asm (ver abajo)
+u32 CalcWorldMtx_Xsi(
+    math::MTX34 *pW, math::VEC3 *pS, const math::MTX34 *pW1, const math::VEC3 *pS1, u32 attr,
+    const ChrAnmResult *pResult
+) {
+    u32 flag = pResult->flags;
+    u32 newAttr = attr;
 
+    if ((flag & ChrAnmResult::FLAG_MTX_IDENT) || (flag & ChrAnmResult::FLAG_ROT_TRANS_ZERO)) {
+        math::MTX34Copy(pW, pW1);
+    } else if (flag & ChrAnmResult::FLAG_ROT_ZERO) {
+        if (detail::WorldMtxAttr::IsAllScaleOne(attr)) {
+            math::VEC3 trans(pResult->rt._03, pResult->rt._13, pResult->rt._23);
+
+            math::MTX34Trans(pW, pW1, &trans);
+        } else {
+            math::VEC3 trans(pS1->x * pResult->rt._03, pS1->y * pResult->rt._13, pS1->z * pResult->rt._23);
+
+            math::MTX34Trans(pW, pW1, &trans);
+        }
+    } else if (detail::WorldMtxAttr::IsAllScaleOne(attr)) {
+        math::MTX34Mult(pW, pW1, &pResult->rt);
+    } else {
+        math::MTX34 m;
+
+        math::MTX34Copy(&m, &pResult->rt);
+
+        m._03 *= pS1->x;
+        m._13 *= pS1->y;
+        m._23 *= pS1->z;
+
+        math::MTX34Mult(pW, pW1, &m);
+    }
+
+    if (flag & ChrAnmResult::FLAG_SCALE_ONE) {
+        newAttr = detail::WorldMtxAttr::AnmScaleOne(newAttr);
+        *pS = *pS1;
+    } else {
+        newAttr = detail::WorldMtxAttr::AnmNotScaleOne(newAttr);
+        pS->x = pS1->x * pResult->s.x;
+        pS->y = pS1->y * pResult->s.y;
+        pS->z = pS1->z * pResult->s.z;
+    }
+
+    if (flag & ChrAnmResult::FLAG_SCALE_UNIFORM) {
+        newAttr = detail::WorldMtxAttr::AnmScaleUniform(newAttr);
+    } else {
+        newAttr = detail::WorldMtxAttr::AnmNotScaleUniform(newAttr);
+    }
+
+    return newAttr;
+}
 
 } // namespace dcc
 } // namespace detail
@@ -331,11 +380,7 @@ bool CalcTexMtx_Xsi(math::MTX34 *pMtx, bool set, const TexSrt &rSrt, TexSrt::Fla
 extern "C" float lbl_804A1E20;
 extern "C" float lbl_804A1E24;
 extern "C" float lbl_804A1E28;
-extern "C" void CalcWorldMtx_Xsi__Q44nw4r3g3d6detail3dccFPQ34nw4r4math5MTX34PQ34nw4r4math4VEC3PCQ34nw4r4math5MTX34PCQ34nw4r4math4VEC3UlPCQ34nw4r3g3d12ChrAnmResult();
-extern "C" void MTX34Trans__Q24nw4r4mathFPQ34nw4r4math5MTX34PCQ34nw4r4math5MTX34PCQ34nw4r4math4VEC3();
 extern "C" void SinCosFIdx__Q24nw4r4mathFPfPff();
-extern "C" void _restgpr_25();
-extern "C" void _savegpr_25();
 extern "C" void fn_801EAB58();
 extern "C" void fn_801EAB90();
 extern "C" void fn_801EAC18();
@@ -1022,128 +1067,5 @@ extern "C" asm void fn_801EB36C() {
     lwz r0, 0x54(r1)
     mtlr r0
     addi r1, r1, 0x50
-    blr
-}
-
-// asm_to_cpp: CalcWorldMtx_Xsi__Q44nw4r3g3d6detail3dccFPQ34nw4r4math5MTX34PQ34nw4r4math4VEC3PCQ34nw4r4math5MTX34PCQ34nw4r4math4VEC3UlPCQ34nw4r3g3d12ChrAnmResult
-extern "C" asm void CalcWorldMtx_Xsi__Q44nw4r3g3d6detail3dccFPQ34nw4r4math5MTX34PQ34nw4r4math4VEC3PCQ34nw4r4math5MTX34PCQ34nw4r4math4VEC3UlPCQ34nw4r3g3d12ChrAnmResult() {
-    nofralloc
-    stwu r1, -0x70(r1)
-    mflr r0
-    stw r0, 0x74(r1)
-    addi r11, r1, 0x70
-    bl _savegpr_25
-    lwz r31, 0x0(r8)
-    mr r25, r3
-    mr r26, r4
-    mr r27, r5
-    rlwinm. r0, r31, 0, 30, 30
-    mr r28, r6
-    mr r29, r7
-    mr r30, r8
-    bne lbl_801EB5A4
-    rlwinm. r0, r31, 0, 29, 29
-    beq lbl_801EB5B4
-lbl_801EB5A4:
-    mr r3, r27
-    mr r4, r25
-    bl PSMTXCopy
-    b lbl_801EB694
-lbl_801EB5B4:
-    rlwinm. r0, r31, 0, 26, 26
-    beq lbl_801EB62C
-    clrrwi. r0, r7, 31
-    beq lbl_801EB5EC
-    lfs f2, 0x48(r8)
-    mr r4, r27
-    lfs f1, 0x38(r8)
-    addi r5, r1, 0x14
-    lfs f0, 0x28(r8)
-    stfs f1, 0x18(r1)
-    stfs f0, 0x14(r1)
-    stfs f2, 0x1c(r1)
-    bl MTX34Trans__Q24nw4r4mathFPQ34nw4r4math5MTX34PCQ34nw4r4math5MTX34PCQ34nw4r4math4VEC3
-    b lbl_801EB694
-lbl_801EB5EC:
-    lfs f1, 0x8(r6)
-    mr r4, r27
-    lfs f0, 0x48(r8)
-    addi r5, r1, 0x8
-    lfs f3, 0x4(r6)
-    fmuls f4, f1, f0
-    lfs f2, 0x38(r8)
-    lfs f1, 0x0(r6)
-    lfs f0, 0x28(r8)
-    fmuls f2, f3, f2
-    stfs f4, 0x10(r1)
-    fmuls f0, f1, f0
-    stfs f2, 0xc(r1)
-    stfs f0, 0x8(r1)
-    bl MTX34Trans__Q24nw4r4mathFPQ34nw4r4math5MTX34PCQ34nw4r4math5MTX34PCQ34nw4r4math4VEC3
-    b lbl_801EB694
-lbl_801EB62C:
-    clrrwi. r0, r7, 31
-    beq lbl_801EB648
-    mr r3, r27
-    mr r5, r25
-    addi r4, r8, 0x1c
-    bl PSMTXConcat
-    b lbl_801EB694
-lbl_801EB648:
-    addi r3, r8, 0x1c
-    addi r4, r1, 0x20
-    bl PSMTXCopy
-    lfs f1, 0x2c(r1)
-    mr r3, r27
-    lfs f0, 0x0(r28)
-    mr r5, r25
-    lfs f3, 0x3c(r1)
-    addi r4, r1, 0x20
-    fmuls f4, f1, f0
-    lfs f2, 0x4(r28)
-    lfs f1, 0x4c(r1)
-    lfs f0, 0x8(r28)
-    fmuls f2, f3, f2
-    stfs f4, 0x2c(r1)
-    fmuls f0, f1, f0
-    stfs f2, 0x3c(r1)
-    stfs f0, 0x4c(r1)
-    bl PSMTXConcat
-lbl_801EB694:
-    rlwinm. r0, r31, 0, 28, 28
-    beq lbl_801EB6BC
-    lfs f2, 0x0(r28)
-    oris r4, r29, 0x4000
-    lfs f1, 0x4(r28)
-    lfs f0, 0x8(r28)
-    stfs f2, 0x0(r26)
-    stfs f1, 0x4(r26)
-    stfs f0, 0x8(r26)
-    b lbl_801EB6F0
-lbl_801EB6BC:
-    lfs f1, 0x0(r28)
-    clrlwi r4, r29, 2
-    lfs f0, 0x4(r30)
-    lfs f3, 0x4(r28)
-    fmuls f4, f1, f0
-    lfs f2, 0x8(r30)
-    lfs f1, 0x8(r28)
-    lfs f0, 0xc(r30)
-    fmuls f2, f3, f2
-    stfs f4, 0x0(r26)
-    fmuls f0, f1, f0
-    stfs f2, 0x4(r26)
-    stfs f0, 0x8(r26)
-lbl_801EB6F0:
-    rlwinm. r0, r31, 0, 27, 27
-    clrlwi r3, r4, 4
-    beq lbl_801EB700
-    oris r3, r4, 0x1000
-lbl_801EB700:
-    addi r11, r1, 0x70
-    bl _restgpr_25
-    lwz r0, 0x74(r1)
-    mtlr r0
-    addi r1, r1, 0x70
     blr
 }

@@ -4,6 +4,7 @@
 
 extern "C" {
 
+
 extern u8 jumptable_8035A5B0[];
 extern u8 lbl_8035A350[];
 extern u8 lbl_8035A4A8[];
@@ -39,31 +40,32 @@ extern u8 lbl_803BE030[];
 extern u8 lbl_803C1A40[];
 extern s32 lbl_8049D700;
 extern s32 *lbl_8049D708;
-extern float lbl_8049D710;
+extern s32 lbl_8049D710;
 extern s32 lbl_8049D718;
-extern float lbl_8049D71C;
-extern float lbl_8049D720;
-extern float lbl_8049D724;
+extern s32 lbl_8049D71C;
+extern s32 lbl_8049D720;
+extern s32 lbl_8049D724;
 extern s32 lbl_8049D728;
-extern float lbl_8049D72C;
-extern float lbl_8049D730;
-extern float lbl_8049D734;
+extern s32 lbl_8049D72C;
+extern s32 lbl_8049D730;
+extern s32 lbl_8049D734;
 extern s32 lbl_8049D738;
-extern float lbl_8049D740;
-extern float lbl_8049D748;
-extern float lbl_8049D74C;
+extern s32 lbl_8049D740;
+extern s32 lbl_8049D748;
+extern s32 lbl_8049D74C;
 extern float lbl_804A0B08;
 extern float lbl_804A0B10;
-extern float lbl_804A0B18;
-extern float lbl_804A0B1C;
-extern float lbl_804A0B20;
-extern float lbl_804A0B24;
-extern float lbl_804A0B28;
+extern s32 lbl_804A0B18;
+extern s32 lbl_804A0B1C;
+extern s32 lbl_804A0B20;
+extern s32 lbl_804A0B24;
+extern s32 lbl_804A0B28;
 extern float lbl_804A0B30;
-extern float lbl_804A0B38;
+__declspec(section ".sdata2") extern const f32 lbl_804A0B38[];
 extern float lbl_804A0B48;
 extern float lbl_804A0B50;
 
+s32 AIGetDMAStartAddr(void);
 s32 AIGetDSPSampleRate(void);
 void AIInitDMA(s32 arg0, s32 arg1);
 s32 AIRegisterDMACallback(s32 arg0);
@@ -71,6 +73,7 @@ void AIStartDMA(void);
 void C_MTXOrtho(s32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6);
 void DCFlushRange(s32 arg0, s32 arg1);
 void DCInvalidateRange(s32 arg0, s32 arg1);
+s32 DVDCancel(s32 arg0);
 s32 DVDClose(s32 arg0);
 s32 DVDOpen(s32 arg0, s32 arg1);
 s32 DVDReadAsyncPrio(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5);
@@ -96,8 +99,8 @@ void GXSetTexCoordCylWrap(s32 arg0, s8 *arg1, s32 arg2);
 M2C_UNK GXSetTexCoordGen2(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5);
 void GXSetTexCoordScaleManually(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 void GXSetViewport(f32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5);
-M2C_UNK GXSetVtxAttrFmt(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
-M2C_UNK GXSetVtxDesc(s32 arg0, s32 arg1);
+void GXSetVtxAttrFmt(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
+void GXSetVtxDesc(s32 arg0, s32 arg1);
 void GXSetZMode(s32 arg0, s32 arg1, s32 arg2);
 M2C_UNK * GetRenderModeObj__Q34nw4r3g3d8G3DStateFv(void);
 void OSCancelThread(s32 arg0);
@@ -169,7 +172,7 @@ s32 fn_80137FD4(s32 arg0);
 void fn_80138118(void);
 s32 fn_80138164(s32 arg0, s32 arg1);
 s32 fn_801383D8(void);
-s32 fn_8013842C(s32 arg0, s32 arg1);
+s32 fn_8013842C(void);
 s32 fn_801384DC(s32 arg0);
 void fn_8013865C(s32 arg0);
 s32 fn_80138738(void);
@@ -178,7 +181,7 @@ s32 fn_80138788(s32 arg0, s32 arg1, s32 arg2);
 s32 fn_801389F8(void);
 void fn_80138A58(void);
 s32 fn_80138B10(void);
-void fn_80138B4C(void);
+s32 fn_80138B4C(void);
 s32 fn_80138DD4(void);
 s32 fn_80138E48(void);
 s32 fn_80138F7C(s32 arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4);
@@ -212,8 +215,8 @@ s32 ** fn_80139F50(s32 arg0, s32 arg1);
 void fn_80139F84(s32 **arg0);
 s32 ** fn_80139F98(s32 arg0);
 void fn_80139FDC(s32 **arg0);
-s32 fn_80139FF0();
-s32 fn_80164DEC();
+s32 fn_80139FF0(s32 arg0_x, s32 arg1_x, s32 arg2_x);
+M2C_UNK fn_80164DEC(s32 arg0_x);
 void fn_80164E1C(void);
 void fn_80164E20(void);
 u32 * fn_80164EC8(s32 **arg0, u32 *arg1, u32 *arg2, u32 *arg3);
@@ -231,30 +234,29 @@ f32 fn_8018DC6C(void);
 f32 fn_8018DD14(s32 arg0);
 s32 fn_8018DE10(void);
 void fn_80195230(s8 *arg0);
-s32 fn_8029AD14(void);
-s32 fn_802D55B4(s8 *arg0);
 void fn_802E1450(void);
 void fn_802E43CC(s32 arg0, s32 arg1);
 void fn_802E4460(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 void fn_802E44A0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 void fn_802E44E0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5);
 void fn_802E4538(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5);
-void fn_802E4654(s32 arg0, u32 *arg1);
-void fn_802E46B0(s32 arg0, s32 arg1);
-void fn_802E4700(s32 arg0, s32 arg1);
+s32 fn_802E4654(s32 arg0, u32 *arg1);
+s32 fn_802E46B0(s32 arg0, s32 arg1);
+s32 fn_802E4700(s32 arg0, s32 arg1);
 void fn_802E4750(s32 arg0, s32 arg1, s32 arg2);
 void fn_802E48CC(u32 arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_802E4A28(s32 arg0);
 s32 fn_8031CDF0(s8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6);
 s32 fn_8031D460(s8 *arg0);
 s32 fn_8031D6F8(M2C_UNK *arg0);
-u8 fn_803260CC(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
+u32 fn_803260CC(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 s32 fn_80329400(void);
 u32 fn_8032949C(u16 *arg0, s8 *arg1, s32 arg2);
 M2C_UNK memcpy(s32 arg0, s32 arg1, s32 arg2);
 M2C_UNK memset(s32 arg0, s32 arg1, s32 arg2);
-M2C_UNK sprintf(s8 *arg0, s32 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7);
+M2C_UNK sprintf(s32 arg0, s32 arg1, ...);
 s32 strcmp(s32 arg0, s32 arg1);
+
 
 u16 * fn_80136B14(s32 arg0) {
     return (u16 *) (arg0 + 0x24);
@@ -264,25 +266,562 @@ s32 fn_80136B1C(s32 arg0) {
     return (s32) (arg0 + 0x28);
 }
 
-// asm_to_cpp: fn_80136B24
-asm u16 fn_80136B24(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_80136B14
-    lhz r4, 0x0(r3)
-    clrlwi r0, r4, 24
-    slwi r3, r0, 8
-    rlwinm r0, r4, 0, 16, 23
-    srawi r0, r0, 8
-    or r0, r3, r0
-    clrlwi r3, r0, 16
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_80136BFC(s8 *arg0) {
+    s32 temp_r5;
+
+    if (arg0 == NULL) {
+        return (s32) (0);
+    }
+    temp_r5 = (s32) (M2C_FIELD(arg0, s32 *, 0x20));
+    return (s32) ((((u32) (temp_r5 & 0xFF000000) >> 0x18U) | ((u32) (temp_r5 & 0xFF0000) >> 8U) | (((u8) temp_r5 << 0x18) | ((temp_r5 & 0xFF00) << 8))) == 0x20061122);
 }
+
+s32 fn_80136C54(s32 arg0) {
+    s32 temp_r3;
+
+    temp_r3 = (s32) (fn_80170E2C((s32) (lbl_8049D700), (s32) (arg0), (s32) (0)));
+    memset((s32) (temp_r3), (s32) (0), (s32) (arg0));
+    return (s32) (temp_r3);
+}
+
+s32 fn_80136CA8(s32 arg0) {
+    s32 temp_r3;
+
+    temp_r3 = (s32) (fn_80170E2C((s32) (lbl_8049D700), (s32) (arg0), (s32) (0)));
+    memset((s32) (temp_r3), (s32) (0), (s32) (arg0));
+    return (s32) (temp_r3);
+}
+
+void fn_80136D94(s32 arg0) {
+    lbl_8049D700 = arg0;
+}
+
+s32 fn_80136D9C(void) {
+    return (s32) (lbl_8049D700);
+}
+
+s32 fn_80136DA4(void) {
+    return (s32) (M2C_FIELD(&lbl_803C1A40, s32 *, 0x7F8));
+}
+
+s32 fn_80136DB4(void) {
+    if ((s32 *) lbl_8049D708 != NULL) {
+        return (s32) ((*lbl_8049D708 - 2) == 0);
+    }
+    return (s32) (1);
+}
+
+s32 fn_80136DDC(void) {
+    s32 *temp_r31;
+    s32 temp_r0;
+
+    temp_r31 = (s32 *) (lbl_8049D708);
+    if (temp_r31 == NULL) {
+        return (s32) (1);
+    }
+    if ((s32) M2C_FIELD(temp_r31, s32 *, 0x44) < 0x3C) {
+        return (s32) (0);
+    }
+    temp_r0 = (s32) (M2C_FIELD(temp_r31, s32 *, 0));
+    switch (temp_r0) {                              /* irregular */
+    case 1:
+        if ((s32) M2C_FIELD(temp_r31, s32 *, 0x58) != 0) {
+            fn_80138A58();
+            fn_801383D8();
+            fn_801373D0((s32) (M2C_FIELD(temp_r31, s32 *, 0x1C)));
+            M2C_FIELD(temp_r31, s32 *, 0x58) = (s32) (0);
+        }
+        /* fallthrough */
+    case 2:
+        M2C_FIELD(temp_r31, s32 *, 0) = (s32) (0xF0);
+        break;
+    }
+    fn_801773E0((s32) ((s32) temp_r31));
+    return (s32) (1);
+}
+
+void fn_80137364(void) {
+}
+
+void fn_80137368(void) {
+}
+
+s32 fn_8013736C(s32 arg0) {
+    s32 temp_r3;
+
+    temp_r3 = (s32) (fn_80170410((s32) (1), (s32) (((((arg0 + 0x1F) & 0xFFFFFFE0) + 0x3F) & 0xFFFFFFE0) + 0x20), (s32) (0), (s32) (0x4004)));
+    M2C_FIELD(&lbl_803C1A40, s32 *, 0x838) = (s32) (temp_r3);
+    return (s32) (fn_80170E2C((s32) (temp_r3), (s32) (arg0), (s32) (0x4004)));
+}
+
+void fn_801373D0(s32 arg0) {
+    fn_80170E84((s32) (M2C_FIELD(&lbl_803C1A40, s32 *, 0x838)), (s8 *) ((s8 *) arg0));
+    fn_80170560((s32) (M2C_FIELD(&lbl_803C1A40, s32 *, 0x838)));
+}
+
+#pragma dont_inline on
+void fn_801374EC(void) {
+    if (*(u32 *)&lbl_8049D710 != 0) {
+        fn_8031D460((s8 *)lbl_803A65E0);
+    }
+}
+#pragma dont_inline reset
+
+void fn_80137544(void) {
+    s32 **temp_r3;
+
+loop_1:
+    temp_r3 = (s32 **) (fn_80139A00());
+    fn_80137614((s32 **) (temp_r3));
+    fn_80139AC4((s32 **) (temp_r3));
+    goto loop_1;
+}
+
+s32 ** fn_801376D4(s32 arg0, s32 arg1) {
+    s32 **sp8;
+
+    OSReceiveMessage((s32) ((s32) &lbl_803A78F8), (s32) ((s32) &sp8), (s32) (1));
+    return (s32 **) (sp8);
+}
+
+void fn_80137708(s32 **arg0) {
+    OSSendMessage((s32) ((s32) &lbl_803A78F8), (s32) ((s32) arg0), (s32) (0));
+}
+
+s32 ** fn_8013771C(s32 arg0) {
+    s32 **sp8;
+
+    if (OSReceiveMessage((s32) ((s32) &lbl_803A7918), (s32) ((s32) &sp8), (s32) (arg0)) == 1) {
+        return (s32 **) (sp8);
+    }
+    return (s32 **) (NULL);
+}
+
+void fn_80137760(s32 **arg0) {
+    OSSendMessage((s32) ((s32) &lbl_803A7918), (s32) ((s32) arg0), (s32) (1));
+}
+
+void fn_80137774(void) {
+    GXSetZMode((s32) (1), (s32) (7), (s32) (0));
+    GXSetBlendMode((s32) (0), (s32) (1), (s32) (0), (s32) (0xF));
+    GXSetNumTexGens((s32) (1));
+    GXSetNumChans((s32) (0));
+    fn_802E4A28((s32) (1));
+    fn_802E48CC((u32) (0U), (s32) (0), (s32) (0), (s32) (0xFF));
+    fn_802E43CC((s32) (0), (s32) (3));
+    fn_802E4750((s32) (0), (s32) (0), (s32) (0));
+    fn_802E4750((s32) (1), (s32) (0), (s32) (0));
+    fn_802E4750((s32) (2), (s32) (0), (s32) (0));
+    fn_802E4750((s32) (3), (s32) (0), (s32) (0));
+    GXSetTexCoordScaleManually((s32) (0), (s32) (0), (s32) (1), (s32) (2), (s32) (3));
+    GXSetTexCoordScaleManually((s32) (1), (s32) (0), (s32) (0), (s32) (0), (s32) (3));
+    GXSetTexCoordScaleManually((s32) (2), (s32) (1), (s32) (1), (s32) (1), (s32) (3));
+    GXSetTexCoordScaleManually((s32) (3), (s32) (2), (s32) (2), (s32) (2), (s32) (3));
+}
+
+void fn_80137F38(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    GXSetTexCoordGen2((s32) (arg0), (s32) (arg1), (s32) (arg2), (s32) (arg3), (s32) (0), (s32) (0x7D));
+}
+
+void fn_80137F44(void) {
+}
+
+void fn_80137F48(u16 arg0, u16 arg1) {
+    *(volatile u16 *)0xCC008000 = arg0;
+    *(volatile u16 *)0xCC008000 = arg1;
+}
+
+void fn_80137F60(s16 arg0, s16 arg1, s16 arg2) {
+    *(volatile s16 *)0xCC008000 = arg0;
+    *(volatile s16 *)0xCC008000 = arg1;
+    *(volatile s16 *)0xCC008000 = arg2;
+}
+
+void fn_80137F80(void) {
+    lbl_8049D738 = 1;
+}
+
+s32 fn_80137F8C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    lbl_8049D738 = 0;
+    DVDReadAsyncPrio((s32) (arg0), (s32) (arg1), (s32) (arg2), (s32) (arg3), (s32) ((s32) fn_80137F80), (s32) (2));
+    do {
+        fn_801780F8((s32) (0));
+    } while ((s32) lbl_8049D738 != 1);
+    return (s32) (lbl_8049D738);
+}
+
+void fn_80138118(void) {
+    s32 temp_r31;
+
+    temp_r31 = (s32) (OSDisableInterrupts());
+    if ((s32) lbl_8049D728 != 0) {
+        AIRegisterDMACallback((s32) (lbl_8049D728));
+    }
+    OSRestoreInterrupts((s32) (temp_r31));
+    lbl_8049D718 = 0;
+}
+
+s32 fn_801383D8(void) {
+    if (((s32) M2C_FIELD(&lbl_803A7980, s32 *, 0xA0) != 0) && ((s32) M2C_FIELD(&lbl_803A7980, u8 *, 0xA4) == 0)) {
+        M2C_FIELD(&lbl_803A7980, s32 *, 0xA0) = (s32) (0);
+        DVDClose((s32) ((s32) &lbl_803A7980));
+        return (s32) (1);
+    }
+    return (s32) (0);
+}
+
+s32 fn_80138738(void) {
+    s32 sp8;
+
+    OSReceiveMessage((s32) ((s32) &lbl_803A7BC0), (s32) ((s32) &sp8), (s32) (1));
+    return (s32) (sp8 != 0);
+}
+
+void fn_80138774(s32 **arg0) {
+    OSSendMessage((s32) ((s32) &lbl_803A7BC0), (s32) ((s32) arg0), (s32) (1));
+}
+
+s32 fn_80138B10(void) {
+    if (((s32) M2C_FIELD(&lbl_803A7980, s32 *, 0xA0) != 0) && ((u8) M2C_FIELD(&lbl_803A7980, u8 *, 0xA4) == 2)) {
+        M2C_FIELD(&lbl_803A7980, s8 *, 0xA5) = (s8) (4);
+        M2C_FIELD(&lbl_803A7980, u8 *, 0xA4) = (u8) (4U);
+        return (s32) (1);
+    }
+    return (s32) (0);
+}
+
+s32 fn_801390DC(void) {
+    return (s32) ((s32) M2C_FIELD(&lbl_803A7980, u8 *, 0xA4));
+}
+
+void fn_801390EC(s32 **arg0) {
+    OSSendMessage((s32) ((s32) &lbl_803A7BE0), (s32) ((s32) arg0), (s32) (0));
+}
+
+s32 ** fn_80139100(void) {
+    s32 **sp8;
+
+    if (OSReceiveMessage((s32) ((s32) &lbl_803A7BE0), (s32) ((s32) &sp8), (s32) (0)) == 1) {
+        return (s32 **) (sp8);
+    }
+    return (s32 **) (NULL);
+}
+
+void fn_80139144(void) {
+    s32 **temp_r3;
+
+    fn_802E1450();
+    if ((s32) lbl_8049D718 != 0) {
+loop_1:
+        temp_r3 = (s32 **) (fn_80139100());
+        if (temp_r3 != NULL) {
+            fn_80139F84((s32 **) (temp_r3));
+            goto loop_1;
+        }
+    }
+}
+
+s32 fn_801397E0(void) {
+    if ((s32) M2C_FIELD(&lbl_803A7980, s32 *, 0xA0) != 0) {
+        return (s32) ((s32) M2C_FIELD(&lbl_803A7980, f32 *, 0xDC));
+    }
+    return (s32) (-1);
+}
+
+#pragma dont_inline on
+void fn_801398C8(void) {
+    if (*(u32 *)&lbl_8049D740 != 0) {
+        fn_8031D460((s8 *)lbl_803A7FF8);
+    }
+}
+#pragma dont_inline reset
+
+s32 ** fn_80139A00(void) {
+    s32 **sp8;
+
+    OSReceiveMessage((s32) ((s32) &lbl_803A7F40), (s32) ((s32) &sp8), (s32) (1));
+    return (s32 **) (sp8);
+}
+
+void fn_80139A34(s32 **arg0) {
+    OSSendMessage((s32) ((s32) &lbl_803A7F40), (s32) ((s32) arg0), (s32) (1));
+}
+
+s32 ** fn_80139A48(void) {
+    s32 **sp8;
+
+    OSReceiveMessage((s32) ((s32) &lbl_803A7F20), (s32) ((s32) &sp8), (s32) (1));
+    return (s32 **) (sp8);
+}
+
+void fn_80139A7C(s32 **arg0) {
+    OSSendMessage((s32) ((s32) &lbl_803A7F20), (s32) ((s32) arg0), (s32) (1));
+}
+
+s32 ** fn_80139A90(void) {
+    s32 **sp8;
+
+    OSReceiveMessage((s32) ((s32) &lbl_803A7F60), (s32) ((s32) &sp8), (s32) (1));
+    return (s32 **) (sp8);
+}
+
+void fn_80139AC4(s32 **arg0) {
+    OSSendMessage((s32) ((s32) &lbl_803A7F60), (s32) ((s32) arg0), (s32) (1));
+}
+
+#pragma dont_inline on
+void fn_80139BB8(void) {
+    if (*(u32 *)&lbl_8049D748 != 0) {
+        fn_8031D460((s8 *)lbl_803A9310);
+    }
+}
+#pragma dont_inline reset
+
+s32 ** fn_80139F50(s32 arg0, s32 arg1) {
+    s32 **sp8;
+
+    OSReceiveMessage((s32) ((s32) &lbl_803AA628), (s32) ((s32) &sp8), (s32) (1));
+    return (s32 **) (sp8);
+}
+
+void fn_80139F84(s32 **arg0) {
+    OSSendMessage((s32) ((s32) &lbl_803AA628), (s32) ((s32) arg0), (s32) (0));
+}
+
+s32 ** fn_80139F98(s32 arg0) {
+    s32 **sp8;
+
+    if (OSReceiveMessage((s32) ((s32) &lbl_803AA648), (s32) ((s32) &sp8), (s32) (arg0)) == 1) {
+        return (s32 **) (sp8);
+    }
+    return (s32 **) (NULL);
+}
+
+void fn_80139FDC(s32 **arg0) {
+    OSSendMessage((s32) ((s32) &lbl_803AA648), (s32) ((s32) arg0), (s32) (1));
+}
+
+#pragma dont_inline on
+u16 fn_80136B24(s32 arg0) {
+    u16 temp_r4;
+
+    temp_r4 = (u16) (*fn_80136B14((s32) (arg0)));
+    return (u16) ((u16) (((u8) temp_r4 << 8) | ((s32) (temp_r4 & 0xFF00) >> 8)));
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+s32 fn_801389F8(void) {
+    if (((s32) M2C_FIELD(&lbl_803A7980, s32 *, 0xA0) != 0) && (((u8) M2C_FIELD(&lbl_803A7980, u8 *, 0xA4) == 1) || ((u8) M2C_FIELD(&lbl_803A7980, u8 *, 0xA4) == 4))) {
+        M2C_FIELD(&lbl_803A7980, u8 *, 0xA4) = (u8) (2U);
+        M2C_FIELD(&lbl_803A7980, s32 *, 0xD0) = (s32) (0);
+        M2C_FIELD(&lbl_803A7980, s32 *, 0xD4) = (s32) (0);
+        M2C_FIELD(&lbl_803A7980, s32 *, 0xCC) = (s32) (-1);
+        M2C_FIELD(&lbl_803A7980, s32 *, 0xC8) = (s32) (-1);
+        return (s32) (1);
+    }
+    return (s32) (0);
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+s32 fn_8013904C(s32 arg0) {
+    if ((s32) M2C_FIELD(&lbl_803A7980, s32 *, 0xA0) != 0) {
+        memcpy((s32) (arg0), (s32) ((s32) ((s8 *) &lbl_803A7980 + 0x80)), (s32) (0xC));
+        return (s32) (1);
+    }
+    return (s32) (0);
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+s32 fn_80139094(s32 arg0) {
+    if ((s32) M2C_FIELD(&lbl_803A7980, s32 *, 0xA0) != 0) {
+        memcpy((s32) (arg0), (s32) ((s32) ((s8 *) &lbl_803A7980 + 0x8C)), (s32) (0x10));
+        return (s32) (1);
+    }
+    return (s32) (0);
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+s32 * fn_80136E78(s32 arg0, s32 arg1) {
+    s32 *temp_r3;
+
+    if ((s32 *) lbl_8049D708 != NULL) {
+        return (s32 *) (NULL);
+    }
+    temp_r3 = (s32 *) (fn_801771D4((s32) (5), (s8 *) (fn_80136F28), (s32) (0x68)));
+    lbl_8049D708 = temp_r3;
+    memset((s32) ((s32) temp_r3), (s32) (0), (s32) (0x68));
+    M2C_FIELD(temp_r3, s32 *, 8) = (s32) (arg0);
+    M2C_FIELD(temp_r3, s32 *, 0xC) = (s32) (arg1);
+    M2C_FIELD(temp_r3, s32 *, 0x54) = (s32) (0);
+    M2C_FIELD(temp_r3, s32 *, 0x58) = (s32) (0);
+    M2C_FIELD(temp_r3, s32 *, 0x5C) = (s32) (0);
+    M2C_FIELD(temp_r3, s32 *, 0x50) = (s32) ((s32) *(s32 *)((s8 *) &lbl_8035A350 + (M2C_FIELD(temp_r3, s32 *, 8) * 4)));
+    M2C_FIELD(temp_r3, s32 *, 0x54) = (s32) (1);
+    M2C_FIELD(temp_r3, s32 *, 0x5C) = (s32) (0);
+    return (s32 *) (temp_r3);
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+s32 fn_80137410(s32 arg0, s32 arg1) {
+    if (arg1 != 0) {
+        if (fn_8031CDF0((s8 *) (&lbl_803A65E0), (s32) ((s32) fn_8013756C), (s32) (arg1), (s32) ((s32) ((s8 *) &lbl_803A68F8 + 0x1000)), (s32) (0x1000), (s32) (arg0), (s32) (1)) == 0) {
+            return (s32) (0);
+        }
+        goto block_5;
+    }
+    if (fn_8031CDF0((s8 *) (&lbl_803A65E0), (s32) ((s32) fn_80137544), (s32) (0), (s32) ((s32) ((s8 *) &lbl_803A68F8 + 0x1000)), (s32) (0x1000), (s32) (arg0), (s32) (1)) == 0) {
+        return (s32) (0);
+    }
+block_5:
+    OSInitMessageQueue((s32) ((s32) &lbl_803A78F8), (s32) ((s32) &lbl_803A7938), (s32) (6));
+    OSInitMessageQueue((s32) ((s32) &lbl_803A7918), (s32) ((s32) &lbl_803A7950), (s32) (6));
+    lbl_8049D710 = 1;
+    return (s32) (1);
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+void fn_80137508(void) {
+    if ((s32) lbl_8049D710 != 0) {
+        OSCancelThread((s32) ((s32) &lbl_803A65E0));
+        lbl_8049D710 = 0;
+    }
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+s32 fn_80139818(s32 arg0) {
+    if (fn_8031CDF0((s8 *) (&lbl_803A7FF8), (s32) ((s32) fn_80139920), (s32) (0), (s32) ((s32) ((s8 *) &lbl_803A8310 + 0x1000)), (s32) (0x1000), (s32) (arg0), (s32) (1)) == 0) {
+        return (s32) (0);
+    }
+    OSInitMessageQueue((s32) ((s32) &lbl_803A7F20), (s32) ((s32) &lbl_803A7F80), (s32) (0xA));
+    OSInitMessageQueue((s32) ((s32) &lbl_803A7F40), (s32) ((s32) &lbl_803A7FA8), (s32) (0xA));
+    OSInitMessageQueue((s32) ((s32) &lbl_803A7F60), (s32) ((s32) &lbl_803A7FD0), (s32) (0xA));
+    lbl_8049D740 = 1;
+    return (s32) (1);
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+void fn_801398E4(void) {
+    if ((s32) lbl_8049D740 != 0) {
+        OSCancelThread((s32) ((s32) &lbl_803A7FF8));
+        lbl_8049D740 = 0;
+    }
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+s32 fn_80139AD8(s32 arg0, s32 arg1) {
+    if (arg1 != 0) {
+        if (fn_8031CDF0((s8 *) (&lbl_803A9310), (s32) ((s32) fn_80139CDC), (s32) (arg1), (s32) ((s32) ((s8 *) &lbl_803A9628 + 0x1000)), (s32) (0x1000), (s32) (arg0), (s32) (1)) == 0) {
+            return (s32) (0);
+        }
+        goto block_5;
+    }
+    if (fn_8031CDF0((s8 *) (&lbl_803A9310), (s32) ((s32) fn_80139C10), (s32) (0), (s32) ((s32) ((s8 *) &lbl_803A9628 + 0x1000)), (s32) (0x1000), (s32) (arg0), (s32) (1)) == 0) {
+        return (s32) (0);
+    }
+block_5:
+    OSInitMessageQueue((s32) ((s32) &lbl_803AA628), (s32) ((s32) &lbl_803AA668), (s32) (3));
+    OSInitMessageQueue((s32) ((s32) &lbl_803AA648), (s32) ((s32) &lbl_803AA674), (s32) (3));
+    lbl_8049D748 = 1;
+    lbl_8049D74C = 1;
+    return (s32) (1);
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+void fn_80139BD4(void) {
+    if ((s32) lbl_8049D748 != 0) {
+        OSCancelThread((s32) ((s32) &lbl_803A9310));
+        lbl_8049D748 = 0;
+    }
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+s32 fn_80137FD4(s32 arg0) {
+    s32 temp_r31;
+    s32 temp_r3;
+
+    memset((s32) ((s32) &lbl_803A7980), (s32) (0), (s32) (0x1F8));
+    M2C_FIELD(&lbl_803A7980, s32 *, 0x1F0) = (s32) (1);
+    if (fn_8018DE10() == 3) {
+        M2C_FIELD(&lbl_803A7980, s32 *, 0x1F0) = (s32) (0);
+    }
+    OSInitMessageQueue((s32) ((s32) &lbl_803A7BE0), (s32) ((s32) &lbl_803A7C00), (s32) (3));
+    if (fn_80329400() == 0) {
+        return (s32) (0);
+    }
+    temp_r31 = (s32) (OSDisableInterrupts());
+    lbl_8049D734 = arg0;
+    lbl_8049D724 = 0;
+    lbl_8049D72C = 0;
+    lbl_8049D730 = 0;
+    temp_r3 = (s32) (AIRegisterDMACallback((s32) ((s32) fn_80139184)));
+    lbl_8049D728 = temp_r3;
+    if ((temp_r3 == 0) && ((s32) lbl_8049D734 != 0)) {
+        AIRegisterDMACallback((s32) (0));
+        OSRestoreInterrupts((s32) (temp_r31));
+        return (s32) (0);
+    }
+    OSRestoreInterrupts((s32) (temp_r31));
+    if ((s32) lbl_8049D734 == 0) {
+        memset((s32) ((s32) &lbl_803A7C20), (s32) (0), (s32) (0x300));
+        DCFlushRange((s32) ((s32) &lbl_803A7C20), (s32) (0x300));
+        AIInitDMA((s32) ((s32) ((s8 *) &lbl_803A7C20 + (lbl_8049D724 * 0x180))), (s32) (0x180));
+        AIStartDMA();
+    }
+    lbl_8049D718 = 1;
+    return (s32) (1);
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+void fn_80139184(void) {
+    s32 temp_r0;
+    s32 temp_r0_2;
+    s32 temp_r30;
+    s32 temp_r30_2;
+
+    if ((s32) lbl_8049D734 == 0) {
+        temp_r0 = (s32) (lbl_8049D724 ^ 1);
+        lbl_8049D724 = temp_r0;
+        AIInitDMA((s32) ((s32) ((s8 *) &lbl_803A7C20 + (temp_r0 * 0x180))), (s32) (0x180));
+        temp_r30 = (s32) (OSEnableInterrupts());
+        fn_801392E8((M2C_UNK *) ((s8 *) &lbl_803A7C20 + (lbl_8049D724 * 0x180)), (M2C_UNK *) (NULL), (u32) (0x60U));
+        DCFlushRange((s32) ((s32) ((s8 *) &lbl_803A7C20 + (lbl_8049D724 * 0x180))), (s32) (0x180));
+        OSRestoreInterrupts((s32) (temp_r30));
+        return;
+    }
+    if ((s32) lbl_8049D734 == 1) {
+        if ((s32) lbl_8049D72C != 0) {
+            lbl_8049D730 = lbl_8049D72C;
+        }
+        ((M2C_UNK (*)()) lbl_8049D728)();
+        lbl_8049D72C = AIGetDMAStartAddr() + 0x80000000;
+    } else {
+        ((M2C_UNK (*)()) lbl_8049D728)();
+        lbl_8049D730 = AIGetDMAStartAddr() + 0x80000000;
+    }
+    temp_r0_2 = (s32) (lbl_8049D724 ^ 1);
+    lbl_8049D724 = temp_r0_2;
+    AIInitDMA((s32) ((s32) ((s8 *) &lbl_803A7C20 + (temp_r0_2 * 0x180))), (s32) (0x180));
+    temp_r30_2 = (s32) (OSEnableInterrupts());
+    if ((s32) lbl_8049D730 != 0) {
+        DCInvalidateRange((s32) (lbl_8049D730), (s32) (0x180));
+    }
+    fn_801392E8((M2C_UNK *) ((s8 *) &lbl_803A7C20 + (lbl_8049D724 * 0x180)), (M2C_UNK *) ((s32 *) lbl_8049D730), (u32) (0x60U));
+    DCFlushRange((s32) ((s32) ((s8 *) &lbl_803A7C20 + (lbl_8049D724 * 0x180))), (s32) (0x180));
+    OSRestoreInterrupts((s32) (temp_r30_2));
+}
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_80136B60
 asm s32 fn_80136B60(s32 arg0, s32 arg1) {
@@ -329,32 +868,6 @@ lbl_80136BE4:
     mtlr r0
     addi r1, r1, 0x20
     blr
-}
-
-s32 fn_80136BFC(s8 *arg0) {
-    s32 temp_r5;
-
-    if (arg0 == NULL) {
-        return (s32) (0);
-    }
-    temp_r5 = (s32) (M2C_FIELD(arg0, s32 *, 0x20));
-    return (s32) ((((u32) (temp_r5 & 0xFF000000) >> 0x18U) | ((u32) (temp_r5 & 0xFF0000) >> 8U) | (((u8) temp_r5 << 0x18) | ((temp_r5 & 0xFF00) << 8))) == 0x20061122);
-}
-
-s32 fn_80136C54(s32 arg0) {
-    s32 temp_r3;
-
-    temp_r3 = (s32) (fn_80170E2C((s32) (lbl_8049D700), (s32) (arg0), (s32) (0)));
-    memset((s32) (temp_r3), (s32) (0), (s32) (arg0));
-    return (s32) (temp_r3);
-}
-
-s32 fn_80136CA8(s32 arg0) {
-    s32 temp_r3;
-
-    temp_r3 = (s32) (fn_80170E2C((s32) (lbl_8049D700), (s32) (arg0), (s32) (0)));
-    memset((s32) (temp_r3), (s32) (0), (s32) (arg0));
-    return (s32) (temp_r3);
 }
 
 // asm_to_cpp: dtor_80136CFC
@@ -406,105 +919,6 @@ lbl_80136D78:
     lwz r0, 0x4(r10)
     mr r1, r10
     mtlr r0
-    blr
-}
-
-void fn_80136D94(s32 arg0) {
-    lbl_8049D700 = arg0;
-}
-
-s32 fn_80136D9C(void) {
-    return (s32) (lbl_8049D700);
-}
-
-s32 fn_80136DA4(void) {
-    return (s32) (M2C_FIELD(&lbl_803C1A40, s32 *, 0x7F8));
-}
-
-s32 fn_80136DB4(void) {
-    if ((s32 *) lbl_8049D708 != NULL) {
-        return (s32) ((*lbl_8049D708 - 2) == 0);
-    }
-    return (s32) (1);
-}
-
-s32 fn_80136DDC(void) {
-    s32 *temp_r31;
-    s32 temp_r0;
-
-    temp_r31 = (s32 *) (lbl_8049D708);
-    if (temp_r31 == NULL) {
-        return (s32) (1);
-    }
-    if ((s32) M2C_FIELD(temp_r31, s32 *, 0x44) < 0x3C) {
-        return (s32) (0);
-    }
-    temp_r0 = (s32) (M2C_FIELD(temp_r31, s32 *, 0));
-    switch (temp_r0) {                              /* irregular */
-    case 1:
-        if ((s32) M2C_FIELD(temp_r31, s32 *, 0x58) != 0) {
-            fn_80138A58();
-            fn_801383D8();
-            fn_801373D0((s32) (M2C_FIELD(temp_r31, s32 *, 0x1C)));
-            M2C_FIELD(temp_r31, s32 *, 0x58) = (s32) (0);
-        }
-        /* fallthrough */
-    case 2:
-        M2C_FIELD(temp_r31, s32 *, 0) = (s32) (0xF0);
-        break;
-    }
-    fn_801773E0((s32) ((s32) temp_r31));
-    return (s32) (1);
-}
-
-// asm_to_cpp: fn_80136E78
-asm s32 * fn_80136E78(s32 arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_29
-    mr r29, r3
-    mr r30, r4
-    lwz r0, lbl_8049D708
-    cmpwi r0, 0x0
-    beq lbl_80136EA8
-    li r3, 0x0
-    b lbl_80136F10
-lbl_80136EA8:
-    li r3, 0x5
-    lis r4, fn_80136F28@ha
-    addi r4, r4, fn_80136F28@l
-    li r5, 0x68
-    bl fn_801771D4
-    mr r31, r3
-    stw r3, lbl_8049D708
-    li r4, 0x0
-    li r5, 0x68
-    bl memset
-    stw r29, 0x8(r31)
-    stw r30, 0xc(r31)
-    li r4, 0x0
-    stw r4, 0x54(r31)
-    stw r4, 0x58(r31)
-    stw r4, 0x5c(r31)
-    lwz r0, 0x8(r31)
-    slwi r0, r0, 2
-    lis r3, lbl_8035A350@ha
-    addi r3, r3, lbl_8035A350@l
-    lwzx r0, r3, r0
-    stw r0, 0x50(r31)
-    li r0, 0x1
-    stw r0, 0x54(r31)
-    stw r4, 0x5c(r31)
-    mr r3, r31
-lbl_80136F10:
-    addi r11, r1, 0x20
-    bl _restgpr_29
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
     blr
 }
 
@@ -811,127 +1225,6 @@ lbl_80137338:
     blr
 }
 
-void fn_80137364(void) {
-}
-
-void fn_80137368(void) {
-}
-
-s32 fn_8013736C(s32 arg0) {
-    s32 temp_r3;
-
-    temp_r3 = (s32) (fn_80170410((s32) (1), (s32) (((((arg0 + 0x1F) & 0xFFFFFFE0) + 0x3F) & 0xFFFFFFE0) + 0x20), (s32) (0), (s32) (0x4004)));
-    M2C_FIELD(&lbl_803C1A40, s32 *, 0x838) = (s32) (temp_r3);
-    return (s32) (fn_80170E2C((s32) (temp_r3), (s32) (arg0), (s32) (0x4004)));
-}
-
-void fn_801373D0(s32 arg0) {
-    fn_80170E84((s32) (M2C_FIELD(&lbl_803C1A40, s32 *, 0x838)), (s8 *) ((s8 *) arg0));
-    fn_80170560((s32) (M2C_FIELD(&lbl_803C1A40, s32 *, 0x838)));
-}
-
-// asm_to_cpp: fn_80137410
-asm s32 fn_80137410(s32 arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    mr r8, r3
-    mr r5, r4
-    cmpwi r4, 0x0
-    beq lbl_80137464
-    lis r3, lbl_803A65E0@ha
-    addi r3, r3, lbl_803A65E0@l
-    lis r4, fn_8013756C@ha
-    addi r4, r4, fn_8013756C@l
-    lis r6, lbl_803A68F8@ha
-    addi r6, r6, lbl_803A68F8@l
-    addi r6, r6, 0x1000
-    li r7, 0x1000
-    li r9, 0x1
-    bl fn_8031CDF0
-    cmpwi r3, 0x0
-    bne lbl_801374A0
-    li r3, 0x0
-    b lbl_801374DC
-lbl_80137464:
-    lis r3, lbl_803A65E0@ha
-    addi r3, r3, lbl_803A65E0@l
-    lis r4, fn_80137544@ha
-    addi r4, r4, fn_80137544@l
-    li r5, 0x0
-    lis r6, lbl_803A68F8@ha
-    addi r6, r6, lbl_803A68F8@l
-    addi r6, r6, 0x1000
-    li r7, 0x1000
-    li r9, 0x1
-    bl fn_8031CDF0
-    cmpwi r3, 0x0
-    bne lbl_801374A0
-    li r3, 0x0
-    b lbl_801374DC
-lbl_801374A0:
-    lis r3, lbl_803A78F8@ha
-    addi r3, r3, lbl_803A78F8@l
-    lis r4, lbl_803A7938@ha
-    addi r4, r4, lbl_803A7938@l
-    li r5, 0x6
-    bl OSInitMessageQueue
-    lis r3, lbl_803A7918@ha
-    addi r3, r3, lbl_803A7918@l
-    lis r4, lbl_803A7950@ha
-    addi r4, r4, lbl_803A7950@l
-    li r5, 0x6
-    bl OSInitMessageQueue
-    li r0, 0x1
-    stw r0, lbl_8049D710
-    li r3, 0x1
-lbl_801374DC:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-#pragma dont_inline on
-void fn_801374EC(void) {
-    if (*(u32 *)&lbl_8049D710 != 0) {
-        fn_8031D460((s8 *)lbl_803A65E0);
-    }
-}
-#pragma dont_inline reset
-
-// asm_to_cpp: fn_80137508
-asm void fn_80137508(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lwz r0, lbl_8049D710
-    cmpwi r0, 0x0
-    beq lbl_80137534
-    lis r3, lbl_803A65E0@ha
-    addi r3, r3, lbl_803A65E0@l
-    bl OSCancelThread
-    li r0, 0x0
-    stw r0, lbl_8049D710
-lbl_80137534:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-void fn_80137544(void) {
-    s32 **temp_r3;
-
-loop_1:
-    temp_r3 = (s32 **) (fn_80139A00());
-    fn_80137614((s32 **) (temp_r3));
-    fn_80139AC4((s32 **) (temp_r3));
-    goto loop_1;
-}
-
 // asm_to_cpp: fn_8013756C
 asm void fn_8013756C(s32 *arg0) {
     nofralloc
@@ -1037,48 +1330,6 @@ lbl_801376BC:
     mtlr r0
     addi r1, r1, 0x20
     blr
-}
-
-s32 ** fn_801376D4(s32 arg0, s32 arg1) {
-    s32 **sp8;
-
-    OSReceiveMessage((s32) ((s32) &lbl_803A78F8), (s32) ((s32) &sp8), (s32) (1));
-    return (s32 **) (sp8);
-}
-
-void fn_80137708(s32 **arg0) {
-    OSSendMessage((s32) ((s32) &lbl_803A78F8), (s32) ((s32) arg0), (s32) (0));
-}
-
-s32 ** fn_8013771C(s32 arg0) {
-    s32 **sp8;
-
-    if (OSReceiveMessage((s32) ((s32) &lbl_803A7918), (s32) ((s32) &sp8), (s32) (arg0)) == 1) {
-        return (s32 **) (sp8);
-    }
-    return (s32 **) (NULL);
-}
-
-void fn_80137760(s32 **arg0) {
-    OSSendMessage((s32) ((s32) &lbl_803A7918), (s32) ((s32) arg0), (s32) (1));
-}
-
-void fn_80137774(void) {
-    GXSetZMode((s32) (1), (s32) (7), (s32) (0));
-    GXSetBlendMode((s32) (0), (s32) (1), (s32) (0), (s32) (0xF));
-    GXSetNumTexGens((s32) (1));
-    GXSetNumChans((s32) (0));
-    fn_802E4A28((s32) (1));
-    fn_802E48CC((u32) (0U), (s32) (0), (s32) (0), (s32) (0xFF));
-    fn_802E43CC((s32) (0), (s32) (3));
-    fn_802E4750((s32) (0), (s32) (0), (s32) (0));
-    fn_802E4750((s32) (1), (s32) (0), (s32) (0));
-    fn_802E4750((s32) (2), (s32) (0), (s32) (0));
-    fn_802E4750((s32) (3), (s32) (0), (s32) (0));
-    GXSetTexCoordScaleManually((s32) (0), (s32) (0), (s32) (1), (s32) (2), (s32) (3));
-    GXSetTexCoordScaleManually((s32) (1), (s32) (0), (s32) (0), (s32) (0), (s32) (3));
-    GXSetTexCoordScaleManually((s32) (2), (s32) (1), (s32) (1), (s32) (1), (s32) (3));
-    GXSetTexCoordScaleManually((s32) (3), (s32) (2), (s32) (2), (s32) (2), (s32) (3));
 }
 
 // asm_to_cpp: fn_8013788C
@@ -1518,139 +1769,6 @@ asm void fn_80137D38(s32 arg0, s32 arg1, s32 arg2, s16 arg3, s16 arg4, u16 arg5,
     blr
 }
 
-void fn_80137F38(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    GXSetTexCoordGen2((s32) (arg0), (s32) (arg1), (s32) (arg2), (s32) (arg3), (s32) (0), (s32) (0x7D));
-}
-
-void fn_80137F44(void) {
-}
-
-void fn_80137F48(u16 arg0, u16 arg1) {
-    *(volatile u16 *)0xCC008000 = arg0;
-    *(volatile u16 *)0xCC008000 = arg1;
-}
-
-void fn_80137F60(s16 arg0, s16 arg1, s16 arg2) {
-    *(volatile s16 *)0xCC008000 = arg0;
-    *(volatile s16 *)0xCC008000 = arg1;
-    *(volatile s16 *)0xCC008000 = arg2;
-}
-
-void fn_80137F80(void) {
-    lbl_8049D738 = 1;
-}
-
-s32 fn_80137F8C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    lbl_8049D738 = 0;
-    DVDReadAsyncPrio((s32) (arg0), (s32) (arg1), (s32) (arg2), (s32) (arg3), (s32) ((s32) fn_80137F80), (s32) (2));
-    do {
-        fn_801780F8((s32) (0));
-    } while ((s32) lbl_8049D738 != 1);
-    return (s32) (lbl_8049D738);
-}
-
-// asm_to_cpp: fn_80137FD4
-asm s32 fn_80137FD4(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    lis r31, lbl_803A7980@ha
-    addi r3, r31, lbl_803A7980@l
-    li r4, 0x0
-    li r5, 0x1f8
-    bl memset
-    li r0, 0x1
-    addi r31, r31, lbl_803A7980@l
-    stw r0, 0x1f0(r31)
-    bl fn_8018DE10
-    cmpwi r3, 0x3
-    bne lbl_80138020
-    li r0, 0x0
-    stw r0, 0x1f0(r31)
-lbl_80138020:
-    lis r3, lbl_803A7BE0@ha
-    addi r3, r3, lbl_803A7BE0@l
-    lis r4, lbl_803A7C00@ha
-    addi r4, r4, lbl_803A7C00@l
-    li r5, 0x3
-    bl OSInitMessageQueue
-    bl fn_80329400
-    cmpwi r3, 0x0
-    bne lbl_8013804C
-    li r3, 0x0
-    b lbl_80138100
-lbl_8013804C:
-    bl OSDisableInterrupts
-    mr r31, r3
-    stw r30, lbl_8049D734
-    li r0, 0x0
-    stw r0, lbl_8049D724
-    stw r0, lbl_8049D72C
-    stw r0, lbl_8049D730
-    lis r3, fn_80139184@ha
-    addi r3, r3, fn_80139184@l
-    bl AIRegisterDMACallback
-    stw r3, lbl_8049D728
-    cmpwi r3, 0x0
-    bne lbl_801380A4
-    lwz r0, lbl_8049D734
-    cmpwi r0, 0x0
-    beq lbl_801380A4
-    li r3, 0x0
-    bl AIRegisterDMACallback
-    mr r3, r31
-    bl OSRestoreInterrupts
-    li r3, 0x0
-    b lbl_80138100
-lbl_801380A4:
-    mr r3, r31
-    bl OSRestoreInterrupts
-    lwz r0, lbl_8049D734
-    cmpwi r0, 0x0
-    bne lbl_801380F4
-    lis r31, lbl_803A7C20@ha
-    addi r3, r31, lbl_803A7C20@l
-    li r4, 0x0
-    li r5, 0x300
-    bl memset
-    addi r3, r31, lbl_803A7C20@l
-    li r4, 0x300
-    bl DCFlushRange
-    lwz r0, lbl_8049D724
-    mulli r3, r0, 0x180
-    addi r0, r31, lbl_803A7C20@l
-    add r3, r0, r3
-    li r4, 0x180
-    bl AIInitDMA
-    bl AIStartDMA
-lbl_801380F4:
-    li r0, 0x1
-    stw r0, lbl_8049D718
-    li r3, 0x1
-lbl_80138100:
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-void fn_80138118(void) {
-    s32 temp_r31;
-
-    temp_r31 = (s32) (OSDisableInterrupts());
-    if ((s32) lbl_8049D728 != 0) {
-        AIRegisterDMACallback((s32) (lbl_8049D728));
-    }
-    OSRestoreInterrupts((s32) (temp_r31));
-    lbl_8049D718 = 0;
-}
-
 // asm_to_cpp: fn_80138164
 asm s32 fn_80138164(s32 arg0, s32 arg1) {
     nofralloc
@@ -1829,17 +1947,8 @@ lbl_801383C0:
     blr
 }
 
-s32 fn_801383D8(void) {
-    if (((s32) M2C_FIELD(&lbl_803A7980, s32 *, 0xA0) != 0) && ((s32) M2C_FIELD(&lbl_803A7980, u8 *, 0xA4) == 0)) {
-        M2C_FIELD(&lbl_803A7980, s32 *, 0xA0) = (s32) (0);
-        DVDClose((s32) ((s32) &lbl_803A7980));
-        return (s32) (1);
-    }
-    return (s32) (0);
-}
-
 // asm_to_cpp: fn_8013842C
-asm s32 fn_8013842C(s32 arg0, s32 arg1) {
+asm s32 fn_8013842C(void) {
     nofralloc
     lis r3, lbl_803A7980@ha
     addi r3, r3, lbl_803A7980@l
@@ -2065,17 +2174,6 @@ lbl_8013870C:
     blr
 }
 
-s32 fn_80138738(void) {
-    s32 sp8;
-
-    OSReceiveMessage((s32) ((s32) &lbl_803A7BC0), (s32) ((s32) &sp8), (s32) (1));
-    return (s32) (sp8 != 0);
-}
-
-void fn_80138774(s32 **arg0) {
-    OSSendMessage((s32) ((s32) &lbl_803A7BC0), (s32) ((s32) arg0), (s32) (1));
-}
-
 // asm_to_cpp: fn_80138788
 asm s32 fn_80138788(s32 arg0, s32 arg1, s32 arg2) {
     nofralloc
@@ -2254,37 +2352,6 @@ lbl_801389E0:
     blr
 }
 
-// asm_to_cpp: fn_801389F8
-asm s32 fn_801389F8(void) {
-    nofralloc
-    lis r3, lbl_803A7980@ha
-    addi r3, r3, lbl_803A7980@l
-    lwz r0, 0xa0(r3)
-    cmpwi r0, 0x0
-    beq lbl_80138A50
-    lbz r0, 0xa4(r3)
-    cmplwi r0, 0x1
-    beq lbl_80138A20
-    cmplwi r0, 0x4
-    bne lbl_80138A50
-lbl_80138A20:
-    li r0, 0x2
-    lis r3, lbl_803A7980@ha
-    addi r3, r3, lbl_803A7980@l
-    stb r0, 0xa4(r3)
-    li r0, 0x0
-    stw r0, 0xd0(r3)
-    stw r0, 0xd4(r3)
-    li r0, -0x1
-    stw r0, 0xcc(r3)
-    stw r0, 0xc8(r3)
-    li r3, 0x1
-    blr
-lbl_80138A50:
-    li r3, 0x0
-    blr
-}
-
 // asm_to_cpp: fn_80138A58
 asm void fn_80138A58(void) {
     nofralloc
@@ -2309,7 +2376,7 @@ asm void fn_80138A58(void) {
     cmpwi r0, 0x0
     bne lbl_80138AB4
     mr r3, r31
-    bl fn_802D55B4
+    bl DVDCancel
     bl fn_801398E4
 lbl_80138AB4:
     bl fn_80139BD4
@@ -2339,17 +2406,8 @@ lbl_80138AFC:
     blr
 }
 
-s32 fn_80138B10(void) {
-    if (((s32) M2C_FIELD(&lbl_803A7980, s32 *, 0xA0) != 0) && ((u8) M2C_FIELD(&lbl_803A7980, u8 *, 0xA4) == 2)) {
-        M2C_FIELD(&lbl_803A7980, s8 *, 0xA5) = (s8) (4);
-        M2C_FIELD(&lbl_803A7980, u8 *, 0xA4) = (u8) (4U);
-        return (s32) (1);
-    }
-    return (s32) (0);
-}
-
 // asm_to_cpp: fn_80138B4C
-asm void fn_80138B4C(void) {
+asm s32 fn_80138B4C(void) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -2713,187 +2771,6 @@ lbl_80139034:
     lwz r0, 0x34(r1)
     mtlr r0
     addi r1, r1, 0x30
-    blr
-}
-
-// asm_to_cpp: fn_8013904C
-asm s32 fn_8013904C(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lis r4, lbl_803A7980@ha
-    addi r4, r4, lbl_803A7980@l
-    lwz r0, 0xa0(r4)
-    cmpwi r0, 0x0
-    beq lbl_80139080
-    addi r4, r4, 0x80
-    li r5, 0xc
-    bl memcpy
-    li r3, 0x1
-    b lbl_80139084
-lbl_80139080:
-    li r3, 0x0
-lbl_80139084:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// asm_to_cpp: fn_80139094
-asm s32 fn_80139094(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lis r4, lbl_803A7980@ha
-    addi r4, r4, lbl_803A7980@l
-    lwz r0, 0xa0(r4)
-    cmpwi r0, 0x0
-    beq lbl_801390C8
-    addi r4, r4, 0x8c
-    li r5, 0x10
-    bl memcpy
-    li r3, 0x1
-    b lbl_801390CC
-lbl_801390C8:
-    li r3, 0x0
-lbl_801390CC:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-s32 fn_801390DC(void) {
-    return (s32) ((s32) M2C_FIELD(&lbl_803A7980, u8 *, 0xA4));
-}
-
-void fn_801390EC(s32 **arg0) {
-    OSSendMessage((s32) ((s32) &lbl_803A7BE0), (s32) ((s32) arg0), (s32) (0));
-}
-
-s32 ** fn_80139100(void) {
-    s32 **sp8;
-
-    if (OSReceiveMessage((s32) ((s32) &lbl_803A7BE0), (s32) ((s32) &sp8), (s32) (0)) == 1) {
-        return (s32 **) (sp8);
-    }
-    return (s32 **) (NULL);
-}
-
-void fn_80139144(void) {
-    s32 **temp_r3;
-
-    fn_802E1450();
-    if ((s32) lbl_8049D718 != 0) {
-loop_1:
-        temp_r3 = (s32 **) (fn_80139100());
-        if (temp_r3 != NULL) {
-            fn_80139F84((s32 **) (temp_r3));
-            goto loop_1;
-        }
-    }
-}
-
-// asm_to_cpp: fn_80139184
-asm void fn_80139184(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    lwz r0, lbl_8049D734
-    cmpwi r0, 0x0
-    bne lbl_80139208
-    lwz r0, lbl_8049D724
-    xori r0, r0, 0x1
-    stw r0, lbl_8049D724
-    mulli r0, r0, 0x180
-    lis r3, lbl_803A7C20@ha
-    addi r31, r3, lbl_803A7C20@l
-    add r3, r31, r0
-    li r4, 0x180
-    bl AIInitDMA
-    bl OSEnableInterrupts
-    mr r30, r3
-    lwz r0, lbl_8049D724
-    mulli r0, r0, 0x180
-    add r3, r31, r0
-    li r4, 0x0
-    li r5, 0x60
-    bl fn_801392E8
-    lwz r0, lbl_8049D724
-    mulli r0, r0, 0x180
-    add r3, r31, r0
-    li r4, 0x180
-    bl DCFlushRange
-    mr r3, r30
-    bl OSRestoreInterrupts
-    b lbl_801392D0
-lbl_80139208:
-    cmpwi r0, 0x1
-    bne lbl_8013923C
-    lwz r0, lbl_8049D72C
-    cmpwi r0, 0x0
-    beq lbl_80139220
-    stw r0, lbl_8049D730
-lbl_80139220:
-    lwz r12, lbl_8049D728
-    mtctr r12
-    bctrl
-    bl fn_8029AD14
-    addis r0, r3, 0x8000
-    stw r0, lbl_8049D72C
-    b lbl_80139254
-lbl_8013923C:
-    lwz r12, lbl_8049D728
-    mtctr r12
-    bctrl
-    bl fn_8029AD14
-    addis r0, r3, 0x8000
-    stw r0, lbl_8049D730
-lbl_80139254:
-    lwz r0, lbl_8049D724
-    xori r0, r0, 0x1
-    stw r0, lbl_8049D724
-    mulli r4, r0, 0x180
-    lis r3, lbl_803A7C20@ha
-    addi r0, r3, lbl_803A7C20@l
-    add r3, r0, r4
-    li r4, 0x180
-    bl AIInitDMA
-    bl OSEnableInterrupts
-    mr r30, r3
-    lwz r3, lbl_8049D730
-    cmpwi r3, 0x0
-    beq lbl_80139294
-    li r4, 0x180
-    bl DCInvalidateRange
-lbl_80139294:
-    lwz r0, lbl_8049D724
-    mulli r0, r0, 0x180
-    lis r3, lbl_803A7C20@ha
-    addi r31, r3, lbl_803A7C20@l
-    add r3, r31, r0
-    lwz r4, lbl_8049D730
-    li r5, 0x60
-    bl fn_801392E8
-    lwz r0, lbl_8049D724
-    mulli r0, r0, 0x180
-    add r3, r31, r0
-    li r4, 0x180
-    bl DCFlushRange
-    mr r3, r30
-    bl OSRestoreInterrupts
-lbl_801392D0:
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
     blr
 }
 
@@ -3266,93 +3143,6 @@ lbl_801397C8:
     blr
 }
 
-s32 fn_801397E0(void) {
-    if ((s32) M2C_FIELD(&lbl_803A7980, s32 *, 0xA0) != 0) {
-        return (s32) ((s32) M2C_FIELD(&lbl_803A7980, f32 *, 0xDC));
-    }
-    return (s32) (-1);
-}
-
-// asm_to_cpp: fn_80139818
-asm s32 fn_80139818(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    mr r8, r3
-    lis r3, lbl_803A7FF8@ha
-    addi r3, r3, lbl_803A7FF8@l
-    lis r4, fn_80139920@ha
-    addi r4, r4, fn_80139920@l
-    li r5, 0x0
-    lis r6, lbl_803A8310@ha
-    addi r6, r6, lbl_803A8310@l
-    addi r6, r6, 0x1000
-    li r7, 0x1000
-    li r9, 0x1
-    bl fn_8031CDF0
-    cmpwi r3, 0x0
-    bne lbl_80139864
-    li r3, 0x0
-    b lbl_801398B8
-lbl_80139864:
-    lis r3, lbl_803A7F20@ha
-    addi r3, r3, lbl_803A7F20@l
-    lis r4, lbl_803A7F80@ha
-    addi r4, r4, lbl_803A7F80@l
-    li r5, 0xa
-    bl OSInitMessageQueue
-    lis r3, lbl_803A7F40@ha
-    addi r3, r3, lbl_803A7F40@l
-    lis r4, lbl_803A7FA8@ha
-    addi r4, r4, lbl_803A7FA8@l
-    li r5, 0xa
-    bl OSInitMessageQueue
-    lis r3, lbl_803A7F60@ha
-    addi r3, r3, lbl_803A7F60@l
-    lis r4, lbl_803A7FD0@ha
-    addi r4, r4, lbl_803A7FD0@l
-    li r5, 0xa
-    bl OSInitMessageQueue
-    li r0, 0x1
-    stw r0, lbl_8049D740
-    li r3, 0x1
-lbl_801398B8:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-#pragma dont_inline on
-void fn_801398C8(void) {
-    if (*(u32 *)&lbl_8049D740 != 0) {
-        fn_8031D460((s8 *)lbl_803A7FF8);
-    }
-}
-#pragma dont_inline reset
-
-// asm_to_cpp: fn_801398E4
-asm void fn_801398E4(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lwz r0, lbl_8049D740
-    cmpwi r0, 0x0
-    beq lbl_80139910
-    lis r3, lbl_803A7FF8@ha
-    addi r3, r3, lbl_803A7FF8@l
-    bl OSCancelThread
-    li r0, 0x0
-    stw r0, lbl_8049D740
-lbl_80139910:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
 // asm_to_cpp: fn_80139920
 asm void fn_80139920(void) {
     nofralloc
@@ -3418,132 +3208,6 @@ lbl_801399F0:
 lbl_801399F8:
     addi r24, r24, 0x1
     b lbl_80139950
-}
-
-s32 ** fn_80139A00(void) {
-    s32 **sp8;
-
-    OSReceiveMessage((s32) ((s32) &lbl_803A7F40), (s32) ((s32) &sp8), (s32) (1));
-    return (s32 **) (sp8);
-}
-
-void fn_80139A34(s32 **arg0) {
-    OSSendMessage((s32) ((s32) &lbl_803A7F40), (s32) ((s32) arg0), (s32) (1));
-}
-
-s32 ** fn_80139A48(void) {
-    s32 **sp8;
-
-    OSReceiveMessage((s32) ((s32) &lbl_803A7F20), (s32) ((s32) &sp8), (s32) (1));
-    return (s32 **) (sp8);
-}
-
-void fn_80139A7C(s32 **arg0) {
-    OSSendMessage((s32) ((s32) &lbl_803A7F20), (s32) ((s32) arg0), (s32) (1));
-}
-
-s32 ** fn_80139A90(void) {
-    s32 **sp8;
-
-    OSReceiveMessage((s32) ((s32) &lbl_803A7F60), (s32) ((s32) &sp8), (s32) (1));
-    return (s32 **) (sp8);
-}
-
-void fn_80139AC4(s32 **arg0) {
-    OSSendMessage((s32) ((s32) &lbl_803A7F60), (s32) ((s32) arg0), (s32) (1));
-}
-
-// asm_to_cpp: fn_80139AD8
-asm s32 fn_80139AD8(s32 arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    mr r8, r3
-    mr r5, r4
-    cmpwi r4, 0x0
-    beq lbl_80139B2C
-    lis r3, lbl_803A9310@ha
-    addi r3, r3, lbl_803A9310@l
-    lis r4, fn_80139CDC@ha
-    addi r4, r4, fn_80139CDC@l
-    lis r6, lbl_803A9628@ha
-    addi r6, r6, lbl_803A9628@l
-    addi r6, r6, 0x1000
-    li r7, 0x1000
-    li r9, 0x1
-    bl fn_8031CDF0
-    cmpwi r3, 0x0
-    bne lbl_80139B68
-    li r3, 0x0
-    b lbl_80139BA8
-lbl_80139B2C:
-    lis r3, lbl_803A9310@ha
-    addi r3, r3, lbl_803A9310@l
-    lis r4, fn_80139C10@ha
-    addi r4, r4, fn_80139C10@l
-    li r5, 0x0
-    lis r6, lbl_803A9628@ha
-    addi r6, r6, lbl_803A9628@l
-    addi r6, r6, 0x1000
-    li r7, 0x1000
-    li r9, 0x1
-    bl fn_8031CDF0
-    cmpwi r3, 0x0
-    bne lbl_80139B68
-    li r3, 0x0
-    b lbl_80139BA8
-lbl_80139B68:
-    lis r3, lbl_803AA628@ha
-    addi r3, r3, lbl_803AA628@l
-    lis r4, lbl_803AA668@ha
-    addi r4, r4, lbl_803AA668@l
-    li r5, 0x3
-    bl OSInitMessageQueue
-    lis r3, lbl_803AA648@ha
-    addi r3, r3, lbl_803AA648@l
-    lis r4, lbl_803AA674@ha
-    addi r4, r4, lbl_803AA674@l
-    li r5, 0x3
-    bl OSInitMessageQueue
-    li r0, 0x1
-    stw r0, lbl_8049D748
-    stw r0, lbl_8049D74C
-    li r3, 0x1
-lbl_80139BA8:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-#pragma dont_inline on
-void fn_80139BB8(void) {
-    if (*(u32 *)&lbl_8049D748 != 0) {
-        fn_8031D460((s8 *)lbl_803A9310);
-    }
-}
-#pragma dont_inline reset
-
-// asm_to_cpp: fn_80139BD4
-asm void fn_80139BD4(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lwz r0, lbl_8049D748
-    cmpwi r0, 0x0
-    beq lbl_80139C00
-    lis r3, lbl_803A9310@ha
-    addi r3, r3, lbl_803A9310@l
-    bl OSCancelThread
-    li r0, 0x0
-    stw r0, lbl_8049D748
-lbl_80139C00:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
 }
 
 // asm_to_cpp: fn_80139C10
@@ -3790,32 +3454,8 @@ lbl_80139F34:
     blr
 }
 
-s32 ** fn_80139F50(s32 arg0, s32 arg1) {
-    s32 **sp8;
-
-    OSReceiveMessage((s32) ((s32) &lbl_803AA628), (s32) ((s32) &sp8), (s32) (1));
-    return (s32 **) (sp8);
-}
-
-void fn_80139F84(s32 **arg0) {
-    OSSendMessage((s32) ((s32) &lbl_803AA628), (s32) ((s32) arg0), (s32) (0));
-}
-
-s32 ** fn_80139F98(s32 arg0) {
-    s32 **sp8;
-
-    if (OSReceiveMessage((s32) ((s32) &lbl_803AA648), (s32) ((s32) &sp8), (s32) (arg0)) == 1) {
-        return (s32 **) (sp8);
-    }
-    return (s32 **) (NULL);
-}
-
-void fn_80139FDC(s32 **arg0) {
-    OSSendMessage((s32) ((s32) &lbl_803AA648), (s32) ((s32) arg0), (s32) (1));
-}
-
 // asm_to_cpp: fn_80139FF0
-asm s32 fn_80139FF0() {
+asm s32 fn_80139FF0(s32 arg0_x, s32 arg1_x, s32 arg2_x) {
     nofralloc
     stwu r1, -0x120(r1)
     mflr r0

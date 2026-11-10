@@ -396,7 +396,7 @@ extern "C" void fn_801AA168();
 extern "C" void fn_801ACC48();
 extern "C" void fn_801B8094();
 extern "C" void fn_801B8100();
-extern "C" void fn_801B92C0();
+extern "C" void UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi();
 extern "C" void fn_801BAAEC();
 
 // asm_to_cpp: fn_801A97E0
@@ -651,7 +651,7 @@ lbl_801A9E3C:
     lhz r5, 0x2c(r30)
     addi r3, r30, 0x24
     addi r4, r1, 0x38
-    bl fn_801B92C0
+    bl UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
     clrlwi r28, r3, 16
     li r27, 0x0
     b lbl_801A9E74
@@ -695,7 +695,7 @@ lbl_801A9EC0:
     lhz r5, 0x2c(r30)
     addi r3, r30, 0x24
     addi r4, r1, 0x38
-    bl fn_801B92C0
+    bl UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
     clrlwi r28, r3, 16
     li r27, 0x0
     b lbl_801A9F44
@@ -729,7 +729,7 @@ lbl_801A9F44:
     lhz r5, 0x2c(r30)
     addi r3, r30, 0x24
     addi r4, r1, 0x38
-    bl fn_801B92C0
+    bl UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
     clrlwi r28, r3, 16
     li r26, 0x0
     b lbl_801A9F88
@@ -748,7 +748,7 @@ lbl_801A9F88:
     lhz r5, 0x2c(r30)
     addi r3, r30, 0x24
     addi r4, r1, 0x38
-    bl fn_801B92C0
+    bl UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
     clrlwi r28, r3, 16
     li r26, 0x0
     b lbl_801A9FCC

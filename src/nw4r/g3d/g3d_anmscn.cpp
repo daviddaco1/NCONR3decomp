@@ -99,11 +99,11 @@ extern "C" void fn_801D8144();
 extern "C" void fn_801D81F0();
 extern "C" void fn_801D839C();
 extern "C" void fn_801D8448();
-extern "C" void fn_801D84C8();
-extern "C" void fn_801D8514();
-extern "C" void fn_801D8560();
-extern "C" void fn_801D85AC();
-extern "C" void fn_801D85F8();
+extern "C" void GetResLightSetByRefNumber__Q34nw4r3g3d9ResAnmScnCFUl();
+extern "C" void GetResAnmAmbLightByRefNumber__Q34nw4r3g3d9ResAnmScnCFUl();
+extern "C" void GetResAnmLightByRefNumber__Q34nw4r3g3d9ResAnmScnCFUl();
+extern "C" void GetResAnmFogByRefNumber__Q34nw4r3g3d9ResAnmScnCFUl();
+extern "C" void GetResAnmCameraByRefNumber__Q34nw4r3g3d9ResAnmScnCFUl();
 extern "C" void fn_801DDC3C();
 extern "C" void fn_8030CAF0();
 extern "C" void fn_8030DE44();
@@ -1052,7 +1052,7 @@ extern "C" asm void GetLightSet__Q34nw4r3g3d9AnmScnResFQ34nw4r3g3d8LightSetUl() 
     mr r25, r4
     mr r4, r5
     addi r3, r3, 0x20
-    bl fn_801D84C8
+    bl GetResLightSetByRefNumber__Q34nw4r3g3d9ResAnmScnCFUl
     cmpwi r3, 0x0
     mr r30, r3
     bne lbl_801DE73C
@@ -1453,7 +1453,7 @@ extern "C" asm void GetAmbLightResult__Q34nw4r3g3d9AnmScnResFPQ34nw4r3g3d17AmbLi
     stw r30, 0x18(r1)
     mr r30, r3
     addi r3, r3, 0x20
-    bl fn_801D8514
+    bl GetResAnmAmbLightByRefNumber__Q34nw4r3g3d9ResAnmScnCFUl
     cmpwi r3, 0x0
     stw r3, 0x8(r1)
     bne lbl_801DEC8C
@@ -1500,7 +1500,7 @@ extern "C" asm void GetLightResult__Q34nw4r3g3d9AnmScnResFPQ34nw4r3g3d14LightAnm
     stw r30, 0x18(r1)
     mr r30, r3
     addi r3, r3, 0x20
-    bl fn_801D8560
+    bl GetResAnmLightByRefNumber__Q34nw4r3g3d9ResAnmScnCFUl
     cmpwi r3, 0x0
     stw r3, 0x8(r1)
     bne lbl_801DED18
@@ -1545,7 +1545,7 @@ extern "C" asm void GetFogResult__Q34nw4r3g3d9AnmScnResFPQ34nw4r3g3d12FogAnmResu
     stw r30, 0x18(r1)
     mr r30, r3
     addi r3, r3, 0x20
-    bl fn_801D85AC
+    bl GetResAnmFogByRefNumber__Q34nw4r3g3d9ResAnmScnCFUl
     cmpwi r3, 0x0
     stw r3, 0x8(r1)
     bne lbl_801DEDA4
@@ -1590,7 +1590,7 @@ extern "C" asm void GetCameraResult__Q34nw4r3g3d9AnmScnResFPQ34nw4r3g3d15CameraA
     stw r30, 0x18(r1)
     mr r30, r3
     addi r3, r3, 0x20
-    bl fn_801D85F8
+    bl GetResAnmCameraByRefNumber__Q34nw4r3g3d9ResAnmScnCFUl
     cmpwi r3, 0x0
     stw r3, 0x8(r1)
     bne lbl_801DEE30
@@ -1630,7 +1630,7 @@ extern "C" asm void GetSpecularLightID__Q34nw4r3g3d9AnmScnResCFUl() {
     mflr r0
     addi r3, r3, 0x20
     stw r0, 0x14(r1)
-    bl fn_801D8560
+    bl GetResAnmLightByRefNumber__Q34nw4r3g3d9ResAnmScnCFUl
     cmpwi r3, 0x0
     beq lbl_801DEE9C
     lwz r3, 0x14(r3)
@@ -1653,7 +1653,7 @@ extern "C" asm void HasSpecularLight__Q34nw4r3g3d9AnmScnResCFUl() {
     mflr r0
     addi r3, r3, 0x20
     stw r0, 0x14(r1)
-    bl fn_801D8560
+    bl GetResAnmLightByRefNumber__Q34nw4r3g3d9ResAnmScnCFUl
     cmpwi r3, 0x0
     li r4, 0x0
     beq lbl_801DEEE0

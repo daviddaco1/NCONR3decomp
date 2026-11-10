@@ -28,11 +28,11 @@ extern "C" void NoteOn__Q44nw4r3snd6detail4BankCFRCQ44nw4r3snd6detail10NoteOnInf
 extern "C" void ReadInstInfo__Q44nw4r3snd6detail14BankFileReaderCFPQ44nw4r3snd6detail8InstInfoiii();
 extern "C" void ReadWaveInfo__Q44nw4r3snd6detail14BankFileReaderCFPQ44nw4r3snd6detail8WaveInfoRCQ54nw4r3snd6detail8InstInfo16WaveDataLocationPCvPPCQ44nw4r3snd6detail8WaveInfo();
 extern "C" void Start__Q44nw4r3snd6detail7ChannelFRCQ44nw4r3snd6detail8WaveInfoiUl();
-extern "C" void fn_8020C018();
+extern "C" void SetAttack__Q44nw4r3snd6detail12EnvGeneratorFi();
 extern "C" void fn_8020C030();
-extern "C" void fn_8020C048();
-extern "C" void fn_8020C0E8();
-extern "C" void fn_8020C0F0();
+extern "C" void SetDecay__Q44nw4r3snd6detail12EnvGeneratorFi();
+extern "C" void SetSustain__Q44nw4r3snd6detail12EnvGeneratorFi();
+extern "C" void SetRelease__Q44nw4r3snd6detail12EnvGeneratorFi();
 
 // asm_to_cpp: NoteOn__Q44nw4r3snd6detail4BankCFRCQ44nw4r3snd6detail10NoteOnInfo
 extern "C" asm void NoteOn__Q44nw4r3snd6detail4BankCFRCQ44nw4r3snd6detail10NoteOnInfo() {
@@ -109,19 +109,19 @@ lbl_80207CB0:
     lfs f0, 0x24(r1)
     stfs f0, 0xbc(r3)
     lbz r4, 0x14(r1)
-    bl fn_8020C018
+    bl SetAttack__Q44nw4r3snd6detail12EnvGeneratorFi
     lbz r4, 0x15(r1)
     mr r3, r31
     bl fn_8020C030
     lbz r4, 0x16(r1)
     mr r3, r31
-    bl fn_8020C048
+    bl SetDecay__Q44nw4r3snd6detail12EnvGeneratorFi
     lbz r4, 0x17(r1)
     mr r3, r31
-    bl fn_8020C0E8
+    bl SetSustain__Q44nw4r3snd6detail12EnvGeneratorFi
     lbz r4, 0x18(r1)
     mr r3, r31
-    bl fn_8020C0F0
+    bl SetRelease__Q44nw4r3snd6detail12EnvGeneratorFi
     lbz r3, 0x22(r1)
     lwz r0, 0x10(r30)
     subi r3, r3, 0x40
