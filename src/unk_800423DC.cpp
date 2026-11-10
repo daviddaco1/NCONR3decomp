@@ -4,12 +4,19 @@
 
 extern "C" {
 
+
+struct S_fn_80042CC0_arg0 {
+    s32 f_0;
+    s32 f_4;
+    u8 pad_8[0x8];
+    s32 f_10;
+};
 extern u8 lbl_803395E0[];
 extern u8 lbl_80339600[];
 extern float lbl_8049EA00;
 extern float lbl_8049EA08;
 extern float lbl_8049EA10;
-extern float lbl_8049EA18;
+__declspec(section ".sdata2") extern const f32 lbl_8049EA18[];
 extern M2C_UNK lbl_8049EA20;
 
 void DCInvalidateRange(s32 arg0, s32 arg1);
@@ -29,8 +36,8 @@ void GXSetNumChans(s32 arg0);
 void GXSetNumTexGens(s32 arg0);
 M2C_UNK GXSetTexCoordGen2(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5);
 void GXSetTexCoordScaleManually(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
-M2C_UNK GXSetVtxAttrFmt(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
-M2C_UNK GXSetVtxDesc(s32 arg0, s32 arg1);
+void GXSetVtxAttrFmt(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
+void GXSetVtxDesc(s32 arg0, s32 arg1);
 void GXSetZCompLoc(s32 arg0);
 void GXSetZMode(s32 arg0, s32 arg1, s32 arg2);
 M2C_UNK * GetRenderModeObj__Q34nw4r3g3d8G3DStateFv(void);
@@ -41,13 +48,13 @@ void SetViewport__Q34nw4r3g3d6CameraFffff(s8 **arg0, f32 farg0, f32 farg1, f32 f
 s32 _restgpr_28();
 s32 _savegpr_28();
 void fn_800163E4(s32 arg0, s32 arg1);
-s32 fn_800169F4();
-s32 fn_80016A44();
-void fn_80016A94(s32 arg0);
-s32 fn_80016CAC();
-void fn_80018AF8(s32 arg0, s32 arg1, s32 arg2);
+M2C_UNK fn_800169F4(s32 arg0_x);
+M2C_UNK fn_80016A44(s32 arg0_x);
+s32 fn_80016A94(s32 arg0);
+M2C_UNK fn_80016CAC(s32 arg0_x);
+s32 fn_80018AF8(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018B00(s32 arg0, s32 arg1, s32 arg2);
-void fn_80018B08(s32 arg0, s32 arg1, s32 arg2);
+void fn_80018B08(s32 arg0, s32 arg1, f32 farg0_x);
 M2C_UNK fn_80018B0C(M2C_UNK *arg0, f32 farg0, f32 farg1, f32 farg2);
 void fn_8001B8B0(s32 arg0, s32 arg1);
 s32 fn_8002B99C(s8 *arg0);
@@ -67,7 +74,7 @@ void fn_80042C7C(f32 farg0, f32 farg1);
 void fn_80042C8C(s8 *arg0, s32 arg1);
 s32 fn_80042C9C(s8 *arg0, s32 arg1);
 s32 fn_80042CB0(s8 *arg0);
-void fn_80042CC0(s8 *arg0);
+void fn_80042CC0(S_fn_80042CC0_arg0 *arg0);
 void fn_80042DC8(s8 *arg0);
 void fn_80042FFC(s8 *arg0);
 void fn_8004306C(void);
@@ -76,22 +83,91 @@ void fn_80043080(u8 arg0);
 void fn_80043090(f32 farg0, f32 farg1, f32 farg2);
 f32 fn_80172608(f32 farg0, f32 farg1);
 void fn_8017B074(M2C_UNK *arg0, s8 *arg1);
-void fn_801E9368(s8 **arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 *arg4);
+s32 fn_801E9368(s8 **arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 *arg4);
 void fn_802E1450(void);
 void fn_802E430C(s32 arg0);
 void fn_802E432C(s32 arg0);
-void fn_802E43CC(s32 arg0, s32 arg1);
+s32 fn_802E43CC(s32 arg0, s32 arg1);
 void fn_802E4460(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 void fn_802E44A0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 void fn_802E44E0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5);
 void fn_802E4538(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5);
-void fn_802E4654(s32 arg0, u32 *arg1);
-void fn_802E4700(s32 arg0, s32 arg1);
-void fn_802E4750(s32 arg0, s32 arg1, s32 arg2);
+s32 fn_802E4654(s32 arg0, u32 *arg1);
+s32 fn_802E4700(s32 arg0, s32 arg1);
+s32 fn_802E4750(s32 arg0, s32 arg1, s32 arg2);
 void fn_802E4808(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
-void fn_802E4840(s32 arg0, s32 arg1, s32 arg2);
-void fn_802E48CC(u32 arg0, s32 arg1, s32 arg2, s32 arg3);
-void fn_802E4A28(s32 arg0);
+s32 fn_802E4840(s32 arg0, s32 arg1, s32 arg2);
+s32 fn_802E48CC(u32 arg0, s32 arg1, s32 arg2, s32 arg3);
+s32 fn_802E4A28(s32 arg0);
+
+
+void fn_800425FC(s8 *arg0) {
+    s32 temp_r31;
+
+    if ((fn_80042CB0((s8 *) (arg0)) != 0) && (fn_80042C9C((s8 *) (arg0), (s32) (1)) != 0)) {
+        temp_r31 = (s32) (fn_8002B99C((s8 *) (M2C_FIELD(arg0, s8 **, 0xC))));
+        fn_800423DC((s32) ((s32) (arg0 + 0x10)), (s32) (fn_8002B99C((s8 *) (M2C_FIELD(arg0, s8 **, 8)))), (s8 *) ((s8 *) temp_r31));
+        fn_80042C8C((s8 *) (arg0), (s32) (2));
+    }
+}
+
+void fn_80042BF0(s8 *arg0, s32 arg1) {
+    SetViewport__Q34nw4r3g3d6CameraFffff((s8 **) ((s8 **) arg1), M2C_FIELD(arg0, f32 *, 0x18), M2C_FIELD(arg0, f32 *, 0x1C), M2C_FIELD(arg0, f32 *, 0x20), M2C_FIELD(arg0, f32 *, 0x24));
+    SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl((s8 **) ((s8 **) arg1), (s32) (M2C_FIELD(arg0, s32 *, 0x30)), (s32) (M2C_FIELD(arg0, s32 *, 0x34)), (s32) (M2C_FIELD(arg0, s32 *, 0x38)), (s32) (M2C_FIELD(arg0, s32 *, 0x3C)));
+}
+
+void fn_80042C54(void) {
+}
+
+void fn_80042C58(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    GXSetTexCoordGen2((s32) (arg0), (s32) (arg1), (s32) (arg2), (s32) (arg3), (s32) (0), (s32) (0x7D));
+}
+
+void fn_80042C64(u8 arg0, u8 arg1) {
+    *(volatile u8 *)0xCC008000 = arg0;
+    *(volatile u8 *)0xCC008000 = arg1;
+}
+
+void fn_80042C7C(f32 farg0, f32 farg1) {
+    *(f32 *)0xCC008000 = farg0;
+    *(f32 *)0xCC008000 = farg1;
+}
+
+void fn_80042C8C(s8 *arg0, s32 arg1) {
+    M2C_FIELD(arg0, s32 *, 0x10) = (s32) ((s32) (M2C_FIELD(arg0, s32 *, 0x10) & ~arg1));
+}
+
+s32 fn_80042C9C(s8 *arg0, s32 arg1) {
+    return (s32) ((M2C_FIELD(arg0, s32 *, 0x10) & arg1) != 0);
+}
+
+s32 fn_80042CB0(s8 *arg0) {
+    return (s32) (M2C_FIELD(arg0, s32 *, 0xC) != 0);
+}
+
+void fn_80042FFC(s8 *arg0) {
+    M2C_FIELD(arg0, f32 *, 0) = fn_80172608(M2C_FIELD(&lbl_8049EA20, f32 *, 8), M2C_FIELD(&lbl_8049EA20, f32 *, 0xC));
+    M2C_FIELD(arg0, f32 *, 4) = fn_80172608(M2C_FIELD(&lbl_8049EA20, f32 *, 8), M2C_FIELD(&lbl_8049EA20, f32 *, 0xC));
+    M2C_FIELD(arg0, f32 *, 8) = fn_80172608(M2C_FIELD(&lbl_8049EA20, f32 *, 8), M2C_FIELD(&lbl_8049EA20, f32 *, 0xC));
+    fn_8001B8B0((s32) ((s32) arg0), (s32) ((s32) arg0));
+}
+
+void fn_8004306C(void) {
+}
+
+void fn_80043070(u8 arg0) {
+    *(volatile u8 *)0xCC008000 = arg0;
+}
+
+void fn_80043080(u8 arg0) {
+    *(volatile u8 *)0xCC008000 = arg0;
+}
+
+void fn_80043090(f32 farg0, f32 farg1, f32 farg2) {
+    *(f32 *)0xCC008000 = farg0;
+    *(f32 *)0xCC008000 = farg1;
+    *(f32 *)0xCC008000 = farg2;
+}
 
 // asm_to_cpp: fn_800423DC
 asm void fn_800423DC(s32 arg0, s32 arg1, s8 *arg2) {
@@ -232,16 +308,6 @@ asm void fn_800423DC(s32 arg0, s32 arg1, s8 *arg2) {
     mtlr r0
     addi r1, r1, 0x40
     blr
-}
-
-void fn_800425FC(s8 *arg0) {
-    s32 temp_r31;
-
-    if ((fn_80042CB0((s8 *) (arg0)) != 0) && (fn_80042C9C((s8 *) (arg0), (s32) (1)) != 0)) {
-        temp_r31 = (s32) (fn_8002B99C((s8 *) (M2C_FIELD(arg0, s8 **, 0xC))));
-        fn_800423DC((s32) ((s32) (arg0 + 0x10)), (s32) (fn_8002B99C((s8 *) (M2C_FIELD(arg0, s8 **, 8)))), (s8 *) ((s8 *) temp_r31));
-        fn_80042C8C((s8 *) (arg0), (s32) (2));
-    }
 }
 
 // asm_to_cpp: fn_8004267C
@@ -562,161 +628,36 @@ lbl_80042B24:
     blr
 }
 
-// asm_to_cpp: fn_80042B3C
-asm void fn_80042B3C(s8 *arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    mr r31, r4
-    mr r3, r31
-    addi r4, r30, 0x18
-    addi r5, r30, 0x1c
-    addi r6, r30, 0x20
-    addi r7, r30, 0x24
-    addi r8, r30, 0x28
-    addi r9, r30, 0x2c
-    bl GetViewport__Q34nw4r3g3d6CameraCFPfPfPfPfPfPf
-    mr r3, r31
-    addi r4, r30, 0x30
-    addi r5, r30, 0x34
-    addi r6, r30, 0x38
-    addi r7, r30, 0x3c
-    bl fn_801E9368
-    mr r3, r31
-    lfs f1, 0x18(r30)
-    lfs f2, 0x1c(r30)
-    la r4, lbl_8049EA18
-    lfs f0, 0x20(r30)
-    lfs f4, 0x4(r4)
-    fmuls f3, f0, f4
-    lfs f0, 0x24(r30)
-    fmuls f4, f0, f4
-    bl SetViewport__Q34nw4r3g3d6CameraFffff
-    mr r3, r31
-    lwz r4, 0x30(r30)
-    lwz r5, 0x34(r30)
-    lwz r0, 0x38(r30)
-    srwi r6, r0, 1
-    lwz r0, 0x3c(r30)
-    srwi r7, r0, 1
-    bl SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+#pragma dont_inline on
+void fn_80042B3C(s8 *arg0, s32 arg1) {
+    GetViewport__Q34nw4r3g3d6CameraCFPfPfPfPfPfPf((s8 **) ((s8 **) arg1), (f32 *) (arg0 + 0x18), (f32 *) (arg0 + 0x1C), (f32 *) (arg0 + 0x20), (f32 *) (arg0 + 0x24), (f32 *) (arg0 + 0x28), (f32 *) (arg0 + 0x2C));
+    fn_801E9368((s8 **) ((s8 **) arg1), (s32 *) (arg0 + 0x30), (s32 *) (arg0 + 0x34), (s32 *) (arg0 + 0x38), (s32 *) (arg0 + 0x3C));
+    SetViewport__Q34nw4r3g3d6CameraFffff((s8 **) ((s8 **) arg1), M2C_FIELD(arg0, f32 *, 0x18), M2C_FIELD(arg0, f32 *, 0x1C), M2C_FIELD(arg0, f32 *, 0x20) * lbl_8049EA18[1], M2C_FIELD(arg0, f32 *, 0x24) * lbl_8049EA18[1]);
+    SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl((s8 **) ((s8 **) arg1), (s32) (M2C_FIELD(arg0, s32 *, 0x30)), (s32) (M2C_FIELD(arg0, s32 *, 0x34)), (s32) ((s32) ((u32) M2C_FIELD(arg0, u32 *, 0x38) >> 1U)), (s32) ((s32) ((u32) M2C_FIELD(arg0, u32 *, 0x3C) >> 1U)));
 }
+#pragma dont_inline reset
 
-void fn_80042BF0(s8 *arg0, s32 arg1) {
-    SetViewport__Q34nw4r3g3d6CameraFffff((s8 **) ((s8 **) arg1), M2C_FIELD(arg0, f32 *, 0x18), M2C_FIELD(arg0, f32 *, 0x1C), M2C_FIELD(arg0, f32 *, 0x20), M2C_FIELD(arg0, f32 *, 0x24));
-    SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl((s8 **) ((s8 **) arg1), (s32) (M2C_FIELD(arg0, s32 *, 0x30)), (s32) (M2C_FIELD(arg0, s32 *, 0x34)), (s32) (M2C_FIELD(arg0, s32 *, 0x38)), (s32) (M2C_FIELD(arg0, s32 *, 0x3C)));
+#pragma dont_inline on
+void fn_80042CC0(S_fn_80042CC0_arg0 *arg0) {
+    if ((u32) (arg0->f_4 - 1) <= 0xF6U) {
+        fn_800169F4((s32) (0));
+        fn_800163E4((s32) (arg0->f_0), (s32) (0x11));
+        GXLoadTexObj((s32) (arg0->f_10), (s32) (0));
+        GXSetArray((s32) (0xB), (s32) ((s32) &lbl_80339600), (s32) (4));
+        GXSetArray((s32) (0xD), (s32) ((s32) &lbl_803395E0), (s32) (8));
+        GXClearVtxDesc();
+        GXSetVtxDesc((s32) (9), (s32) (1));
+        GXSetVtxDesc((s32) (0xB), (s32) (2));
+        GXSetVtxDesc((s32) (0xD), (s32) (2));
+        GXSetVtxAttrFmt((s32) (0), (s32) (9), (s32) (1), (s32) (4), (s32) (0));
+        GXSetVtxAttrFmt((s32) (0), (s32) (0xB), (s32) (1), (s32) (5), (s32) (0));
+        GXSetVtxAttrFmt((s32) (0), (s32) (0xD), (s32) (1), (s32) (4), (s32) (0));
+        fn_80042DC8((s8 *) (arg0));
+        fn_80016A44((s32) (0));
+        fn_80016A94((s32) (0));
+    }
 }
-
-void fn_80042C54(void) {
-}
-
-void fn_80042C58(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    GXSetTexCoordGen2((s32) (arg0), (s32) (arg1), (s32) (arg2), (s32) (arg3), (s32) (0), (s32) (0x7D));
-}
-
-void fn_80042C64(u8 arg0, u8 arg1) {
-    *(volatile u8 *)0xCC008000 = arg0;
-    *(volatile u8 *)0xCC008000 = arg1;
-}
-
-void fn_80042C7C(f32 farg0, f32 farg1) {
-    *(f32 *)0xCC008000 = farg0;
-    *(f32 *)0xCC008000 = farg1;
-}
-
-void fn_80042C8C(s8 *arg0, s32 arg1) {
-    M2C_FIELD(arg0, s32 *, 0x10) = (s32) ((s32) (M2C_FIELD(arg0, s32 *, 0x10) & ~arg1));
-}
-
-s32 fn_80042C9C(s8 *arg0, s32 arg1) {
-    return (s32) ((M2C_FIELD(arg0, s32 *, 0x10) & arg1) != 0);
-}
-
-s32 fn_80042CB0(s8 *arg0) {
-    return (s32) (M2C_FIELD(arg0, s32 *, 0xC) != 0);
-}
-
-// asm_to_cpp: fn_80042CC0
-asm void fn_80042CC0(s8 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    lwz r3, 0x4(r3)
-    subi r0, r3, 0x1
-    cmplwi r0, 0xf6
-    bgt lbl_80042DB4
-    li r3, 0x0
-    bl fn_800169F4
-    lwz r3, 0x0(r31)
-    li r4, 0x11
-    bl fn_800163E4
-    lwz r3, 0x10(r31)
-    li r4, 0x0
-    bl GXLoadTexObj
-    li r3, 0xb
-    lis r4, lbl_80339600@ha
-    addi r4, r4, lbl_80339600@l
-    li r5, 0x4
-    bl GXSetArray
-    li r3, 0xd
-    lis r4, lbl_803395E0@ha
-    addi r4, r4, lbl_803395E0@l
-    li r5, 0x8
-    bl GXSetArray
-    bl GXClearVtxDesc
-    li r3, 0x9
-    li r4, 0x1
-    bl GXSetVtxDesc
-    li r3, 0xb
-    li r4, 0x2
-    bl GXSetVtxDesc
-    li r3, 0xd
-    li r4, 0x2
-    bl GXSetVtxDesc
-    li r3, 0x0
-    li r4, 0x9
-    li r5, 0x1
-    li r6, 0x4
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    li r3, 0x0
-    li r4, 0xb
-    li r5, 0x1
-    li r6, 0x5
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    li r3, 0x0
-    li r4, 0xd
-    li r5, 0x1
-    li r6, 0x4
-    li r7, 0x0
-    bl GXSetVtxAttrFmt
-    mr r3, r31
-    bl fn_80042DC8
-    li r3, 0x0
-    bl fn_80016A44
-    li r3, 0x0
-    bl fn_80016A94
-lbl_80042DB4:
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_80042DC8
 asm void fn_80042DC8(s8 *arg0) {
@@ -866,30 +807,6 @@ lbl_80042FCC:
     mtlr r0
     addi r1, r1, 0xf0
     blr
-}
-
-void fn_80042FFC(s8 *arg0) {
-    M2C_FIELD(arg0, f32 *, 0) = fn_80172608(M2C_FIELD(&lbl_8049EA20, f32 *, 8), M2C_FIELD(&lbl_8049EA20, f32 *, 0xC));
-    M2C_FIELD(arg0, f32 *, 4) = fn_80172608(M2C_FIELD(&lbl_8049EA20, f32 *, 8), M2C_FIELD(&lbl_8049EA20, f32 *, 0xC));
-    M2C_FIELD(arg0, f32 *, 8) = fn_80172608(M2C_FIELD(&lbl_8049EA20, f32 *, 8), M2C_FIELD(&lbl_8049EA20, f32 *, 0xC));
-    fn_8001B8B0((s32) ((s32) arg0), (s32) ((s32) arg0));
-}
-
-void fn_8004306C(void) {
-}
-
-void fn_80043070(u8 arg0) {
-    *(volatile u8 *)0xCC008000 = arg0;
-}
-
-void fn_80043080(u8 arg0) {
-    *(volatile u8 *)0xCC008000 = arg0;
-}
-
-void fn_80043090(f32 farg0, f32 farg1, f32 farg2) {
-    *(f32 *)0xCC008000 = farg0;
-    *(f32 *)0xCC008000 = farg1;
-    *(f32 *)0xCC008000 = farg2;
 }
 
 } // extern "C"

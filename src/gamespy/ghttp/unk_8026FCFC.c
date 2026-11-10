@@ -1,38 +1,427 @@
-#include "types.h"
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+#include "ghttpCommon.h"
 
-// Translation unit: src/gamespy/ghttp/unk_8026FCFC.cpp
-// Total functions: 6
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+GHTTPBool ghttpSetRequestEncryptionEngine(GHTTPRequest request,
+                                          GHTTPEncryptionEngine engine) {
+  GHIConnection* connection = ghiRequestToConnection(request);
+  if (!connection)
+    return GHTTPFalse;
 
-// Global data symbols (@ha/@l)
-extern u8 ghiIsPostAutoFree[];
-extern u8 ghiPostSetAutoFree[];
+  // Translate default into the actual engine name
+  // We don't want to set the engine value to "default" because
+  //   we'd lose the ability to determine the engine name in other places
+  if (engine == GHTTPEncryptionEngine_Default) {
+    engine = GHTTPEncryptionEngine_RevoEx;
+  }
+
+  // If the same engine has previously been set then we're done
+  if (connection->encryptor.mEngine == engine)
+    return GHTTPTrue;
+
+  // If a different engine has previously been set then we're screwed
+  if (connection->encryptor.mInterface != NULL &&
+      connection->encryptor.mEngine != engine) {
+    return GHTTPFalse;
+  }
+
+  // If the URL is HTTPS but the engine is specific as NONE then we can't
+  // connect
+  if ((engine == GHTTPEncryptionEngine_None) &&
+      (strncmp(connection->URL, "https://", 8) == 0))
+    return GHTTPFalse;
+
+  // Initialize the engine
+  connection->encryptor.mEngine = engine;
+
+  if (engine == GHTTPEncryptionEngine_None) {
+    connection->encryptor.mInterface = NULL;
+    return GHTTPTrue; // this is the default, just return
+  } else {
+    // 02OCT07 BED: Design was changed to only allow one engine at a time
+    //              Assert that the specified engine is the one supported
+    if (engine != GHTTPEncryptionEngine_Default) {
+      GS_ASSERT(engine == GHTTPEncryptionEngine_RevoEx);
+    }
+
+    connection->encryptor.mInterface = NULL;
+    connection->encryptor.mInitFunc = ghiEncryptorSslInitFunc;
+    connection->encryptor.mStartFunc = ghiEncryptorSslStartFunc;
+    connection->encryptor.mCleanupFunc = ghiEncryptorSslCleanupFunc;
+    connection->encryptor.mEncryptFunc = ghiEncryptorSslEncryptFunc;
+    connection->encryptor.mDecryptFunc = ghiEncryptorSslDecryptFunc;
+    connection->encryptor.mInitialized = GHTTPFalse;
+    connection->encryptor.mSessionStarted = GHTTPFalse;
+    connection->encryptor.mSessionEstablished = GHTTPFalse;
+    connection->encryptor.mEncryptOnBuffer = GHTTPTrue;
+    connection->encryptor.mEncryptOnSend = GHTTPFalse;
+    connection->encryptor.mLibSendsHandshakeMessages = GHTTPFalse;
+    return GHTTPTrue;
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+// *********************  REVOEX SSL ENCRYPTION ENGINE  ******************** //
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+#include <rvl/ssl.h>
+
+typedef struct gsRevoExInterface {
+  int mId;
+  int mClientCertId;
+  int mRootCAId;
+  GHTTPBool mConnected; // means "connected to socket", not "connected to remote
+                        // machine"
+} gsRevoExInterface;
+
+// Init the engine
+GHIEncryptionResult ghiEncryptorSslInitFunc(struct GHIConnection* connection,
+                                            struct GHIEncryptor* theEncryptor) {
+  int i = 0;
+  gsRevoExInterface* sslInterface = NULL;
+
+  // There is only one place where this function should be called,
+  //  and it should check if the engine has been initialized
+  GS_ASSERT(theEncryptor->mInitialized == GHTTPFalse);
+  GS_ASSERT(theEncryptor->mInterface == NULL);
+
+  // allocate the interface (need one per connection)
+  theEncryptor->mInterface = gsimalloc(sizeof(gsRevoExInterface));
+  if (theEncryptor->mInterface == NULL) {
+    // memory allocation failed
+    gsDebugFormat(
+        GSIDebugCat_HTTP, GSIDebugType_Memory, GSIDebugLevel_WarmError,
+        "Failed to allocate SSL interface (out of memory: %d bytes)\r\n",
+        sizeof(gsRevoExInterface));
+    return GHIEncryptionResult_Error;
+  }
+  memset(theEncryptor->mInterface, 0, sizeof(gsRevoExInterface));
+  sslInterface = (gsRevoExInterface*)theEncryptor->mInterface;
+
+  {
+    int verifyOption = 0;
+    int rcode = 0;
+
+    // verifyOption = SSL_VERIFY_COMMON_NAME | SSL_VERIFY_ROOT_CA |
+    //               SSL_VERIFY_DATE | SSL_VERIFY_CHAIN |
+    //               SSL_VERIFY_SUBJECT_ALT_NAME;
+    verifyOption = 0xb;
+
+    // todo serverAddress, is this used for certificate name?
+    sslInterface->mId = SSLNew(verifyOption, connection->serverAddress);
+
+    rcode = SSLSetBuiltinRootCA(sslInterface->mId, 1);
+    if (rcode != SSL_ENONE) {
+      SSLShutdown(sslInterface->mId);
+      return GHIEncryptionResult_Error;
+    }
+
+    rcode = SSLSetBuiltinClientCert(sslInterface->mId, 0);
+    if (rcode != SSL_ENONE) {
+      SSLShutdown(sslInterface->mId);
+      return GHIEncryptionResult_Error;
+    }
+  }
+
+  theEncryptor->mInitialized = GHTTPTrue;
+  theEncryptor->mSessionStarted = GHTTPFalse;
+  theEncryptor->mSessionEstablished = GHTTPFalse;
+  // theEncryptor->mUseSSLConnect = GHTTPTrue;
+  theEncryptor->mEncryptOnBuffer = GHTTPFalse;
+  theEncryptor->mEncryptOnSend = GHTTPTrue;
+  theEncryptor->mLibSendsHandshakeMessages = GHTTPTrue;
+
+  gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+                "GameSpy SSL (RevoEx engine) initialized\r\n");
+
+  return GHIEncryptionResult_Success;
+}
+
+// Destroy the engine
+GHIEncryptionResult
+ghiEncryptorSslCleanupFunc(struct GHIConnection* connection,
+                           struct GHIEncryptor* theEncryptor) {
+  if (theEncryptor != NULL) {
+    gsRevoExInterface* sslInterface =
+        (gsRevoExInterface*)theEncryptor->mInterface;
+    if (sslInterface != NULL) {
+      SSLShutdown(sslInterface->mId);
+      gsifree(sslInterface);
+      theEncryptor->mInterface = NULL;
+    }
+    theEncryptor->mInitialized = GHTTPFalse;
+    theEncryptor->mSessionStarted = GHTTPFalse;
+    theEncryptor->mSessionEstablished = GHTTPFalse;
+  }
+
+  gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+                "GameSpy SSL (RevoEx) engine cleanup called\r\n");
+
+  GSI_UNUSED(connection);
+
+  return GHIEncryptionResult_Success;
+}
+
+GHIEncryptionResult
+ghiEncryptorSslStartFunc(struct GHIConnection* connection,
+                         struct GHIEncryptor* theEncryptor) {
+  gsRevoExInterface* sslInterface =
+      (gsRevoExInterface*)theEncryptor->mInterface;
+  int result = 0;
+
+  GS_ASSERT(theEncryptor->mSessionStarted == GHTTPFalse);
+
+  // Call this only AFTER the socket has been connected to the remote server
+  if (!sslInterface->mConnected) {
+    result = SSLConnect(sslInterface->mId, connection->socket);
+    if (result != SSL_ENONE) {
+      switch (result) {
+      case SSL_EFAILED:
+        gsDebugFormat(
+            GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+            "GameSpy SSL (RevoEx) SSLConnect failed (SSL_EFAILED)\r\n");
+        break;
+      case SSL_ESSLID:
+        gsDebugFormat(
+            GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+            "GameSpy SSL (RevoEx) SSLConnect failed (SSL_ESSLID)\r\n");
+        break;
+      default:
+        gsDebugFormat(
+            GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+            "GameSpy SSL (RevoEx) SSLConnect failed (Unhandled Error)\r\n");
+        break;
+      }
+      return GHIEncryptionResult_Error;
+    }
+    sslInterface->mConnected = GHTTPTrue;
+  }
+
+  GS_ASSERT(sslInterface->mConnected == GHTTPTrue);
+
+  // begin securing the session
+  result = SSLDoHandshake(sslInterface->mId);
+  if (result != SSL_ENONE) {
+    // Check for EWOULDBLOCK conditions
+    if (result == SSL_EWANT_READ || result == SSL_EWANT_WRITE)
+      return GHIEncryptionResult_Success;
+
+    switch (result) {
+    case SSL_EFAILED:
+      gsDebugFormat(
+          GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+          "GameSpy SSL (RevoEx) SSLDoHandshake failed (SSL_EFAILED)\r\n");
+      break;
+    case SSL_ESSLID:
+      gsDebugFormat(
+          GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+          "GameSpy SSL (RevoEx) SSLDoHandshake failed (SSL_ESSLID)\r\n");
+      break;
+    case SSL_ESYSCALL:
+      gsDebugFormat(
+          GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+          "GameSpy SSL (RevoEx) SSLDoHandshake failed (SSL_ESYSCALL)\r\n");
+      break;
+    case SSL_EZERO_RETURN:
+      gsDebugFormat(
+          GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+          "GameSpy SSL (RevoEx) SSLDoHandshake failed (SSL_EZERO_RETURN)\r\n");
+      break;
+    case SSL_EWANT_CONNECT:
+      gsDebugFormat(
+          GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+          "GameSpy SSL (RevoEx) SSLDoHandshake failed (SSL_EWANT_CONNECT)\r\n");
+      break;
+    case SSL_EVERIFY_COMMON_NAME:
+      gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+                    "GameSpy SSL (RevoEx) SSLDoHandshake failed "
+                    "(SSL_EVERIFY_COMMON_NAME)\r\n");
+      break;
+    case SSL_EVERIFY_CHAIN:
+      gsDebugFormat(
+          GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+          "GameSpy SSL (RevoEx) SSLDoHandshake failed (SSL_EVERIFY_CHAIN)\r\n");
+      break;
+    case SSL_EVERIFY_ROOT_CA:
+      gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+                    "GameSpy SSL (RevoEx) SSLDoHandshake failed "
+                    "(SSL_EVERIFY_ROOT_CA)\r\n");
+      break;
+    case SSL_EVERIFY_DATE:
+      gsDebugFormat(
+          GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+          "GameSpy SSL (RevoEx) SSLDoHandshake failed (SSL_EVERIFY_DATE)\r\n");
+      break;
+    default:
+      gsDebugFormat(
+          GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+          "GameSpy SSL (RevoEx) SSLDoHandshake failed (Unhandled Error)\r\n");
+      break;
+    }
+    return GHIEncryptionResult_Error;
+  }
+
+  // Success
+  theEncryptor->mSessionStarted = GHTTPTrue;
+  theEncryptor->mSessionEstablished = GHTTPTrue;
+  return GHIEncryptionResult_Success;
+}
+
+// Encrypt and send some data
+GHIEncryptionResult
+ghiEncryptorSslEncryptSend(struct GHIConnection* connection,
+                           struct GHIEncryptor* theEncryptor,
+                           const char* thePlainTextBuffer,
+                           int thePlainTextLength, int* theBytesSentOut) {
+  gsRevoExInterface* sslInterface =
+      (gsRevoExInterface*)theEncryptor->mInterface;
+  int result = 0;
+
+  result = SSLWrite(sslInterface->mId, thePlainTextBuffer, thePlainTextLength);
+  if (result == SSL_EWANT_WRITE) {
+    // signal socket error, GetLastError will return EWOULDBLOCK or EINPROGRESS
+    *theBytesSentOut = -1;
+  } else if (result < 0) {
+    switch (result) {
+    case SSL_EFAILED:
+      gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+                    "GameSpy SSL (RevoEx) SSLWrite failed (SSL_EFAILED)\r\n");
+      break;
+    case SSL_ESSLID:
+      gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+                    "GameSpy SSL (RevoEx) SSLWrite failed (SSL_ESSLID)\r\n");
+      break;
+    case SSL_EWANT_READ:
+      gsDebugFormat(
+          GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+          "GameSpy SSL (RevoEx) SSLWrite failed (SSL_EWANT_READ)\r\n");
+      break;
+    case SSL_ESYSCALL:
+      gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+                    "GameSpy SSL (RevoEx) SSLWrite failed (SSL_ESYSCALL)\r\n");
+      break;
+    case SSL_EWANT_CONNECT:
+      gsDebugFormat(
+          GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+          "GameSpy SSL (RevoEx) SSLWrite failed (SSL_EWANT_CONNECT)\r\n");
+      break;
+    default:
+      gsDebugFormat(
+          GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+          "GameSpy SSL (RevoEx) SSLWrite failed (Unhandled Error)\r\n");
+      break;
+    }
+    return GHIEncryptionResult_Error;
+  } else {
+    GS_ASSERT(result > 0);
+    *theBytesSentOut = result;
+  }
+  GSI_UNUSED(connection);
+  return GHIEncryptionResult_Success;
+}
+
+// Receive and decrypt some data
+GHIEncryptionResult
+ghiEncryptorSslDecryptRecv(struct GHIConnection* connection,
+                           struct GHIEncryptor* theEncryptor,
+                           char* theDecryptedBuffer, int* theDecryptedLength) {
+  gsRevoExInterface* sslInterface =
+      (gsRevoExInterface*)theEncryptor->mInterface;
+  int result = 0;
+
+  result = SSLRead(sslInterface->mId, theDecryptedBuffer, *theDecryptedLength);
+  if (result == SSL_EZERO_RETURN) {
+    // receive 0 is not fatal
+    *theDecryptedLength = 0;
+  } else if (result == SSL_EWANT_READ) {
+    // signal socket error, GetLastError will return EWOULDBLOCK or EINPROGRESS
+    *theDecryptedLength = -1;
+  } else if (result < 0) {
+    // Fatal errors
+    switch (result) {
+    case SSL_EFAILED:
+      gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+                    "GameSpy SSL (RevoEx) SSLRead failed (SSL_EFAILED)\r\n");
+      break;
+    case SSL_ESSLID:
+      gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+                    "GameSpy SSL (RevoEx) SSLRead failed (SSL_ESSLID)\r\n");
+      break;
+    case SSL_EWANT_WRITE:
+      gsDebugFormat(
+          GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+          "GameSpy SSL (RevoEx) SSLRead failed (SSL_EWANT_WRITE)\r\n");
+      break;
+    case SSL_ESYSCALL:
+      gsDebugFormat(GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+                    "GameSpy SSL (RevoEx) SSLRead failed (SSL_ESYSCALL)\r\n");
+      break;
+    case SSL_EWANT_CONNECT:
+      gsDebugFormat(
+          GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+          "GameSpy SSL (RevoEx) SSLRead failed (SSL_EWANT_CONNECT)\r\n");
+      break;
+    default:
+      gsDebugFormat(
+          GSIDebugCat_HTTP, GSIDebugType_Misc, GSIDebugLevel_Debug,
+          "GameSpy SSL (RevoEx) SSLRead failed (Unhandled Error)\r\n");
+      break;
+    }
+    return GHIEncryptionResult_Error;
+  } else {
+    GS_ASSERT(result > 0);
+    *theDecryptedLength = result;
+  }
+  GSI_UNUSED(connection);
+  return GHIEncryptionResult_Success;
+}
+
+GHIEncryptionResult ghiEncryptorSslEncryptFunc(
+    struct GHIConnection* connection, struct GHIEncryptor* theEncryptor,
+    const char* thePlainTextBuffer, int thePlainTextLength,
+    char* theEncryptedBuffer, int* theEncryptedLength) {
+  GS_FAIL(); // Should never call this for RevoEx SSL!  It uses encrypt on send
+
+  GSI_UNUSED(connection);
+  GSI_UNUSED(theEncryptor);
+  GSI_UNUSED(thePlainTextBuffer);
+  GSI_UNUSED(thePlainTextLength);
+  GSI_UNUSED(theEncryptedBuffer);
+  GSI_UNUSED(theEncryptedLength);
+
+  return GHIEncryptionResult_Error;
+}
+
+GHIEncryptionResult ghiEncryptorSslDecryptFunc(
+    struct GHIConnection* connection, struct GHIEncryptor* theEncryptor,
+    const char* theEncryptedBuffer, int* theEncryptedLength,
+    char* theDecryptedBuffer, int* theDecryptedLength) {
+  GS_FAIL(); // Should never call this for RevoEx SSL!  It uses decrypt on recv
+
+  GSI_UNUSED(connection);
+  GSI_UNUSED(theEncryptor);
+  GSI_UNUSED(theEncryptedBuffer);
+  GSI_UNUSED(theEncryptedLength);
+  GSI_UNUSED(theDecryptedBuffer);
+  GSI_UNUSED(theDecryptedLength);
+
+  return GHIEncryptionResult_Error;
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern u8 lbl_8036AF10[];
-
-// Forward declarations
-extern void gsimalloc();
-extern void gsifree();
-extern void fn_8026FCFC();
-extern void fn_8026FE28();
-extern void fn_8026FF08();
-extern void fn_8026FF78();
-extern void fn_80270018();
-extern void ghiEncryptorSslDecryptRecv();
-extern void fn_803377F8();
+extern int fn_8026FCFC();
+extern int fn_8026FF78();
+extern int fn_80270018();
 extern void fn_80337950();
 extern void fn_80337A18();
-extern void fn_80337AC4();
 extern void fn_80337D94();
-extern void fn_80338054();
-extern void fn_803383B4();
-extern void fn_8033847C();
-extern void ghiRequestToConnection();
-extern void memset();
-extern void strncmp();
 
-// ----------------------------------------------------------------------------
-// fn_8026FCFC
-// ----------------------------------------------------------------------------
-asm void fn_8026FCFC() {
+// asm_to_cpp: fn_8026FCFC
+asm int fn_8026FCFC() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -85,17 +474,17 @@ lbl_8026FD90:
     b lbl_8026FE10
 lbl_8026FDAC:
     li r7, 0x0
-    lis r4, fn_8026FE28@ha
+    lis r4, ghiEncryptorSslInitFunc@ha
     stw r7, 0x190(r31)
-    addi r4, r4, fn_8026FE28@l
+    addi r4, r4, ghiEncryptorSslInitFunc@l
     lis r6, fn_8026FF78@ha
-    lis r3, fn_8026FF08@ha
+    lis r3, ghiEncryptorSslCleanupFunc@ha
     stw r4, 0x1b0(r31)
     addi r6, r6, fn_8026FF78@l
     lis r5, ghiPostSetAutoFree@ha
     lis r4, ghiIsPostAutoFree@ha
     stw r6, 0x1b8(r31)
-    addi r3, r3, fn_8026FF08@l
+    addi r3, r3, ghiEncryptorSslCleanupFunc@l
     addi r5, r5, ghiPostSetAutoFree@l
     addi r4, r4, ghiIsPostAutoFree@l
     stw r3, 0x1b4(r31)
@@ -118,114 +507,8 @@ lbl_8026FE10:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8026FE28
-// ----------------------------------------------------------------------------
-asm void fn_8026FE28() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    stw r30, 0x18(r1)
-    mr r30, r4
-    stw r29, 0x14(r1)
-    mr r29, r3
-    li r3, 0x10
-    bl gsimalloc
-    cmpwi r3, 0x0
-    stw r3, 0x0(r30)
-    bne lbl_8026FE64
-    li r3, 0x3
-    b lbl_8026FEEC
-lbl_8026FE64:
-    li r4, 0x0
-    li r5, 0x10
-    bl memset
-    lwz r31, 0x0(r30)
-    li r3, 0xb
-    lwz r4, 0x18(r29)
-    bl fn_803377F8
-    stw r3, 0x0(r31)
-    li r4, 0x1
-    bl fn_803383B4
-    cmpwi r3, 0x0
-    beq lbl_8026FEA4
-    lwz r3, 0x0(r31)
-    bl fn_80338054
-    li r3, 0x3
-    b lbl_8026FEEC
-lbl_8026FEA4:
-    lwz r3, 0x0(r31)
-    li r4, 0x0
-    bl fn_8033847C
-    cmpwi r3, 0x0
-    beq lbl_8026FEC8
-    lwz r3, 0x0(r31)
-    bl fn_80338054
-    li r3, 0x3
-    b lbl_8026FEEC
-lbl_8026FEC8:
-    li r4, 0x1
-    li r0, 0x0
-    stw r4, 0x8(r30)
-    li r3, 0x1
-    stw r0, 0xc(r30)
-    stw r0, 0x10(r30)
-    stw r0, 0x14(r30)
-    stw r4, 0x18(r30)
-    stw r4, 0x1c(r30)
-lbl_8026FEEC:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8026FF08
-// ----------------------------------------------------------------------------
-asm void fn_8026FF08() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    cmpwi r4, 0x0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r4
-    beq lbl_8026FF5C
-    lwz r31, 0x0(r4)
-    cmpwi r31, 0x0
-    beq lbl_8026FF4C
-    lwz r3, 0x0(r31)
-    bl fn_80338054
-    mr r3, r31
-    bl gsifree
-    li r0, 0x0
-    stw r0, 0x0(r30)
-lbl_8026FF4C:
-    li r0, 0x0
-    stw r0, 0x8(r30)
-    stw r0, 0xc(r30)
-    stw r0, 0x10(r30)
-lbl_8026FF5C:
-    lwz r31, 0xc(r1)
-    li r3, 0x1
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8026FF78
-// ----------------------------------------------------------------------------
-asm void fn_8026FF78() {
+// asm_to_cpp: fn_8026FF78
+asm int fn_8026FF78() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -273,10 +556,8 @@ lbl_80270000:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_80270018
-// ----------------------------------------------------------------------------
-asm void fn_80270018() {
+// asm_to_cpp: fn_80270018
+asm int fn_80270018() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -316,48 +597,3 @@ lbl_80270084:
     addi r1, r1, 0x10
     blr
 }
-
-// ----------------------------------------------------------------------------
-// ghiEncryptorSslDecryptRecv
-// ----------------------------------------------------------------------------
-asm void ghiEncryptorSslDecryptRecv() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    mr r3, r4
-    mr r4, r5
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r6
-    lwz r3, 0x0(r3)
-    lwz r5, 0x0(r6)
-    lwz r3, 0x0(r3)
-    bl fn_80337AC4
-    cmpwi r3, -0x6
-    bne lbl_802700D8
-    li r0, 0x0
-    stw r0, 0x0(r31)
-    b lbl_80270100
-lbl_802700D8:
-    cmpwi r3, -0x2
-    bne lbl_802700EC
-    li r0, -0x1
-    stw r0, 0x0(r31)
-    b lbl_80270100
-lbl_802700EC:
-    cmpwi r3, 0x0
-    bge lbl_802700FC
-    li r3, 0x3
-    b lbl_80270104
-lbl_802700FC:
-    stw r3, 0x0(r31)
-lbl_80270100:
-    li r3, 0x1
-lbl_80270104:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-

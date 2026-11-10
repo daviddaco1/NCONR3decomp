@@ -21,7 +21,7 @@ extern void fn_802E1540();
 extern void fn_802E1550();
 extern void fn_802E1568();
 extern void fn_802E157C();
-extern void fn_802E1844();
+extern void __GXSetDirtyState();
 
 // ----------------------------------------------------------------------------
 // fn_802E1450
@@ -46,7 +46,7 @@ asm void fn_802E1450() {
     lwz r0, 0x5fc(r29)
     cmpwi r0, 0x0
     beq lbl_802E149C
-    bl fn_802E1844
+    bl __GXSetDirtyState
 lbl_802E149C:
     li r31, 0x0
     lis r3, 0xcc01

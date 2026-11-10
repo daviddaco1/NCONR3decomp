@@ -1,9 +1,201 @@
-#include "types.h"
+#include <nw4r/g3d.h>
 
-// Translation unit: src/nw4r/g3d/res/unk_801D7300.cpp
-// Total functions: 22
+namespace nw4r {
+namespace g3d {
+namespace {
 
-// Small Data symbols (@sda21)
+NW4R_G3D_RESFILE_NAME_DEF(LightSet, "LightSet(NW4R)");
+NW4R_G3D_RESFILE_NAME_DEF(AmbLights, "AmbLights(NW4R)");
+NW4R_G3D_RESFILE_NAME_DEF(Lights, "Lights(NW4R)");
+
+} // namespace
+
+bool ResAnmScn::HasResAnmAmbLight() const {
+    return ResDic(ofs_to_obj<ResDic>(
+               ref().toScnTopLevelDic))[ResName(&ResNameData_AmbLights)] !=
+           NULL;
+}
+
+bool ResAnmScn::HasResAnmLight() const {
+    return ResDic(ofs_to_obj<ResDic>(
+               ref().toScnTopLevelDic))[ResName(&ResNameData_Lights)] != NULL;
+}
+
+ResLightSet ResAnmScn::GetResLightSet(int idx) const {
+    void* pResLightSetDicData = ResDic(ofs_to_obj<ResDic>(
+        ref().toScnTopLevelDic))[ResName(&ResNameData_LightSet)];
+
+    if (pResLightSetDicData != NULL) {
+        return ResLightSet(ResDic(pResLightSetDicData)[idx]);
+    }
+
+    return ResLightSet(NULL);
+}
+
+ResLightSet ResAnmScn::GetResLightSet(u32 idx) const {
+    return GetResLightSet(static_cast<int>(idx));
+}
+
+u32 ResAnmScn::GetResLightSetNumEntries() const {
+    void* pResLightSetDicData = ResDic(ofs_to_obj<ResDic>(
+        ref().toScnTopLevelDic))[ResName(&ResNameData_LightSet)];
+
+    if (pResLightSetDicData != NULL) {
+        return ResDic(pResLightSetDicData).GetNumData();
+    }
+
+    return 0;
+}
+
+ResAnmAmbLight ResAnmScn::GetResAnmAmbLight(const ResName name) const {
+    void* pResAnmAmbLightDicData = ResDic(ofs_to_obj<ResDic>(
+        ref().toScnTopLevelDic))[ResName(&ResNameData_AmbLights)];
+
+    if (pResAnmAmbLightDicData != NULL) {
+        return ResAnmAmbLight(ResDic(pResAnmAmbLightDicData)[name]);
+    }
+
+    return ResAnmAmbLight(NULL);
+}
+
+ResAnmAmbLight ResAnmScn::GetResAnmAmbLight(int idx) const {
+    void* pResAnmAmbLightDicData = ResDic(ofs_to_obj<ResDic>(
+        ref().toScnTopLevelDic))[ResName(&ResNameData_AmbLights)];
+
+    if (pResAnmAmbLightDicData != NULL) {
+        return ResAnmAmbLight(ResDic(pResAnmAmbLightDicData)[idx]);
+    }
+
+    return ResAnmAmbLight(NULL);
+}
+
+ResAnmAmbLight ResAnmScn::GetResAnmAmbLight(u32 idx) const {
+    return GetResAnmAmbLight(static_cast<int>(idx));
+}
+
+ResAnmLight ResAnmScn::GetResAnmLight(const ResName name) const {
+    void* pResAnmLightDicData = ResDic(ofs_to_obj<ResDic>(
+        ref().toScnTopLevelDic))[ResName(&ResNameData_Lights)];
+
+    if (pResAnmLightDicData != NULL) {
+        return ResAnmLight(ResDic(pResAnmLightDicData)[name]);
+    }
+
+    return ResAnmLight(NULL);
+}
+
+ResAnmLight ResAnmScn::GetResAnmLight(int idx) const {
+    void* pResAnmLightDicData = ResDic(ofs_to_obj<ResDic>(
+        ref().toScnTopLevelDic))[ResName(&ResNameData_Lights)];
+
+    if (pResAnmLightDicData != NULL) {
+        return ResAnmLight(ResDic(pResAnmLightDicData)[idx]);
+    }
+
+    return ResAnmLight(NULL);
+}
+
+ResAnmLight ResAnmScn::GetResAnmLight(u32 idx) const {
+    return GetResAnmLight(static_cast<int>(idx));
+}
+
+ResLightSet ResAnmScn::GetResLightSetByRefNumber(u32 refNumber) const {
+    const ResAnmScnInfoData& rInfoData = ref().info;
+
+    if (rInfoData.numResLightSetData <= refNumber) {
+        return ResLightSet(NULL);
+    }
+
+    const ResLightSetData* pArray =
+        ofs_to_ptr<ResLightSetData>(ref().toResLightSetDataArray);
+
+    ResLightSetData* pTarget = const_cast<ResLightSetData*>(&pArray[refNumber]);
+
+    return ResLightSet(pTarget->id < rInfoData.numResLightSetData ? pTarget
+                                                                  : NULL);
+}
+
+ResAnmAmbLight ResAnmScn::GetResAnmAmbLightByRefNumber(u32 refNumber) const {
+    const ResAnmScnInfoData& rInfoData = ref().info;
+
+    if (rInfoData.numResAnmAmbLightData <= refNumber) {
+        return ResAnmAmbLight(NULL);
+    }
+
+    const ResAnmAmbLightData* pArray =
+        ofs_to_ptr<ResAnmAmbLightData>(ref().toResAnmAmbLightDataArray);
+
+    ResAnmAmbLightData* pTarget =
+        const_cast<ResAnmAmbLightData*>(&pArray[refNumber]);
+
+    return ResAnmAmbLight(
+        pTarget->id < rInfoData.numResAnmAmbLightData ? pTarget : NULL);
+}
+
+ResAnmLight ResAnmScn::GetResAnmLightByRefNumber(u32 refNumber) const {
+    const ResAnmScnInfoData& rInfoData = ref().info;
+
+    if (rInfoData.numResAnmLightData <= refNumber) {
+        return ResAnmLight(NULL);
+    }
+
+    const ResAnmLightData* pArray =
+        ofs_to_ptr<ResAnmLightData>(ref().toResAnmLightDataArray);
+
+    ResAnmLightData* pTarget = const_cast<ResAnmLightData*>(&pArray[refNumber]);
+
+    return ResAnmLight(pTarget->id < rInfoData.numResAnmLightData ? pTarget
+                                                                  : NULL);
+}
+
+ResAnmFog ResAnmScn::GetResAnmFogByRefNumber(u32 refNumber) const {
+    const ResAnmScnInfoData& rInfoData = ref().info;
+
+    if (rInfoData.numResAnmFogData <= refNumber) {
+        return ResAnmFog(NULL);
+    }
+
+    const ResAnmFogData* pArray =
+        ofs_to_ptr<ResAnmFogData>(ref().toResAnmFogDataArray);
+
+    ResAnmFogData* pTarget = const_cast<ResAnmFogData*>(&pArray[refNumber]);
+
+    return ResAnmFog(pTarget->id < rInfoData.numResAnmFogData ? pTarget : NULL);
+}
+
+ResAnmCamera ResAnmScn::GetResAnmCameraByRefNumber(u32 refNumber) const {
+    const ResAnmScnInfoData& rInfoData = ref().info;
+
+    if (rInfoData.numResAnmCameraData <= refNumber) {
+        return ResAnmCamera(NULL);
+    }
+
+    const ResAnmCameraData* pArray =
+        ofs_to_ptr<ResAnmCameraData>(ref().toResAnmCameraDataArray);
+
+    ResAnmCameraData* pTarget =
+        const_cast<ResAnmCameraData*>(&pArray[refNumber]);
+
+    return ResAnmCamera(pTarget->id < rInfoData.numResAnmCameraData ? pTarget
+                                                                    : NULL);
+}
+
+bool ResAnmScn::Bind(const ResAnmScn scene) {
+    u32 lightSetNum = GetResLightSetNumEntries();
+    bool success = true;
+
+    for (u32 i = 0; i < lightSetNum; i++) {
+        ResLightSet set = GetResLightSet(i);
+        success = set.Bind(scene) && success;
+    }
+
+    return success;
+}
+
+} // namespace g3d
+} // namespace nw4r
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern "C" float lbl_804A1C38;
 extern "C" float lbl_804A1C3C;
 extern "C" float lbl_804A1C58;
@@ -13,26 +205,19 @@ extern "C" float lbl_804A1C70;
 extern "C" float lbl_804A1C78;
 extern "C" float lbl_804A1C80;
 extern "C" float lbl_804A1C88;
-
-// Global data symbols (@ha/@l)
 extern "C" u8 lbl_80360C60[];
 extern "C" u8 lbl_80360C80[];
 extern "C" u8 lbl_80360CA0[];
 extern "C" u8 lbl_80360CC0[];
 extern "C" u8 lbl_80360CE0[];
-
-// Forward declarations
-extern "C" void fn_801D8270();
 extern "C" void FrSqrt__Q24nw4r4mathFf();
 extern "C" void MTX34Scale__Q24nw4r4mathFPQ34nw4r4math5MTX34PCQ34nw4r4math5MTX34PCQ34nw4r4math4VEC3();
-extern "C" void PSMTXCopy();
 extern "C" void __vc__Q34nw4r3g3d6ResDicCFPCc();
 extern "C" void __vc__Q34nw4r3g3d6ResDicCFQ34nw4r3g3d7ResName();
 extern "C" void _restgpr_22();
 extern "C" void _restgpr_23();
 extern "C" void _savegpr_22();
 extern "C" void _savegpr_23();
-extern "C" void floor();
 extern "C" void fn_801D4B44();
 extern "C" void fn_801D4C70();
 extern "C" void fn_801D7300();
@@ -47,19 +232,12 @@ extern "C" void fn_801D8018();
 extern "C" void fn_801D80C4();
 extern "C" void fn_801D8144();
 extern "C" void fn_801D81F0();
-extern "C" void fn_801D82F0();
+extern "C" void fn_801D8270();
 extern "C" void fn_801D839C();
 extern "C" void fn_801D8448();
-extern "C" void fn_801D84C8();
-extern "C" void fn_801D8514();
-extern "C" void fn_801D8560();
-extern "C" void fn_801D85AC();
-extern "C" void fn_801D85F8();
 extern "C" void fn_801D8644();
 
-// ----------------------------------------------------------------------------
-// fn_801D7300
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801D7300
 extern "C" asm void fn_801D7300() {
     nofralloc
     stwu r1, -0x60(r1)
@@ -213,9 +391,7 @@ lbl_801D74F0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801D752C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801D752C
 extern "C" asm void fn_801D752C() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -279,9 +455,7 @@ lbl_801D75E4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801D75FC
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801D75FC
 extern "C" asm void fn_801D75FC() {
     nofralloc
     stwu r1, -0x60(r1)
@@ -581,9 +755,7 @@ lbl_801D79CC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801D79F4
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801D79F4
 extern "C" asm void fn_801D79F4() {
     nofralloc
     stwu r1, -0x50(r1)
@@ -687,9 +859,7 @@ lbl_801D7B20:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801D7B54
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801D7B54
 extern "C" asm void fn_801D7B54() {
     nofralloc
     stwu r1, -0x40(r1)
@@ -928,9 +1098,7 @@ lbl_801D7E4C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801D7E6C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801D7E6C
 extern "C" asm void fn_801D7E6C() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -972,9 +1140,7 @@ lbl_801D7EDC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801D7EEC
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801D7EEC
 extern "C" asm void fn_801D7EEC() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1028,9 +1194,7 @@ lbl_801D7F84:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801D7F98
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801D7F98
 extern "C" asm void fn_801D7F98() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1072,9 +1236,7 @@ lbl_801D8008:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801D8018
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801D8018
 extern "C" asm void fn_801D8018() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1128,9 +1290,7 @@ lbl_801D80B0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801D80C4
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801D80C4
 extern "C" asm void fn_801D80C4() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1172,9 +1332,7 @@ lbl_801D8134:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801D8144
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801D8144
 extern "C" asm void fn_801D8144() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1228,9 +1386,7 @@ lbl_801D81DC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801D81F0
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801D81F0
 extern "C" asm void fn_801D81F0() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1272,9 +1428,7 @@ lbl_801D8260:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801D8270
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801D8270
 extern "C" asm void fn_801D8270() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1315,65 +1469,7 @@ lbl_801D82DC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801D82F0
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_801D82F0() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    lwz r3, 0x0(r3)
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r4
-    lwz r0, 0x10(r3)
-    cmpwi r0, 0x0
-    beq lbl_801D831C
-    add r0, r3, r0
-    b lbl_801D8320
-lbl_801D831C:
-    li r0, 0x0
-lbl_801D8320:
-    lis r3, lbl_80360CE0@ha
-    stw r0, 0xc(r1)
-    addi r3, r3, lbl_80360CE0@l
-    addi r4, r1, 0x8
-    stw r3, 0x8(r1)
-    addi r3, r1, 0xc
-    bl __vc__Q34nw4r3g3d6ResDicCFQ34nw4r3g3d7ResName
-    cmpwi r3, 0x0
-    beq lbl_801D8384
-    neg r0, r3
-    or r0, r0, r3
-    srwi. r0, r0, 31
-    beq lbl_801D837C
-    addi r0, r31, 0x1
-    slwi r0, r0, 4
-    add r4, r3, r0
-    lwz r0, 0x14(r4)
-    cmpwi r0, 0x0
-    beq lbl_801D8374
-    add r3, r3, r0
-    b lbl_801D8388
-lbl_801D8374:
-    li r3, 0x0
-    b lbl_801D8388
-lbl_801D837C:
-    li r3, 0x0
-    b lbl_801D8388
-lbl_801D8384:
-    li r3, 0x0
-lbl_801D8388:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_801D839C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801D839C
 extern "C" asm void fn_801D839C() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -1427,9 +1523,7 @@ lbl_801D8434:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801D8448
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801D8448
 extern "C" asm void fn_801D8448() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -1471,154 +1565,7 @@ lbl_801D84B8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801D84C8
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_801D84C8() {
-    nofralloc
-    lwz r3, 0x0(r3)
-    lhz r5, 0x3c(r3)
-    cmplw r5, r4
-    bgt lbl_801D84E0
-    li r3, 0x0
-    blr
-lbl_801D84E0:
-    lwz r0, 0x14(r3)
-    cmpwi r0, 0x0
-    beq lbl_801D84F4
-    add r3, r3, r0
-    b lbl_801D84F8
-lbl_801D84F4:
-    li r3, 0x0
-lbl_801D84F8:
-    mulli r0, r4, 0x4c
-    add r3, r3, r0
-    lwz r0, 0xc(r3)
-    cmplw r0, r5
-    bltlr
-    li r3, 0x0
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_801D8514
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_801D8514() {
-    nofralloc
-    lwz r3, 0x0(r3)
-    lhz r5, 0x3e(r3)
-    cmplw r5, r4
-    bgt lbl_801D852C
-    li r3, 0x0
-    blr
-lbl_801D852C:
-    lwz r0, 0x18(r3)
-    cmpwi r0, 0x0
-    beq lbl_801D8540
-    add r3, r3, r0
-    b lbl_801D8544
-lbl_801D8540:
-    li r3, 0x0
-lbl_801D8544:
-    mulli r0, r4, 0x1c
-    add r3, r3, r0
-    lwz r0, 0xc(r3)
-    cmplw r0, r5
-    bltlr
-    li r3, 0x0
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_801D8560
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_801D8560() {
-    nofralloc
-    lwz r3, 0x0(r3)
-    lhz r5, 0x40(r3)
-    cmplw r5, r4
-    bgt lbl_801D8578
-    li r3, 0x0
-    blr
-lbl_801D8578:
-    lwz r0, 0x1c(r3)
-    cmpwi r0, 0x0
-    beq lbl_801D858C
-    add r3, r3, r0
-    b lbl_801D8590
-lbl_801D858C:
-    li r3, 0x0
-lbl_801D8590:
-    mulli r0, r4, 0x5c
-    add r3, r3, r0
-    lwz r0, 0xc(r3)
-    cmplw r0, r5
-    bltlr
-    li r3, 0x0
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_801D85AC
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_801D85AC() {
-    nofralloc
-    lwz r3, 0x0(r3)
-    lhz r5, 0x42(r3)
-    cmplw r5, r4
-    bgt lbl_801D85C4
-    li r3, 0x0
-    blr
-lbl_801D85C4:
-    lwz r0, 0x20(r3)
-    cmpwi r0, 0x0
-    beq lbl_801D85D8
-    add r3, r3, r0
-    b lbl_801D85DC
-lbl_801D85D8:
-    li r3, 0x0
-lbl_801D85DC:
-    mulli r0, r4, 0x28
-    add r3, r3, r0
-    lwz r0, 0xc(r3)
-    cmplw r0, r5
-    bltlr
-    li r3, 0x0
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_801D85F8
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_801D85F8() {
-    nofralloc
-    lwz r3, 0x0(r3)
-    lhz r5, 0x44(r3)
-    cmplw r5, r4
-    bgt lbl_801D8610
-    li r3, 0x0
-    blr
-lbl_801D8610:
-    lwz r0, 0x24(r3)
-    cmpwi r0, 0x0
-    beq lbl_801D8624
-    add r3, r3, r0
-    b lbl_801D8628
-lbl_801D8624:
-    li r3, 0x0
-lbl_801D8628:
-    mulli r0, r4, 0x5c
-    add r3, r3, r0
-    lwz r0, 0xc(r3)
-    cmplw r0, r5
-    bltlr
-    li r3, 0x0
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_801D8644
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801D8644
 extern "C" asm void fn_801D8644() {
     nofralloc
     stwu r1, -0x40(r1)
@@ -1721,4 +1668,3 @@ lbl_801D8780:
     addi r1, r1, 0x40
     blr
 }
-

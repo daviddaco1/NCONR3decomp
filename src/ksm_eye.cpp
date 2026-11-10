@@ -4,8 +4,36 @@
 
 extern "C" {
 
+struct SK_fn_800F3188_A0 { f32 v[12]; } __attribute__((aligned(16)));
+struct SK_fn_800F3188_70 { f32 v[12]; } __attribute__((aligned(16)));
+struct SK_fn_800F3188_60 { f32 v[4]; } __attribute__((aligned(16)));
+struct SK_fn_800F3188_50 { f32 v[4]; } __attribute__((aligned(16)));
+struct SK_fn_800F3188_40 { f32 v[4]; } __attribute__((aligned(16)));
+struct SK_fn_800F3188_30 { f32 v[4]; } __attribute__((aligned(16)));
+struct SK_fn_800F3188_20 { f32 v[4]; } __attribute__((aligned(16)));
+struct SK_fn_800F3188_10 { f32 v[4]; } __attribute__((aligned(16)));
+struct S_fn_800F3188_temp_r3 {
+    u8 pad_0[0x30];
+    f32 f_30;
+};
+struct S_fn_800F3188_temp_r3_2 {
+    u8 pad_0[0x34];
+    f32 f_34;
+};
+struct S_fn_800F3188_temp_r3_3 {
+    u8 pad_0[0x38];
+    f32 f_38;
+};
+struct S_fn_800F3188_temp_r3_4 {
+    u8 pad_0[0x3C];
+    f32 f_3C;
+};
+struct S_fn_800F3188_temp_r3_6 {
+    s32 f_0;
+};
+
 extern u8 lbl_80339958[];
-extern float lbl_804A0368;
+__declspec(section ".sdata2") extern const f32 lbl_804A0368[];
 
 s32 _restgpr_24();
 s32 _restgpr_26();
@@ -16,18 +44,18 @@ s32 _savegpr_26();
 s32 _savegpr_28();
 s32 _savegpr_29();
 void fn_80018AF4(s32 arg0, s32 arg1, s32 arg2);
-void fn_80018AF8(s32 arg0, s32 arg1, s32 arg2);
+s32 fn_80018AF8(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018AFC(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018B00(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018B04(s32 arg0, s32 arg1, s32 arg2);
-void fn_80018B08(s32 arg0, s32 arg1, s32 arg2);
+void fn_80018B08(s32 arg0, s32 arg1, f32 farg0);
 M2C_UNK fn_80018B0C(M2C_UNK *arg0, f32 farg0, f32 farg1, f32 farg2);
 f32 fn_80018BD4(f32 farg0);
-void fn_8001B8B0(s32 arg0, s32 arg1);
+s32 fn_8001B8B0(s32 arg0, s32 arg1);
 void fn_8001B8B8(s32 arg0, s32 arg1, s32 arg2);
 void fn_80020D20(M2C_UNK *arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3);
-void fn_800515D8(s32 arg0, s32 arg1);
-void fn_800515DC(s32 arg0, s32 arg1, s32 arg2);
+f32 fn_800515D8(s32 arg0, s32 arg1);
+void fn_800515DC(s32 arg0, s32 arg1, f32 farg0_x);
 void fn_800EEFD8(s32 arg0, s32 arg1);
 s32 fn_800EEFE0(s8 *arg0, s32 arg1, s8 *arg2);
 M2C_UNK fn_800EF7B4(s32 arg0, s32 arg1, s32 arg2);
@@ -38,21 +66,120 @@ void fn_800F14B0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
 void fn_800F1D58(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6);
 void fn_800F25AC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6);
 void fn_800F2D80(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6);
-void fn_800F3188(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6);
+s32 fn_800F3188(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, f32 farg0, f32 farg1);
 void fn_800F354C(s32 arg0, s32 arg1, s32 arg2);
-void fn_800F5B14(s8 *arg0, s8 *arg1, s32 arg2, s32 arg3);
+s32 fn_800F5B14(s8 *arg0, s8 *arg1, s32 arg2, s32 arg3);
 s8 * fn_800F5B78(s8 *arg0, s32 arg1, s32 arg2);
 M2C_UNK fn_80170E2C(s32 arg0, s32 arg1, s32 arg2);
 void fn_801734E4(s32 arg0, s32 arg1);
 void fn_80173754(s32 arg0, s32 arg1);
-void fn_8017375C(s32 arg0, s32 arg1, s32 arg2);
+s32 fn_8017375C(s32 arg0, s32 arg1, s32 arg2);
 s32 * fn_8018149C(s8 *arg0, s32 arg1);
 s32 fn_80181504(s8 *arg0, s32 arg1);
 void fn_80190874(s8 *arg0, s32 arg1);
 M2C_UNK memset(s32 arg0, s32 arg1, s32 arg2);
 
+
 void fn_800EEFD8(s32 arg0, s32 arg1) {
     fn_800EEFE0((s8 *) (arg0), (s32) (arg1), (s8 *) (NULL));
+}
+
+s32 fn_800F3188(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, f32 farg0, f32 farg1) {
+    SK_fn_800F3188_A0 spA0;
+    SK_fn_800F3188_70 sp70;
+    SK_fn_800F3188_60 sp60;
+    SK_fn_800F3188_50 sp50;
+    SK_fn_800F3188_40 sp40;
+    SK_fn_800F3188_30 sp30;
+    SK_fn_800F3188_20 sp20;
+    SK_fn_800F3188_10 sp10;
+    f32 temp_f31;
+    S_fn_800F3188_temp_r3 *temp_r3;
+    S_fn_800F3188_temp_r3_2 *temp_r3_2;
+    S_fn_800F3188_temp_r3_3 *temp_r3_3;
+    S_fn_800F3188_temp_r3_4 *temp_r3_4;
+    s8 *temp_r3_5;
+    S_fn_800F3188_temp_r3_6 *temp_r3_6;
+
+    temp_f31 = farg1;
+    fn_80020D20((M2C_UNK *) (&sp60), lbl_804A0368[0], lbl_804A0368[0], lbl_804A0368[0], lbl_804A0368[0]);
+    fn_80020D20((M2C_UNK *) (&sp50), lbl_804A0368[0], lbl_804A0368[0], lbl_804A0368[0], lbl_804A0368[0]);
+    fn_80020D20((M2C_UNK *) (&sp40), lbl_804A0368[0], lbl_804A0368[0], lbl_804A0368[0], lbl_804A0368[0]);
+    fn_80020D20((M2C_UNK *) (&sp30), lbl_804A0368[0], lbl_804A0368[0], lbl_804A0368[0], lbl_804A0368[0]);
+    fn_80020D20((M2C_UNK *) (&sp20), lbl_804A0368[0], lbl_804A0368[0], lbl_804A0368[0], lbl_804A0368[0]);
+    fn_80020D20((M2C_UNK *) (&sp10), lbl_804A0368[0], lbl_804A0368[0], lbl_804A0368[0], lbl_804A0368[0]);
+    fn_801734E4((s32) (arg1 + 0xD10), (s32) (arg1 + 0xCE0));
+    fn_8017375C((s32) ((s32) &sp70), (s32) (M2C_FIELD(arg1, s32 *, 0xCD4) + 0x224), (s32) (M2C_FIELD(arg1, s8 **, 0xCD8) + 0x50));
+    fn_801734E4((s32) (arg1 + 0xCE0), (s32) ((s32) &sp70));
+    fn_80018AF8((s32) ((s32) &sp60), (s32) (arg1 + 0xCE0), (s32) (arg4));
+    fn_80018AF8((s32) ((s32) &sp50), (s32) (arg1 + 0xD10), (s32) (arg4));
+    fn_8001B8B8((s32) ((s32) &sp40), (s32) ((s32) &sp50), (s32) ((s32) &sp60));
+    fn_80018B08((s32) ((s32) &sp30), (s32) ((s32) &sp40), farg0);
+    fn_80018B00((s32) ((s32) &sp30), (s32) ((s32) &sp30), (s32) (arg3));
+    fn_80173754((s32) ((s32) &spA0), (s32) ((s32) &sp70));
+    fn_80018B04((s32) ((s32) &sp10), (s32) ((s32) &spA0), (s32) ((s32) &sp30));
+    fn_8001B8B0((s32) ((s32) &sp10), (s32) ((s32) &sp10));
+    switch (arg2) {                                 /* irregular */
+    case 0x10:
+    case 0x11:
+    case 0x2A:
+    case 0x2B:
+    case 0x2E:
+    case 0x66:
+    case 0x67:
+    case 0x68:
+    case 0x69:
+    case 0x6A:
+    case 0x6D:
+    case 0x84:
+    case 0x85:
+    case 0x88:
+    case 0x89:
+    case 0x8B:
+        if (sp10.v[0] < lbl_804A0368[1]) {
+            sp10.v[0] = lbl_804A0368[1];
+        }
+        if (sp10.v[1] < lbl_804A0368[24]) {
+            sp10.v[1] = lbl_804A0368[24];
+        }
+        if (sp10.v[1] > lbl_804A0368[7]) {
+            sp10.v[1] = lbl_804A0368[7];
+        }
+        break;
+    default:
+        if (M2C_BITWISE(f32, sp10.v[0]) <= lbl_804A0368[23]) {
+            sp10.v[0] = lbl_804A0368[23];
+        }
+        if (M2C_BITWISE(f32, sp10.v[0]) >= lbl_804A0368[1]) {
+            sp10.v[0] = lbl_804A0368[1];
+        }
+        if (sp10.v[1] <= lbl_804A0368[31]) {
+            sp10.v[1] = lbl_804A0368[31];
+        }
+        if (sp10.v[1] >= lbl_804A0368[8]) {
+            sp10.v[1] = lbl_804A0368[8];
+        }
+        if (sp10.v[2] <= lbl_804A0368[16]) {
+            sp10.v[2] = lbl_804A0368[16];
+        }
+        if (sp10.v[2] >= lbl_804A0368[7]) {
+            sp10.v[2] = lbl_804A0368[7];
+        }
+        break;
+    }
+    temp_r3 = (S_fn_800F3188_temp_r3 *) (M2C_FIELD(arg1, s8 **, 0xCD8));
+    temp_r3->f_30 = (f32) (temp_r3->f_30 + (temp_f31 * (sp10.v[0] - temp_r3->f_30)));
+    temp_r3_2 = (S_fn_800F3188_temp_r3_2 *) (M2C_FIELD(arg1, s8 **, 0xCD8));
+    temp_r3_2->f_34 = (f32) (temp_r3_2->f_34 + (temp_f31 * (sp10.v[1] - temp_r3_2->f_34)));
+    temp_r3_3 = (S_fn_800F3188_temp_r3_3 *) (M2C_FIELD(arg1, s8 **, 0xCD8));
+    temp_r3_3->f_38 = (f32) (temp_r3_3->f_38 + (temp_f31 * (sp10.v[2] - temp_r3_3->f_38)));
+    temp_r3_4 = (S_fn_800F3188_temp_r3_4 *) (M2C_FIELD(arg1, s8 **, 0xCD8));
+    temp_r3_4->f_3C = (f32) (temp_r3_4->f_3C + (temp_f31 * (sp10.v[3] - temp_r3_4->f_3C)));
+    temp_r3_5 = (s8 *) ((s8 *) M2C_FIELD(arg1, s8 **, 0xCD8) + 0x30);
+    fn_8001B8B0((s32) ((s32) temp_r3_5), (s32) ((s32) temp_r3_5));
+    temp_r3_6 = (S_fn_800F3188_temp_r3_6 *) (M2C_FIELD(arg1, s8 **, 0xCD8));
+    temp_r3_6->f_0 = (s32) (temp_r3_6->f_0 | 0xE01);
+    return (s32) (1);
 }
 
 // asm_to_cpp: fn_800EEFE0
@@ -4541,267 +4668,6 @@ lbl_800F3068:
     lfd f25, -0x70(r10)
     subi r11, r10, 0x70
     bl _restgpr_26
-    lwz r0, 0x4(r10)
-    mtlr r0
-    mr r1, r10
-    blr
-}
-
-// asm_to_cpp: fn_800F3188
-asm void fn_800F3188(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
-    nofralloc
-    clrlwi r11, r1, 28
-    subfic r11, r11, -0x100
-    mr r12, r1
-    stwux r1, r1, r11
-    mflr r0
-    stw r0, 0x4(r12)
-    stfd f31, -0x10(r12)
-    opword 0xF3EC0FF8
-    stfd f30, -0x20(r12)
-    opword 0xF3CC0FE8
-    subi r11, r12, 0x20
-    bl _savegpr_28
-    mr r31, r4
-    mr r28, r5
-    mr r29, r6
-    mr r30, r7
-    fmr f30, f1
-    fmr f31, f2
-    addi r3, r1, 0x60
-    lfs f1, lbl_804A0368
-    fmr f2, f1
-    fmr f3, f1
-    fmr f4, f1
-    bl fn_80020D20
-    addi r3, r1, 0x50
-    lfs f1, lbl_804A0368
-    fmr f2, f1
-    fmr f3, f1
-    fmr f4, f1
-    bl fn_80020D20
-    addi r3, r1, 0x40
-    lfs f1, lbl_804A0368
-    fmr f2, f1
-    fmr f3, f1
-    fmr f4, f1
-    bl fn_80020D20
-    addi r3, r1, 0x30
-    lfs f1, lbl_804A0368
-    fmr f2, f1
-    fmr f3, f1
-    fmr f4, f1
-    bl fn_80020D20
-    addi r3, r1, 0x20
-    lfs f1, lbl_804A0368
-    fmr f2, f1
-    fmr f3, f1
-    fmr f4, f1
-    bl fn_80020D20
-    addi r3, r1, 0x10
-    lfs f1, lbl_804A0368
-    fmr f2, f1
-    fmr f3, f1
-    fmr f4, f1
-    bl fn_80020D20
-    addi r3, r31, 0xd10
-    addi r4, r31, 0xce0
-    bl fn_801734E4
-    addi r3, r1, 0x70
-    lwz r4, 0xcd4(r31)
-    addi r4, r4, 0x224
-    lwz r5, 0xcd8(r31)
-    addi r5, r5, 0x50
-    bl fn_8017375C
-    addi r3, r31, 0xce0
-    addi r4, r1, 0x70
-    bl fn_801734E4
-    addi r3, r1, 0x60
-    addi r4, r31, 0xce0
-    mr r5, r30
-    bl fn_80018AF8
-    addi r3, r1, 0x50
-    addi r4, r31, 0xd10
-    mr r5, r30
-    bl fn_80018AF8
-    addi r3, r1, 0x40
-    addi r4, r1, 0x50
-    addi r5, r1, 0x60
-    bl fn_8001B8B8
-    addi r3, r1, 0x30
-    addi r4, r1, 0x40
-    fmr f1, f30
-    bl fn_80018B08
-    addi r3, r1, 0x30
-    mr r4, r3
-    mr r5, r29
-    bl fn_80018B00
-    addi r3, r1, 0xa0
-    addi r4, r1, 0x70
-    bl fn_80173754
-    addi r3, r1, 0x10
-    addi r4, r1, 0xa0
-    addi r5, r1, 0x30
-    bl fn_80018B04
-    addi r3, r1, 0x10
-    mr r4, r3
-    bl fn_8001B8B0
-    cmpwi r28, 0x6d
-    beq lbl_800F3390
-    bge lbl_800F335C
-    cmpwi r28, 0x2e
-    beq lbl_800F3390
-    bge lbl_800F3348
-    cmpwi r28, 0x2a
-    bge lbl_800F333C
-    cmpwi r28, 0x12
-    bge lbl_800F33DC
-    cmpwi r28, 0x10
-    bge lbl_800F3390
-    b lbl_800F33DC
-lbl_800F333C:
-    cmpwi r28, 0x2c
-    bge lbl_800F33DC
-    b lbl_800F3390
-lbl_800F3348:
-    cmpwi r28, 0x6b
-    bge lbl_800F33DC
-    cmpwi r28, 0x66
-    bge lbl_800F3390
-    b lbl_800F33DC
-lbl_800F335C:
-    cmpwi r28, 0x8a
-    beq lbl_800F33DC
-    bge lbl_800F3388
-    cmpwi r28, 0x86
-    bge lbl_800F337C
-    cmpwi r28, 0x84
-    bge lbl_800F3390
-    b lbl_800F33DC
-lbl_800F337C:
-    cmpwi r28, 0x88
-    bge lbl_800F3390
-    b lbl_800F33DC
-lbl_800F3388:
-    cmpwi r28, 0x8c
-    bge lbl_800F33DC
-lbl_800F3390:
-    lfs f1, 0x10(r1)
-    la r3, lbl_804A0368
-    lfs f0, 0x4(r3)
-    fcmpo cr0, f1, f0
-    bge lbl_800F33A8
-    stfs f0, 0x10(r1)
-lbl_800F33A8:
-    lfs f1, 0x14(r1)
-    la r3, lbl_804A0368
-    lfs f0, 0x60(r3)
-    fcmpo cr0, f1, f0
-    bge lbl_800F33C0
-    stfs f0, 0x14(r1)
-lbl_800F33C0:
-    lfs f1, 0x14(r1)
-    la r3, lbl_804A0368
-    lfs f0, 0x1c(r3)
-    fcmpo cr0, f1, f0
-    ble lbl_800F3484
-    stfs f0, 0x14(r1)
-    b lbl_800F3484
-lbl_800F33DC:
-    lfs f1, 0x10(r1)
-    la r3, lbl_804A0368
-    lfs f0, 0x5c(r3)
-    fcmpo cr0, f1, f0
-    opword 0x4C401382
-    bne lbl_800F33F8
-    stfs f0, 0x10(r1)
-lbl_800F33F8:
-    lfs f1, 0x10(r1)
-    la r3, lbl_804A0368
-    lfs f0, 0x4(r3)
-    fcmpo cr0, f1, f0
-    opword 0x4C411382
-    bne lbl_800F3414
-    stfs f0, 0x10(r1)
-lbl_800F3414:
-    lfs f1, 0x14(r1)
-    la r3, lbl_804A0368
-    lfs f0, 0x7c(r3)
-    fcmpo cr0, f1, f0
-    opword 0x4C401382
-    bne lbl_800F3430
-    stfs f0, 0x14(r1)
-lbl_800F3430:
-    lfs f1, 0x14(r1)
-    la r3, lbl_804A0368
-    lfs f0, 0x20(r3)
-    fcmpo cr0, f1, f0
-    opword 0x4C411382
-    bne lbl_800F344C
-    stfs f0, 0x14(r1)
-lbl_800F344C:
-    lfs f1, 0x18(r1)
-    la r3, lbl_804A0368
-    lfs f0, 0x40(r3)
-    fcmpo cr0, f1, f0
-    opword 0x4C401382
-    bne lbl_800F3468
-    stfs f0, 0x18(r1)
-lbl_800F3468:
-    lfs f1, 0x18(r1)
-    la r3, lbl_804A0368
-    lfs f0, 0x1c(r3)
-    fcmpo cr0, f1, f0
-    opword 0x4C411382
-    bne lbl_800F3484
-    stfs f0, 0x18(r1)
-lbl_800F3484:
-    lwz r3, 0xcd8(r31)
-    lfs f0, 0x10(r1)
-    lfs f1, 0x30(r3)
-    fsubs f0, f0, f1
-    fmuls f0, f31, f0
-    fadds f0, f1, f0
-    stfs f0, 0x30(r3)
-    lwz r3, 0xcd8(r31)
-    lfs f0, 0x14(r1)
-    lfs f1, 0x34(r3)
-    fsubs f0, f0, f1
-    fmuls f0, f31, f0
-    fadds f0, f1, f0
-    stfs f0, 0x34(r3)
-    lwz r3, 0xcd8(r31)
-    lfs f0, 0x18(r1)
-    lfs f1, 0x38(r3)
-    fsubs f0, f0, f1
-    fmuls f0, f31, f0
-    fadds f0, f1, f0
-    stfs f0, 0x38(r3)
-    lwz r3, 0xcd8(r31)
-    lfs f0, 0x1c(r1)
-    lfs f1, 0x3c(r3)
-    fsubs f0, f0, f1
-    fmuls f0, f31, f0
-    fadds f0, f1, f0
-    stfs f0, 0x3c(r3)
-    lwz r3, 0xcd8(r31)
-    addi r3, r3, 0x30
-    mr r4, r3
-    bl fn_8001B8B0
-    lwz r3, 0xcd8(r31)
-    lwz r0, 0x0(r3)
-    ori r0, r0, 0xe01
-    stw r0, 0x0(r3)
-    li r3, 0x1
-    lwz r10, 0x0(r1)
-    li r0, -0x8
-    opword 0x13EA000C
-    lfd f31, -0x10(r10)
-    li r0, -0x18
-    opword 0x13CA000C
-    lfd f30, -0x20(r10)
-    subi r11, r10, 0x20
-    bl _restgpr_28
     lwz r0, 0x4(r10)
     mtlr r0
     mr r1, r10

@@ -503,9 +503,9 @@ extern "C" void fn_801BF940();
 extern "C" void fn_801C0E98();
 extern "C" void fn_801C2CF4();
 extern "C" void fn_801C2DC8();
-extern "C" void fn_801C2E84();
+extern "C" void CalcAhead_EmitterDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle();
 extern "C" void fn_801C3624();
-extern "C" void fn_801C53B8();
+extern "C" void CalcAhead_NoDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle();
 extern "C" void fn_801C6834();
 extern "C" void fn_801C6B84();
 extern "C" void fn_801C6B8C();
@@ -525,7 +525,6 @@ extern "C" void fn_801C9560();
 extern "C" void fn_801C9678();
 extern "C" void fn_801C98E0();
 extern "C" void fn_801C9B90();
-extern "C" void fn_8030D7E0();
 extern "C" void fn_8030DEEC();
 
 // asm_to_cpp: fn_801C6834
@@ -1031,11 +1030,11 @@ lbl_801C6E78:
     mr r4, r30
     addi r3, r1, 0xb8
     addi r5, r1, 0x40
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     mr r4, r31
     addi r3, r1, 0xb8
     addi r5, r1, 0x34
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     lfs f2, 0x48(r1)
     lis r3, 0xcc01
     lfs f1, 0x44(r1)
@@ -2898,7 +2897,7 @@ lbl_801C8A5C:
     mr r3, r27
     addi r4, r27, 0x8c
     addi r5, r1, 0x38
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0x38
     mr r4, r3
     bl fn_801B9B90
@@ -3049,7 +3048,7 @@ lbl_801C8C98:
     mr r3, r27
     addi r4, r27, 0x8c
     addi r5, r1, 0x20
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0x20
     mr r4, r3
     bl fn_801B9B90
@@ -3618,14 +3617,14 @@ extern "C" asm void fn_801C94AC() {
     lis r3, fn_801C2DC8@ha
     addi r3, r3, fn_801C2DC8@l
     blr
-    lis r3, fn_801C2E84@ha
-    addi r3, r3, fn_801C2E84@l
+    lis r3, CalcAhead_EmitterDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle@ha
+    addi r3, r3, CalcAhead_EmitterDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle@l
     blr
     lis r3, fn_801C9560@ha
     addi r3, r3, fn_801C9560@l
     blr
-    lis r3, fn_801C53B8@ha
-    addi r3, r3, fn_801C53B8@l
+    lis r3, CalcAhead_NoDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle@ha
+    addi r3, r3, CalcAhead_NoDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle@l
     blr
     lbz r0, 0x14e(r4)
     clrlwi r0, r0, 29

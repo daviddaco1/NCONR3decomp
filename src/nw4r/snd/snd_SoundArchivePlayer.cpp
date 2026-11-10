@@ -143,14 +143,14 @@ extern "C" void fn_8021553C();
 extern "C" void fn_8021555C();
 extern "C" void fn_802155B4();
 extern "C" void fn_802155D4();
-extern "C" void fn_802156E4();
-extern "C" void fn_80215A80();
-extern "C" void fn_8021779C();
+extern "C" void IsAvailable__Q34nw4r3snd18SoundArchivePlayerCFv();
+extern "C" void GetRequiredStrmBufferSize__Q34nw4r3snd18SoundArchivePlayerFPCQ34nw4r3snd12SoundArchive();
+extern "C" void LoadGroup__Q34nw4r3snd18SoundArchivePlayerFUlPQ34nw4r3snd22SoundMemoryAllocatableUl();
 extern "C" void fn_80217C70();
 extern "C" void fn_80217C78();
 extern "C" void fn_80217C80();
-extern "C" void fn_80217C88();
-extern "C" void fn_80217CD4();
+extern "C" void detail_AttachSound__Q34nw4r3snd11SoundHandleFPQ44nw4r3snd6detail10BasicSound();
+extern "C" void DetachSound__Q34nw4r3snd11SoundHandleFv();
 extern "C" void fn_80218D4C();
 extern "C" void fn_8021C974();
 extern "C" void fn_80221374();
@@ -481,9 +481,9 @@ lbl_802156C8:
 }
 
 // ----------------------------------------------------------------------------
-// fn_802156E4
+// IsAvailable__Q34nw4r3snd18SoundArchivePlayerCFv
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_802156E4() {
+extern "C" asm void IsAvailable__Q34nw4r3snd18SoundArchivePlayerCFv() {
     nofralloc
     lwz r3, 0x10(r3)
     cmpwi r3, 0x0
@@ -758,9 +758,9 @@ lbl_80215A48:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80215A80
+// GetRequiredStrmBufferSize__Q34nw4r3snd18SoundArchivePlayerFPCQ34nw4r3snd12SoundArchive
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_80215A80() {
+extern "C" asm void GetRequiredStrmBufferSize__Q34nw4r3snd18SoundArchivePlayerFPCQ34nw4r3snd12SoundArchive() {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -1748,7 +1748,7 @@ lbl_80216750:
     cmpwi r0, 0x0
     beq lbl_80216764
     mr r3, r19
-    bl fn_80217CD4
+    bl DetachSound__Q34nw4r3snd11SoundHandleFv
 lbl_80216764:
     lwz r3, 0x10(r18)
     mr r4, r20
@@ -2462,7 +2462,7 @@ lbl_802170E8:
 lbl_80217100:
     mr r3, r19
     mr r4, r15
-    bl fn_80217C88
+    bl detail_AttachSound__Q34nw4r3snd11SoundHandleFPQ44nw4r3snd6detail10BasicSound
     bl GetInstance__Q44nw4r3snd6detail11SoundThreadFv
     addi r3, r3, 0x354
     bl OSUnlockMutex
@@ -2957,9 +2957,9 @@ lbl_80217784:
 }
 
 // ----------------------------------------------------------------------------
-// fn_8021779C
+// LoadGroup__Q34nw4r3snd18SoundArchivePlayerFUlPQ34nw4r3snd22SoundMemoryAllocatableUl
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_8021779C() {
+extern "C" asm void LoadGroup__Q34nw4r3snd18SoundArchivePlayerFUlPQ34nw4r3snd22SoundMemoryAllocatableUl() {
     nofralloc
     stwu r1, -0x240(r1)
     mflr r0

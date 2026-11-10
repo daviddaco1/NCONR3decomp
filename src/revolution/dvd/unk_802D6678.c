@@ -52,6 +52,7 @@ void lowCallback(s32 arg0) {
 s32 __DVDCheckDevice(void);
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
+extern void SCGetProductGameRegion();
 extern float at_834_8049D024;
 s32 DVDSetAutoFatalMessaging(s32 arg0, s32 arg1, s32 arg2);
 extern void OSFatal();
@@ -159,7 +160,7 @@ lbl_802D67B8:
     li r3, 0x0
     bl OSSetFontEncode
 lbl_802D67C0:
-    bl fn_803249E8
+    bl SCGetProductGameRegion
     extsb r0, r3
     cmpwi r0, 0x3
     beq lbl_802D67EC

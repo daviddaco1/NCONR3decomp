@@ -50,7 +50,7 @@ extern void GKI_sched_unlock();
 extern void _restgpr_26();
 extern void _savegpr_26();
 extern void bta_sys_register();
-extern void fn_802A59E8();
+extern void bdcpy();
 
 // asm_to_cpp: BTA_HhEnable
 asm void BTA_HhEnable() {
@@ -152,7 +152,7 @@ asm void BTA_HhOpen() {
     sth r0, 0x6(r31)
     stb r30, 0xe(r31)
     stb r29, 0xf(r31)
-    bl fn_802A59E8
+    bl bdcpy
     mr r3, r31
     bl bta_sys_sendmsg
     b lbl_802AAD9C
@@ -253,7 +253,7 @@ asm void BTA_HhAddDev() {
     bl memcpy
     mr r4, r26
     addi r3, r31, 0x8
-    bl fn_802A59E8
+    bl bdcpy
     mr r3, r31
     bl bta_sys_sendmsg
 lbl_802AAEDC:

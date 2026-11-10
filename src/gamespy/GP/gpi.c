@@ -33,10 +33,85 @@ void MD5Digest(unsigned char *, unsigned int, char[33]);
 
 // FUNCTIONS
 ///////////
-// gpiInitialize: definicion C reemplazada por asm (ver abajo)
 GPResult gpiInitialize(GPConnection* connection, int productID, int namespaceID,
-                       int partnerID);
+                       int partnerID) {
+  GPIConnection* iconnection;
+  int i;
+  GPResult result;
 
+  // Set the connection to NULL in case of error.
+  ///////////////////////////////////////////////
+  *connection = NULL;
+
+  // Allocate the connection.
+  ///////////////////////////
+  iconnection = (GPIConnection*)gsimalloc(sizeof(GPIConnection));
+  if (iconnection == NULL)
+    return GP_MEMORY_ERROR;
+
+  // Initialize connection-specific variables.
+  ////////////////////////////////////////////
+  memset(iconnection, 0, sizeof(GPIConnection));
+  iconnection->errorString[0] = '\0';
+  iconnection->errorCode = (GPErrorCode)0;
+  iconnection->infoCaching = GPITrue;
+  iconnection->infoCachingBuddyAndBlockOnly = GPIFalse;
+  iconnection->simulation = GPIFalse;
+  iconnection->firewall = GPIFalse;
+  iconnection->productID = productID;
+  iconnection->namespaceID = namespaceID;
+  iconnection->partnerID = partnerID;
+
+  if (!gpiInitProfiles((GPConnection*)&iconnection)) {
+    freeclear(iconnection);
+    return GP_MEMORY_ERROR;
+  }
+  iconnection->diskCache = NULL;
+  for (i = 0; i < GPI_NUM_CALLBACKS; i++) {
+    iconnection->callbacks[i].callback = NULL;
+    iconnection->callbacks[i].param = NULL;
+  }
+
+  // Reset connection-specific stuff.
+  ///////////////////////////////////
+  result = gpiReset((GPConnection*)&iconnection);
+  if (result != GP_NO_ERROR) {
+    gpiDestroy((GPConnection*)&iconnection);
+    return result;
+  }
+
+  // Initialize the sockets library.
+  //////////////////////////////////
+  SocketStartUp();
+
+  // Seed the random number generator.
+  ////////////////////////////////////
+  srand((unsigned int)current_time());
+
+#ifndef NOFILE
+  // Load profiles cached on disk.
+  ////////////////////////////////
+  result = gpiLoadDiskProfiles((GPConnection*)&iconnection);
+  if (result != GP_NO_ERROR) {
+    gpiDestroy((GPConnection*)&iconnection);
+    return result;
+  }
+#endif
+
+#ifndef NOFILE
+  result = gpiInitTransfers((GPConnection*)&iconnection);
+  if (result != GP_NO_ERROR) {
+    gpiDestroy((GPConnection*)&iconnection);
+    return result;
+  }
+#endif
+
+  // Set the connection.
+  //////////////////////
+  *connection = (GPConnection)iconnection;
+
+  return GP_NO_ERROR;
+}
 
 void gpiDestroy(GPConnection* connection) {
   GPIConnection* iconnection = (GPIConnection*)*connection;
@@ -382,322 +457,15 @@ extern float lbl_8049C83C;
 extern float lbl_8049C848;
 extern u8 lbl_80368A40[];
 extern void _restgpr_26();
-extern void _restgpr_27();
 extern void _savegpr_26();
-extern void _savegpr_27();
-extern void fn_8019B578();
-extern void fn_802565E8();
-extern void fn_80256638();
-extern void fn_80256C4C();
-extern void fn_80256C5C();
-extern void fn_80256C70();
 extern int fn_80259588();
-extern void fn_80262A78();
 extern void fn_80263290();
 extern void gpiCallErrorCallback();
-GPResult gpiInitialize(GPConnection* connection, int productID, int namespaceID,
-                       int partnerID);
 GPResult gpiProcessConnectionManager(GPConnection* connection);
 GPResult gpiReset(GPConnection* connection);
 extern void gpiSetError();
 extern void gpiSetErrorString();
-
-// asm_to_cpp: gpiInitialize
-asm GPResult gpiInitialize(GPConnection* connection, int productID, int namespaceID,
-                       int partnerID) {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    addi r11, r1, 0x30
-    bl _savegpr_27
-    li r31, 0x0
-    mr r30, r3
-    stw r31, 0x0(r3)
-    mr r27, r4
-    mr r28, r5
-    mr r29, r6
-    li r3, 0x638
-    bl fn_80256C4C
-    cmpwi r3, 0x0
-    stw r3, 0x8(r1)
-    bne lbl_80259130
-    li r3, 0x1
-    b lbl_8025929C
-lbl_80259130:
-    li r4, 0x0
-    li r5, 0x638
-    bl memset
-    lwz r4, 0x8(r1)
-    li r0, 0x1
-    addi r3, r1, 0x8
-    stb r31, 0x0(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x5b8(r4)
-    lwz r4, 0x8(r1)
-    stw r0, 0x100(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x104(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x108(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x10c(r4)
-    lwz r4, 0x8(r1)
-    stw r27, 0x60c(r4)
-    lwz r4, 0x8(r1)
-    stw r28, 0x610(r4)
-    lwz r4, 0x8(r1)
-    stw r29, 0x1a4(r4)
-    bl fn_80262A78
-    cmpwi r3, 0x0
-    bne lbl_802591A8
-    lwz r3, 0x8(r1)
-    bl fn_80256C70
-    li r3, 0x1
-    b lbl_8025929C
-lbl_802591A8:
-    lwz r4, 0x8(r1)
-    addi r3, r1, 0x8
-    stw r31, 0x5c0(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x1a8(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x1ac(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x1b0(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x1b4(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x1b8(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x1bc(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x1c0(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x1c4(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x1c8(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x1cc(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x1d0(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x1d4(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x1d8(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x1dc(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x1e0(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x1e4(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x1e8(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x1ec(r4)
-    bl gpiProcessConnectionManager
-    cmpwi r3, 0x0
-    mr r31, r3
-    beq lbl_80259284
-    lwz r30, 0x8(r1)
-    addi r3, r1, 0x8
-    li r4, 0x1
-    bl gpiDisconnect
-    addi r3, r1, 0x8
-    bl gpiStatusInfoKeysDestroy
-    lwz r3, 0x5c8(r30)
-    bl TableFree
-    mr r3, r30
-    bl fn_80256C70
-    mr r3, r31
-    b lbl_8025929C
-lbl_80259284:
-    bl fn_802565E8
-    bl current_time
-    bl fn_8019B578
-    lwz r0, 0x8(r1)
-    li r3, 0x0
-    stw r0, 0x0(r30)
-lbl_8025929C:
-    addi r11, r1, 0x30
-    bl _restgpr_27
-    lwz r0, 0x34(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
-}
-
-// asm_to_cpp: gpiReset
-asm GPResult gpiReset(GPConnection* connection) {
-    nofralloc
-    li r0, 0x0
-    li r3, 0x1
-    stw r0, 0x8(r4)
-    stw r0, 0xc(r4)
-    stw r0, 0x14(r4)
-    stw r0, 0x18(r4)
-    stw r0, 0x1c(r4)
-    stw r0, 0x20(r4)
-    stw r0, 0x28(r4)
-    blr
-}
-
-// asm_to_cpp: gpiProcessConnectionManager
-asm GPResult gpiProcessConnectionManager(GPConnection* connection) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    li r0, -0x1
-    stw r31, 0x1c(r1)
-    li r31, 0x0
-    stw r30, 0x18(r1)
-    mr r30, r3
-    lwz r4, 0x0(r3)
-    stw r4, 0x8(r1)
-    stb r31, 0x110(r4)
-    lwz r3, 0x8(r1)
-    stb r31, 0x12f(r3)
-    lwz r3, 0x8(r1)
-    stb r31, 0x144(r3)
-    lwz r3, 0x8(r1)
-    stw r0, 0x1f0(r3)
-    lwz r3, 0x8(r1)
-    stw r31, 0x1f4(r3)
-    lwz r3, 0x8(r1)
-    stw r31, 0x200(r3)
-    lwz r3, 0x8(r1)
-    stw r31, 0x204(r3)
-    lwz r3, 0x8(r1)
-    stw r31, 0x1fc(r3)
-    lwz r3, 0x8(r1)
-    lwz r3, 0x1f8(r3)
-    bl fn_80256C70
-    lwz r3, 0x8(r1)
-    stw r31, 0x1f8(r3)
-    lwz r3, 0x8(r1)
-    stw r31, 0x1f8(r3)
-    lwz r3, 0x8(r1)
-    stw r31, 0x20c(r3)
-    lwz r3, 0x8(r1)
-    lwz r3, 0x208(r3)
-    bl fn_80256C70
-    lwz r3, 0x8(r1)
-    stw r31, 0x208(r3)
-    lwz r3, 0x8(r1)
-    stw r31, 0x208(r3)
-    lwz r3, 0x8(r1)
-    stw r31, 0x218(r3)
-    lwz r3, 0x8(r1)
-    stw r31, 0x21c(r3)
-    lwz r3, 0x8(r1)
-    stw r31, 0x214(r3)
-    lwz r3, 0x8(r1)
-    lwz r3, 0x210(r3)
-    bl fn_80256C70
-    lwz r3, 0x8(r1)
-    stw r31, 0x210(r3)
-    lwz r3, 0x8(r1)
-    stw r31, 0x210(r3)
-    lwz r3, 0x8(r1)
-    stw r31, 0x5ec(r3)
-    lwz r3, 0x8(r1)
-    stw r31, 0x5f0(r3)
-    lwz r3, 0x8(r1)
-    stw r31, 0x5e8(r3)
-    lwz r3, 0x8(r1)
-    lwz r3, 0x5e4(r3)
-    bl fn_80256C70
-    lwz r3, 0x8(r1)
-    stw r31, 0x5e4(r3)
-    lwz r3, 0x8(r1)
-    stw r31, 0x5e4(r3)
-    lwz r3, 0x8(r1)
-    stw r31, 0x5fc(r3)
-    lwz r3, 0x8(r1)
-    stw r31, 0x600(r3)
-    lwz r3, 0x8(r1)
-    stw r31, 0x5f8(r3)
-    lwz r3, 0x8(r1)
-    lwz r3, 0x5f4(r3)
-    bl fn_80256C70
-    lwz r4, 0x8(r1)
-    mr r3, r30
-    stw r31, 0x5f4(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x5f4(r4)
-    bl gpiStatusInfoKeysDestroy
-    addi r3, r1, 0x8
-    bl gpiStatusInfoKeysInit
-    cmpwi r3, 0x0
-    mr r31, r3
-    beq lbl_802594C4
-    lwz r30, 0x8(r1)
-    addi r3, r1, 0x8
-    li r4, 0x1
-    bl gpiDisconnect
-    addi r3, r1, 0x8
-    bl gpiStatusInfoKeysDestroy
-    lwz r3, 0x5c8(r30)
-    bl TableFree
-    mr r3, r30
-    bl fn_80256C70
-    mr r3, r31
-    b lbl_80259570
-lbl_802594C4:
-    lwz r3, 0x8(r1)
-    li r0, 0x2
-    stw r0, 0x234(r3)
-    b lbl_802594DC
-lbl_802594D4:
-    mr r3, r30
-    bl gpiRemoveOperation
-lbl_802594DC:
-    lwz r3, 0x8(r1)
-    lwz r4, 0x5c4(r3)
-    cmpwi r4, 0x0
-    bne lbl_802594D4
-    li r31, 0x0
-    lis r4, gpiReset@ha
-    stw r31, 0x5c4(r3)
-    mr r3, r30
-    addi r4, r4, gpiReset@l
-    li r5, 0x0
-    lwz r6, 0x8(r1)
-    stw r31, 0x5d0(r6)
-    lwz r6, 0x8(r1)
-    stw r31, 0x5d4(r6)
-    bl gpiProfileMap
-    lwz r4, 0x8(r1)
-    li r0, -0x1
-    li r3, 0x0
-    stw r31, 0x19c(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x1a0(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x198(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x238(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x5bc(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x5d8(r4)
-    lwz r4, 0x8(r1)
-    stw r0, 0x23c(r4)
-    lwz r4, 0x8(r1)
-    stb r31, 0x3b8(r4)
-    lwz r4, 0x8(r1)
-    stb r31, 0x4b8(r4)
-    lwz r4, 0x8(r1)
-    stw r31, 0x634(r4)
-lbl_80259570:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
+extern void gsifree();
 
 // asm_to_cpp: fn_80259588
 asm int fn_80259588() {
@@ -777,7 +545,7 @@ lbl_8025968C:
     stw r3, 0x20c(r28)
     addi r4, r3, 0x1
     lwz r3, 0x208(r28)
-    bl fn_80256C5C
+    bl gsirealloc
     cmpwi r3, 0x0
     bne lbl_802596C0
     mr r3, r27
@@ -934,7 +702,7 @@ lbl_802598D4:
     mr r26, r3
     beq lbl_802598F0
     li r3, 0xa
-    bl fn_80256638
+    bl msleep
 lbl_802598F0:
     cmpwi r26, 0x0
     bne lbl_802595BC
@@ -957,5 +725,177 @@ lbl_80259928:
     lwz r0, 0x34(r1)
     mtlr r0
     addi r1, r1, 0x30
+    blr
+}
+
+// asm_to_cpp: gpiProcessConnectionManager
+asm GPResult gpiProcessConnectionManager(GPConnection* connection) {
+    nofralloc
+    stwu r1, -0x20(r1)
+    mflr r0
+    stw r0, 0x24(r1)
+    li r0, -0x1
+    stw r31, 0x1c(r1)
+    li r31, 0x0
+    stw r30, 0x18(r1)
+    mr r30, r3
+    lwz r4, 0x0(r3)
+    stw r4, 0x8(r1)
+    stb r31, 0x110(r4)
+    lwz r3, 0x8(r1)
+    stb r31, 0x12f(r3)
+    lwz r3, 0x8(r1)
+    stb r31, 0x144(r3)
+    lwz r3, 0x8(r1)
+    stw r0, 0x1f0(r3)
+    lwz r3, 0x8(r1)
+    stw r31, 0x1f4(r3)
+    lwz r3, 0x8(r1)
+    stw r31, 0x200(r3)
+    lwz r3, 0x8(r1)
+    stw r31, 0x204(r3)
+    lwz r3, 0x8(r1)
+    stw r31, 0x1fc(r3)
+    lwz r3, 0x8(r1)
+    lwz r3, 0x1f8(r3)
+    bl gsifree
+    lwz r3, 0x8(r1)
+    stw r31, 0x1f8(r3)
+    lwz r3, 0x8(r1)
+    stw r31, 0x1f8(r3)
+    lwz r3, 0x8(r1)
+    stw r31, 0x20c(r3)
+    lwz r3, 0x8(r1)
+    lwz r3, 0x208(r3)
+    bl gsifree
+    lwz r3, 0x8(r1)
+    stw r31, 0x208(r3)
+    lwz r3, 0x8(r1)
+    stw r31, 0x208(r3)
+    lwz r3, 0x8(r1)
+    stw r31, 0x218(r3)
+    lwz r3, 0x8(r1)
+    stw r31, 0x21c(r3)
+    lwz r3, 0x8(r1)
+    stw r31, 0x214(r3)
+    lwz r3, 0x8(r1)
+    lwz r3, 0x210(r3)
+    bl gsifree
+    lwz r3, 0x8(r1)
+    stw r31, 0x210(r3)
+    lwz r3, 0x8(r1)
+    stw r31, 0x210(r3)
+    lwz r3, 0x8(r1)
+    stw r31, 0x5ec(r3)
+    lwz r3, 0x8(r1)
+    stw r31, 0x5f0(r3)
+    lwz r3, 0x8(r1)
+    stw r31, 0x5e8(r3)
+    lwz r3, 0x8(r1)
+    lwz r3, 0x5e4(r3)
+    bl gsifree
+    lwz r3, 0x8(r1)
+    stw r31, 0x5e4(r3)
+    lwz r3, 0x8(r1)
+    stw r31, 0x5e4(r3)
+    lwz r3, 0x8(r1)
+    stw r31, 0x5fc(r3)
+    lwz r3, 0x8(r1)
+    stw r31, 0x600(r3)
+    lwz r3, 0x8(r1)
+    stw r31, 0x5f8(r3)
+    lwz r3, 0x8(r1)
+    lwz r3, 0x5f4(r3)
+    bl gsifree
+    lwz r4, 0x8(r1)
+    mr r3, r30
+    stw r31, 0x5f4(r4)
+    lwz r4, 0x8(r1)
+    stw r31, 0x5f4(r4)
+    bl gpiStatusInfoKeysDestroy
+    addi r3, r1, 0x8
+    bl gpiStatusInfoKeysInit
+    cmpwi r3, 0x0
+    mr r31, r3
+    beq lbl_802594C4
+    lwz r30, 0x8(r1)
+    addi r3, r1, 0x8
+    li r4, 0x1
+    bl gpiDisconnect
+    addi r3, r1, 0x8
+    bl gpiStatusInfoKeysDestroy
+    lwz r3, 0x5c8(r30)
+    bl TableFree
+    mr r3, r30
+    bl gsifree
+    mr r3, r31
+    b lbl_80259570
+lbl_802594C4:
+    lwz r3, 0x8(r1)
+    li r0, 0x2
+    stw r0, 0x234(r3)
+    b lbl_802594DC
+lbl_802594D4:
+    mr r3, r30
+    bl gpiRemoveOperation
+lbl_802594DC:
+    lwz r3, 0x8(r1)
+    lwz r4, 0x5c4(r3)
+    cmpwi r4, 0x0
+    bne lbl_802594D4
+    li r31, 0x0
+    lis r4, gpiReset@ha
+    stw r31, 0x5c4(r3)
+    mr r3, r30
+    addi r4, r4, gpiReset@l
+    li r5, 0x0
+    lwz r6, 0x8(r1)
+    stw r31, 0x5d0(r6)
+    lwz r6, 0x8(r1)
+    stw r31, 0x5d4(r6)
+    bl gpiProfileMap
+    lwz r4, 0x8(r1)
+    li r0, -0x1
+    li r3, 0x0
+    stw r31, 0x19c(r4)
+    lwz r4, 0x8(r1)
+    stw r31, 0x1a0(r4)
+    lwz r4, 0x8(r1)
+    stw r31, 0x198(r4)
+    lwz r4, 0x8(r1)
+    stw r31, 0x238(r4)
+    lwz r4, 0x8(r1)
+    stw r31, 0x5bc(r4)
+    lwz r4, 0x8(r1)
+    stw r31, 0x5d8(r4)
+    lwz r4, 0x8(r1)
+    stw r0, 0x23c(r4)
+    lwz r4, 0x8(r1)
+    stb r31, 0x3b8(r4)
+    lwz r4, 0x8(r1)
+    stb r31, 0x4b8(r4)
+    lwz r4, 0x8(r1)
+    stw r31, 0x634(r4)
+lbl_80259570:
+    lwz r0, 0x24(r1)
+    lwz r31, 0x1c(r1)
+    lwz r30, 0x18(r1)
+    mtlr r0
+    addi r1, r1, 0x20
+    blr
+}
+
+// asm_to_cpp: gpiReset
+asm GPResult gpiReset(GPConnection* connection) {
+    nofralloc
+    li r0, 0x0
+    li r3, 0x1
+    stw r0, 0x8(r4)
+    stw r0, 0xc(r4)
+    stw r0, 0x14(r4)
+    stw r0, 0x18(r4)
+    stw r0, 0x1c(r4)
+    stw r0, 0x20(r4)
+    stw r0, 0x28(r4)
     blr
 }

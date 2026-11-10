@@ -1,108 +1,723 @@
-#include "types.h"
-#include "m2c_macros.h"
-#include "m2c_protos.h"
+#include "expHeap.h"
 
-M2C_UNK memset();                   /* extern */
+#include "heap.h"
+#include "heapi.h"
 
-u32 AllocUsedBlockFromFreeBlock_();
-u32 AllocFromHead_();
-u32 AllocFromTail_();
-s32 RecycleRegion_();
-u32 MEMCreateExpHeapEx();
-s32 MEMDestroyExpHeap();
-u32 MEMAllocFromExpHeapEx();
-u16 fn_8030C61C();
-u32 fn_8030C66C();
-s32 fn_8030C6F0();
-u32 fn_8030C720();
-void fn_8030C840();
-s32 fn_8030C8E0();
-s32 fn_8030C9B4();
-void fn_8030CA68();
-void fn_8030CAD8();
-void MEMGetSizeForMBlockExpHeap();
+#include <stdbool.h>
+#include <stdlib.h>
 
-u32 AllocUsedBlockFromFreeBlock_(s8 *arg0, s8 *arg1, u32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0);
-
-u32 AllocFromHead_(s8 *arg0, u32 arg1, s32 arg2);
-
-u32 AllocFromTail_(s8 *arg0, u32 arg1, s32 arg2);
-
-s32 RecycleRegion_(s8 **arg0, s8 *arg1);
-
-u32 MEMCreateExpHeapEx(s32 arg0, s32 arg1, s32 arg2);
-
-s32 MEMDestroyExpHeap(s32 arg0) {
-    MEMiFinalizeHeap((s32 *) arg0);
-    return arg0;
+// MEM_ExpBlockInsert inserts a block into the heap linked list.
+static inline MEMiExpHeapMBlockHead*
+MEM_ExpBlockInsert(MEMiExpMBlockList* list, MEMiExpHeapMBlockHead* target,
+                   MEMiExpHeapMBlockHead* prev) {
+  MEMiExpHeapMBlockHead* next;
+  target->prev = prev;
+  if (prev) {
+    next = prev->next;
+    prev->next = target;
+  } else {
+    next = list->head;
+    list->head = target;
+  }
+  target->next = next;
+  if (next)
+    next->prev = target;
+  else
+    list->tail = target;
+  return target;
 }
 
-// MEMAllocFromExpHeapEx: definicion C reemplazada por asm (ver abajo)
-
-
-void MEMFreeToExpHeap(s8 *arg0, s8 *arg1);
-
-
-// fn_8030C66C: definicion C reemplazada por asm (ver abajo)
-
-
-s32 fn_8030C6F0(s32 arg0) {
-    MEMiFinalizeHeap((s32 *) arg0);
-    return arg0;
+// MEM_ExpBlockRemove removes a block from the heap linked list.
+static inline MEMiExpHeapMBlockHead*
+MEM_ExpBlockRemove(MEMiExpMBlockList* list, MEMiExpHeapMBlockHead* block) {
+  MEMiExpHeapMBlockHead* prev = block->prev;
+  MEMiExpHeapMBlockHead* next = block->next;
+  if (prev)
+    prev->next = next;
+  else
+    list->head = next;
+  if (next)
+    next->prev = prev;
+  else
+    list->tail = prev;
+  return prev;
 }
 
-// fn_8030C720: definicion C reemplazada por asm (ver abajo)
+// MEM_BlockInit prepares a block for use.
+static inline MEMiExpHeapMBlockHead* MEM_BlockInit(MEM_Extent* region,
+                                                   u16 signature) {
+  MEMiExpHeapMBlockHead* block = (MEMiExpHeapMBlockHead*)region->start;
+  block->signature = signature;
+  block->attribute.val = 0;
+  u32 start = (u32)block + 0x10;
+  block->blockSize = (u32)region->end - start;
+  block->prev = NULL;
+  block->next = NULL;
+  return block;
+}
 
+// MEM_BlockAppend inserts a block at the end of a heap list.
+static inline void MEM_BlockAppend(MEMiExpMBlockList* list,
+                                   MEMiExpHeapMBlockHead* block) {
+  (void)MEM_ExpBlockInsert(list, block, list->tail);
+}
 
-// fn_8030C840: definicion C reemplazada por asm (ver abajo)
+// MEM_ExpBlockGetExtent retrieves the memory extent of a given block.
+static inline void MEM_ExpBlockGetExtent(MEM_Extent* region,
+                                         MEMiExpHeapMBlockHead* block) {
+  region->start = ptr_sub(block, block->attribute.fields.alignment);
+  region->end = (void*)((u32)block + 0x10 + block->blockSize);
+}
 
+static void* MEM_ExpAllocNewBlock(MEMiExpHeapHead* expHeap,
+                                  MEMiExpHeapMBlockHead* expBlockFree,
+                                  void* block, u32 size, u16 dir) {
+  MEM_Extent extFreeL;
+  MEM_Extent extFreeR;
+  MEMiExpHeapMBlockHead* expBlockFreePrev;
+  // Get the extents before and after the free block.
+  MEM_ExpBlockGetExtent(&extFreeL, expBlockFree);
+  extFreeR.end = extFreeL.end;
+  extFreeR.start = ptr_add(block, size);
+  extFreeL.end = ptr_sub(block, 0x10);
+  // Remove block from free list.
+  expBlockFreePrev = MEM_ExpBlockRemove(&expHeap->freeList, expBlockFree);
+  // Shrink or deallocate left extent.
+  if ((u32)extFreeL.end - (u32)extFreeL.start < 0x14) {
+    extFreeL.end = extFreeL.start;
+  } else {
+    expBlockFreePrev = MEM_ExpBlockInsert(
+        &expHeap->freeList, MEM_BlockInit(&extFreeL, 'FR'), expBlockFreePrev);
+  }
+  // Shrink or deallocate right extent.
+  if ((u32)extFreeR.end - (u32)extFreeR.start < 0x14) {
+    extFreeR.start = extFreeR.end;
+  } else {
+    MEM_ExpBlockInsert(&expHeap->freeList, MEM_BlockInit(&extFreeR, 'FR'),
+                       expBlockFreePrev);
+  }
+  // Optionally clear block.
+  MEM_BlockZero((MEMiHeapHead*)((u32)expHeap - sizeof(MEMiHeapHead)),
+                extFreeL.end, ptr_dist(extFreeL.end, extFreeR.start));
+  // Mark block as used.
+  MEMiExpHeapMBlockHead* expBlockUsed;
+  MEM_Extent extent;
+  extent.start = ptr_sub(block, 0x10);
+  extent.end = extFreeR.start;
+  expBlockUsed = MEM_BlockInit(&extent, 'UD');
+  expBlockUsed->attribute.fields.dir = dir;
+  expBlockUsed->attribute.fields.alignment =
+      (u16)((u32)expBlockUsed - (u32)extFreeL.end);
+  expBlockUsed->attribute.fields.groupID = (u8)expHeap->groupID;
+  MEM_BlockAppend(&expHeap->usedList, expBlockUsed);
+  return block;
+}
 
-s32 fn_8030C8E0(s8 *arg0, s32 arg1, M2C_UNK arg_sp0);
-
-// fn_8030C9B4: definicion C reemplazada por asm (ver abajo)
-
-
-void fn_8030CA68(s8 *arg0, s32 *arg1) {
-    if (arg1 != NULL) {
-        if (M2C_FIELD(arg0, s32 *, 0x38) & 4) {
-            OSLockMutex(arg0 + 0x20);
-        }
-        *arg1 = M2C_FIELD(arg0, s32 *, 0x3C);
-        M2C_FIELD(arg0, s32 *, 0x3C) = (s32) arg1;
-        if (M2C_FIELD(arg0, s32 *, 0x38) & 4) {
-            OSUnlockMutex(arg0 + 0x20);
-        }
+void* MEM_ExpAllocFromHead(MEMiHeapHead* heap, u32 size, int alignment) {
+  MEMiExpHeapHead* expHeap =
+      (MEMiExpHeapHead*)((u32)heap + sizeof(MEMiHeapHead));
+  const u32 special = expHeap->feature.fields.allocMode == 0;
+  // Search heap for the next free block.
+  MEMiExpHeapMBlockHead* curExpBlock = NULL; // current block we're looking at
+  MEMiExpHeapMBlockHead* resExpBlock = NULL; // matching / result block
+  u32 resSize = 0xffffffff;
+  void* resMemBlock = NULL;
+  // Begin search.
+  for (curExpBlock = expHeap->freeList.head; curExpBlock;
+       curExpBlock = curExpBlock->next) {
+    void* block = (void*)((u32)curExpBlock + 0x10);
+    void* alignedBlock = fastceil_ptr(block, alignment);
+    u32 offset = (u32)alignedBlock - (u32)block;
+    if (curExpBlock->blockSize >= size + offset &&
+        resSize > curExpBlock->blockSize) {
+      resExpBlock = curExpBlock;
+      resSize = curExpBlock->blockSize;
+      resMemBlock = alignedBlock;
+      if (special || resSize == size)
+        break;
     }
+  }
+  // Out of memory if no block found.
+  if (!resExpBlock)
+    return NULL;
+  // Mark block as used.
+  return MEM_ExpAllocNewBlock(expHeap, resExpBlock, resMemBlock, size, 0);
 }
 
-// fn_8030CAD8: definicion C reemplazada por asm (ver abajo)
+void* MEM_ExpAllocFromTail(MEMiHeapHead* heap, u32 size, int alignment) {
+  MEMiExpHeapHead* expHeap =
+      (MEMiExpHeapHead*)((u32)heap + sizeof(MEMiHeapHead));
+  const u32 special = expHeap->feature.fields.allocMode == 0;
+  // Search heap backwards for the next free block.
+  MEMiExpHeapMBlockHead* curExpBlock = NULL; // current block we're looking at
+  MEMiExpHeapMBlockHead* resExpBlock = NULL; // matching / result block
+  u32 resSize = 0xffffffff;
+  void* resMemBlock = NULL;
+  // Begin search.
+  for (curExpBlock = expHeap->freeList.tail; curExpBlock;
+       curExpBlock = curExpBlock->prev) {
+    void* block = (void*)((u32)curExpBlock + 0x10);
+    void* blockEnd = ptr_add(block, curExpBlock->blockSize);
+    void* alignedBlock = fastfloor_ptr(ptr_sub(blockEnd, size), alignment);
+    if ((int)alignedBlock - (int)block >= 0 &&
+        resSize > curExpBlock->blockSize) {
+      resExpBlock = curExpBlock;
+      resSize = curExpBlock->blockSize;
+      resMemBlock = alignedBlock;
+      if (special || resSize == size)
+        break;
+    }
+  }
+  // Out of memory if no block found.
+  if (!resExpBlock)
+    return NULL;
+  // Mark block as used.
+  return MEM_ExpAllocNewBlock(expHeap, resExpBlock, resMemBlock, size, 1);
+}
+
+u32 MEM_ExpRecycleRegion(MEMiExpHeapHead* expHeap, const MEM_Extent* ext) {
+  MEMiExpHeapMBlockHead* blockFree = NULL;
+  MEM_Extent extFree = *ext;
+  MEMiExpHeapMBlockHead* block;
+  for (block = expHeap->freeList.head; block; block = block->next) {
+    if (block < ext->start) {
+      blockFree = block;
+      continue;
+    }
+    if (block == ext->end) {
+      extFree.end = (void*)((u32)block + 0x10 + block->blockSize);
+      MEM_ExpBlockRemove(&expHeap->freeList, block);
+    }
+    break;
+  }
+  if (blockFree && (void*)((u32)blockFree + sizeof(MEMiExpHeapMBlockHead) +
+                           blockFree->blockSize) == ext->start) {
+    extFree.start = blockFree;
+    blockFree = MEM_ExpBlockRemove(&expHeap->freeList, blockFree);
+  }
+  if (ptr_dist(extFree.start, extFree.end) < sizeof(MEMiExpHeapMBlockHead))
+    return false;
+  MEM_ExpBlockInsert(&expHeap->freeList, MEM_BlockInit(&extFree, 'FR'),
+                     blockFree);
+  return true;
+}
+
+static inline MEMiHeapHead* MEM_ExpHeapInit(void* begin, void* end, u16 flags) {
+  MEMiHeapHead* heap = (MEMiHeapHead*)begin;
+  MEMiExpHeapHead* expHeap =
+      (MEMiExpHeapHead*)ptr_add(heap, sizeof(MEMiHeapHead));
+  MEMiInitHeapHead(heap, 'EXPH', ptr_add(expHeap, sizeof(MEMiExpHeapHead)), end,
+                   flags);
+  expHeap->groupID = 0;
+  expHeap->feature.val = 0;
+  expHeap->feature.fields.allocMode = 0;
+  {
+    MEMiExpHeapMBlockHead* block;
+    MEM_Extent region;
+    region.start = heap->arena_start;
+    region.end = heap->arena_end;
+    block = MEM_BlockInit(&region, 'FR');
+    expHeap->freeList.head = block;
+    expHeap->freeList.tail = block;
+    expHeap->usedList.head = NULL;
+    expHeap->usedList.tail = NULL;
+    return heap;
+  }
+}
+
+// MEMCreateExpHeapEx: definicion C reemplazada por asm (ver abajo)
+MEMHeapHandle MEMCreateExpHeapEx(void* addr, u32 size, u16 flags);
 
 
-void MEMGetSizeForMBlockExpHeap(s8 *arg0, s32 arg1);
+void* MEMDestroyExpHeap(MEMHeapHandle heap) {
+  MEMiFinalizeHeap(heap);
+  return (void*)heap;
+}
+
+void* MEMAllocFromExpHeapEx(MEMHeapHandle heap, u32 size, int dir) {
+  void* memory = NULL;
+  if (size == 0)
+    size = 1;
+  size = fastceil_u32(size, 4);
+
+  if (((u16)heap->_unk38.parts.flags) & 0x04)
+    OSLockMutex(&heap->mutex);
+
+  if (dir >= 0)
+    memory = MEM_ExpAllocFromHead(heap, size, dir);
+  else
+    memory = MEM_ExpAllocFromTail(heap, size, -dir);
+
+  if (((u16)heap->_unk38.parts.flags) & 0x04)
+    OSUnlockMutex(&heap->mutex);
+
+  return memory;
+}
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// Referenced by assembly.
+void _restgpr_26();
+void _savegpr_26();
+#ifdef __cplusplus
+}
+#endif
+
+asm u32 MEMResizeForMBlockExpHeap(MEMHeapHandle heap, void* addr, u32 size) {
+  nofralloc;
+  stwu r1, -48(r1);
+  mflr r0;
+  stw r0, 52(r1);
+  addi r11, r1, 0x30;
+  bl _savegpr_26;
+  addi r5, r5, 0x3;
+  lwz r0, -12(r4);
+  rlwinm r29, r5, 0x0, 0x0, 0x1d;
+  addi r30, r4, -0x10;
+  cmplw r29, r0;
+  mr r27, r3;
+  mr r28, r4;
+  addi r31, r3, 0x3c;
+  bne loc1;
+loc0:
+  mr r3, r29;
+  b loc35;
+loc1:
+  lwz r0, 56(r3);
+  rlwinm.r0, r0, 0x0, 0x1d, 0x1d;
+  beq loc3;
+loc2:
+  addi r3, r3, 0x20;
+  bl OSLockMutex;
+loc3:
+  lwz r26, 4(r30);
+  cmplw r29, r26;
+  ble loc30;
+loc4:
+  add r3, r30, r26;
+  lwz r7, 0(r31);
+  addi r0, r3, 0x10;
+  b loc7;
+loc5:
+  cmplw r7, r0;
+  beq loc8;
+loc6:
+  lwz r7, 12(r7);
+loc7:
+  cmpwi r7, 0x0;
+  bne loc5;
+loc8:
+  cmpwi r7, 0x0;
+  beq loc10;
+loc9:
+  lwz r4, 4(r7);
+  add r3, r26, r4;
+  addi r0, r3, 0x10;
+  cmplw r29, r0;
+  ble loc13;
+loc10:
+  lwz r0, 56(r27);
+  rlwinm.r0, r0, 0x0, 0x1d, 0x1d;
+  beq loc12;
+loc11:
+  addi r3, r27, 0x20;
+  bl OSUnlockMutex;
+loc12:
+  li r3, 0x0;
+  b loc35;
+loc13:
+  lwz r5, 8(r7);
+  add r3, r7, r4;
+  lhz r0, 2(r7);
+  addi r6, r3, 0x10;
+  cmpwi r5, 0x0;
+  lwz r4, 12(r7);
+  rlwinm r0, r0, 0x18, 0x19, 0x1f;
+  subf r3, r0, r7;
+  beq loc15;
+loc14:
+  stw r4, 12(r5);
+  b loc16;
+loc15:
+  stw r4, 0(r31);
+loc16:
+  cmpwi r4, 0x0;
+  beq loc18;
+loc17:
+  stw r5, 8(r4);
+  b loc19;
+loc18:
+  stw r5, 4(r31);
+loc19:
+  add r7, r29, r28;
+  subf r0, r7, r6;
+  cmplwi r0, 0x10;
+  bge loc21;
+loc20:
+  mr r7, r6;
+loc21:
+  subf r0, r7, r6;
+  subf r4, r28, r7;
+  cmplwi r0, 0x10;
+  stw r4, 4(r30);
+  blt loc28;
+loc22:
+  li r4, 0x4652;
+  addi r0, r7, 0x10;
+  sth r4, 0(r7);
+  li r4, 0x0;
+  subf r0, r0, r6;
+  cmpwi r5, 0x0;
+  sth r4, 2(r7);
+  stw r0, 4(r7);
+  stw r4, 12(r7);
+  stw r5, 8(r7);
+  beq loc24;
+loc23:
+  lwz r4, 12(r5);
+  stw r7, 12(r5);
+  b loc25;
+loc24:
+  lwz r4, 0(r31);
+  stw r7, 0(r31);
+loc25:
+  cmpwi r4, 0x0;
+  stw r4, 12(r7);
+  beq loc27;
+loc26:
+  stw r7, 8(r4);
+  b loc28;
+loc27:
+  stw r7, 4(r31);
+loc28:
+  lwz r0, 56(r27);
+  subf r5, r3, r7;
+  clrlwi.r0, r0, 0x1f;
+  beq loc32;
+loc29:
+  li r4, 0x0;
+  bl memset;
+  b loc32;
+loc30:
+  add r0, r29, r28;
+  mr r3, r31;
+  stw r0, 8(r1);
+  addi r4, r1, 0x8;
+  lwz r0, 4(r30);
+  add r5, r30, r0;
+  addi r0, r5, 0x10;
+  stw r0, 12(r1);
+  stw r29, 4(r30);
+  bl MEM_ExpRecycleRegion;
+  cmpwi r3, 0x0;
+  bne loc32;
+loc31:
+  stw r26, 4(r30);
+loc32:
+  lwz r0, 56(r27);
+  rlwinm.r0, r0, 0x0, 0x1d, 0x1d;
+  beq loc34;
+loc33:
+  addi r3, r27, 0x20;
+  bl OSUnlockMutex;
+loc34:
+  lwz r3, 4(r30);
+loc35:
+  addi r11, r1, 0x30;
+  bl _restgpr_26;
+  lwz r0, 52(r1);
+  mtlr r0;
+  addi r1, r1, 0x30;
+  blr;
+}
+
+// MEMFreeToExpHeap: definicion C reemplazada por asm (ver abajo)
+void MEMFreeToExpHeap(MEMHeapHandle heap, void* addr);
+
+
+// MEMGetTotalFreeSizeForExpHeap returns the total amount of free space on the
+// heap.
+u32 MEMGetTotalFreeSizeForExpHeap(MEMHeapHandle heap) {
+  u32 ret = 0;
+
+  if (((u16)heap->_unk38.parts.flags) & 0x04)
+    OSLockMutex(&heap->mutex);
+
+  MEMiExpHeapHead* expHeap =
+      (MEMiExpHeapHead*)ptr_add(heap, sizeof(MEMiHeapHead));
+  // Loop over all blocks in the heap and count along the way.
+  MEMiExpHeapMBlockHead* block;
+  for (block = expHeap->freeList.head; block; block = block->next)
+    ret += block->blockSize;
+
+  if (((u16)heap->_unk38.parts.flags) & 0x04)
+    OSUnlockMutex(&heap->mutex);
+
+  return ret;
+}
+
+u32 MEMGetAllocatableSizeForExpHeapEx(MEMHeapHandle heap, s32 alignment) {
+  alignment = abs(alignment);
+
+  if (((u16)heap->_unk38.parts.flags) & 0x04)
+    OSLockMutex(&heap->mutex);
+
+  {
+    MEMiExpHeapHead* expHeap =
+        (MEMiExpHeapHead*)ptr_add(heap, sizeof(MEMiHeapHead));
+    MEMiExpHeapMBlockHead* block;
+    u32 maxSize = 0;
+    u32 offsetMin = 0xFFFFFFFF;
+
+    for (block = expHeap->freeList.head; block; block = block->next) {
+      void* blockAddress1 = ptr_add(block, sizeof(MEMiExpHeapMBlockHead));
+      void* baseAddress = fastceil_ptr(blockAddress1, alignment);
+      void* endAddress1 = ptr_add(blockAddress1, block->blockSize);
+      if ((u32)(baseAddress) < (u32)(endAddress1)) {
+        void* blockAddress2 = ptr_add(block, sizeof(MEMiExpHeapMBlockHead));
+        void* endAddress2 = ptr_add(blockAddress2, block->blockSize);
+        const u32 blockSize = ptr_dist(baseAddress, endAddress2);
+        const u32 offset = ptr_dist(blockAddress2, baseAddress);
+        if (maxSize < blockSize ||
+            (maxSize == blockSize && offsetMin > offset)) {
+          maxSize = blockSize;
+          offsetMin = offset;
+        }
+      }
+    }
+
+    if (((u16)heap->_unk38.parts.flags) & 0x04)
+      OSUnlockMutex(&heap->mutex);
+
+    return maxSize;
+  }
+}
+
+u16 MEMSetGroupIDForExpHeap(MEMHeapHandle heap, u16 groupID) {
+  u32 interrupts = OSDisableInterrupts();
+  MEMiExpHeapHead* expHeap =
+      (MEMiExpHeapHead*)ptr_add(heap, sizeof(MEMiHeapHead));
+  u16 old = expHeap->groupID;
+  expHeap->groupID = groupID;
+  OSRestoreInterrupts(interrupts);
+  return old;
+}
+
+void MEMVisitAllocatedForExpHeap(MEMHeapHandle heap, MEMExpHeapVisitor visitor,
+                                 u32 userParam) {
+  if (((u16)heap->_unk38.parts.flags) & 0x04)
+    OSLockMutex(&heap->mutex);
+
+  MEMiExpHeapHead* expHeap =
+      (MEMiExpHeapHead*)ptr_add(heap, sizeof(MEMiHeapHead));
+  MEMiExpHeapMBlockHead* block = expHeap->usedList.head;
+  while (block) {
+    MEMiExpHeapMBlockHead* next = block->next;
+    void* blockAddr = ptr_add(block, sizeof(MEMiExpHeapMBlockHead));
+    (*visitor)(blockAddr, heap, userParam);
+    block = next;
+  }
+
+  if (((u16)heap->_unk38.parts.flags) & 0x04)
+    OSUnlockMutex(&heap->mutex);
+}
+
+// MEMGetSizeForMBlockExpHeap: definicion C reemplazada por asm (ver abajo)
+u32 MEMGetSizeForMBlockExpHeap(const void* addr);
+
+
+u16 MEMGetGroupIDForMBlockExpHeap(const void* data) {
+  MEMiExpHeapMBlockHead* block =
+      (MEMiExpHeapMBlockHead*)((u32)data - sizeof(MEMiExpHeapMBlockHead));
+  return block->attribute.fields.groupID;
+}
+
+u32 MEMAdjustExpHeap(MEMHeapHandle heapHandle) {
+  MEMiHeapHead* heap = heapHandle;
+  MEMiExpHeapHead* expHeap =
+      (MEMiExpHeapHead*)ptr_add(heap, sizeof(MEMiHeapHead));
+  u32 ret;
+
+  if (((u16)heap->_unk38.parts.flags) & 0x04)
+    OSLockMutex(&heap->mutex);
+
+  MEMiExpHeapMBlockHead* block = expHeap->freeList.tail;
+  if (block == NULL) {
+    ret = 0;
+    goto ret_;
+  }
+
+  void* const start = ptr_add(block, sizeof(MEMiExpHeapMBlockHead));
+  void* const end = ptr_add(start, block->blockSize);
+  u32 blockSize;
+
+  if (end != heap->arena_end) {
+    ret = 0;
+    goto ret_;
+  }
+
+  MEM_ExpBlockRemove(&expHeap->freeList, block);
+  blockSize = block->blockSize + sizeof(MEMiExpHeapMBlockHead);
+  heap->arena_end = ptr_sub(heap->arena_end, blockSize);
+  ret = ptr_dist(heap, heap->arena_end);
+
+ret_:
+  if (((u16)heap->_unk38.parts.flags) & 0x04)
+    OSUnlockMutex(&heap->mutex);
+
+  return ret;
+}
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-u32 AllocFromHead_();
-u32 AllocFromTail_();
-u32 AllocUsedBlockFromFreeBlock_();
-u32 MEMAllocFromExpHeapEx(s8 *arg0, s32 arg1, s32 arg2);
-u32 MEMCreateExpHeapEx();
-void MEMGetSizeForMBlockExpHeap();
-extern void MEMiInitHeapHead();
-s32 RecycleRegion_();
-extern void _restgpr_26();
+extern int AllocFromHead_();
+extern int AllocFromTail_();
+extern int AllocUsedBlockFromFreeBlock_();
+MEMHeapHandle MEMCreateExpHeapEx(void* addr, u32 size, u16 flags);
+void MEMFreeToExpHeap(MEMHeapHandle heap, void* addr);
+u32 MEMGetSizeForMBlockExpHeap(const void* addr);
+extern int RecycleRegion_();
 extern void _restgpr_27();
-extern void _savegpr_26();
 extern void _savegpr_27();
-u16 fn_8030C61C();
-u32 fn_8030C66C(s32 arg0, s32 arg1, s32 arg2);
-u32 fn_8030C720(s8 *arg0, s32 arg1, s32 arg2);
-void fn_8030C840(s8 *arg0, s32 arg1);
-s32 fn_8030C8E0();
-s32 fn_8030C9B4(s8 *arg0, s32 arg1);
-void fn_8030CAD8(s8 *arg0, s32 arg1);
+extern int fn_8030C66C();
+extern int fn_8030C6F0();
+extern int fn_8030C720();
+extern int fn_8030C840();
+extern int fn_8030C8E0();
+extern int fn_8030C9B4();
+extern int fn_8030CA68();
+extern int fn_8030CAD8();
+
+// asm_to_cpp: AllocFromHead_
+asm int AllocFromHead_() {
+    nofralloc
+    stwu r1, -0x20(r1)
+    mflr r0
+    addi r3, r3, 0x3c
+    mr r6, r4
+    stw r0, 0x24(r1)
+    subi r0, r5, 0x1
+    nor r8, r0, r0
+    li r12, 0x0
+    stw r31, 0x1c(r1)
+    li r31, -0x1
+    stw r30, 0x18(r1)
+    li r30, 0x0
+    stw r29, 0x14(r1)
+    lhz r7, 0x12(r3)
+    lwz r11, 0x0(r3)
+    clrlwi r0, r7, 31
+    cntlzw r0, r0
+    srwi r10, r0, 5
+    b lbl_8030C154
+lbl_8030C108:
+    addi r29, r11, 0x10
+    lwz r9, 0x4(r11)
+    add r7, r5, r29
+    subi r0, r7, 0x1
+    and r7, r8, r0
+    subf r0, r29, r7
+    add r0, r4, r0
+    cmplw r9, r0
+    blt lbl_8030C150
+    cmplw r31, r9
+    ble lbl_8030C150
+    cmpwi r10, 0x0
+    mr r12, r11
+    mr r31, r9
+    mr r30, r7
+    bne lbl_8030C15C
+    cmplw r9, r4
+    beq lbl_8030C15C
+lbl_8030C150:
+    lwz r11, 0xc(r11)
+lbl_8030C154:
+    cmpwi r11, 0x0
+    bne lbl_8030C108
+lbl_8030C15C:
+    cmpwi r12, 0x0
+    beq lbl_8030C178
+    mr r4, r12
+    mr r5, r30
+    li r7, 0x0
+    bl AllocUsedBlockFromFreeBlock_
+    b lbl_8030C17C
+lbl_8030C178:
+    li r3, 0x0
+lbl_8030C17C:
+    lwz r0, 0x24(r1)
+    lwz r31, 0x1c(r1)
+    lwz r30, 0x18(r1)
+    lwz r29, 0x14(r1)
+    mtlr r0
+    addi r1, r1, 0x20
+    blr
+}
+
+// asm_to_cpp: AllocFromTail_
+asm int AllocFromTail_() {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    addi r3, r3, 0x3c
+    mr r6, r4
+    stw r0, 0x14(r1)
+    subi r0, r5, 0x1
+    nor r7, r0, r0
+    li r11, 0x0
+    stw r31, 0xc(r1)
+    li r12, -0x1
+    stw r30, 0x8(r1)
+    lhz r5, 0x12(r3)
+    lwz r10, 0x4(r3)
+    clrlwi r0, r5, 31
+    li r5, 0x0
+    cntlzw r0, r0
+    srwi r9, r0, 5
+    b lbl_8030C224
+lbl_8030C1E0:
+    lwz r8, 0x4(r10)
+    addi r31, r10, 0x10
+    add r0, r8, r31
+    subf r0, r4, r0
+    and r30, r7, r0
+    subf. r0, r31, r30
+    blt lbl_8030C220
+    cmplw r12, r8
+    ble lbl_8030C220
+    cmpwi r9, 0x0
+    mr r11, r10
+    mr r12, r8
+    mr r5, r30
+    bne lbl_8030C22C
+    cmplw r8, r4
+    beq lbl_8030C22C
+lbl_8030C220:
+    lwz r10, 0x8(r10)
+lbl_8030C224:
+    cmpwi r10, 0x0
+    bne lbl_8030C1E0
+lbl_8030C22C:
+    cmpwi r11, 0x0
+    beq lbl_8030C244
+    mr r4, r11
+    li r7, 0x1
+    bl AllocUsedBlockFromFreeBlock_
+    b lbl_8030C248
+lbl_8030C244:
+    li r3, 0x0
+lbl_8030C248:
+    lwz r0, 0x14(r1)
+    lwz r31, 0xc(r1)
+    lwz r30, 0x8(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
+}
 
 // asm_to_cpp: AllocUsedBlockFromFreeBlock_
-asm u32 AllocUsedBlockFromFreeBlock_() {
+asm int AllocUsedBlockFromFreeBlock_() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -267,135 +882,127 @@ lbl_8030C0A0:
     blr
 }
 
-// asm_to_cpp: AllocFromHead_
-asm u32 AllocFromHead_() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    addi r3, r3, 0x3c
-    mr r6, r4
-    stw r0, 0x24(r1)
-    subi r0, r5, 0x1
-    nor r8, r0, r0
-    li r12, 0x0
-    stw r31, 0x1c(r1)
-    li r31, -0x1
-    stw r30, 0x18(r1)
-    li r30, 0x0
-    stw r29, 0x14(r1)
-    lhz r7, 0x12(r3)
-    lwz r11, 0x0(r3)
-    clrlwi r0, r7, 31
-    cntlzw r0, r0
-    srwi r10, r0, 5
-    b lbl_8030C154
-lbl_8030C108:
-    addi r29, r11, 0x10
-    lwz r9, 0x4(r11)
-    add r7, r5, r29
-    subi r0, r7, 0x1
-    and r7, r8, r0
-    subf r0, r29, r7
-    add r0, r4, r0
-    cmplw r9, r0
-    blt lbl_8030C150
-    cmplw r31, r9
-    ble lbl_8030C150
-    cmpwi r10, 0x0
-    mr r12, r11
-    mr r31, r9
-    mr r30, r7
-    bne lbl_8030C15C
-    cmplw r9, r4
-    beq lbl_8030C15C
-lbl_8030C150:
-    lwz r11, 0xc(r11)
-lbl_8030C154:
-    cmpwi r11, 0x0
-    bne lbl_8030C108
-lbl_8030C15C:
-    cmpwi r12, 0x0
-    beq lbl_8030C178
-    mr r4, r12
-    mr r5, r30
-    li r7, 0x0
-    bl AllocUsedBlockFromFreeBlock_
-    b lbl_8030C17C
-lbl_8030C178:
-    li r3, 0x0
-lbl_8030C17C:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// asm_to_cpp: AllocFromTail_
-asm u32 AllocFromTail_() {
+// asm_to_cpp: MEMCreateExpHeapEx
+asm MEMHeapHandle MEMCreateExpHeapEx(void* addr, u32 size, u16 flags) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
-    addi r3, r3, 0x3c
-    mr r6, r4
+    add r4, r4, r3
     stw r0, 0x14(r1)
-    subi r0, r5, 0x1
-    nor r7, r0, r0
-    li r11, 0x0
+    addi r0, r3, 0x3
+    clrrwi r6, r4, 2
     stw r31, 0xc(r1)
-    li r12, -0x1
-    stw r30, 0x8(r1)
-    lhz r5, 0x12(r3)
-    lwz r10, 0x4(r3)
-    clrlwi r0, r5, 31
-    li r5, 0x0
-    cntlzw r0, r0
-    srwi r9, r0, 5
-    b lbl_8030C224
-lbl_8030C1E0:
-    lwz r8, 0x4(r10)
-    addi r31, r10, 0x10
-    add r0, r8, r31
-    subf r0, r4, r0
-    and r30, r7, r0
-    subf. r0, r31, r30
-    blt lbl_8030C220
-    cmplw r12, r8
-    ble lbl_8030C220
-    cmpwi r9, 0x0
-    mr r11, r10
-    mr r12, r8
-    mr r5, r30
-    bne lbl_8030C22C
-    cmplw r8, r4
-    beq lbl_8030C22C
-lbl_8030C220:
-    lwz r10, 0x8(r10)
-lbl_8030C224:
-    cmpwi r10, 0x0
-    bne lbl_8030C1E0
-lbl_8030C22C:
-    cmpwi r11, 0x0
-    beq lbl_8030C244
-    mr r4, r11
-    li r7, 0x1
-    bl AllocUsedBlockFromFreeBlock_
-    b lbl_8030C248
-lbl_8030C244:
+    clrrwi r31, r0, 2
+    cmplw r31, r6
+    bgt lbl_8030C3FC
+    subf r0, r31, r6
+    cmplwi r0, 0x64
+    bge lbl_8030C404
+lbl_8030C3FC:
     li r3, 0x0
-lbl_8030C248:
+    b lbl_8030C464
+lbl_8030C404:
+    lis r4, 0x4558
+    mr r7, r5
+    mr r3, r31
+    addi r5, r31, 0x50
+    addi r4, r4, 0x5048
+    bl MEMiInitHeapHead
+    li r5, 0x0
+    li r4, 0x4652
+    sth r5, 0x4c(r31)
+    mr r3, r31
+    sth r5, 0x4e(r31)
+    lwz r6, 0x18(r31)
+    lwz r7, 0x1c(r31)
+    addi r0, r6, 0x10
+    sth r4, 0x0(r6)
+    subf r0, r0, r7
+    sth r5, 0x2(r6)
+    stw r0, 0x4(r6)
+    stw r5, 0x8(r6)
+    stw r5, 0xc(r6)
+    stw r6, 0x3c(r31)
+    stw r6, 0x40(r31)
+    stw r5, 0x44(r31)
+    stw r5, 0x48(r31)
+lbl_8030C464:
     lwz r0, 0x14(r1)
     lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
     mtlr r0
     addi r1, r1, 0x10
     blr
 }
 
+// asm_to_cpp: MEMFreeToExpHeap
+asm void MEMFreeToExpHeap(MEMHeapHandle heap, void* addr) {
+    nofralloc
+    stwu r1, -0x20(r1)
+    mflr r0
+    cmpwi r4, 0x0
+    stw r0, 0x24(r1)
+    stw r31, 0x1c(r1)
+    mr r31, r4
+    stw r30, 0x18(r1)
+    mr r30, r3
+    beq lbl_8030C604
+    lwz r0, 0x38(r3)
+    rlwinm. r0, r0, 0, 29, 29
+    beq lbl_8030C590
+    addi r3, r3, 0x20
+    bl OSLockMutex
+lbl_8030C590:
+    lhz r0, -0xe(r31)
+    subi r6, r31, 0x10
+    addi r3, r30, 0x3c
+    extrwi r0, r0, 7, 17
+    subf r0, r0, r6
+    stw r0, 0x8(r1)
+    lwz r0, -0xc(r31)
+    add r4, r6, r0
+    addi r0, r4, 0x10
+    stw r0, 0xc(r1)
+    lwz r5, -0x8(r31)
+    lwz r4, -0x4(r31)
+    cmpwi r5, 0x0
+    beq lbl_8030C5D0
+    stw r4, 0xc(r5)
+    b lbl_8030C5D4
+lbl_8030C5D0:
+    stw r4, 0x8(r3)
+lbl_8030C5D4:
+    cmpwi r4, 0x0
+    beq lbl_8030C5E4
+    stw r5, 0x8(r4)
+    b lbl_8030C5E8
+lbl_8030C5E4:
+    stw r5, 0xc(r3)
+lbl_8030C5E8:
+    addi r4, r1, 0x8
+    bl RecycleRegion_
+    lwz r0, 0x38(r30)
+    rlwinm. r0, r0, 0, 29, 29
+    beq lbl_8030C604
+    addi r3, r30, 0x20
+    bl OSUnlockMutex
+lbl_8030C604:
+    lwz r0, 0x24(r1)
+    lwz r31, 0x1c(r1)
+    lwz r30, 0x18(r1)
+    mtlr r0
+    addi r1, r1, 0x20
+    blr
+}
+
+// asm_to_cpp: MEMGetSizeForMBlockExpHeap
+asm u32 MEMGetSizeForMBlockExpHeap(const void* addr) {
+    nofralloc
+    lwz r3, 0x4(r3)
+    b MEMFreeToExpHeap
+}
+
 // asm_to_cpp: RecycleRegion_
-asm s32 RecycleRegion_() {
+asm int RecycleRegion_() {
     nofralloc
     stwu r1, -0x10(r1)
     li r8, 0x0
@@ -508,199 +1115,8 @@ lbl_8030C3C0:
     blr
 }
 
-// asm_to_cpp: MEMCreateExpHeapEx
-asm u32 MEMCreateExpHeapEx() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    add r4, r4, r3
-    stw r0, 0x14(r1)
-    addi r0, r3, 0x3
-    clrrwi r6, r4, 2
-    stw r31, 0xc(r1)
-    clrrwi r31, r0, 2
-    cmplw r31, r6
-    bgt lbl_8030C3FC
-    subf r0, r31, r6
-    cmplwi r0, 0x64
-    bge lbl_8030C404
-lbl_8030C3FC:
-    li r3, 0x0
-    b lbl_8030C464
-lbl_8030C404:
-    lis r4, 0x4558
-    mr r7, r5
-    mr r3, r31
-    addi r5, r31, 0x50
-    addi r4, r4, 0x5048
-    bl MEMiInitHeapHead
-    li r5, 0x0
-    li r4, 0x4652
-    sth r5, 0x4c(r31)
-    mr r3, r31
-    sth r5, 0x4e(r31)
-    lwz r6, 0x18(r31)
-    lwz r7, 0x1c(r31)
-    addi r0, r6, 0x10
-    sth r4, 0x0(r6)
-    subf r0, r0, r7
-    sth r5, 0x2(r6)
-    stw r0, 0x4(r6)
-    stw r5, 0x8(r6)
-    stw r5, 0xc(r6)
-    stw r6, 0x3c(r31)
-    stw r6, 0x40(r31)
-    stw r5, 0x44(r31)
-    stw r5, 0x48(r31)
-lbl_8030C464:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// asm_to_cpp: MEMAllocFromExpHeapEx
-asm u32 MEMAllocFromExpHeapEx(s8 *arg0, s32 arg1, s32 arg2) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    cmpwi r4, 0x0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r5
-    stw r30, 0x18(r1)
-    mr r30, r4
-    stw r29, 0x14(r1)
-    mr r29, r3
-    bne lbl_8030C4D8
-    li r30, 0x1
-lbl_8030C4D8:
-    lwz r0, 0x38(r3)
-    addi r4, r30, 0x3
-    clrrwi r30, r4, 2
-    rlwinm. r0, r0, 0, 29, 29
-    beq lbl_8030C4F4
-    addi r3, r3, 0x20
-    bl OSLockMutex
-lbl_8030C4F4:
-    cmpwi r31, 0x0
-    blt lbl_8030C510
-    mr r3, r29
-    mr r4, r30
-    mr r5, r31
-    bl AllocFromHead_
-    b lbl_8030C520
-lbl_8030C510:
-    mr r3, r29
-    mr r4, r30
-    neg r5, r31
-    bl AllocFromTail_
-lbl_8030C520:
-    lwz r0, 0x38(r29)
-    mr r31, r3
-    rlwinm. r0, r0, 0, 29, 29
-    beq lbl_8030C538
-    addi r3, r29, 0x20
-    bl OSUnlockMutex
-lbl_8030C538:
-    mr r3, r31
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// asm_to_cpp: MEMFreeToExpHeap
-asm void MEMFreeToExpHeap(s8 *arg0, s8 *arg1) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    cmpwi r4, 0x0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r4
-    stw r30, 0x18(r1)
-    mr r30, r3
-    beq lbl_8030C604
-    lwz r0, 0x38(r3)
-    rlwinm. r0, r0, 0, 29, 29
-    beq lbl_8030C590
-    addi r3, r3, 0x20
-    bl OSLockMutex
-lbl_8030C590:
-    lhz r0, -0xe(r31)
-    subi r6, r31, 0x10
-    addi r3, r30, 0x3c
-    extrwi r0, r0, 7, 17
-    subf r0, r0, r6
-    stw r0, 0x8(r1)
-    lwz r0, -0xc(r31)
-    add r4, r6, r0
-    addi r0, r4, 0x10
-    stw r0, 0xc(r1)
-    lwz r5, -0x8(r31)
-    lwz r4, -0x4(r31)
-    cmpwi r5, 0x0
-    beq lbl_8030C5D0
-    stw r4, 0xc(r5)
-    b lbl_8030C5D4
-lbl_8030C5D0:
-    stw r4, 0x8(r3)
-lbl_8030C5D4:
-    cmpwi r4, 0x0
-    beq lbl_8030C5E4
-    stw r5, 0x8(r4)
-    b lbl_8030C5E8
-lbl_8030C5E4:
-    stw r5, 0xc(r3)
-lbl_8030C5E8:
-    addi r4, r1, 0x8
-    bl RecycleRegion_
-    lwz r0, 0x38(r30)
-    rlwinm. r0, r0, 0, 29, 29
-    beq lbl_8030C604
-    addi r3, r30, 0x20
-    bl OSUnlockMutex
-lbl_8030C604:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// asm_to_cpp: fn_8030C61C
-asm u16 fn_8030C61C() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    stw r30, 0x18(r1)
-    mr r30, r4
-    stw r29, 0x14(r1)
-    mr r29, r3
-    bl OSDisableInterrupts
-    lhz r31, 0x4c(r29)
-    sth r30, 0x4c(r29)
-    bl OSRestoreInterrupts
-    mr r3, r31
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
 // asm_to_cpp: fn_8030C66C
-asm u32 fn_8030C66C(s32 arg0, s32 arg1, s32 arg2) {
+asm int fn_8030C66C() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -740,8 +1156,25 @@ lbl_8030C6DC:
     blr
 }
 
+// asm_to_cpp: fn_8030C6F0
+asm int fn_8030C6F0() {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    stw r0, 0x14(r1)
+    stw r31, 0xc(r1)
+    mr r31, r3
+    bl MEMiFinalizeHeap
+    mr r3, r31
+    lwz r31, 0xc(r1)
+    lwz r0, 0x14(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
+}
+
 // asm_to_cpp: fn_8030C720
-asm u32 fn_8030C720(s8 *arg0, s32 arg1, s32 arg2) {
+asm int fn_8030C720() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -827,7 +1260,7 @@ lbl_8030C820:
 }
 
 // asm_to_cpp: fn_8030C840
-asm void fn_8030C840(s8 *arg0, s32 arg1) {
+asm int fn_8030C840() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -878,7 +1311,7 @@ lbl_8030C8C8:
 }
 
 // asm_to_cpp: fn_8030C8E0
-asm s32 fn_8030C8E0() {
+asm int fn_8030C8E0() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -943,7 +1376,7 @@ lbl_8030C998:
 }
 
 // asm_to_cpp: fn_8030C9B4
-asm s32 fn_8030C9B4(s8 *arg0, s32 arg1) {
+asm int fn_8030C9B4() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -999,10 +1432,46 @@ lbl_8030CA4C:
     blr
 }
 
-void fn_8030CAD8(s8 *arg0, s32 arg1) {
-    MEMAllocFromExpHeapEx(*(void **)(arg0 + 4), arg1, *(s32 *)(arg0 + 8));
+// asm_to_cpp: fn_8030CA68
+asm int fn_8030CA68() {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    cmpwi r4, 0x0
+    stw r0, 0x14(r1)
+    stw r31, 0xc(r1)
+    mr r31, r4
+    stw r30, 0x8(r1)
+    mr r30, r3
+    beq lbl_8030CAC0
+    lwz r0, 0x38(r3)
+    rlwinm. r0, r0, 0, 29, 29
+    beq lbl_8030CAA0
+    addi r3, r3, 0x20
+    bl OSLockMutex
+lbl_8030CAA0:
+    lwz r0, 0x3c(r30)
+    stw r0, 0x0(r31)
+    lwz r0, 0x38(r30)
+    stw r31, 0x3c(r30)
+    rlwinm. r0, r0, 0, 29, 29
+    beq lbl_8030CAC0
+    addi r3, r30, 0x20
+    bl OSUnlockMutex
+lbl_8030CAC0:
+    lwz r0, 0x14(r1)
+    lwz r31, 0xc(r1)
+    lwz r30, 0x8(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
 }
 
-void MEMGetSizeForMBlockExpHeap(s8 *arg0, s32 arg1) {
-    MEMFreeToExpHeap(*(void **)(arg0 + 4), (void *)arg1);
+// asm_to_cpp: fn_8030CAD8
+asm int fn_8030CAD8() {
+    nofralloc
+    mr r5, r3
+    lwz r3, 0x4(r3)
+    lwz r5, 0x8(r5)
+    b MEMAllocFromExpHeapEx
 }

@@ -37,10 +37,10 @@ extern void SCGetIdleMode();
 extern void __OSSetIdleLEDMode();
 extern void _restgpr_27();
 extern void _savegpr_27();
-extern void fn_80313F50();
+extern void OSGetAppType();
 extern void fn_8031C81C();
 extern void fn_8032C0C4();
-extern void fn_80334060();
+extern void NWC24iRegister();
 extern void fn_80334334();
 extern void fn_80334F7C();
 extern void fn_8033504C();
@@ -55,7 +55,7 @@ asm void NWC24iPrepareShutdown() {
     stw r0, 0x24(r1)
     stw r31, 0x1c(r1)
     li r31, 0x0
-    bl fn_80334060
+    bl NWC24iRegister
     lis r5, fn_80334F7C@ha
     lis r4, lbl_80470300@ha
     addi r5, r5, fn_80334F7C@l
@@ -89,7 +89,7 @@ lbl_80334F28:
     lbz r3, 0x9(r1)
     bl __OSSetIdleLEDMode
 lbl_80334F4C:
-    bl fn_80313F50
+    bl OSGetAppType
     clrlwi r0, r3, 24
     cmplwi r0, 0x40
     bne lbl_80334F64

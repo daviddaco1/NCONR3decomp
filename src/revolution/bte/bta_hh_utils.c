@@ -29,8 +29,8 @@ extern void bta_hh_clean_up_kdev();
 extern void bta_hh_find_cb();
 extern void bta_hh_tod_spt();
 extern void bta_hh_trace_dev_db();
-extern void fn_802A59E8();
-extern void fn_802A5A1C();
+extern void bdcpy();
+extern void bdcmp();
 extern void fn_802A6134();
 extern void memcpy();
 extern void memset();
@@ -56,12 +56,12 @@ lbl_802AB534:
     mr r3, r27
     add r4, r31, r29
     addi r4, r4, 0x18
-    bl fn_802A5A1C
+    bl bdcmp
     cmpwi r3, 0x0
     bne lbl_802AB590
     mr r3, r27
     la r4, lbl_804A2810
-    bl fn_802A5A1C
+    bl bdcmp
     cmpwi r3, 0x0
     beq lbl_802AB590
     lbz r0, lbl_8049E000
@@ -105,7 +105,7 @@ lbl_802AB5DC:
     bne lbl_802AB600
     mr r4, r27
     addi r3, r3, 0x18
-    bl fn_802A59E8
+    bl bdcpy
     b lbl_802AB608
 lbl_802AB600:
     addi r29, r29, 0x1

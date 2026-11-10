@@ -41,7 +41,7 @@ extern void _savegpr_27();
 void fn_802E10A8(s32 arg0, s32 arg1);
 void fn_802E1138(s32 arg0, s32 arg1, s32 arg2, M2C_UNK arg_sp0);
 void fn_802E129C(M2C_UNK arg_sp0);
-extern void fn_802E1844();
+extern void __GXSetDirtyState();
 
 // asm_to_cpp: GXSetMisc
 asm void GXSetMisc() {
@@ -97,7 +97,7 @@ asm void fn_802E10A8(s32 arg0, s32 arg1) {
     lwz r0, 0x5fc(r3)
     cmpwi r0, 0x0
     beq lbl_802E10C8
-    bl fn_802E1844
+    bl __GXSetDirtyState
 lbl_802E10C8:
     li r0, 0x0
     lis r3, 0xcc01
@@ -318,7 +318,7 @@ lbl_802E13C4:
     li r0, 0x0
     stw r0, 0x5fc(r31)
     b lbl_802E140C
-    bl fn_802E1844
+    bl __GXSetDirtyState
 lbl_802E140C:
     li r0, 0x0
     lis r3, 0xcc01

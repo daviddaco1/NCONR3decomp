@@ -64,7 +64,7 @@ extern "C" void fn_80209F5C();
 extern "C" void fn_80209F90();
 extern "C" void fn_8020A038();
 extern "C" void fn_8020C330();
-extern "C" void fn_80217CD4();
+extern "C" void DetachSound__Q34nw4r3snd11SoundHandleFv();
 extern "C" void memcpy();
 
 // ----------------------------------------------------------------------------
@@ -1427,12 +1427,12 @@ lbl_80209B38:
     lwz r3, 0x8(r30)
     cmpwi r3, 0x0
     beq lbl_80209B68
-    bl fn_80217CD4
+    bl DetachSound__Q34nw4r3snd11SoundHandleFv
 lbl_80209B68:
     lwz r3, 0xc(r30)
     cmpwi r3, 0x0
     beq lbl_80209B78
-    bl fn_80217CD4
+    bl DetachSound__Q34nw4r3snd11SoundHandleFv
 lbl_80209B78:
     lwz r12, 0x0(r30)
     mr r3, r30
@@ -1912,7 +1912,7 @@ extern "C" asm void IsAttachedGeneralHandle__Q44nw4r3snd6detail10BasicSoundFv() 
 extern "C" asm void DetachTempGeneralHandle__Q44nw4r3snd6detail10BasicSoundFv() {
     nofralloc
     lwz r3, 0x8(r3)
-    b fn_80217CD4
+    b DetachSound__Q34nw4r3snd11SoundHandleFv
 }
 
 // ----------------------------------------------------------------------------

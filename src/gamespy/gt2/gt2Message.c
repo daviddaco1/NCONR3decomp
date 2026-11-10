@@ -1807,10 +1807,7 @@ extern void _restgpr_26();
 extern void _savegpr_25();
 extern void _savegpr_26();
 extern void detail_HoldSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandlePCcPCQ44nw4r3snd14SoundStartable9StartInfo();
-extern void fn_80253658();
-extern void fn_80253660();
 extern void fn_80255E4C();
-extern void fn_80267074();
 extern int fn_80268E04();
 extern int fn_80269ED8();
 extern void fn_80336B20();
@@ -1934,13 +1931,13 @@ lbl_80268F80:
     b lbl_8026923C
 lbl_80268FA4:
     lwz r3, 0x5c(r30)
-    bl fn_80253658
+    bl ArrayLength
     subi r26, r3, 0x1
     b lbl_80269088
 lbl_80268FB4:
     lwz r3, 0x5c(r30)
     mr r4, r26
-    bl fn_80253660
+    bl ArrayNth
     lhz r4, 0xc(r3)
     mr r31, r3
     lhz r0, 0x66(r30)
@@ -1965,14 +1962,14 @@ lbl_80269000:
     lwz r3, 0x5c(r30)
     bl detail_HoldSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandlePCcPCQ44nw4r3snd14SoundStartable9StartInfo
     lwz r3, 0x5c(r30)
-    bl fn_80253658
+    bl ArrayLength
     mr r31, r3
     li r26, 0x0
     b lbl_80269068
 lbl_8026902C:
     lwz r3, 0x5c(r30)
     mr r4, r26
-    bl fn_80253660
+    bl ArrayNth
     lwz r0, 0x0(r3)
     cmpw r0, r29
     ble lbl_80269064
@@ -2193,7 +2190,7 @@ lbl_80269F68:
     li r8, 0x0
     li r9, 0x0
     li r10, 0x0
-    bl fn_80267074
+    bl gti2DumpCallback
     cmpwi r3, 0x0
     bne lbl_80269FD4
     li r0, 0x0

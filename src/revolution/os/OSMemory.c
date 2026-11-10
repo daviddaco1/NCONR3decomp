@@ -405,8 +405,42 @@ static void WeirdAssInline(u32 size){
     }while(size != 0xBA2CF);
 }
 
-// BATConfig: definicion C reemplazada por asm (ver abajo)
+static void BATConfig(u32 size) {
+    u32 mem1sim;
+    u32 mem1phys;
+    void* mem2end;
 
+    mem1sim = OSGetConsoleSimulatedMem1Size();
+    mem1phys = OSGetPhysicalMem1Size();
+    if (OSGetConsoleSimulatedMem1Size() < mem1phys &&
+        mem1sim == OS_MEM_MB_TO_B(24)) {
+        DCInvalidateRange((void*)0x81800000, OS_MEM_MB_TO_B(24));
+        MI_HW_REGS[MI_REG_0x28] = 2;
+    }
+
+    if (mem1sim <= OS_MEM_MB_TO_B(24)) {
+        RealMode(ConfigMEM1_24MB);
+    }
+
+    mem2end = *(void**)OSPhysicalToCached(OS_PHYS_ACCESSIBLE_MEM2_END);
+    if (OSGetConsoleSimulatedMem2Size() <= OS_MEM_MB_TO_B(64)) {
+        if (mem2end <= (void*)0x93400000) {
+            RealMode(ConfigMEM2_52MB);
+        } else if ((char*)mem2end <= (char*)0x93400000 + OS_MEM_MB_TO_B(4)) {
+            RealMode(ConfigMEM2_56MB);
+        } else {
+            RealMode(ConfigMEM2_64MB);
+        }
+    } else if (OSGetConsoleSimulatedMem2Size() <= OS_MEM_MB_TO_B(128)) {
+        if (mem2end <= (void*)0x97000000) {
+            RealMode(ConfigMEM2_112MB);
+        } else {
+            RealMode(ConfigMEM2_128MB);
+        }
+    }
+
+    WeirdAssInline(size);
+}
 
 //unused
 void OSDisableCodeExecOnMEM1Hi8MB(){
@@ -429,19 +463,40 @@ void OSEnableCodeExecOnMEM2Lo16MB(){
 void OSEnableCodeExecOnMEM2Lo8MB(){
 }
 
-// __OSInitMemoryProtection: definicion C reemplazada por asm (ver abajo)
+void __OSInitMemoryProtection(void) {
+    static BOOL initialized = FALSE;
 
+    if(!initialized){
+        const BOOL enabled = OSDisableInterrupts();
+
+        MI_HW_REGS[MI_REG_0x20] = 0;
+        MI_HW_REGS[MI_PROT_MEM0] = 0xFF;
+
+        __OSMaskInterrupts(
+            OS_INTR_MASK(OS_INTR_MEM_0) | OS_INTR_MASK(OS_INTR_MEM_1) |
+            OS_INTR_MASK(OS_INTR_MEM_2) | OS_INTR_MASK(OS_INTR_MEM_3));
+        __OSSetInterruptHandler(OS_INTR_MEM_0, MEMIntrruptHandler);
+        __OSSetInterruptHandler(OS_INTR_MEM_1, MEMIntrruptHandler);
+        __OSSetInterruptHandler(OS_INTR_MEM_2, MEMIntrruptHandler);
+        __OSSetInterruptHandler(OS_INTR_MEM_3, MEMIntrruptHandler);
+        __OSSetInterruptHandler(OS_INTR_MEM_ADDRESS, MEMIntrruptHandler);
+        OSRegisterShutdownFunction(&ShutdownFunctionInfo);
+
+        BATConfig(0xBA2CF);
+        __OSUnmaskInterrupts(OS_INTR_MASK(OS_INTR_MEM_ADDRESS));
+
+        initialized = TRUE;
+        
+        OSRestoreInterrupts(enabled);
+    }
+}
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-extern float initialized_696_8049E318;
-extern u8 ShutdownFunctionInfo_803810A8[];
-extern void DCInvalidateRange();
-extern void OSRegisterShutdownFunction();
-extern void fn_8031A5A8();
-extern void fn_8031ABB0();
+extern int fn_8031A5A8();
+extern int fn_8031ABB0();
 
 // asm_to_cpp: fn_8031A5A8
-asm void fn_8031A5A8() {
+asm int fn_8031A5A8() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -461,93 +516,8 @@ lbl_8031A5D0:
     blr
 }
 
-// asm_to_cpp: BATConfig
-asm static void BATConfig(u32 size) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    lis r4, 0x8000
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    lwz r31, 0x3104(r4)
-    lwz r0, 0x3100(r4)
-    cmplw r31, r0
-    bge lbl_8031AAE0
-    subis r0, r31, 0x180
-    cmplwi r0, 0x0
-    bne lbl_8031AAE0
-    lis r3, 0x8180
-    lis r4, 0x180
-    bl DCInvalidateRange
-    li r0, 0x2
-    lis r3, 0xcc00
-    sth r0, 0x4028(r3)
-lbl_8031AAE0:
-    lis r0, 0x180
-    cmplw r31, r0
-    bgt lbl_8031AAF8
-    lis r3, ConfigMEM1_24MB@ha
-    addi r3, r3, ConfigMEM1_24MB@l
-    bl RealMode
-lbl_8031AAF8:
-    lis r3, 0x8000
-    lis r0, 0x400
-    lwz r4, 0x311c(r3)
-    lwz r3, 0x3120(r3)
-    cmplw r4, r0
-    bgt lbl_8031AB58
-    lis r0, 0x9340
-    cmplw r3, r0
-    bgt lbl_8031AB2C
-    lis r3, ConfigMEM2_52MB@ha
-    addi r3, r3, ConfigMEM2_52MB@l
-    bl RealMode
-    b lbl_8031AB8C
-lbl_8031AB2C:
-    lis r0, 0x9380
-    cmplw r3, r0
-    bgt lbl_8031AB48
-    lis r3, ConfigMEM2_56MB@ha
-    addi r3, r3, ConfigMEM2_56MB@l
-    bl RealMode
-    b lbl_8031AB8C
-lbl_8031AB48:
-    lis r3, ConfigMEM2_64MB@ha
-    addi r3, r3, ConfigMEM2_64MB@l
-    bl RealMode
-    b lbl_8031AB8C
-lbl_8031AB58:
-    lis r0, 0x800
-    cmplw r4, r0
-    bgt lbl_8031AB8C
-    lis r0, 0x9700
-    cmplw r3, r0
-    bgt lbl_8031AB80
-    lis r3, ConfigMEM2_112MB@ha
-    addi r3, r3, ConfigMEM2_112MB@l
-    bl RealMode
-    b lbl_8031AB8C
-lbl_8031AB80:
-    lis r3, ConfigMEM2_128MB@ha
-    addi r3, r3, ConfigMEM2_128MB@l
-    bl RealMode
-lbl_8031AB8C:
-    subis r0, r30, 0xb
-lbl_8031AB90:
-    cmplwi r0, 0xa2cf
-    bne lbl_8031AB90
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
 // asm_to_cpp: fn_8031ABB0
-asm void fn_8031ABB0() {
+asm int fn_8031ABB0() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -563,63 +533,6 @@ lbl_8031ABD4:
     bne lbl_8031ABD4
     lwz r0, 0x14(r1)
     lwz r31, 0xc(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// asm_to_cpp: __OSInitMemoryProtection
-asm void __OSInitMemoryProtection(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    lwz r0, initialized_696_8049E318
-    stw r31, 0xc(r1)
-    cmpwi r0, 0x0
-    stw r30, 0x8(r1)
-    bne lbl_8031ACA4
-    bl OSDisableInterrupts
-    lis r4, 0xcc00
-    li r0, 0x0
-    sth r0, 0x4020(r4)
-    li r0, 0xff
-    mr r30, r3
-    lis r3, 0xf000
-    sth r0, 0x4010(r4)
-    bl __OSMaskInterrupts
-    lis r31, MEMIntrruptHandler@ha
-    li r3, 0x0
-    addi r4, r31, MEMIntrruptHandler@l
-    bl __OSSetInterruptHandler
-    addi r4, r31, MEMIntrruptHandler@l
-    li r3, 0x1
-    bl __OSSetInterruptHandler
-    addi r4, r31, MEMIntrruptHandler@l
-    li r3, 0x2
-    bl __OSSetInterruptHandler
-    addi r4, r31, MEMIntrruptHandler@l
-    li r3, 0x3
-    bl __OSSetInterruptHandler
-    addi r4, r31, MEMIntrruptHandler@l
-    li r3, 0x4
-    bl __OSSetInterruptHandler
-    lis r3, ShutdownFunctionInfo_803810A8@ha
-    addi r3, r3, ShutdownFunctionInfo_803810A8@l
-    bl OSRegisterShutdownFunction
-    lis r3, 0xc
-    subi r3, r3, 0x5d31
-    bl BATConfig
-    lis r3, 0x800
-    bl __OSUnmaskInterrupts
-    li r0, 0x1
-    mr r3, r30
-    stw r0, initialized_696_8049E318
-    bl OSRestoreInterrupts
-lbl_8031ACA4:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
     mtlr r0
     addi r1, r1, 0x10
     blr

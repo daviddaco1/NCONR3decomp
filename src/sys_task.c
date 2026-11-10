@@ -4,6 +4,59 @@
 
 extern "C" {
 
+struct TaskStruct_0x160 {
+    u32 flags;
+    u8 pad[0x70];
+    s32 field_0x74;
+    u8 pad2[0x15c - 0x78];
+    void (*field_0x15c)(struct TaskStruct_0x160 *);
+};
+struct TaskStruct_0x160 * fn_8017ADBC(s32 arg0);
+struct SK_fn_8017B9BC_8 { f32 f_0; f32 f_4; f32 f_8; f32 f_C; };
+struct S_fn_8017B9BC_arg0 {
+    u8 pad_0[0x4];
+    f32 f_4;
+    f32 f_8;
+    f32 f_C;
+    u8 pad_10[0xC];
+    f32 f_1C;
+    f32 f_20;
+    f32 f_24;
+    f32 f_28;
+    f32 f_2C;
+    f32 f_30;
+};
+struct TaskStruct_0x160 * fn_8017ADBC(s32 arg0);
+struct TaskStruct_0x160 * fn_8017ADBC(s32 arg0);
+struct S_fn_8017A4D8_arg0 {
+    u8 pad_0[0x34];
+    f32 f_34;
+    f32 f_38;
+};
+struct S_fn_8017A510_arg0 {
+    f32 f_0;
+    f32 f_4;
+};
+struct S_fn_8017A594_arg0 {
+    f32 f_0;
+    f32 f_4;
+};
+struct S_fn_8017C8F0_arg0 {
+    u8 pad_0[0x38];
+    f32 f_38;
+};
+struct TaskStruct_0x160 * fn_8017ADBC(s32 arg0);
+struct TaskStruct_0x160 * fn_8017ADBC(s32 arg0);
+struct SK_fn_8017AC64_28 { f32 f_0; f32 f_4; f32 f_8; f32 f_C; f32 f_10; f32 f_14; f32 f_18; f32 f_1C; f32 f_20; f32 f_24; f32 f_28; f32 f_2C; };
+struct SK_fn_8017AC64_8 { f32 f_0; f32 f_4; f32 f_8; f32 f_C; f32 f_10; f32 f_14; f32 f_18; f32 f_1C; };
+struct TaskStruct_0x160 * fn_8017ADBC(s32 arg0);
+struct TaskStruct_0x160 * fn_8017ADBC(s32 arg0);
+struct SK_fn_8017CC60_8 { f32 f_0; f32 f_4; f32 f_8; f32 f_C; };
+struct TaskStruct_0x160 * fn_8017ADBC(s32 arg0);
+struct TaskStruct_0x160 * fn_8017ADBC(s32 arg0);
+struct TaskStruct_0x160 * fn_8017ADBC(s32 arg0);
+struct TaskStruct_0x160 * fn_8017ADBC(s32 arg0);
+
 extern u8 jumptable_8035E13C[];
 extern u8 lbl_8035E080[];
 extern u8 lbl_8035E088[];
@@ -22,34 +75,27 @@ extern u8 lbl_803C83B8[];
 extern u8 lbl_803D13B8[];
 extern u8 lbl_803D13F8[];
 extern u8 lbl_803D1438[];
-struct TaskStruct_0x160 {
-    u32 flags;
-    u8 pad[0x70];
-    s32 field_0x74;
-    u8 pad2[0x15c - 0x78];
-    void (*field_0x15c)(struct TaskStruct_0x160 *);
-};
 extern struct TaskStruct_0x160 lbl_803D1460[];
-extern float lbl_8049D800;
-extern float lbl_8049D808;
-extern float lbl_8049D80C;
-extern float lbl_8049D810;
-extern float lbl_8049D814;
-extern float lbl_8049D818;
-extern float lbl_8049D81C;
-extern float lbl_8049D820;
-extern float lbl_8049D824;
-extern float lbl_8049D828;
+extern s32 lbl_8049D800;
+extern s32 lbl_8049D808;
+extern s32 lbl_8049D80C;
+extern s32 lbl_8049D810;
+extern s32 lbl_8049D814;
+extern s32 lbl_8049D818;
+extern s32 lbl_8049D81C;
+extern s32 lbl_8049D820;
+extern s32 lbl_8049D824;
+extern s32 lbl_8049D828;
 extern s32 lbl_8049D82C;
 extern s32 lbl_8049D830;
 extern s32 lbl_8049D834;
 extern float lbl_804A0E88;
-extern float lbl_804A0E90;
+__declspec(section ".sdata2") extern const f32 lbl_804A0E90[];
 extern float lbl_804A0EF0;
-extern float lbl_804A0EF8;
+__declspec(section ".sdata2") extern const f32 lbl_804A0EF8[];
 extern float lbl_804A0F08;
 extern float lbl_804A0F10;
-extern float lbl_804A0F18;
+__declspec(section ".sdata2") extern const f32 lbl_804A0F18[];
 
 void C_MTXOrtho(s32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6);
 M2C_UNK GXBegin(s32 arg0, s32 arg1, s32 arg2);
@@ -71,8 +117,8 @@ s32 GXSetScissorBoxOffset__Q34nw4r3g3d6CameraCFv();
 s32 GXSetScissor__Q34nw4r3g3d6CameraCFv(s32 arg0_pad);
 M2C_UNK GXSetTexCoordGen2(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5);
 void GXSetViewport__Q34nw4r3g3d6CameraCFv(s8 **arg0);
-M2C_UNK GXSetVtxAttrFmt(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
-M2C_UNK GXSetVtxDesc(s32 arg0, s32 arg1);
+void GXSetVtxAttrFmt(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
+void GXSetVtxDesc(s32 arg0, s32 arg1);
 void GXSetZMode(s32 arg0, s32 arg1, s32 arg2);
 void GetCameraMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX34(s8 **arg0, s32 arg1);
 void GetProjectionMtx__Q34nw4r3g3d6CameraCFPQ34nw4r4math5MTX44(s8 **arg0, s32 arg1);
@@ -93,7 +139,7 @@ s32 NANDGetHomeDir(s32 arg0);
 u8 * NANDGetType(void);
 s32 NANDGetUserData(s32 *arg0);
 u8 * NANDInit(void);
-void NANDInitBanner(s8 *arg0, s32 arg1, M2C_UNK *arg2, M2C_UNK *arg3);
+void NANDInitBanner(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 s32 NANDMove(s32 arg0, s32 arg1);
 s32 NANDMoveAsync(s32 arg0, s32 arg1, s32 arg2, s8 *arg3);
 s32 NANDOpen(s32 arg0, s8 *arg1, s32 arg2);
@@ -123,6 +169,7 @@ void SetPosture__Q34nw4r3g3d6CameraFRCQ44nw4r3g3d6Camera11PostureInfo(s8 **arg0,
 void SetScissorBoxOffset__Q34nw4r3g3d6CameraFll(s8 **arg0, s32 arg1, s32 arg2);
 void SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl(s8 **arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 void SetViewport__Q34nw4r3g3d6CameraFffff(s8 **arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3);
+void TPLBind(s32 arg0);
 void __construct_array(void *ptr, void *ctor, void *dtor, u32 size, u32 n);
 s32 __cvt_fp2unsigned(f64 arg0);
 s32 _restfpr_26();
@@ -139,12 +186,12 @@ s32 _savegpr_25();
 s32 _savegpr_27();
 s32 _savegpr_28();
 s32 _savegpr_29();
-void fn_80016D44(s32 arg0);
+void fn_80016D44(void);
 s32 fn_80016E44(s32 arg0, s32 arg1);
-void fn_80018AF8(s32 arg0, s32 arg1, s32 arg2);
+s32 fn_80018AF8(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018B00(s32 arg0, s32 arg1, s32 arg2);
 void fn_80018B04(s32 arg0, s32 arg1, s32 arg2);
-void fn_80018B08(s32 arg0, s32 arg1, s32 arg2);
+void fn_80018B08(s32 arg0, s32 arg1, f32 farg0_x);
 M2C_UNK fn_80018B0C(M2C_UNK *arg0, f32 farg0, f32 farg1, f32 farg2);
 f32 fn_80018BD4(f32 farg0);
 M2C_UNK fn_80018C2C(f32 farg0);
@@ -154,14 +201,14 @@ M2C_UNK fn_8001B8B4(s32 arg0, s32 arg1);
 void fn_8001B8B8(s32 arg0, s32 arg1, s32 arg2);
 M2C_UNK fn_8001D9AC(s32 arg0, s32 arg1);
 f32 fn_8001DA9C(f32 farg0);
-void fn_8001F9C8(s32 arg0, s32 arg1, s32 arg2);
-M2C_UNK fn_8002AE3C(s32 arg0);
-void fn_8002AE40(s32 arg0);
-void fn_8002AF5C(s32 arg0);
+s32 fn_8001F9C8(s32 arg0, s32 arg1, s32 arg2);
+M2C_UNK fn_8002AE3C(void);
+void fn_8002AE40(void);
+void fn_8002AF5C(void);
 M2C_UNK fn_8002AF60(s8 *arg0, f32 farg0, f32 farg1, f32 farg2);
 s32 fn_8002AF70(s32 arg0);
 s32 fn_8002AFB4(s32 arg0, s32 arg1);
-void fn_8002AFF0(s32 arg0, f32 farg4, f32 farg5, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
+void fn_8002AFF0(s32 arg0, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f32 farg4, f32 farg5);
 void fn_80034AF0(s32 arg0, s32 arg1);
 M2C_UNK * fn_80036184(M2C_UNK *arg0, s32 arg1);
 s32 fn_8003D25C(s32 arg0, s8 *arg1, s8 *arg2, s8 *arg3, s32 arg4);
@@ -170,7 +217,7 @@ s32 fn_8003DB44(s32 arg0);
 f32 fn_800674B8(s32 arg0, s32 arg1);
 void fn_80090CAC(s8 *arg0);
 s32 fn_80090CC4(s8 *arg0);
-void fn_80090D40(s8 *arg0, s8 *arg1);
+f32 fn_80090D40(s8 *arg0, s8 *arg1);
 s32 fn_80166640(s32 arg0);
 M2C_UNK fn_80166A90(s32 arg0, s32 arg1, s32 arg2);
 s32 fn_80166B54(s32 arg0);
@@ -182,7 +229,7 @@ s32 fn_80170410(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 s32 fn_80170560(s32 arg0);
 M2C_UNK fn_80170E2C(s32 arg0, s32 arg1, s32 arg2);
 f32 fn_801728FC(f32 farg0, f32 farg1, f32 farg2, f32 farg3);
-f32 fn_8017298C(f32 farg0, f32 farg1, f32 farg2, f32 farg3, s32 arg4);
+f32 fn_8017298C(s32 arg4, f32 farg0, f32 farg1, f32 farg2, f32 farg3);
 f32 fn_80172A18(f32 farg0, f32 farg1, f32 farg2);
 f32 fn_80172A28(s32 arg0, s32 arg1, s32 arg2, f32 farg0, f32 farg1);
 f32 fn_80172CB4(s32 arg0, s32 arg1, s32 arg2, f32 farg0, f32 farg1);
@@ -190,8 +237,8 @@ void fn_80172FB0(s32 arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4, s32 arg5);
 void fn_80173228(f32 *arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4, s32 arg5);
 void fn_8017347C(s32 arg0, f32 *arg1);
 void fn_801734E4(s32 arg0, s32 arg1);
-void fn_80173750(s32 arg0);
-void fn_801739B8(s32 arg0, s32 arg1, s32 arg2);
+s32 fn_80173750(s32 arg0);
+void fn_801739B8(s32 arg0, s32 arg1, s32 arg2, f32 farg0_x);
 void fn_80176674(void);
 void fn_801766D4(void);
 s8 * fn_80176808(s32 arg0);
@@ -251,8 +298,8 @@ s32 fn_801794E4(s32 arg0, s32 arg1);
 s32 fn_801794E8(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 s32 fn_801794EC(s32 arg0, s32 arg1, s32 arg2);
 s32 fn_801794F0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
-void *fn_801794F4(const void *arg0);
-void *fn_80179524(s32 arg0, const void *arg1);
+void * fn_801794F4(const void *arg0);
+void * fn_80179524(s32 arg0, const void *arg1);
 void fn_80179570(u8 *arg0);
 s32 fn_8017967C(u8 *arg0, s32 arg1);
 s32 fn_80179740(u8 *arg0, s32 arg1);
@@ -274,9 +321,9 @@ s32 fn_8017A040(void);
 void fn_8017A054(M2C_UNK *arg0);
 void fn_8017A0D8(M2C_UNK *arg0);
 void fn_8017A444(void);
-void fn_8017A4D8(M2C_UNK *arg0, s32 arg1);
-void fn_8017A510(s8 *arg0, f32 farg0, f32 farg1);
-s32 fn_8017A594();
+void fn_8017A4D8(S_fn_8017A4D8_arg0 *arg0, s32 arg1);
+void fn_8017A510(S_fn_8017A510_arg0 *arg0, f32 farg0, f32 farg1);
+void fn_8017A594(S_fn_8017A594_arg0 *arg0, u32 arg1);
 void fn_8017A704(void);
 s32 fn_8017A848(s32 arg0);
 void fn_8017A940(void);
@@ -288,7 +335,7 @@ void fn_8017AD78(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_8017AD84(s16 arg0, s16 arg1);
 void fn_8017AD9C(s16 arg0, s16 arg1, s16 arg2);
 struct TaskStruct_0x160 * fn_8017ADBC(s32 arg0);
-s32 fn_8017ADE4();
+f32 fn_8017ADE4(s32 arg0_x);
 void fn_8017AE0C(f32 *arg0, s32 *arg1);
 void fn_8017AE60(f32 *arg0, s32 *arg1);
 void fn_8017AF90(f32 *arg0, s32 *arg1);
@@ -303,13 +350,13 @@ s8 * fn_8017B5E4(s32 arg0);
 void fn_8017B738(s32 arg0);
 void fn_8017B754(void);
 void fn_8017B790(void);
-void fn_8017B9BC(s32 *arg0);
+void fn_8017B9BC(S_fn_8017B9BC_arg0 *arg0);
 void fn_8017BA64(s32 *arg0);
 void fn_8017BC20(struct TaskStruct_0x160 *arg0);
-void fn_8017BC38(s32 *arg0);
+s32 fn_8017BC38(s32 *arg0);
 void fn_8017BF10(s32 *arg0);
 void fn_8017BF58(s32 arg0, s32 arg1, s32 arg2, f32 farg0, f32 farg1);
-void fn_8017C068(s32 *arg0);
+s32 fn_8017C068(s32 *arg0);
 void fn_8017C22C(s32 arg0);
 void fn_8017C2CC(void);
 s32 fn_8017C348(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3);
@@ -320,7 +367,7 @@ void fn_8017C534(s32 *arg0, f32 farg0, f32 farg1);
 void fn_8017C6BC(s32 *arg0, f32 farg0);
 void fn_8017C75C(s32 *arg0, f32 farg0, f32 farg1);
 void fn_8017C8AC(s32 *arg0, f32 farg0);
-void fn_8017C8F0(s32 *arg0, f32 farg0);
+void fn_8017C8F0(S_fn_8017C8F0_arg0 *arg0, f32 farg0);
 void fn_8017C934(s32 *arg0, s32 arg1, s32 arg2, f32 farg0, f32 farg1);
 void fn_8017CAEC(s32 *arg0, s32 arg1, s32 arg2, f32 farg0, f32 farg1);
 void fn_8017CC60(s32 *arg0, s32 arg1, s32 arg2, f32 farg0);
@@ -330,7 +377,7 @@ s32 fn_8017CF14(s32 arg0);
 s32 fn_8017CF48(s32 arg0);
 s8 * fn_80186C78(s8 *arg0, s32 arg1, u32 arg2);
 void fn_8018BED4(void);
-void fn_8018C184(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, f32 farg0, f32 farg1, f32 farg2, f32 farg3, s32 arg10);
+void fn_8018C184(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg10, f32 farg0, f32 farg1, f32 farg2, f32 farg3);
 void fn_8018C9DC(void);
 M2C_UNK fn_8018CB4C(s32 arg0);
 M2C_UNK fn_8018CB84(void);
@@ -341,9 +388,9 @@ f32 fn_801A32A0(f64 farg0, f64 farg1);
 f32 fn_801A3344(f64 farg0);
 f32 fn_802019BC(void);
 s32 fn_8028A9B8(s32 arg0, s32 *arg1);
-void fn_802E43CC(s32 arg0, s32 arg1);
-void fn_802E48CC(u32 arg0, s32 arg1, s32 arg2, s32 arg3);
-void fn_802E4A28(s32 arg0);
+s32 fn_802E43CC(s32 arg0, s32 arg1);
+s32 fn_802E48CC(u32 arg0, s32 arg1, s32 arg2, s32 arg3);
+s32 fn_802E4A28(s32 arg0);
 void fn_802E9AC0(s8 *arg0, s32 arg1);
 void fn_802E9BE8(void);
 void fn_802E9C18(s8 *arg0);
@@ -359,14 +406,601 @@ void fn_80310908(void);
 u8 * fn_80311D38(s32 arg0, s32 arg1, s32 arg2, u8 *arg3);
 s32 fn_8031209C(s32 arg0, s32 arg1, s32 *arg2);
 s32 fn_803121A4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s8 *arg4);
-void fn_803299FC(s8 *arg0);
 s32 memcmp(s32 arg0, s32 arg1, s32 arg2);
-void *memcpy(void *dest, const void *src, u32 count);
-void *memset(void *dest, int ch, u32 count);
+void * memcpy(void *dest, const void *src, u32 count);
+void * memset(void *dest, int ch, u32 count);
 s32 nandChangeDirCallback(u8 *arg0);
-M2C_UNK sprintf(s8 *arg0, s32 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7);
+M2C_UNK sprintf(s32 arg0, s32 arg1, ...);
 void strcat(s32 arg0, s32 arg1);
 void strcpy(s32 arg0, s32 arg1);
+
+
+void fn_80178728(s32 arg0, s32 arg1) {
+    fn_80178558((s8 *) ((s8 *) arg0), (s32) (0x10002), (s32) (arg1));
+}
+
+void fn_80178738(s32 arg0, s32 arg1) {
+    fn_80178558((s8 *) ((s8 *) arg0), (s32) (0x10012), (s32) (arg1));
+}
+
+void fn_80178748(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    s8 *temp_r3;
+
+    temp_r3 = (s8 *) (fn_80178558((s8 *) ((s8 *) arg0), (s32) (0x10003), (s32) (arg1)));
+    if (temp_r3 != NULL) {
+        M2C_FIELD(temp_r3, s32 *, 4) = (s32) (arg2);
+        M2C_FIELD(temp_r3, s32 *, 8) = (s32) ((s32) ((arg3 + 0x1F) & 0xFFFFFFE0));
+    }
+}
+
+void fn_801787A8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    s8 *temp_r3;
+
+    temp_r3 = (s8 *) (fn_80178558((s8 *) ((s8 *) arg0), (s32) (0x10004), (s32) (arg1)));
+    if (temp_r3 != NULL) {
+        M2C_FIELD(temp_r3, s32 *, 4) = (s32) (arg2);
+        M2C_FIELD(temp_r3, s32 *, 8) = (s32) ((s32) ((arg3 + 0x1F) & 0xFFFFFFE0));
+    }
+}
+
+void fn_80178808(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    s8 *temp_r3;
+
+    temp_r3 = (s8 *) (fn_80178558((s8 *) ((s8 *) arg0), (s32) (0x10005), (s32) (arg1)));
+    if (temp_r3 != NULL) {
+        M2C_FIELD(temp_r3, s32 *, 4) = (s32) (arg2);
+        M2C_FIELD(temp_r3, s32 *, 8) = (s32) (arg3);
+    }
+}
+
+void fn_801788D0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    s8 *temp_r3;
+
+    temp_r3 = (s8 *) (fn_80178558((s8 *) ((s8 *) arg0), (s32) (0x10013), (s32) (arg1)));
+    if (temp_r3 != NULL) {
+        M2C_FIELD(temp_r3, s32 *, 4) = (s32) (arg2);
+        M2C_FIELD(temp_r3, s32 *, 8) = (s32) (arg3);
+        M2C_FIELD(temp_r3, s32 *, 0xC) = (s32) (arg4);
+    }
+}
+
+void fn_80178ACC(s8 *arg0, s32 arg1) {
+    s32 temp_r3_3;
+    s32 temp_r3_4;
+    s32 var_r5;
+    s8 *temp_r3;
+    s8 *temp_r3_2;
+
+    temp_r3 = (s8 *) (NANDGetUserData((s32 *) ((s32 *) arg1)));
+    if ((s32) (M2C_FIELD(temp_r3, s32 *, 0) & 4) != 0) {
+        fn_80178C20((s8 *) (temp_r3), (s32) (-1));
+        return;
+    }
+    fn_80178A00((s8 *) (temp_r3), (s8 *) (arg0));
+    temp_r3_2 = (s8 *) (fn_801789A8((s8 *) (temp_r3), (s8 *) (arg0)));
+    M2C_FIELD((M2C_FIELD(temp_r3, s32 *, 0x1E0) + (M2C_FIELD(temp_r3, s32 *, 0x1D8) * 0x130)), s8 **, 0x128) = (s8 *) (temp_r3_2);
+    temp_r3_3 = (s32) (fn_8017830C((s32) ((s32) temp_r3_2)));
+    var_r5 = (s32) (0);
+    if ((temp_r3_3 == 0) || ((s32) (temp_r3_3 & M2C_FIELD((M2C_FIELD(temp_r3, s32 *, 0x1E0) + (M2C_FIELD(temp_r3, s32 *, 0x1D8) * 0x130)), s32 *, 0x12C)) != 0)) {
+        var_r5 = (s32) (1);
+    }
+    if (var_r5 != 0) {
+        M2C_FIELD(temp_r3, s32 *, 0x1D8) = (s32) ((s32) (M2C_FIELD(temp_r3, s32 *, 0x1D8) + 1));
+        fn_80178C54((s8 *) (temp_r3));
+        return;
+    }
+    temp_r3_4 = (s32) (M2C_FIELD(temp_r3, s32 *, 0));
+    if ((s32) (temp_r3_4 & 1) != 0) {
+        M2C_FIELD(temp_r3, s32 *, 0) = (s32) ((s32) (temp_r3_4 & 0xFFFFFFFE));
+        fn_801793C4((s32) ((s32) (temp_r3 + 0x84)), (s32) ((s32) fn_80178ACC), (s32) ((s32) (temp_r3 + 0x110)));
+        M2C_FIELD(temp_r3, s32 *, 0) = (s32) ((s32) (M2C_FIELD(temp_r3, s32 *, 0) | 4));
+        return;
+    }
+    if ((s32) (temp_r3_4 & 2) != 0) {
+        M2C_FIELD(temp_r3, s32 *, 0) = (s32) ((s32) (temp_r3_4 & 0xFFFFFFFD));
+        fn_801793CC((s32) ((s32) (temp_r3 + 0x84)), (s32) ((s32) fn_80178ACC), (s32) ((s32) (temp_r3 + 0x110)));
+        M2C_FIELD(temp_r3, s32 *, 0) = (s32) ((s32) (M2C_FIELD(temp_r3, s32 *, 0) | 4));
+        return;
+    }
+    fn_80178C20((s8 *) (temp_r3), (s32) (-1));
+}
+
+s32 fn_801792A8(void) {
+    return (s32) (NANDInit());
+}
+
+s8 * fn_801792AC(void) {
+    s32 temp_r3;
+
+    temp_r3 = (s32) (fn_801792F0());
+    if (temp_r3 != 0) {
+        return (s8 *) ((s8 *) temp_r3);
+    }
+    fn_801794C8();
+    fn_801794B8();
+    return (s8 *) ((s8 *) temp_r3);
+}
+
+#pragma dont_inline on
+M2C_UNK fn_801792F0(void) {
+    return (M2C_UNK)NANDTellAsync((s32 *)(lbl_803C2330 + 0x80), (s32 *)(lbl_803C2330 + 0x84));
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+M2C_UNK fn_80179304(s32 arg0, s32 arg1) {
+    return (M2C_UNK)fn_8030F3DC((s32)(lbl_803C2330 + 0x80), (s32)(lbl_803C2330 + 0x84), arg0, (s8 *)arg1);
+}
+#pragma dont_inline reset
+
+s32 fn_80179320(s32 arg0, u8 arg1, u8 arg2) {
+    return (s32) (NANDCreate((s32) (arg0), (s32) ((s32) arg1), (s32) ((s32) arg2)));
+}
+
+s32 fn_8017932C(s32 arg0, u8 arg1, u8 arg2, s32 arg3, s32 arg4) {
+    return (s32) (NANDPrivateCreateAsync((s32) (arg0), (s32) ((s32) arg1), (s32) ((s32) arg2), (s32) (arg3), (s8 *) ((s8 *) arg4)));
+}
+
+s32 fn_80179338(s8 *arg0, s32 arg1, u8 arg2) {
+    return (s32) (NANDOpen((s32) (arg1), (s8 *) (arg0), (s32) ((s32) arg2)));
+}
+
+s32 fn_8017934C(s8 *arg0, s32 arg1, u8 arg2, s32 arg3, s32 arg4) {
+    return (s32) (NANDOpenAsync((s32) (arg1), (s32) ((s32) arg0), (s32) ((s32) arg2), (s32) (arg3), (s8 *) ((s8 *) arg4)));
+}
+
+s32 fn_801793C0(s32 arg0) {
+    return (s32) (NANDClose((s8 *) ((s8 *) arg0)));
+}
+
+s32 fn_801793C4(s32 arg0, s32 arg1, s32 arg2) {
+    return (s32) (NANDCloseAsync((s8 *) ((s8 *) arg0), (s32) (arg1), (s8 *) ((s8 *) arg2)));
+}
+
+void fn_801793C8(void) {
+    NANDPrivateSafeOpenAsync();
+}
+
+void fn_801793CC(s32 arg0, s32 arg1, s32 arg2) {
+    fn_802019BC();
+}
+
+s32 fn_801793D0(s32 arg0, s32 arg1, s32 arg2) {
+    if ((s32) (arg1 & 0x1F) != 0) {
+        *(s32 *)1 = 0;
+    }
+    return (s32) (NANDRead((s32 *) ((s32 *) arg0), (s32) (arg1), (s32) ((arg2 + 0x1F) & 0xFFFFFFE0)));
+}
+
+s32 fn_801793F0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    if ((s32) (arg1 & 0x1F) != 0) {
+        *(s32 *)1 = 0;
+    }
+    return (s32) (NANDReadAsync((s32 *) ((s32 *) arg0), (s32) (arg1), (s32) ((arg2 + 0x1F) & 0xFFFFFFE0), (s32) (arg3), (s8 *) ((s8 *) arg4)));
+}
+
+s32 fn_80179410(s32 arg0, s32 arg1, s32 arg2) {
+    if ((s32) (arg1 & 0x1F) != 0) {
+        *(s32 *)1 = 0;
+    }
+    return (s32) (NANDWrite((s32 *) ((s32 *) arg0), (s32) (arg1), (s32) ((arg2 + 0x1F) & 0xFFFFFFE0)));
+}
+
+s32 fn_80179430(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    if ((s32) (arg1 & 0x1F) != 0) {
+        *(s32 *)1 = 0;
+    }
+    return (s32) (NANDWriteAsync((s32 *) ((s32 *) arg0), (s32) (arg1), (s32) ((arg2 + 0x1F) & 0xFFFFFFE0), (s32) (arg3), (s8 *) ((s8 *) arg4)));
+}
+
+s32 fn_80179450(s32 arg0, s32 arg1, s32 arg2) {
+    return (s32) (NANDSeek((s32 *) ((s32 *) arg0), (s32) (arg1), (s32) (arg2)));
+}
+
+s32 fn_80179454(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    return (s32) (NANDSeekAsync((s32 *) ((s32 *) arg0), (s32) (arg1), (s32) (arg2), (s32) (arg3), (s8 *) ((s8 *) arg4)));
+}
+
+s32 fn_80179458(s32 arg0, s32 arg1, s32 arg2) {
+    if ((arg1 != 0) && ((s32) (arg1 & 0x1F) != 0)) {
+        *(s32 *)1 = 0;
+    }
+    return (s32) (fn_8030EC80((s32) (arg0), (s32) (arg1), (s32) (arg2)));
+}
+
+s32 fn_80179478(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    if ((arg1 != 0) && ((s32) (arg1 & 0x1F) != 0)) {
+        *(s32 *)1 = 0;
+    }
+    return (s32) (NANDReadDirAsync((s32) (arg0), (s32) (arg1), (s32) (arg2), (s32) (arg3), (s8 *) ((s8 *) arg4)));
+}
+
+s32 fn_80179498(s32 arg0, u8 arg1, u8 arg2) {
+    return (s32) (NANDPrivateCreateDir((s32) (arg0), (s32) ((s32) arg1), (s32) ((s32) arg2)));
+}
+
+s32 fn_801794A4(s32 arg0, u8 arg1, u8 arg2, s32 arg3, s32 arg4) {
+    return (s32) (NANDPrivateCreateDirAsync((s32) (arg0), (s32) ((s32) arg1), (s32) ((s32) arg2), (s32) (arg3), (s8 *) ((s8 *) arg4)));
+}
+
+s32 fn_801794B0(s32 arg0) {
+    return (s32) (NANDChangeDir());
+}
+
+s32 fn_801794B4(s32 arg0, s32 arg1, s32 arg2) {
+    return (s32) (NANDChangeDirAsync((s32) (arg0), (s32) (arg1), (u8 *) ((u8 *) arg2)));
+}
+
+#pragma dont_inline on
+M2C_UNK fn_801794B8(void) {
+    return (M2C_UNK)nandChangeDirCallback(lbl_803C2330 + 0x40);
+}
+#pragma dont_inline reset
+
+s32 fn_801794C8(void) {
+    return (s32) (NANDGetHomeDir((s32) ((s32) &lbl_803C2330)));
+}
+
+s32 fn_801794D4(s32 arg0) {
+    return (s32) (NANDDelete((s32) (arg0)));
+}
+
+s32 fn_801794D8(s32 arg0, s32 arg1, s32 arg2) {
+    return (s32) (NANDDeleteAsync((s32) (arg0), (s32) (arg1), (s8 *) ((s8 *) arg2)));
+}
+
+s32 fn_801794DC(s32 arg0, s32 arg1) {
+    return (s32) (NANDMove((s32) (arg0), (s32) (arg1)));
+}
+
+s32 fn_801794E0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    return (s32) (NANDMoveAsync((s32) (arg0), (s32) (arg1), (s32) (arg2), (s8 *) ((s8 *) arg3)));
+}
+
+s32 fn_801794E4(s32 arg0, s32 arg1) {
+    return (s32) (NANDGetType());
+}
+
+s32 fn_801794E8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    return (s32) (fn_80311D38((s32) (arg0), (s32) (arg1), (s32) (arg2), (u8 *) ((u8 *) arg3)));
+}
+
+s32 fn_801794EC(s32 arg0, s32 arg1, s32 arg2) {
+    return (s32) (fn_8031209C((s32) (arg0), (s32) (arg1), (s32 *) ((s32 *) arg2)));
+}
+
+s32 fn_801794F0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    return (s32) (fn_803121A4((s32) (arg0), (s32) (arg1), (s32) (arg2), (s32) (arg3), (s8 *) ((s8 *) arg4)));
+}
+
+#pragma dont_inline on
+void * fn_801794F4(const void *arg0) {
+    if (arg0 == 0) {
+        return memset(lbl_803C23B8, 0xFF, 0x6000);
+    }
+    return memcpy(lbl_803C23B8, arg0, 0x6000);
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+void * fn_80179524(s32 arg0, const void *arg1) {
+    if (arg1 == 0) {
+        return memset(&lbl_803C83B8[arg0 * 0x1200], (arg0 + 1) * 16 + arg0 + 1, 0x1200);
+    }
+    return memcpy(&lbl_803C83B8[arg0 * 0x1200], arg1, 0x1200);
+}
+#pragma dont_inline reset
+
+void fn_8017999C(void) {
+    fn_80179DC4();
+    if (fn_8017A018() == 0) {
+        fn_801799DC();
+    }
+    if (fn_8017A018() != 0) {
+        fn_80179AB0();
+    }
+}
+
+void fn_80179FB4(void) {
+    if ((s32) (lbl_8049D82C & 0x20) != 0) {
+        lbl_8049D82C = (lbl_8049D82C | 4) & 0xFFFFFFEF;
+    }
+}
+
+void fn_80179FD4(void) {
+    lbl_8049D82C &= ~0x14;
+}
+
+void fn_80179FE8(void) {
+    lbl_8049D82C |= 0x10;
+}
+
+void fn_80179FF8(void) {
+    lbl_8049D82C |= 0x20;
+    fn_80179FB4();
+}
+
+#pragma dont_inline on
+void fn_8017A008(void) {
+    lbl_8049D82C &= ~0x20;
+    fn_80179FD4();
+}
+#pragma dont_inline reset
+
+s32 fn_8017A018(void) {
+    return (s32) ((lbl_8049D82C & 2) != 0);
+}
+
+s32 fn_8017A02C(void) {
+    return (s32) ((lbl_8049D82C & 4) != 0);
+}
+
+s32 fn_8017A040(void) {
+    return (s32) ((lbl_8049D82C & 1) != 0);
+}
+
+void fn_8017A940(void) {
+    if ((s32) lbl_8049D834 != 0) {
+        fn_80170560((s32) (lbl_8049D834));
+        lbl_8049D830 = 0;
+        lbl_8049D834 = 0;
+    }
+}
+
+void fn_8017AD74(void) {
+}
+
+void fn_8017AD78(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    GXSetTexCoordGen2((s32) (arg0), (s32) (arg1), (s32) (arg2), (s32) (arg3), (s32) (0), (s32) (0x7D));
+}
+
+void fn_8017AD84(s16 arg0, s16 arg1) {
+    *(volatile s16 *)0xCC008000 = arg0;
+    *(volatile s16 *)0xCC008000 = arg1;
+}
+
+void fn_8017AD9C(s16 arg0, s16 arg1, s16 arg2) {
+    *(volatile s16 *)0xCC008000 = arg0;
+    *(volatile s16 *)0xCC008000 = arg1;
+    *(volatile s16 *)0xCC008000 = arg2;
+}
+
+#pragma dont_inline on
+struct TaskStruct_0x160 * fn_8017ADBC(s32 arg0) {
+    struct TaskStruct_0x160 *p = &lbl_803D1460[arg0];
+    if (p->flags & 1) {
+        return p;
+    }
+    return 0;
+}
+#pragma dont_inline reset
+
+void fn_8017AE0C(f32 *arg0, s32 *arg1) {
+    if ((s32) (*arg1 & 1) != 0) {
+        fn_8001B8B8((s32) ((s32) arg0), (s32) ((s32) ((s8 *)arg1 + 0x1C)), (s32) ((s32) ((s8 *)arg1 + 4)));
+        fn_8001B8B0((s32) ((s32) arg0), (s32) ((s32) arg0));
+    }
+}
+
+#pragma dont_inline on
+void fn_8017B738(s32 arg0) {
+    lbl_803D1460[arg0].flags &= ~3;
+}
+#pragma dont_inline reset
+
+void fn_8017B754(void) {
+    s32 var_r31;
+
+    var_r31 = (s32) (0);
+    do {
+        fn_8017B738((s32) (var_r31));
+        var_r31 += 1;
+    } while (var_r31 < 6);
+}
+
+#pragma dont_inline on
+void fn_8017BC20(struct TaskStruct_0x160 *arg0) {
+    if (arg0->field_0x15c != 0) {
+        arg0->field_0x15c(arg0);
+    }
+}
+#pragma dont_inline reset
+
+s32 fn_8017C348(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
+    s8 *spC;
+    s32 sp8;
+
+    if ((s32) (fn_8017ADBC((s32) (arg0))->flags & 1) == 0) {
+        return (s32) (0);
+    }
+    sp8 = (s32) (fn_8018CB4C((s32) (arg0)));
+    fn_8002AFB4((s32) ((s32) &spC), (s32) ((s32) &sp8));
+    SetViewport__Q34nw4r3g3d6CameraFffff((s8 **) (&spC), farg0, farg1, farg2, farg3);
+    return (s32) (1);
+}
+
+s32 fn_8017C3E0(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5, s32 arg7) {
+    s8 *spC;
+    s32 sp8;
+
+    if ((s32) (fn_8017ADBC((s32) (arg0))->flags & 1) == 0) {
+        return (s32) (0);
+    }
+    sp8 = (s32) (fn_8018CB4C((s32) (arg0)));
+    fn_8002AFB4((s32) ((s32) &spC), (s32) ((s32) &sp8));
+    SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl((s8 **) (&spC), (s32) ((s32) (u32) farg0), (s32) ((s32) (u32) farg1), (s32) ((s32) (u32) farg2), (s32) ((s32) (u32) farg3));
+    SetScissorBoxOffset__Q34nw4r3g3d6CameraFll((s8 **) (&spC), (s32) ((s32) -farg4), (s32) ((s32) -farg5));
+    GXSetScissor__Q34nw4r3g3d6CameraCFv((s32) ((s8 *) &spC));
+    return (s32) (1);
+}
+
+#pragma dont_inline on
+void fn_8017C4E4(s32 arg0, s32 arg1) {
+    struct TaskStruct_0x160 *p = &lbl_803D1460[arg0];
+    if (p->flags & 1) {
+        p->field_0x74 = arg1;
+    }
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+void fn_8017C50C(s32 arg0, void (*arg1)(struct TaskStruct_0x160 *)) {
+    struct TaskStruct_0x160 *p = &lbl_803D1460[arg0];
+    if (p->flags & 1) {
+        p->field_0x15c = arg1;
+    }
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+void fn_8017CEF4(void) {
+    __construct_array(lbl_803D1460, (void *)fn_8017CF14, 0, 0x160, 6);
+}
+#pragma dont_inline reset
+
+s32 fn_8017CF14(s32 arg0) {
+    fn_8017CF48((s32) (arg0 + 0x130));
+    return (s32) (arg0);
+}
+
+#pragma dont_inline on
+void fn_8017B9BC(S_fn_8017B9BC_arg0 *arg0) {
+    SK_fn_8017B9BC_8 sp8;
+
+    fn_8002AF60((s8 *) (&sp8), arg0->f_1C - arg0->f_4, arg0->f_20 - arg0->f_8, arg0->f_24 - arg0->f_C);
+    arg0->f_2C = (f32) (lbl_804A0F18[7] * fn_801A32A0((f64) sp8.f_0, (f64) sp8.f_8));
+    arg0->f_28 = (f32) (lbl_804A0F18[7] * fn_801A32A0((f64) sp8.f_4, (f64) sp8.f_8));
+    arg0->f_30 = (f32) (lbl_804A0F18[7] * fn_801A32A0((f64) sp8.f_4, (f64) sp8.f_0));
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+void fn_8017BF10(s32 *arg0) {
+    fn_80090D40((s8 *) (arg0), (s8 *) ((s8 *)arg0 + 0x130));
+    if (fn_80090CC4((s8 *) ((s8 *)arg0 + 0x130)) == 0) {
+        fn_80090CAC((s8 *) ((s8 *)arg0 + 0x130));
+    }
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+void fn_8017A4D8(S_fn_8017A4D8_arg0 *arg0, s32 arg1) {
+    if (arg1 == 0) {
+        arg0->f_34 = (f32) lbl_804A0E90[10];
+        arg0->f_38 = (f32) lbl_804A0E90[18];
+        return;
+    }
+    arg0->f_34 = (f32) lbl_804A0E90[19];
+    arg0->f_38 = (f32) lbl_804A0E90[18];
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+void fn_8017A510(S_fn_8017A510_arg0 *arg0, f32 farg0, f32 farg1) {
+    f32 temp_f1;
+
+    temp_f1 = arg0->f_0 + (farg0 / lbl_804A0E90[20]);
+    arg0->f_0 = temp_f1;
+    arg0->f_4 = (f32) (arg0->f_4 - (farg1 / lbl_804A0E90[20]));
+    arg0->f_0 = fn_801728FC(temp_f1, lbl_804A0E90[1], lbl_804A0E90[0], lbl_804A0E90[10]);
+    arg0->f_4 = fn_801728FC(arg0->f_4, lbl_804A0E90[1], lbl_804A0E90[0], lbl_804A0E90[10]);
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+void fn_8017A594(S_fn_8017A594_arg0 *arg0, u32 arg1) {
+    switch (arg1) {
+    case 1:
+        arg0->f_4 = (f32) (arg0->f_4 - lbl_804A0E90[21]);
+        break;
+    case 2:
+        arg0->f_4 = (f32) (arg0->f_4 + lbl_804A0E90[21]);
+        break;
+    case 4:
+        arg0->f_0 = (f32) (arg0->f_0 - lbl_804A0E90[21]);
+        break;
+    case 8:
+        arg0->f_0 = (f32) (arg0->f_0 + lbl_804A0E90[21]);
+        break;
+    case 5:
+        arg0->f_4 = (f32) (arg0->f_4 - lbl_804A0E90[22]);
+        arg0->f_0 = (f32) (arg0->f_0 - lbl_804A0E90[22]);
+        break;
+    case 9:
+        arg0->f_4 = (f32) (arg0->f_4 - lbl_804A0E90[22]);
+        arg0->f_0 = (f32) (arg0->f_0 + lbl_804A0E90[22]);
+        break;
+    case 6:
+        arg0->f_4 = (f32) (arg0->f_4 + lbl_804A0E90[22]);
+        arg0->f_0 = (f32) (arg0->f_0 - lbl_804A0E90[22]);
+        break;
+    case 10:
+        arg0->f_4 = (f32) (arg0->f_4 + lbl_804A0E90[22]);
+        arg0->f_0 = (f32) (arg0->f_0 + lbl_804A0E90[22]);
+        break;
+    }
+    arg0->f_0 = fn_801728FC(arg0->f_0, lbl_804A0E90[1], lbl_804A0E90[0], lbl_804A0E90[10]);
+    arg0->f_4 = fn_801728FC(arg0->f_4, lbl_804A0E90[1], lbl_804A0E90[0], lbl_804A0E90[10]);
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+void fn_8017C8F0(S_fn_8017C8F0_arg0 *arg0, f32 farg0) {
+    arg0->f_38 = fn_801728FC(arg0->f_38, farg0, lbl_804A0F18[2], lbl_804A0F18[23]);
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+void fn_8017AC64(s32 arg0) {
+    SK_fn_8017AC64_28 sp28;
+    SK_fn_8017AC64_8 sp8;
+    s8 *tg_lbl_8049D830;
+
+    if ((s32) lbl_8049D830 == 0) {
+        fn_8017A848((s32) (1));
+    }
+    tg_lbl_8049D830 = (s8 *) ((s8 *) lbl_8049D830);
+    GXInitTexObj((s32) ((s32) &sp8), (s32) (arg0), (s32) ((s32) M2C_FIELD(tg_lbl_8049D830, u16 *, 0x1E)), (s32) ((s32) M2C_FIELD(tg_lbl_8049D830, u16 *, 0x20)), (s32) ((s32) M2C_FIELD(tg_lbl_8049D830, u16 *, 0x18)), (s32) (0), (s32) (0), (s32) (0));
+    GXInitTexObjLOD((s32) ((s32) &sp8), (s32) (1), (s32) (1), lbl_804A0EF8[0], lbl_804A0EF8[0], lbl_804A0EF8[0], (s32) (0), (s32) (0), (s32) (0));
+    GXLoadTexObj((s32) ((s32) &sp8), (s32) (0));
+    tg_lbl_8049D830 = (s8 *) ((s8 *) lbl_8049D830);
+    PSMTXScale((s32) ((s32) &sp28), lbl_804A0EF8[2] / (f32) M2C_FIELD(tg_lbl_8049D830, u16 *, 0x1E), lbl_804A0EF8[2] / (f32) M2C_FIELD(tg_lbl_8049D830, u16 *, 0x20), lbl_804A0EF8[2]);
+    GXLoadTexMtxImm((s32) ((s32) &sp28), (s32) (0x1E), (s32) (1));
+    GXSetNumTexGens((s32) (1));
+    fn_8017AD78((s32) (0), (s32) (1), (s32) (4), (s32) (0x1E));
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+void fn_8017CC60(s32 *arg0, s32 arg1, s32 arg2, f32 farg0) {
+    SK_fn_8017CC60_8 sp8;
+    s32 temp_r0;
+    s32 temp_r3;
+
+    fn_8017AE0C((f32 *) (&sp8), (s32 *) (arg0));
+    fn_80018B08((s32) ((s32) &sp8), (s32) ((s32) &sp8), farg0);
+    M2C_FIELD(arg0, s8 *, 0x84) = (s8) (1);
+    M2C_FIELD(arg0, s8 *, 0xAC) = (s8) (1);
+    M2C_FIELD(arg0, s32 *, 0xA0) = (s32) (0);
+    M2C_FIELD(arg0, s32 *, 0xA4) = (s32) (arg1);
+    M2C_FIELD(arg0, s32 *, 0xA8) = (s32) (arg2);
+    M2C_FIELD(arg0, s32 *, 0xC8) = (s32) (0);
+    M2C_FIELD(arg0, s32 *, 0xCC) = (s32) (arg1);
+    M2C_FIELD(arg0, s32 *, 0xD0) = (s32) (arg2);
+    temp_r0 = (s32) (arg1 / 2);
+    if (arg2 > temp_r0) {
+        M2C_FIELD(arg0, s32 *, 0xA8) = (s32) (temp_r0);
+    }
+    temp_r3 = (s32) ((s32) M2C_FIELD(arg0, s32 *, 0xCC) / 2);
+    if ((s32) M2C_FIELD(arg0, s32 *, 0xD0) > temp_r3) {
+        M2C_FIELD(arg0, s32 *, 0xD0) = (s32) (temp_r3);
+    }
+    fn_80019DAC((s8 *) ((s8 *)arg0 + 0x88), (f32 *) ((f32 *) ((s8 *)arg0 + 4)));
+    fn_80019DAC((s8 *) ((s8 *)arg0 + 0xB0), (f32 *) ((f32 *) ((s8 *)arg0 + 0x1C)));
+    fn_80018B00((s32) ((s32) ((s8 *)arg0 + 0x94)), (s32) ((s32) ((s8 *)arg0 + 4)), (s32) ((s32) &sp8));
+    fn_80018B00((s32) ((s32) ((s8 *)arg0 + 0xBC)), (s32) ((s32) ((s8 *)arg0 + 0x1C)), (s32) ((s32) &sp8));
+}
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_801785A4
 asm void fn_801785A4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
@@ -483,44 +1117,6 @@ lbl_80178710:
     blr
 }
 
-void fn_80178728(s32 arg0, s32 arg1) {
-    fn_80178558((s8 *) ((s8 *) arg0), (s32) (0x10002), (s32) (arg1));
-}
-
-void fn_80178738(s32 arg0, s32 arg1) {
-    fn_80178558((s8 *) ((s8 *) arg0), (s32) (0x10012), (s32) (arg1));
-}
-
-void fn_80178748(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s8 *temp_r3;
-
-    temp_r3 = (s8 *) (fn_80178558((s8 *) ((s8 *) arg0), (s32) (0x10003), (s32) (arg1)));
-    if (temp_r3 != NULL) {
-        M2C_FIELD(temp_r3, s32 *, 4) = (s32) (arg2);
-        M2C_FIELD(temp_r3, s32 *, 8) = (s32) ((s32) ((arg3 + 0x1F) & 0xFFFFFFE0));
-    }
-}
-
-void fn_801787A8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s8 *temp_r3;
-
-    temp_r3 = (s8 *) (fn_80178558((s8 *) ((s8 *) arg0), (s32) (0x10004), (s32) (arg1)));
-    if (temp_r3 != NULL) {
-        M2C_FIELD(temp_r3, s32 *, 4) = (s32) (arg2);
-        M2C_FIELD(temp_r3, s32 *, 8) = (s32) ((s32) ((arg3 + 0x1F) & 0xFFFFFFE0));
-    }
-}
-
-void fn_80178808(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s8 *temp_r3;
-
-    temp_r3 = (s8 *) (fn_80178558((s8 *) ((s8 *) arg0), (s32) (0x10005), (s32) (arg1)));
-    if (temp_r3 != NULL) {
-        M2C_FIELD(temp_r3, s32 *, 4) = (s32) (arg2);
-        M2C_FIELD(temp_r3, s32 *, 8) = (s32) (arg3);
-    }
-}
-
 // asm_to_cpp: fn_80178860
 asm void fn_80178860(s32 arg0, s32 arg1, s32 arg2) {
     nofralloc
@@ -553,17 +1149,6 @@ lbl_801788B8:
     mtlr r0
     addi r1, r1, 0x10
     blr
-}
-
-void fn_801788D0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    s8 *temp_r3;
-
-    temp_r3 = (s8 *) (fn_80178558((s8 *) ((s8 *) arg0), (s32) (0x10013), (s32) (arg1)));
-    if (temp_r3 != NULL) {
-        M2C_FIELD(temp_r3, s32 *, 4) = (s32) (arg2);
-        M2C_FIELD(temp_r3, s32 *, 8) = (s32) (arg3);
-        M2C_FIELD(temp_r3, s32 *, 0xC) = (s32) (arg4);
-    }
 }
 
 // asm_to_cpp: fn_80178930
@@ -692,47 +1277,6 @@ lbl_80178ABC:
     rlwinm r0, r0, 0, 31, 29
     stw r0, 0x0(r3)
     blr
-}
-
-void fn_80178ACC(s8 *arg0, s32 arg1) {
-    s32 temp_r3_3;
-    s32 temp_r3_4;
-    s32 var_r5;
-    s8 *temp_r3;
-    s8 *temp_r3_2;
-
-    temp_r3 = (s8 *) (NANDGetUserData((s32 *) ((s32 *) arg1)));
-    if ((s32) (M2C_FIELD(temp_r3, s32 *, 0) & 4) != 0) {
-        fn_80178C20((s8 *) (temp_r3), (s32) (-1));
-        return;
-    }
-    fn_80178A00((s8 *) (temp_r3), (s8 *) (arg0));
-    temp_r3_2 = (s8 *) (fn_801789A8((s8 *) (temp_r3), (s8 *) (arg0)));
-    M2C_FIELD((M2C_FIELD(temp_r3, s32 *, 0x1E0) + (M2C_FIELD(temp_r3, s32 *, 0x1D8) * 0x130)), s8 **, 0x128) = (s8 *) (temp_r3_2);
-    temp_r3_3 = (s32) (fn_8017830C((s32) ((s32) temp_r3_2)));
-    var_r5 = (s32) (0);
-    if ((temp_r3_3 == 0) || ((s32) (temp_r3_3 & M2C_FIELD((M2C_FIELD(temp_r3, s32 *, 0x1E0) + (M2C_FIELD(temp_r3, s32 *, 0x1D8) * 0x130)), s32 *, 0x12C)) != 0)) {
-        var_r5 = (s32) (1);
-    }
-    if (var_r5 != 0) {
-        M2C_FIELD(temp_r3, s32 *, 0x1D8) = (s32) ((s32) (M2C_FIELD(temp_r3, s32 *, 0x1D8) + 1));
-        fn_80178C54((s8 *) (temp_r3));
-        return;
-    }
-    temp_r3_4 = (s32) (M2C_FIELD(temp_r3, s32 *, 0));
-    if ((s32) (temp_r3_4 & 1) != 0) {
-        M2C_FIELD(temp_r3, s32 *, 0) = (s32) ((s32) (temp_r3_4 & 0xFFFFFFFE));
-        fn_801793C4((s32) ((s32) (temp_r3 + 0x84)), (s32) ((s32) fn_80178ACC), (s32) ((s32) (temp_r3 + 0x110)));
-        M2C_FIELD(temp_r3, s32 *, 0) = (s32) ((s32) (M2C_FIELD(temp_r3, s32 *, 0) | 4));
-        return;
-    }
-    if ((s32) (temp_r3_4 & 2) != 0) {
-        M2C_FIELD(temp_r3, s32 *, 0) = (s32) ((s32) (temp_r3_4 & 0xFFFFFFFD));
-        fn_801793CC((s32) ((s32) (temp_r3 + 0x84)), (s32) ((s32) fn_80178ACC), (s32) ((s32) (temp_r3 + 0x110)));
-        M2C_FIELD(temp_r3, s32 *, 0) = (s32) ((s32) (M2C_FIELD(temp_r3, s32 *, 0) | 4));
-        return;
-    }
-    fn_80178C20((s8 *) (temp_r3), (s32) (-1));
 }
 
 // asm_to_cpp: fn_80178C20
@@ -1225,50 +1769,6 @@ lbl_80179298:
     blr
 }
 
-s32 fn_801792A8(void) {
-    return (s32) (NANDInit());
-}
-
-s8 * fn_801792AC(void) {
-    s32 temp_r3;
-
-    temp_r3 = (s32) (fn_801792F0());
-    if (temp_r3 != 0) {
-        return (s8 *) ((s8 *) temp_r3);
-    }
-    fn_801794C8();
-    fn_801794B8();
-    return (s8 *) ((s8 *) temp_r3);
-}
-
-#pragma dont_inline on
-M2C_UNK fn_801792F0(void) {
-    return (M2C_UNK)NANDTellAsync((s32 *)(lbl_803C2330 + 0x80), (s32 *)(lbl_803C2330 + 0x84));
-}
-#pragma dont_inline reset
-
-#pragma dont_inline on
-M2C_UNK fn_80179304(s32 arg0, s32 arg1) {
-    return (M2C_UNK)fn_8030F3DC((s32)(lbl_803C2330 + 0x80), (s32)(lbl_803C2330 + 0x84), arg0, (s8 *)arg1);
-}
-#pragma dont_inline reset
-
-s32 fn_80179320(s32 arg0, u8 arg1, u8 arg2) {
-    return (s32) (NANDCreate((s32) (arg0), (s32) ((s32) arg1), (s32) ((s32) arg2)));
-}
-
-s32 fn_8017932C(s32 arg0, u8 arg1, u8 arg2, s32 arg3, s32 arg4) {
-    return (s32) (NANDPrivateCreateAsync((s32) (arg0), (s32) ((s32) arg1), (s32) ((s32) arg2), (s32) (arg3), (s8 *) ((s8 *) arg4)));
-}
-
-s32 fn_80179338(s8 *arg0, s32 arg1, u8 arg2) {
-    return (s32) (NANDOpen((s32) (arg1), (s8 *) (arg0), (s32) ((s32) arg2)));
-}
-
-s32 fn_8017934C(s8 *arg0, s32 arg1, u8 arg2, s32 arg3, s32 arg4) {
-    return (s32) (NANDOpenAsync((s32) (arg1), (s32) ((s32) arg0), (s32) ((s32) arg2), (s32) (arg3), (s8 *) ((s8 *) arg4)));
-}
-
 // asm_to_cpp: fn_80179360
 asm M2C_UNK fn_80179360(s8 *arg0, s32 arg1, u8 arg2, s32 arg3, s32 arg4) {
     nofralloc
@@ -1304,148 +1804,6 @@ lbl_801793A8:
     clrrwi r7, r0, 5
     b fn_803102EC
 }
-
-s32 fn_801793C0(s32 arg0) {
-    return (s32) (NANDClose((s8 *) ((s8 *) arg0)));
-}
-
-s32 fn_801793C4(s32 arg0, s32 arg1, s32 arg2) {
-    return (s32) (NANDCloseAsync((s8 *) ((s8 *) arg0), (s32) (arg1), (s8 *) ((s8 *) arg2)));
-}
-
-void fn_801793C8(void) {
-    NANDPrivateSafeOpenAsync();
-}
-
-void fn_801793CC(s32 arg0, s32 arg1, s32 arg2) {
-    fn_802019BC();
-}
-
-s32 fn_801793D0(s32 arg0, s32 arg1, s32 arg2) {
-    if ((s32) (arg1 & 0x1F) != 0) {
-        *(s32 *)1 = 0;
-    }
-    return (s32) (NANDRead((s32 *) ((s32 *) arg0), (s32) (arg1), (s32) ((arg2 + 0x1F) & 0xFFFFFFE0)));
-}
-
-s32 fn_801793F0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    if ((s32) (arg1 & 0x1F) != 0) {
-        *(s32 *)1 = 0;
-    }
-    return (s32) (NANDReadAsync((s32 *) ((s32 *) arg0), (s32) (arg1), (s32) ((arg2 + 0x1F) & 0xFFFFFFE0), (s32) (arg3), (s8 *) ((s8 *) arg4)));
-}
-
-s32 fn_80179410(s32 arg0, s32 arg1, s32 arg2) {
-    if ((s32) (arg1 & 0x1F) != 0) {
-        *(s32 *)1 = 0;
-    }
-    return (s32) (NANDWrite((s32 *) ((s32 *) arg0), (s32) (arg1), (s32) ((arg2 + 0x1F) & 0xFFFFFFE0)));
-}
-
-s32 fn_80179430(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    if ((s32) (arg1 & 0x1F) != 0) {
-        *(s32 *)1 = 0;
-    }
-    return (s32) (NANDWriteAsync((s32 *) ((s32 *) arg0), (s32) (arg1), (s32) ((arg2 + 0x1F) & 0xFFFFFFE0), (s32) (arg3), (s8 *) ((s8 *) arg4)));
-}
-
-s32 fn_80179450(s32 arg0, s32 arg1, s32 arg2) {
-    return (s32) (NANDSeek((s32 *) ((s32 *) arg0), (s32) (arg1), (s32) (arg2)));
-}
-
-s32 fn_80179454(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    return (s32) (NANDSeekAsync((s32 *) ((s32 *) arg0), (s32) (arg1), (s32) (arg2), (s32) (arg3), (s8 *) ((s8 *) arg4)));
-}
-
-s32 fn_80179458(s32 arg0, s32 arg1, s32 arg2) {
-    if ((arg1 != 0) && ((s32) (arg1 & 0x1F) != 0)) {
-        *(s32 *)1 = 0;
-    }
-    return (s32) (fn_8030EC80((s32) (arg0), (s32) (arg1), (s32) (arg2)));
-}
-
-s32 fn_80179478(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    if ((arg1 != 0) && ((s32) (arg1 & 0x1F) != 0)) {
-        *(s32 *)1 = 0;
-    }
-    return (s32) (NANDReadDirAsync((s32) (arg0), (s32) (arg1), (s32) (arg2), (s32) (arg3), (s8 *) ((s8 *) arg4)));
-}
-
-s32 fn_80179498(s32 arg0, u8 arg1, u8 arg2) {
-    return (s32) (NANDPrivateCreateDir((s32) (arg0), (s32) ((s32) arg1), (s32) ((s32) arg2)));
-}
-
-s32 fn_801794A4(s32 arg0, u8 arg1, u8 arg2, s32 arg3, s32 arg4) {
-    return (s32) (NANDPrivateCreateDirAsync((s32) (arg0), (s32) ((s32) arg1), (s32) ((s32) arg2), (s32) (arg3), (s8 *) ((s8 *) arg4)));
-}
-
-s32 fn_801794B0(s32 arg0) {
-    return (s32) (NANDChangeDir());
-}
-
-s32 fn_801794B4(s32 arg0, s32 arg1, s32 arg2) {
-    return (s32) (NANDChangeDirAsync((s32) (arg0), (s32) (arg1), (u8 *) ((u8 *) arg2)));
-}
-
-#pragma dont_inline on
-M2C_UNK fn_801794B8(void) {
-    return (M2C_UNK)nandChangeDirCallback(lbl_803C2330 + 0x40);
-}
-#pragma dont_inline reset
-
-s32 fn_801794C8(void) {
-    return (s32) (NANDGetHomeDir((s32) ((s32) &lbl_803C2330)));
-}
-
-s32 fn_801794D4(s32 arg0) {
-    return (s32) (NANDDelete((s32) (arg0)));
-}
-
-s32 fn_801794D8(s32 arg0, s32 arg1, s32 arg2) {
-    return (s32) (NANDDeleteAsync((s32) (arg0), (s32) (arg1), (s8 *) ((s8 *) arg2)));
-}
-
-s32 fn_801794DC(s32 arg0, s32 arg1) {
-    return (s32) (NANDMove((s32) (arg0), (s32) (arg1)));
-}
-
-s32 fn_801794E0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    return (s32) (NANDMoveAsync((s32) (arg0), (s32) (arg1), (s32) (arg2), (s8 *) ((s8 *) arg3)));
-}
-
-s32 fn_801794E4(s32 arg0, s32 arg1) {
-    return (s32) (NANDGetType());
-}
-
-s32 fn_801794E8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    return (s32) (fn_80311D38((s32) (arg0), (s32) (arg1), (s32) (arg2), (u8 *) ((u8 *) arg3)));
-}
-
-s32 fn_801794EC(s32 arg0, s32 arg1, s32 arg2) {
-    return (s32) (fn_8031209C((s32) (arg0), (s32) (arg1), (s32 *) ((s32 *) arg2)));
-}
-
-s32 fn_801794F0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    return (s32) (fn_803121A4((s32) (arg0), (s32) (arg1), (s32) (arg2), (s32) (arg3), (s8 *) ((s8 *) arg4)));
-}
-
-#pragma dont_inline on
-void *fn_801794F4(const void *arg0) {
-    if (arg0 == 0) {
-        return memset(lbl_803C23B8, 0xFF, 0x6000);
-    }
-    return memcpy(lbl_803C23B8, arg0, 0x6000);
-}
-#pragma dont_inline reset
-
-#pragma dont_inline on
-void *fn_80179524(s32 arg0, const void *arg1) {
-    if (arg1 == 0) {
-        return memset(&lbl_803C83B8[arg0 * 0x1200], (arg0 + 1) * 16 + arg0 + 1, 0x1200);
-    }
-    return memcpy(&lbl_803C83B8[arg0 * 0x1200], arg1, 0x1200);
-}
-#pragma dont_inline reset
 
 // asm_to_cpp: fn_80179570
 asm void fn_80179570(u8 *arg0) {
@@ -1754,16 +2112,6 @@ lbl_80179984:
     mtlr r0
     addi r1, r1, 0x20
     blr
-}
-
-void fn_8017999C(void) {
-    fn_80179DC4();
-    if (fn_8017A018() == 0) {
-        fn_801799DC();
-    }
-    if (fn_8017A018() != 0) {
-        fn_80179AB0();
-    }
 }
 
 // asm_to_cpp: fn_801799DC
@@ -2180,44 +2528,6 @@ lbl_80179F94:
     blr
 }
 
-void fn_80179FB4(void) {
-    if ((s32) (lbl_8049D82C & 0x20) != 0) {
-        lbl_8049D82C = (lbl_8049D82C | 4) & 0xFFFFFFEF;
-    }
-}
-
-void fn_80179FD4(void) {
-    lbl_8049D82C &= ~0x14;
-}
-
-void fn_80179FE8(void) {
-    lbl_8049D82C |= 0x10;
-}
-
-void fn_80179FF8(void) {
-    lbl_8049D82C |= 0x20;
-    fn_80179FB4();
-}
-
-#pragma dont_inline on
-void fn_8017A008(void) {
-    lbl_8049D82C &= ~0x20;
-    fn_80179FD4();
-}
-#pragma dont_inline reset
-
-s32 fn_8017A018(void) {
-    return (s32) ((lbl_8049D82C & 2) != 0);
-}
-
-s32 fn_8017A02C(void) {
-    return (s32) ((lbl_8049D82C & 4) != 0);
-}
-
-s32 fn_8017A040(void) {
-    return (s32) ((lbl_8049D82C & 1) != 0);
-}
-
 // asm_to_cpp: fn_8017A054
 asm void fn_8017A054(M2C_UNK *arg0) {
     nofralloc
@@ -2424,7 +2734,7 @@ lbl_8017A234:
     stw r3, lbl_8049D824
     lwz r3, 0x5c(r3)
     stw r3, lbl_8049D808
-    bl fn_803299FC
+    bl TPLBind
     addi r3, r1, 0x30
     addi r4, r29, lbl_8035E118@l
     bl strcpy
@@ -2529,162 +2839,6 @@ asm void fn_8017A444(void) {
     lwz r0, 0x54(r1)
     mtlr r0
     addi r1, r1, 0x50
-    blr
-}
-
-// asm_to_cpp: fn_8017A4D8
-asm void fn_8017A4D8(M2C_UNK *arg0, s32 arg1) {
-    nofralloc
-    cmpwi r4, 0x0
-    bne lbl_8017A4F8
-    la r4, lbl_804A0E90
-    lfs f0, 0x28(r4)
-    stfs f0, 0x34(r3)
-    lfs f0, 0x48(r4)
-    stfs f0, 0x38(r3)
-    blr
-lbl_8017A4F8:
-    la r4, lbl_804A0E90
-    lfs f0, 0x4c(r4)
-    stfs f0, 0x34(r3)
-    lfs f0, 0x48(r4)
-    stfs f0, 0x38(r3)
-    blr
-}
-
-// asm_to_cpp: fn_8017A510
-asm void fn_8017A510(s8 *arg0, f32 farg0, f32 farg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    la r31, lbl_804A0E90
-    lfs f3, 0x50(r31)
-    fdivs f1, f1, f3
-    lfs f0, 0x0(r3)
-    fadds f1, f0, f1
-    stfs f1, 0x0(r3)
-    fdivs f2, f2, f3
-    lfs f0, 0x4(r3)
-    fsubs f0, f0, f2
-    stfs f0, 0x4(r3)
-    lfs f2, 0x4(r31)
-    lfs f3, lbl_804A0E90
-    lfs f4, 0x28(r31)
-    bl fn_801728FC
-    stfs f1, 0x0(r30)
-    lfs f1, 0x4(r30)
-    lfs f2, 0x4(r31)
-    lfs f3, lbl_804A0E90
-    lfs f4, 0x28(r31)
-    bl fn_801728FC
-    stfs f1, 0x4(r30)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// asm_to_cpp: fn_8017A594
-asm s32 fn_8017A594() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    cmplwi r4, 0xa
-    bgt lbl_8017A6B8
-    lis r5, jumptable_8035E13C@ha
-    addi r5, r5, jumptable_8035E13C@l
-    slwi r0, r4, 2
-    lwzx r5, r5, r0
-    mtctr r5
-    bctr
-    la r4, lbl_804A0E90
-    lfs f1, 0x4(r3)
-    lfs f0, 0x54(r4)
-    fsubs f0, f1, f0
-    stfs f0, 0x4(r3)
-    b lbl_8017A6B8
-    la r4, lbl_804A0E90
-    lfs f1, 0x4(r3)
-    lfs f0, 0x54(r4)
-    fadds f0, f1, f0
-    stfs f0, 0x4(r3)
-    b lbl_8017A6B8
-    la r4, lbl_804A0E90
-    lfs f1, 0x0(r3)
-    lfs f0, 0x54(r4)
-    fsubs f0, f1, f0
-    stfs f0, 0x0(r3)
-    b lbl_8017A6B8
-    la r4, lbl_804A0E90
-    lfs f1, 0x0(r3)
-    lfs f0, 0x54(r4)
-    fadds f0, f1, f0
-    stfs f0, 0x0(r3)
-    b lbl_8017A6B8
-    la r4, lbl_804A0E90
-    lfs f0, 0x4(r3)
-    lfs f1, 0x58(r4)
-    fsubs f0, f0, f1
-    stfs f0, 0x4(r3)
-    lfs f0, 0x0(r3)
-    fsubs f0, f0, f1
-    stfs f0, 0x0(r3)
-    b lbl_8017A6B8
-    la r4, lbl_804A0E90
-    lfs f0, 0x4(r3)
-    lfs f1, 0x58(r4)
-    fsubs f0, f0, f1
-    stfs f0, 0x4(r3)
-    lfs f0, 0x0(r3)
-    fadds f0, f0, f1
-    stfs f0, 0x0(r3)
-    b lbl_8017A6B8
-    la r4, lbl_804A0E90
-    lfs f0, 0x4(r3)
-    lfs f1, 0x58(r4)
-    fadds f0, f0, f1
-    stfs f0, 0x4(r3)
-    lfs f0, 0x0(r3)
-    fsubs f0, f0, f1
-    stfs f0, 0x0(r3)
-    b lbl_8017A6B8
-    la r4, lbl_804A0E90
-    lfs f0, 0x4(r3)
-    lfs f1, 0x58(r4)
-    fadds f0, f0, f1
-    stfs f0, 0x4(r3)
-    lfs f0, 0x0(r3)
-    fadds f0, f0, f1
-    stfs f0, 0x0(r3)
-lbl_8017A6B8:
-    lfs f1, 0x0(r3)
-    la r31, lbl_804A0E90
-    lfs f2, 0x4(r31)
-    lfs f3, lbl_804A0E90
-    lfs f4, 0x28(r31)
-    bl fn_801728FC
-    stfs f1, 0x0(r30)
-    lfs f1, 0x4(r30)
-    lfs f2, 0x4(r31)
-    lfs f3, lbl_804A0E90
-    lfs f4, 0x28(r31)
-    bl fn_801728FC
-    stfs f1, 0x4(r30)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
     blr
 }
 
@@ -2861,14 +3015,6 @@ lbl_8017A92C:
     mtlr r0
     addi r1, r1, 0x10
     blr
-}
-
-void fn_8017A940(void) {
-    if ((s32) lbl_8049D834 != 0) {
-        fn_80170560((s32) (lbl_8049D834));
-        lbl_8049D830 = 0;
-        lbl_8049D834 = 0;
-    }
 }
 
 // asm_to_cpp: fn_8017A978
@@ -3074,110 +3220,8 @@ asm void fn_8017AB78(s16 arg0, s16 arg1, s16 arg2, s16 arg3) {
     blr
 }
 
-// asm_to_cpp: fn_8017AC64
-asm void fn_8017AC64(s32 arg0) {
-    nofralloc
-    stwu r1, -0x70(r1)
-    mflr r0
-    stw r0, 0x74(r1)
-    stw r31, 0x6c(r1)
-    mr r31, r3
-    lwz r0, lbl_8049D830
-    cmpwi r0, 0x0
-    bne lbl_8017AC8C
-    li r3, 0x1
-    bl fn_8017A848
-lbl_8017AC8C:
-    lwz r7, lbl_8049D830
-    addi r3, r1, 0x8
-    mr r4, r31
-    lhz r5, 0x1e(r7)
-    lhz r6, 0x20(r7)
-    lhz r7, 0x18(r7)
-    li r8, 0x0
-    li r9, 0x0
-    li r10, 0x0
-    bl GXInitTexObj
-    addi r3, r1, 0x8
-    li r4, 0x1
-    li r5, 0x1
-    lfs f1, lbl_804A0EF8
-    fmr f2, f1
-    fmr f3, f1
-    li r6, 0x0
-    li r7, 0x0
-    li r8, 0x0
-    bl GXInitTexObjLOD
-    addi r3, r1, 0x8
-    li r4, 0x0
-    bl GXLoadTexObj
-    lwz r6, lbl_8049D830
-    addi r3, r1, 0x28
-    la r5, lbl_804A0EF8
-    lhz r0, 0x1e(r6)
-    lfd f2, lbl_804A0EF0
-    stw r0, 0x5c(r1)
-    lis r4, 0x4330
-    stw r4, 0x58(r1)
-    lfd f0, 0x58(r1)
-    fsubs f0, f0, f2
-    lfs f3, 0x8(r5)
-    fdivs f1, f3, f0
-    lhz r0, 0x20(r6)
-    stw r0, 0x64(r1)
-    stw r4, 0x60(r1)
-    lfd f0, 0x60(r1)
-    fsubs f0, f0, f2
-    fdivs f2, f3, f0
-    bl PSMTXScale
-    addi r3, r1, 0x28
-    li r4, 0x1e
-    li r5, 0x1
-    bl GXLoadTexMtxImm
-    li r3, 0x1
-    bl GXSetNumTexGens
-    li r3, 0x0
-    li r4, 0x1
-    li r5, 0x4
-    li r6, 0x1e
-    bl fn_8017AD78
-    lwz r31, 0x6c(r1)
-    lwz r0, 0x74(r1)
-    mtlr r0
-    addi r1, r1, 0x70
-    blr
-}
-
-void fn_8017AD74(void) {
-}
-
-void fn_8017AD78(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    GXSetTexCoordGen2((s32) (arg0), (s32) (arg1), (s32) (arg2), (s32) (arg3), (s32) (0), (s32) (0x7D));
-}
-
-void fn_8017AD84(s16 arg0, s16 arg1) {
-    *(volatile s16 *)0xCC008000 = arg0;
-    *(volatile s16 *)0xCC008000 = arg1;
-}
-
-void fn_8017AD9C(s16 arg0, s16 arg1, s16 arg2) {
-    *(volatile s16 *)0xCC008000 = arg0;
-    *(volatile s16 *)0xCC008000 = arg1;
-    *(volatile s16 *)0xCC008000 = arg2;
-}
-
-#pragma dont_inline on
-struct TaskStruct_0x160 * fn_8017ADBC(s32 arg0) {
-    struct TaskStruct_0x160 *p = &lbl_803D1460[arg0];
-    if (p->flags & 1) {
-        return p;
-    }
-    return 0;
-}
-#pragma dont_inline reset
-
 // asm_to_cpp: fn_8017ADE4
-asm s32 fn_8017ADE4() {
+asm f32 fn_8017ADE4(s32 arg0_x) {
     nofralloc
     mr r4, r3
     lwz r0, 0x0(r3)
@@ -3190,13 +3234,6 @@ asm s32 fn_8017ADE4() {
 lbl_8017AE04:
     lfs f1, lbl_804A0F18
     blr
-}
-
-void fn_8017AE0C(f32 *arg0, s32 *arg1) {
-    if ((s32) (*arg1 & 1) != 0) {
-        fn_8001B8B8((s32) ((s32) arg0), (s32) ((s32) ((s8 *)arg1 + 0x1C)), (s32) ((s32) ((s8 *)arg1 + 4)));
-        fn_8001B8B0((s32) ((s32) arg0), (s32) ((s32) arg0));
-    }
 }
 
 // asm_to_cpp: fn_8017AE60
@@ -3831,22 +3868,6 @@ asm s8 * fn_8017B5E4(s32 arg0) {
     blr
 }
 
-#pragma dont_inline on
-void fn_8017B738(s32 arg0) {
-    lbl_803D1460[arg0].flags &= ~3;
-}
-#pragma dont_inline reset
-
-void fn_8017B754(void) {
-    s32 var_r31;
-
-    var_r31 = (s32) (0);
-    do {
-        fn_8017B738((s32) (var_r31));
-        var_r31 += 1;
-    } while (var_r31 < 6);
-}
-
 // asm_to_cpp: fn_8017B790
 asm void fn_8017B790(void) {
     nofralloc
@@ -4005,53 +4026,6 @@ lbl_8017B97C:
     blr
 }
 
-// asm_to_cpp: fn_8017B9BC
-asm void fn_8017B9BC(s32 *arg0) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    stw r30, 0x18(r1)
-    mr r30, r3
-    addi r3, r1, 0x8
-    lfs f1, 0x1c(r30)
-    lfs f0, 0x4(r30)
-    fsubs f1, f1, f0
-    lfs f2, 0x20(r30)
-    lfs f0, 0x8(r30)
-    fsubs f2, f2, f0
-    lfs f3, 0x24(r30)
-    lfs f0, 0xc(r30)
-    fsubs f3, f3, f0
-    bl fn_8002AF60
-    lfs f1, 0x8(r1)
-    lfs f2, 0x10(r1)
-    bl fn_801A32A0
-    la r31, lbl_804A0F18
-    lfs f0, 0x1c(r31)
-    fmuls f0, f0, f1
-    stfs f0, 0x2c(r30)
-    lfs f1, 0xc(r1)
-    lfs f2, 0x10(r1)
-    bl fn_801A32A0
-    lfs f0, 0x1c(r31)
-    fmuls f0, f0, f1
-    stfs f0, 0x28(r30)
-    lfs f1, 0xc(r1)
-    lfs f2, 0x8(r1)
-    bl fn_801A32A0
-    lfs f0, 0x1c(r31)
-    fmuls f0, f0, f1
-    stfs f0, 0x30(r30)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
 // asm_to_cpp: fn_8017BA64
 asm void fn_8017BA64(s32 *arg0) {
     nofralloc
@@ -4178,16 +4152,8 @@ lbl_8017BC00:
     blr
 }
 
-#pragma dont_inline on
-void fn_8017BC20(struct TaskStruct_0x160 *arg0) {
-    if (arg0->field_0x15c != 0) {
-        arg0->field_0x15c(arg0);
-    }
-}
-#pragma dont_inline reset
-
 // asm_to_cpp: fn_8017BC38
-asm void fn_8017BC38(s32 *arg0) {
+asm s32 fn_8017BC38(s32 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -4392,30 +4358,6 @@ lbl_8017BEFC:
     blr
 }
 
-// asm_to_cpp: fn_8017BF10
-asm void fn_8017BF10(s32 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    addi r4, r3, 0x130
-    bl fn_80090D40
-    addi r3, r31, 0x130
-    bl fn_80090CC4
-    cmpwi r3, 0x0
-    bne lbl_8017BF44
-    addi r3, r31, 0x130
-    bl fn_80090CAC
-lbl_8017BF44:
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
 // asm_to_cpp: fn_8017BF58
 asm void fn_8017BF58(s32 arg0, s32 arg1, s32 arg2, f32 farg0, f32 farg1) {
     nofralloc
@@ -4492,7 +4434,7 @@ lbl_8017C02C:
 }
 
 // asm_to_cpp: fn_8017C068
-asm void fn_8017C068(s32 *arg0) {
+asm s32 fn_8017C068(s32 *arg0) {
     nofralloc
     stwu r1, -0x60(r1)
     mflr r0
@@ -4691,52 +4633,6 @@ asm void fn_8017C2CC(void) {
     addi r1, r1, 0x40
     blr
 }
-
-s32 fn_8017C348(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
-    s8 *spC;
-    s32 sp8;
-
-    if ((s32) (fn_8017ADBC((s32) (arg0))->flags & 1) == 0) {
-        return (s32) (0);
-    }
-    sp8 = (s32) (fn_8018CB4C((s32) (arg0)));
-    fn_8002AFB4((s32) ((s32) &spC), (s32) ((s32) &sp8));
-    SetViewport__Q34nw4r3g3d6CameraFffff((s8 **) (&spC), farg0, farg1, farg2, farg3);
-    return (s32) (1);
-}
-
-s32 fn_8017C3E0(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5, s32 arg7) {
-    s8 *spC;
-    s32 sp8;
-
-    if ((s32) (fn_8017ADBC((s32) (arg0))->flags & 1) == 0) {
-        return (s32) (0);
-    }
-    sp8 = (s32) (fn_8018CB4C((s32) (arg0)));
-    fn_8002AFB4((s32) ((s32) &spC), (s32) ((s32) &sp8));
-    SetScissor__Q34nw4r3g3d6CameraFUlUlUlUl((s8 **) (&spC), (s32) ((s32) (u32) farg0), (s32) ((s32) (u32) farg1), (s32) ((s32) (u32) farg2), (s32) ((s32) (u32) farg3));
-    SetScissorBoxOffset__Q34nw4r3g3d6CameraFll((s8 **) (&spC), (s32) ((s32) -farg4), (s32) ((s32) -farg5));
-    GXSetScissor__Q34nw4r3g3d6CameraCFv((s32) ((s8 *) &spC));
-    return (s32) (1);
-}
-
-#pragma dont_inline on
-void fn_8017C4E4(s32 arg0, s32 arg1) {
-    struct TaskStruct_0x160 *p = &lbl_803D1460[arg0];
-    if (p->flags & 1) {
-        p->field_0x74 = arg1;
-    }
-}
-#pragma dont_inline reset
-
-#pragma dont_inline on
-void fn_8017C50C(s32 arg0, void (*arg1)(struct TaskStruct_0x160 *)) {
-    struct TaskStruct_0x160 *p = &lbl_803D1460[arg0];
-    if (p->flags & 1) {
-        p->field_0x15c = arg1;
-    }
-}
-#pragma dont_inline reset
 
 // asm_to_cpp: fn_8017C534
 asm void fn_8017C534(s32 *arg0, f32 farg0, f32 farg1) {
@@ -5002,28 +4898,6 @@ asm void fn_8017C8AC(s32 *arg0, f32 farg0) {
     blr
 }
 
-// asm_to_cpp: fn_8017C8F0
-asm void fn_8017C8F0(s32 *arg0, f32 farg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    fmr f2, f1
-    lfs f1, 0x38(r3)
-    la r3, lbl_804A0F18
-    lfs f3, 0x8(r3)
-    lfs f4, 0x5c(r3)
-    bl fn_801728FC
-    stfs f1, 0x38(r31)
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
 // asm_to_cpp: fn_8017C934
 asm void fn_8017C934(s32 *arg0, s32 arg1, s32 arg2, f32 farg0, f32 farg1) {
     nofralloc
@@ -5245,73 +5119,6 @@ lbl_8017CC30:
     blr
 }
 
-// asm_to_cpp: fn_8017CC60
-asm void fn_8017CC60(s32 *arg0, s32 arg1, s32 arg2, f32 farg0) {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    stfd f31, 0x28(r1)
-    addi r11, r1, 0x28
-    bl _savegpr_29
-    mr r29, r3
-    mr r30, r4
-    mr r31, r5
-    fmr f31, f1
-    addi r3, r1, 0x8
-    mr r4, r29
-    bl fn_8017AE0C
-    addi r3, r1, 0x8
-    mr r4, r3
-    fmr f1, f31
-    bl fn_80018B08
-    li r0, 0x1
-    stb r0, 0x84(r29)
-    stb r0, 0xac(r29)
-    li r0, 0x0
-    stw r0, 0xa0(r29)
-    stw r30, 0xa4(r29)
-    stw r31, 0xa8(r29)
-    stw r0, 0xc8(r29)
-    stw r30, 0xcc(r29)
-    stw r31, 0xd0(r29)
-    srawi r0, r30, 1
-    addze r0, r0
-    cmpw r31, r0
-    ble lbl_8017CCE0
-    stw r0, 0xa8(r29)
-lbl_8017CCE0:
-    lwz r0, 0xcc(r29)
-    srawi r0, r0, 1
-    addze r3, r0
-    lwz r0, 0xd0(r29)
-    cmpw r0, r3
-    ble lbl_8017CCFC
-    stw r3, 0xd0(r29)
-lbl_8017CCFC:
-    addi r3, r29, 0x88
-    addi r4, r29, 0x4
-    bl fn_80019DAC
-    addi r3, r29, 0xb0
-    addi r4, r29, 0x1c
-    bl fn_80019DAC
-    addi r3, r29, 0x94
-    addi r4, r29, 0x4
-    addi r5, r1, 0x8
-    bl fn_80018B00
-    addi r3, r29, 0xbc
-    addi r4, r29, 0x1c
-    addi r5, r1, 0x8
-    bl fn_80018B00
-    lfd f31, 0x28(r1)
-    addi r11, r1, 0x28
-    bl _restgpr_29
-    lwz r0, 0x34(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
-}
-
 // asm_to_cpp: fn_8017CD50
 asm void fn_8017CD50(s32 *arg0, s32 arg1, s32 arg2, f32 farg0, f32 farg1) {
     nofralloc
@@ -5422,17 +5229,6 @@ lbl_8017CE60:
     mtlr r0
     addi r1, r1, 0x60
     blr
-}
-
-#pragma dont_inline on
-void fn_8017CEF4(void) {
-    __construct_array(lbl_803D1460, (void *)fn_8017CF14, 0, 0x160, 6);
-}
-#pragma dont_inline reset
-
-s32 fn_8017CF14(s32 arg0) {
-    fn_8017CF48((s32) (arg0 + 0x130));
-    return (s32) (arg0);
 }
 
 } // extern "C"

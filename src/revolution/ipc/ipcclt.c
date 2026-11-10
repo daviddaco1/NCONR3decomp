@@ -1,814 +1,694 @@
-#include "types.h"
-#include "m2c_macros.h"
-#include "m2c_protos.h"
+#include <revolution/IPC.h>
+#include <revolution/OS.h>
+#include <string.h>
 
-extern s32 __mailboxAck_8049D0C0;
-extern M2C_UNK __responses_80463060;
-extern s32 hid_8049D0C4;
-extern s32 lbl_8049E200;
-extern s8 *lbl_8049E204;
-extern u32 lbl_8049E208;
+#define IPC_QUEUE_CAPACITY 16
+#define IPC_HEAP_SIZE_OLD 0x800
+#define IPC_HEAP_SIZE 0x1000
 
-s32 strnlen();
-void IpcReplyHandler();
-void IPCInterruptHandler();
-s32 IPCCltInit();
-s32 IPCCltReInit();
-s32 __ios_Ipc2();
-s32 IOS_OpenAsync();
-s32 IOS_Open();
-s32 IOS_CloseAsync();
-s32 IOS_Close();
-s32 IOS_ReadAsync();
-s32 IOS_Read();
-s32 IOS_WriteAsync();
-s32 IOS_Write();
-s32 IOS_SeekAsync();
-s32 IOS_Seek();
-s32 IOS_IoctlAsync();
-s32 IOS_Ioctl();
-s32 __ios_Ioctlv();
-s32 IOS_IoctlvAsync();
-s32 IOS_Ioctlv();
+typedef struct IPCRequestQueue {
+    u32 sent;                                // at 0x0
+    u32 queued;                              // at 0x4
+    u32 front;                               // at 0x8
+    u32 back;                                // at 0xC
+    IPCRequestEx* queue[IPC_QUEUE_CAPACITY]; // at 0x10
+} IPCRequestQueue;
 
-// strnlen: definicion C reemplazada por asm (ver abajo)
+static s32 __mailboxAck = 1;
+static s32 hid = -1;
 
+static BOOL __relnchFl = FALSE;
+static IPCRequestEx* __relnchRpc = NULL;
+static IPCRequestEx* __relnchRpcSave = NULL;
 
-void IpcReplyHandler(s32 arg0, s32 *arg1);
+static IPCRequestQueue __responses;
 
-// IPCInterruptHandler: definicion C reemplazada por asm (ver abajo)
+static OSAlarm __timeout_alarm;
 
+static IPCRequestEx __rpcBuf;
 
+size_t strnlen(const char* s, size_t maxlen);
+
+size_t strnlen(const char* s, size_t maxlen) {
+    const u8* p = (const u8*)s;
+    while (*p && maxlen-- > 0) {
+        p++;
+    }
+    return (uintptr_t)p - (uintptr_t)s;
+}
+
+static IPCRequestEx* ipcAllocReq(void) {
+    return (IPCRequestEx*)iosAllocAligned(hid, sizeof(IPCRequestEx), 32);
+}
+
+static s32 ipcFree(void* block) {
+    iosFree(hid, block);
+    return IPC_RESULT_OK;
+}
+
+static DECOMP_INLINE s32 __ipcQueueRequest(IPCRequestEx* req) {
+    s32 ret = IPC_RESULT_OK;
+    s32 waiting;
+
+    waiting =
+        (__responses.queued < __responses.sent)
+            // Difference of count
+            ? __responses.queued - __responses.sent
+            // Is queue full?
+            : (__responses.queued - __responses.sent) >= IPC_QUEUE_CAPACITY;
+
+    if (waiting != 0) {
+        ret = IPC_RESULT_BUSY_INTERNAL;
+    } else {
+        __responses.queue[__responses.back] = req;
+        __responses.back = (__responses.back + 1) % IPC_QUEUE_CAPACITY;
+        __responses.queued++;
+        IPCiProfQueueReq(req, req->base.fd);
+    }
+
+    return ret;
+}
+
+static DECOMP_INLINE s32 __ipcSendRequest(void) {
+    s32 ret = IPC_RESULT_OK;
+    IPCRequestEx* req;
+    s32 waiting;
+
+    waiting = (__responses.queued < __responses.sent)
+                  // Difference of sent/queued
+                  ? __responses.queued - __responses.sent
+                  // Are no requests waiting
+                  : (__responses.queued - __responses.sent) == 0;
+
+    if (waiting != 0) {
+        ret = IPC_RESULT_BUSY_INTERNAL;
+    } else {
+        req = __responses.queue[__responses.front];
+        if (req == NULL) {
+            goto exit;
+        }
+
+        if (req->reboot) {
+            __mailboxAck--;
+        }
+
+        IPCWriteReg(IPC_IPC_PPCMSG, (u32)OSCachedToPhysical(req));
+        __responses.front = (__responses.front + 1) % IPC_QUEUE_CAPACITY;
+        __responses.sent++;
+        __mailboxAck--;
+        IPCWriteReg(IPC_IPC_PPCCTRL, (IPCReadReg(IPC_IPC_PPCCTRL) & 0x30) | 1);
+    }
+
+exit:
+    return ret;
+}
+
+static void IpcReplyHandler(s32 intr, OSContext* ctx) {
+#pragma unused(intr)
+
+    IPCRequestEx* req;
+    IPCIoctlvArgs* args;
+    u32 reg;
+    OSContext temp;
+    int i;
+
+    reg = IPCReadReg(IPC_IPC_ARMMSG);
+    if (reg != 0) {
+        req = (IPCRequestEx*)OSPhysicalToCached(reg);
+
+        IPCWriteReg(IPC_IPC_PPCCTRL, (IPCReadReg(IPC_IPC_PPCCTRL) & 0x30) | 4);
+        ACRWriteReg(ACR_PPCIRQFLAG, 0x40000000);
+        DCInvalidateRange(&req->base, sizeof(IPCRequest));
+
+        // Not type??
+        switch (req->base.fd) {
+        case IPC_REQ_READ:
+            req->base.rw.data = (req->base.rw.data != NULL)
+                                    ? OSPhysicalToCached((u32)req->base.rw.data)
+                                    : NULL;
+
+            if (req->base.ret > 0) {
+                DCInvalidateRange(req->base.rw.data, req->base.ret);
+            }
+            break;
+        case IPC_REQ_IOCTL:
+            req->base.ioctl.out =
+                (req->base.ioctl.out != NULL)
+                    ? OSPhysicalToCached((u32)req->base.ioctl.out)
+                    : NULL;
+
+            DCInvalidateRange(req->base.ioctl.in, req->base.ioctl.inSize);
+            DCInvalidateRange(req->base.ioctl.out, req->base.ioctl.outSize);
+            break;
+        case IPC_REQ_IOCTLV:
+            args = &req->base.ioctlv;
+
+            req->base.ioctlv.vectors =
+                (req->base.ioctlv.vectors != NULL)
+                    ? OSPhysicalToCached((u32)req->base.ioctlv.vectors)
+                    : NULL;
+
+            DCInvalidateRange(req->base.ioctlv.vectors,
+                              (args->inCount + args->outCount) *
+                                  sizeof(IPCIOVector));
+
+            for (i = 0; i < args->inCount + args->outCount; i++) {
+                // Just trust me
+                i++;
+                i--;
+
+                req->base.ioctlv.vectors[i].base =
+                    (args->vectors[i].base != NULL)
+                        ? OSPhysicalToCached((u32)args->vectors[i].base)
+                        : NULL;
+                DCInvalidateRange(args->vectors[i].base,
+                                  req->base.ioctlv.vectors[i].length);
+            }
+
+            if (__relnchFl && __relnchRpc == req) {
+                __relnchFl = FALSE;
+                if (__mailboxAck < 1) {
+                    __mailboxAck++;
+                }
+            }
+            break;
+        }
+
+        if (req->callback != NULL) {
+            OSClearContext(&temp);
+            OSSetCurrentContext(&temp);
+            req->callback(req->base.ret, req->callbackArg);
+            OSClearContext(&temp);
+            OSSetCurrentContext(ctx);
+            ipcFree(req);
+        } else {
+            OSWakeupThread(&req->queue);
+        }
+
+        IPCWriteReg(IPC_IPC_PPCCTRL, (IPCReadReg(IPC_IPC_PPCCTRL) & 0x30) | 8);
+        IPCiProfReply(req, req->base.fd);
+    }
+}
+
+static void IpcAckHandler(u8 intr, OSContext* ctx) {
+#pragma unused(intr)
+#pragma unused(ctx)
+
+    IPCWriteReg(IPC_IPC_PPCCTRL, (IPCReadReg(IPC_IPC_PPCCTRL) & 0x30) | 2);
+    ACRWriteReg(ACR_PPCIRQFLAG, 0x40000000);
+
+    if (__mailboxAck < 1) {
+        __mailboxAck++;
+        IPCiProfAck();
+    }
+
+    if (__mailboxAck > 0) {
+        if (__relnchFl) {
+            __relnchRpc->base.ret = IPC_RESULT_OK;
+            __relnchFl = FALSE;
+            OSWakeupThread(&__relnchRpc->queue);
+            IPCWriteReg(IPC_IPC_PPCCTRL,
+                        (IPCReadReg(IPC_IPC_PPCCTRL) & 0x30) | 8);
+        }
+        __ipcSendRequest();
+    }
+}
+
+static void IPCInterruptHandler(s32 intr, OSContext* ctx) {
+    if ((IPCReadReg(IPC_IPC_PPCCTRL) & 0x14) == 0x14) {
+        IpcReplyHandler(intr, ctx);
+    }
+
+    if ((IPCReadReg(IPC_IPC_PPCCTRL) & 0x22) == 0x22) {
+        IpcAckHandler(intr, ctx);
+    }
+}
+
+// IPCCltInit: definicion C reemplazada por asm (ver abajo)
 s32 IPCCltInit(void);
 
-// IPCCltReInit: definicion C reemplazada por asm (ver abajo)
 
 
-// __ios_Ipc2: definicion C reemplazada por asm (ver abajo)
+s32 IPCCltReInit(void) {
 
+    s32 err = 0;
+    void* lo;
+
+    lo = IPCGetBufferLo();
+    if ((char*)lo + IPC_HEAP_SIZE_OLD > IPCGetBufferHi()) {
+        err = IPC_RESULT_ALLOC_FAILED;
+    } else {
+        hid = iosCreateHeap(lo, IPC_HEAP_SIZE_OLD);
+        IPCSetBufferLo((char*)lo + IPC_HEAP_SIZE_OLD);
+    }
+
+    return err;
+}
+
+static s32 __ios_Ipc1(s32 fd, IPCRequestType type, IPCAsyncCallback callback,
+                      void* callbackArg, IPCRequestEx** out) {
+    IPCRequest* req;
+    s32 ret = IPC_RESULT_OK;
+
+    if (out == NULL) {
+        ret = IPC_RESULT_INVALID_INTERNAL;
+    } else {
+        *out = ipcAllocReq();
+        if (*out == NULL) {
+            ret = IPC_RESULT_ALLOC_FAILED;
+        } else {
+            req = &(*out)->base;
+
+            (*out)->callback = callback;
+            (*out)->callbackArg = callbackArg;
+            (*out)->reboot = FALSE;
+
+            req->type = type;
+            req->fd = fd;
+        }
+    }
+
+    return ret;
+}
+
+static s32 __ios_Ipc2(IPCRequestEx* req, IPCAsyncCallback callback) {
+    s32 ret = IPC_RESULT_OK;
+    BOOL enabled;
+
+    if (req == NULL) {
+        ret = IPC_RESULT_INVALID_INTERNAL;
+    } else {
+        if (callback == NULL) {
+            OSInitThreadQueue(&req->queue);
+        }
+        DCFlushRange(&req->base, sizeof(IPCRequest));
+
+        enabled = OSDisableInterrupts();
+
+        ret = __ipcQueueRequest(req);
+        if (ret != IPC_RESULT_OK) {
+            OSRestoreInterrupts(enabled);
+            if (callback != NULL) {
+                ipcFree(req);
+            }
+        } else {
+            if (__mailboxAck > 0) {
+                __ipcSendRequest();
+            }
+
+            if (callback == NULL) {
+                OSSleepThread(&req->queue);
+            }
+
+            OSRestoreInterrupts(enabled);
+
+            if (callback == NULL) {
+                ret = req->base.ret;
+            }
+        }
+    }
+
+    if (req != NULL && callback == NULL) {
+        ipcFree(req);
+    }
+
+    return ret;
+}
+
+//unused
+void __ios_Ipc2WithTimeout(){
+}
+
+//unused
+void __timeout_cb(){
+}
+
+static s32 __ios_Open(IPCRequestEx* req, const char* path, IPCOpenMode mode) {
+    s32 ret = IPC_RESULT_OK;
+
+    if (req == NULL) {
+        ret = IPC_RESULT_INVALID_INTERNAL;
+    } else {
+        DCFlushRange(path, strnlen(path, 64) + 1);
+        req->base.open.path = (const char*)OSCachedToPhysical(path);
+        req->base.open.mode = mode;
+    }
+
+    return ret;
+}
 
 // IOS_OpenAsync: definicion C reemplazada por asm (ver abajo)
+s32 IOS_OpenAsync(const char* path, IPCOpenMode mode, IPCAsyncCallback callback,
+                  void* callbackArg);
 
 
 // IOS_Open: definicion C reemplazada por asm (ver abajo)
+s32 IOS_Open(const char* path, IPCOpenMode mode);
 
 
-s32 IOS_CloseAsync(s32 arg0, s32 arg1, s32 arg2) {
-    s32 sp8;
-    s32 temp_r3;
-    s32 var_r31;
-
-    var_r31 = 0;
-    if (&sp8 == NULL) {
-        var_r31 = -4;
-    } else {
-        temp_r3 = iosAllocAligned(hid_8049D0C4, 0x40, 0x20);
-        sp8 = temp_r3;
-        if (temp_r3 == 0) {
-            var_r31 = -0x16;
-        } else {
-            M2C_FIELD(temp_r3, s32 *, 0x20) = arg1;
-            M2C_FIELD(sp8, s32 *, 0x24) = arg2;
-            M2C_FIELD(sp8, s32 *, 0x28) = 0;
-            M2C_FIELD(temp_r3, s32 *, 0) = 2;
-            M2C_FIELD(temp_r3, s32 *, 8) = arg0;
-        }
-    }
-    if (var_r31 == 0) {
-        var_r31 = __ios_Ipc2((u8 *) sp8, arg1);
-    }
-    return var_r31;
+//unused
+void IOS_OpenWithTimeout(){
 }
 
-// IOS_Close: definicion C reemplazada por asm (ver abajo)
+s32 IOS_CloseAsync(s32 fd, IPCAsyncCallback callback, void* callbackArg) {
+    IPCRequestEx* req;
+    s32 ret = __ios_Ipc1(fd, IPC_REQ_CLOSE, callback, callbackArg, &req);
+    if (ret == IPC_RESULT_OK) {
+        ret = __ios_Ipc2(req, callback);
+    }
 
+    return ret;
+}
 
-// IOS_ReadAsync: definicion C reemplazada por asm (ver abajo)
+s32 IOS_Close(s32 fd) {
+    IPCRequestEx* req;
+    s32 ret = __ios_Ipc1(fd, IPC_REQ_CLOSE, NULL, NULL, &req);
+    if (ret == IPC_RESULT_OK) {
+        ret = __ios_Ipc2(req, NULL);
+    }
 
+    return ret;
+}
 
-// IOS_Read: definicion C reemplazada por asm (ver abajo)
+//unused
+void IOS_CloseWithTimeout(){
+}
 
+static s32 __ios_Read(IPCRequestEx* req, void* buf, s32 len) {
+    s32 ret = IPC_RESULT_OK;
 
-// IOS_WriteAsync: definicion C reemplazada por asm (ver abajo)
+    if (req == NULL) {
+        ret = IPC_RESULT_INVALID_INTERNAL;
+    } else {
+        DCInvalidateRange(buf, len);
+        req->base.rw.data = (buf != NULL) ? OSCachedToPhysical(buf) : NULL;
+        req->base.rw.length = len;
+    }
 
+    return ret;
+}
 
-// IOS_Write: definicion C reemplazada por asm (ver abajo)
+s32 IOS_ReadAsync(s32 fd, void* buf, s32 len, IPCAsyncCallback callback,
+                  void* callbackArg) {
+    IPCRequestEx* req;
+    s32 ret = __ios_Ipc1(fd, IPC_REQ_READ, callback, callbackArg, &req);
+    if (ret == IPC_RESULT_OK) {
+        ret = __ios_Read(req, buf, len);
+        if (ret == IPC_RESULT_OK) {
+            ret = __ios_Ipc2(req, callback);
+        }
+    }
 
+    return ret;
+}
 
-// IOS_SeekAsync: definicion C reemplazada por asm (ver abajo)
+s32 IOS_Read(s32 fd, void* buf, s32 len) {
+    IPCRequestEx* req;
+    s32 ret = __ios_Ipc1(fd, IPC_REQ_READ, NULL, NULL, &req);
+    if (ret == IPC_RESULT_OK) {
+        ret = __ios_Read(req, buf, len);
+        if (ret == IPC_RESULT_OK) {
+            ret = __ios_Ipc2(req, NULL);
+        }
+    }
 
+    return ret;
+}
 
-// IOS_Seek: definicion C reemplazada por asm (ver abajo)
+static s32 __ios_Write(IPCRequestEx* req, const void* buf, s32 len) {
+    s32 ret = IPC_RESULT_OK;
 
+    if (req == NULL) {
+        ret = IPC_RESULT_INVALID_INTERNAL;
+    } else {
+        req->base.rw.data = (buf != NULL) ? OSCachedToPhysical(buf) : NULL;
+        req->base.rw.length = len;
+        DCFlushRange(buf, len);
+    }
 
-// IOS_IoctlAsync: definicion C reemplazada por asm (ver abajo)
+    return ret;
+}
 
+s32 IOS_WriteAsync(s32 fd, const void* buf, s32 len, IPCAsyncCallback callback,
+                   void* callbackArg) {
+    IPCRequestEx* req;
+    s32 ret = __ios_Ipc1(fd, IPC_REQ_WRITE, callback, callbackArg, &req);
+    if (ret == IPC_RESULT_OK) {
+        ret = __ios_Write(req, buf, len);
+        if (ret == IPC_RESULT_OK) {
+            ret = __ios_Ipc2(req, callback);
+        }
+    }
 
-// IOS_Ioctl: definicion C reemplazada por asm (ver abajo)
+    return ret;
+}
 
+s32 IOS_Write(s32 fd, const void* buf, s32 len) {
+    IPCRequestEx* req;
+    s32 ret = __ios_Ipc1(fd, IPC_REQ_WRITE, NULL, NULL, &req);
+    if (ret == IPC_RESULT_OK) {
+        ret = __ios_Write(req, buf, len);
+        if (ret == IPC_RESULT_OK) {
+            ret = __ios_Ipc2(req, NULL);
+        }
+    }
 
-// __ios_Ioctlv: definicion C reemplazada por asm (ver abajo)
+    return ret;
+}
 
+static s32 __ios_Seek(IPCRequestEx* req, s32 offset, IPCSeekMode mode) {
+    s32 ret = IPC_RESULT_OK;
 
-s32 IOS_IoctlvAsync(s32 arg0, s32 arg1, u32 arg2, u32 arg3, u8 *arg4, s32 arg5, s32 arg6, M2C_UNK arg_sp0);
+    if (req == NULL) {
+        ret = IPC_RESULT_INVALID_INTERNAL;
+    } else {
+        req->base.seek.offset = offset;
+        req->base.seek.mode = mode;
+    }
 
-s32 IOS_Ioctlv(s32 arg0, s32 arg1, u32 arg2, u32 arg3, u8 *arg4, M2C_UNK arg_sp0);
+    return ret;
+}
+
+s32 IOS_SeekAsync(s32 fd, s32 offset, IPCSeekMode mode,
+                  IPCAsyncCallback callback, void* callbackArg) {
+    IPCRequestEx* req;
+    s32 ret = __ios_Ipc1(fd, IPC_REQ_SEEK, callback, callbackArg, &req);
+    if (ret == IPC_RESULT_OK) {
+        ret = __ios_Seek(req, offset, mode);
+        if (ret == IPC_RESULT_OK) {
+            ret = __ios_Ipc2(req, callback);
+        }
+    }
+
+    return ret;
+}
+
+//unused
+s32 IOS_Seek(s32 fd, s32 offset, IPCSeekMode mode) {
+    IPCRequestEx* req;
+    s32 ret = __ios_Ipc1(fd, IPC_REQ_SEEK, NULL, NULL, &req);
+    if (ret == IPC_RESULT_OK) {
+        ret = __ios_Seek(req, offset, mode);
+        if (ret == IPC_RESULT_OK) {
+            ret = __ios_Ipc2(req, NULL);
+        }
+    }
+
+    return ret;
+}
+
+static s32 __ios_Ioctl(IPCRequestEx* req, s32 type, void* in, s32 inSize,
+                       void* out, s32 outSize) {
+    s32 ret = IPC_RESULT_OK;
+
+    if (req == NULL) {
+        ret = IPC_RESULT_INVALID_INTERNAL;
+    } else {
+        req->base.ioctl.type = type;
+        req->base.ioctl.out = (out != NULL) ? OSCachedToPhysical(out) : NULL;
+        req->base.ioctl.outSize = outSize;
+        req->base.ioctl.in = (in != NULL) ? OSCachedToPhysical(in) : NULL;
+        req->base.ioctl.inSize = inSize;
+
+        DCFlushRange(in, inSize);
+        DCFlushRange(out, outSize);
+    }
+
+    return ret;
+}
+
+s32 IOS_IoctlAsync(s32 fd, s32 type, void* in, s32 inSize, void* out,
+                   s32 outSize, IPCAsyncCallback callback, void* callbackArg) {
+    IPCRequestEx* req;
+    s32 ret = __ios_Ipc1(fd, IPC_REQ_IOCTL, callback, callbackArg, &req);
+    if (ret == IPC_RESULT_OK) {
+        ret = __ios_Ioctl(req, type, in, inSize, out, outSize);
+        if (ret == IPC_RESULT_OK) {
+            ret = __ios_Ipc2(req, callback);
+        }
+    }
+
+    return ret;
+}
+
+s32 IOS_Ioctl(s32 fd, s32 type, void* in, s32 inSize, void* out, s32 outSize) {
+    IPCRequestEx* req;
+    s32 ret = __ios_Ipc1(fd, IPC_REQ_IOCTL, NULL, NULL, &req);
+    if (ret == IPC_RESULT_OK) {
+        ret = __ios_Ioctl(req, type, in, inSize, out, outSize);
+        if (ret == IPC_RESULT_OK) {
+            ret = __ios_Ipc2(req, NULL);
+        }
+    }
+
+    return ret;
+}
+
+static s32 __ios_Ioctlv(IPCRequestEx* req, s32 type, s32 inCount, s32 outCount,
+                        IPCIOVector* vectors) {
+    int i;
+    s32 ret = IPC_RESULT_OK;
+
+    if (req == NULL) {
+        ret = IPC_RESULT_INVALID_INTERNAL;
+    } else {
+        req->base.ioctlv.type = type;
+        req->base.ioctlv.inCount = inCount;
+        req->base.ioctlv.outCount = outCount;
+        req->base.ioctlv.vectors = vectors;
+
+        for (i = 0; i < req->base.ioctlv.outCount; i++) {
+            DCFlushRange(req->base.ioctlv.vectors[inCount + i].base,
+                         req->base.ioctlv.vectors[inCount + i].length);
+
+            req->base.ioctlv.vectors[inCount + i].base =
+                (req->base.ioctlv.vectors[inCount + i].base != NULL)
+                    ? OSCachedToPhysical(
+                          req->base.ioctlv.vectors[inCount + i].base)
+                    : NULL;
+        }
+
+        for (i = 0; i < req->base.ioctlv.inCount; i++) {
+            DCFlushRange(req->base.ioctlv.vectors[i].base,
+                         req->base.ioctlv.vectors[i].length);
+
+            req->base.ioctlv.vectors[i].base =
+                (req->base.ioctlv.vectors[i].base != NULL)
+                    ? OSCachedToPhysical(req->base.ioctlv.vectors[i].base)
+                    : NULL;
+        }
+
+        DCFlushRange(req->base.ioctlv.vectors,
+                     (req->base.ioctlv.inCount + req->base.ioctlv.outCount) *
+                         sizeof(IPCIOVector));
+
+        req->base.ioctlv.vectors =
+            (vectors != NULL) ? OSCachedToPhysical(vectors) : NULL;
+    }
+
+    return ret;
+}
+
+s32 IOS_IoctlvAsync(s32 fd, s32 type, s32 inCount, s32 outCount,
+                    IPCIOVector* vectors, IPCAsyncCallback callback,
+                    void* callbackArg) {
+    IPCRequestEx* req;
+    s32 ret = __ios_Ipc1(fd, IPC_REQ_IOCTLV, callback, callbackArg, &req);
+    if (ret == IPC_RESULT_OK) {
+        ret = __ios_Ioctlv(req, type, inCount, outCount, vectors);
+        if (ret == IPC_RESULT_OK) {
+            ret = __ios_Ipc2(req, callback);
+        }
+    }
+
+    return ret;
+}
+
+s32 IOS_Ioctlv(s32 fd, s32 type, s32 inCount, s32 outCount,
+               IPCIOVector* vectors) {
+    IPCRequestEx* req;
+    s32 ret = __ios_Ipc1(fd, IPC_REQ_IOCTLV, NULL, NULL, &req);
+    if (ret == IPC_RESULT_OK) {
+        ret = __ios_Ioctlv(req, type, inCount, outCount, vectors);
+        if (ret == IPC_RESULT_OK) {
+            ret = __ios_Ipc2(req, NULL);
+        }
+    }
+
+    return ret;
+}
+
+s32 IOS_IoctlvReboot(s32 fd, s32 type, s32 inCount, s32 outCount,
+                     IPCIOVector* vectors) {
+    IPCRequestEx* req;
+    BOOL enabled;
+    s32 ret;
+
+    enabled = OSDisableInterrupts();
+
+    if(__relnchFl){
+         OSRestoreInterrupts(enabled);
+        ret = -10;
+    }else{
+        __relnchFl = TRUE;
+        OSRestoreInterrupts(enabled);
+        ret = __ios_Ipc1(fd, IPC_REQ_IOCTLV, NULL, NULL, &req);
+
+        if (ret == IPC_RESULT_OK) {
+            __relnchRpcSave = req;
+            req->reboot = TRUE;
+            
+            ret = __ios_Ioctlv(req, type, inCount, outCount, vectors);
+            if (ret == IPC_RESULT_OK) {
+                memcpy(&__rpcBuf,req,sizeof(IPCRequestEx));
+
+                __relnchRpc = &__rpcBuf;
+
+                OSInitThreadQueue(&req->queue);
+                DCFlushRange(&req->base, sizeof(IPCRequest));
+
+                enabled = OSDisableInterrupts();
+                ret = __ipcQueueRequest(req);
+                
+                if (ret != IPC_RESULT_OK) {
+                    OSRestoreInterrupts(enabled);
+                } else {
+                    if (__mailboxAck > 0) {
+                        __ipcSendRequest();
+                    }
+
+                    OSSleepThread(&__relnchRpc->queue);
+                    OSRestoreInterrupts(enabled);
+                    ret = __relnchRpc->base.ret;
+                }
+            }
+        }
+
+        __relnchFl = FALSE;
+        __relnchRpcSave = NULL;
+
+        if (req != NULL && ret) {
+            ipcFree(req);
+        }
+
+    }
+
+    return ret;
+}
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
 extern float initialized_654_8049E20C;
-extern void DCFlushRange();
-extern void DCInvalidateRange();
-s32 IOS_Close(s32 arg0);
-s32 IOS_Ioctl(s32 arg0, s32 arg1, u8 *arg2, s32 arg3, u8 *arg4, s32 arg5, M2C_UNK arg_sp0);
-s32 IOS_IoctlAsync(s32 arg0, s32 arg1, u8 *arg2, s32 arg3, u8 *arg4, s32 arg5, s32 arg6, s32 arg7, M2C_UNK arg_sp0);
-s32 IOS_Ioctlv();
-s32 IOS_IoctlvAsync();
-s32 IOS_Open(u8 *arg0, s32 arg1);
-s32 IOS_OpenAsync(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, M2C_UNK arg_sp0);
-s32 IOS_Read(s32 arg0, u8 *arg1, s32 arg2);
-s32 IOS_ReadAsync(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0);
-s32 IOS_Seek(s32 arg0, s32 arg1, s32 arg2);
-s32 IOS_SeekAsync(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0);
-s32 IOS_Write(s32 arg0, u8 *arg1, s32 arg2);
-s32 IOS_WriteAsync(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0);
-s32 IPCCltInit();
-s32 IPCCltReInit(void);
+s32 IOS_Open(const char* path, IPCOpenMode mode);
+s32 IOS_OpenAsync(const char* path, IPCOpenMode mode, IPCAsyncCallback callback,
+                  void* callbackArg);
+s32 IPCCltInit(void);
 extern void IPCInit();
-void IPCInterruptHandler(s32 *arg0, s32 arg1);
-extern void IPCSetBufferLo();
-extern void IPCWriteReg();
-extern void IPCiProfAck();
 extern void IPCiProfInit();
-extern void IPCiProfQueueReq();
-extern void IPCiProfReply();
-void IpcReplyHandler();
-extern void OSClearContext();
-extern void OSInitThreadQueue();
-extern void OSSetCurrentContext();
-extern void OSSleepThread();
-s32 __ios_Ioctlv(u8 *arg0, s32 arg1, u32 arg2, u32 arg3, u8 *arg4, M2C_UNK arg_sp0);
-s32 __ios_Ipc2(u8 *arg0, s32 arg1);
-extern void _restgpr_23();
-extern void _restgpr_24();
-extern void _restgpr_25();
-extern void _restgpr_26();
 extern void _restgpr_27();
-extern void _savegpr_23();
-extern void _savegpr_24();
-extern void _savegpr_25();
-extern void _savegpr_26();
 extern void _savegpr_27();
-extern void fn_8031D978();
-s32 strnlen(u8 *arg0, s32 arg1);
-
-// asm_to_cpp: strnlen
-asm s32 strnlen(u8 *arg0, s32 arg1) {
-    nofralloc
-    mr r5, r3
-    b lbl_803058A0
-lbl_8030589C:
-    addi r5, r5, 0x1
-lbl_803058A0:
-    lbz r0, 0x0(r5)
-    cmpwi r0, 0x0
-    beq lbl_803058B8
-    cmpwi r4, 0x0
-    subi r4, r4, 0x1
-    bne lbl_8030589C
-lbl_803058B8:
-    subf r3, r3, r5
-    blr
-}
-
-// asm_to_cpp: IpcReplyHandler
-asm void IpcReplyHandler() {
-    nofralloc
-    stwu r1, -0x2e0(r1)
-    mflr r0
-    li r3, 0x2
-    stw r0, 0x2e4(r1)
-    stw r31, 0x2dc(r1)
-    stw r30, 0x2d8(r1)
-    mr r30, r4
-    stw r29, 0x2d4(r1)
-    stw r28, 0x2d0(r1)
-    bl IPCReadReg
-    cmpwi r3, 0x0
-    beq lbl_80305AF8
-    addis r31, r3, 0x8000
-    li r3, 0x1
-    bl IPCReadReg
-    rlwinm r0, r3, 0, 26, 27
-    li r3, 0x1
-    ori r4, r0, 0x4
-    bl IPCWriteReg
-    lis r0, 0x4000
-    lis r3, 0xcd00
-    stw r0, 0x30(r3)
-    mr r3, r31
-    li r4, 0x20
-    bl DCInvalidateRange
-    lwz r0, 0x8(r31)
-    cmpwi r0, 0x6
-    beq lbl_80305980
-    bge lbl_80305940
-    cmpwi r0, 0x3
-    beq lbl_8030594C
-    b lbl_80305A7C
-lbl_80305940:
-    cmpwi r0, 0x8
-    bge lbl_80305A7C
-    b lbl_803059B8
-lbl_8030594C:
-    lwz r3, 0xc(r31)
-    cmpwi r3, 0x0
-    beq lbl_80305960
-    addis r0, r3, 0x8000
-    b lbl_80305964
-lbl_80305960:
-    li r0, 0x0
-lbl_80305964:
-    stw r0, 0xc(r31)
-    lwz r4, 0x4(r31)
-    cmpwi r4, 0x0
-    ble lbl_80305A7C
-    lwz r3, 0xc(r31)
-    bl DCInvalidateRange
-    b lbl_80305A7C
-lbl_80305980:
-    lwz r3, 0x18(r31)
-    cmpwi r3, 0x0
-    beq lbl_80305994
-    addis r0, r3, 0x8000
-    b lbl_80305998
-lbl_80305994:
-    li r0, 0x0
-lbl_80305998:
-    stw r0, 0x18(r31)
-    lwz r3, 0x10(r31)
-    lwz r4, 0x14(r31)
-    bl DCInvalidateRange
-    lwz r3, 0x18(r31)
-    lwz r4, 0x1c(r31)
-    bl DCInvalidateRange
-    b lbl_80305A7C
-lbl_803059B8:
-    lwz r3, 0x18(r31)
-    cmpwi r3, 0x0
-    beq lbl_803059CC
-    addis r3, r3, 0x8000
-    b lbl_803059D0
-lbl_803059CC:
-    li r3, 0x0
-lbl_803059D0:
-    stw r3, 0x18(r31)
-    lwz r4, 0x10(r31)
-    lwz r0, 0x14(r31)
-    add r0, r4, r0
-    slwi r4, r0, 3
-    bl DCInvalidateRange
-    li r28, 0x0
-    li r29, 0x0
-    b lbl_80305A34
-lbl_803059F4:
-    lwz r3, 0x18(r31)
-    lwzx r3, r3, r29
-    cmpwi r3, 0x0
-    beq lbl_80305A0C
-    addis r0, r3, 0x8000
-    b lbl_80305A10
-lbl_80305A0C:
-    li r0, 0x0
-lbl_80305A10:
-    lwz r3, 0x18(r31)
-    stwx r0, r3, r29
-    lwz r3, 0x18(r31)
-    add r4, r3, r29
-    lwzx r3, r3, r29
-    lwz r4, 0x4(r4)
-    bl DCInvalidateRange
-    addi r28, r28, 0x1
-    addi r29, r29, 0x8
-lbl_80305A34:
-    lwz r3, 0x10(r31)
-    lwz r0, 0x14(r31)
-    add r0, r3, r0
-    cmplw r28, r0
-    blt lbl_803059F4
-    lwz r0, lbl_8049E200
-    cmpwi r0, 0x0
-    beq lbl_80305A7C
-    lwz r0, lbl_8049E208
-    cmplw r0, r31
-    bne lbl_80305A7C
-    lwz r3, __mailboxAck_8049D0C0
-    li r0, 0x0
-    stw r0, lbl_8049E200
-    cmpwi r3, 0x1
-    bge lbl_80305A7C
-    addi r0, r3, 0x1
-    stw r0, __mailboxAck_8049D0C0
-lbl_80305A7C:
-    lwz r0, 0x20(r31)
-    cmpwi r0, 0x0
-    beq lbl_80305ACC
-    addi r3, r1, 0x8
-    bl OSClearContext
-    addi r3, r1, 0x8
-    bl OSSetCurrentContext
-    lwz r12, 0x20(r31)
-    lwz r3, 0x4(r31)
-    lwz r4, 0x24(r31)
-    mtctr r12
-    bctrl
-    addi r3, r1, 0x8
-    bl OSClearContext
-    mr r3, r30
-    bl OSSetCurrentContext
-    lwz r3, hid_8049D0C4
-    mr r4, r31
-    bl iosFree
-    b lbl_80305AD4
-lbl_80305ACC:
-    addi r3, r31, 0x2c
-    bl fn_8031D978
-lbl_80305AD4:
-    li r3, 0x1
-    bl IPCReadReg
-    rlwinm r0, r3, 0, 26, 27
-    li r3, 0x1
-    ori r4, r0, 0x8
-    bl IPCWriteReg
-    lwz r4, 0x8(r31)
-    mr r3, r31
-    bl IPCiProfReply
-lbl_80305AF8:
-    lwz r0, 0x2e4(r1)
-    lwz r31, 0x2dc(r1)
-    lwz r30, 0x2d8(r1)
-    lwz r29, 0x2d4(r1)
-    lwz r28, 0x2d0(r1)
-    mtlr r0
-    addi r1, r1, 0x2e0
-    blr
-}
-
-// asm_to_cpp: IPCInterruptHandler
-asm void IPCInterruptHandler(s32 *arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r4
-    stw r30, 0x8(r1)
-    mr r30, r3
-    li r3, 0x1
-    bl IPCReadReg
-    andi. r0, r3, 0x14
-    cmplwi r0, 0x14
-    bne lbl_80305B54
-    mr r3, r30
-    mr r4, r31
-    bl IpcReplyHandler
-lbl_80305B54:
-    li r3, 0x1
-    bl IPCReadReg
-    andi. r0, r3, 0x22
-    cmplwi r0, 0x22
-    bne lbl_80305CAC
-    li r3, 0x1
-    bl IPCReadReg
-    rlwinm r0, r3, 0, 26, 27
-    li r3, 0x1
-    ori r4, r0, 0x2
-    bl IPCWriteReg
-    lis r0, 0x4000
-    lis r3, 0xcd00
-    stw r0, 0x30(r3)
-    lwz r31, __mailboxAck_8049D0C0
-    cmpwi r31, 0x1
-    bge lbl_80305BA4
-    addi r31, r31, 0x1
-    stw r31, __mailboxAck_8049D0C0
-    bl IPCiProfAck
-lbl_80305BA4:
-    cmpwi r31, 0x0
-    ble lbl_80305CAC
-    lwz r0, lbl_8049E200
-    cmpwi r0, 0x0
-    beq lbl_80305BEC
-    lwz r3, lbl_8049E204
-    li r0, 0x0
-    stw r0, 0x4(r3)
-    lwz r3, lbl_8049E204
-    stw r0, lbl_8049E200
-    addi r3, r3, 0x2c
-    bl fn_8031D978
-    li r3, 0x1
-    bl IPCReadReg
-    rlwinm r0, r3, 0, 26, 27
-    li r3, 0x1
-    ori r4, r0, 0x8
-    bl IPCWriteReg
-lbl_80305BEC:
-    lis r4, __responses_80463060@ha
-    addi r3, r4, __responses_80463060@l
-    lwz r4, __responses_80463060@l(r4)
-    lwz r0, 0x4(r3)
-    cmplw r0, r4
-    bge lbl_80305C0C
-    subf r0, r4, r0
-    b lbl_80305C18
-lbl_80305C0C:
-    subf r0, r4, r0
-    cntlzw r0, r0
-    srwi r0, r0, 5
-lbl_80305C18:
-    cmpwi r0, 0x0
-    bne lbl_80305CAC
-    lis r3, __responses_80463060@ha
-    addi r3, r3, __responses_80463060@l
-    lwz r0, 0x8(r3)
-    slwi r0, r0, 2
-    add r3, r3, r0
-    lwz r4, 0x10(r3)
-    cmpwi r4, 0x0
-    beq lbl_80305CAC
-    lwz r0, 0x28(r4)
-    cmpwi r0, 0x0
-    beq lbl_80305C58
-    lwz r3, __mailboxAck_8049D0C0
-    subi r0, r3, 0x1
-    stw r0, __mailboxAck_8049D0C0
-lbl_80305C58:
-    addis r4, r4, 0x8000
-    li r3, 0x0
-    bl IPCWriteReg
-    lis r7, __responses_80463060@ha
-    lwz r3, __mailboxAck_8049D0C0
-    addi r6, r7, __responses_80463060@l
-    lwz r4, __responses_80463060@l(r7)
-    lwz r5, 0x8(r6)
-    subi r0, r3, 0x1
-    stw r0, __mailboxAck_8049D0C0
-    addi r4, r4, 0x1
-    addi r0, r5, 0x1
-    li r3, 0x1
-    clrlwi r0, r0, 28
-    stw r4, __responses_80463060@l(r7)
-    stw r0, 0x8(r6)
-    bl IPCReadReg
-    rlwinm r0, r3, 0, 26, 27
-    li r3, 0x1
-    ori r4, r0, 0x1
-    bl IPCWriteReg
-lbl_80305CAC:
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// asm_to_cpp: IPCCltInit
-asm s32 IPCCltInit() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    lwz r0, initialized_654_8049E20C
-    stw r31, 0x1c(r1)
-    cmpwi r0, 0x0
-    stw r30, 0x18(r1)
-    li r30, 0x0
-    stw r29, 0x14(r1)
-    bne lbl_80305D58
-    li r0, 0x1
-    stw r0, initialized_654_8049E20C
-    bl IPCInit
-    bl IPCGetBufferLo
-    mr r29, r3
-    addi r31, r3, 0x1000
-    bl IPCGetBufferHi
-    cmplw r31, r3
-    ble lbl_80305D18
-    li r30, -0x16
-    b lbl_80305D58
-lbl_80305D18:
-    mr r3, r29
-    li r4, 0x1000
-    bl iosCreateHeap
-    stw r3, hid_8049D0C4
-    mr r3, r31
-    bl IPCSetBufferLo
-    lis r4, IPCInterruptHandler@ha
-    li r3, 0x1b
-    addi r4, r4, IPCInterruptHandler@l
-    bl __OSSetInterruptHandler
-    li r3, 0x10
-    bl __OSUnmaskInterrupts
-    li r3, 0x1
-    li r4, 0x38
-    bl IPCWriteReg
-    bl IPCiProfInit
-lbl_80305D58:
-    mr r3, r30
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// asm_to_cpp: IPCCltReInit
-asm s32 IPCCltReInit(void) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    stw r30, 0x18(r1)
-    li r30, 0x0
-    stw r29, 0x14(r1)
-    bl IPCGetBufferLo
-    mr r29, r3
-    addi r31, r3, 0x800
-    bl IPCGetBufferHi
-    cmplw r31, r3
-    ble lbl_80305DB4
-    li r30, -0x16
-    b lbl_80305DCC
-lbl_80305DB4:
-    mr r3, r29
-    li r4, 0x800
-    bl iosCreateHeap
-    stw r3, hid_8049D0C4
-    mr r3, r31
-    bl IPCSetBufferLo
-lbl_80305DCC:
-    mr r3, r30
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// asm_to_cpp: __ios_Ipc2
-asm s32 __ios_Ipc2(u8 *arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    cmpwi r3, 0x0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    stw r30, 0x18(r1)
-    stw r29, 0x14(r1)
-    mr r29, r4
-    stw r28, 0x10(r1)
-    mr r28, r3
-    bne lbl_80305E20
-    li r31, -0x4
-    b lbl_80305FEC
-lbl_80305E20:
-    cmpwi r4, 0x0
-    bne lbl_80305E30
-    addi r3, r3, 0x2c
-    bl OSInitThreadQueue
-lbl_80305E30:
-    mr r3, r28
-    li r4, 0x20
-    bl DCFlushRange
-    bl OSDisableInterrupts
-    lis r4, __responses_80463060@ha
-    mr r30, r3
-    addi r3, r4, __responses_80463060@l
-    lwz r4, __responses_80463060@l(r4)
-    lwz r0, 0x4(r3)
-    li r31, 0x0
-    cmplw r0, r4
-    bge lbl_80305E68
-    subf r0, r4, r0
-    b lbl_80305E84
-lbl_80305E68:
-    subf r4, r4, r0
-    li r3, 0x10
-    subi r0, r4, 0x10
-    orc r3, r4, r3
-    srwi r0, r0, 1
-    subf r0, r0, r3
-    srwi r0, r0, 31
-lbl_80305E84:
-    cmpwi r0, 0x0
-    beq lbl_80305E94
-    li r31, -0x8
-    b lbl_80305ED4
-lbl_80305E94:
-    lis r6, __responses_80463060@ha
-    mr r3, r28
-    addi r6, r6, __responses_80463060@l
-    lwz r0, 0xc(r6)
-    slwi r0, r0, 2
-    add r4, r6, r0
-    stw r28, 0x10(r4)
-    lwz r5, 0xc(r6)
-    lwz r4, 0x4(r6)
-    addi r0, r5, 0x1
-    clrlwi r5, r0, 28
-    addi r0, r4, 0x1
-    stw r5, 0xc(r6)
-    stw r0, 0x4(r6)
-    lwz r4, 0x8(r28)
-    bl IPCiProfQueueReq
-lbl_80305ED4:
-    cmpwi r31, 0x0
-    beq lbl_80305EFC
-    mr r3, r30
-    bl OSRestoreInterrupts
-    cmpwi r29, 0x0
-    beq lbl_80305FEC
-    lwz r3, hid_8049D0C4
-    mr r4, r28
-    bl iosFree
-    b lbl_80305FEC
-lbl_80305EFC:
-    lwz r0, __mailboxAck_8049D0C0
-    cmpwi r0, 0x0
-    ble lbl_80305FC8
-    lis r4, __responses_80463060@ha
-    addi r3, r4, __responses_80463060@l
-    lwz r4, __responses_80463060@l(r4)
-    lwz r0, 0x4(r3)
-    cmplw r0, r4
-    bge lbl_80305F28
-    subf r0, r4, r0
-    b lbl_80305F34
-lbl_80305F28:
-    subf r0, r4, r0
-    cntlzw r0, r0
-    srwi r0, r0, 5
-lbl_80305F34:
-    cmpwi r0, 0x0
-    bne lbl_80305FC8
-    lis r3, __responses_80463060@ha
-    addi r3, r3, __responses_80463060@l
-    lwz r0, 0x8(r3)
-    slwi r0, r0, 2
-    add r3, r3, r0
-    lwz r4, 0x10(r3)
-    cmpwi r4, 0x0
-    beq lbl_80305FC8
-    lwz r0, 0x28(r4)
-    cmpwi r0, 0x0
-    beq lbl_80305F74
-    lwz r3, __mailboxAck_8049D0C0
-    subi r0, r3, 0x1
-    stw r0, __mailboxAck_8049D0C0
-lbl_80305F74:
-    addis r4, r4, 0x8000
-    li r3, 0x0
-    bl IPCWriteReg
-    lis r7, __responses_80463060@ha
-    lwz r3, __mailboxAck_8049D0C0
-    addi r6, r7, __responses_80463060@l
-    lwz r4, __responses_80463060@l(r7)
-    lwz r5, 0x8(r6)
-    subi r0, r3, 0x1
-    stw r0, __mailboxAck_8049D0C0
-    addi r4, r4, 0x1
-    addi r0, r5, 0x1
-    li r3, 0x1
-    clrlwi r0, r0, 28
-    stw r4, __responses_80463060@l(r7)
-    stw r0, 0x8(r6)
-    bl IPCReadReg
-    rlwinm r0, r3, 0, 26, 27
-    li r3, 0x1
-    ori r4, r0, 0x1
-    bl IPCWriteReg
-lbl_80305FC8:
-    cmpwi r29, 0x0
-    bne lbl_80305FD8
-    addi r3, r28, 0x2c
-    bl OSSleepThread
-lbl_80305FD8:
-    mr r3, r30
-    bl OSRestoreInterrupts
-    cmpwi r29, 0x0
-    bne lbl_80305FEC
-    lwz r31, 0x4(r28)
-lbl_80305FEC:
-    cmpwi r28, 0x0
-    beq lbl_80306008
-    cmpwi r29, 0x0
-    bne lbl_80306008
-    lwz r3, hid_8049D0C4
-    mr r4, r28
-    bl iosFree
-lbl_80306008:
-    mr r3, r31
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r28, 0x10(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// asm_to_cpp: IOS_OpenAsync
-asm s32 IOS_OpenAsync(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, M2C_UNK arg_sp0) {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    addi r11, r1, 0x30
-    bl _savegpr_27
-    addic. r0, r1, 0x8
-    mr r27, r3
-    mr r28, r4
-    mr r29, r5
-    mr r31, r6
-    li r30, 0x0
-    bne lbl_80306064
-    li r30, -0x4
-    b lbl_803060AC
-lbl_80306064:
-    lwz r3, hid_8049D0C4
-    li r4, 0x40
-    li r5, 0x20
-    bl iosAllocAligned
-    cmpwi r3, 0x0
-    stw r3, 0x8(r1)
-    bne lbl_80306088
-    li r30, -0x16
-    b lbl_803060AC
-lbl_80306088:
-    stw r29, 0x20(r3)
-    li r5, 0x0
-    li r0, 0x1
-    lwz r4, 0x8(r1)
-    stw r31, 0x24(r4)
-    lwz r4, 0x8(r1)
-    stw r5, 0x28(r4)
-    stw r0, 0x0(r3)
-    stw r5, 0x8(r3)
-lbl_803060AC:
-    cmpwi r30, 0x0
-    bne lbl_80306128
-    lwz r31, 0x8(r1)
-    li r30, 0x0
-    cmpwi r31, 0x0
-    bne lbl_803060CC
-    li r30, -0x4
-    b lbl_80306110
-lbl_803060CC:
-    mr r3, r27
-    li r4, 0x40
-    b lbl_803060DC
-lbl_803060D8:
-    addi r3, r3, 0x1
-lbl_803060DC:
-    lbz r0, 0x0(r3)
-    cmpwi r0, 0x0
-    beq lbl_803060F4
-    cmpwi r4, 0x0
-    subi r4, r4, 0x1
-    bne lbl_803060D8
-lbl_803060F4:
-    subf r4, r27, r3
-    mr r3, r27
-    addi r4, r4, 0x1
-    bl DCFlushRange
-    addis r0, r27, 0x8000
-    stw r0, 0xc(r31)
-    stw r28, 0x10(r31)
-lbl_80306110:
-    cmpwi r30, 0x0
-    bne lbl_80306128
-    lwz r3, 0x8(r1)
-    mr r4, r29
-    bl __ios_Ipc2
-    mr r30, r3
-lbl_80306128:
-    addi r11, r1, 0x30
-    mr r3, r30
-    bl _restgpr_27
-    lwz r0, 0x34(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
-}
 
 // asm_to_cpp: IOS_Open
-asm s32 IOS_Open(u8 *arg0, s32 arg1) {
+asm s32 IOS_Open(const char* path, IPCOpenMode mode) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -825,7 +705,7 @@ asm s32 IOS_Open(u8 *arg0, s32 arg1) {
     li r30, -0x4
     b lbl_803061C4
 lbl_8030617C:
-    lwz r3, hid_8049D0C4
+    lwz r3, hid
     li r4, 0x40
     li r5, 0x20
     bl iosAllocAligned
@@ -893,911 +773,139 @@ lbl_80306240:
     blr
 }
 
-// asm_to_cpp: IOS_Close
-asm s32 IOS_Close(s32 arg0) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addic. r0, r1, 0x8
-    stw r31, 0x1c(r1)
-    li r31, 0x0
-    stw r30, 0x18(r1)
-    mr r30, r3
-    bne lbl_80306350
-    li r31, -0x4
-    b lbl_80306398
-lbl_80306350:
-    lwz r3, hid_8049D0C4
-    li r4, 0x40
-    li r5, 0x20
-    bl iosAllocAligned
-    cmpwi r3, 0x0
-    stw r3, 0x8(r1)
-    bne lbl_80306374
-    li r31, -0x16
-    b lbl_80306398
-lbl_80306374:
-    li r5, 0x0
-    li r0, 0x2
-    stw r5, 0x20(r3)
-    lwz r4, 0x8(r1)
-    stw r5, 0x24(r4)
-    lwz r4, 0x8(r1)
-    stw r5, 0x28(r4)
-    stw r0, 0x0(r3)
-    stw r30, 0x8(r3)
-lbl_80306398:
-    cmpwi r31, 0x0
-    bne lbl_803063B0
-    lwz r3, 0x8(r1)
-    li r4, 0x0
-    bl __ios_Ipc2
-    mr r31, r3
-lbl_803063B0:
-    mr r3, r31
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// asm_to_cpp: IOS_ReadAsync
-asm s32 IOS_ReadAsync(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0) {
+// asm_to_cpp: IOS_OpenAsync
+asm s32 IOS_OpenAsync(const char* path, IPCOpenMode mode, IPCAsyncCallback callback,
+                  void* callbackArg) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
     stw r0, 0x34(r1)
     addi r11, r1, 0x30
-    bl _savegpr_26
+    bl _savegpr_27
     addic. r0, r1, 0x8
-    mr r26, r3
-    mr r27, r4
-    mr r28, r5
-    mr r29, r6
-    mr r31, r7
+    mr r27, r3
+    mr r28, r4
+    mr r29, r5
+    mr r31, r6
     li r30, 0x0
-    bne lbl_80306408
+    bne lbl_80306064
     li r30, -0x4
-    b lbl_80306450
-lbl_80306408:
-    lwz r3, hid_8049D0C4
+    b lbl_803060AC
+lbl_80306064:
+    lwz r3, hid
     li r4, 0x40
     li r5, 0x20
     bl iosAllocAligned
     cmpwi r3, 0x0
     stw r3, 0x8(r1)
-    bne lbl_8030642C
+    bne lbl_80306088
     li r30, -0x16
-    b lbl_80306450
-lbl_8030642C:
+    b lbl_803060AC
+lbl_80306088:
     stw r29, 0x20(r3)
     li r5, 0x0
-    li r0, 0x3
+    li r0, 0x1
     lwz r4, 0x8(r1)
     stw r31, 0x24(r4)
     lwz r4, 0x8(r1)
     stw r5, 0x28(r4)
     stw r0, 0x0(r3)
-    stw r26, 0x8(r3)
-lbl_80306450:
+    stw r5, 0x8(r3)
+lbl_803060AC:
     cmpwi r30, 0x0
-    bne lbl_803064B0
+    bne lbl_80306128
     lwz r31, 0x8(r1)
     li r30, 0x0
     cmpwi r31, 0x0
-    bne lbl_80306470
+    bne lbl_803060CC
     li r30, -0x4
-    b lbl_80306498
-lbl_80306470:
+    b lbl_80306110
+lbl_803060CC:
     mr r3, r27
-    mr r4, r28
-    bl DCInvalidateRange
-    cmpwi r27, 0x0
-    beq lbl_8030648C
+    li r4, 0x40
+    b lbl_803060DC
+lbl_803060D8:
+    addi r3, r3, 0x1
+lbl_803060DC:
+    lbz r0, 0x0(r3)
+    cmpwi r0, 0x0
+    beq lbl_803060F4
+    cmpwi r4, 0x0
+    subi r4, r4, 0x1
+    bne lbl_803060D8
+lbl_803060F4:
+    subf r4, r27, r3
+    mr r3, r27
+    addi r4, r4, 0x1
+    bl DCFlushRange
     addis r0, r27, 0x8000
-    b lbl_80306490
-lbl_8030648C:
-    li r0, 0x0
-lbl_80306490:
     stw r0, 0xc(r31)
     stw r28, 0x10(r31)
-lbl_80306498:
+lbl_80306110:
     cmpwi r30, 0x0
-    bne lbl_803064B0
+    bne lbl_80306128
     lwz r3, 0x8(r1)
     mr r4, r29
     bl __ios_Ipc2
     mr r30, r3
-lbl_803064B0:
+lbl_80306128:
     addi r11, r1, 0x30
     mr r3, r30
-    bl _restgpr_26
+    bl _restgpr_27
     lwz r0, 0x34(r1)
     mtlr r0
     addi r1, r1, 0x30
     blr
 }
 
-// asm_to_cpp: IOS_Read
-asm s32 IOS_Read(s32 arg0, u8 *arg1, s32 arg2) {
+// asm_to_cpp: IPCCltInit
+asm s32 IPCCltInit(void) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
     stw r0, 0x24(r1)
-    addic. r0, r1, 0x8
+    lwz r0, initialized_654_8049E20C
     stw r31, 0x1c(r1)
-    mr r31, r3
+    cmpwi r0, 0x0
     stw r30, 0x18(r1)
     li r30, 0x0
     stw r29, 0x14(r1)
-    mr r29, r5
-    stw r28, 0x10(r1)
-    mr r28, r4
-    bne lbl_80306508
-    li r30, -0x4
-    b lbl_80306550
-lbl_80306508:
-    lwz r3, hid_8049D0C4
-    li r4, 0x40
-    li r5, 0x20
-    bl iosAllocAligned
-    cmpwi r3, 0x0
-    stw r3, 0x8(r1)
-    bne lbl_8030652C
-    li r30, -0x16
-    b lbl_80306550
-lbl_8030652C:
-    li r5, 0x0
-    li r0, 0x3
-    stw r5, 0x20(r3)
-    lwz r4, 0x8(r1)
-    stw r5, 0x24(r4)
-    lwz r4, 0x8(r1)
-    stw r5, 0x28(r4)
-    stw r0, 0x0(r3)
-    stw r31, 0x8(r3)
-lbl_80306550:
-    cmpwi r30, 0x0
-    bne lbl_803065B0
-    lwz r31, 0x8(r1)
-    li r30, 0x0
-    cmpwi r31, 0x0
-    bne lbl_80306570
-    li r30, -0x4
-    b lbl_80306598
-lbl_80306570:
-    mr r3, r28
-    mr r4, r29
-    bl DCInvalidateRange
-    cmpwi r28, 0x0
-    beq lbl_8030658C
-    addis r0, r28, 0x8000
-    b lbl_80306590
-lbl_8030658C:
-    li r0, 0x0
-lbl_80306590:
-    stw r0, 0xc(r31)
-    stw r29, 0x10(r31)
-lbl_80306598:
-    cmpwi r30, 0x0
-    bne lbl_803065B0
-    lwz r3, 0x8(r1)
-    li r4, 0x0
-    bl __ios_Ipc2
-    mr r30, r3
-lbl_803065B0:
-    mr r3, r30
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r28, 0x10(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// asm_to_cpp: IOS_WriteAsync
-asm s32 IOS_WriteAsync(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0) {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    addi r11, r1, 0x30
-    bl _savegpr_26
-    addic. r0, r1, 0x8
-    mr r26, r3
-    mr r27, r4
-    mr r28, r5
-    mr r29, r6
-    mr r30, r7
-    li r31, 0x0
-    bne lbl_80306610
-    li r31, -0x4
-    b lbl_80306658
-lbl_80306610:
-    lwz r3, hid_8049D0C4
-    li r4, 0x40
-    li r5, 0x20
-    bl iosAllocAligned
-    cmpwi r3, 0x0
-    stw r3, 0x8(r1)
-    bne lbl_80306634
-    li r31, -0x16
-    b lbl_80306658
-lbl_80306634:
-    stw r29, 0x20(r3)
-    li r5, 0x0
-    li r0, 0x4
-    lwz r4, 0x8(r1)
-    stw r30, 0x24(r4)
-    lwz r4, 0x8(r1)
-    stw r5, 0x28(r4)
-    stw r0, 0x0(r3)
-    stw r26, 0x8(r3)
-lbl_80306658:
-    cmpwi r31, 0x0
-    bne lbl_803066B8
-    lwz r5, 0x8(r1)
-    li r31, 0x0
-    cmpwi r5, 0x0
-    bne lbl_80306678
-    li r31, -0x4
-    b lbl_803066A0
-lbl_80306678:
-    cmpwi r27, 0x0
-    beq lbl_80306688
-    addis r0, r27, 0x8000
-    b lbl_8030668C
-lbl_80306688:
-    li r0, 0x0
-lbl_8030668C:
-    stw r0, 0xc(r5)
-    mr r3, r27
-    mr r4, r28
-    stw r28, 0x10(r5)
-    bl DCFlushRange
-lbl_803066A0:
-    cmpwi r31, 0x0
-    bne lbl_803066B8
-    lwz r3, 0x8(r1)
-    mr r4, r29
-    bl __ios_Ipc2
-    mr r31, r3
-lbl_803066B8:
-    addi r11, r1, 0x30
-    mr r3, r31
-    bl _restgpr_26
-    lwz r0, 0x34(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
-}
-
-// asm_to_cpp: IOS_Write
-asm s32 IOS_Write(s32 arg0, u8 *arg1, s32 arg2) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addic. r0, r1, 0x8
-    stw r31, 0x1c(r1)
-    li r31, 0x0
-    stw r30, 0x18(r1)
-    mr r30, r5
-    stw r29, 0x14(r1)
-    mr r29, r4
-    stw r28, 0x10(r1)
-    mr r28, r3
-    bne lbl_80306710
-    li r31, -0x4
-    b lbl_80306758
-lbl_80306710:
-    lwz r3, hid_8049D0C4
-    li r4, 0x40
-    li r5, 0x20
-    bl iosAllocAligned
-    cmpwi r3, 0x0
-    stw r3, 0x8(r1)
-    bne lbl_80306734
-    li r31, -0x16
-    b lbl_80306758
-lbl_80306734:
-    li r5, 0x0
-    li r0, 0x4
-    stw r5, 0x20(r3)
-    lwz r4, 0x8(r1)
-    stw r5, 0x24(r4)
-    lwz r4, 0x8(r1)
-    stw r5, 0x28(r4)
-    stw r0, 0x0(r3)
-    stw r28, 0x8(r3)
-lbl_80306758:
-    cmpwi r31, 0x0
-    bne lbl_803067B8
-    lwz r5, 0x8(r1)
-    li r31, 0x0
-    cmpwi r5, 0x0
-    bne lbl_80306778
-    li r31, -0x4
-    b lbl_803067A0
-lbl_80306778:
-    cmpwi r29, 0x0
-    beq lbl_80306788
-    addis r0, r29, 0x8000
-    b lbl_8030678C
-lbl_80306788:
-    li r0, 0x0
-lbl_8030678C:
-    stw r0, 0xc(r5)
-    mr r3, r29
-    mr r4, r30
-    stw r30, 0x10(r5)
-    bl DCFlushRange
-lbl_803067A0:
-    cmpwi r31, 0x0
-    bne lbl_803067B8
-    lwz r3, 0x8(r1)
-    li r4, 0x0
-    bl __ios_Ipc2
-    mr r31, r3
-lbl_803067B8:
-    mr r3, r31
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r28, 0x10(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// asm_to_cpp: IOS_SeekAsync
-asm s32 IOS_SeekAsync(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, M2C_UNK arg_sp0) {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    addi r11, r1, 0x30
-    bl _savegpr_26
-    addic. r0, r1, 0x8
-    mr r26, r3
-    mr r27, r4
-    mr r28, r5
-    mr r29, r6
-    mr r30, r7
-    li r31, 0x0
-    bne lbl_80306818
-    li r31, -0x4
-    b lbl_80306860
-lbl_80306818:
-    lwz r3, hid_8049D0C4
-    li r4, 0x40
-    li r5, 0x20
-    bl iosAllocAligned
-    cmpwi r3, 0x0
-    stw r3, 0x8(r1)
-    bne lbl_8030683C
-    li r31, -0x16
-    b lbl_80306860
-lbl_8030683C:
-    stw r29, 0x20(r3)
-    li r5, 0x0
-    li r0, 0x5
-    lwz r4, 0x8(r1)
-    stw r30, 0x24(r4)
-    lwz r4, 0x8(r1)
-    stw r5, 0x28(r4)
-    stw r0, 0x0(r3)
-    stw r26, 0x8(r3)
-lbl_80306860:
-    cmpwi r31, 0x0
-    bne lbl_803068A0
-    lwz r3, 0x8(r1)
-    li r31, 0x0
-    cmpwi r3, 0x0
-    bne lbl_80306880
-    li r31, -0x4
-    b lbl_80306888
-lbl_80306880:
-    stw r27, 0xc(r3)
-    stw r28, 0x10(r3)
-lbl_80306888:
-    cmpwi r31, 0x0
-    bne lbl_803068A0
-    lwz r3, 0x8(r1)
-    mr r4, r29
-    bl __ios_Ipc2
-    mr r31, r3
-lbl_803068A0:
-    addi r11, r1, 0x30
-    mr r3, r31
-    bl _restgpr_26
-    lwz r0, 0x34(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
-}
-
-// asm_to_cpp: IOS_Seek
-asm s32 IOS_Seek(s32 arg0, s32 arg1, s32 arg2) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addic. r0, r1, 0x8
-    stw r31, 0x1c(r1)
-    li r31, 0x0
-    stw r30, 0x18(r1)
-    mr r30, r5
-    stw r29, 0x14(r1)
-    mr r29, r4
-    stw r28, 0x10(r1)
-    mr r28, r3
-    bne lbl_803068F8
-    li r31, -0x4
-    b lbl_80306940
-lbl_803068F8:
-    lwz r3, hid_8049D0C4
-    li r4, 0x40
-    li r5, 0x20
-    bl iosAllocAligned
-    cmpwi r3, 0x0
-    stw r3, 0x8(r1)
-    bne lbl_8030691C
-    li r31, -0x16
-    b lbl_80306940
-lbl_8030691C:
-    li r5, 0x0
-    li r0, 0x5
-    stw r5, 0x20(r3)
-    lwz r4, 0x8(r1)
-    stw r5, 0x24(r4)
-    lwz r4, 0x8(r1)
-    stw r5, 0x28(r4)
-    stw r0, 0x0(r3)
-    stw r28, 0x8(r3)
-lbl_80306940:
-    cmpwi r31, 0x0
-    bne lbl_80306980
-    lwz r3, 0x8(r1)
-    li r31, 0x0
-    cmpwi r3, 0x0
-    bne lbl_80306960
-    li r31, -0x4
-    b lbl_80306968
-lbl_80306960:
-    stw r29, 0xc(r3)
-    stw r30, 0x10(r3)
-lbl_80306968:
-    cmpwi r31, 0x0
-    bne lbl_80306980
-    lwz r3, 0x8(r1)
-    li r4, 0x0
-    bl __ios_Ipc2
-    mr r31, r3
-lbl_80306980:
-    mr r3, r31
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r28, 0x10(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// asm_to_cpp: IOS_IoctlAsync
-asm s32 IOS_IoctlAsync(s32 arg0, s32 arg1, u8 *arg2, s32 arg3, u8 *arg4, s32 arg5, s32 arg6, s32 arg7, M2C_UNK arg_sp0) {
-    nofralloc
-    stwu r1, -0x40(r1)
-    mflr r0
-    stw r0, 0x44(r1)
-    addi r11, r1, 0x40
-    bl _savegpr_23
-    addic. r0, r1, 0x8
-    mr r23, r3
-    mr r24, r4
-    mr r25, r5
-    mr r26, r6
-    mr r27, r7
-    mr r28, r8
-    mr r29, r9
-    mr r30, r10
-    li r31, 0x0
-    bne lbl_803069EC
-    li r31, -0x4
-    b lbl_80306A34
-lbl_803069EC:
-    lwz r3, hid_8049D0C4
-    li r4, 0x40
-    li r5, 0x20
-    bl iosAllocAligned
-    cmpwi r3, 0x0
-    stw r3, 0x8(r1)
-    bne lbl_80306A10
-    li r31, -0x16
-    b lbl_80306A34
-lbl_80306A10:
-    stw r29, 0x20(r3)
-    li r5, 0x0
-    li r0, 0x6
-    lwz r4, 0x8(r1)
-    stw r30, 0x24(r4)
-    lwz r4, 0x8(r1)
-    stw r5, 0x28(r4)
-    stw r0, 0x0(r3)
-    stw r23, 0x8(r3)
-lbl_80306A34:
-    cmpwi r31, 0x0
-    bne lbl_80306AC0
-    lwz r5, 0x8(r1)
-    li r31, 0x0
-    cmpwi r5, 0x0
-    bne lbl_80306A54
-    li r31, -0x4
-    b lbl_80306AA8
-lbl_80306A54:
-    cmpwi r27, 0x0
-    stw r24, 0xc(r5)
-    beq lbl_80306A68
-    addis r0, r27, 0x8000
-    b lbl_80306A6C
-lbl_80306A68:
-    li r0, 0x0
-lbl_80306A6C:
-    stw r0, 0x18(r5)
-    cmpwi r25, 0x0
-    stw r28, 0x1c(r5)
-    beq lbl_80306A84
-    addis r0, r25, 0x8000
-    b lbl_80306A88
-lbl_80306A84:
-    li r0, 0x0
-lbl_80306A88:
-    stw r0, 0x10(r5)
-    mr r3, r25
-    mr r4, r26
-    stw r26, 0x14(r5)
-    bl DCFlushRange
-    mr r3, r27
-    mr r4, r28
-    bl DCFlushRange
-lbl_80306AA8:
-    cmpwi r31, 0x0
-    bne lbl_80306AC0
-    lwz r3, 0x8(r1)
-    mr r4, r29
-    bl __ios_Ipc2
-    mr r31, r3
-lbl_80306AC0:
-    addi r11, r1, 0x40
-    mr r3, r31
-    bl _restgpr_23
-    lwz r0, 0x44(r1)
-    mtlr r0
-    addi r1, r1, 0x40
-    blr
-}
-
-// asm_to_cpp: IOS_Ioctl
-asm s32 IOS_Ioctl(s32 arg0, s32 arg1, u8 *arg2, s32 arg3, u8 *arg4, s32 arg5, M2C_UNK arg_sp0) {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    addi r11, r1, 0x30
-    bl _savegpr_25
-    addic. r0, r1, 0x8
-    mr r25, r3
-    mr r26, r4
-    mr r27, r5
-    mr r28, r6
-    mr r29, r7
-    mr r30, r8
-    li r31, 0x0
-    bne lbl_80306B1C
-    li r31, -0x4
-    b lbl_80306B64
-lbl_80306B1C:
-    lwz r3, hid_8049D0C4
-    li r4, 0x40
-    li r5, 0x20
-    bl iosAllocAligned
-    cmpwi r3, 0x0
-    stw r3, 0x8(r1)
-    bne lbl_80306B40
-    li r31, -0x16
-    b lbl_80306B64
-lbl_80306B40:
-    li r5, 0x0
-    li r0, 0x6
-    stw r5, 0x20(r3)
-    lwz r4, 0x8(r1)
-    stw r5, 0x24(r4)
-    lwz r4, 0x8(r1)
-    stw r5, 0x28(r4)
-    stw r0, 0x0(r3)
-    stw r25, 0x8(r3)
-lbl_80306B64:
-    cmpwi r31, 0x0
-    bne lbl_80306BF0
-    lwz r5, 0x8(r1)
-    li r31, 0x0
-    cmpwi r5, 0x0
-    bne lbl_80306B84
-    li r31, -0x4
-    b lbl_80306BD8
-lbl_80306B84:
-    cmpwi r29, 0x0
-    stw r26, 0xc(r5)
-    beq lbl_80306B98
-    addis r0, r29, 0x8000
-    b lbl_80306B9C
-lbl_80306B98:
-    li r0, 0x0
-lbl_80306B9C:
-    stw r0, 0x18(r5)
-    cmpwi r27, 0x0
-    stw r30, 0x1c(r5)
-    beq lbl_80306BB4
-    addis r0, r27, 0x8000
-    b lbl_80306BB8
-lbl_80306BB4:
-    li r0, 0x0
-lbl_80306BB8:
-    stw r0, 0x10(r5)
-    mr r3, r27
-    mr r4, r28
-    stw r28, 0x14(r5)
-    bl DCFlushRange
-    mr r3, r29
-    mr r4, r30
-    bl DCFlushRange
-lbl_80306BD8:
-    cmpwi r31, 0x0
-    bne lbl_80306BF0
-    lwz r3, 0x8(r1)
-    li r4, 0x0
-    bl __ios_Ipc2
-    mr r31, r3
-lbl_80306BF0:
-    addi r11, r1, 0x30
-    mr r3, r31
-    bl _restgpr_25
-    lwz r0, 0x34(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
-}
-
-// asm_to_cpp: __ios_Ioctlv
-asm s32 __ios_Ioctlv(u8 *arg0, s32 arg1, u32 arg2, u32 arg3, u8 *arg4, M2C_UNK arg_sp0) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_26
-    cmpwi r3, 0x0
+    bne lbl_80305D58
+    li r0, 0x1
+    stw r0, initialized_654_8049E20C
+    bl IPCInit
+    bl IPCGetBufferLo
     mr r29, r3
-    mr r30, r7
-    li r31, 0x0
-    bne lbl_80306C3C
-    li r31, -0x4
-    b lbl_80306D2C
-lbl_80306C3C:
-    stw r4, 0xc(r3)
-    slwi r27, r5, 3
-    li r26, 0x0
-    li r28, 0x0
-    stw r5, 0x10(r3)
-    stw r6, 0x14(r3)
-    stw r7, 0x18(r3)
-    b lbl_80306CA0
-lbl_80306C5C:
-    lwz r3, 0x18(r29)
-    add r0, r28, r27
-    add r4, r3, r0
-    lwzx r3, r3, r0
-    lwz r4, 0x4(r4)
-    bl DCFlushRange
-    lwz r4, 0x18(r29)
-    add r3, r28, r27
-    lwzx r5, r4, r3
-    cmpwi r5, 0x0
-    beq lbl_80306C90
-    addis r0, r5, 0x8000
-    b lbl_80306C94
-lbl_80306C90:
-    li r0, 0x0
-lbl_80306C94:
-    stwx r0, r4, r3
-    addi r28, r28, 0x8
-    addi r26, r26, 0x1
-lbl_80306CA0:
-    lwz r0, 0x14(r29)
-    cmplw r26, r0
-    blt lbl_80306C5C
-    li r27, 0x0
-    li r28, 0x0
-    b lbl_80306CF4
-lbl_80306CB8:
-    lwz r0, 0x18(r29)
-    add r4, r0, r28
-    lwzx r3, r28, r0
-    lwz r4, 0x4(r4)
-    bl DCFlushRange
-    lwz r3, 0x18(r29)
-    lwzx r4, r3, r28
-    cmpwi r4, 0x0
-    beq lbl_80306CE4
-    addis r0, r4, 0x8000
-    b lbl_80306CE8
-lbl_80306CE4:
-    li r0, 0x0
-lbl_80306CE8:
-    stwx r0, r3, r28
-    addi r28, r28, 0x8
-    addi r27, r27, 0x1
-lbl_80306CF4:
-    lwz r4, 0x10(r29)
-    cmplw r27, r4
-    blt lbl_80306CB8
-    lwz r0, 0x14(r29)
-    lwz r3, 0x18(r29)
-    add r0, r4, r0
-    slwi r4, r0, 3
-    bl DCFlushRange
-    cmpwi r30, 0x0
-    beq lbl_80306D24
-    addis r0, r30, 0x8000
-    b lbl_80306D28
-lbl_80306D24:
-    li r0, 0x0
-lbl_80306D28:
-    stw r0, 0x18(r29)
-lbl_80306D2C:
-    addi r11, r1, 0x20
+    addi r31, r3, 0x1000
+    bl IPCGetBufferHi
+    cmplw r31, r3
+    ble lbl_80305D18
+    li r30, -0x16
+    b lbl_80305D58
+lbl_80305D18:
+    mr r3, r29
+    li r4, 0x1000
+    bl iosCreateHeap
+    stw r3, hid
     mr r3, r31
-    bl _restgpr_26
+    bl IPCSetBufferLo
+    lis r4, IPCInterruptHandler@ha
+    li r3, 0x1b
+    addi r4, r4, IPCInterruptHandler@l
+    bl __OSSetInterruptHandler
+    li r3, 0x10
+    bl __OSUnmaskInterrupts
+    li r3, 0x1
+    li r4, 0x38
+    bl IPCWriteReg
+    bl IPCiProfInit
+lbl_80305D58:
+    mr r3, r30
+    lwz r31, 0x1c(r1)
+    lwz r30, 0x18(r1)
+    lwz r29, 0x14(r1)
     lwz r0, 0x24(r1)
     mtlr r0
     addi r1, r1, 0x20
-    blr
-}
-
-// asm_to_cpp: IOS_IoctlvAsync
-asm s32 IOS_IoctlvAsync() {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    addi r11, r1, 0x30
-    bl _savegpr_24
-    addic. r0, r1, 0x8
-    mr r24, r3
-    mr r25, r4
-    mr r26, r5
-    mr r27, r6
-    mr r28, r7
-    mr r29, r8
-    mr r30, r9
-    li r31, 0x0
-    bne lbl_80306D8C
-    li r31, -0x4
-    b lbl_80306DD4
-lbl_80306D8C:
-    lwz r3, hid_8049D0C4
-    li r4, 0x40
-    li r5, 0x20
-    bl iosAllocAligned
-    cmpwi r3, 0x0
-    stw r3, 0x8(r1)
-    bne lbl_80306DB0
-    li r31, -0x16
-    b lbl_80306DD4
-lbl_80306DB0:
-    stw r29, 0x20(r3)
-    li r5, 0x0
-    li r0, 0x7
-    lwz r4, 0x8(r1)
-    stw r30, 0x24(r4)
-    lwz r4, 0x8(r1)
-    stw r5, 0x28(r4)
-    stw r0, 0x0(r3)
-    stw r24, 0x8(r3)
-lbl_80306DD4:
-    cmpwi r31, 0x0
-    bne lbl_80306E10
-    lwz r3, 0x8(r1)
-    mr r4, r25
-    mr r5, r26
-    mr r6, r27
-    mr r7, r28
-    bl __ios_Ioctlv
-    cmpwi r3, 0x0
-    mr r31, r3
-    bne lbl_80306E10
-    lwz r3, 0x8(r1)
-    mr r4, r29
-    bl __ios_Ipc2
-    mr r31, r3
-lbl_80306E10:
-    addi r11, r1, 0x30
-    mr r3, r31
-    bl _restgpr_24
-    lwz r0, 0x34(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
-}
-
-// asm_to_cpp: IOS_Ioctlv
-asm s32 IOS_Ioctlv() {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    addi r11, r1, 0x30
-    bl _savegpr_26
-    addic. r0, r1, 0x8
-    mr r26, r3
-    mr r27, r4
-    mr r28, r5
-    mr r29, r6
-    mr r30, r7
-    li r31, 0x0
-    bne lbl_80306E68
-    li r31, -0x4
-    b lbl_80306EB0
-lbl_80306E68:
-    lwz r3, hid_8049D0C4
-    li r4, 0x40
-    li r5, 0x20
-    bl iosAllocAligned
-    cmpwi r3, 0x0
-    stw r3, 0x8(r1)
-    bne lbl_80306E8C
-    li r31, -0x16
-    b lbl_80306EB0
-lbl_80306E8C:
-    li r5, 0x0
-    li r0, 0x7
-    stw r5, 0x20(r3)
-    lwz r4, 0x8(r1)
-    stw r5, 0x24(r4)
-    lwz r4, 0x8(r1)
-    stw r5, 0x28(r4)
-    stw r0, 0x0(r3)
-    stw r26, 0x8(r3)
-lbl_80306EB0:
-    cmpwi r31, 0x0
-    bne lbl_80306EEC
-    lwz r3, 0x8(r1)
-    mr r4, r27
-    mr r5, r28
-    mr r6, r29
-    mr r7, r30
-    bl __ios_Ioctlv
-    cmpwi r3, 0x0
-    mr r31, r3
-    bne lbl_80306EEC
-    lwz r3, 0x8(r1)
-    li r4, 0x0
-    bl __ios_Ipc2
-    mr r31, r3
-lbl_80306EEC:
-    addi r11, r1, 0x30
-    mr r3, r31
-    bl _restgpr_26
-    lwz r0, 0x34(r1)
-    mtlr r0
-    addi r1, r1, 0x30
     blr
 }

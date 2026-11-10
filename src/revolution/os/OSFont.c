@@ -38,7 +38,7 @@ extern void _restgpr_26();
 extern void _savegpr_17();
 extern void _savegpr_25();
 extern void _savegpr_26();
-extern void fn_803150C4();
+extern void DCStoreRange();
 extern void fn_8031E248();
 extern void fn_8031E358();
 extern void fn_8031E3C8();
@@ -1199,7 +1199,7 @@ lbl_80319848:
 lbl_80319898:
     lwz r4, 0x28(r3)
     mr r3, r5
-    b fn_803150C4
+    b DCStoreRange
 }
 
 // ----------------------------------------------------------------------------

@@ -203,6 +203,8 @@ Please include it in the input .s file(s), or in an additional file.
 
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
+extern void ArrayLength();
+extern void ArrayNth();
 extern float CurrTvMode_8049DD28;
 extern float lbl_8049CE90;
 extern float lbl_8049CE98;
@@ -283,13 +285,12 @@ extern void _restgpr_27();
 extern void _savegpr_24();
 extern void _savegpr_25();
 extern void _savegpr_27();
-extern void fn_80253690();
+extern void ArrayAppend();
 s32 fn_80281E00();
 s32 fn_80281EAC(s32 arg0, s32 arg1, M2C_UNK arg_sp0);
 void fn_802836CC(s8 *arg0, M2C_UNK arg_sp0);
 extern void fn_802864A0();
 extern void fn_8031D978();
-extern void fn_803260C4();
 s8 * getTiming();
 void setFbbRegs(s32 *arg0, u32 *arg1, u32 *arg2, u32 *arg3, u32 *arg4);
 void setHorizontalRegs();
@@ -323,14 +324,14 @@ lbl_80281C98:
     lhz r29, 0x2a(r1)
     lwz r30, 0x2c(r1)
     lwz r3, 0x4(r26)
-    bl fn_80253658
+    bl ArrayLength
     mr r31, r3
     li r28, 0x0
     b lbl_80281D14
 lbl_80281CD8:
     lwz r3, 0x4(r26)
     mr r4, r28
-    bl fn_80253660
+    bl ArrayNth
     lwz r27, 0x0(r3)
     mr r3, r27
     bl SBServerGetPublicInetAddress
@@ -368,7 +369,7 @@ lbl_80281D50:
     stw r27, 0x20(r1)
     addi r4, r1, 0x20
     lwz r3, 0x4(r26)
-    bl fn_80253690
+    bl ArrayAppend
     lwz r12, 0x488(r26)
     mr r3, r26
     lwz r5, 0x20(r1)
@@ -793,7 +794,7 @@ lbl_80282320:
     beq lbl_80282334
     li r0, 0x0
     stw r0, lbl_8049DD60
-    bl fn_803260C4
+    bl SIRefreshSamplingRate
 lbl_80282334:
     bl OSDisableInterrupts
     lis r4, 0xcc00

@@ -200,6 +200,7 @@ void fn_8030B154(s32 arg0, s32 arg1);
 void fn_8030B410(s32 arg0, s32 arg1, s32 arg2);
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
+extern void PSMTXMultVec();
 extern float lbl_8049D12C;
 extern float lbl_8049D130;
 extern float lbl_804A26A0;
@@ -216,7 +217,7 @@ extern void _savegpr_20();
 extern void _savegpr_25();
 extern void _savegpr_27();
 extern void fn_80289630();
-extern void fn_8028A7FC();
+extern void WPADGetAccGravityUnit();
 extern void fn_8028AF20();
 extern void fn_8028B2E8();
 extern void fn_8028EE58();
@@ -1096,7 +1097,7 @@ lbl_803084C4:
     lis r3, lbl_80464840@ha
     mr r5, r4
     addi r3, r3, lbl_80464840@l
-    bl fn_8030D7E0
+    bl PSMTXMultVec
 lbl_803084E8:
     lwz r6, 0x68(r30)
     mr r3, r30
@@ -3540,7 +3541,7 @@ lbl_8030A764:
     sth r7, 0x8(r1)
     sth r6, 0xa(r1)
     sth r0, 0xc(r1)
-    bl fn_8028A7FC
+    bl WPADGetAccGravityUnit
     lha r5, 0x10(r1)
     lha r4, 0x14(r1)
     lha r3, 0x12(r1)
@@ -3577,7 +3578,7 @@ lbl_8030A82C:
     mr r3, r25
     addi r5, r1, 0x8
     li r4, 0x1
-    bl fn_8028A7FC
+    bl WPADGetAccGravityUnit
     lha r5, 0x8(r1)
     lha r4, 0xc(r1)
     lha r3, 0xa(r1)

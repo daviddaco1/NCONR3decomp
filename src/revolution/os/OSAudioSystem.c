@@ -2,7 +2,7 @@
 #include <revolution/IPC.h>
 #include <revolution/OS.h>
 
-#include <string.h>
+#include <cstring>
 
 #define DSP_CODE_WORK_MEM ((void*)0x81000000)
 #define DSP_CODE_WORK_MEM_BACKUP ((u8*)OSGetArenaHi() - sizeof(DSPInitCode))
@@ -71,207 +71,135 @@ static void __AIClockInit(BOOL arg0) {
     waitMicroSec(1000);
 }
 
-// __OSInitAudioSystem: definicion C reemplazada por asm (ver abajo)
+void __OSInitAudioSystem(void) {
+    u16 cpuMboxHi;
+    u32 start;
+    u16 ctrl;
 
+    if (!__OSInIPL) {
+        __AIClockInit(TRUE);
+    }
 
-// __OSStopAudioSystem: definicion C reemplazada por asm (ver abajo)
+    // Backup existing work memory contents
+    memcpy(DSP_CODE_WORK_MEM_BACKUP, DSP_CODE_WORK_MEM, sizeof(DSPInitCode));
+    // Copy in DSP code
+    memcpy(DSP_CODE_WORK_MEM, DSPInitCode, sizeof(DSPInitCode));
+    DCFlushRange(DSP_CODE_WORK_MEM, sizeof(DSPInitCode));
 
+    DSP_HW_REGS[DSP_AR_SIZE] = 0x43;
+    DSP_HW_REGS[DSP_CSR] = DSP_CSR_HALT | DSP_CSR_AIDINT | DSP_CSR_ARINT |
+                           DSP_CSR_DSPINT | DSP_CSR_RES;
+
+    // Reset DSP
+    DSP_HW_REGS[DSP_CSR] |= 0x1;
+    while (DSP_HW_REGS[DSP_CSR] & 0x1) {
+        ;
+    }
+
+    DSP_HW_REGS[DSP_DSPMBOX_H] = 0;
+    // Wait for mail delivery
+    while (((DSP_HW_REGS[DSP_CPUMBOX_H] << 16) | DSP_HW_REGS[DSP_CPUMBOX_L]) &
+           (DSP_CPUMBOX_H_STATUS << 16)) {
+        ;
+    }
+
+    *(u32*)&DSP_HW_REGS[DSP_AR_DMA_MMADDR_H] = 0x01000000;
+    *(u32*)&DSP_HW_REGS[DSP_AR_DMA_ARADDR_H] = 0x00000000;
+    *(u32*)&DSP_HW_REGS[DSP_AR_DMA_CNT_H] = 32;
+
+    // Wait for ARAM interrupt
+    for (ctrl = DSP_HW_REGS[DSP_CSR]; !(ctrl & DSP_CSR_ARINT);
+         ctrl = DSP_HW_REGS[DSP_CSR]) {
+        ;
+    }
+    DSP_HW_REGS[DSP_CSR] = ctrl;
+
+    start = OSGetTick();
+    do {
+        ;
+    } while (OS_TICKS_DELTA(OSGetTick(), start) < 2194);
+
+    *(u32*)&DSP_HW_REGS[DSP_AR_DMA_MMADDR_H] = 0x01000000;
+    *(u32*)&DSP_HW_REGS[DSP_AR_DMA_ARADDR_H] = 0x00000000;
+    *(u32*)&DSP_HW_REGS[DSP_AR_DMA_CNT_H] = 32;
+
+    // Wait for ARAM interrupt
+    for (ctrl = DSP_HW_REGS[DSP_CSR]; !(ctrl & DSP_CSR_ARINT);
+         ctrl = DSP_HW_REGS[DSP_CSR]) {
+        ;
+    }
+    DSP_HW_REGS[DSP_CSR] = ctrl;
+
+    DSP_HW_REGS[DSP_CSR] &= ~DSP_CSR_RES;
+    while (DSP_HW_REGS[DSP_CSR] & 0x400) {
+        ;
+    }
+
+    DSP_HW_REGS[DSP_CSR] &= ~DSP_CSR_HALT;
+    for (cpuMboxHi = DSP_HW_REGS[DSP_CPUMBOX_H];
+         !(cpuMboxHi & DSP_CPUMBOX_H_STATUS);
+         cpuMboxHi = DSP_HW_REGS[DSP_CPUMBOX_H]) {
+        ;
+    }
+
+    // ?????
+    DSP_HW_REGS[DSP_CPUMBOX_L];
+
+    DSP_HW_REGS[DSP_CSR] |= DSP_CSR_HALT;
+    DSP_HW_REGS[DSP_CSR] = DSP_CSR_HALT | DSP_CSR_AIDINT | DSP_CSR_ARINT |
+                           DSP_CSR_DSPINT | DSP_CSR_RES;
+
+    // Reset DSP
+    DSP_HW_REGS[DSP_CSR] |= 0x1;
+    while (DSP_HW_REGS[DSP_CSR] & 0x1) {
+        ;
+    }
+
+    // Restore backup
+    memcpy(DSP_CODE_WORK_MEM, DSP_CODE_WORK_MEM_BACKUP, sizeof(DSPInitCode));
+}
+
+void __OSStopAudioSystem(void) {
+    u32 start;
+    u16 ctrl;
+
+    DSP_HW_REGS[DSP_CSR] = DSP_CSR_HALT | DSP_CSR_RES;
+    // Clear sample control
+    DSP_HW_REGS[DSP_AI_DMA_CSR] &= ~DSP_AI_DMA_CSR_PLAY;
+
+    for (ctrl = DSP_HW_REGS[DSP_CSR]; ctrl & 0x400;
+         ctrl = DSP_HW_REGS[DSP_CSR]) {
+        ;
+    }
+
+    // Wait for DMA interrupt to end
+    for (ctrl = DSP_HW_REGS[DSP_CSR]; ctrl & DSP_CSR_DMAINT;
+         ctrl = DSP_HW_REGS[DSP_CSR]) {
+        ;
+    }
+
+    DSP_HW_REGS[DSP_CSR] = DSP_CSR_HALT | DSP_CSR_AIDINT | DSP_CSR_ARINT |
+                           DSP_CSR_DSPINT | DSP_CSR_RES;
+
+    DSP_HW_REGS[DSP_DSPMBOX_H] = 0;
+    // Wait for mail delivery
+    while (((DSP_HW_REGS[DSP_CPUMBOX_H] << 16) | DSP_HW_REGS[DSP_CPUMBOX_L]) &
+           (DSP_CPUMBOX_H_STATUS << 16)) {
+        ;
+    }
+
+    start = OSGetTick();
+    do {
+        ;
+    } while (OS_TICKS_DELTA(OSGetTick(), start) < 44);
+
+    // Reset DSP
+    DSP_HW_REGS[DSP_CSR] |= 0x1;
+    for (ctrl = DSP_HW_REGS[DSP_CSR]; ctrl & 0x1; ctrl = DSP_HW_REGS[DSP_CSR]) {
+        ;
+    }
+}
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-extern u8 DSPInitCode_8037FD40[];
-extern void DCFlushRange();
 
-// asm_to_cpp: __OSInitAudioSystem
-asm void __OSInitAudioSystem(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    lwz r0, __OSInIPL
-    cmpwi r0, 0x0
-    bne lbl_80314DE4
-    li r3, 0x1
-    bl __AIClockInit
-lbl_80314DE4:
-    bl OSGetArenaHi
-    lis r4, 0x8100
-    li r5, 0x80
-    subi r3, r3, 0x80
-    bl memcpy
-    lis r4, DSPInitCode_8037FD40@ha
-    lis r3, 0x8100
-    addi r4, r4, DSPInitCode_8037FD40@l
-    li r5, 0x80
-    bl memcpy
-    lis r3, 0x8100
-    li r4, 0x80
-    bl DCFlushRange
-    lis r3, 0xcc00
-    li r0, 0x43
-    sth r0, 0x5012(r3)
-    li r0, 0x8ac
-    sth r0, 0x500a(r3)
-    lhz r0, 0x500a(r3)
-    ori r0, r0, 0x1
-    sth r0, 0x500a(r3)
-lbl_80314E38:
-    lhz r0, 0x500a(r3)
-    clrlwi. r0, r0, 31
-    bne lbl_80314E38
-    li r0, 0x0
-    lis r4, 0xcc00
-    sth r0, 0x5000(r4)
-lbl_80314E50:
-    lhz r3, 0x5004(r4)
-    lhz r0, 0x5006(r4)
-    rlwimi r0, r3, 16, 0, 15
-    clrrwi. r0, r0, 31
-    bne lbl_80314E50
-    lis r4, 0xcc00
-    lis r0, 0x100
-    stw r0, 0x5020(r4)
-    li r3, 0x0
-    li r0, 0x20
-    stw r3, 0x5024(r4)
-    stw r0, 0x5028(r4)
-    lhz r5, 0x500a(r4)
-    b lbl_80314E8C
-lbl_80314E88:
-    lhz r5, 0x500a(r4)
-lbl_80314E8C:
-    rlwinm. r0, r5, 0, 26, 26
-    beq lbl_80314E88
-    lis r3, 0xcc00
-    sth r5, 0x500a(r3)
-    bl OSGetTick
-    mr r31, r3
-lbl_80314EA4:
-    bl OSGetTick
-    subf r0, r31, r3
-    cmpwi r0, 0x892
-    blt lbl_80314EA4
-    lis r4, 0xcc00
-    lis r0, 0x100
-    stw r0, 0x5020(r4)
-    li r3, 0x0
-    li r0, 0x20
-    stw r3, 0x5024(r4)
-    stw r0, 0x5028(r4)
-    lhz r5, 0x500a(r4)
-    b lbl_80314EDC
-lbl_80314ED8:
-    lhz r5, 0x500a(r4)
-lbl_80314EDC:
-    rlwinm. r0, r5, 0, 26, 26
-    beq lbl_80314ED8
-    lis r3, 0xcc00
-    sth r5, 0x500a(r3)
-    lhz r0, 0x500a(r3)
-    rlwinm r0, r0, 0, 21, 19
-    sth r0, 0x500a(r3)
-lbl_80314EF8:
-    lhz r0, 0x500a(r3)
-    rlwinm. r0, r0, 0, 21, 21
-    bne lbl_80314EF8
-    lis r3, 0xcc00
-    lhz r0, 0x500a(r3)
-    rlwinm r0, r0, 0, 30, 28
-    sth r0, 0x500a(r3)
-    lhz r0, 0x5004(r3)
-    b lbl_80314F20
-lbl_80314F1C:
-    lhz r0, 0x5004(r3)
-lbl_80314F20:
-    rlwinm. r0, r0, 0, 16, 16
-    beq lbl_80314F1C
-    lis r4, 0xcc00
-    li r0, 0x8ac
-    lhz r3, 0x5006(r4)
-    lhz r3, 0x500a(r4)
-    ori r3, r3, 0x4
-    sth r3, 0x500a(r4)
-    sth r0, 0x500a(r4)
-    lhz r0, 0x500a(r4)
-    ori r0, r0, 0x1
-    sth r0, 0x500a(r4)
-lbl_80314F50:
-    lhz r0, 0x500a(r4)
-    clrlwi. r0, r0, 31
-    bne lbl_80314F50
-    bl OSGetArenaHi
-    mr r4, r3
-    lis r3, 0x8100
-    subi r4, r4, 0x80
-    li r5, 0x80
-    bl memcpy
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
 
-// asm_to_cpp: __OSStopAudioSystem
-asm void __OSStopAudioSystem(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    lis r3, 0xcc00
-    stw r0, 0x14(r1)
-    li r0, 0x804
-    stw r31, 0xc(r1)
-    sth r0, 0x500a(r3)
-    lhz r0, 0x5036(r3)
-    clrlwi r0, r0, 17
-    sth r0, 0x5036(r3)
-    lhz r0, 0x500a(r3)
-    b lbl_80314FBC
-lbl_80314FB8:
-    lhz r0, 0x500a(r3)
-lbl_80314FBC:
-    rlwinm. r0, r0, 0, 21, 21
-    bne lbl_80314FB8
-    lis r3, 0xcc00
-    lhz r0, 0x500a(r3)
-    b lbl_80314FD4
-lbl_80314FD0:
-    lhz r0, 0x500a(r3)
-lbl_80314FD4:
-    rlwinm. r0, r0, 0, 22, 22
-    bne lbl_80314FD0
-    lis r4, 0xcc00
-    li r0, 0x8ac
-    sth r0, 0x500a(r4)
-    li r0, 0x0
-    sth r0, 0x5000(r4)
-lbl_80314FF0:
-    lhz r3, 0x5004(r4)
-    lhz r0, 0x5006(r4)
-    rlwimi r0, r3, 16, 0, 15
-    clrrwi. r0, r0, 31
-    bne lbl_80314FF0
-    bl OSGetTick
-    mr r31, r3
-lbl_8031500C:
-    bl OSGetTick
-    subf r0, r31, r3
-    cmpwi r0, 0x2c
-    blt lbl_8031500C
-    lis r3, 0xcc00
-    lhz r0, 0x500a(r3)
-    ori r0, r0, 0x1
-    sth r0, 0x500a(r3)
-    lhz r0, 0x500a(r3)
-    b lbl_80315038
-lbl_80315034:
-    lhz r0, 0x500a(r3)
-lbl_80315038:
-    clrlwi. r0, r0, 31
-    bne lbl_80315034
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}

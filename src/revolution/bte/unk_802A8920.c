@@ -1,122 +1,465 @@
-#include "types.h"
+/******************************************************************************
+ *
+ *  Copyright (C) 2003-2012 Broadcom Corporation
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at:
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ ******************************************************************************/
 
-// Translation unit: src/revolution/bte/unk_802A8920.cpp
-// Total functions: 2
+/******************************************************************************
+ *
+ *  This is the main implementation file for the BTA device manager.
+ *
+ ******************************************************************************/
 
-// Global data symbols (@ha/@l)
-extern u8 lbl_803416C0[];
-extern u8 lbl_803416F4[];
-extern u8 lbl_80341720[];
-extern u8 lbl_803417D8[];
-extern u8 lbl_80453B98[];
+#include "bta_api.h"
+#include "bta_sys.h"
+#include "bta_dm_int.h"
 
-// Forward declarations
-extern void fn_802A8920();
-extern void fn_802A89B8();
 
-// ----------------------------------------------------------------------------
-// fn_802A8920
-// ----------------------------------------------------------------------------
-asm void fn_802A8920() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    lis r31, lbl_803416C0@ha
-    addi r31, r31, lbl_803416C0@l
-    stw r30, 0x18(r1)
-    lis r30, lbl_803416F4@ha
-    addi r30, r30, lbl_803416F4@l
-    stw r29, 0x14(r1)
-    li r29, 0x0
-    stw r28, 0x10(r1)
-    mr r28, r3
-lbl_802A8954:
-    lhz r3, 0x0(r28)
-    add r0, r29, r30
-    clrlwi r4, r3, 24
-    clrlslwi r3, r3, 24, 2
-    subf r3, r4, r3
-    lbzx r0, r3, r0
-    cmplwi r0, 0xd
-    beq lbl_802A8994
-    clrlslwi r0, r0, 24, 2
-    mr r3, r28
-    lwzx r12, r31, r0
-    mtctr r12
-    bctrl
-    addi r29, r29, 0x1
-    cmpwi r29, 0x2
-    blt lbl_802A8954
-lbl_802A8994:
-    lwz r31, 0x1c(r1)
-    li r3, 0x1
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r28, 0x10(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+/*****************************************************************************
+** Constants and types
+*****************************************************************************/
+
+#if BTA_DYNAMIC_MEMORY == FALSE
+#ifdef REVOLUTION
+tBTA_DM_SEARCH_CB bta_dm_search_cb;
+tBTA_DM_CB  bta_dm_cb;
+#else
+tBTA_DM_CB  bta_dm_cb;
+tBTA_DM_SEARCH_CB bta_dm_search_cb;
+tBTA_DM_DI_CB       bta_dm_di_cb;
+#endif
+#endif
+
+
+#ifdef REVOLUTION
+#define BTA_DM_ACTIONS      2
+#define BTA_DM_NUM_ACTIONS  13
+#undef BTA_DM_IGNORE
+#define BTA_DM_IGNORE       13
+
+/* type for action functions */
+typedef void (*tBTA_DM_ACTION)(tBTA_DM_MSG *p_data);
+
+/* action function list */
+const tBTA_DM_ACTION bta_dm_action[] =
+{
+    bta_dm_enable,            /* 0  BTA_DM_API_ENABLE_EVT */
+    bta_dm_disable,           /* 1  BTA_DM_API_DISABLE_EVT */
+    bta_dm_set_dev_name,      /* 2  BTA_DM_API_SET_NAME_EVT */
+    bta_dm_set_visibility,    /* 3  BTA_DM_API_SET_VISIBILITY_EVT */
+    bta_dm_bond,              /* 4  BTA_DM_API_BOND_EVT */
+    bta_dm_pin_reply,         /* 5  BTA_DM_API_PIN_REPLY_EVT */
+    bta_dm_auth_reply,        /* 6  BTA_DM_API_AUTH_REPLY_EVT */
+    bta_dm_signal_strength,   /* 7  BTA_API_DM_SIG_STRENGTH_EVT */
+    bta_dm_acl_change,        /* 8  BTA_DM_ACL_CHANGE_EVT */
+    bta_dm_pm_btm_status,     /* 9  BTA_DM_PM_BTM_STATUS_EVT */
+    bta_dm_pm_timer,          /* 10 BTA_DM_PM_TIMER_EVT */
+    bta_dm_keep_acl,          /* 11 BTA_DM_API_KEEP_ACL_EVT */
+    bta_dm_send_hci_reset     /* 12 BTA_DM_API_SEND_HCI_RESET_EVT */
+};
+
+/*
+ * DM event-to-action lookup table.
+ * Standard BTA state-machine row format: { Action 1, Action 2, Next State }
+ * For DM (stateless), Action 2 is always BTA_DM_IGNORE (0x0D) and Next State is 0.
+ * 14 rows: 13 event entries (0..12) plus 1 zeroed terminator/padding row,
+ * padded to 44 bytes to match retail alignment.
+ */
+const UINT8 bta_dm_act_table[][3] =
+{
+    {0,  BTA_DM_IGNORE, 0}, /* 0  BTA_DM_API_ENABLE_EVT */
+    {1,  BTA_DM_IGNORE, 0}, /* 1  BTA_DM_API_DISABLE_EVT */
+    {2,  BTA_DM_IGNORE, 0}, /* 2  BTA_DM_API_SET_NAME_EVT */
+    {3,  BTA_DM_IGNORE, 0}, /* 3  BTA_DM_API_SET_VISIBILITY_EVT */
+    {7,  BTA_DM_IGNORE, 0}, /* 4  BTA_API_DM_SIG_STRENGTH_EVT */
+    {8,  BTA_DM_IGNORE, 0}, /* 5  BTA_DM_ACL_CHANGE_EVT */
+    {4,  BTA_DM_IGNORE, 0}, /* 6  BTA_DM_API_BOND_EVT */
+    {5,  BTA_DM_IGNORE, 0}, /* 7  BTA_DM_API_PIN_REPLY_EVT */
+    {6,  BTA_DM_IGNORE, 0}, /* 8  BTA_DM_API_AUTH_REPLY_EVT */
+    {9,  BTA_DM_IGNORE, 0}, /* 9  BTA_DM_PM_BTM_STATUS_EVT */
+    {10, BTA_DM_IGNORE, 0}, /* 10 BTA_DM_PM_TIMER_EVT */
+    {11, BTA_DM_IGNORE, 0}, /* 11 BTA_DM_API_KEEP_ACL_EVT */
+    {12, BTA_DM_IGNORE, 0}, /* 12 BTA_DM_API_SEND_HCI_RESET_EVT */
+    {0,  0,             0}  /* 13 padding/terminator row */
+};
+#else
+#define BTA_DM_NUM_ACTIONS  (BTA_DM_MAX_EVT & 0x00ff)
+
+/* type for action functions */
+typedef void (*tBTA_DM_ACTION)(tBTA_DM_MSG *p_data);
+
+/* action function list */
+const tBTA_DM_ACTION bta_dm_action[] =
+{
+
+    /* device manager local device API events */
+    bta_dm_enable,            /* 0  BTA_DM_API_ENABLE_EVT */
+    bta_dm_disable,           /* 1  BTA_DM_API_DISABLE_EVT */
+    bta_dm_set_dev_name,      /* 2  BTA_DM_API_SET_NAME_EVT */
+    bta_dm_set_visibility,    /* 3  BTA_DM_API_SET_VISIBILITY_EVT */
+    bta_dm_set_afhchannels,   /* 4  BTA_DM_API_SET_AFH_CHANNELS_EVT */
+    bta_dm_signal_strength,   /* 5  BTA_API_DM_SIG_STRENGTH_EVT */
+    bta_dm_vendor_spec_command,/* 6  BTA_DM_API_VENDOR_SPECIFIC_COMMAND_EVT */
+    bta_dm_tx_inqpower,       /* 7  BTA_DM_API_SIG_STRENGTH_EVT */
+    bta_dm_acl_change,        /* 8  BTA_DM_ACL_CHANGE_EVT */
+    bta_dm_add_device,        /* 9  BTA_DM_API_ADD_DEVICE_EVT */
+
+    /* security API events */
+    bta_dm_bond,              /* 10  BTA_DM_API_BOND_EVT */
+    bta_dm_bond_cancel,       /* 11  BTA_DM_API_BOND_CANCEL_EVT */
+    bta_dm_pin_reply,         /* 12 BTA_DM_API_PIN_REPLY_EVT */
+    bta_dm_link_policy,       /* 13 BTA_DM_API_LINK_POLICY_EVT */
+    bta_dm_auth_reply,        /* 14 BTA_DM_API_AUTH_REPLY_EVT */
+
+    /* power manger events */
+    bta_dm_pm_btm_status,     /* 15 BTA_DM_PM_BTM_STATUS_EVT */
+    bta_dm_pm_timer,          /* 16 BTA_DM_PM_TIMER_EVT*/
+
+    /* simple pairing events */
+    bta_dm_confirm,           /* 17 BTA_DM_API_CONFIRM_EVT */
+
+    bta_dm_set_encryption,    /* BTA_DM_API_SET_ENCRYPTION_EVT */
+
+#if (BTM_LOCAL_IO_CAPS != BTM_IO_CAP_NONE)
+    bta_dm_passkey_cancel,    /* 19 BTA_DM_API_PASKY_CANCEL_EVT */
+#endif
+#if (BTM_OOB_INCLUDED == TRUE)
+    bta_dm_loc_oob,           /* 20 BTA_DM_API_LOC_OOB_EVT */
+    bta_dm_ci_io_req_act,     /* 21 BTA_DM_CI_IO_REQ_EVT */
+    bta_dm_ci_rmt_oob_act,    /* 22 BTA_DM_CI_RMT_OOB_EVT */
+#endif /* BTM_OOB_INCLUDED */
+
+    bta_dm_remove_device,      /*  BTA_DM_API_REMOVE_DEVICE_EVT */
+
+#if BLE_INCLUDED == TRUE
+    bta_dm_add_blekey,          /*  BTA_DM_API_ADD_BLEKEY_EVT           */
+    bta_dm_add_ble_device,      /*  BTA_DM_API_ADD_BLEDEVICE_EVT        */
+    bta_dm_ble_passkey_reply,   /*  BTA_DM_API_BLE_PASSKEY_REPLY_EVT    */
+    bta_dm_security_grant,
+    bta_dm_ble_set_bg_conn_type,
+    bta_dm_ble_set_conn_params,      /* BTA_DM_API_BLE_CONN_PARAM_EVT */
+    bta_dm_ble_set_scan_params,      /* BTA_DM_API_BLE_SCAN_PARAM_EVT */
+#endif
+
+#if ( BTM_EIR_SERVER_INCLUDED == TRUE )&&( BTA_EIR_CANNED_UUID_LIST != TRUE )&&(BTA_EIR_SERVER_NUM_CUSTOM_UUID > 0)
+    bta_dm_update_eir_uuid,     /*  BTA_DM_API_UPDATE_EIR_UUID_EVT      */
+#endif
+#if (BTM_EIR_SERVER_INCLUDED == TRUE)
+    bta_dm_set_eir_config,      /*  BTA_DM_API_SET_EIR_CONFIG_EVT       */
+#endif
+
+    bta_dm_enable_test_mode,    /*  BTA_DM_API_ENABLE_TEST_MODE_EVT     */
+    bta_dm_disable_test_mode,   /*  BTA_DM_API_DISABLE_TEST_MODE_EVT    */
+    bta_dm_execute_callback,     /*  BTA_DM_API_EXECUTE_CBACK_EVT        */
+    bta_dm_set_afh_channel_assesment      /* BTA_DM_API_SET_AFH_CHANNEL_ASSESMENT_EVT */
+};
+#endif
+
+
+
+/* state machine action enumeration list */
+enum
+{
+    BTA_DM_API_SEARCH,                  /* 0 bta_dm_search_start */
+    BTA_DM_API_SEARCH_CANCEL,           /* 1 bta_dm_search_cancel */
+    BTA_DM_API_DISCOVER,                /* 2 bta_dm_discover */
+    BTA_DM_INQUIRY_CMPL,                /* 3 bta_dm_inq_cmpl */
+    BTA_DM_REMT_NAME,                   /* 4 bta_dm_rmt_name */
+    BTA_DM_SDP_RESULT,                  /* 5 bta_dm_sdp_result */
+    BTA_DM_SEARCH_CMPL,                 /* 6 bta_dm_search_cmpl*/
+    BTA_DM_FREE_SDP_DB,                 /* 7 bta_dm_free_sdp_db */
+    BTA_DM_DISC_RESULT,                 /* 8 bta_dm_disc_result */
+    BTA_DM_SEARCH_RESULT,               /* 9 bta_dm_search_result */
+    BTA_DM_QUEUE_SEARCH,                /* 10 bta_dm_queue_search */
+    BTA_DM_QUEUE_DISC,                  /* 11 bta_dm_queue_disc */
+    BTA_DM_SEARCH_CLEAR_QUEUE,          /* 12 bta_dm_search_clear_queue */
+    BTA_DM_SEARCH_CANCEL_CMPL,          /* 13 bta_dm_search_cancel_cmpl */
+    BTA_DM_SEARCH_CANCEL_NOTIFY,        /* 14 bta_dm_search_cancel_notify */
+    BTA_DM_SEARCH_CANCEL_TRANSAC_CMPL,  /* 15 bta_dm_search_cancel_transac_cmpl */
+    BTA_DM_DISC_RMT_NAME,               /* 16 bta_dm_disc_rmt_name */
+    BTA_DM_API_DI_DISCOVER,             /* 17 bta_dm_di_disc */
+    BTA_DM_SEARCH_NUM_ACTIONS           /* 18 */
+};
+
+
+/* action function list */
+const tBTA_DM_ACTION bta_dm_search_action[] =
+{
+
+  bta_dm_search_start,              /* 0 BTA_DM_API_SEARCH */
+  bta_dm_search_cancel,             /* 1 BTA_DM_API_SEARCH_CANCEL */
+  bta_dm_discover,                  /* 2 BTA_DM_API_DISCOVER */
+  bta_dm_inq_cmpl,                  /* 3 BTA_DM_INQUIRY_CMPL */
+  bta_dm_rmt_name,                  /* 4 BTA_DM_REMT_NAME */
+  bta_dm_sdp_result,                /* 5 BTA_DM_SDP_RESULT */
+  bta_dm_search_cmpl,               /* 6 BTA_DM_SEARCH_CMPL */
+  bta_dm_free_sdp_db,               /* 7 BTA_DM_FREE_SDP_DB */
+  bta_dm_disc_result,               /* 8 BTA_DM_DISC_RESULT */
+  bta_dm_search_result,             /* 9 BTA_DM_SEARCH_RESULT */
+  bta_dm_queue_search,              /* 10 BTA_DM_QUEUE_SEARCH */
+  bta_dm_queue_disc,                /* 11 BTA_DM_QUEUE_DISC */
+  bta_dm_search_clear_queue,        /* 12 BTA_DM_SEARCH_CLEAR_QUEUE */
+  bta_dm_search_cancel_cmpl,        /* 13 BTA_DM_SEARCH_CANCEL_CMPL */
+  bta_dm_search_cancel_notify,      /* 14 BTA_DM_SEARCH_CANCEL_NOTIFY */
+  bta_dm_search_cancel_transac_cmpl, /* 15 BTA_DM_SEARCH_CANCEL_TRANSAC_CMPL */
+  bta_dm_disc_rmt_name,             /* 16 BTA_DM_DISC_RMT_NAME */
+  bta_dm_di_disc                    /* 17 BTA_DM_API_DI_DISCOVER */
+};
+
+#define BTA_DM_SEARCH_IGNORE       BTA_DM_SEARCH_NUM_ACTIONS
+/* state table information */
+#define BTA_DM_SEARCH_ACTIONS              2       /* number of actions */
+#define BTA_DM_SEARCH_NEXT_STATE           2       /* position of next state */
+#define BTA_DM_SEARCH_NUM_COLS             3       /* number of columns in state tables */
+
+
+
+/* state table for listen state */
+const UINT8 bta_dm_search_idle_st_table[][BTA_DM_SEARCH_NUM_COLS] =
+{
+
+/* Event                        Action 1                            Action 2                    Next State */
+/* API_SEARCH */            {BTA_DM_API_SEARCH,                BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_ACTIVE},
+/* API_SEARCH_CANCEL */     {BTA_DM_SEARCH_CANCEL_NOTIFY,      BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_IDLE},
+/* API_SEARCH_DISC */       {BTA_DM_API_DISCOVER,              BTA_DM_SEARCH_IGNORE,          BTA_DM_DISCOVER_ACTIVE},
+/* INQUIRY_CMPL */          {BTA_DM_SEARCH_IGNORE,             BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_IDLE},
+/* REMT_NAME_EVT */         {BTA_DM_SEARCH_IGNORE,             BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_IDLE},
+#ifdef REVOLUTION
+/* API_DI_DISCOVER_EVT */   {BTA_DM_SEARCH_IGNORE,             BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_IDLE},
+/* SDP_RESULT_EVT */        {BTA_DM_FREE_SDP_DB,               BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_IDLE},
+/* SEARCH_CMPL_EVT */       {BTA_DM_SEARCH_IGNORE,             BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_IDLE},
+/* DISCV_RES_EVT */         {BTA_DM_SEARCH_IGNORE,             BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_IDLE}
+#else
+/* SDP_RESULT_EVT */        {BTA_DM_FREE_SDP_DB,               BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_IDLE},
+/* SEARCH_CMPL_EVT */       {BTA_DM_SEARCH_IGNORE,             BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_IDLE},
+/* DISCV_RES_EVT */         {BTA_DM_SEARCH_IGNORE,             BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_IDLE},
+/* API_DI_DISCOVER_EVT */   {BTA_DM_API_DI_DISCOVER,           BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_ACTIVE}
+#endif
+
+};
+const UINT8 bta_dm_search_search_active_st_table[][BTA_DM_SEARCH_NUM_COLS] =
+{
+
+/* Event                        Action 1                            Action 2                    Next State */
+/* API_SEARCH */            {BTA_DM_SEARCH_IGNORE,             BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_ACTIVE},
+/* API_SEARCH_CANCEL */     {BTA_DM_API_SEARCH_CANCEL,         BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_CANCELLING},
+/* API_SEARCH_DISC */       {BTA_DM_SEARCH_IGNORE,             BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_ACTIVE},
+/* INQUIRY_CMPL */          {BTA_DM_INQUIRY_CMPL,              BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_ACTIVE},
+/* REMT_NAME_EVT */         {BTA_DM_REMT_NAME,                 BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_ACTIVE},
+#ifdef REVOLUTION
+/* API_DI_DISCOVER_EVT */   {BTA_DM_API_DI_DISCOVER,           BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_ACTIVE},
+/* SDP_RESULT_EVT */        {BTA_DM_SDP_RESULT,                BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_ACTIVE},
+/* SEARCH_CMPL_EVT */       {BTA_DM_SEARCH_CMPL,               BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_IDLE},
+/* DISCV_RES_EVT */         {BTA_DM_SEARCH_RESULT,             BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_ACTIVE}
+#else
+/* SDP_RESULT_EVT */        {BTA_DM_SDP_RESULT,                BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_ACTIVE},
+/* SEARCH_CMPL_EVT */       {BTA_DM_SEARCH_CMPL,               BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_IDLE},
+/* DISCV_RES_EVT */         {BTA_DM_SEARCH_RESULT,             BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_ACTIVE},
+/* API_DI_DISCOVER_EVT */   {BTA_DM_SEARCH_IGNORE,             BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_ACTIVE}
+#endif
+
+
+};
+
+const UINT8 bta_dm_search_search_cancelling_st_table[][BTA_DM_SEARCH_NUM_COLS] =
+{
+
+/* Event                        Action 1                            Action 2                    Next State */
+/* API_SEARCH */            {BTA_DM_QUEUE_SEARCH,               BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_CANCELLING},
+/* API_SEARCH_CANCEL */     {BTA_DM_SEARCH_CLEAR_QUEUE,         BTA_DM_SEARCH_CANCEL_NOTIFY,   BTA_DM_SEARCH_CANCELLING},
+/* API_SEARCH_DISC */       {BTA_DM_QUEUE_DISC,                 BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_CANCELLING},
+/* INQUIRY_CMPL */          {BTA_DM_SEARCH_CANCEL_CMPL,         BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_IDLE},
+/* REMT_NAME_EVT */         {BTA_DM_SEARCH_CANCEL_TRANSAC_CMPL, BTA_DM_SEARCH_CANCEL_CMPL,     BTA_DM_SEARCH_IDLE},
+#ifdef REVOLUTION
+/* API_DI_DISCOVER_EVT */   {BTA_DM_SEARCH_IGNORE,              BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_CANCELLING},
+/* SDP_RESULT_EVT */        {BTA_DM_SEARCH_CANCEL_TRANSAC_CMPL, BTA_DM_SEARCH_CANCEL_CMPL,     BTA_DM_SEARCH_IDLE},
+/* SEARCH_CMPL_EVT */       {BTA_DM_SEARCH_CANCEL_CMPL,         BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_IDLE},
+/* DISCV_RES_EVT */         {BTA_DM_SEARCH_CANCEL_CMPL,         BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_IDLE}
+#else
+/* SDP_RESULT_EVT */        {BTA_DM_SEARCH_CANCEL_TRANSAC_CMPL, BTA_DM_SEARCH_CANCEL_CMPL,     BTA_DM_SEARCH_IDLE},
+/* SEARCH_CMPL_EVT */       {BTA_DM_SEARCH_CANCEL_CMPL,         BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_IDLE},
+/* DISCV_RES_EVT */         {BTA_DM_SEARCH_CANCEL_CMPL,         BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_IDLE},
+/* API_DI_DISCOVER_EVT */   {BTA_DM_SEARCH_IGNORE,              BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_CANCELLING}
+#endif
+
+
+};
+
+const UINT8 bta_dm_search_disc_active_st_table[][BTA_DM_SEARCH_NUM_COLS] =
+{
+
+/* Event                        Action 1                            Action 2                    Next State */
+/* API_SEARCH */            {BTA_DM_SEARCH_IGNORE,             BTA_DM_SEARCH_IGNORE,          BTA_DM_DISCOVER_ACTIVE},
+#ifdef REVOLUTION
+/* API_SEARCH_CANCEL */     {BTA_DM_SEARCH_CANCEL_NOTIFY,      BTA_DM_SEARCH_IGNORE,          BTA_DM_DISCOVER_ACTIVE},
+#else
+/* API_SEARCH_CANCEL */     {BTA_DM_SEARCH_CANCEL_NOTIFY,      BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_CANCELLING},
+#endif
+/* API_SEARCH_DISC */       {BTA_DM_SEARCH_IGNORE,             BTA_DM_SEARCH_IGNORE,          BTA_DM_DISCOVER_ACTIVE},
+/* INQUIRY_CMPL */          {BTA_DM_SEARCH_IGNORE,             BTA_DM_SEARCH_IGNORE,          BTA_DM_DISCOVER_ACTIVE},
+/* REMT_NAME_EVT */         {BTA_DM_DISC_RMT_NAME,             BTA_DM_SEARCH_IGNORE,          BTA_DM_DISCOVER_ACTIVE},
+#ifdef REVOLUTION
+/* API_DI_DISCOVER_EVT */   {BTA_DM_API_DI_DISCOVER,           BTA_DM_SEARCH_IGNORE,          BTA_DM_DISCOVER_ACTIVE},
+/* SDP_RESULT_EVT */        {BTA_DM_SDP_RESULT,                BTA_DM_SEARCH_IGNORE,          BTA_DM_DISCOVER_ACTIVE},
+/* SEARCH_CMPL_EVT */       {BTA_DM_SEARCH_IGNORE,             BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_IDLE},
+/* DISCV_RES_EVT */         {BTA_DM_DISC_RESULT,               BTA_DM_SEARCH_IGNORE,          BTA_DM_DISCOVER_ACTIVE}
+#else
+/* SDP_RESULT_EVT */        {BTA_DM_SDP_RESULT,                BTA_DM_SEARCH_IGNORE,          BTA_DM_DISCOVER_ACTIVE},
+/* SEARCH_CMPL_EVT */       {BTA_DM_SEARCH_CMPL,               BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_IDLE},
+/* DISCV_RES_EVT */         {BTA_DM_DISC_RESULT,               BTA_DM_SEARCH_IGNORE,          BTA_DM_DISCOVER_ACTIVE},
+/* API_DI_DISCOVER_EVT */   {BTA_DM_SEARCH_IGNORE,             BTA_DM_SEARCH_IGNORE,          BTA_DM_SEARCH_DISCOVER_ACTIVE}
+#endif
+
+};
+
+typedef const UINT8 (*tBTA_DM_ST_TBL)[BTA_DM_SEARCH_NUM_COLS];
+
+/* state table */
+const tBTA_DM_ST_TBL bta_dm_search_st_tbl[] = {
+    bta_dm_search_idle_st_table,
+    bta_dm_search_search_active_st_table,
+    bta_dm_search_search_cancelling_st_table,
+    bta_dm_search_disc_active_st_table
+};
+
+
+#ifndef REVOLUTION
+/*******************************************************************************
+**
+** Function         bta_dm_sm_disable
+**
+** Description     unregister BTA DM
+**
+**
+** Returns          void
+**
+*******************************************************************************/
+void bta_dm_sm_disable( )
+{
+    bta_sys_deregister( BTA_ID_DM );
+}
+#endif
+
+
+/*******************************************************************************
+**
+** Function         bta_dm_sm_execute
+**
+** Description      State machine event handling function for DM
+**
+**
+** Returns          void
+**
+*******************************************************************************/
+BOOLEAN bta_dm_sm_execute(BT_HDR *p_msg)
+{
+#ifdef REVOLUTION
+    const UINT8 (*act_table)[3] = bta_dm_act_table;
+    UINT8 action;
+    int i;
+
+    for (i = 0; i < BTA_DM_ACTIONS; i++)
+    {
+        if ((action = act_table[p_msg->event & 0x00ff][i]) != BTA_DM_IGNORE)
+        {
+            (*bta_dm_action[action])((tBTA_DM_MSG *)p_msg);
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    return TRUE;
+#else
+    UINT16  event = p_msg->event & 0x00ff;
+
+    APPL_TRACE_EVENT1("bta_dm_sm_execute event:0x%x", event);
+
+    /* execute action functions */
+    if(event < BTA_DM_NUM_ACTIONS)
+    {
+        (*bta_dm_action[event])( (tBTA_DM_MSG*) p_msg);
+    }
+
+    return TRUE;
+#endif
 }
 
-// ----------------------------------------------------------------------------
-// fn_802A89B8
-// ----------------------------------------------------------------------------
-asm void fn_802A89B8() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    lis r7, lbl_80453B98@ha
-    lis r5, lbl_803417D8@ha
-    stw r0, 0x24(r1)
-    addi r7, r7, lbl_80453B98@l
-    addi r5, r5, lbl_803417D8@l
-    stw r31, 0x1c(r1)
-    lis r31, lbl_80341720@ha
-    addi r31, r31, lbl_80341720@l
-    stw r30, 0x18(r1)
-    stw r29, 0x14(r1)
-    li r29, 0x0
-    stw r28, 0x10(r1)
-    mr r28, r3
-    lhz r6, 0x18(r7)
-    lhz r0, 0x0(r3)
-    slwi r6, r6, 2
-    clrlwi r4, r0, 24
-    clrlslwi r0, r0, 24, 2
-    lwzx r30, r5, r6
-    subf r0, r4, r0
-    add r3, r30, r0
-    lbz r0, 0x2(r3)
-    sth r0, 0x18(r7)
-lbl_802A8A1C:
-    lhz r3, 0x0(r28)
-    add r0, r29, r30
-    clrlwi r4, r3, 24
-    clrlslwi r3, r3, 24, 2
-    subf r3, r4, r3
-    lbzx r0, r3, r0
-    cmplwi r0, 0x12
-    beq lbl_802A8A5C
-    clrlslwi r0, r0, 24, 2
-    mr r3, r28
-    lwzx r12, r31, r0
-    mtctr r12
-    bctrl
-    addi r29, r29, 0x1
-    cmpwi r29, 0x2
-    blt lbl_802A8A1C
-lbl_802A8A5C:
-    lwz r31, 0x1c(r1)
-    li r3, 0x1
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r28, 0x10(r1)
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
+#ifndef REVOLUTION
+/*******************************************************************************
+**
+** Function         bta_dm_sm_search_disable
+**
+** Description     unregister BTA SEARCH DM
+**
+**
+** Returns          void
+**
+*******************************************************************************/
+void bta_dm_search_sm_disable( )
+{
+    bta_sys_deregister( BTA_ID_DM_SEARCH );
+
 }
+#endif
+
+
+/*******************************************************************************
+**
+** Function         bta_dm_search_sm_execute
+**
+** Description      State machine event handling function for DM
+**
+**
+** Returns          void
+**
+*******************************************************************************/
+BOOLEAN bta_dm_search_sm_execute(BT_HDR *p_msg)
+{
+    tBTA_DM_ST_TBL      state_table;
+    UINT8               action;
+    int                 i;
+
+#ifndef REVOLUTION
+    APPL_TRACE_EVENT2("bta_dm_search_sm_execute state:%d, event:0x%x",
+        bta_dm_search_cb.state, p_msg->event);
+#endif
+
+    /* look up the state table for the current state */
+    state_table = bta_dm_search_st_tbl[bta_dm_search_cb.state];
+
+    bta_dm_search_cb.state = state_table[p_msg->event & 0x00ff][BTA_DM_SEARCH_NEXT_STATE];
+
+
+    /* execute action functions */
+    for (i = 0; i < BTA_DM_SEARCH_ACTIONS; i++)
+    {
+        if ((action = state_table[p_msg->event & 0x00ff][i]) != BTA_DM_SEARCH_IGNORE)
+        {
+            (*bta_dm_search_action[action])( (tBTA_DM_MSG*) p_msg);
+        }
+        else
+        {
+            break;
+        }
+    }
+    return TRUE;
+}
+
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
+
 

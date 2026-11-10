@@ -42,11 +42,33 @@ inline void Copy6Floats(register f32* dst, register const f32* src) {
     )
 }
 
-// __GXSetProjection: definicion C reemplazada por asm (ver abajo)
+void __GXSetProjection(void) {
+    // Temp required to match
+    volatile void* wgpipe = &WGPIPE;
 
+    GX_XF_LOAD_REGS(ARRAY_SIZE(gxdt->proj), GX_XF_REG_PROJECTIONA);
+    WriteProjPS(wgpipe, gxdt->proj);
+    WGPIPE.i = gxdt->projType;
+}
 
-// GXSetProjection: definicion C reemplazada por asm (ver abajo)
+void GXSetProjection(const Mtx44 proj, GXProjectionType type) {
+    gxdt->projType = type;
 
+    gxdt->proj[0] = proj[0][0];
+    gxdt->proj[2] = proj[1][1];
+    gxdt->proj[4] = proj[2][2];
+    gxdt->proj[5] = proj[2][3];
+
+    if (type == GX_ORTHOGRAPHIC) {
+        gxdt->proj[1] = proj[0][3];
+        gxdt->proj[3] = proj[1][3];
+    } else {
+        gxdt->proj[1] = proj[0][2];
+        gxdt->proj[3] = proj[1][2];
+    }
+
+    gxdt->gxDirtyFlags |= GX_DIRTY_PROJECTION;
+}
 
 void GXSetProjectionv(const f32 proj[GX_PROJECTION_SZ]) {
     gxdt->projType = proj[0] == 0.0f ? GX_PERSPECTIVE : GX_ORTHOGRAPHIC;
@@ -116,36 +138,85 @@ inline void WriteMTXPS4x2(register volatile void* dst, register const Mtx src) {
     )
 }
 
-// GXLoadPosMtxImm: definicion C reemplazada por asm (ver abajo)
+void GXLoadPosMtxImm(const Mtx mtx, u32 id) {
+    // Position matrices are 4x3
+    GX_XF_LOAD_REGS(4 * 3 - 1, id * 4 + GX_XF_MEM_POSMTX);
+    WriteMTXPS4x3(&WGPIPE, mtx);
+}
 
+void GXLoadPosMtxIndx(u16 index, u32 id) {
+    // Position matrices are 4x3
+    GX_FIFO_LOAD_INDX_A(id * 4 + GX_XF_MEM_POSMTX, 4 * 3 - 1, index);
+}
 
-// GXLoadPosMtxIndx: definicion C reemplazada por asm (ver abajo)
-
-
-// GXLoadNrmMtxImm: definicion C reemplazada por asm (ver abajo)
-
+void GXLoadNrmMtxImm(const Mtx mtx, u32 id) {
+    // Normal matrices are 3x3
+    GX_XF_LOAD_REGS(3 * 3 - 1, id * 3 + GX_XF_MEM_NRMMTX);
+    WriteMTXPS3x3(&WGPIPE, mtx);
+}
 
 //unused
 void GXLoadNrmMtxImm3x3(){
 }
 
-// GXLoadNrmMtxIndx3x3: definicion C reemplazada por asm (ver abajo)
-
+void GXLoadNrmMtxIndx3x3(u16 index, u32 id) {
+    // Normal matrices are 3x3
+    GX_FIFO_LOAD_INDX_B(id * 3 + GX_XF_MEM_NRMMTX, 3 * 3 - 1, index);
+}
 
 void GXSetCurrentMtx(u32 id) {
     GX_XF_SET_MATRIXINDEX0_GEOM(gxdt->matrixIndex0, id);
     gxdt->gxDirtyFlags |= GX_DIRTY_MTX_IDX;
 }
 
-// GXLoadTexMtxImm: definicion C reemplazada por asm (ver abajo)
+void GXLoadTexMtxImm(const Mtx mtx, u32 id, GXMtxType type) {
+    u32 addr;
+    u32 num;
 
+    // Base row address in XF memory
+    addr = id >= GX_PTTEXMTX0
+               ? (id - GX_PTTEXMTX0) * sizeof(f32) + GX_XF_MEM_DUALTEXMTX
+               : id * 4 + (u64)GX_XF_MEM_POSMTX;
+
+    // Number of elements in matrix
+    num = type == GX_MTX_2x4 ? (u64)(2 * 4) : 3 * 4;
+
+    GX_XF_LOAD_REGS(num - 1, addr);
+
+    if (type == GX_MTX_3x4) {
+        WriteMTXPS4x3(&WGPIPE, mtx);
+    } else {
+        WriteMTXPS4x2(&WGPIPE, mtx);
+    }
+}
 
 //unused
 void GXLoadTexMtxIndx(){
 }
 
-// __GXSetViewport: definicion C reemplazada por asm (ver abajo)
+void __GXSetViewport(void) {
+    f32 a, b, c, d, e, f;
+    f32 near, far;
 
+    a = gxdt->vpSx / 2.0f;
+    b = -gxdt->vpSy / 2.0f;
+    d = gxdt->vpOx + (gxdt->vpSx / 2.0f) + 342.0f;
+    e = gxdt->vpOy + (gxdt->vpSy / 2.0f) + 342.0f;
+
+    near = gxdt->vpNear * gxdt->scaleZ;
+    far = gxdt->vpFar * gxdt->scaleZ;
+
+    c = far - near;
+    f = far + gxdt->offsetZ;
+
+    GX_XF_LOAD_REGS(6 - 1, GX_XF_REG_SCALEX);
+    WGPIPE.f = a;
+    WGPIPE.f = b;
+    WGPIPE.f = c;
+    WGPIPE.f = d;
+    WGPIPE.f = e;
+    WGPIPE.f = f;
+}
 
 void GXSetViewportJitter(f32 ox, f32 oy, f32 sx, f32 sy, f32 near, f32 far,
                          u32 nextField) {
@@ -184,8 +255,29 @@ void GXSetZScaleOffset(f32 scale, f32 offset) {
     gxdt->gxDirtyFlags |= GX_DIRTY_VIEWPORT;
 }
 
-// GXSetScissor: definicion C reemplazada por asm (ver abajo)
+void GXSetScissor(u32 x, u32 y, u32 w, u32 h) {
+    u32 x1, y1, x2, y2;
+    u32 reg;
 
+    x1 = x + 342;
+    y1 = y + 342;
+    x2 = x1 + w - 1;
+    y2 = y1 + h - 1;
+
+    reg = gxdt->scissorTL;
+    GX_BP_SET_SCISSORTL_TOP(reg, y1);
+    GX_BP_SET_SCISSORTL_LEFT(reg, x1);
+    gxdt->scissorTL = reg;
+
+    reg = gxdt->scissorBR;
+    GX_BP_SET_SCISSORBR_BOT(reg, y2);
+    GX_BP_SET_SCISSORBR_RIGHT(reg, x2);
+    gxdt->scissorBR = reg;
+
+    GX_BP_LOAD_REG(gxdt->scissorTL);
+    GX_BP_LOAD_REG(gxdt->scissorBR);
+    gxdt->lastWriteWasXF = FALSE;
+}
 
 //unused
 void GXGetScissor(u32* x, u32* y, u32* w, u32* h) {
@@ -203,8 +295,15 @@ void GXGetScissor(u32* x, u32* y, u32* w, u32* h) {
     *h = y2 - y1 + 1;
 }
 
-// GXSetScissorBoxOffset: definicion C reemplazada por asm (ver abajo)
+void GXSetScissorBoxOffset(u32 ox, u32 oy) {
+    u32 cmd = 0;
+    GX_BP_SET_SCISSOROFFSET_OX(cmd, (ox + 342) / 2);
+    GX_BP_SET_SCISSOROFFSET_OY(cmd, (oy + 342) / 2);
+    GX_BP_SET_OPCODE(cmd, GX_BP_REG_SCISSOROFFSET);
 
+    GX_BP_LOAD_REG(cmd);
+    gxdt->lastWriteWasXF = FALSE;
+}
 
 void GXSetClipMode(GXClipMode mode) {
     GX_XF_LOAD_REG(GX_XF_REG_CLIPDISABLE, mode);
@@ -228,11 +327,10 @@ void __GXSetMatrixIndex(GXAttr index) {
 extern float lbl_804A2670;
 extern float lbl_804A2674;
 extern float lbl_804A2678;
-extern float lbl_804A267C;
-extern void GXProject();
+extern int GXProject();
 
 // asm_to_cpp: GXProject
-asm void GXProject() {
+asm int GXProject() {
     nofralloc
     lfs f5, 0x0(r3)
     lfs f4, 0x4(r3)
@@ -333,292 +431,5 @@ lbl_802E549C:
     stfs f1, 0x0(r7)
     stfs f0, 0x0(r8)
     addi r1, r1, 0x20
-    blr
-}
-
-// asm_to_cpp: __GXSetProjection
-asm void __GXSetProjection(void) {
-    nofralloc
-    lis r4, 0xcc01
-    li r0, 0x10
-    lis r3, 0x6
-    stb r0, -0x8000(r4)
-    addi r0, r3, 0x1020
-    lwz r3, __GXData
-    stw r0, -0x8000(r4)
-    addi r5, r4, -0x8000
-    opword 0xE043052C
-    opword 0xE0230534
-    opword 0xE003053C
-    opword 0xF0450000
-    opword 0xF0250000
-    opword 0xF0050000
-    lwz r0, 0x528(r3)
-    stw r0, -0x8000(r4)
-    blr
-}
-
-// asm_to_cpp: GXSetProjection
-asm void GXSetProjection(const Mtx44 proj, GXProjectionType type) {
-    nofralloc
-    lwz r5, __GXData
-    cmpwi r4, 0x1
-    lfs f1, 0x0(r3)
-    stw r4, 0x528(r5)
-    lfs f0, 0x14(r3)
-    stfs f1, 0x52c(r5)
-    lfs f1, 0x28(r3)
-    stfs f0, 0x534(r5)
-    lfs f0, 0x2c(r3)
-    stfs f1, 0x53c(r5)
-    stfs f0, 0x540(r5)
-    bne lbl_802E5598
-    lfs f1, 0xc(r3)
-    lfs f0, 0x1c(r3)
-    stfs f1, 0x530(r5)
-    stfs f0, 0x538(r5)
-    b lbl_802E55A8
-lbl_802E5598:
-    lfs f1, 0x8(r3)
-    lfs f0, 0x18(r3)
-    stfs f1, 0x530(r5)
-    stfs f0, 0x538(r5)
-lbl_802E55A8:
-    lwz r0, 0x5fc(r5)
-    oris r0, r0, 0x800
-    stw r0, 0x5fc(r5)
-    blr
-}
-
-// asm_to_cpp: GXLoadPosMtxImm
-asm void GXLoadPosMtxImm(const Mtx mtx, u32 id) {
-    nofralloc
-    lis r5, 0xcc01
-    li r0, 0x10
-    slwi r4, r4, 2
-    stb r0, -0x8000(r5)
-    oris r0, r4, 0xb
-    stw r0, -0x8000(r5)
-    addi r4, r5, -0x8000
-    opword 0xE0A30000
-    opword 0xE0830008
-    opword 0xE0630010
-    opword 0xE0430018
-    opword 0xE0230020
-    opword 0xE0030028
-    opword 0xF0A40000
-    opword 0xF0840000
-    opword 0xF0640000
-    opword 0xF0440000
-    opword 0xF0240000
-    opword 0xF0040000
-    blr
-}
-
-// asm_to_cpp: GXLoadPosMtxIndx
-asm void GXLoadPosMtxIndx(u16 index, u32 id) {
-    nofralloc
-    slwi r0, r4, 2
-    li r6, 0x0
-    rlwimi r6, r0, 0, 20, 31
-    lis r4, 0xcc01
-    li r0, 0x20
-    li r5, 0xb
-    rlwimi r6, r5, 12, 16, 19
-    stb r0, -0x8000(r4)
-    rlwimi r6, r3, 16, 0, 15
-    stw r6, -0x8000(r4)
-    blr
-}
-
-// asm_to_cpp: GXLoadNrmMtxImm
-asm void GXLoadNrmMtxImm(const Mtx mtx, u32 id) {
-    nofralloc
-    slwi r0, r4, 2
-    lis r5, 0xcc01
-    subf r4, r4, r0
-    li r0, 0x10
-    addi r4, r4, 0x400
-    stb r0, -0x8000(r5)
-    oris r0, r4, 0x8
-    stw r0, -0x8000(r5)
-    addi r4, r5, -0x8000
-    opword 0xE0A30000
-    lfs f4, 0x8(r3)
-    opword 0xE0630010
-    lfs f2, 0x18(r3)
-    opword 0xE0230020
-    lfs f0, 0x28(r3)
-    opword 0xF0A40000
-    stfs f4, -0x8000(r5)
-    opword 0xF0640000
-    stfs f2, -0x8000(r5)
-    opword 0xF0240000
-    stfs f0, -0x8000(r5)
-    blr
-}
-
-// asm_to_cpp: GXLoadNrmMtxIndx3x3
-asm void GXLoadNrmMtxIndx3x3(u16 index, u32 id) {
-    nofralloc
-    slwi r0, r4, 2
-    lis r5, 0xcc01
-    subf r4, r4, r0
-    li r6, 0x0
-    li r0, 0x28
-    addi r4, r4, 0x400
-    stb r0, -0x8000(r5)
-    rlwimi r6, r4, 0, 20, 31
-    li r4, 0x8
-    rlwimi r6, r4, 12, 16, 19
-    rlwimi r6, r3, 16, 0, 15
-    stw r6, -0x8000(r5)
-    blr
-}
-
-// asm_to_cpp: GXLoadTexMtxImm
-asm void GXLoadTexMtxImm(const Mtx mtx, u32 id, GXMtxType type) {
-    nofralloc
-    cmplwi r4, 0x40
-    blt lbl_802E5784
-    subi r0, r4, 0x40
-    slwi r4, r0, 2
-    addi r7, r4, 0x500
-    b lbl_802E5788
-lbl_802E5784:
-    slwi r7, r4, 2
-lbl_802E5788:
-    cmpwi r5, 0x1
-    bne lbl_802E5798
-    li r4, 0x8
-    b lbl_802E579C
-lbl_802E5798:
-    li r4, 0xc
-lbl_802E579C:
-    subi r6, r4, 0x1
-    lis r4, 0xcc01
-    li r0, 0x10
-    cmpwi r5, 0x0
-    slwi r5, r6, 16
-    stb r0, -0x8000(r4)
-    or r0, r7, r5
-    stw r0, -0x8000(r4)
-    bne lbl_802E57F8
-    addi r4, r4, -0x8000
-    opword 0xE0A30000
-    opword 0xE0830008
-    opword 0xE0630010
-    opword 0xE0430018
-    opword 0xE0230020
-    opword 0xE0030028
-    opword 0xF0A40000
-    opword 0xF0840000
-    opword 0xF0640000
-    opword 0xF0440000
-    opword 0xF0240000
-    opword 0xF0040000
-    blr
-lbl_802E57F8:
-    addi r4, r4, -0x8000
-    opword 0xE0630000
-    opword 0xE0430008
-    opword 0xE0230010
-    opword 0xE0030018
-    opword 0xF0640000
-    opword 0xF0440000
-    opword 0xF0240000
-    opword 0xF0040000
-    blr
-}
-
-// asm_to_cpp: __GXSetViewport
-asm void __GXSetViewport(void) {
-    nofralloc
-    lwz r6, __GXData
-    lis r3, 0x5
-    lfs f6, lbl_804A2678
-    lis r4, 0xcc01
-    lfs f2, 0x550(r6)
-    li r5, 0x10
-    lfs f3, 0x54c(r6)
-    addi r0, r3, 0x101a
-    fneg f1, f2
-    lfs f0, 0x544(r6)
-    fmuls f7, f3, f6
-    lfs f4, 0x548(r6)
-    fmuls f5, f2, f6
-    lfs f3, 0x554(r6)
-    fmuls f8, f1, f6
-    lfs f2, 0x560(r6)
-    lfs f1, 0x558(r6)
-    fadds f6, f0, f7
-    lfs f0, 0x55c(r6)
-    fmuls f3, f3, f2
-    fmuls f9, f1, f2
-    stb r5, -0x8000(r4)
-    lfs f2, lbl_804A267C
-    fadds f1, f4, f5
-    stw r0, -0x8000(r4)
-    fsubs f3, f9, f3
-    stfs f7, -0x8000(r4)
-    fadds f4, f2, f6
-    fadds f1, f2, f1
-    stfs f8, -0x8000(r4)
-    fadds f0, f9, f0
-    stfs f3, -0x8000(r4)
-    stfs f4, -0x8000(r4)
-    stfs f1, -0x8000(r4)
-    stfs f0, -0x8000(r4)
-    blr
-}
-
-// asm_to_cpp: GXSetScissor
-asm void GXSetScissor(u32 x, u32 y, u32 w, u32 h) {
-    nofralloc
-    lwz r8, __GXData
-    addi r4, r4, 0x156
-    addi r9, r3, 0x156
-    lis r7, 0xcc01
-    lwz r0, 0x148(r8)
-    rlwimi r0, r4, 0, 21, 31
-    rlwimi r0, r9, 12, 9, 19
-    add r6, r4, r6
-    stw r0, 0x148(r8)
-    add r3, r9, r5
-    subi r5, r6, 0x1
-    li r4, 0x61
-    lwz r6, 0x14c(r8)
-    subi r3, r3, 0x1
-    rlwimi r6, r5, 0, 21, 31
-    li r0, 0x0
-    rlwimi r6, r3, 12, 9, 19
-    stw r6, 0x14c(r8)
-    stb r4, -0x8000(r7)
-    lwz r3, 0x148(r8)
-    stw r3, -0x8000(r7)
-    stb r4, -0x8000(r7)
-    lwz r3, 0x14c(r8)
-    stw r3, -0x8000(r7)
-    sth r0, 0x2(r8)
-    blr
-}
-
-// asm_to_cpp: GXSetScissorBoxOffset
-asm void GXSetScissorBoxOffset(u32 ox, u32 oy) {
-    nofralloc
-    addi r0, r3, 0x156
-    li r6, 0x0
-    rlwimi r6, r0, 31, 22, 31
-    lis r5, 0xcc01
-    li r0, 0x61
-    addi r3, r4, 0x156
-    stb r0, -0x8000(r5)
-    rlwimi r6, r3, 9, 12, 21
-    li r0, 0x59
-    lwz r3, __GXData
-    rlwimi r6, r0, 24, 0, 7
-    stw r6, -0x8000(r5)
-    li r0, 0x0
-    sth r0, 0x2(r3)
     blr
 }

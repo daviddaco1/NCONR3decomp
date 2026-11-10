@@ -66,8 +66,167 @@ s32 __AXGetNumVoices(void) {
     return __AXNumVoices;
 }
 
-// __AXServiceVPB: definicion C reemplazada por asm (ver abajo)
+void __AXServiceVPB(AXVPB* vpb) {
+    AXPB* dst;
+    AXPB* src;
+    u32 sync;
 
+    __AXNumVoices++;
+
+    dst = &__AXPB[vpb->index];
+    src = &vpb->pb;
+    sync = vpb->sync;
+
+    if (sync == 0) {
+        src->state = dst->state;
+        src->ve.currentVolume = dst->ve.currentVolume;
+        src->addr.currentAddressHi = dst->addr.currentAddressHi;
+        src->addr.currentAddressLo = dst->addr.currentAddressLo;
+        return;
+    }
+
+    if (sync & AX_PBSYNC_ALL) {
+        memcpy(dst, src, sizeof(AXPB));
+        return;
+    }
+
+    if (sync & AX_PBSYNC_SELECT) {
+        dst->srcSelect = src->srcSelect;
+        dst->coefSelect = src->coefSelect;
+    }
+
+    if (sync & AX_PBSYNC_MIXER_CTRL) {
+        dst->mixerCtrl = src->mixerCtrl;
+    }
+
+    if (sync & AX_PBSYNC_STATE) {
+        dst->state = src->state;
+    } else {
+        src->state = dst->state;
+    }
+
+    if (sync & AX_PBSYNC_TYPE) {
+        dst->type = src->type;
+    }
+
+    if (sync & AX_PBSYNC_MIX) {
+        memcpy(&dst->mix, &src->mix, sizeof(AXPBMIX));
+    }
+
+    if (sync & AX_PBSYNC_ITD_SHIFT) {
+        dst->itd.targetShiftL = src->itd.targetShiftL;
+        dst->itd.targetShiftR = src->itd.targetShiftR;
+    } else if (sync & AX_PBSYNC_ITD) {
+        FUNNY_COPY(&dst->itd, &src->itd, u16, sizeof(AXPBITD));
+        __memclr(vpb->itdBuffer, sizeof(AXITD));
+    }
+
+    if (sync & AX_PBSYNC_DPOP) {
+        memcpy(&dst->dpop, &src->dpop, sizeof(AXPBDPOP));
+    }
+
+    if (sync & AX_PBSYNC_VE_DELTA) {
+        src->ve.currentVolume = dst->ve.currentVolume;
+        dst->ve.currentDelta = src->ve.currentDelta;
+    } else if (sync & AX_PBSYNC_VE) {
+        dst->ve.currentVolume = src->ve.currentVolume;
+        dst->ve.currentDelta = src->ve.currentDelta;
+    }
+
+    if (sync & (AX_PBSYNC_LOOP_FLAG | AX_PBSYNC_LOOP_ADDR | AX_PBSYNC_END_ADDR |
+                AX_PBSYNC_CURR_ADDR)) {
+        if (sync & AX_PBSYNC_LOOP_FLAG) {
+            dst->addr.loopFlag = src->addr.loopFlag;
+        }
+
+        if (sync & AX_PBSYNC_LOOP_ADDR) {
+            *(u32*)&dst->addr.loopAddressHi = *(u32*)&src->addr.loopAddressHi;
+        }
+
+        if (sync & AX_PBSYNC_END_ADDR) {
+            *(u32*)&dst->addr.endAddressHi = *(u32*)&src->addr.endAddressHi;
+        }
+
+        if (sync & AX_PBSYNC_CURR_ADDR) {
+            *(u32*)&dst->addr.currentAddressHi =
+                *(u32*)&src->addr.currentAddressHi;
+        } else {
+            *(u32*)&src->addr.currentAddressHi =
+                *(u32*)&dst->addr.currentAddressHi;
+        }
+    } else if (sync & AX_PBSYNC_ADDR) {
+        FUNNY_COPY(&dst->addr, &src->addr, u32, sizeof(AXPBADDR));
+    } else {
+        src->addr.currentAddressHi = dst->addr.currentAddressHi;
+        src->addr.currentAddressLo = dst->addr.currentAddressLo;
+    }
+
+    if (sync & AX_PBSYNC_ADPCM) {
+        FUNNY_COPY(&dst->adpcm, &src->adpcm, u32, sizeof(AXPBADPCM));
+    }
+
+    if (sync & AX_PBSYNC_SRC_RATIO) {
+        dst->src.ratioHi = src->src.ratioHi;
+        dst->src.ratioLo = src->src.ratioLo;
+    } else if (sync & AX_PBSYNC_SRC) {
+        FUNNY_COPY(&dst->src, &src->src, u16, sizeof(AXPBSRC));
+    }
+
+    if (sync & AX_PBSYNC_ADPCM_LOOP) {
+        FUNNY_COPY(&dst->adpcmLoop, &src->adpcmLoop, u16,
+                   sizeof(AXPBADPCMLOOP));
+    }
+
+    if (sync & AX_PBSYNC_LPF_COEFS) {
+        dst->lpf.a0 = src->lpf.a0;
+        dst->lpf.b0 = src->lpf.b0;
+    } else if (sync & AX_PBSYNC_LPF) {
+        FUNNY_COPY(&dst->lpf, &src->lpf, u16, sizeof(AXPBLPF));
+    }
+
+    if (sync & AX_PBSYNC_BIQUAD_COEFS) {
+        dst->biquad.b0 = src->biquad.b0;
+        dst->biquad.b1 = src->biquad.b1;
+        dst->biquad.b2 = src->biquad.b2;
+        dst->biquad.a1 = src->biquad.a1;
+        dst->biquad.a2 = src->biquad.a2;
+    } else if (sync & AX_PBSYNC_BIQUAD) {
+        FUNNY_COPY(&dst->biquad, &src->biquad, u16, sizeof(AXPBBIQUAD));
+    }
+
+    if (sync & AX_PBSYNC_REMOTE) {
+        dst->remote = src->remote;
+    }
+
+    if (sync & AX_PBSYNC_RMT_MIXER_CTRL) {
+        dst->rmtMixerCtrl = src->rmtMixerCtrl;
+    }
+
+    if (sync & AX_PBSYNC_RMTMIX) {
+        memcpy(&dst->rmtMix, &src->rmtMix, sizeof(AXPBRMTMIX));
+    }
+
+    if (sync & AX_PBSYNC_RMTDPOP) {
+        memcpy(&dst->rmtDpop, &src->rmtDpop, sizeof(AXPBRMTDPOP));
+    }
+
+    if (sync & AX_PBSYNC_RMTSRC) {
+        memcpy(&dst->rmtSrc, &src->rmtSrc, sizeof(AXPBRMTSRC));
+    }
+
+    if (sync & AX_PBSYNC_RMTIIR_LPF_COEFS) {
+        dst->rmtIIR.lpf.a0 = src->rmtIIR.lpf.a0;
+        dst->rmtIIR.lpf.b0 = src->rmtIIR.lpf.b0;
+    } else if (sync & AX_PBSYNC_RMTIIR_BIQUAD_COEFS) {
+        dst->rmtIIR.biquad.b0 = src->rmtIIR.biquad.b0;
+        dst->rmtIIR.biquad.b1 = src->rmtIIR.biquad.b1;
+        dst->rmtIIR.biquad.b2 = src->rmtIIR.biquad.b2;
+        dst->rmtIIR.biquad.a1 = src->rmtIIR.biquad.a1;
+        dst->rmtIIR.biquad.a2 = src->rmtIIR.biquad.a2;
+    } else if (sync & AX_PBSYNC_RMTIIR) {
+        FUNNY_COPY(&dst->rmtIIR, &src->rmtIIR, u16, sizeof(AXPBRMTIIR));
+    }
+}
 
 void __AXDumpVPB(AXVPB* vpb) {
     AXPB* pb = &__AXPB[vpb->index];
@@ -82,12 +241,103 @@ void __AXDumpVPB(AXVPB* vpb) {
     __AXPushCallbackStack(vpb);
 }
 
-// __AXSyncPBs: definicion C reemplazada por asm (ver abajo)
+void __AXSyncPBs(u32 baseCycles) {
+    u32 cycles;
+    u32 prio;
+    AXVPB* head;
 
+    __AXNumVoices = 0;
 
-AXPB* __AXGetPBs(void) {
-    return __AXPB;
+    DCInvalidateRange(__AXPB, __AXMaxVoices * sizeof(AXPB));
+    DCInvalidateRange(__AXITD, __AXMaxVoices * sizeof(AXITD));
+
+    cycles = 32 + __AXGetCommandListCycles() + __AXMaxVoices * 600 + baseCycles;
+
+    for (prio = AX_PRIORITY_MAX; prio > AX_PRIORITY_FREE; prio--) {
+        for (head = __AXGetStackHead(prio); head != NULL; head = head->next) {
+            if (head->pb.itd.flag == 1) {
+                cycles += 129;
+            }
+
+            if (head->depop) {
+                __AXDepopVoice(&__AXPB[head->index]);
+            }
+
+            if (head->pb.state == AX_VOICE_RUN) {
+                cycles += 387;
+
+                if (head->pb.lpf.on) {
+                    cycles += 309;
+                }
+
+                if (head->pb.biquad.on) {
+                    cycles += 1024;
+                }
+
+                if (head->pb.itd.flag == 1) {
+                    cycles += 27;
+                }
+
+                cycles += __AXGetSrcCycles(head->pb.srcSelect, &head->pb.src);
+                cycles += __AXMixCycles[head->pb.mixerCtrl >> 0 & 31] +
+                          __AXMixCycles[head->pb.mixerCtrl >> 16 & 31] +
+                          __AXMixCycles[head->pb.mixerCtrl >> 21 & 31] +
+                          __AXMixCycles[head->pb.mixerCtrl >> 26 & 31];
+
+                if (head->pb.remote == TRUE) {
+                    cycles += 613;
+
+                    if (head->pb.rmtIIR.lpf.on == AX_PB_LPF_ON) {
+                        cycles += 118;
+                    } else if (head->pb.rmtIIR.biquad.on == AX_PB_BIQUAD_ON) {
+                        cycles += 834;
+                    }
+
+                    cycles +=
+                        __AXRmtMixCycles[head->pb.rmtMixerCtrl >> 0 & 3] +
+                        __AXRmtMixCycles[head->pb.rmtMixerCtrl >> 2 & 3] +
+                        __AXRmtMixCycles[head->pb.rmtMixerCtrl >> 4 & 3] +
+                        __AXRmtMixCycles[head->pb.rmtMixerCtrl >> 6 & 3] +
+                        __AXRmtMixCycles[head->pb.rmtMixerCtrl >> 8 & 3] +
+                        __AXRmtMixCycles[head->pb.rmtMixerCtrl >> 10 & 3] +
+                        __AXRmtMixCycles[head->pb.rmtMixerCtrl >> 12 & 3] +
+                        __AXRmtMixCycles[head->pb.rmtMixerCtrl >> 14 & 3];
+                }
+
+                if (__AXMaxDspCycles > cycles) {
+                    __AXServiceVPB(head);
+                } else {
+                    __AXDumpVPB(head);
+                }
+
+            } else {
+                __AXServiceVPB(head);
+            }
+
+            head->sync = 0;
+            head->depop = FALSE;
+        }
+    }
+
+    __AXRecDspCycles = cycles;
+
+    for (head = __AXGetStackHead(AX_PRIORITY_FREE); head != NULL;
+         head = head->next) {
+        if (head->depop) {
+            __AXDepopVoice(&__AXPB[head->index]);
+        }
+
+        head->depop = FALSE;
+        __AXPB[head->index].state = AX_VOICE_STOP;
+    }
+
+    DCFlushRange(__AXPB, __AXMaxVoices * sizeof(AXPB));
+    DCFlushRange(__AXITD, __AXMaxVoices * sizeof(AXITD));
 }
+
+// __AXGetPBs: definicion C reemplazada por asm (ver abajo)
+AXPB* __AXGetPBs(void);
+
 
 void __AXSetPBDefault(AXVPB* vpb) {
     vpb->pb.state = AX_VOICE_STOP;
@@ -117,6 +367,7 @@ void __AXVPBInit(void) {
 }
 
 // __AXVPBInitCommon: definicion C reemplazada por asm (ver abajo)
+void __AXVPBInitCommon(void);
 
 
 void __AXVPBQuit(void) {
@@ -177,8 +428,65 @@ void AXSetVoiceState(AXVPB* vpb, u16 state) {
     OSRestoreInterrupts(enabled);
 }
 
-// AXSetVoiceAddr: definicion C reemplazada por asm (ver abajo)
+void AXSetVoiceAddr(AXVPB* vpb, AXPBADDR* addr) {
+    BOOL enabled = OSDisableInterrupts();
 
+    u32* dst = (u32*)&vpb->pb.addr;
+    const u32* src = (u32*)addr;
+
+    // :(
+    *dst = *src;
+    dst++;
+    src++;
+
+    *dst = *src;
+    dst++;
+    src++;
+
+    *dst = *src;
+    dst++;
+    src++;
+
+    *dst = *src;
+
+    switch (addr->format) {
+    case AX_SAMPLE_FORMAT_PCM_S16:
+        dst++;
+        *dst++ = 0;
+        *dst++ = 0;
+        *dst++ = 0;
+        *dst++ = 0;
+        *dst++ = 0;
+        *dst++ = 0;
+        *dst++ = 0;
+        *dst++ = 0;
+        *dst++ = 0x08000000;
+        *dst = 0;
+        break;
+    case AX_SAMPLE_FORMAT_PCM_S8:
+        dst++;
+        *dst++ = 0;
+        *dst++ = 0;
+        *dst++ = 0;
+        *dst++ = 0;
+        *dst++ = 0;
+        *dst++ = 0;
+        *dst++ = 0;
+        *dst++ = 0;
+        *dst++ = 0x01000000;
+        *dst = 0;
+        break;
+    case AX_SAMPLE_FORMAT_DSP_ADPCM:
+    default:
+        break;
+    }
+
+    vpb->sync &= ~(AX_PBSYNC_LOOP_FLAG | AX_PBSYNC_LOOP_ADDR |
+                   AX_PBSYNC_END_ADDR | AX_PBSYNC_CURR_ADDR);
+    vpb->sync |= AX_PBSYNC_ADDR | AX_PBSYNC_ADPCM;
+
+    OSRestoreInterrupts(enabled);
+}
 
 void AXSetVoiceSrc(AXVPB* p, AXPBSRC* src_)
 {
@@ -218,8 +526,13 @@ void AXSetVoiceSrc(AXVPB* p, AXPBSRC* src_)
     OSRestoreInterrupts(old);
 }
 
-// AXGetLpfCoefs: definicion C reemplazada por asm (ver abajo)
+void AXGetLpfCoefs(u16 freq, u16* a, u16* b) {
+    f32 rf31 = 2.0f - cosf(2 * M_PI * freq / AX_SAMPLE_RATE);
+    f32 rf30 = (float)sqrt(rf31 * rf31 - 1.0f) - rf31;
 
+    *b = 32768 * -rf30;
+    *a = 32767 - *b;
+}
 
 void AXSetMaxDspCycles(u32 num) {
     __AXMaxDspCycles = num;
@@ -246,632 +559,35 @@ void AXSetVoiceRmtOn(AXVPB *vpb, u16 on) {
     OSRestoreInterrupts(old);
 }
 
-s32 AXGetMaxVoices(void) {
-    return __AXMaxVoices;
-}
+// AXGetMaxVoices: definicion C reemplazada por asm (ver abajo)
+s32 AXGetMaxVoices(void);
+
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
 extern float lbl_8049DFA0;
 extern float lbl_8049DFA4;
 extern float lbl_8049DFA8;
 extern float lbl_8049DFAC;
-extern float lbl_8049DFB0;
 extern float lbl_8049DFB4;
 extern float lbl_8049DFB8;
-extern float lbl_804A2418;
-extern float lbl_804A241C;
-extern float lbl_804A2420;
-extern float lbl_804A2424;
-extern float lbl_804A2428;
-extern float lbl_804A2430;
-extern u8 lbl_8036F3C0[];
-extern u8 lbl_8036F440[];
-extern void DCFlushRange();
-extern void DCInvalidateRange();
+s32 AXGetMaxVoices(void);
+AXPB* __AXGetPBs(void);
 extern void __AXPushFreeStack();
+static void __AXVPBInitCommon(void);
 extern void _restgpr_25();
 extern void _savegpr_25();
-extern void fn_8029C958();
 
-// asm_to_cpp: __AXServiceVPB
-asm void __AXServiceVPB(AXVPB* vpb) {
+// asm_to_cpp: AXGetMaxVoices
+asm s32 AXGetMaxVoices(void) {
     nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    stw r30, 0x18(r1)
-    addi r30, r3, 0x28
-    stw r29, 0x14(r1)
-    stw r28, 0x10(r1)
-    mr r28, r3
-    lwz r5, lbl_8049DFB0
-    lwz r4, lbl_8049DFA0
-    addi r0, r5, 0x1
-    stw r0, lbl_8049DFB0
-    lwz r0, 0x18(r3)
-    lwz r29, 0x1c(r3)
-    mulli r0, r0, 0x140
-    cmpwi r29, 0x0
-    add r31, r4, r0
-    bne lbl_8029E0F4
-    lhz r0, 0x10(r31)
-    sth r0, 0x10(r30)
-    lhz r0, 0x6a(r31)
-    sth r0, 0x6a(r30)
-    lhz r0, 0x7a(r31)
-    sth r0, 0x7a(r30)
-    lhz r0, 0x7c(r31)
-    sth r0, 0x7c(r30)
-    b lbl_8029E5B4
-lbl_8029E0F4:
-    clrrwi. r0, r29, 31
-    beq lbl_8029E110
-    mr r3, r31
-    mr r4, r30
-    li r5, 0x140
-    bl memcpy
-    b lbl_8029E5B4
-lbl_8029E110:
-    clrlwi. r0, r29, 31
-    beq lbl_8029E128
-    lhz r0, 0x8(r30)
-    sth r0, 0x8(r31)
-    lhz r0, 0xa(r30)
-    sth r0, 0xa(r31)
-lbl_8029E128:
-    rlwinm. r0, r29, 0, 30, 30
-    beq lbl_8029E138
-    lwz r0, 0xc(r30)
-    stw r0, 0xc(r31)
-lbl_8029E138:
-    rlwinm. r0, r29, 0, 29, 29
-    beq lbl_8029E14C
-    lhz r0, 0x10(r30)
-    sth r0, 0x10(r31)
-    b lbl_8029E154
-lbl_8029E14C:
-    lhz r0, 0x10(r31)
-    sth r0, 0x10(r30)
-lbl_8029E154:
-    rlwinm. r0, r29, 0, 28, 28
-    beq lbl_8029E164
-    lhz r0, 0x12(r30)
-    sth r0, 0x12(r31)
-lbl_8029E164:
-    rlwinm. r0, r29, 0, 27, 27
-    beq lbl_8029E17C
-    addi r3, r31, 0x14
-    addi r4, r30, 0x14
-    li r5, 0x30
-    bl memcpy
-lbl_8029E17C:
-    rlwinm. r0, r29, 0, 25, 25
-    beq lbl_8029E198
-    lhz r0, 0x4e(r30)
-    sth r0, 0x4e(r31)
-    lhz r0, 0x50(r30)
-    sth r0, 0x50(r31)
-    b lbl_8029E220
-lbl_8029E198:
-    rlwinm. r0, r29, 0, 26, 26
-    beq lbl_8029E220
-    lhz r3, 0x44(r30)
-    li r0, 0x0
-    sth r3, 0x44(r31)
-    lhz r3, 0x46(r30)
-    sth r3, 0x46(r31)
-    lhz r3, 0x48(r30)
-    sth r3, 0x48(r31)
-    lhz r3, 0x4a(r30)
-    sth r3, 0x4a(r31)
-    lhz r3, 0x4c(r30)
-    sth r3, 0x4c(r31)
-    lhz r3, 0x4e(r30)
-    sth r3, 0x4e(r31)
-    lhz r3, 0x50(r30)
-    sth r3, 0x50(r31)
-    lwz r3, 0x24(r28)
-    stw r0, 0x0(r3)
-    stw r0, 0x4(r3)
-    stw r0, 0x8(r3)
-    stw r0, 0xc(r3)
-    stw r0, 0x10(r3)
-    stw r0, 0x14(r3)
-    stw r0, 0x18(r3)
-    stw r0, 0x1c(r3)
-    stw r0, 0x20(r3)
-    stw r0, 0x24(r3)
-    stw r0, 0x28(r3)
-    stw r0, 0x2c(r3)
-    stw r0, 0x30(r3)
-    stw r0, 0x34(r3)
-    stw r0, 0x38(r3)
-    stw r0, 0x3c(r3)
-lbl_8029E220:
-    rlwinm. r0, r29, 0, 24, 24
-    beq lbl_8029E238
-    addi r3, r31, 0x52
-    addi r4, r30, 0x52
-    li r5, 0x18
-    bl memcpy
-lbl_8029E238:
-    rlwinm. r0, r29, 0, 22, 22
-    beq lbl_8029E254
-    lhz r3, 0x6a(r31)
-    lha r0, 0x6c(r30)
-    sth r3, 0x6a(r30)
-    sth r0, 0x6c(r31)
-    b lbl_8029E26C
-lbl_8029E254:
-    rlwinm. r0, r29, 0, 23, 23
-    beq lbl_8029E26C
-    lhz r0, 0x6a(r30)
-    sth r0, 0x6a(r31)
-    lha r0, 0x6c(r30)
-    sth r0, 0x6c(r31)
-lbl_8029E26C:
-    rlwinm. r0, r29, 0, 17, 20
-    beq lbl_8029E2C4
-    rlwinm. r0, r29, 0, 20, 20
-    beq lbl_8029E284
-    lhz r0, 0x6e(r30)
-    sth r0, 0x6e(r31)
-lbl_8029E284:
-    rlwinm. r0, r29, 0, 19, 19
-    beq lbl_8029E294
-    lwz r0, 0x72(r30)
-    stw r0, 0x72(r31)
-lbl_8029E294:
-    rlwinm. r0, r29, 0, 18, 18
-    beq lbl_8029E2A4
-    lwz r0, 0x76(r30)
-    stw r0, 0x76(r31)
-lbl_8029E2A4:
-    rlwinm. r0, r29, 0, 17, 17
-    beq lbl_8029E2B8
-    lwz r0, 0x7a(r30)
-    stw r0, 0x7a(r31)
-    b lbl_8029E300
-lbl_8029E2B8:
-    lwz r0, 0x7a(r31)
-    stw r0, 0x7a(r30)
-    b lbl_8029E300
-lbl_8029E2C4:
-    rlwinm. r0, r29, 0, 21, 21
-    beq lbl_8029E2F0
-    lwz r0, 0x6e(r30)
-    stw r0, 0x6e(r31)
-    lwz r0, 0x72(r30)
-    stw r0, 0x72(r31)
-    lwz r0, 0x76(r30)
-    stw r0, 0x76(r31)
-    lwz r0, 0x7a(r30)
-    stw r0, 0x7a(r31)
-    b lbl_8029E300
-lbl_8029E2F0:
-    lhz r0, 0x7a(r31)
-    sth r0, 0x7a(r30)
-    lhz r0, 0x7c(r31)
-    sth r0, 0x7c(r30)
-lbl_8029E300:
-    rlwinm. r0, r29, 0, 16, 16
-    beq lbl_8029E358
-    lwz r0, 0x7e(r30)
-    stw r0, 0x7e(r31)
-    lwz r0, 0x82(r30)
-    stw r0, 0x82(r31)
-    lwz r0, 0x86(r30)
-    stw r0, 0x86(r31)
-    lwz r0, 0x8a(r30)
-    stw r0, 0x8a(r31)
-    lwz r0, 0x8e(r30)
-    stw r0, 0x8e(r31)
-    lwz r0, 0x92(r30)
-    stw r0, 0x92(r31)
-    lwz r0, 0x96(r30)
-    stw r0, 0x96(r31)
-    lwz r0, 0x9a(r30)
-    stw r0, 0x9a(r31)
-    lwz r0, 0x9e(r30)
-    stw r0, 0x9e(r31)
-    lwz r0, 0xa2(r30)
-    stw r0, 0xa2(r31)
-lbl_8029E358:
-    rlwinm. r0, r29, 0, 14, 14
-    beq lbl_8029E374
-    lhz r0, 0xa6(r30)
-    sth r0, 0xa6(r31)
-    lhz r0, 0xa8(r30)
-    sth r0, 0xa8(r31)
-    b lbl_8029E3B4
-lbl_8029E374:
-    rlwinm. r0, r29, 0, 15, 15
-    beq lbl_8029E3B4
-    lhz r0, 0xa6(r30)
-    sth r0, 0xa6(r31)
-    lhz r0, 0xa8(r30)
-    sth r0, 0xa8(r31)
-    lhz r0, 0xaa(r30)
-    sth r0, 0xaa(r31)
-    lhz r0, 0xac(r30)
-    sth r0, 0xac(r31)
-    lhz r0, 0xae(r30)
-    sth r0, 0xae(r31)
-    lhz r0, 0xb0(r30)
-    sth r0, 0xb0(r31)
-    lhz r0, 0xb2(r30)
-    sth r0, 0xb2(r31)
-lbl_8029E3B4:
-    rlwinm. r0, r29, 0, 13, 13
-    beq lbl_8029E3D4
-    lhz r0, 0xb4(r30)
-    sth r0, 0xb4(r31)
-    lhz r0, 0xb6(r30)
-    sth r0, 0xb6(r31)
-    lhz r0, 0xb8(r30)
-    sth r0, 0xb8(r31)
-lbl_8029E3D4:
-    rlwinm. r0, r29, 0, 11, 11
-    beq lbl_8029E3F0
-    lhz r0, 0xbe(r30)
-    sth r0, 0xbe(r31)
-    lhz r0, 0xc0(r30)
-    sth r0, 0xc0(r31)
-    b lbl_8029E418
-lbl_8029E3F0:
-    rlwinm. r0, r29, 0, 12, 12
-    beq lbl_8029E418
-    lhz r0, 0xba(r30)
-    sth r0, 0xba(r31)
-    lhz r0, 0xbc(r30)
-    sth r0, 0xbc(r31)
-    lhz r0, 0xbe(r30)
-    sth r0, 0xbe(r31)
-    lhz r0, 0xc0(r30)
-    sth r0, 0xc0(r31)
-lbl_8029E418:
-    rlwinm. r0, r29, 0, 9, 9
-    beq lbl_8029E44C
-    lhz r0, 0xcc(r30)
-    sth r0, 0xcc(r31)
-    lhz r0, 0xce(r30)
-    sth r0, 0xce(r31)
-    lhz r0, 0xd0(r30)
-    sth r0, 0xd0(r31)
-    lhz r0, 0xd2(r30)
-    sth r0, 0xd2(r31)
-    lhz r0, 0xd4(r30)
-    sth r0, 0xd4(r31)
-    b lbl_8029E4A4
-lbl_8029E44C:
-    rlwinm. r0, r29, 0, 10, 10
-    beq lbl_8029E4A4
-    lhz r0, 0xc2(r30)
-    sth r0, 0xc2(r31)
-    lhz r0, 0xc4(r30)
-    sth r0, 0xc4(r31)
-    lhz r0, 0xc6(r30)
-    sth r0, 0xc6(r31)
-    lhz r0, 0xc8(r30)
-    sth r0, 0xc8(r31)
-    lhz r0, 0xca(r30)
-    sth r0, 0xca(r31)
-    lhz r0, 0xcc(r30)
-    sth r0, 0xcc(r31)
-    lhz r0, 0xce(r30)
-    sth r0, 0xce(r31)
-    lhz r0, 0xd0(r30)
-    sth r0, 0xd0(r31)
-    lhz r0, 0xd2(r30)
-    sth r0, 0xd2(r31)
-    lhz r0, 0xd4(r30)
-    sth r0, 0xd4(r31)
-lbl_8029E4A4:
-    rlwinm. r0, r29, 0, 8, 8
-    beq lbl_8029E4B4
-    lhz r0, 0xd6(r30)
-    sth r0, 0xd6(r31)
-lbl_8029E4B4:
-    rlwinm. r0, r29, 0, 7, 7
-    beq lbl_8029E4C4
-    lhz r0, 0xd8(r30)
-    sth r0, 0xd8(r31)
-lbl_8029E4C4:
-    rlwinm. r0, r29, 0, 6, 6
-    beq lbl_8029E4DC
-    addi r3, r31, 0xda
-    addi r4, r30, 0xda
-    li r5, 0x20
-    bl memcpy
-lbl_8029E4DC:
-    rlwinm. r0, r29, 0, 5, 5
-    beq lbl_8029E4F4
-    addi r3, r31, 0xfa
-    addi r4, r30, 0xfa
-    li r5, 0x10
-    bl memcpy
-lbl_8029E4F4:
-    rlwinm. r0, r29, 0, 4, 4
-    beq lbl_8029E50C
-    addi r3, r31, 0x10a
-    addi r4, r30, 0x10a
-    li r5, 0xa
-    bl memcpy
-lbl_8029E50C:
-    rlwinm. r0, r29, 0, 2, 2
-    beq lbl_8029E528
-    lhz r0, 0x118(r30)
-    sth r0, 0x118(r31)
-    lhz r0, 0x11a(r30)
-    sth r0, 0x11a(r31)
-    b lbl_8029E5B4
-lbl_8029E528:
-    rlwinm. r0, r29, 0, 1, 1
-    beq lbl_8029E55C
-    lhz r0, 0x11e(r30)
-    sth r0, 0x11e(r31)
-    lhz r0, 0x120(r30)
-    sth r0, 0x120(r31)
-    lhz r0, 0x122(r30)
-    sth r0, 0x122(r31)
-    lhz r0, 0x124(r30)
-    sth r0, 0x124(r31)
-    lhz r0, 0x126(r30)
-    sth r0, 0x126(r31)
-    b lbl_8029E5B4
-lbl_8029E55C:
-    rlwinm. r0, r29, 0, 3, 3
-    beq lbl_8029E5B4
-    lhz r0, 0x114(r30)
-    sth r0, 0x114(r31)
-    lhz r0, 0x116(r30)
-    sth r0, 0x116(r31)
-    lhz r0, 0x118(r30)
-    sth r0, 0x118(r31)
-    lhz r0, 0x11a(r30)
-    sth r0, 0x11a(r31)
-    lhz r0, 0x11c(r30)
-    sth r0, 0x11c(r31)
-    lhz r0, 0x11e(r30)
-    sth r0, 0x11e(r31)
-    lhz r0, 0x120(r30)
-    sth r0, 0x120(r31)
-    lhz r0, 0x122(r30)
-    sth r0, 0x122(r31)
-    lhz r0, 0x124(r30)
-    sth r0, 0x124(r31)
-    lhz r0, 0x126(r30)
-    sth r0, 0x126(r31)
-lbl_8029E5B4:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r28, 0x10(r1)
-    mtlr r0
-    addi r1, r1, 0x20
+    lwz r3, lbl_8049DFAC
     blr
 }
 
-// asm_to_cpp: __AXSyncPBs
-asm void __AXSyncPBs(u32 baseCycles) {
+// asm_to_cpp: __AXGetPBs
+asm AXPB* __AXGetPBs(void) {
     nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    addi r11, r1, 0x30
-    bl _savegpr_25
-    lwz r0, lbl_8049DFAC
-    li r29, 0x0
-    mr r25, r3
-    stw r29, lbl_8049DFB0
-    mulli r4, r0, 0x140
     lwz r3, lbl_8049DFA0
-    bl DCInvalidateRange
-    lwz r0, lbl_8049DFAC
-    lwz r3, lbl_8049DFA4
-    slwi r4, r0, 6
-    bl DCInvalidateRange
-    bl fn_8029C958
-    lwz r0, lbl_8049DFAC
-    lis r31, lbl_8036F440@ha
-    lis r30, lbl_8036F3C0@ha
-    li r27, 0x1f
-    mulli r0, r0, 0x258
-    addi r31, r31, lbl_8036F440@l
-    addi r30, r30, lbl_8036F3C0@l
-    add r0, r3, r0
-    add r3, r0, r25
-    addi r28, r3, 0x20
-lbl_8029E640:
-    mr r3, r27
-    bl __AXGetStackHead
-    mr r26, r3
-    b lbl_8029E840
-lbl_8029E650:
-    lhz r0, 0x6c(r26)
-    cmplwi r0, 0x1
-    bne lbl_8029E660
-    addi r28, r28, 0x81
-lbl_8029E660:
-    lwz r0, 0x20(r26)
-    cmpwi r0, 0x0
-    beq lbl_8029E680
-    lwz r0, 0x18(r26)
-    lwz r3, lbl_8049DFA0
-    mulli r0, r0, 0x140
-    add r3, r3, r0
-    bl __AXDepopVoice
-lbl_8029E680:
-    lhz r0, 0x38(r26)
-    cmplwi r0, 0x1
-    bne lbl_8029E82C
-    lhz r0, 0xe2(r26)
-    addi r28, r28, 0x183
-    cmpwi r0, 0x0
-    beq lbl_8029E6A0
-    addi r28, r28, 0x135
-lbl_8029E6A0:
-    lhz r0, 0xea(r26)
-    cmpwi r0, 0x0
-    beq lbl_8029E6B0
-    addi r28, r28, 0x400
-lbl_8029E6B0:
-    lhz r0, 0x6c(r26)
-    cmplwi r0, 0x1
-    bne lbl_8029E6C0
-    addi r28, r28, 0x1b
-lbl_8029E6C0:
-    lhz r3, 0x30(r26)
-    lhz r0, 0xce(r26)
-    cmpwi r3, 0x0
-    lhz r4, 0xd0(r26)
-    rlwimi r4, r0, 16, 0, 15
-    bne lbl_8029E6F0
-    slwi r3, r4, 9
-    addis r3, r3, 0x1
-    addi r0, r3, -0x8000
-    srwi r3, r0, 16
-    addi r0, r3, 0x619
-    b lbl_8029E710
-lbl_8029E6F0:
-    cmplwi r3, 0x1
-    li r0, 0x25d
-    bne lbl_8029E710
-    slwi r3, r4, 9
-    addis r3, r3, 0x1
-    addi r0, r3, -0x8000
-    srwi r3, r0, 16
-    addi r0, r3, 0x5ba
-lbl_8029E710:
-    lwz r4, 0x34(r26)
-    add r28, r28, r0
-    lhz r0, 0xfe(r26)
-    rlwinm r5, r4, 13, 25, 29
-    clrlslwi r3, r4, 27, 2
-    rlwinm r6, r4, 8, 25, 29
-    rlwinm r4, r4, 18, 25, 29
-    cmplwi r0, 0x1
-    lwzx r5, r30, r5
-    lwzx r0, r30, r3
-    lwzx r6, r30, r6
-    lwzx r4, r30, r4
-    add r0, r5, r0
-    add r3, r28, r6
-    add r0, r4, r0
-    add r28, r3, r0
-    bne lbl_8029E7DC
-    lhz r0, 0x13c(r26)
-    addi r28, r28, 0x265
-    cmplwi r0, 0x1
-    bne lbl_8029E76C
-    addi r28, r28, 0x76
-    b lbl_8029E778
-lbl_8029E76C:
-    cmplwi r0, 0x2
-    bne lbl_8029E778
-    addi r28, r28, 0x342
-lbl_8029E778:
-    lhz r3, 0x100(r26)
-    rlwinm r4, r3, 30, 28, 29
-    clrlslwi r0, r3, 30, 2
-    lwzx r4, r31, r4
-    rlwinm r9, r3, 20, 28, 29
-    lwzx r0, r31, r0
-    rlwinm r8, r3, 22, 28, 29
-    rlwinm r7, r3, 24, 28, 29
-    rlwinm r6, r3, 26, 28, 29
-    rlwinm r5, r3, 28, 28, 29
-    rlwinm r3, r3, 0, 28, 29
-    lwzx r7, r31, r7
-    add r0, r4, r0
-    lwzx r3, r31, r3
-    lwzx r9, r31, r9
-    add r7, r28, r7
-    lwzx r8, r31, r8
-    add r0, r3, r0
-    lwzx r6, r31, r6
-    lwzx r4, r31, r5
-    add r8, r9, r8
-    add r3, r8, r7
-    add r4, r6, r4
-    add r0, r4, r0
-    add r28, r3, r0
-lbl_8029E7DC:
-    lwz r0, lbl_8049DFB8
-    cmplw r0, r28
-    ble lbl_8029E7F4
-    mr r3, r26
-    bl __AXServiceVPB
-    b lbl_8029E834
-lbl_8029E7F4:
-    lwz r0, 0x18(r26)
-    lwz r3, lbl_8049DFA0
-    mulli r0, r0, 0x140
-    add r25, r3, r0
-    lhz r0, 0x10(r25)
-    cmplwi r0, 0x1
-    bne lbl_8029E818
-    mr r3, r25
-    bl __AXDepopVoice
-lbl_8029E818:
-    sth r29, 0x38(r26)
-    mr r3, r26
-    sth r29, 0x10(r25)
-    bl __AXPushCallbackStack
-    b lbl_8029E834
-lbl_8029E82C:
-    mr r3, r26
-    bl __AXServiceVPB
-lbl_8029E834:
-    stw r29, 0x1c(r26)
-    stw r29, 0x20(r26)
-    lwz r26, 0x0(r26)
-lbl_8029E840:
-    cmpwi r26, 0x0
-    bne lbl_8029E650
-    subic. r27, r27, 0x1
-    bne lbl_8029E640
-    stw r28, lbl_8049DFB4
-    li r3, 0x0
-    bl __AXGetStackHead
-    mr r25, r3
-    li r26, 0x0
-    b lbl_8029E8A4
-lbl_8029E868:
-    lwz r0, 0x20(r25)
-    cmpwi r0, 0x0
-    beq lbl_8029E888
-    lwz r0, 0x18(r25)
-    lwz r3, lbl_8049DFA0
-    mulli r0, r0, 0x140
-    add r3, r3, r0
-    bl __AXDepopVoice
-lbl_8029E888:
-    stw r26, 0x20(r25)
-    lwz r0, 0x18(r25)
-    lwz r3, lbl_8049DFA0
-    mulli r0, r0, 0x140
-    add r3, r3, r0
-    sth r26, 0x10(r3)
-    lwz r25, 0x0(r25)
-lbl_8029E8A4:
-    cmpwi r25, 0x0
-    bne lbl_8029E868
-    lwz r0, lbl_8049DFAC
-    lwz r3, lbl_8049DFA0
-    mulli r4, r0, 0x140
-    bl DCFlushRange
-    lwz r0, lbl_8049DFAC
-    lwz r3, lbl_8049DFA4
-    slwi r4, r0, 6
-    bl DCFlushRange
-    addi r11, r1, 0x30
-    bl _restgpr_25
-    lwz r0, 0x34(r1)
-    mtlr r0
-    addi r1, r1, 0x30
     blr
 }
 
@@ -1052,129 +768,6 @@ lbl_8029EBB4:
     bl DCFlushRange
     addi r11, r1, 0x30
     bl _restgpr_25
-    lwz r0, 0x34(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
-}
-
-// asm_to_cpp: AXSetVoiceAddr
-asm void AXSetVoiceAddr(AXVPB* vpb, AXPBADDR* addr) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r4
-    stw r30, 0x8(r1)
-    mr r30, r3
-    bl OSDisableInterrupts
-    lwz r0, 0x0(r31)
-    stw r0, 0x96(r30)
-    lwz r0, 0x4(r31)
-    stw r0, 0x9a(r30)
-    lwz r0, 0x8(r31)
-    stw r0, 0x9e(r30)
-    lwz r0, 0xc(r31)
-    stw r0, 0xa2(r30)
-    lhz r0, 0x2(r31)
-    cmpwi r0, 0xa
-    beq lbl_8029ECD4
-    bge lbl_8029ECC8
-    cmpwi r0, 0x0
-    beq lbl_8029ED38
-    b lbl_8029ED38
-lbl_8029ECC8:
-    cmpwi r0, 0x19
-    beq lbl_8029ED08
-    b lbl_8029ED38
-lbl_8029ECD4:
-    li r4, 0x0
-    lis r0, 0x800
-    stw r4, 0xa6(r30)
-    stw r4, 0xaa(r30)
-    stw r4, 0xae(r30)
-    stw r4, 0xb2(r30)
-    stw r4, 0xb6(r30)
-    stw r4, 0xba(r30)
-    stw r4, 0xbe(r30)
-    stw r4, 0xc2(r30)
-    stw r0, 0xc6(r30)
-    stw r4, 0xca(r30)
-    b lbl_8029ED38
-lbl_8029ED08:
-    li r4, 0x0
-    lis r0, 0x100
-    stw r4, 0xa6(r30)
-    stw r4, 0xaa(r30)
-    stw r4, 0xae(r30)
-    stw r4, 0xb2(r30)
-    stw r4, 0xb6(r30)
-    stw r4, 0xba(r30)
-    stw r4, 0xbe(r30)
-    stw r4, 0xc2(r30)
-    stw r0, 0xc6(r30)
-    stw r4, 0xca(r30)
-lbl_8029ED38:
-    lwz r0, 0x1c(r30)
-    rlwinm r0, r0, 0, 21, 16
-    ori r0, r0, 0x8400
-    stw r0, 0x1c(r30)
-    bl OSRestoreInterrupts
-    lwz r0, 0x14(r1)
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// asm_to_cpp: AXGetLpfCoefs
-asm void AXGetLpfCoefs(u16 freq, u16* a, u16* b) {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    stfd f31, 0x20(r1)
-    opword 0xF3E10028
-    lis r0, 0x4330
-    lfd f3, lbl_804A2430
-    stw r3, 0xc(r1)
-    lfs f1, lbl_804A241C
-    stw r0, 0x8(r1)
-    lfs f0, lbl_804A2420
-    lfd f2, 0x8(r1)
-    stw r31, 0x1c(r1)
-    mr r31, r5
-    fsubs f2, f2, f3
-    stw r30, 0x18(r1)
-    mr r30, r4
-    fmuls f1, f1, f2
-    fdivs f1, f1, f0
-    bl cos
-    frsp f2, f1
-    lfs f1, lbl_804A2418
-    lfs f0, lbl_804A2424
-    fsubs f31, f1, f2
-    fmuls f1, f31, f31
-    fsubs f1, f1, f0
-    bl sqrt
-    frsp f1, f1
-    lfs f0, lbl_804A2428
-    fsubs f1, f1, f31
-    fneg f1, f1
-    fmuls f0, f0, f1
-    fctiwz f0, f0
-    stfd f0, 0x10(r1)
-    lwz r3, 0x14(r1)
-    clrlwi r0, r3, 16
-    sth r3, 0x0(r31)
-    subfic r0, r0, 0x7fff
-    sth r0, 0x0(r30)
-    opword 0xE3E10028
-    lfd f31, 0x20(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
     lwz r0, 0x34(r1)
     mtlr r0
     addi r1, r1, 0x30

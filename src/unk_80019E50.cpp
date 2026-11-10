@@ -4,6 +4,7 @@
 
 extern "C" {
 
+
 extern u8 lbl_803C1A40[];
 extern u8 lbl_803C22B0[];
 extern float lbl_8049D630;
@@ -47,6 +48,7 @@ void fn_8017742C(void);
 void fn_8017776C(s32 arg0);
 void fn_8017C2CC(void);
 M2C_UNK memset(s32 arg0, s32 arg1, s32 arg2);
+
 
 s8 * fn_80019E50(s32 arg0) {
     s8 *p = (s8 *)fn_80177280(0x12, (M2C_UNK *)fn_80019F28, (M2C_UNK **)*(s32 *)&lbl_8049D630);
@@ -198,6 +200,41 @@ void fn_8001A1A4(s8 *arg0) {
         fn_8017C2CC();
         fn_80016A94((s32) (0));
     }
+}
+
+void fn_8001A940(s8 *arg0, u32 arg1) {
+    struct Color {
+        u32 a: 8;
+        u32 b: 8;
+        u32 c: 8;
+        u32 d: 8;
+    };
+    Color c = *(Color *)&arg1;
+    ((u8 *)arg0)[0] = c.a;
+    ((u8 *)arg0)[1] = c.b;
+    ((u8 *)arg0)[2] = c.c;
+    ((u8 *)arg0)[3] = c.d;
+}
+
+void fn_8001A964(void) {
+}
+
+void fn_8001A968(f32 farg0, f32 farg1) {
+    *(f32 *)0xCC008000 = farg0;
+    *(f32 *)0xCC008000 = farg1;
+}
+
+void fn_8001A978(u8 arg0, u8 arg1, u8 arg2, u8 arg3) {
+    *(volatile u8 *)0xCC008000 = arg0;
+    *(volatile u8 *)0xCC008000 = arg1;
+    *(volatile u8 *)0xCC008000 = arg2;
+    *(volatile u8 *)0xCC008000 = arg3;
+}
+
+void fn_8001A9A0(f32 farg0, f32 farg1, f32 farg2) {
+    *(f32 *)0xCC008000 = farg0;
+    *(f32 *)0xCC008000 = farg1;
+    *(f32 *)0xCC008000 = farg2;
 }
 
 // asm_to_cpp: fn_8001A348
@@ -595,41 +632,6 @@ asm void fn_8001A7CC(s8 *arg0) {
     mtlr r0
     addi r1, r1, 0x50
     blr
-}
-
-void fn_8001A940(s8 *arg0, u32 arg1) {
-    struct Color {
-        u32 a: 8;
-        u32 b: 8;
-        u32 c: 8;
-        u32 d: 8;
-    };
-    Color c = *(Color *)&arg1;
-    ((u8 *)arg0)[0] = c.a;
-    ((u8 *)arg0)[1] = c.b;
-    ((u8 *)arg0)[2] = c.c;
-    ((u8 *)arg0)[3] = c.d;
-}
-
-void fn_8001A964(void) {
-}
-
-void fn_8001A968(f32 farg0, f32 farg1) {
-    *(f32 *)0xCC008000 = farg0;
-    *(f32 *)0xCC008000 = farg1;
-}
-
-void fn_8001A978(u8 arg0, u8 arg1, u8 arg2, u8 arg3) {
-    *(volatile u8 *)0xCC008000 = arg0;
-    *(volatile u8 *)0xCC008000 = arg1;
-    *(volatile u8 *)0xCC008000 = arg2;
-    *(volatile u8 *)0xCC008000 = arg3;
-}
-
-void fn_8001A9A0(f32 farg0, f32 farg1, f32 farg2) {
-    *(f32 *)0xCC008000 = farg0;
-    *(f32 *)0xCC008000 = farg1;
-    *(f32 *)0xCC008000 = farg2;
 }
 
 } // extern "C"

@@ -84,6 +84,11 @@ def header_sig(name):
                 m = pat.search(open(os.path.join(d, f), errors='replace').read())
                 if m:
                     return f'{m.group(1).strip()} {name}({m.group(2).strip()})'
+    # prototipos de m2c (los C de tools/m2c_pass.py incluyen include/m2c_protos.h)
+    if os.path.exists('include/m2c_protos.h'):
+        m = pat.search(open('include/m2c_protos.h', errors='replace').read())
+        if m:
+            return f'{m.group(1).strip()} {name}({m.group(2).strip()})'
     return None
 
 
@@ -124,6 +129,13 @@ def render(text, names, decls, blocks, is_c, skip, force, sigs):
             ext.append(f'extern int {sym}();')
         else:
             ext.append(d.replace('extern "C" ', 'extern ') if is_c else d)
+    # forzados sin declaracion propia (p. ej. memset usado en C sin prototipo: declaracion implicita,
+    # invisible para el asm inline): prototipo `int f();` al principio, compatible con la implicita
+    known = {re.search(r'(\w+)(?:\[\])?(?:\(\))?;$', d).group(1) for d in decls}
+    top = ''.join(f'int {s}();\n' for s in sorted(force) if (s not in known or s in skip) and is_c)
+    if top:
+        k = text.find('\n', text.rfind('#include')) + 1 if '#include' in text else 0
+        text = text[:k] + top + text[k:]
     return (text + '\n// ---- Funciones aun sin C que matchee (asm generado) ----\n'
             + '\n'.join(ext) + '\n\n' + '\n'.join(body))
 

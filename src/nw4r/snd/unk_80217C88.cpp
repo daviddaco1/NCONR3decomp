@@ -6,13 +6,13 @@
 // Forward declarations
 extern "C" void DetachTempGeneralHandle__Q44nw4r3snd6detail10BasicSoundFv();
 extern "C" void IsAttachedGeneralHandle__Q44nw4r3snd6detail10BasicSoundFv();
-extern "C" void fn_80217C88();
-extern "C" void fn_80217CD4();
+extern "C" void detail_AttachSound__Q34nw4r3snd11SoundHandleFPQ44nw4r3snd6detail10BasicSound();
+extern "C" void DetachSound__Q34nw4r3snd11SoundHandleFv();
 
 // ----------------------------------------------------------------------------
-// fn_80217C88
+// detail_AttachSound__Q34nw4r3snd11SoundHandleFPQ44nw4r3snd6detail10BasicSound
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_80217C88() {
+extern "C" asm void detail_AttachSound__Q34nw4r3snd11SoundHandleFPQ44nw4r3snd6detail10BasicSound() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -37,9 +37,9 @@ lbl_80217CB8:
 }
 
 // ----------------------------------------------------------------------------
-// fn_80217CD4
+// DetachSound__Q34nw4r3snd11SoundHandleFv
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_80217CD4() {
+extern "C" asm void DetachSound__Q34nw4r3snd11SoundHandleFv() {
     nofralloc
     lwz r4, 0x0(r3)
     cmpwi r4, 0x0

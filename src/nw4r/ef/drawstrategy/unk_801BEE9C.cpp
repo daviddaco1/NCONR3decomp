@@ -199,7 +199,7 @@ extern "C" void fn_801C0DA4();
 extern "C" void fn_801C0DC8();
 extern "C" void fn_801C0DF8();
 extern "C" void fn_801C0E40();
-extern "C" void fn_801C0E70();
+extern "C" void GetNextDrawParticle_YoungersFirst__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r2ef15ParticleManagerPQ34nw4r2ef8Particle();
 extern "C" void fn_801C0E98();
 extern "C" void fn_801C10B4();
 extern "C" void fn_801C10F4();
@@ -212,7 +212,7 @@ extern "C" void fn_801C2BA8();
 extern "C" void fn_801C2C78();
 extern "C" void fn_801C2CF4();
 extern "C" void fn_801C2DC8();
-extern "C" void fn_801C2E84();
+extern "C" void CalcAhead_EmitterDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle();
 extern "C" void fn_801C2EA0();
 extern "C" void fn_801C2FB0();
 extern "C" void fn_801C3218();
@@ -234,7 +234,7 @@ extern "C" void fn_801C4A44();
 extern "C" void fn_801C4C4C();
 extern "C" void fn_801C5280();
 extern "C" void fn_801C533C();
-extern "C" void fn_801C53B8();
+extern "C" void CalcAhead_NoDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle();
 extern "C" void fn_801C53E8();
 extern "C" void fn_801C5424();
 extern "C" void fn_801C555C();
@@ -292,10 +292,10 @@ extern "C" void fn_801CE9C4();
 extern "C" void fn_801CE9D4();
 extern "C" void fn_801CE9EC();
 extern "C" void fn_801CE9F8();
-extern "C" void fn_801CEA04();
-extern "C" void fn_801CEA54();
-extern "C" void fn_801CEA7C();
-extern "C" void fn_802E1DE4();
+extern "C" void __eq__Q34nw4r3g3d7ResNameCFQ34nw4r3g3d7ResName();
+extern "C" void ResWriteBPCmd__Q34nw4r3g3d6detailFPUcUl();
+extern "C" void ResWriteCPCmd__Q34nw4r3g3d6detailFPUcUcUl();
+extern "C" void GXSetCoPlanar();
 extern "C" void fn_802E3F80();
 extern "C" void fn_802E3FE8();
 extern "C" void fn_802E413C();
@@ -314,7 +314,7 @@ extern "C" void fn_802E4750();
 extern "C" void fn_802E4808();
 extern "C" void fn_802E48CC();
 extern "C" void fn_802E4A28();
-extern "C" void fn_8030D7E0();
+extern "C" void PSMTXMultVec();
 extern "C" void fn_8030DEEC();
 extern "C" void strcmp();
 
@@ -749,7 +749,7 @@ lbl_801BF4A4:
     li r3, 0x0
     bl GXSetCullMode
     li r3, 0x0
-    bl fn_802E1DE4
+    bl GXSetCoPlanar
     lbz r3, 0x5c(r30)
     lbz r4, 0x5d(r30)
     lbz r5, 0x5e(r30)
@@ -2586,8 +2586,8 @@ extern "C" asm void fn_801C0DA4() {
     beq lbl_801C0DB0
     b lbl_801C0DBC
 lbl_801C0DB0:
-    lis r3, fn_801C0E70@ha
-    addi r3, r3, fn_801C0E70@l
+    lis r3, GetNextDrawParticle_YoungersFirst__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r2ef15ParticleManagerPQ34nw4r2ef8Particle@ha
+    addi r3, r3, GetNextDrawParticle_YoungersFirst__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r2ef15ParticleManagerPQ34nw4r2ef8Particle@l
     blr
 lbl_801C0DBC:
     lis r3, fn_801C0E40@ha
@@ -2669,9 +2669,9 @@ lbl_801C0E58:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801C0E70
+// GetNextDrawParticle_YoungersFirst__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r2ef15ParticleManagerPQ34nw4r2ef8Particle
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_801C0E70() {
+extern "C" asm void GetNextDrawParticle_YoungersFirst__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r2ef15ParticleManagerPQ34nw4r2ef8Particle() {
     nofralloc
     lhz r5, 0x42(r3)
     lwzx r3, r4, r5
@@ -2766,7 +2766,7 @@ lbl_801C0F78:
     stfs f1, 0x2c(r1)
     stfs f2, 0x30(r1)
     stfs f3, 0x34(r1)
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     lfs f0, 0x2c(r1)
     stfs f0, 0xa4(r30)
     lfs f0, 0x30(r1)
@@ -3047,7 +3047,7 @@ lbl_801C1350:
     mr r3, r25
     addi r4, r25, 0x8c
     addi r5, r1, 0x84
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0x84
     mr r4, r3
     bl fn_801B9B90
@@ -3322,7 +3322,7 @@ lbl_801C1718:
     mr r3, r18
     addi r4, r27, 0xac
     addi r5, r1, 0x24
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     lfs f7, 0x20(r1)
     fmuls f30, f21, f22
     fmuls f31, f21, f23
@@ -3700,7 +3700,7 @@ lbl_801C1CF8:
     mr r3, r24
     addi r4, r24, 0x8c
     addi r5, r1, 0x84
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0x84
     mr r4, r3
     bl fn_801B9B90
@@ -3967,7 +3967,7 @@ lbl_801C20AC:
     fadds f0, f1, f0
     stfs f2, 0x1c(r1)
     stfs f0, 0x20(r1)
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     lfs f0, 0x20(r1)
     fmuls f22, f27, f19
     fmuls f23, f27, f18
@@ -4256,7 +4256,7 @@ lbl_801C2528:
     mr r3, r24
     addi r4, r24, 0x8c
     addi r5, r1, 0x7c
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0x7c
     mr r4, r3
     bl fn_801B9B90
@@ -4533,7 +4533,7 @@ lbl_801C2938:
     addi r3, r1, 0xc0
     addi r4, r26, 0xac
     addi r5, r1, 0x10
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     lfs f8, 0xc(r1)
     fmuls f0, f26, f22
     lfs f4, 0x8(r1)
@@ -4781,8 +4781,8 @@ lbl_801C2CB8:
     addi r3, r3, fn_801C2DC8@l
     blr
 lbl_801C2CC4:
-    lis r3, fn_801C2E84@ha
-    addi r3, r3, fn_801C2E84@l
+    lis r3, CalcAhead_EmitterDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle@ha
+    addi r3, r3, CalcAhead_EmitterDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle@l
     blr
 lbl_801C2CD0:
     lis r3, fn_801C2EA0@ha
@@ -4919,9 +4919,9 @@ lbl_801C2E6C:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801C2E84
+// CalcAhead_EmitterDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_801C2E84() {
+extern "C" asm void CalcAhead_EmitterDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle() {
     nofralloc
     lfs f0, 0x98(r4)
     stfs f0, 0x0(r3)
@@ -5228,19 +5228,19 @@ extern "C" asm void fn_801C3254() {
     mr r30, r4
     stw r29, 0x44(r1)
     mr r29, r3
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     mr r3, r29
     addi r4, r30, 0xc
     addi r5, r1, 0x20
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     mr r3, r29
     addi r4, r30, 0x18
     addi r5, r1, 0x14
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     mr r3, r29
     addi r4, r30, 0x24
     addi r5, r1, 0x8
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
@@ -5626,7 +5626,7 @@ lbl_801C3804:
     mr r3, r24
     addi r5, r1, 0x38
     addi r4, r24, 0x8c
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0x38
     mr r4, r3
     bl fn_801B9B90
@@ -6452,7 +6452,7 @@ lbl_801C441C:
     mr r3, r27
     addi r4, r27, 0x8c
     addi r5, r1, 0x8
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0x8
     mr r4, r3
     bl fn_801B9B90
@@ -7557,14 +7557,14 @@ extern "C" asm void fn_801C533C() {
     lis r3, fn_801C2DC8@ha
     addi r3, r3, fn_801C2DC8@l
     blr
-    lis r3, fn_801C2E84@ha
-    addi r3, r3, fn_801C2E84@l
+    lis r3, CalcAhead_EmitterDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle@ha
+    addi r3, r3, CalcAhead_EmitterDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle@l
     blr
     lis r3, fn_801C2EA0@ha
     addi r3, r3, fn_801C2EA0@l
     blr
-    lis r3, fn_801C53B8@ha
-    addi r3, r3, fn_801C53B8@l
+    lis r3, CalcAhead_NoDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle@ha
+    addi r3, r3, CalcAhead_NoDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle@l
     blr
     lis r3, fn_801C2FB0@ha
     addi r3, r3, fn_801C2FB0@l
@@ -7576,9 +7576,9 @@ lbl_801C53AC:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801C53B8
+// CalcAhead_NoDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_801C53B8() {
+extern "C" asm void CalcAhead_NoDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle() {
     nofralloc
     stwu r1, -0x20(r1)
     lfs f2, 0xb0(r4)
@@ -7631,19 +7631,19 @@ extern "C" asm void fn_801C5424() {
     mr r30, r4
     stw r29, 0x44(r1)
     mr r29, r3
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     mr r3, r29
     addi r4, r30, 0xc
     addi r5, r1, 0x20
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     mr r3, r29
     addi r4, r30, 0x18
     addi r5, r1, 0x14
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     mr r3, r29
     addi r4, r30, 0x24
     addi r5, r1, 0x8
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     li r3, 0x80
     li r4, 0x0
     li r5, 0x4
@@ -7838,7 +7838,7 @@ lbl_801C5740:
     mr r3, r25
     addi r5, r1, 0x2c
     addi r4, r25, 0x8c
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0x2c
     mr r4, r3
     bl fn_801B9B90
@@ -8403,7 +8403,7 @@ lbl_801C5F84:
     mr r3, r24
     addi r4, r24, 0x8c
     addi r5, r1, 0x18
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0x18
     mr r4, r3
     bl fn_801B9B90
@@ -8813,7 +8813,7 @@ lbl_801C655C:
     mr r3, r28
     addi r4, r28, 0x8c
     addi r5, r1, 0xc
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0xc
     mr r4, r3
     bl fn_801B9B90
@@ -9525,11 +9525,11 @@ lbl_801C6E78:
     mr r4, r30
     addi r3, r1, 0xb8
     addi r5, r1, 0x40
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     mr r4, r31
     addi r3, r1, 0xb8
     addi r5, r1, 0x34
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     lfs f2, 0x48(r1)
     lis r3, 0xcc01
     lfs f1, 0x44(r1)
@@ -11408,7 +11408,7 @@ lbl_801C8A5C:
     mr r3, r27
     addi r4, r27, 0x8c
     addi r5, r1, 0x38
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0x38
     mr r4, r3
     bl fn_801B9B90
@@ -11559,7 +11559,7 @@ lbl_801C8C98:
     mr r3, r27
     addi r4, r27, 0x8c
     addi r5, r1, 0x20
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0x20
     mr r4, r3
     bl fn_801B9B90
@@ -12132,14 +12132,14 @@ extern "C" asm void fn_801C94AC() {
     lis r3, fn_801C2DC8@ha
     addi r3, r3, fn_801C2DC8@l
     blr
-    lis r3, fn_801C2E84@ha
-    addi r3, r3, fn_801C2E84@l
+    lis r3, CalcAhead_EmitterDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle@ha
+    addi r3, r3, CalcAhead_EmitterDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle@l
     blr
     lis r3, fn_801C9560@ha
     addi r3, r3, fn_801C9560@l
     blr
-    lis r3, fn_801C53B8@ha
-    addi r3, r3, fn_801C53B8@l
+    lis r3, CalcAhead_NoDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle@ha
+    addi r3, r3, CalcAhead_NoDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle@l
     blr
     lbz r0, 0x14e(r4)
     clrlwi r0, r0, 29
@@ -13033,11 +13033,11 @@ lbl_801CA068:
     mr r4, r29
     mr r5, r25
     addi r3, r1, 0xa0
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     mr r4, r30
     addi r3, r1, 0xa0
     addi r5, r25, 0xc
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     stfs f31, 0x18(r25)
     opword 0xE3E10128
     lfd f31, 0x120(r1)
@@ -16617,7 +16617,7 @@ lbl_801CD524:
     mr r3, r25
     addi r4, r25, 0x8c
     addi r5, r1, 0x38
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0x38
     mr r4, r3
     bl fn_801B9B90
@@ -16767,7 +16767,7 @@ lbl_801CD75C:
     mr r3, r25
     addi r4, r25, 0x8c
     addi r5, r1, 0x20
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0x20
     mr r4, r3
     bl fn_801B9B90
@@ -17439,14 +17439,14 @@ extern "C" asm void fn_801CE0C4() {
     lis r3, fn_801C2DC8@ha
     addi r3, r3, fn_801C2DC8@l
     blr
-    lis r3, fn_801C2E84@ha
-    addi r3, r3, fn_801C2E84@l
+    lis r3, CalcAhead_EmitterDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle@ha
+    addi r3, r3, CalcAhead_EmitterDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle@l
     blr
     lis r3, fn_801CE178@ha
     addi r3, r3, fn_801CE178@l
     blr
-    lis r3, fn_801C53B8@ha
-    addi r3, r3, fn_801C53B8@l
+    lis r3, CalcAhead_NoDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle@ha
+    addi r3, r3, CalcAhead_NoDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle@l
     blr
     lbz r0, 0x14e(r4)
     clrlwi r0, r0, 29
@@ -18137,9 +18137,9 @@ extern "C" asm void fn_801CE9F8() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_801CEA04
+// __eq__Q34nw4r3g3d7ResNameCFQ34nw4r3g3d7ResName
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_801CEA04() {
+extern "C" asm void __eq__Q34nw4r3g3d7ResNameCFQ34nw4r3g3d7ResName() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -18166,9 +18166,9 @@ lbl_801CEA44:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801CEA54
+// ResWriteBPCmd__Q34nw4r3g3d6detailFPUcUl
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_801CEA54() {
+extern "C" asm void ResWriteBPCmd__Q34nw4r3g3d6detailFPUcUl() {
     nofralloc
     srwi r6, r4, 24
     extrwi r5, r4, 8, 8
@@ -18183,9 +18183,9 @@ extern "C" asm void fn_801CEA54() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_801CEA7C
+// ResWriteCPCmd__Q34nw4r3g3d6detailFPUcUcUl
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_801CEA7C() {
+extern "C" asm void ResWriteCPCmd__Q34nw4r3g3d6detailFPUcUcUl() {
     nofralloc
     srwi r7, r5, 24
     extrwi r6, r5, 8, 8

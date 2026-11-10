@@ -3000,3 +3000,359 @@ del repo).
   (−75,296 de asm sin marcar, −9,324 de `.o` fantasma, −1,276 de `OSExceptionInit` que volvió a
   asm con su unidad, +1,572 de C de Runtime/`__mem` que vuelve a compilar).
 
+
+## Entrada: 2026-11-05 - Fase 2 (sesión 1): importación sistemática de C externo al SDK
+
+Objetivo de la campaña: 50% de C real. **No alcanzado en esta sesión** (ver "Pendiente").
+
+### Cifras (verificadas desde cero: `build/RNEPDA/src/` y `main.dol` borrados)
+- **C real: 23.52% → 27.20%** (776,108 → 897,420 bytes; +121,312; 5,426 → 5,815 funciones).
+  SDK 35.92% → 42.90%; Game Code sin cambios (9.73%).
+- Matching crudo (C + asm): 91.80% → **93.77%** (3,093,644 bytes). `build.sha1` OK,
+  `check_workspace.py`: 0 problemas. 0 funciones que estaban al 100% quedaron por debajo.
+- 15 funciones (364 bytes, stubs de 4-212 bytes) pasaron de C a asm (siguen al 100% crudo) por
+  adoptar una fuente que gana >= 1 KB neto en su TU: `__DVDRestartMotor` (dvd, +15 KB),
+  `SCFindS8Item` (scsystem), `nandShutdownCallback` (NANDCore), `__AXGetPBs`/`AXGetMaxVoices`
+  (AXVPB), 6 stubs `fn_8029D3B0..3F0` (AXCL), 4 métodos de `AnmObjShp` (g3d_anmshp).
+
+### Método
+1. **`tools/import_scan.py`** (nuevo): compila cada fuente de otro decomp aislada con varios
+   compiladores y empareja sus funciones con el asm de dtk **por contenido** (palabras con las
+   relocations enmascaradas), no por nombre: encuentra también funciones que siguen como `fn_*` y
+   TUs mal nombradas (p. ej. `kpad/unk_802864A0` es WPAD). Validado contra objdiff (dvd: el
+   escaneo y la build coinciden). Escaneos hechos (resultados en `scratch/fase2/*.tsv`, local):
+   forecast completo (RVL, NW4R), MKW (`libs/mkw` y upstream), Xenoblade (RVL_SDK, nw4r,
+   PowerPC_EABI_Support), SS, ogws (RVL). Potencial total deduplicado: ~274 KB.
+2. **Renombres**: 138 `fn_*` → nombre real del escaneo con `rename_symbols.py` (solo dentro del
+   split candidato; nombres con `@unnamed@` revertidos: rompen el asm inline). Solo eso dio
+   +6.5 KB (funciones que ya matcheaban pero objdiff no emparejaba por nombre, gotcha 1).
+3. **`tools/adopt_import.py`** (nuevo): por TU candidata arma el mixto con `mix_asm.py`, cambia el
+   objeto a la fuente/compilador del escaneo, compila, pasa a asm lo que no queda al 100% y se
+   queda con el cambio solo si sube el C real sin perder funciones C (`--allow-loss`: acepta
+   perder C si gana >= 1 KB neto; quedan listadas). Revierte solo lo que no sirve.
+   183 candidatos: **109 adoptados**, 65 sin ganancia, 14 no compilan, 1 revertido (ver abajo).
+4. **`tools/fix_mixed_decls.py`** (nuevo): repara mixtos que dejan de compilar tras renombrar
+   (`extern` genérico que choca con el prototipo del header, `illegal function overloading`,
+   definición C + asm duplicadas, símbolo renombrado sin declarar). Reparó 24/25 mixtos.
+
+### Hallazgos
+- **El compilador del SDK no es uniforme**: muchas TUs que se importaron antes con `Wii/1.0`
+  matchean mucho más con `GC/3.0a5.2` o `GC/3.0a5` (dvd: 2,460 → 17,484 bytes). Por eso
+  forecast/Xenoblade daban "parcial" en la fase 100.
+- `rename_symbols.py` ahora renombra también `include/m2c_protos.h` (los C de m2c declaran ahí
+  los `fn_*`). **Pero** `m2c_context.py` reescribe `include/m2c_protos.h` entero: tras renombres,
+  regenerarlo choca con headers reales en mixtos del SDK; usar solo `build/m2c_ctx.h` nuevo.
+- **No adoptar en TUs con `source="x.s"`** (gotcha 8, `addic.` con `@l`): `dwc/unk_8022813C` se
+  adoptó con darray.c y perdió la relocation de `fn_8022E320`; revertido y filtrado en la
+  herramienta (el mixto quedó en `scratch/fase2/`).
+- **`m2c_pass.py` al revertir regenera el asm con `asm_to_cpp.py`**, que no siempre reproduce el
+  asm versionado: `nhttp/unk_8032B024` y `gamespy/common/revolution/unk_802557FC` quedaron en
+  0% crudo (−43 KB) hasta restaurarlos de git. Verificar matching crudo después de cada pasada.
+- `gamespy/gstats/unk_80274A58` y `gamespy/gstats/gstats.c` salen del mismo `gstats.c` de MKW:
+  un solo archivo original partido en dos splits (frontera a corregir).
+- `include/` de forecast copiado completo a `libs/forecast/include` (mismo commit 1283668) y
+  fuentes RVL/NW4R adoptadas copiadas a `libs/forecast/src`. `cflags_forecast_rvl` nuevo.
+
+### Game code (sin avance; diagnóstico)
+- Triage m2c: de 2,559 funciones asm solo 154 compilan sin matchear (64 KB); el resto no compila.
+- **Causa principal encontrada**: m2c no reconoce el prólogo con pila alineada a 16
+  (`clrlwi r11,r1,28; subfic; stwux`, guardado vía r12 / restaurado vía r10: locales con
+  `__attribute__((aligned(16)))`, reproducido con mwcc) y el patrón `fcmpo`+`cror` de m2c solo
+  acepta la forma numérica (`cror 2,0,2`), no la de dtk (`cror eq, lt, eq`, 2,284 usos).
+  523 funciones del juego (687 KB) guardan FPRs con `psq_st`; 205 (360 KB) usan pila alineada.
+- `tools/m2c_cpp.py`: `m2c_input()` preprocesa el `.s` para m2c (cror numérico + marco alineado
+  normalizado a `stwu r1,-N(r1)`); `m2c_pass.py` lo usa también. m2c pasa a dar C limpio para
+  esas funciones (antes: registros "unset").
+- **Pero `m2c_cpp.py --game` es destructivo**: regenera los fuentes y descarta structs escritos a
+  mano en rondas previas (`file_task.c`, `tcg_cell`...), con lo que ~130-160 funciones C vuelven
+  a asm (+7 / −127 en la prueba). La pasada se descartó (no está en este estado). Para el
+  juego hay que usar `fn_diff.py`/a mano o arreglar antes `m2c_cpp.py` para que conserve
+  declaraciones de tipos del fuente.
+- Gemelas exactas entre `*_eye`: solo 29 KB (15 grupos); la familia eye/face (383 KB) son
+  funciones grandes (1-4 KB) con vectores alineados y comparaciones float.
+
+### Pendiente / próximos pasos recomendados
+1. Arreglar `m2c_cpp.py` para conservar structs/typedefs del fuente; luego pasada `--game` con el
+   preproceso nuevo y, para pila alineada, declarar como `aligned(16)` los locales cuyo
+   address se pasa (prueba manual: `fn_800B9608` de `ino_eye`, 6 gemelas).
+2. DWC (178 KB, fuente `.s`): sin C público; solo m2c + mano, resolviendo antes las funciones
+   con `addic.@l`. NHTTP (37 KB), KPAD/WPAD (`kpad/unk_802864A0`, 35 KB).
+3. Recuperar los 15 stubs perdidos a mano en su mixto.
+4. Estimación: con importación externa agotada (~274 KB de potencial, ~113 KB adoptados), llegar
+   al 50% requiere ~750 KB más, casi todo game code a mano/semi-automático. Varias sesiones.
+
+Comandos: `python tools/import_scan.py <out.tsv> <mw,...> "<cflags>" <dir>`;
+`python tools/adopt_import.py --rename <cands.tsv> <scans...>` + `ninja`;
+`python tools/adopt_import.py [--allow-loss] <cands.tsv> <scans...>`.
+
+## Entrada: 2026-11-05 - Fase 3 (sesión 1): regeneración incremental segura y rollback seguro
+
+Objetivo de la campaña: 50% de C real. **No alcanzado** (27.23%).
+
+### Cifras (build desde cero, `main.dol` OK, `check_workspace.py` 0 problemas)
+- C real 27.20% → **27.23%** (897,420 → 898,244 bytes; 5,815 → 5,823 funciones). Game Code
+  9.73% → 9.78% (2,318 → 2,326 funciones). SDK sin cambios (42.90%). Crudo 93.77%.
+- Regresiones contra `scratch/fase3/report_base.json` (comparación por `virtual_address`):
+  **0 funciones que estaban al 100% dejaron de estarlo**.
+
+### `tools/m2c_cpp.py`: regeneración incremental (antes destructiva)
+Causa de las pérdidas de la fase 2 (auditoría): `render()` reconstruía el archivo desde cero y
+solo conservaba funciones C, prototipos y líneas `extern ...;`. Se perdían `struct`/`typedef`/
+`enum`, `#define`, helpers que no son del split, `__declspec(section) extern struct ...` y los
+`#pragma` de región (`dont_inline`, `fp_contract`...); sin esos tipos el C conservado no
+compilaba, `compile_until_ok` borraba funciones aunque fueran conservadas y el fallback
+`t.c = {}` tiraba todo el C. La aceptación solo exigía 100% crudo de la TU.
+Ahora:
+- `chunks()`/`parse_def()`: el fuente se parte en bloques de nivel superior (llaves balanceadas,
+  firmas con punteros a función, comentarios/literales neutralizados con la misma longitud). Se
+  regeneran solo externs/prototipos/asm; todo lo demás se conserva tal cual, en orden y ámbito
+  (fuera/dentro de `extern "C"`). Externs y prototipos del fuente (incl. `extern "C" T f();` y
+  `__declspec`) se emiten verbatim; un nombre con prototipo nunca se declara como dato.
+- Pragmas de región: pila por nombre; cada función conservada recibe exactamente los pragmas
+  activos en su posición original.
+- Funciones conservadas: nunca se borran (ni por errores atribuidos ni en el fallback, que ahora
+  es "solo lo conservado"); se definen con su propia firma.
+- Orden: primero las conservadas, después nuevas/asm (con `-inline auto` un C nuevo definido
+  antes de un llamador conservado le cambiaría el código).
+- Aceptación por TU contra el reporte previo (build fresca al inicio): todo lo que estaba al
+  100% (C o asm) sigue al 100% y hay C nuevo; si no, se restauran **los bytes originales** (antes
+  se reescribía en modo texto: CRLF→LF en 111 archivos, ya corregido).
+- Backup en `build/m2c_cpp_backup/<ts>/` (configure.py + fuentes) antes de escribir; al final se
+  recompila todo (ningún `.o` viejo enmascara).
+- Pruebas: round-trip (render solo con lo conservado, compilar aparte, comparar bytes) sobre las
+  **117 TUs del juego: 117/117 idénticas, 2,250 funciones**
+  (`scratch/fase3/test_roundtrip_all.py`); pasada real en 5 TUs representativas repetida 3 veces
+  (idempotente, 0 regresiones); pasada `--game` completa: 0 regresiones, +8 funciones.
+
+### `tools/m2c_pass.py`: rollback seguro
+Antes, al revertir: `AsmObject("x")` genérico (perdía `source="x.s"`/flags) y el asm se
+regeneraba con `asm_to_cpp.py` (no siempre igual al versionado → 2 TUs al 0% crudo en la fase 2).
+Para splits `x.c`, `mix_asm` escribe `src/x.c`, que es el mismo archivo asm original. Ahora: foto
+inicial byte a byte de cada archivo que puede tocar + entrada original de configure.py (copia en
+`build/m2c_pass_backup/<ts>/`); toda reversión restaura esa foto; recompila al final. Prueba sobre
+las 2 TUs que antes se rompían: archivos y configure.py idénticos (md5) y progreso sin cambios.
+
+### Game code: diagnóstico tras el preproceso cror/pila alineada
+- Triage (`scratch/fase3/triage_637.json`): funciones que compilan sin matchear **154 (64 KB) →
+  637 (188 KB)**: `largo±N` 309 (122 KB), `largo±1` 128 (26 KB), `otro` 119, `regs` 43 (6.4 KB),
+  `inm` 25, `orden` 13. TUs con más: tcg_cell 63, gl_effect 42, c_eye_tbl 37, gl_sound 33.
+- Patrón visto en `c_eye_tbl` (37 funciones casi gemelas): el original rematerializa la dirección
+  de la tabla de constantes con `li rX, lbl@sda21` en cada sentencia (solo la mantiene en r30
+  dentro de algunos bloques); el C de m2c (`M2C_FIELD(&lbl, f32 *, off)`) la mantiene viva entre
+  llamadas → usa r28-r31 (`_savegpr_28`) y marco de 48 en vez de 32. Requiere ajuste manual de la
+  forma de acceso a la tabla; resuelto uno, `apply_template.py` lo propaga a la familia.
+
+### dtk
+`build/tools/dtk.exe` (checkout principal y worktree) es el v1.8.3 **stock** (mismo
+`--version` que el parcheado: no se distinguen por versión). Con `symbols.txt` completo da
+`build.sha1` OK. No se reconstruyó el parcheado: compilar código externo requiere autorización
+del usuario. Procedimiento listo en `scratch/fase3/build_dtk_patched.sh` (deja el binario en
+`scratch/fase3/dtk-patched.exe` sin tocar el que está en uso, con las dos pruebas a correr).
+
+### DWC (178 KB)
+Sin fuente pública (búsqueda de la fase 2 + MKW upstream solo trae 3 archivos `dwc/common`). El
+escaneo por contenido de MKW/GameSpy contra la TU solo empareja `darray.c` (1 KB), y la TU usa
+fuente `.s` (gotcha 8: no se puede mezclar con asm inline por `addic.@l`). Recuperable solo por
+m2c + mano, resolviendo antes las funciones con `addic.@l` (o reescribiéndolas en C).
+
+### Próximos objetivos concretos
+1. Familia `c_eye_tbl` (37 funciones, ~35 KB): ajustar a mano una (forma de acceso a la tabla
+   `lbl_8049F998`) con `fn_diff.py`, propagar con `apply_template.py`, verificar con `m2c_cpp.py`.
+2. Categorías `regs`/`orden`/`inm` del triage (81 funciones, 12.8 KB) con `decomp-permuter`.
+3. `largo±1` (128 funciones, 26 KB): suelen ser un cast/extensión de signo o un `clrlwi`.
+4. Pila alineada (205 funciones, 360 KB): declarar `aligned(16)` los locales cuyo address se
+   pasa (prueba manual en `ino_eye fn_800B9608`, 6 gemelas).
+5. Autorizar y correr `scratch/fase3/build_dtk_patched.sh`.
+
+## Entrada: 2026-11-05 - Fase 3 (sesión 1, cont.): variante M2C_TX y reglas de matching del game code
+
+**C real 27.23% → 28.62%** (944,336 bytes; Game 9.78% → 12.73%). `build.sha1` OK, 0 funciones
+al 100% perdidas contra `scratch/fase3/report_base.json`.
+
+### Reglas verificadas a mano (100%) y automatizadas en `tools/m2c_cpp.py` (con `M2C_TX=1`)
+1. **El game code se compiló con `-fp_contract off`**: ningún `fmadds/fmsubs` en las 121 TUs.
+   Agregado a las 117 entradas del juego en `configure.py` y a `m2c_cpp.FLAGS` (sin cambios en lo
+   ya matcheado).
+2. **Tablas de constantes f32 en `.sdata2`**: `__declspec(section ".sdata2") extern const f32
+   lbl[];` indexado (`lbl[k]`). Con `M2C_FIELD(&lbl, f32 *, off)` mwcc no puede reutilizar el
+   valor entre stores (alias por tomar la dirección).
+3. **Campos por miembro de struct, no `M2C_FIELD`**: mwcc CSE-a direcciones `(T*)((s8*)p+off)`
+   pero no accesos `p->f`. `tx_structify` sintetiza `struct S_<fn>_<var>` (campos sin
+   solapamiento) y tipa parámetros/locales usados solo como base de campos.
+4. **Llamadas inline**: m2c saca resultados de llamadas a temporales (`t = f(a); if (f(b) > t)`),
+   el original las tenía inline (mwcc evalúa el operando derecho primero). `tx_inline_temps`.
+5. **Lecturas de campo inline**: `t = p->f; ... t ... t` → `p->f` en cada uso (mwcc lo CSE-a),
+   si el campo no se escribe después (o se escribe en la sentencia del último uso).
+   `tx_inline_loads`.
+6. **Pila alineada (`clrlwi r11,r1,28`)**: locales vectoriales `aligned(16)` y **declarados en orden
+   de offset descendente** (mwcc da el offset más bajo al último declarado). `tx_stack` agrupa los
+   `spXX` con dirección tomada en `struct SK_<fn>_<off>` (componentes con el tipo de m2c), tamaño
+   del último objeto deducido del área de registros guardados (`frame_saves`).
+7. **`switch` "irregular" de m2c**: m2c omite los casos de rango de un árbol `cmpwi/bge/blt`.
+   `tx_switch` simula el árbol del asm para cada valor y completa la lista de `case` por destino.
+8. **Contexto**: `tools/m2c_ctx_fargs.py` (nuevo, correr tras `m2c_context.py`) agrega parámetros
+   float que m2c no ve en código paired-single (VEC3Scale...), fija la aridad entera exacta de
+   hojas y thunks (`b destino`, sin contar llamadas en cola) y el retorno `s32`/`f32` de funciones
+   que escriben r3/f1 antes de cada `blr`. 1,600 firmas corregidas.
+9. Firma de funciones nuevas: la de m2c (no el prototipo viejo del archivo), salvo que la llame C
+   conservado (`fixed_sig`: ese C compila con el prototipo existente). En modo TX, para funciones
+   asm no llamadas por C conservado manda el contexto reparado.
+10. Orden de emisión: conservadas en su **orden original del archivo** (con `-inline auto` el orden
+   decide qué se inlinea) y después nuevas/asm.
+
+Resultado: `c_eye_tbl` 36/37 en C (+30 KB), `ino_eye fn_800B9608` (pila alineada) automático.
+Uso: `python tools/m2c_context.py && python tools/m2c_ctx_fargs.py` y luego
+`M2C_TX=1 python tools/m2c_cpp.py --game` (idempotente; segunda pasada no degrada).
+
+### Pendiente en esta línea
+- 29 funciones eye compilan pero difieren (marco más grande: bucles con contadores e int→float
+  que m2c castea y el original no). `fn_800C0B0C` (sai_eye) es el ejemplo para seguir.
+- Errores de m2c que siguen bloqueando: `switch` anidados con `case` fuera de lugar, aridad de
+  funciones llamadas por C conservado (`fixed_sig`).
+
+### Continuación (misma sesión): 28.62% → 28.82%
+- `-fp_contract off`, `m2c_ctx_fargs.py` y TX ya estaban; se agregaron: `#pragma dont_inline on`
+  para todo C nuevo (las llamadas que deja m2c son reales; inlinear funciones conservadas
+  definidas antes cambiaba el código), `this` implícito y retorno `f32` en llamadas virtuales
+  (`virtualize`), `(s8 *)&lbl + N` para símbolos array, `tx_stack` no transforma funciones con
+  aritmética de punteros sobre locales.
+- Bug corregido en `m2c_ctx_fargs.py`: trataba `f32 *p` (puntero, registro entero) como parámetro
+  float y rellenaba con nombres repetidos → 1,418 errores "redeclared" en todo el juego.
+- Verificado desde cero: **C real 28.82%** (950,832 bytes; Game 13.15%, SDK 42.90%), crudo 93.77%,
+  `build.sha1` OK, 0 regresiones contra el estado base de la fase 3.
+- Errores de compilación dominantes que quedan (diagnóstico por función,
+  `scratch/fase3/diag_compile.py`): aritmética de punteros de m2c sobre tipos inferidos (410),
+  aridad de llamadas entre el contexto y la firma propia de funciones nuevas (~336), casts
+  explícitos inválidos (149), campos `s32` usados como puntero (144).
+
+- Tras corregir `\b` (escapes) en `m2c_ctx_fargs.py` y regenerar el contexto: **28.95- Tras corregir escapes `\b` en `m2c_ctx_fargs.py` (un heredoc los había convertido en backspace) y
+  regenerar el contexto: **C real 28.95%** (955,240 bytes; Game 13.43%), verificado desde cero,
+  `build.sha1` OK, 0 regresiones. Una segunda pasada `--game` no cambia nada (convergió).
+- Más reglas TX: componentes de objetos de pila `f32` salvo punteros (m2c declara `s32` floats
+  que usa con `M2C_BITWISE`), `tx_stack` solo aborta con aritmética `&spXX ±`, temporales puros
+  usados varias veces en la sentencia siguiente se inlinean, `tx_declare_stack` y `tx_pad_args`.
+  Gemelas: `ino_eye fn_800B9608` sale sola en `ldy_eye`/`kgr_eye`/`tmr_eye`.
+- **No usar `tools/apply_template.py` con la variante TX**: copia cuerpos que usan structs
+  `S_<fn>_*`/`SK_<fn>_*` de la función de referencia sin sus definiciones; la verificación
+  posterior abortó con la build rota y dejó un `report.json` viejo (29.06% falso). Restaurado
+  desde `build/m2c_cpp_backup/`. Con TX las gemelas salen solas por la pasada `--game`.
+- Estado verificado: **C real 29.06%** (958,724 bytes; Game 13.65%), 0 regresiones.
+
+### `tools/m2c_permute.py` (nuevo): mini-permutador para C++
+- decomp-permuter no sirve para el game code (parsea C; aquí hay `extern "C"`, `__declspec`,
+  `virtual`). Este muta el C de la variante TX (operandos de `+`/`*`, comparaciones invertidas,
+  `x op= y` ↔ `x = y op x`/`x = x op y`, sentencias simples contiguas, `#pragma peephole`), compila
+  con los flags del juego y puntúa contra el asm (palabras enmascaradas). `--apply` integra por TU
+  con build real y aceptación sin regresiones (restaura bytes si falla).
+- Corridas: casi-matches ≤400 B (530 funciones, 100 iteraciones): 54 resueltas → +15 funciones
+  netas (las demás ya eran C, incluso C conservado que no matcheaba). ≤1200 B (595, 150 it.): 47
+  resueltas → +2 netas. **C real 29.13%** (961,000 bytes; Game 13.80%), 0 regresiones.
+- Uso: `M2C_TX=1 python tools/m2c_triage.py` → `python tools/m2c_permute.py --triage --max-size N
+  --iters K` → `python tools/m2c_permute.py --apply`.
+
+### Campaña manual (inicio): banco de trabajo, `-opt nocse` por TU
+- `tools/m2c_hand.py` (nuevo): `dump` vuelca el C (TX) de una función a `scratch/hand/<fn>.cpp`,
+  `test` lo compila dentro de su TU y muestra el diff contra el asm, `save` lo deja en
+  `build/m2c_permute/<fn>.json` para `m2c_permute.py --apply` (integración segura). Directivas en el
+  archivo: `//@struct ...` (structs extra), `//@peep`, `//@inline` (sin `dont_inline`).
+- **Hallazgo: gran parte del game code se compiló sin CSE (`-opt nocse`)**. Reescribiendo a mano
+  `sai_eye fn_800C0B0C` (bucle de 3 iteraciones), el original recalcula `p + i*0x30` antes de cada
+  llamada en vez de reutilizarlo: con `-opt nocse` el diff baja de 62 a 5 instrucciones. Compilando
+  todos los fuentes del juego: `nocse` no rompe nada salvo en `g_cam_fra`, `tcg_cell`, `clinklist`
+  y `c_eye` (C a mano que necesita CSE). Agregado `-opt nocse` a las otras 113 entradas;
+  `m2c_cpp.py` conserva los flags por TU de `TU_FLAGS` y los usa en sus compilaciones directas
+  (también `m2c_permute.py`/`m2c_hand.py`). Pasada TX: **+5.4 KB → 29.30%**.
+- `fn_800C0B0C` queda a 5 diferencias: el `switch (key) { case 0x71: case 0x160: ... default: }`
+  original es un árbol binario (`cmpwi 0x160; beq; bge default; cmpwi 0x71; beq; b default`) que no
+  se reproduce con 2, 3 ni 4 etiquetas; pendiente.
+- **Jumptables**: m2c abortaba en 135 funciones del juego (309 KB, intérpretes de `seq_cmdeft`,
+  `eft_scmd`, cámaras...) con "Found bctr ... jump table is not provided": sin splits de datos, las
+  tablas de cada `switch` viven en `auto_*_data.s`. `m2c_cpp.add_jumptables()` las agrega al `.s`
+  preprocesado (destinos `fn+off` → `.L_<addr>`, insertando las etiquetas que dtk no puso porque
+  solo las alcanza la tabla). Pasada TX: **+5.5 KB → 29.46%**. Las funciones grandes ya tienen C
+  candidato pero casi todas difieren en estructura (trabajo manual).
+- `m2c_permute.py --triage` ahora descarta funciones que ya son C real (antes "resolvía" C
+  conservado).
+- Tamaño del último objeto de pila: el hueco hasta los registros guardados incluye relleno de
+  alineación; se redondea a múltiplo de 16 (matrices 3×4 de 0x30). +3.3 KB (krs_eye ×4, hnt_eye,
+  homebutton, gl_effect...). Cuando el objeto real es un VEC3 (12 B) el redondeo lo desalinea
+  (mwcc alinea a 8 los structs de 16): `m2c_permute.py` ahora prueba ±16 B por struct `SK_*`
+  antes de mutar el cuerpo (`resize_stack`), y las soluciones guardan sus structs (`--apply` y
+  `m2c_hand.py` los reemplazan, no los suman).
+- Manual: `g_cam_act fn_8009692C` era un `switch` con `case 1: case 2:` agrupados que m2c parte en
+  `if ((u32)(x - 1) > 1U) { switch ... } else ...` → reescrito como switch, 100%.
+  `file_task fn_80168668`, `system_ctrl fn_80070F4C` (VEC3 en pila). **29.67%** (978,908 bytes).
+- **Switch `0x71/0x160` de las TUs eye** (≈43 apariciones; bloquea p. ej. `sai_eye fn_800C0B0C`,
+  que queda a 5 diferencias): el original es el árbol binario de mwcc (`cmpwi 0x160; beq A;
+  bge B; cmpwi 0x71; beq A; b B`). Probado: mwcc pasa de cadena lineal a búsqueda binaria **a partir
+  de 8 casos** (con 2-7 siempre lineal, con cualquier flag/versión Wii/1.0-1.3). Etiquetas extra
+  sobre el `default` se descartan antes de decidir; con bloque propio activan el árbol pero dejan
+  sus comparaciones. Falta encontrar qué construcción del fuente (8+ casos que desaparecen)
+  produce exactamente ese árbol; experimentos en `build/scr/sw*.cpp`.
+- Permutador con ajuste de pila sobre 803 casi-matches: 6 resueltas (g_net_data ×5, seq_cmdtcg).
+  **29.70%** (979,880 bytes), 0 regresiones.
+- Más reglas: `tx_comma` (`(temp = E, R)` en condiciones → términos con E inline, 50 apariciones),
+  `tx_global_local` (global puntero desreferenciado varias veces en una sentencia → local, en TUs sin
+  CSE), `tx_stack` deja como escalares los objetos de 4 B (punteros de salida). `m2c_permute.py`
+  ahora también reordena declaraciones de locales (asignación de registros de mwcc).
+  `m2c_hand.py dump` vuelca también structs multilínea.
+- Manuales/permutador: `g_cam_fra fn_8009EC0C`/`fn_8009EEA4`, `seq_cmdtcg fn_801648C4`,
+  `sys_task fn_8017AC64`, `glib_anim fn_8002905C`.
+- Estado verificado: **C real 29.75%** (981,384 bytes), `build.sha1` OK, 0 regresiones.
+- **Diagnóstico de compilación del C candidato** (`scratch/fase3/diag_compile.py` sobre todo el
+  game code): ~1,340 funciones con C de m2c no compilaban. Causas corregidas en `m2c_cpp.py` /
+  `m2c_ctx_fargs.py`:
+  - `&lbl + N` dentro de paréntesis (`(&lbl_X + 0xC2)`, 328 casos) quedaba sin el cast a `s8 *`
+    (el lookbehind excluía `(`). Y `*(&lbl + i)` se convertía en carga de byte: `fix_lbl_deref`
+    lo pasa a `*(T *)((s8 *) &lbl + i)` con T del cast de m2c (por defecto `s32`).
+  - 384 funciones que m2c no descompila no tenían prototipo en `build/m2c_ctx.h`; la TU las declara
+    `s32 f();` (en C++ = sin parámetros) y toda llamada con argumentos fallaba.
+    `m2c_ctx_fargs.py` agrega firma aproximada (enteros hasta el rN más alto leído antes de
+    escribirse, floats, retorno detectado).
+  - `is_scalar` trataba `f32 *` como float: no casteaba argumentos puntero a parámetros `f32 *`.
+  - `tx_comma` salía con `return` sin quitar su marca `\x01` (22 funciones con "expression syntax
+    error" invisible).
+  - `fix_field_index`: `*(M2C_FIELD(x, s32 *, off) + i*4)` (campo puntero indexado en bytes) →
+    `*(s32 *)(M2C_FIELD(x, s8 **, off) + i*4)`.
+- **`tx_ctr`**: bucles con `mtctr/bdnz` (m2c: `var_ctr = N; do {...} while` o `loop: ...
+  if (var_ctr == 0) {cola} goto loop`) con N constante → `for (i = 0; i < N; i++)`, variables de
+  inducción `V += k` → `i * k`. 153 casi-matches (48 KB) tenían `bdnz`; p. ej. `g_cam_sub
+  fn_8009494C` pasa a 100%.
+- Tres pasadas `--game` + triage + permutador (41 soluciones aplicadas): **C real 30.06%**
+  (991,716 bytes; game code 15.61% → ~15.9%). `build.sha1` OK, `check_workspace` 0 problemas,
+  0 funciones perdidas contra `report_base.json`.
+- Segunda tanda de reglas (diagnóstico: 1,345 → 877 funciones que no compilaban):
+  - `TU.int_global` (TX): global escalar declarado `float` (voto de m2c) que el asm de la TU nunca
+    accede con instrucciones float → se declara `s32` (punteros globales de `.sbss` como
+    `lbl_8049D788` en `file_task`).
+  - `(&lbl)[i]` → `((s32 *) &lbl)[i]`.
+  - `m2c_ctx_fargs.int_args` exigía registros contiguos desde r3: una hoja que no usa r3 pero lee r4
+    quedaba con aridad 0 (87 firmas corregidas, p. ej. `fn_80169B24`).
+  - Funciones asm con prototipo en el fuente que ningún C conservado llama: la aridad la decide la
+    TU (su firma no cambia su código).
+  - Límite conocido: C conservado con parámetros sin uso (`void fn_8016C844(s32, s32, s32)` cuyo
+    original toma 2) choca con llamadas nuevas de otra aridad; no se toca C que ya matchea.
+- `m2c_permute.py`: `retype` (búsqueda local `f32`↔`s32` en campos de structs propios, tipo
+  apuntado de parámetros puntero, retorno), encadenado con `resize_stack` dos veces. Primer diff de
+  los casi-matches: marco de pila 16 B mayor en 273 funciones (structs de pila con tipo/tamaño
+  inferido mal, `fctiwz` que el original no tiene).
+- Pasadas 4-5 + permutador (125 soluciones aplicadas en total): **C real 30.37%** (1,001,992
+  bytes, 6,240 funciones). `build.sha1` OK, `check_workspace` 0 problemas, 0 perdidas, crudo
+  93.79%.
+- **DWC partido** (`dwc/unk_8022813C`, 178 KB, era `.s` entero por una sola función con
+  `addic. rX, rY, sym@l`, `fn_8022E320`): `splits.txt` en tres TUs `.text`
+  (`unk_8022813C` 0x8022813C-0x8022E320, `unk_8022E320` = esa función, sigue en `.s`,
+  `unk_8022E6D8` 0x8022E6D8-0x80253934). Las dos grandes pasan a `asm_to_cpp` → `m2c_pass`
+  (`-fp_contract off|-func_align 4`; las funciones de DWC están alineadas a 4): **+58 funciones**
+  (chicas, ~1.7 KB). Las tres unidades al 100% crudo, `build.sha1` OK. `src/dwc/unk_8022813C.s`
+  queda sin uso (versionado; se puede borrar en el commit).
+  - Arreglos de herramientas en el camino: `m2c_pass` corta tras 400 descartes (antes 80) y con
+    `M2C_DEBUG` guarda el mixto fallido en `build/m2c_pass_fail/`; `mix_asm.header_sig` busca
+    también en `include/m2c_protos.h`; símbolo forzado sin declaración (p. ej. `memset` usado en C
+    sin prototipo → declaración implícita invisible para el asm inline) → `int f();` arriba;
+    `M2C_PROTOS=ctx` hace que `m2c_pass` declare los callees con la firma de `build/m2c_ctx.h` en
+    vez de incluir `m2c_protos.h` (viejo; chocaba con las firmas corregidas).
+  - Barrido de compiladores (Wii/1.0-1.3, GC/3.0a5, 3.0a5.2) y `-O4,p/-O4,s/-O3` sobre el C de
+    m2c de DWC: mismo resultado; el límite es la calidad del C de m2c para este código.
+- `tx_stack`: tipo de los campos de structs de pila según el asm (`N(r1)` solo con accesos
+  enteros → `s32`; antes todo lo no puntero era `f32` y aparecían `fctiwz`/conversiones).

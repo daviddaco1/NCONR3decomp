@@ -321,12 +321,16 @@ GPResult gpiConnect(GPConnection* connection, const char nick[GP_NICK_LEN],
 }
 
 // gpiSendLogin: definicion C reemplazada por asm (ver abajo)
+GPResult gpiSendLogin(GPConnection* connection, GPIConnectData* data);
 
 
 // gpiSendNewuser: definicion C reemplazada por asm (ver abajo)
+GPResult gpiSendNewuser(GPConnection* connection, GPIConnectData* data);
 
 
 // gpiProcessConnect: definicion C reemplazada por asm (ver abajo)
+GPResult gpiProcessConnect(GPConnection* connection, GPIOperation* operation,
+                           const char* input);
 
 
 GPResult gpiCheckConnect(GPConnection* connection) {
@@ -358,10 +362,97 @@ GPResult gpiCheckConnect(GPConnection* connection) {
 }
 
 // gpiDisconnectCleanupProfile: definicion C reemplazada por asm (ver abajo)
+GPIBool gpiDisconnectCleanupProfile(GPConnection* connection,
+                                           GPIProfile* profile, void* data);
 
 
-// gpiDisconnect: definicion C reemplazada por asm (ver abajo)
+void gpiDisconnect(GPConnection* connection, GPIBool tellServer) {
+  GPIConnection* iconnection = (GPIConnection*)*connection;
+  GPIPeer* peer;
+  GPIPeer* delPeer;
+  GPIBool connClosed;
 
+  // Check if we're already disconnected.
+  // PANTS|05.15.00
+  ///////////////////////////////////////
+  if (iconnection->connectState == GPI_DISCONNECTED)
+    return;
+
+  // Skip most of this stuff if we never actually connected.
+  // PANTS|05.16.00
+  //////////////////////////////////////////////////////////
+  if (iconnection->connectState != GPI_NOT_CONNECTED) {
+    // Are we connected?
+    ////////////////////
+    if (tellServer && (iconnection->connectState == GPI_CONNECTED)) {
+      // Send the disconnect.
+      ///////////////////////
+      gpiAppendStringToBuffer(connection, &iconnection->outputBuffer,
+                              "\\logout\\\\sesskey\\");
+      gpiAppendIntToBuffer(connection, &iconnection->outputBuffer,
+                           iconnection->sessKey);
+      gpiAppendStringToBuffer(connection, &iconnection->outputBuffer,
+                              "\\final\\");
+    }
+
+    // Always flush remaining messages.
+    // PANTS|05.16.00
+    ///////////////////////////////////
+    gpiSendFromBuffer(connection, iconnection->cmSocket,
+                      &iconnection->outputBuffer, &connClosed, GPITrue, "CM");
+
+    // Cleanup the connection.
+    //////////////////////////
+    if (iconnection->cmSocket != INVALID_SOCKET) {
+      shutdown(iconnection->cmSocket, 2);
+      closesocket(iconnection->cmSocket);
+      iconnection->cmSocket = INVALID_SOCKET;
+    }
+
+    if (/*iconnection->peerSocket != INVALID_SOCKET*/
+        gsUdpEngineIsInitialized()) {
+      // shutdown(iconnection->peerSocket, 2);
+      // closesocket(iconnection->peerSocket);
+      // iconnection->peerSocket = INVALID_SOCKET;
+      gsUdpEngineRemoveMsgHandler(iconnection->mHeader);
+      if (gsUdpEngineNoMoreMsgHandlers() && gsUdpEngineNoApp())
+        gsUdpEngineShutdown();
+    }
+
+    // We're disconnected.
+    //////////////////////
+    iconnection->connectState = GPI_DISCONNECTED;
+
+    // Don't keep the userid/profileid.
+    ///////////////////////////////////
+    iconnection->userid = 0;
+    iconnection->profileid = 0;
+  }
+
+  // freeclear all the memory.
+  ///////////////////////
+  freeclear(iconnection->socketBuffer.buffer);
+  freeclear(iconnection->inputBuffer);
+  freeclear(iconnection->outputBuffer.buffer);
+  freeclear(iconnection->updateproBuffer.buffer);
+  freeclear(iconnection->updateuiBuffer.buffer);
+  while (iconnection->operationList != NULL)
+    gpiRemoveOperation(connection, iconnection->operationList);
+  iconnection->operationList = NULL;
+  for (peer = iconnection->peerList; peer != NULL;) {
+    delPeer = peer;
+    peer = peer->pnext;
+    gpiDestroyPeer(connection, delPeer);
+  }
+  iconnection->peerList = NULL;
+
+  // Cleanup buddies.
+  // This is not optimal - because we can't continue the mapping
+  // after freeing a profile, we need to start it all over again.
+  ///////////////////////////////////////////////////////////////
+  while (!gpiProfileMap(connection, gpiDisconnectCleanupProfile, NULL)) {
+  };
+}
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
 extern float lbl_8049C918;
@@ -383,461 +474,140 @@ extern float lbl_8049C988;
 extern float lbl_8049C990;
 extern float lbl_8049C998;
 extern float lbl_8049C9A0;
-extern float lbl_8049C9A8;
 extern u8 lbl_80368C80[];
-extern u8 lbl_80369014[];
 extern u8 lbl_8040A168[];
+extern void ArrayFree();
+extern void B64Encode();
 extern void MD5Digest();
+extern void Util_RandSeed();
 extern void _restgpr_25();
 extern void _restgpr_26();
 extern void _savegpr_25();
 extern void _savegpr_26();
-extern void fn_802535C4();
-extern void fn_80256674();
-extern void fn_8025668C();
-extern void fn_80256A24();
-extern void fn_80256C4C();
-extern void fn_80256C70();
 extern void gpiCallErrorCallback();
-extern void gpiDestroyPeer();
+static GPIBool gpiDisconnectCleanupProfile(GPConnection* connection,
+                                           GPIProfile* profile, void* data);
 extern void gpiEncodeString();
-extern void gpiRemoveOperation();
+GPResult gpiProcessConnect(GPConnection* connection, GPIOperation* operation,
+                           const char* input);
 extern void gpiRemoveProfile();
 extern void gpiRemoveProfileByID();
+static GPResult gpiSendLogin(GPConnection* connection, GPIConnectData* data);
+static GPResult gpiSendNewuser(GPConnection* connection, GPIConnectData* data);
 extern void gpiSetError();
 extern void gpiSetErrorString();
+extern void gsifree();
 
-// asm_to_cpp: gpiSendLogin
-asm static GPResult gpiSendLogin(GPConnection* connection, GPIConnectData* data) {
+// asm_to_cpp: gpiDisconnectCleanupProfile
+asm static GPIBool gpiDisconnectCleanupProfile(GPConnection* connection,
+                                           GPIProfile* profile, void* data) {
     nofralloc
-    stwu r1, -0x2b0(r1)
+    stwu r1, -0x20(r1)
     mflr r0
-    stw r0, 0x2b4(r1)
-    addi r11, r1, 0x2b0
-    bl _savegpr_25
-    lis r31, lbl_80368C80@ha
-    lis r5, 0x842
-    addi r31, r31, lbl_80368C80@l
-    lwz r30, 0x0(r3)
-    mr r28, r3
-    mr r29, r4
-    addi r26, r5, 0x1085
-    addi r27, r31, 0x198
-    li r25, 0x0
-lbl_8025CFC0:
-    bl rand
-    mulhwu r5, r26, r3
-    add r4, r29, r25
-    addi r25, r25, 0x1
-    cmpwi r25, 0x20
-    subf r0, r5, r3
-    srwi r0, r0, 1
-    add r0, r0, r5
-    srwi r0, r0, 5
-    mulli r0, r0, 0x3e
-    subf r0, r0, r3
-    lbzx r0, r27, r0
-    stb r0, 0x80(r4)
-    blt lbl_8025CFC0
-    add r3, r29, r25
-    li r0, 0x0
-    stb r0, 0x80(r3)
-    lbz r0, 0x1c2(r29)
-    extsb. r0, r0
-    beq lbl_8025D018
-    addi r25, r29, 0x1c2
-    b lbl_8025D01C
-lbl_8025D018:
-    addi r25, r30, 0x177
-lbl_8025D01C:
-    mr r3, r25
-    bl strlen
-    mr r4, r3
-    mr r3, r25
-    addi r5, r29, 0xa1
-    bl MD5Digest
-    lwz r5, 0x1a4(r30)
+    stw r0, 0x24(r1)
+    stw r31, 0x1c(r1)
+    stw r30, 0x18(r1)
+    mr r30, r4
+    stw r29, 0x14(r1)
+    mr r29, r3
+    stw r28, 0x10(r1)
+    lwz r5, 0x8(r4)
+    lwz r31, 0x0(r3)
     cmpwi r5, 0x0
-    beq lbl_8025D054
-    addi r3, r1, 0xc
-    la r4, lbl_8049C918
-    opword 0x4CC63182
-    bl sprintf
-    b lbl_8025D060
-lbl_8025D054:
-    addi r3, r1, 0xc
-    la r4, lbl_8049C91C
-    bl strcpy
-lbl_8025D060:
-    lbz r0, 0xc2(r29)
-    extsb. r0, r0
-    beq lbl_8025D074
-    addi r7, r29, 0xc2
-    b lbl_8025D0C0
-lbl_8025D074:
-    lbz r0, 0x12f(r30)
-    extsb. r0, r0
-    beq lbl_8025D0A0
-    addi r3, r1, 0x3c
-    addi r5, r1, 0xc
-    addi r6, r30, 0x12f
-    la r4, lbl_8049C920
-    opword 0x4CC63182
-    bl sprintf
-    addi r7, r1, 0x3c
-    b lbl_8025D0C0
-lbl_8025D0A0:
-    addi r3, r1, 0x3c
-    addi r5, r1, 0xc
-    addi r6, r30, 0x110
-    addi r7, r30, 0x144
-    la r4, lbl_8049C928
-    opword 0x4CC63182
-    bl sprintf
-    addi r7, r1, 0x3c
-lbl_8025D0C0:
-    addi r5, r29, 0xa1
-    mr r9, r29
-    addi r3, r1, 0x90
-    addi r4, r31, 0x1d8
-    mr r10, r5
-    addi r6, r31, 0x1e8
-    addi r8, r29, 0x80
-    opword 0x4CC63182
-    bl sprintf
-    addi r3, r1, 0x90
-    bl strlen
-    mr r4, r3
-    addi r3, r1, 0x90
-    addi r5, r1, 0x18
-    bl MD5Digest
-    lwz r0, 0x100(r30)
-    cmpwi r0, 0x0
-    beq lbl_8025D13C
-    mr r3, r28
-    addi r4, r30, 0x110
-    addi r5, r30, 0x144
-    addi r6, r1, 0x8
-    bl gpiFindProfileByUser
-    lwz r3, 0x8(r1)
-    cmpwi r3, 0x0
-    beq lbl_8025D13C
-    lwz r0, 0x4(r3)
-    stw r0, 0x19c(r30)
-    lwz r3, 0x8(r1)
-    lwz r0, 0x0(r3)
-    stw r0, 0x1a0(r30)
-lbl_8025D13C:
-    mr r3, r28
-    addi r4, r30, 0x210
-    la r5, lbl_8049C930
-    bl gpiAppendStringToBuffer
-    mr r3, r28
-    addi r4, r30, 0x210
-    addi r5, r31, 0x21c
-    bl gpiAppendStringToBuffer
-    mr r3, r28
-    addi r4, r30, 0x210
-    addi r5, r29, 0x80
-    bl gpiAppendStringToBuffer
-    lbz r0, 0xc2(r29)
-    extsb. r0, r0
-    beq lbl_8025D19C
-    mr r3, r28
-    addi r4, r30, 0x210
-    addi r5, r31, 0x228
-    bl gpiAppendStringToBuffer
-    mr r3, r28
-    addi r4, r30, 0x210
-    addi r5, r29, 0xc2
-    bl gpiAppendStringToBuffer
-    b lbl_8025D20C
-lbl_8025D19C:
-    lbz r0, 0x12f(r30)
-    extsb. r0, r0
-    beq lbl_8025D1CC
-    mr r3, r28
-    addi r4, r30, 0x210
-    addi r5, r31, 0x234
-    bl gpiAppendStringToBuffer
-    mr r3, r28
-    addi r4, r30, 0x210
-    addi r5, r30, 0x12f
-    bl gpiAppendStringToBuffer
-    b lbl_8025D20C
-lbl_8025D1CC:
-    mr r3, r28
-    addi r4, r30, 0x210
-    la r5, lbl_8049C938
-    bl gpiAppendStringToBuffer
-    mr r3, r28
-    addi r4, r30, 0x210
-    addi r5, r30, 0x110
-    bl gpiAppendStringToBuffer
-    mr r3, r28
-    addi r4, r30, 0x210
-    la r5, lbl_8049C940
-    bl gpiAppendStringToBuffer
-    mr r3, r28
-    addi r4, r30, 0x210
-    addi r5, r30, 0x144
-    bl gpiAppendStringToBuffer
-lbl_8025D20C:
-    lwz r0, 0x19c(r30)
-    cmpwi r0, 0x0
-    beq lbl_8025D238
-    mr r3, r28
-    addi r4, r30, 0x210
-    addi r5, r31, 0x244
-    bl gpiAppendStringToBuffer
-    lwz r5, 0x19c(r30)
-    mr r3, r28
-    addi r4, r30, 0x210
-    bl gpiAppendIntToBuffer
-lbl_8025D238:
-    lwz r0, 0x1a0(r30)
-    cmpwi r0, 0x0
-    beq lbl_8025D264
-    mr r3, r28
-    addi r4, r30, 0x210
-    addi r5, r31, 0x250
-    bl gpiAppendStringToBuffer
-    lwz r5, 0x1a0(r30)
-    mr r3, r28
-    addi r4, r30, 0x210
-    bl gpiAppendIntToBuffer
-lbl_8025D264:
-    mr r3, r28
-    addi r4, r30, 0x210
-    addi r5, r31, 0x25c
-    bl gpiAppendStringToBuffer
-    lwz r5, 0x1a4(r30)
-    mr r3, r28
-    addi r4, r30, 0x210
-    bl gpiAppendIntToBuffer
-    mr r3, r28
-    addi r4, r30, 0x210
-    addi r5, r31, 0x268
-    bl gpiAppendStringToBuffer
-    mr r3, r28
-    addi r4, r30, 0x210
-    addi r5, r1, 0x18
-    bl gpiAppendStringToBuffer
-    lwz r0, 0x10c(r30)
-    cmpwi r0, 0x1
-    bne lbl_8025D2C0
-    mr r3, r28
-    addi r4, r30, 0x210
-    addi r5, r31, 0x274
-    bl gpiAppendStringToBuffer
-lbl_8025D2C0:
-    mr r3, r28
-    addi r4, r30, 0x210
-    la r5, lbl_8049C944
-    bl gpiAppendStringToBuffer
-    lhz r5, 0x230(r30)
-    mr r3, r28
-    addi r4, r30, 0x210
-    bl gpiAppendIntToBuffer
-    mr r3, r28
-    addi r4, r30, 0x210
-    addi r5, r31, 0x280
-    bl gpiAppendStringToBuffer
-    lwz r5, 0x60c(r30)
-    mr r3, r28
-    addi r4, r30, 0x210
-    bl gpiAppendIntToBuffer
-    mr r3, r28
-    addi r4, r30, 0x210
-    addi r5, r31, 0x28c
-    bl gpiAppendStringToBuffer
-    lis r5, lbl_8040A168@ha
-    mr r3, r28
-    addi r4, r30, 0x210
-    addi r5, r5, lbl_8040A168@l
-    bl gpiAppendStringToBuffer
-    mr r3, r28
-    addi r4, r30, 0x210
-    addi r5, r31, 0x298
-    bl gpiAppendStringToBuffer
-    lwz r5, 0x610(r30)
-    mr r3, r28
-    addi r4, r30, 0x210
-    bl gpiAppendIntToBuffer
-    mr r3, r28
-    addi r4, r30, 0x210
-    addi r5, r31, 0x2a8
-    bl gpiAppendStringToBuffer
-    mr r3, r28
-    addi r4, r30, 0x210
-    li r5, 0xb
-    bl gpiAppendIntToBuffer
-    mr r3, r28
-    addi r4, r30, 0x210
-    la r5, lbl_8049C950
-    bl gpiAppendStringToBuffer
-    lwz r5, 0x630(r30)
-    mr r3, r28
-    addi r4, r30, 0x210
-    bl gpiAppendIntToBuffer
-    mr r3, r28
-    addi r4, r30, 0x210
-    la r5, lbl_8049C958
-    bl gpiAppendStringToBuffer
-    mr r3, r28
-    addi r4, r30, 0x210
-    la r5, lbl_8049C960
-    bl gpiAppendStringToBuffer
-    addi r11, r1, 0x2b0
-    li r3, 0x0
-    bl _restgpr_25
-    lwz r0, 0x2b4(r1)
-    mtlr r0
-    addi r1, r1, 0x2b0
-    blr
-}
-
-// asm_to_cpp: gpiSendNewuser
-asm static GPResult gpiSendNewuser(GPConnection* connection, GPIConnectData* data) {
-    nofralloc
-    stwu r1, -0x100(r1)
-    mflr r0
-    stw r0, 0x104(r1)
-    addi r11, r1, 0x100
-    bl _savegpr_25
-    lwz r29, 0x0(r3)
-    lis r31, lbl_80368C80@ha
-    mr r25, r3
-    mr r26, r4
-    addi r31, r31, lbl_80368C80@l
-    addi r3, r29, 0x177
-    addi r4, r1, 0x8
-    bl gpiEncodeString
-    mr r3, r25
-    addi r4, r29, 0x210
-    addi r5, r31, 0x2b8
-    bl gpiAppendStringToBuffer
-    mr r3, r25
-    addi r4, r29, 0x210
-    la r5, lbl_8049C968
-    bl gpiAppendStringToBuffer
-    mr r3, r25
-    addi r4, r29, 0x210
-    addi r5, r29, 0x144
-    bl gpiAppendStringToBuffer
-    mr r3, r25
-    addi r4, r29, 0x210
-    la r5, lbl_8049C970
-    bl gpiAppendStringToBuffer
-    mr r3, r25
-    addi r4, r29, 0x210
-    addi r5, r29, 0x110
-    bl gpiAppendStringToBuffer
-    mr r3, r25
-    addi r4, r29, 0x210
-    addi r5, r31, 0x2c4
-    bl gpiAppendStringToBuffer
-    mr r3, r25
-    addi r4, r29, 0x210
-    addi r5, r1, 0x8
-    bl gpiAppendStringToBuffer
-    mr r3, r25
-    addi r4, r29, 0x210
-    addi r5, r31, 0x280
-    bl gpiAppendStringToBuffer
-    lwz r5, 0x60c(r29)
-    mr r3, r25
-    addi r4, r29, 0x210
-    bl gpiAppendIntToBuffer
-    mr r3, r25
-    addi r4, r29, 0x210
-    addi r5, r31, 0x28c
-    bl gpiAppendStringToBuffer
-    lis r5, lbl_8040A168@ha
-    mr r3, r25
-    addi r4, r29, 0x210
-    addi r5, r5, lbl_8040A168@l
-    bl gpiAppendStringToBuffer
-    mr r3, r25
-    addi r4, r29, 0x210
-    addi r5, r31, 0x298
-    bl gpiAppendStringToBuffer
-    lwz r5, 0x610(r29)
-    mr r3, r25
-    addi r4, r29, 0x210
-    bl gpiAppendIntToBuffer
-    mr r3, r25
-    addi r4, r29, 0x210
-    addi r5, r31, 0x234
-    bl gpiAppendStringToBuffer
-    mr r3, r25
-    addi r4, r29, 0x210
-    addi r5, r29, 0x12f
-    bl gpiAppendStringToBuffer
-    lbz r0, 0x2c2(r26)
-    extsb. r0, r0
-    beq lbl_8025D584
-    addi r3, r26, 0x2c2
-    bl strlen
-    lis r4, 0x7970
-    mr r27, r3
-    addi r3, r4, 0x7367
-    bl fn_80256674
-    addi r30, r1, 0x94
+    beq lbl_8025DD7C
+    li r0, 0x1
+    stw r0, 0x28(r4)
+    lwz r3, 0x8(r5)
+    bl gsifree
+    lwz r3, 0x8(r30)
     li r28, 0x0
-    b lbl_8025D540
-lbl_8025D518:
-    li r3, 0x0
-    li r4, 0xff
-    bl fn_8025668C
-    add r4, r26, r28
-    extsb r3, r3
-    lbz r0, 0x2c2(r4)
-    addi r28, r28, 0x1
-    xor r0, r3, r0
-    stb r0, 0x0(r30)
-    addi r30, r30, 0x1
-lbl_8025D540:
-    cmplw r28, r27
-    blt lbl_8025D518
-    addi r3, r1, 0x94
+    stw r28, 0x8(r3)
+    lwz r3, 0x8(r30)
+    lwz r3, 0xc(r3)
+    bl gsifree
+    lwz r3, 0x8(r30)
+    stw r28, 0xc(r3)
+    lwz r3, 0x8(r30)
+    bl gsifree
+    stw r28, 0x8(r30)
+lbl_8025DD7C:
+    lwz r3, 0xc(r30)
+    cmpwi r3, 0x0
+    beq lbl_8025DE0C
+    li r0, 0x1
+    stw r0, 0x28(r30)
+    lwz r3, 0x8(r3)
+    bl gsifree
+    lwz r3, 0xc(r30)
+    li r28, 0x0
+    stw r28, 0x8(r3)
+    lwz r3, 0xc(r30)
+    lwz r3, 0xc(r3)
+    bl gsifree
+    lwz r3, 0xc(r30)
+    stw r28, 0xc(r3)
+    lwz r3, 0xc(r30)
+    lwz r3, 0x10(r3)
+    bl gsifree
+    lwz r3, 0xc(r30)
+    stw r28, 0x10(r3)
+    lwz r3, 0xc(r30)
+    lwz r3, 0x14(r3)
+    bl gsifree
+    lwz r3, 0xc(r30)
+    stw r28, 0x14(r3)
+    lwz r3, 0xc(r30)
+    lwz r3, 0x38(r3)
+    cmpwi r3, 0x0
+    beq lbl_8025DDFC
+    bl ArrayFree
+    lwz r3, 0xc(r30)
+    stw r28, 0x38(r3)
+lbl_8025DDFC:
+    lwz r3, 0xc(r30)
+    bl gsifree
     li r0, 0x0
-    stbx r0, r3, r28
-    mr r5, r27
-    addi r4, r1, 0x38
-    li r6, 0x1
-    bl fn_80256A24
-    mr r3, r25
-    addi r4, r29, 0x210
-    addi r5, r31, 0x2d4
-    bl gpiAppendStringToBuffer
-    mr r3, r25
-    addi r4, r29, 0x210
-    addi r5, r1, 0x38
-    bl gpiAppendStringToBuffer
-lbl_8025D584:
-    mr r3, r25
-    addi r4, r29, 0x210
-    addi r5, r31, 0x25c
-    bl gpiAppendStringToBuffer
-    lwz r5, 0x1a4(r29)
-    mr r3, r25
-    addi r4, r29, 0x210
-    bl gpiAppendIntToBuffer
-    mr r3, r25
-    addi r4, r29, 0x210
-    la r5, lbl_8049C958
-    bl gpiAppendStringToBuffer
-    mr r3, r25
-    addi r4, r29, 0x210
-    la r5, lbl_8049C960
-    bl gpiAppendStringToBuffer
-    addi r11, r1, 0x100
+    stw r0, 0xc(r30)
+lbl_8025DE0C:
+    lwz r0, 0x20(r30)
+    cmpwi r0, 0x0
+    beq lbl_8025DE20
+    li r0, 0x1
+    stw r0, 0x28(r30)
+lbl_8025DE20:
+    lwz r3, 0x14(r30)
+    bl gsifree
+    li r28, 0x0
+    lwz r3, 0x1c(r30)
+    stw r28, 0x14(r30)
+    bl gsifree
+    lwz r0, 0x10(r30)
+    stw r28, 0x1c(r30)
+    cmpwi r0, 0x0
+    stw r28, 0x18(r30)
+    beq lbl_8025DE64
+    lwz r0, 0x104(r31)
+    cmpwi r0, 0x1
+    bne lbl_8025DE78
+    lwz r0, 0x28(r30)
+    cmpwi r0, 0x0
+    bne lbl_8025DE78
+lbl_8025DE64:
+    mr r3, r29
+    mr r4, r30
+    bl gpiRemoveProfile
     li r3, 0x0
-    bl _restgpr_25
-    lwz r0, 0x104(r1)
+    b lbl_8025DE7C
+lbl_8025DE78:
+    li r3, 0x1
+lbl_8025DE7C:
+    lwz r0, 0x24(r1)
+    lwz r31, 0x1c(r1)
+    lwz r30, 0x18(r1)
+    lwz r29, 0x14(r1)
+    lwz r28, 0x10(r1)
     mtlr r0
-    addi r1, r1, 0x100
+    addi r1, r1, 0x20
     blr
 }
 
@@ -1251,7 +1021,7 @@ lbl_8025DB9C:
     stw r0, 0x14(r1)
     beq lbl_8025DC44
     li r3, 0x20
-    bl fn_80256C4C
+    bl gsimalloc
     cmpwi r3, 0x0
     mr r27, r3
     bne lbl_8025DBE4
@@ -1300,240 +1070,436 @@ lbl_8025DC54:
     blr
 }
 
-// asm_to_cpp: gpiDisconnectCleanupProfile
-asm static GPIBool gpiDisconnectCleanupProfile(GPConnection* connection,
-                                           GPIProfile* profile, void* data) {
+// asm_to_cpp: gpiSendLogin
+asm static GPResult gpiSendLogin(GPConnection* connection, GPIConnectData* data) {
     nofralloc
-    stwu r1, -0x20(r1)
+    stwu r1, -0x2b0(r1)
     mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    stw r30, 0x18(r1)
-    mr r30, r4
-    stw r29, 0x14(r1)
-    mr r29, r3
-    stw r28, 0x10(r1)
-    lwz r5, 0x8(r4)
-    lwz r31, 0x0(r3)
-    cmpwi r5, 0x0
-    beq lbl_8025DD7C
-    li r0, 0x1
-    stw r0, 0x28(r4)
-    lwz r3, 0x8(r5)
-    bl fn_80256C70
-    lwz r3, 0x8(r30)
-    li r28, 0x0
-    stw r28, 0x8(r3)
-    lwz r3, 0x8(r30)
-    lwz r3, 0xc(r3)
-    bl fn_80256C70
-    lwz r3, 0x8(r30)
-    stw r28, 0xc(r3)
-    lwz r3, 0x8(r30)
-    bl fn_80256C70
-    stw r28, 0x8(r30)
-lbl_8025DD7C:
-    lwz r3, 0xc(r30)
-    cmpwi r3, 0x0
-    beq lbl_8025DE0C
-    li r0, 0x1
-    stw r0, 0x28(r30)
-    lwz r3, 0x8(r3)
-    bl fn_80256C70
-    lwz r3, 0xc(r30)
-    li r28, 0x0
-    stw r28, 0x8(r3)
-    lwz r3, 0xc(r30)
-    lwz r3, 0xc(r3)
-    bl fn_80256C70
-    lwz r3, 0xc(r30)
-    stw r28, 0xc(r3)
-    lwz r3, 0xc(r30)
-    lwz r3, 0x10(r3)
-    bl fn_80256C70
-    lwz r3, 0xc(r30)
-    stw r28, 0x10(r3)
-    lwz r3, 0xc(r30)
-    lwz r3, 0x14(r3)
-    bl fn_80256C70
-    lwz r3, 0xc(r30)
-    stw r28, 0x14(r3)
-    lwz r3, 0xc(r30)
-    lwz r3, 0x38(r3)
-    cmpwi r3, 0x0
-    beq lbl_8025DDFC
-    bl fn_802535C4
-    lwz r3, 0xc(r30)
-    stw r28, 0x38(r3)
-lbl_8025DDFC:
-    lwz r3, 0xc(r30)
-    bl fn_80256C70
-    li r0, 0x0
-    stw r0, 0xc(r30)
-lbl_8025DE0C:
-    lwz r0, 0x20(r30)
-    cmpwi r0, 0x0
-    beq lbl_8025DE20
-    li r0, 0x1
-    stw r0, 0x28(r30)
-lbl_8025DE20:
-    lwz r3, 0x14(r30)
-    bl fn_80256C70
-    li r28, 0x0
-    lwz r3, 0x1c(r30)
-    stw r28, 0x14(r30)
-    bl fn_80256C70
-    lwz r0, 0x10(r30)
-    stw r28, 0x1c(r30)
-    cmpwi r0, 0x0
-    stw r28, 0x18(r30)
-    beq lbl_8025DE64
-    lwz r0, 0x104(r31)
-    cmpwi r0, 0x1
-    bne lbl_8025DE78
-    lwz r0, 0x28(r30)
-    cmpwi r0, 0x0
-    bne lbl_8025DE78
-lbl_8025DE64:
-    mr r3, r29
-    mr r4, r30
-    bl gpiRemoveProfile
-    li r3, 0x0
-    b lbl_8025DE7C
-lbl_8025DE78:
-    li r3, 0x1
-lbl_8025DE7C:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
-    lwz r28, 0x10(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// asm_to_cpp: gpiDisconnect
-asm void gpiDisconnect(GPConnection* connection, GPIBool tellServer) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    stw r31, 0x1c(r1)
-    stw r30, 0x18(r1)
-    stw r29, 0x14(r1)
-    mr r29, r3
+    stw r0, 0x2b4(r1)
+    addi r11, r1, 0x2b0
+    bl _savegpr_25
+    lis r31, lbl_80368C80@ha
+    lis r5, 0x842
+    addi r31, r31, lbl_80368C80@l
     lwz r30, 0x0(r3)
-    lwz r0, 0x1f4(r30)
-    cmpwi r0, 0x4
-    beq lbl_8025E038
+    mr r28, r3
+    mr r29, r4
+    addi r26, r5, 0x1085
+    addi r27, r31, 0x198
+    li r25, 0x0
+lbl_8025CFC0:
+    bl rand
+    mulhwu r5, r26, r3
+    add r4, r29, r25
+    addi r25, r25, 0x1
+    cmpwi r25, 0x20
+    subf r0, r5, r3
+    srwi r0, r0, 1
+    add r0, r0, r5
+    srwi r0, r0, 5
+    mulli r0, r0, 0x3e
+    subf r0, r0, r3
+    lbzx r0, r27, r0
+    stb r0, 0x80(r4)
+    blt lbl_8025CFC0
+    add r3, r29, r25
+    li r0, 0x0
+    stb r0, 0x80(r3)
+    lbz r0, 0x1c2(r29)
+    extsb. r0, r0
+    beq lbl_8025D018
+    addi r25, r29, 0x1c2
+    b lbl_8025D01C
+lbl_8025D018:
+    addi r25, r30, 0x177
+lbl_8025D01C:
+    mr r3, r25
+    bl strlen
+    mr r4, r3
+    mr r3, r25
+    addi r5, r29, 0xa1
+    bl MD5Digest
+    lwz r5, 0x1a4(r30)
+    cmpwi r5, 0x0
+    beq lbl_8025D054
+    addi r3, r1, 0xc
+    la r4, lbl_8049C918
+    opword 0x4CC63182
+    bl sprintf
+    b lbl_8025D060
+lbl_8025D054:
+    addi r3, r1, 0xc
+    la r4, lbl_8049C91C
+    bl strcpy
+lbl_8025D060:
+    lbz r0, 0xc2(r29)
+    extsb. r0, r0
+    beq lbl_8025D074
+    addi r7, r29, 0xc2
+    b lbl_8025D0C0
+lbl_8025D074:
+    lbz r0, 0x12f(r30)
+    extsb. r0, r0
+    beq lbl_8025D0A0
+    addi r3, r1, 0x3c
+    addi r5, r1, 0xc
+    addi r6, r30, 0x12f
+    la r4, lbl_8049C920
+    opword 0x4CC63182
+    bl sprintf
+    addi r7, r1, 0x3c
+    b lbl_8025D0C0
+lbl_8025D0A0:
+    addi r3, r1, 0x3c
+    addi r5, r1, 0xc
+    addi r6, r30, 0x110
+    addi r7, r30, 0x144
+    la r4, lbl_8049C928
+    opword 0x4CC63182
+    bl sprintf
+    addi r7, r1, 0x3c
+lbl_8025D0C0:
+    addi r5, r29, 0xa1
+    mr r9, r29
+    addi r3, r1, 0x90
+    addi r4, r31, 0x1d8
+    mr r10, r5
+    addi r6, r31, 0x1e8
+    addi r8, r29, 0x80
+    opword 0x4CC63182
+    bl sprintf
+    addi r3, r1, 0x90
+    bl strlen
+    mr r4, r3
+    addi r3, r1, 0x90
+    addi r5, r1, 0x18
+    bl MD5Digest
+    lwz r0, 0x100(r30)
     cmpwi r0, 0x0
-    beq lbl_8025DF94
-    cmpwi r4, 0x0
-    beq lbl_8025DF10
-    cmpwi r0, 0x3
-    bne lbl_8025DF10
-    lis r5, lbl_80369014@ha
+    beq lbl_8025D13C
+    mr r3, r28
+    addi r4, r30, 0x110
+    addi r5, r30, 0x144
+    addi r6, r1, 0x8
+    bl gpiFindProfileByUser
+    lwz r3, 0x8(r1)
+    cmpwi r3, 0x0
+    beq lbl_8025D13C
+    lwz r0, 0x4(r3)
+    stw r0, 0x19c(r30)
+    lwz r3, 0x8(r1)
+    lwz r0, 0x0(r3)
+    stw r0, 0x1a0(r30)
+lbl_8025D13C:
+    mr r3, r28
     addi r4, r30, 0x210
-    addi r5, r5, lbl_80369014@l
+    la r5, lbl_8049C930
     bl gpiAppendStringToBuffer
-    lwz r5, 0x198(r30)
-    mr r3, r29
+    mr r3, r28
+    addi r4, r30, 0x210
+    addi r5, r31, 0x21c
+    bl gpiAppendStringToBuffer
+    mr r3, r28
+    addi r4, r30, 0x210
+    addi r5, r29, 0x80
+    bl gpiAppendStringToBuffer
+    lbz r0, 0xc2(r29)
+    extsb. r0, r0
+    beq lbl_8025D19C
+    mr r3, r28
+    addi r4, r30, 0x210
+    addi r5, r31, 0x228
+    bl gpiAppendStringToBuffer
+    mr r3, r28
+    addi r4, r30, 0x210
+    addi r5, r29, 0xc2
+    bl gpiAppendStringToBuffer
+    b lbl_8025D20C
+lbl_8025D19C:
+    lbz r0, 0x12f(r30)
+    extsb. r0, r0
+    beq lbl_8025D1CC
+    mr r3, r28
+    addi r4, r30, 0x210
+    addi r5, r31, 0x234
+    bl gpiAppendStringToBuffer
+    mr r3, r28
+    addi r4, r30, 0x210
+    addi r5, r30, 0x12f
+    bl gpiAppendStringToBuffer
+    b lbl_8025D20C
+lbl_8025D1CC:
+    mr r3, r28
+    addi r4, r30, 0x210
+    la r5, lbl_8049C938
+    bl gpiAppendStringToBuffer
+    mr r3, r28
+    addi r4, r30, 0x210
+    addi r5, r30, 0x110
+    bl gpiAppendStringToBuffer
+    mr r3, r28
+    addi r4, r30, 0x210
+    la r5, lbl_8049C940
+    bl gpiAppendStringToBuffer
+    mr r3, r28
+    addi r4, r30, 0x210
+    addi r5, r30, 0x144
+    bl gpiAppendStringToBuffer
+lbl_8025D20C:
+    lwz r0, 0x19c(r30)
+    cmpwi r0, 0x0
+    beq lbl_8025D238
+    mr r3, r28
+    addi r4, r30, 0x210
+    addi r5, r31, 0x244
+    bl gpiAppendStringToBuffer
+    lwz r5, 0x19c(r30)
+    mr r3, r28
     addi r4, r30, 0x210
     bl gpiAppendIntToBuffer
-    mr r3, r29
+lbl_8025D238:
+    lwz r0, 0x1a0(r30)
+    cmpwi r0, 0x0
+    beq lbl_8025D264
+    mr r3, r28
+    addi r4, r30, 0x210
+    addi r5, r31, 0x250
+    bl gpiAppendStringToBuffer
+    lwz r5, 0x1a0(r30)
+    mr r3, r28
+    addi r4, r30, 0x210
+    bl gpiAppendIntToBuffer
+lbl_8025D264:
+    mr r3, r28
+    addi r4, r30, 0x210
+    addi r5, r31, 0x25c
+    bl gpiAppendStringToBuffer
+    lwz r5, 0x1a4(r30)
+    mr r3, r28
+    addi r4, r30, 0x210
+    bl gpiAppendIntToBuffer
+    mr r3, r28
+    addi r4, r30, 0x210
+    addi r5, r31, 0x268
+    bl gpiAppendStringToBuffer
+    mr r3, r28
+    addi r4, r30, 0x210
+    addi r5, r1, 0x18
+    bl gpiAppendStringToBuffer
+    lwz r0, 0x10c(r30)
+    cmpwi r0, 0x1
+    bne lbl_8025D2C0
+    mr r3, r28
+    addi r4, r30, 0x210
+    addi r5, r31, 0x274
+    bl gpiAppendStringToBuffer
+lbl_8025D2C0:
+    mr r3, r28
+    addi r4, r30, 0x210
+    la r5, lbl_8049C944
+    bl gpiAppendStringToBuffer
+    lhz r5, 0x230(r30)
+    mr r3, r28
+    addi r4, r30, 0x210
+    bl gpiAppendIntToBuffer
+    mr r3, r28
+    addi r4, r30, 0x210
+    addi r5, r31, 0x280
+    bl gpiAppendStringToBuffer
+    lwz r5, 0x60c(r30)
+    mr r3, r28
+    addi r4, r30, 0x210
+    bl gpiAppendIntToBuffer
+    mr r3, r28
+    addi r4, r30, 0x210
+    addi r5, r31, 0x28c
+    bl gpiAppendStringToBuffer
+    lis r5, lbl_8040A168@ha
+    mr r3, r28
+    addi r4, r30, 0x210
+    addi r5, r5, lbl_8040A168@l
+    bl gpiAppendStringToBuffer
+    mr r3, r28
+    addi r4, r30, 0x210
+    addi r5, r31, 0x298
+    bl gpiAppendStringToBuffer
+    lwz r5, 0x610(r30)
+    mr r3, r28
+    addi r4, r30, 0x210
+    bl gpiAppendIntToBuffer
+    mr r3, r28
+    addi r4, r30, 0x210
+    addi r5, r31, 0x2a8
+    bl gpiAppendStringToBuffer
+    mr r3, r28
+    addi r4, r30, 0x210
+    li r5, 0xb
+    bl gpiAppendIntToBuffer
+    mr r3, r28
+    addi r4, r30, 0x210
+    la r5, lbl_8049C950
+    bl gpiAppendStringToBuffer
+    lwz r5, 0x630(r30)
+    mr r3, r28
+    addi r4, r30, 0x210
+    bl gpiAppendIntToBuffer
+    mr r3, r28
+    addi r4, r30, 0x210
+    la r5, lbl_8049C958
+    bl gpiAppendStringToBuffer
+    mr r3, r28
     addi r4, r30, 0x210
     la r5, lbl_8049C960
     bl gpiAppendStringToBuffer
-lbl_8025DF10:
-    lwz r4, 0x1f0(r30)
-    mr r3, r29
-    addi r5, r30, 0x210
-    addi r6, r1, 0x8
-    li r7, 0x1
-    la r8, lbl_8049C9A8
-    bl gpiSendFromBuffer
-    lwz r3, 0x1f0(r30)
-    cmpwi r3, -0x1
-    beq lbl_8025DF50
-    li r4, 0x2
-    bl shutdown
-    lwz r3, 0x1f0(r30)
-    bl closesocket
-    li r0, -0x1
-    stw r0, 0x1f0(r30)
-lbl_8025DF50:
-    bl gsUdpEngineIsInitialized
-    cmpwi r3, 0x0
-    beq lbl_8025DF80
-    addi r3, r30, 0x220
-    bl gsUdpEngineRemoveMsgHandler
-    bl gsUdpEngineNoMoreMsgHandlers
-    cmpwi r3, 0x0
-    beq lbl_8025DF80
-    bl gsUdpEngineNoApp
-    cmpwi r3, 0x0
-    beq lbl_8025DF80
-    bl gsUdpEngineShutdown
-lbl_8025DF80:
-    li r3, 0x4
-    li r0, 0x0
-    stw r3, 0x1f4(r30)
-    stw r0, 0x19c(r30)
-    stw r0, 0x1a0(r30)
-lbl_8025DF94:
-    lwz r3, 0x1f8(r30)
-    bl fn_80256C70
-    li r31, 0x0
-    stw r31, 0x1f8(r30)
-    lwz r3, 0x208(r30)
-    bl fn_80256C70
-    stw r31, 0x208(r30)
-    lwz r3, 0x210(r30)
-    bl fn_80256C70
-    stw r31, 0x210(r30)
-    lwz r3, 0x5e4(r30)
-    bl fn_80256C70
-    stw r31, 0x5e4(r30)
-    lwz r3, 0x5f4(r30)
-    bl fn_80256C70
-    stw r31, 0x5f4(r30)
-    b lbl_8025DFE0
-lbl_8025DFD8:
-    mr r3, r29
-    bl gpiRemoveOperation
-lbl_8025DFE0:
-    lwz r4, 0x5c4(r30)
-    cmpwi r4, 0x0
-    bne lbl_8025DFD8
-    li r0, 0x0
-    stw r0, 0x5c4(r30)
-    lwz r31, 0x5d8(r30)
-    b lbl_8025E00C
-lbl_8025DFFC:
-    mr r4, r31
-    lwz r31, 0x54(r31)
-    mr r3, r29
-    bl gpiDestroyPeer
-lbl_8025E00C:
-    cmpwi r31, 0x0
-    bne lbl_8025DFFC
-    li r0, 0x0
-    lis r31, gpiDisconnectCleanupProfile@ha
-    stw r0, 0x5d8(r30)
-lbl_8025E020:
-    mr r3, r29
-    addi r4, r31, gpiDisconnectCleanupProfile@l
-    li r5, 0x0
-    bl gpiProfileMap
-    cmpwi r3, 0x0
-    beq lbl_8025E020
-lbl_8025E038:
-    lwz r0, 0x24(r1)
-    lwz r31, 0x1c(r1)
-    lwz r30, 0x18(r1)
-    lwz r29, 0x14(r1)
+    addi r11, r1, 0x2b0
+    li r3, 0x0
+    bl _restgpr_25
+    lwz r0, 0x2b4(r1)
     mtlr r0
-    addi r1, r1, 0x20
+    addi r1, r1, 0x2b0
+    blr
+}
+
+// asm_to_cpp: gpiSendNewuser
+asm static GPResult gpiSendNewuser(GPConnection* connection, GPIConnectData* data) {
+    nofralloc
+    stwu r1, -0x100(r1)
+    mflr r0
+    stw r0, 0x104(r1)
+    addi r11, r1, 0x100
+    bl _savegpr_25
+    lwz r29, 0x0(r3)
+    lis r31, lbl_80368C80@ha
+    mr r25, r3
+    mr r26, r4
+    addi r31, r31, lbl_80368C80@l
+    addi r3, r29, 0x177
+    addi r4, r1, 0x8
+    bl gpiEncodeString
+    mr r3, r25
+    addi r4, r29, 0x210
+    addi r5, r31, 0x2b8
+    bl gpiAppendStringToBuffer
+    mr r3, r25
+    addi r4, r29, 0x210
+    la r5, lbl_8049C968
+    bl gpiAppendStringToBuffer
+    mr r3, r25
+    addi r4, r29, 0x210
+    addi r5, r29, 0x144
+    bl gpiAppendStringToBuffer
+    mr r3, r25
+    addi r4, r29, 0x210
+    la r5, lbl_8049C970
+    bl gpiAppendStringToBuffer
+    mr r3, r25
+    addi r4, r29, 0x210
+    addi r5, r29, 0x110
+    bl gpiAppendStringToBuffer
+    mr r3, r25
+    addi r4, r29, 0x210
+    addi r5, r31, 0x2c4
+    bl gpiAppendStringToBuffer
+    mr r3, r25
+    addi r4, r29, 0x210
+    addi r5, r1, 0x8
+    bl gpiAppendStringToBuffer
+    mr r3, r25
+    addi r4, r29, 0x210
+    addi r5, r31, 0x280
+    bl gpiAppendStringToBuffer
+    lwz r5, 0x60c(r29)
+    mr r3, r25
+    addi r4, r29, 0x210
+    bl gpiAppendIntToBuffer
+    mr r3, r25
+    addi r4, r29, 0x210
+    addi r5, r31, 0x28c
+    bl gpiAppendStringToBuffer
+    lis r5, lbl_8040A168@ha
+    mr r3, r25
+    addi r4, r29, 0x210
+    addi r5, r5, lbl_8040A168@l
+    bl gpiAppendStringToBuffer
+    mr r3, r25
+    addi r4, r29, 0x210
+    addi r5, r31, 0x298
+    bl gpiAppendStringToBuffer
+    lwz r5, 0x610(r29)
+    mr r3, r25
+    addi r4, r29, 0x210
+    bl gpiAppendIntToBuffer
+    mr r3, r25
+    addi r4, r29, 0x210
+    addi r5, r31, 0x234
+    bl gpiAppendStringToBuffer
+    mr r3, r25
+    addi r4, r29, 0x210
+    addi r5, r29, 0x12f
+    bl gpiAppendStringToBuffer
+    lbz r0, 0x2c2(r26)
+    extsb. r0, r0
+    beq lbl_8025D584
+    addi r3, r26, 0x2c2
+    bl strlen
+    lis r4, 0x7970
+    mr r27, r3
+    addi r3, r4, 0x7367
+    bl Util_RandSeed
+    addi r30, r1, 0x94
+    li r28, 0x0
+    b lbl_8025D540
+lbl_8025D518:
+    li r3, 0x0
+    li r4, 0xff
+    bl Util_RandInt
+    add r4, r26, r28
+    extsb r3, r3
+    lbz r0, 0x2c2(r4)
+    addi r28, r28, 0x1
+    xor r0, r3, r0
+    stb r0, 0x0(r30)
+    addi r30, r30, 0x1
+lbl_8025D540:
+    cmplw r28, r27
+    blt lbl_8025D518
+    addi r3, r1, 0x94
+    li r0, 0x0
+    stbx r0, r3, r28
+    mr r5, r27
+    addi r4, r1, 0x38
+    li r6, 0x1
+    bl B64Encode
+    mr r3, r25
+    addi r4, r29, 0x210
+    addi r5, r31, 0x2d4
+    bl gpiAppendStringToBuffer
+    mr r3, r25
+    addi r4, r29, 0x210
+    addi r5, r1, 0x38
+    bl gpiAppendStringToBuffer
+lbl_8025D584:
+    mr r3, r25
+    addi r4, r29, 0x210
+    addi r5, r31, 0x25c
+    bl gpiAppendStringToBuffer
+    lwz r5, 0x1a4(r29)
+    mr r3, r25
+    addi r4, r29, 0x210
+    bl gpiAppendIntToBuffer
+    mr r3, r25
+    addi r4, r29, 0x210
+    la r5, lbl_8049C958
+    bl gpiAppendStringToBuffer
+    mr r3, r25
+    addi r4, r29, 0x210
+    la r5, lbl_8049C960
+    bl gpiAppendStringToBuffer
+    addi r11, r1, 0x100
+    li r3, 0x0
+    bl _restgpr_25
+    lwz r0, 0x104(r1)
+    mtlr r0
+    addi r1, r1, 0x100
     blr
 }

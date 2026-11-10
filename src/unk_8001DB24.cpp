@@ -4,13 +4,153 @@
 
 extern "C" {
 
+
+struct S_fn_8001E264_arg0 {
+    u8 pad_0[0x4];
+    s32 f_4;
+    u8 pad_8[0x4];
+    s32 f_C;
+    u8 pad_10[0x58];
+    s8 * f_68;
+    u8 pad_6C[0x6];
+    s16 f_72;
+};
+struct S_fn_8001E460_arg0 {
+    u8 pad_0[0x4];
+    s32 f_4;
+    u8 pad_8[0x44];
+    s32 f_4C;
+    s32 f_50;
+    u8 pad_54[0x8];
+    u8 f_5C;
+    u8 f_5D;
+    u8 f_5E;
+    u8 f_5F;
+    u8 f_60;
+    u8 f_61;
+    u8 f_62;
+    u8 f_63;
+    u8 pad_64[0xC];
+    s16 f_70;
+    s16 f_72;
+    s16 f_74;
+    u8 pad_76[0x12];
+    f32 f_88;
+    u8 pad_8C[0x4];
+    f32 f_90;
+};
+struct S_fn_8001E460_temp_r3_3 {
+    f32 f_0;
+    f32 f_4;
+    f32 f_8;
+};
+struct S_fn_8001E460_temp_r3_4 {
+    f32 f_0;
+    f32 f_4;
+    f32 f_8;
+};
+struct S_fn_8001EA44_arg0 {
+    u8 pad_0[0x4];
+    s32 f_4;
+    u8 pad_8[0x44];
+    s32 f_4C;
+    s32 f_50;
+    u8 pad_54[0x8];
+    u8 f_5C;
+    u8 f_5D;
+    u8 f_5E;
+    u8 f_5F;
+    u8 f_60;
+    u8 f_61;
+    u8 f_62;
+    u8 f_63;
+    f32 f_64;
+    u8 pad_68[0x8];
+    s16 f_70;
+    s16 f_72;
+    s16 f_74;
+    u8 pad_76[0x12];
+    f32 f_88;
+    u8 pad_8C[0x4];
+    f32 f_90;
+};
+struct S_fn_8001EA44_temp_r3_3 {
+    f32 f_0;
+    f32 f_4;
+    f32 f_8;
+};
+struct S_fn_8001EA44_temp_r3_4 {
+    f32 f_0;
+    f32 f_4;
+    f32 f_8;
+};
+struct S_fn_8001F284_arg0 {
+    u8 pad_0[0x4C];
+    s32 f_4C;
+    u8 pad_50[0xC];
+    u8 f_5C;
+    u8 f_5D;
+    u8 f_5E;
+    u8 pad_5F[0x1];
+    u8 f_60;
+    u8 f_61;
+    u8 f_62;
+    u8 pad_63[0xD];
+    s16 f_70;
+    u8 pad_72[0x2];
+    s16 f_74;
+    s16 f_76;
+    u8 pad_78[0x10];
+    f32 f_88;
+};
+struct S_fn_8001F49C_arg0 {
+    u8 pad_0[0x4C];
+    s32 f_4C;
+    u8 pad_50[0xC];
+    u8 f_5C;
+    u8 f_5D;
+    u8 f_5E;
+    u8 pad_5F[0x1];
+    u8 f_60;
+    u8 f_61;
+    u8 f_62;
+    u8 pad_63[0x11];
+    s16 f_74;
+    s16 f_76;
+    u8 pad_78[0x10];
+    f32 f_88;
+};
+struct S_fn_8001F63C_arg0 {
+    u8 pad_0[0x4C];
+    s32 f_4C;
+    u8 pad_50[0xC];
+    u8 f_5C;
+    u8 f_5D;
+    u8 f_5E;
+    u8 pad_5F[0x1];
+    u8 f_60;
+    u8 f_61;
+    u8 f_62;
+    u8 pad_63[0x1];
+    f32 f_64;
+    u8 pad_68[0xC];
+    s16 f_74;
+    s16 f_76;
+    u8 pad_78[0x10];
+    f32 f_88;
+};
+struct S_fn_8001F63C_temp_r3_3 {
+    u8 pad_0[0x4];
+    f32 f_4;
+    f32 f_8;
+};
 extern u8 lbl_803C1A40[];
 extern u8 lbl_803C22B0[];
 extern float lbl_8049D688;
 extern float lbl_8049D6B0;
 extern float lbl_8049E6C8;
 extern float lbl_8049E6D0;
-extern float lbl_8049E6D8;
+__declspec(section ".sdata2") extern const f32 lbl_8049E6D8[];
 
 M2C_UNK GXBegin(s32 arg0, s32 arg1, s32 arg2);
 void GXClearVtxDesc(void);
@@ -90,6 +230,42 @@ void fn_8017B074(M2C_UNK *arg0, s8 *arg1);
 void fn_8017B144(s32 arg0, s8 *arg1, s32 arg2);
 f32 fn_8030DEEC(s8 *arg0, s8 *arg1, s32 arg2);
 M2C_UNK memset(s32 arg0, s32 arg1, s32 arg2);
+
+
+void fn_8001DCA8(s32 arg0) {
+    s8 *temp_r31;
+
+    temp_r31 = (s8 *) (M2C_FIELD(fn_80018B1C((s32) (arg0)), s8 **, 0x4C));
+    if (temp_r31 != NULL) {
+        fn_80170E84((s32) (fn_8010E6AC((s32) (0))), (s8 *) (temp_r31));
+    }
+    fn_8017776C((s32) (arg0));
+}
+
+void fn_8001F9C8(s32 arg0, s32 arg1, s32 arg2) {
+    fn_8001F9CC((s32) (arg0), (s32) (arg1), (s32) (arg2));
+}
+
+void fn_8001FA30(void) {
+}
+
+void fn_8001FA34(u8 arg0, u8 arg1, u8 arg2, u8 arg3) {
+    *(volatile u8 *)0xCC008000 = arg0;
+    *(volatile u8 *)0xCC008000 = arg1;
+    *(volatile u8 *)0xCC008000 = arg2;
+    *(volatile u8 *)0xCC008000 = arg3;
+}
+
+void fn_8001FA5C(f32 farg0, f32 farg1, f32 farg2) {
+    *(f32 *)0xCC008000 = farg0;
+    *(f32 *)0xCC008000 = farg1;
+    *(f32 *)0xCC008000 = farg2;
+}
+
+void fn_8001FA70(f32 farg0, f32 farg1, s32 arg2, s32 arg3) {
+    *(f32 *)0xCC008000 = farg0;
+    *(f32 *)0xCC008000 = farg1;
+}
 
 // asm_to_cpp: fn_8001DB24
 asm s8 * fn_8001DB24(s32 arg0, s8 *arg1, s32 arg2, s16 arg3, s32 arg4) {
@@ -196,16 +372,6 @@ lbl_8001DC90:
     mtlr r0
     addi r1, r1, 0x30
     blr
-}
-
-void fn_8001DCA8(s32 arg0) {
-    s8 *temp_r31;
-
-    temp_r31 = (s8 *) (M2C_FIELD(fn_80018B1C((s32) (arg0)), s8 **, 0x4C));
-    if (temp_r31 != NULL) {
-        fn_80170E84((s32) (fn_8010E6AC((s32) (0))), (s8 *) (temp_r31));
-    }
-    fn_8017776C((s32) (arg0));
 }
 
 // asm_to_cpp: fn_8001DD00
@@ -2164,59 +2330,10 @@ lbl_8001F95C:
     blr
 }
 
-void fn_8001F9C8(s32 arg0, s32 arg1, s32 arg2) {
-    fn_8001F9CC((s32) (arg0), (s32) (arg1), (s32) (arg2));
-}
+s32 fn_8001F9CC(s32 arg0, s32 arg1, s32 arg2) {
 
-// asm_to_cpp: fn_8001F9CC
-asm s32 fn_8001F9CC(s32 arg0, s32 arg1, s32 arg2) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_28
-    mr r28, r3
-    mr r29, r4
-    mr r31, r5
-    bl fn_80018B88
-    mr r30, r3
-    mr r3, r31
-    bl fn_80018B8C
-    mr r31, r3
-    mr r3, r29
-    bl fn_80018B8C
-    mr r4, r31
-    mr r5, r30
-    bl fn_8030DEEC
-    mr r3, r28
-    addi r11, r1, 0x20
-    bl _restgpr_28
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-void fn_8001FA30(void) {
-}
-
-void fn_8001FA34(u8 arg0, u8 arg1, u8 arg2, u8 arg3) {
-    *(volatile u8 *)0xCC008000 = arg0;
-    *(volatile u8 *)0xCC008000 = arg1;
-    *(volatile u8 *)0xCC008000 = arg2;
-    *(volatile u8 *)0xCC008000 = arg3;
-}
-
-void fn_8001FA5C(f32 farg0, f32 farg1, f32 farg2) {
-    *(f32 *)0xCC008000 = farg0;
-    *(f32 *)0xCC008000 = farg1;
-    *(f32 *)0xCC008000 = farg2;
-}
-
-void fn_8001FA70(f32 farg0, f32 farg1, s32 arg2, s32 arg3) {
-    *(f32 *)0xCC008000 = farg0;
-    *(f32 *)0xCC008000 = farg1;
+    fn_8030DEEC((s8 *) (fn_80018B8C((s32) (arg1))), (s8 *) ((s8 *) (fn_80018B8C((s32) (arg2)))), (s32) ((fn_80018B88())));
+    return (s32) (arg0);
 }
 
 } // extern "C"

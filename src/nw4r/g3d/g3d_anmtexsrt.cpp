@@ -55,7 +55,7 @@ extern "C" void _restgpr_27();
 extern "C" void _savegpr_25();
 extern "C" void _savegpr_27();
 extern "C" void fn_801D5538();
-extern "C" void fn_801E62C8();
+extern "C" void CalcTexMtx__Q24nw4r3g3dFPQ34nw4r4math5MTX34bRCQ34nw4r3g3d6TexSrtQ44nw4r3g3d6TexSrt4Flag();
 extern "C" void fn_8030CAF0();
 extern "C" void ldexp();
 
@@ -719,7 +719,7 @@ lbl_801DB114:
     addi r3, r1, 0x10
     clrlwi r6, r30, 28
     li r4, 0x1
-    bl fn_801E62C8
+    bl CalcTexMtx__Q24nw4r3g3dFPQ34nw4r4math5MTX34bRCQ34nw4r3g3d6TexSrtQ44nw4r3g3d6TexSrt4Flag
     lfs f0, 0x10(r1)
     fabs f1, f0
     fcmpo cr0, f31, f1

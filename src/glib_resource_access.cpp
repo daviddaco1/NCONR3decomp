@@ -4,6 +4,7 @@
 
 extern "C" {
 
+
 extern u8 lbl_803480B0[];
 extern u8 lbl_803480D0[];
 extern u8 lbl_803480E0[];
@@ -43,39 +44,10 @@ s32 fn_8003617C(s32 *arg0);
 s32 * fn_80036184(s32 *arg0, s32 arg1);
 void fn_800361B4(s32 *arg0, s32 *arg1);
 s32 fn_800361C0(s32 arg0);
-void fn_800361F0(s32 *arg0);
+M2C_UNK fn_800361F0(s32 *arg0);
 s32 * fn_80036254(void);
-void fn_801A9384(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7);
+void fn_801A9384(s32 arg0, s32 arg1, s32 arg2, ...);
 
-// asm_to_cpp: fn_80035E80
-asm void fn_80035E80(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    mr r4, r3
-    addi r3, r1, 0x8
-    bl fn_80016E44
-    addi r3, r1, 0x8
-    bl CheckRevision__Q34nw4r3g3d7ResFileCFv
-    cmpwi r3, 0x0
-    bne lbl_80035EC0
-    lis r3, lbl_803480E0@ha
-    addi r3, r3, lbl_803480E0@l
-    li r4, 0x21
-    addi r5, r3, 0x19
-    opword 0x4CC63182
-    bl fn_801A9384
-lbl_80035EC0:
-    addi r3, r1, 0x8
-    bl Init__Q34nw4r3g3d7ResFileFv
-    addi r3, r1, 0x8
-    bl fn_8003611C
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
 
 void fn_80035EE0(s32 arg0) {
     s32 sp8;
@@ -110,6 +82,65 @@ s32 fn_80035FA0(s32 arg0) {
 
     fn_80016E44((s32) ((s32) &sp8), (s32) (arg0));
     return (s32) (GetResAnmShp__Q34nw4r3g3d7ResFileCFPCc((s32 *) (&sp8)));
+}
+
+void fn_8003611C(s32 *arg0) {
+    s32 sp8;
+
+    sp8 = (s32) (*arg0);
+    Bind__Q34nw4r3g3d7ResFileFQ34nw4r3g3d7ResFile((s32 *) (arg0), (s32 *) (&sp8));
+}
+
+void fn_80036148(s32 *arg0) {
+    Release__Q34nw4r3g3d7ResFileFv((s32 *) (arg0));
+    Terminate__Q34nw4r3g3d7ResFileFv((s32 *) (arg0));
+}
+
+s32 fn_8003617C(s32 *arg0) {
+    return (s32) (*arg0);
+}
+
+s32 * fn_80036184(s32 *arg0, s32 arg1) {
+    fn_800361B4((s32 *) (arg0), (s32 *) ((s32 *) arg1));
+    return (s32 *) (arg0);
+}
+
+void fn_800361B4(s32 *arg0, s32 *arg1) {
+    *arg0 = *arg1;
+}
+
+s32 * fn_80036254(void) {
+    return (s32 *) (&lbl_8049C288);
+}
+
+// asm_to_cpp: fn_80035E80
+asm void fn_80035E80(s32 arg0) {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    stw r0, 0x14(r1)
+    mr r4, r3
+    addi r3, r1, 0x8
+    bl fn_80016E44
+    addi r3, r1, 0x8
+    bl CheckRevision__Q34nw4r3g3d7ResFileCFv
+    cmpwi r3, 0x0
+    bne lbl_80035EC0
+    lis r3, lbl_803480E0@ha
+    addi r3, r3, lbl_803480E0@l
+    li r4, 0x21
+    addi r5, r3, 0x19
+    opword 0x4CC63182
+    bl fn_801A9384
+lbl_80035EC0:
+    addi r3, r1, 0x8
+    bl Init__Q34nw4r3g3d7ResFileFv
+    addi r3, r1, 0x8
+    bl fn_8003611C
+    lwz r0, 0x14(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
 }
 
 // asm_to_cpp: fn_80035FD0
@@ -204,50 +235,12 @@ lbl_80036104:
     blr
 }
 
-void fn_8003611C(s32 *arg0) {
-    s32 sp8;
-
-    sp8 = (s32) (*arg0);
-    Bind__Q34nw4r3g3d7ResFileFQ34nw4r3g3d7ResFile((s32 *) (arg0), (s32 *) (&sp8));
-}
-
-void fn_80036148(s32 *arg0) {
-    Release__Q34nw4r3g3d7ResFileFv((s32 *) (arg0));
-    Terminate__Q34nw4r3g3d7ResFileFv((s32 *) (arg0));
-}
-
-s32 fn_8003617C(s32 *arg0) {
-    return (s32) (*arg0);
-}
-
-s32 * fn_80036184(s32 *arg0, s32 arg1) {
-    fn_800361B4((s32 *) (arg0), (s32 *) ((s32 *) arg1));
-    return (s32 *) (arg0);
-}
-
-void fn_800361B4(s32 *arg0, s32 *arg1) {
-    *arg0 = *arg1;
-}
-
-// asm_to_cpp: fn_800361C0
-asm s32 fn_800361C0(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl fn_800361F0
-    lwz r0, 0x18(r3)
-    clrlwi r3, r0, 31
-    subic r0, r3, 0x1
-    subfe r3, r0, r3
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_800361C0(s32 arg0) {
+    return (s32) ((M2C_FIELD(fn_800361F0((s32 *) ((s32 *) arg0)), s32 *, 0x18) & 1) != 0);
 }
 
 // asm_to_cpp: fn_800361F0
-asm void fn_800361F0(s32 *arg0) {
+asm M2C_UNK fn_800361F0(s32 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -275,10 +268,6 @@ lbl_80036238:
     mtlr r0
     addi r1, r1, 0x10
     blr
-}
-
-s32 * fn_80036254(void) {
-    return (s32 *) (&lbl_8049C288);
 }
 
 } // extern "C"

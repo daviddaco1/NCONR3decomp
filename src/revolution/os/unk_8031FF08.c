@@ -46,15 +46,15 @@ extern void _restgpr_25();
 extern void _savegpr_23();
 extern void _savegpr_24();
 extern void _savegpr_25();
-extern void fn_802D5770();
+extern void __DVDResetWithNoSpinup();
 extern void fn_802D926C();
 extern void fn_80311F28();
-extern void fn_80313F50();
+extern void OSGetAppType();
 extern void fn_8031B310();
 extern void fn_8031B930();
 extern void fn_8031B9D4();
-extern void fn_8031F554();
-extern void fn_8031F604();
+extern void __OSCreateNandbootInfo();
+extern void __OSWriteNandbootInfo();
 extern void fn_8031FF08();
 extern void fn_80320088();
 extern void fn_8032019C();
@@ -63,7 +63,7 @@ extern void fn_80320460();
 extern void fn_80320660();
 extern void fn_8032077C();
 extern void fn_80320BC0();
-extern void fn_803249E8();
+extern void SCGetProductGameRegion();
 extern void memcpy();
 extern void memset();
 extern void sprintf();
@@ -214,7 +214,7 @@ lbl_803200E4:
     lhz r31, 0xc(r1)
     cmplwi r31, 0x2
     bne lbl_8032011C
-    bl fn_80313F50
+    bl OSGetAppType
     clrlwi r0, r3, 24
     cmplwi r0, 0x80
     bne lbl_8032011C
@@ -599,15 +599,15 @@ lbl_803205D8:
     lwz r3, 0x44(r1)
     stw r3, 0x1c(r30)
     stw r0, 0x18(r30)
-    bl fn_80313F50
+    bl OSGetAppType
     stb r3, 0xa(r30)
     li r3, 0x1
     oris r0, r29, 0x8000
     stb r3, 0xb(r30)
     stw r0, 0xc(r30)
-    bl fn_8031F554
+    bl __OSCreateNandbootInfo
     mr r3, r30
-    bl fn_8031F604
+    bl __OSWriteNandbootInfo
     addi r3, r1, 0x60
     bl __OSReadStateFlags
     li r0, 0x3
@@ -789,7 +789,7 @@ lbl_80320888:
     li r0, 0x1
     b lbl_803208B8
 lbl_8032089C:
-    bl fn_803249E8
+    bl SCGetProductGameRegion
     extsb r0, r3
     cmplw r28, r0
     bne lbl_803208B4
@@ -818,7 +818,7 @@ lbl_803208E8:
     bl __DVDGetCoverStatus
     cmplwi r3, 0x2
     bne lbl_80320900
-    bl fn_802D5770
+    bl __DVDResetWithNoSpinup
 lbl_80320900:
     cmpwi r27, 0x0
     bne lbl_80320910
@@ -963,7 +963,7 @@ lbl_80320AF4:
     stw r0, 0x18(r30)
     lwz r0, 0x8(r29)
     stw r0, 0x4(r30)
-    bl fn_80313F50
+    bl OSGetAppType
     xori r4, r24, 0x2
     xori r0, r25, 0x1
     or. r0, r4, r0
@@ -977,9 +977,9 @@ lbl_80320B30:
     stb r0, 0xb(r30)
 lbl_80320B38:
     stw r26, 0xc(r30)
-    bl fn_8031F554
+    bl __OSCreateNandbootInfo
     mr r3, r30
-    bl fn_8031F604
+    bl __OSWriteNandbootInfo
     addi r3, r1, 0x78
     bl __OSReadStateFlags
     xori r3, r24, 0x2

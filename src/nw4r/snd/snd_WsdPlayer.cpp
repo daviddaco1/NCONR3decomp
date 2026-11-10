@@ -65,11 +65,11 @@ extern "C" void _restgpr_27();
 extern "C" void _savegpr_23();
 extern "C" void _savegpr_26();
 extern "C" void _savegpr_27();
-extern "C" void fn_8020C018();
+extern "C" void SetAttack__Q44nw4r3snd6detail12EnvGeneratorFi();
 extern "C" void fn_8020C030();
-extern "C" void fn_8020C048();
-extern "C" void fn_8020C0E8();
-extern "C" void fn_8020C0F0();
+extern "C" void SetDecay__Q44nw4r3snd6detail12EnvGeneratorFi();
+extern "C" void SetSustain__Q44nw4r3snd6detail12EnvGeneratorFi();
+extern "C" void SetRelease__Q44nw4r3snd6detail12EnvGeneratorFi();
 extern "C" void fn_80222AF0();
 extern "C" void fn_80222AF8();
 extern "C" void fn_80222B00();
@@ -860,19 +860,19 @@ lbl_802224D0:
     b lbl_80222574
 lbl_80222504:
     lbz r4, 0xc(r1)
-    bl fn_8020C018
+    bl SetAttack__Q44nw4r3snd6detail12EnvGeneratorFi
     lbz r4, 0xd(r1)
     mr r3, r31
     bl fn_8020C030
     lbz r4, 0xe(r1)
     mr r3, r31
-    bl fn_8020C048
+    bl SetDecay__Q44nw4r3snd6detail12EnvGeneratorFi
     lbz r4, 0xf(r1)
     mr r3, r31
-    bl fn_8020C0E8
+    bl SetSustain__Q44nw4r3snd6detail12EnvGeneratorFi
     lbz r4, 0x10(r1)
     mr r3, r31
-    bl fn_8020C0F0
+    bl SetRelease__Q44nw4r3snd6detail12EnvGeneratorFi
     lbz r0, 0xf0(r29)
     mr r3, r31
     mr r6, r30

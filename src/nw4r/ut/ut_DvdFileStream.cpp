@@ -39,7 +39,7 @@ extern "C" void dtor_80136CFC();
 extern "C" void Skip__Q44nw4r2ut10FileStream12FilePositionFl();
 extern "C" void Append__Q44nw4r2ut10FileStream12FilePositionFl();
 extern "C" void fn_80223EAC();
-extern "C" void fn_802D55B4();
+extern "C" void DVDCancel();
 
 // ----------------------------------------------------------------------------
 // DvdAsyncCallback___Q34nw4r2ut13DvdFileStreamFlP11DVDFileInfo
@@ -476,7 +476,7 @@ extern "C" asm void Seek__Q34nw4r2ut13DvdFileStreamFlUl() {
 extern "C" asm void Cancel__Q34nw4r2ut13DvdFileStreamFv() {
     nofralloc
     addi r3, r3, 0x28
-    b fn_802D55B4
+    b DVDCancel
 }
 
 // ----------------------------------------------------------------------------

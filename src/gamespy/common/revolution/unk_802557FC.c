@@ -51,7 +51,7 @@ extern void fn_8025622C();
 extern void fn_80256360();
 extern void fn_80256428();
 extern void fn_8025651C();
-extern void fn_8025658C();
+extern void _strlwr();
 extern void gsiInitializeCriticalSection();
 extern void gsiEnterCriticalSection();
 extern void current_time();
@@ -1129,9 +1129,9 @@ lbl_80256574:
 }
 
 // ----------------------------------------------------------------------------
-// fn_8025658C
+// _strlwr
 // ----------------------------------------------------------------------------
-asm void fn_8025658C() {
+asm void _strlwr() {
     nofralloc
     lis r5, lbl_8035FBD8@ha
     mr r7, r3

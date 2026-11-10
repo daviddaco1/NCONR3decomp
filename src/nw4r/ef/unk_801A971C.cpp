@@ -220,7 +220,7 @@ extern "C" void fn_801AC83C();
 extern "C" void fn_801ACA14();
 extern "C" void fn_801ACC48();
 extern "C" void fn_801ACD98();
-extern "C" void fn_801ACEA8();
+extern "C" void foreachParticleManagerSub__Q24nw4r2efFPvUl();
 extern "C" void fn_801ACEF0();
 extern "C" void fn_801ACFD4();
 extern "C" void fn_801ACFE0();
@@ -245,10 +245,10 @@ extern "C" void fn_801B3A98();
 extern "C" void fn_801B426C();
 extern "C" void fn_801B48B0();
 extern "C" void fn_801B4C90();
-extern "C" void fn_801B5504();
-extern "C" void fn_801B5514();
+extern "C" void __ct__Q34nw4r2ef8ParticleFv();
+extern "C" void __dt__Q34nw4r2ef8ParticleFv();
 extern "C" void fn_801B5554();
-extern "C" void fn_801B5560();
+extern "C" void DestroyFunc__Q34nw4r2ef8ParticleFv();
 extern "C" void fn_801B5564();
 extern "C" void fn_801B587C();
 extern "C" void fn_801B60F0();
@@ -256,9 +256,9 @@ extern "C" void fn_801B6324();
 extern "C" void fn_801B637C();
 extern "C" void fn_801B6388();
 extern "C" void fn_801B638C();
-extern "C" void fn_801B6418();
+extern "C" void RetireParticleAll__Q34nw4r2ef15ParticleManagerFv();
 extern "C" void fn_801B64D8();
-extern "C" void fn_801B6628();
+extern "C" void __dt__Q34nw4r2ef15ParticleManagerFv();
 extern "C" void fn_801B6668();
 extern "C" void fn_801B6794();
 extern "C" void fn_801B7CD8();
@@ -286,11 +286,11 @@ extern "C" void fn_801B9068();
 extern "C" void fn_801B9108();
 extern "C" void fn_801B916C();
 extern "C" void fn_801B9270();
-extern "C" void fn_801B92C0();
+extern "C" void UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi();
 extern "C" void fn_801B9344();
 extern "C" void fn_801B9448();
 extern "C" void fn_801B955C();
-extern "C" void fn_801B96C8();
+extern "C" void MtxGetTranslate__Q24nw4r2efFRCQ34nw4r4math5MTX34PQ34nw4r4math4VEC3();
 extern "C" void fn_801B96E4();
 extern "C" void fn_801B9B90();
 extern "C" void fn_801B9BF4();
@@ -305,7 +305,7 @@ extern "C" void fn_801BA7E4();
 extern "C" void fn_801BA7F0();
 extern "C" void fn_801BA96C();
 extern "C" void fn_801BAAEC();
-extern "C" void fn_8030D7E0();
+extern "C" void PSMTXMultVec();
 extern "C" void fn_8030DE44();
 extern "C" void fn_8030DE88();
 extern "C" void fn_8030DEEC();
@@ -690,7 +690,7 @@ extern "C" asm void fn_801A9BA4() {
     addi r4, r1, 0x8
     li r28, 0x0
     addi r3, r3, 0x24
-    bl fn_801B92C0
+    bl UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
     addi r29, r1, 0x8
     clrlwi r31, r3, 16
     li r27, 0x0
@@ -758,7 +758,7 @@ extern "C" asm void fn_801A9C7C() {
     stw r28, 0x1010(r1)
     lhz r5, 0x2c(r3)
     addi r3, r3, 0x24
-    bl fn_801B92C0
+    bl UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
     addi r30, r1, 0x8
     clrlwi r31, r3, 16
     li r28, 0x0
@@ -883,7 +883,7 @@ lbl_801A9E3C:
     lhz r5, 0x2c(r30)
     addi r3, r30, 0x24
     addi r4, r1, 0x38
-    bl fn_801B92C0
+    bl UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
     clrlwi r28, r3, 16
     li r27, 0x0
     b lbl_801A9E74
@@ -927,7 +927,7 @@ lbl_801A9EC0:
     lhz r5, 0x2c(r30)
     addi r3, r30, 0x24
     addi r4, r1, 0x38
-    bl fn_801B92C0
+    bl UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
     clrlwi r28, r3, 16
     li r27, 0x0
     b lbl_801A9F44
@@ -961,7 +961,7 @@ lbl_801A9F44:
     lhz r5, 0x2c(r30)
     addi r3, r30, 0x24
     addi r4, r1, 0x38
-    bl fn_801B92C0
+    bl UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
     clrlwi r28, r3, 16
     li r26, 0x0
     b lbl_801A9F88
@@ -980,7 +980,7 @@ lbl_801A9F88:
     lhz r5, 0x2c(r30)
     addi r3, r30, 0x24
     addi r4, r1, 0x38
-    bl fn_801B92C0
+    bl UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
     clrlwi r28, r3, 16
     li r26, 0x0
     b lbl_801A9FCC
@@ -1772,7 +1772,7 @@ extern "C" asm void fn_801AA94C() {
     add r3, r3, r0
     lhz r5, 0x8(r3)
     li r31, 0x0
-    bl fn_801B92C0
+    bl UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
     addi r26, r1, 0x8
     clrlwi r28, r3, 16
     li r30, 0x0
@@ -1848,7 +1848,7 @@ extern "C" asm void fn_801AAA44() {
     lwz r3, -0x3fe8(r3)
     add r3, r3, r0
     lhz r5, 0x8(r3)
-    bl fn_801B92C0
+    bl UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
     addi r30, r1, 0x8
     clrlwi r31, r3, 16
     li r28, 0x0
@@ -1893,7 +1893,7 @@ extern "C" asm void fn_801AAAD4() {
     lwz r3, -0x3fe8(r3)
     add r3, r3, r0
     lhz r5, 0x8(r3)
-    bl fn_801B92C0
+    bl UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
     addi r30, r1, 0x8
     clrlwi r31, r3, 16
     li r28, 0x0
@@ -1937,7 +1937,7 @@ extern "C" asm void fn_801AAB64() {
     add r3, r5, r0
     lhz r5, 0x8(r3)
     addi r4, r1, 0x8
-    bl fn_801B92C0
+    bl UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
     addi r30, r1, 0x8
     clrlwi r31, r3, 16
     li r29, 0x0
@@ -2160,7 +2160,7 @@ extern "C" asm void fn_801AAE4C() {
     stw r28, 0x1010(r1)
     lhz r5, 0xc8(r3)
     addi r3, r3, 0xc0
-    bl fn_801B92C0
+    bl UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
     addi r30, r1, 0x8
     clrlwi r31, r3, 16
     li r28, 0x0
@@ -2168,7 +2168,7 @@ extern "C" asm void fn_801AAE4C() {
 lbl_801AAE8C:
     clrlslwi r0, r28, 16, 2
     lwzx r3, r30, r0
-    bl fn_801B6418
+    bl RetireParticleAll__Q34nw4r2ef15ParticleManagerFv
     add r29, r29, r3
     addi r28, r28, 0x1
 lbl_801AAEA0:
@@ -2228,7 +2228,7 @@ lbl_801AAF1C:
     addi r4, r1, 0x8
     lhz r5, 0x2c(r3)
     addi r3, r3, 0x24
-    bl fn_801B92C0
+    bl UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
     addi r30, r1, 0x8
     clrlwi r31, r3, 16
     li r29, 0x0
@@ -2335,7 +2335,7 @@ extern "C" asm void fn_801AB06C() {
     addi r4, r1, 0x8
     li r28, 0x0
     addi r3, r3, 0xc0
-    bl fn_801B92C0
+    bl UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
     addi r29, r1, 0x8
     clrlwi r31, r3, 16
     li r27, 0x0
@@ -2988,7 +2988,7 @@ lbl_801AB968:
     stfs f2, 0x20(r1)
     stfs f1, 0x24(r1)
     stfs f0, 0x28(r1)
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0x20
     mr r4, r3
     bl fn_801B9B90
@@ -3577,7 +3577,7 @@ lbl_801AC214:
     bl fn_801ACC48
     addi r4, r29, 0x90
     addi r5, r1, 0x18
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addis r4, r19, 0x1
     lfs f3, 0x44(r29)
     lfs f1, -0x3fa4(r4)
@@ -3899,7 +3899,7 @@ extern "C" asm void fn_801AC6A0() {
     lhz r5, 0xc8(r3)
     addi r4, r1, 0x8
     addi r3, r3, 0xc0
-    bl fn_801B92C0
+    bl UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
     addi r30, r1, 0x8
     clrlwi r31, r3, 16
     li r29, 0x0
@@ -4200,7 +4200,7 @@ lbl_801ACAE8:
     bl PSMTXIdentity
     mr r3, r27
     addi r4, r1, 0x2c
-    bl fn_801B96C8
+    bl MtxGetTranslate__Q24nw4r2efFRCQ34nw4r4math5MTX34PQ34nw4r4math4VEC3
     extsb r0, r30
     cmpwi r0, 0x64
     bne lbl_801ACB1C
@@ -4476,9 +4476,9 @@ lbl_801ACE90:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801ACEA8
+// foreachParticleManagerSub__Q24nw4r2efFPvUl
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_801ACEA8() {
+extern "C" asm void foreachParticleManagerSub__Q24nw4r2efFPvUl() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -4546,10 +4546,10 @@ lbl_801ACF70:
     cmpwi r28, 0x0
     beq lbl_801ACFB8
     li r0, 0x0
-    lis r4, fn_801ACEA8@ha
+    lis r4, foreachParticleManagerSub__Q24nw4r2efFPvUl@ha
     stw r0, 0x8(r1)
     mr r7, r24
-    addi r4, r4, fn_801ACEA8@l
+    addi r4, r4, foreachParticleManagerSub__Q24nw4r2efFPvUl@l
     addi r5, r1, 0x8
     stw r25, 0xc(r1)
     li r6, 0x1
@@ -10837,7 +10837,7 @@ lbl_801B24FC:
 lbl_801B2584:
     mr r4, r9
     mr r5, r10
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f31
     b lbl_801B2918
 lbl_801B2598:
@@ -10878,7 +10878,7 @@ lbl_801B2598:
 lbl_801B2620:
     mr r4, r9
     mr r5, r10
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f31
     b lbl_801B2918
 lbl_801B2634:
@@ -10934,7 +10934,7 @@ lbl_801B2668:
 lbl_801B26F0:
     mr r4, r9
     mr r5, r10
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f31
     b lbl_801B2918
 lbl_801B2704:
@@ -10975,7 +10975,7 @@ lbl_801B2704:
 lbl_801B278C:
     mr r4, r9
     mr r5, r10
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f31
     b lbl_801B2918
 lbl_801B27A0:
@@ -11031,7 +11031,7 @@ lbl_801B27D4:
 lbl_801B285C:
     mr r4, r9
     mr r5, r10
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f31
     b lbl_801B2918
 lbl_801B2870:
@@ -11072,7 +11072,7 @@ lbl_801B2870:
 lbl_801B28F8:
     mr r4, r9
     mr r5, r10
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f31
     b lbl_801B2918
 lbl_801B290C:
@@ -11169,7 +11169,7 @@ lbl_801B2998:
 lbl_801B2A44:
     mr r4, r9
     mr r5, r10
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f31
     b lbl_801B2EBC
 lbl_801B2A58:
@@ -11222,7 +11222,7 @@ lbl_801B2A60:
 lbl_801B2B0C:
     mr r4, r9
     mr r5, r10
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f31
     b lbl_801B2EBC
 lbl_801B2B20:
@@ -11290,7 +11290,7 @@ lbl_801B2B5C:
 lbl_801B2C08:
     mr r4, r9
     mr r5, r10
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f31
     b lbl_801B2EBC
 lbl_801B2C1C:
@@ -11343,7 +11343,7 @@ lbl_801B2C24:
 lbl_801B2CD0:
     mr r4, r9
     mr r5, r10
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f31
     b lbl_801B2EBC
 lbl_801B2CE4:
@@ -11411,7 +11411,7 @@ lbl_801B2D20:
 lbl_801B2DCC:
     mr r4, r9
     mr r5, r10
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f31
     b lbl_801B2EBC
 lbl_801B2DE0:
@@ -11464,7 +11464,7 @@ lbl_801B2DE8:
 lbl_801B2E94:
     mr r4, r9
     mr r5, r10
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f31
     b lbl_801B2EBC
 lbl_801B2EA8:
@@ -11563,7 +11563,7 @@ lbl_801B2F3C:
 lbl_801B2FE4:
     mr r4, r9
     mr r5, r10
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f31
     b lbl_801B3448
 lbl_801B2FF8:
@@ -11615,7 +11615,7 @@ lbl_801B3000:
 lbl_801B30A8:
     mr r4, r9
     mr r5, r10
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f31
     b lbl_801B3448
 lbl_801B30BC:
@@ -11682,7 +11682,7 @@ lbl_801B30F8:
 lbl_801B31A0:
     mr r4, r9
     mr r5, r10
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f31
     b lbl_801B3448
 lbl_801B31B4:
@@ -11734,7 +11734,7 @@ lbl_801B31BC:
 lbl_801B3264:
     mr r4, r9
     mr r5, r10
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f31
     b lbl_801B3448
 lbl_801B3278:
@@ -11801,7 +11801,7 @@ lbl_801B32B4:
 lbl_801B335C:
     mr r4, r9
     mr r5, r10
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f31
     b lbl_801B3448
 lbl_801B3370:
@@ -11853,7 +11853,7 @@ lbl_801B3378:
 lbl_801B3420:
     mr r4, r9
     mr r5, r10
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f31
     b lbl_801B3448
 lbl_801B3434:
@@ -12092,7 +12092,7 @@ lbl_801B3780:
     mr r3, r31
     mr r4, r29
     mr r5, r30
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f30
     b lbl_801B3A58
 lbl_801B3798:
@@ -12150,7 +12150,7 @@ lbl_801B3860:
     mr r3, r31
     mr r4, r29
     mr r5, r30
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f30
     b lbl_801B3A58
 lbl_801B3878:
@@ -12214,7 +12214,7 @@ lbl_801B38EC:
     mr r4, r27
     addi r3, r1, 0x48
     addi r5, r1, 0x14
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     lfs f0, 0x18(r1)
     mr r4, r28
     opword 0xE05D0000
@@ -12236,7 +12236,7 @@ lbl_801B38EC:
     opword 0xF01B0000
     opword 0x10020828
     opword 0xF01B8008
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     lfs f1, 0x18(r1)
     opword 0xE07D0000
     lfs f0, lbl_804A1774
@@ -12278,7 +12278,7 @@ lbl_801B3A44:
     mr r3, r31
     mr r4, r29
     mr r5, r30
-    bl fn_8030D7E0
+    bl PSMTXMultVec
 lbl_801B3A54:
     fmr f1, f29
 lbl_801B3A58:
@@ -12491,7 +12491,7 @@ lbl_801B3D58:
     mr r3, r31
     mr r4, r29
     mr r5, r30
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f31
     b lbl_801B422C
 lbl_801B3D70:
@@ -12549,7 +12549,7 @@ lbl_801B3E38:
     mr r3, r31
     mr r4, r29
     mr r5, r30
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f31
     b lbl_801B422C
 lbl_801B3E50:
@@ -12620,7 +12620,7 @@ lbl_801B3F48:
     mr r3, r31
     mr r4, r29
     mr r5, r30
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f31
     b lbl_801B422C
 lbl_801B3F60:
@@ -12678,7 +12678,7 @@ lbl_801B4028:
     mr r3, r31
     mr r4, r29
     mr r5, r30
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     fmr f1, f31
     b lbl_801B422C
 lbl_801B4040:
@@ -12809,7 +12809,7 @@ lbl_801B4218:
     mr r3, r31
     mr r4, r29
     mr r5, r30
-    bl fn_8030D7E0
+    bl PSMTXMultVec
 lbl_801B4228:
     fmr f1, f30
 lbl_801B422C:
@@ -13115,7 +13115,7 @@ lbl_801B465C:
     stfs f4, 0x0(r9)
     stfs f2, 0x4(r9)
     stfs f0, 0x8(r9)
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     lhz r0, 0x2c(r28)
     rlwinm. r0, r0, 0, 30, 30
     beq lbl_801B4854
@@ -13430,7 +13430,7 @@ lbl_801B4AF4:
     mr r3, r26
     mr r4, r22
     mr r5, r24
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     lfs f2, 0x0(r24)
     addi r25, r1, 0x8
     lfs f1, 0x30(r27)
@@ -13455,7 +13455,7 @@ lbl_801B4AF4:
     opword 0xF0190000
     opword 0x10010118
     opword 0xF0198008
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     lfs f1, 0x8(r1)
     lfs f0, 0x30(r27)
     lfs f3, 0xc(r1)
@@ -13659,7 +13659,7 @@ lbl_801B4D58:
     stfs f0, 0x9c(r1)
     stfs f0, 0xac(r1)
     stfs f0, 0xbc(r1)
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     lbz r0, 0x29(r24)
     lbz r4, 0x2a(r24)
     cmpwi r0, 0x3
@@ -13919,11 +13919,11 @@ lbl_801B51A4:
     fmuls f1, f1, f2
     fadds f0, f0, f1
     stfs f0, 0x70(r1)
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     mr r4, r28
     addi r3, r1, 0x90
     addi r5, r1, 0x5c
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     lfs f31, lbl_804A17A4
     addi r22, r1, 0x50
     addi r28, r1, 0x44
@@ -13993,11 +13993,11 @@ lbl_801B5300:
     li r31, 0x1
     stfs f1, 0x78(r1)
     stfs f0, 0x7c(r1)
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0x90
     addi r4, r1, 0x2c
     addi r5, r1, 0x5c
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     b lbl_801B54CC
 lbl_801B5340:
     cmpwi r21, 0x0
@@ -14127,9 +14127,9 @@ lbl_801B54E4:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801B5504
+// __ct__Q34nw4r2ef8ParticleFv
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_801B5504() {
+extern "C" asm void __ct__Q34nw4r2ef8ParticleFv() {
     nofralloc
     lis r4, lbl_803606D0@ha
     addi r4, r4, lbl_803606D0@l
@@ -14138,9 +14138,9 @@ extern "C" asm void fn_801B5504() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_801B5514
+// __dt__Q34nw4r2ef8ParticleFv
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_801B5514() {
+extern "C" asm void __dt__Q34nw4r2ef8ParticleFv() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -14172,9 +14172,9 @@ extern "C" asm void fn_801B5554() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_801B5560
+// DestroyFunc__Q34nw4r2ef8ParticleFv
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_801B5560() {
+extern "C" asm void DestroyFunc__Q34nw4r2ef8ParticleFv() {
     nofralloc
     blr
 }
@@ -14505,7 +14505,7 @@ lbl_801B5A0C:
     stfs f0, 0xc4(r1)
     stfs f0, 0xb4(r1)
     stfs f0, 0xa4(r1)
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     opword 0xE01800A0
     opword 0xE0210028
     opword 0x1020082A
@@ -14520,7 +14520,7 @@ lbl_801B5A60:
     addi r4, r24, 0xac
     mr r3, r28
     mr r5, r4
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     lwz r6, 0x0(r28)
     addi r4, r24, 0xa0
     lwz r0, 0x4(r28)
@@ -14552,7 +14552,7 @@ lbl_801B5A60:
     stfs f0, 0x94(r1)
     stfs f0, 0x84(r1)
     stfs f0, 0x74(r1)
-    bl fn_8030D7E0
+    bl PSMTXMultVec
 lbl_801B5AF8:
     lfs f0, lbl_804A17D8
     cmpwi r27, 0x0
@@ -14579,7 +14579,7 @@ lbl_801B5AF8:
     stfs f0, 0x64(r1)
     stfs f0, 0x54(r1)
     stfs f0, 0x44(r1)
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     lwz r3, 0xc8(r24)
     addi r4, r1, 0x38
     bl fn_801B7FB8
@@ -14593,7 +14593,7 @@ lbl_801B5AF8:
     addi r4, r1, 0x1c
     addi r3, r1, 0x38
     mr r5, r4
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     lha r0, 0x0(r26)
     lfd f6, lbl_804A17E8
     xoris r0, r0, 0x8000
@@ -15212,9 +15212,9 @@ lbl_801B63DC:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801B6418
+// RetireParticleAll__Q34nw4r2ef15ParticleManagerFv
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_801B6418() {
+extern "C" asm void RetireParticleAll__Q34nw4r2ef15ParticleManagerFv() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -15365,9 +15365,9 @@ lbl_801B6570:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801B6628
+// __dt__Q34nw4r2ef15ParticleManagerFv
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_801B6628() {
+extern "C" asm void __dt__Q34nw4r2ef15ParticleManagerFv() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -15940,20 +15940,20 @@ lbl_801B6E80:
     addi r3, r1, 0x3a0
     mr r4, r27
     mr r5, r28
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     b lbl_801B6EEC
 lbl_801B6EA0:
     addi r3, r1, 0x460
     mr r4, r27
     mr r5, r28
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r4, r1, 0x8c
     stfs f22, 0x8c(r1)
     mr r3, r14
     stfs f22, 0x90(r1)
     mr r5, r4
     stfs f22, 0x94(r1)
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     opword 0xE01C0000
     opword 0xE021008C
     opword 0x10400828
@@ -16104,7 +16104,7 @@ lbl_801B70F8:
     addi r4, r1, 0x5c
     mr r3, r26
     mr r5, r4
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0x5c
     bl fn_8030DE88
     stfs f1, 0x150(r1)
@@ -16183,7 +16183,7 @@ lbl_801B7220:
     addi r4, r1, 0x68
     mr r3, r26
     mr r5, r4
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0x68
     mr r4, r3
     bl fn_801B9B90
@@ -16286,7 +16286,7 @@ lbl_801B73A4:
     mr r4, r24
     mr r5, r24
     addi r3, r1, 0x198
-    bl fn_8030D7E0
+    bl PSMTXMultVec
 lbl_801B73B4:
     lbz r0, 0x14f(r1)
     rlwinm. r0, r0, 0, 29, 29
@@ -16320,7 +16320,7 @@ lbl_801B73D4:
     mr r4, r25
     mr r5, r24
     addi r3, r1, 0x168
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     opword 0xE0180000
     opword 0xE0390000
     opword 0x10400828
@@ -16494,13 +16494,13 @@ lbl_801B76C4:
     addi r4, r1, 0xec
     addi r3, r1, 0x2e0
     mr r5, r4
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     b lbl_801B7714
 lbl_801B76D8:
     addi r4, r1, 0xec
     addi r3, r1, 0x370
     mr r5, r4
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     b lbl_801B7714
 lbl_801B76EC:
     opword 0xE0180000
@@ -16512,7 +16512,7 @@ lbl_801B76EC:
     opword 0xF0380000
     opword 0x10200558
     opword 0xF0388008
-    bl fn_8030D7E0
+    bl PSMTXMultVec
 lbl_801B7714:
     lbz r0, 0x14d(r1)
     cmpwi r0, 0x1
@@ -16736,7 +16736,7 @@ lbl_801B7A40:
     addi r3, r1, 0x1f8
     addi r4, r22, 0xac
     addi r5, r1, 0xbc
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     lfs f0, 0xbc(r1)
     li r0, 0x0
     fcmpo cr0, f0, f25
@@ -16809,7 +16809,7 @@ lbl_801B7B60:
     addi r3, r1, 0x258
     addi r4, r1, 0xbc
     addi r5, r22, 0xac
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     b lbl_801B7C10
 lbl_801B7B7C:
     opword 0xE01600A0
@@ -17434,7 +17434,7 @@ lbl_801B8410:
     addi r4, r4, 0xac
     addi r3, r3, lbl_803E5E70@l
     addi r5, r1, 0x8
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0x8
     opword 0xE01D007C
     opword 0xE0230000
@@ -18590,9 +18590,9 @@ extern "C" asm void fn_801B9270() {
 }
 
 // ----------------------------------------------------------------------------
-// fn_801B92C0
+// UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_801B92C0() {
+extern "C" asm void UtlistToArray__Q24nw4r2efFPCQ34nw4r2ut4ListPPvi() {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -18890,9 +18890,9 @@ lbl_801B9698:
 }
 
 // ----------------------------------------------------------------------------
-// fn_801B96C8
+// MtxGetTranslate__Q24nw4r2efFRCQ34nw4r4math5MTX34PQ34nw4r4math4VEC3
 // ----------------------------------------------------------------------------
-extern "C" asm void fn_801B96C8() {
+extern "C" asm void MtxGetTranslate__Q24nw4r2efFRCQ34nw4r4math5MTX34PQ34nw4r4math4VEC3() {
     nofralloc
     lfs f2, 0xc(r3)
     lfs f1, 0x1c(r3)

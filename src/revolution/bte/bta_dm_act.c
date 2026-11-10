@@ -390,7 +390,7 @@ extern void bta_sys_rm_register();
 extern void bta_sys_start_timer();
 extern void bta_sys_stop_timer();
 extern void btsnd_hcic_write_scan_enable();
-extern void fn_802A59E8();
+extern void bdcpy();
 extern void strncpy();
 
 // asm_to_cpp: bta_dm_enable
@@ -731,7 +731,7 @@ asm void bta_dm_discover(s8 *arg0) {
     bl BTM_SecAddRmtNameNotifyCallback
     addi r3, r31, 0x1a
     addi r4, r30, 0x8
-    bl fn_802A59E8
+    bl bdcpy
     lwz r0, 0x8(r31)
     cmpwi r0, 0x0
     beq lbl_802A677C
@@ -767,7 +767,7 @@ lbl_802A67A0:
     beq lbl_802A6804
     addi r3, r3, 0x8
     addi r4, r31, 0x1a
-    bl fn_802A59E8
+    bl bdcpy
     li r3, 0x0
     li r0, 0x204
     stb r3, 0xe(r30)
@@ -829,7 +829,7 @@ lbl_802A6884:
     stw r29, 0x10(r30)
     stw r0, 0xc(r30)
     stb r29, 0x20(r30)
-    bl fn_802A59E8
+    bl bdcpy
     lwz r3, 0x4(r30)
     addi r3, r3, 0x2
     bl bta_dm_find_services
@@ -844,7 +844,7 @@ lbl_802A68E0:
     beq lbl_802A6918
     addi r3, r1, 0x8
     addi r4, r4, 0x2
-    bl fn_802A59E8
+    bl bdcpy
     lwz r12, lbl_80453B98@l(r28)
     addi r4, r1, 0x8
     stb r30, 0xe(r1)
@@ -887,7 +887,7 @@ lbl_802A6944:
     beq lbl_802A69B4
     mr r4, r28
     addi r3, r3, 0x8
-    bl fn_802A59E8
+    bl bdcpy
     li r3, 0x0
     li r0, 0x204
     stb r3, 0xe(r29)
@@ -957,7 +957,7 @@ lbl_802A6A6C:
     beq lbl_802A6AA8
     addi r3, r1, 0x8
     addi r4, r4, 0x2
-    bl fn_802A59E8
+    bl bdcpy
     lwz r12, lbl_80453B98@l(r28)
     addi r4, r1, 0x8
     stb r30, 0xe(r1)
@@ -998,7 +998,7 @@ lbl_802A6ACC:
     beq lbl_802A6B3C
     mr r4, r28
     addi r3, r3, 0x8
-    bl fn_802A59E8
+    bl bdcpy
     li r3, 0x0
     li r0, 0x204
     stb r3, 0xe(r29)
@@ -1161,7 +1161,7 @@ lbl_802A6D1C:
     lwz r0, 0x10(r30)
     stw r0, 0x108(r3)
     addi r3, r3, 0x8
-    bl fn_802A59E8
+    bl bdcpy
     lbz r0, 0x20(r30)
     addi r31, r30, 0x20
     extsb. r0, r0
@@ -1214,7 +1214,7 @@ lbl_802A6DC4:
     lwz r0, 0x10(r31)
     stw r0, 0x108(r3)
     addi r3, r3, 0x8
-    bl fn_802A59E8
+    bl bdcpy
     lbz r0, 0x20(r31)
     addi r30, r31, 0x20
     extsb. r0, r0
@@ -1576,7 +1576,7 @@ lbl_802A7290:
     lwz r0, 0x10(r26)
     stw r0, 0x108(r3)
     addi r3, r3, 0x8
-    bl fn_802A59E8
+    bl bdcpy
     lbz r0, 0x20(r26)
     addi r23, r26, 0x20
     extsb. r0, r0
@@ -1643,7 +1643,7 @@ lbl_802A7378:
     stw r30, 0x10(r31)
     stb r30, 0x20(r31)
     stw r0, 0xc(r31)
-    bl fn_802A59E8
+    bl bdcpy
     lwz r3, 0x4(r31)
     addi r3, r3, 0x2
     bl bta_dm_find_services
@@ -1701,7 +1701,7 @@ asm void bta_dm_inq_results_cb() {
     mr r31, r3
     addi r3, r1, 0x8
     addi r4, r31, 0x2
-    bl fn_802A59E8
+    bl bdcpy
     addi r3, r1, 0xe
     addi r4, r31, 0x8
     li r5, 0x3
@@ -1777,7 +1777,7 @@ asm void bta_dm_remname_cback(s8 *arg0) {
     lwz r4, 0x4(r31)
     addi r3, r3, 0x8
     addi r4, r4, 0x2
-    bl fn_802A59E8
+    bl bdcpy
     addi r3, r30, 0xe
     addi r4, r29, 0x4
     li r5, 0x20
@@ -1817,7 +1817,7 @@ asm void bta_dm_disc_remname_cback(s8 *arg0) {
     beq lbl_802A7660
     addi r3, r3, 0x8
     addi r4, r31, 0x1a
-    bl fn_802A59E8
+    bl bdcpy
     addi r3, r30, 0xe
     addi r4, r29, 0x4
     li r5, 0x20
@@ -1850,7 +1850,7 @@ asm s32 bta_dm_authorize_cback(s8 *arg0, s32 arg2, u32 arg4) {
     mr r30, r7
     stw r29, 0x124(r1)
     mr r29, r5
-    bl fn_802A59E8
+    bl bdcpy
     mr r4, r29
     addi r3, r1, 0xe
     li r5, 0x20
@@ -1909,7 +1909,7 @@ asm void bta_dm_pinname_cback(s8 *arg0) {
     mr r30, r3
     addi r3, r1, 0x8
     addi r4, r31, 0xf8
-    bl fn_802A59E8
+    bl bdcpy
     lbz r4, 0xfe(r31)
     cmpwi r30, 0x0
     lbz r3, 0xff(r31)
@@ -1978,7 +1978,7 @@ lbl_802A784C:
     bne lbl_802A78BC
     mr r4, r28
     addi r3, r31, 0xf8
-    bl fn_802A59E8
+    bl bdcpy
     lbz r0, 0x0(r29)
     lis r4, bta_dm_pinname_cback@ha
     mr r3, r28
@@ -2005,7 +2005,7 @@ lbl_802A78A0:
 lbl_802A78BC:
     mr r4, r28
     addi r3, r1, 0x8
-    bl fn_802A59E8
+    bl bdcpy
     lbz r0, 0x0(r29)
     mr r4, r30
     addi r3, r1, 0xe
@@ -2049,7 +2049,7 @@ asm s32 bta_dm_new_link_key_cback(s8 *arg0, s32 arg1, s32 *arg2, s32 *arg3) {
     mr r31, r6
     stw r30, 0x118(r1)
     mr r30, r5
-    bl fn_802A59E8
+    bl bdcpy
     mr r4, r30
     addi r3, r1, 0xe
     li r5, 0x1f
@@ -2094,7 +2094,7 @@ asm s32 bta_dm_authentication_complete_cback(s8 *arg0, s32 arg1, s32 *arg2, s32 
     beq lbl_802A7A48
     mr r4, r3
     addi r3, r1, 0x8
-    bl fn_802A59E8
+    bl bdcpy
     mr r4, r31
     addi r3, r1, 0xe
     li r5, 0x1f
@@ -2248,7 +2248,7 @@ asm void bta_dm_acl_change_cback() {
     beq lbl_802A7C0C
     mr r4, r29
     addi r3, r3, 0xb
-    bl fn_802A59E8
+    bl bdcpy
     stb r30, 0xa(r31)
     li r0, 0x105
     mr r3, r31
@@ -2286,7 +2286,7 @@ lbl_802A7C60:
     mr r4, r31
     mulli r0, r0, 0xb
     add r3, r30, r0
-    bl fn_802A5A1C
+    bl bdcmp
     cmpwi r3, 0x0
     beq lbl_802A7C90
     addi r29, r29, 0x1
@@ -2305,7 +2305,7 @@ lbl_802A7C90:
     mulli r0, r3, 0xb
     mr r4, r31
     add r3, r30, r0
-    bl fn_802A59E8
+    bl bdcpy
     lbz r3, 0x4d(r30)
     addi r0, r3, 0x1
     stb r0, 0x4d(r30)
@@ -2321,7 +2321,7 @@ lbl_802A7CC4:
     mr r4, r31
     addi r3, r1, 0x8
     stb r0, 0x7(r5)
-    bl fn_802A59E8
+    bl bdcpy
     lwz r12, 0x50(r30)
     addi r4, r1, 0x8
     li r3, 0x5
@@ -2338,7 +2338,7 @@ lbl_802A7D1C:
     mr r4, r31
     mulli r0, r0, 0xb
     add r3, r30, r0
-    bl fn_802A5A1C
+    bl bdcmp
     cmpwi r3, 0x0
     bne lbl_802A7D7C
     lis r3, lbl_80453C14@ha
@@ -2380,7 +2380,7 @@ lbl_802A7D90:
     beq lbl_802A7E10
     mr r4, r31
     addi r3, r30, 0x1a
-    bl fn_802A5A1C
+    bl bdcmp
     cmpwi r3, 0x0
     bne lbl_802A7E10
     lbz r0, 0x79(r30)
@@ -2424,7 +2424,7 @@ lbl_802A7E10:
 lbl_802A7E5C:
     mr r4, r31
     addi r3, r1, 0x8
-    bl fn_802A59E8
+    bl bdcpy
     bl btm_get_acl_disc_reason_code
     lis r5, lbl_80453C14@ha
     stb r3, 0xe(r1)
@@ -2469,7 +2469,7 @@ asm void bta_dm_rssi_cback(s8 *arg0) {
     bne lbl_802A7F1C
     addi r3, r1, 0x8
     addi r4, r31, 0x3
-    bl fn_802A59E8
+    bl bdcpy
     li r0, 0x1
     lis r3, lbl_80453C14@ha
     stb r0, 0xe(r1)
@@ -2502,7 +2502,7 @@ asm void bta_dm_link_quality_cback(s8 *arg0) {
     bne lbl_802A7F88
     addi r3, r1, 0x8
     addi r4, r31, 0x3
-    bl fn_802A59E8
+    bl bdcpy
     li r0, 0x2
     lis r3, lbl_80453C14@ha
     stb r0, 0xe(r1)
@@ -2544,7 +2544,7 @@ lbl_802A7FD0:
     bne lbl_802A8050
     mr r3, r30
     mr r4, r25
-    bl fn_802A5A1C
+    bl bdcmp
     cmpwi r3, 0x0
     bne lbl_802A8050
     lbz r0, lbl_8049E000
@@ -2672,7 +2672,7 @@ lbl_802A8164:
     mr r3, r31
     stb r4, 0x6(r31)
     mr r4, r6
-    bl fn_802A59E8
+    bl bdcpy
     lbz r0, lbl_8049E000
     li r3, 0x1
     stb r3, 0x8(r31)
@@ -2773,7 +2773,7 @@ lbl_802A82F0:
     mr r4, r26
     mulli r28, r0, 0xb
     add r3, r29, r28
-    bl fn_802A5A1C
+    bl bdcmp
     cmpwi r3, 0x0
     bne lbl_802A8394
     add r3, r29, r28

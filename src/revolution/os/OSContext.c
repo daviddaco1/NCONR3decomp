@@ -175,10 +175,6 @@ _exit:
     // clang-format on
 }
 
-//unused
-asm void OSLoadFPUContext(){
-}
-
 asm void OSSaveFPUContext(register OSContext* ctx) {
     // clang-format off
     nofralloc
@@ -282,13 +278,13 @@ asm void OSLoadContext(register OSContext* ctx) {
 
     // If the context was in OSDisableInterrupts,
     // jump back to the beginning of the function
-    lis r4, __RAS_OSDisableInterrupts_begin@ha
+    lis r4, OSDisableInterrupts@ha
     lwz r6, ctx->srr0
-    addi r5, r4, __RAS_OSDisableInterrupts_begin@l
+    addi r5, r4, OSDisableInterrupts@l
     cmplw r6, r5
     ble _srr0_not_in_disableintr
-    lis r4, __RAS_OSDisableInterrupts_end@ha
-    addi r0, r4, __RAS_OSDisableInterrupts_end@l
+    lis r4, OSDisableInterrupts+0xc@ha
+    addi r0, r4, OSDisableInterrupts+0xc@l
     cmplw r6, r0
     bge _srr0_not_in_disableintr
     stw r5, ctx->srr0
@@ -361,10 +357,6 @@ asm void* OSGetStackPointer(void) {
     // clang-format on
 }
 
-//unused
-asm void OSSwitchStack(){
-}
-
 asm void OSSwitchFiber(register void* func, register void* stack) {
     // clang-format off
     nofralloc
@@ -414,8 +406,14 @@ asm void OSSwitchFiberEx(u32 r3, u32 r4, u32 r5, u32 r6, register void* func,
     // clang-format on
 }
 
-// OSClearContext: definicion C reemplazada por asm (ver abajo)
+void OSClearContext(OSContext* ctx) {
+    ctx->mode = 0;
+    ctx->state = 0;
 
+    if (ctx == OS_CURRENT_FPU_CONTEXT) {
+        OS_CURRENT_FPU_CONTEXT = NULL;
+    }
+}
 
 asm void OSInitContext(register OSContext* ctx, register void* _srr0,
                        register void* stack) {
@@ -478,8 +476,63 @@ asm void OSInitContext(register OSContext* ctx, register void* _srr0,
     // clang-format on
 }
 
-// OSDumpContext: definicion C reemplazada por asm (ver abajo)
+void OSDumpContext(const OSContext* ctx) {
+    u32 i;
+    u32* sp;
 
+    OSReport(
+        "------------------------- Context 0x%08x -------------------------\n",
+        ctx);
+
+    for (i = 0; i < 16; i++) {
+        OSReport("r%-2d  = 0x%08x (%14d)  r%-2d  = 0x%08x (%14d)\n", i,
+                 ctx->gprs[i], ctx->gprs[i], i + 16, ctx->gprs[i + 16],
+                 ctx->gprs[i + 16]);
+    }
+
+    OSReport("LR   = 0x%08x                   CR   = 0x%08x\n", ctx->lr,
+             ctx->cr);
+    OSReport("SRR0 = 0x%08x                   SRR1 = 0x%08x\n", ctx->srr0,
+             ctx->srr1);
+
+    OSReport("\nGQRs----------\n");
+    for (i = 0; i < 4; i++) {
+        OSReport("gqr%d = 0x%08x \t gqr%d = 0x%08x\n", i, ctx->gqrs[i], i + 4,
+                 ctx->gqrs[i + 4]);
+    }
+
+    if (ctx->state & OS_CONTEXT_STATE_FP_SAVED) {
+        OSContext tempCtx;
+        BOOL enabled = OSDisableInterrupts();
+        OSContext* currCtx = OSGetCurrentContext();
+
+        OSClearContext(&tempCtx);
+        OSSetCurrentContext(&tempCtx);
+
+        OSReport("\n\nFPRs----------\n");
+        for (i = 0; i < 32; i += 2) {
+            OSReport("fr%d \t= %d \t fr%d \t= %d\n", i, (u32)ctx->fprs[i],
+                     i + 1, (u32)ctx->fprs[i + 1]);
+        }
+
+        OSReport("\n\nPSFs----------\n");
+        for (i = 0; i < 32; i += 2) {
+            OSReport("ps%d \t= 0x%x \t ps%d \t= 0x%x\n", i, (u32)ctx->psfs[i],
+                     i + 1, (u32)ctx->psfs[i + 1]);
+        }
+
+        OSClearContext(&tempCtx);
+        OSSetCurrentContext(currCtx);
+        OSRestoreInterrupts(enabled);
+    }
+
+    OSReport("\nAddress:      Back Chain    LR Save\n");
+    i = 0;
+    sp = (u32*)ctx->gprs[1];
+    for (; sp != NULL && sp != (u32*)0xFFFFFFFF && i++ < 16; sp = (u32*)*sp) {
+        OSReport("0x%08x:   0x%08x    0x%08x\n", sp, *sp, sp[1]);
+    }
+}
 
 static asm void OSSwitchFPUContext(register u8 err, register OSContext* ctx) {
     // clang-format off
@@ -531,220 +584,12 @@ _ctx_is_curr_fpu_ctx:
     // clang-format on
 }
 
-// __OSContextInit: definicion C reemplazada por asm (ver abajo)
-
-
-//unused
-void OSFillFPUContext(){
+void __OSContextInit(void) {
+    __OSSetExceptionHandler(OS_ERR_FP_UNAVAIL, OSSwitchFPUContext);
+    OS_CURRENT_FPU_CONTEXT = NULL;
+    DBPrintf("FPU-unavailable handler installed\n");
 }
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
-extern u8 at_721_803801B0[];
-extern u8 lbl_8037FFF8[];
-extern void __cvt_fp2unsigned();
-extern void _restgpr_25();
-extern void _savegpr_25();
 
-// asm_to_cpp: OSClearContext
-asm void OSClearContext(OSContext* ctx) {
-    nofralloc
-    li r5, 0x0
-    lis r4, 0x8000
-    sth r5, 0x1a0(r3)
-    sth r5, 0x1a2(r3)
-    lwz r0, 0xd8(r4)
-    cmplw r3, r0
-    bnelr
-    stw r5, 0xd8(r4)
-    blr
-}
 
-// asm_to_cpp: OSDumpContext
-asm void OSDumpContext(const OSContext* ctx) {
-    nofralloc
-    stwu r1, -0x2f0(r1)
-    mflr r0
-    stw r0, 0x2f4(r1)
-    addi r11, r1, 0x2f0
-    bl _savegpr_25
-    lis r28, lbl_8037FFF8@ha
-    mr r30, r3
-    addi r28, r28, lbl_8037FFF8@l
-    mr r4, r30
-    addi r3, r28, 0x0
-    opword 0x4CC63182
-    bl OSReport
-    mr r26, r30
-    li r25, 0x0
-lbl_80315C18:
-    lwz r8, 0x40(r26)
-    mr r4, r25
-    lwz r5, 0x0(r26)
-    addi r3, r28, 0x48
-    mr r9, r8
-    addi r7, r25, 0x10
-    mr r6, r5
-    opword 0x4CC63182
-    bl OSReport
-    addi r25, r25, 0x1
-    addi r26, r26, 0x4
-    cmplwi r25, 0x10
-    blt lbl_80315C18
-    lwz r4, 0x84(r30)
-    addi r3, r28, 0x78
-    lwz r5, 0x80(r30)
-    opword 0x4CC63182
-    bl OSReport
-    lwz r4, 0x198(r30)
-    addi r3, r28, 0xa8
-    lwz r5, 0x19c(r30)
-    opword 0x4CC63182
-    bl OSReport
-    addi r3, r28, 0xd8
-    opword 0x4CC63182
-    bl OSReport
-    mr r26, r30
-    li r25, 0x0
-lbl_80315C88:
-    lwz r5, 0x1a4(r26)
-    mr r4, r25
-    lwz r7, 0x1b4(r26)
-    addi r3, r28, 0xec
-    addi r6, r25, 0x4
-    opword 0x4CC63182
-    bl OSReport
-    addi r25, r25, 0x1
-    addi r26, r26, 0x4
-    cmplwi r25, 0x4
-    blt lbl_80315C88
-    lhz r0, 0x1a2(r30)
-    clrlwi. r0, r0, 31
-    beq lbl_80315DD4
-    bl OSDisableInterrupts
-    lis r6, 0x8000
-    li r5, 0x0
-    lwz r27, 0xd4(r6)
-    addi r4, r1, 0x8
-    mr r31, r3
-    sth r5, 0x1a8(r1)
-    sth r5, 0x1aa(r1)
-    lwz r0, 0xd8(r6)
-    cmplw r4, r0
-    bne lbl_80315CF0
-    stw r5, 0xd8(r6)
-lbl_80315CF0:
-    addi r3, r1, 0x8
-    bl OSSetCurrentContext
-    addi r3, r28, 0x110
-    opword 0x4CC63182
-    bl OSReport
-    mr r26, r30
-    li r25, 0x0
-lbl_80315D0C:
-    lfd f1, 0x98(r26)
-    bl __cvt_fp2unsigned
-    lfd f1, 0x90(r26)
-    mr r29, r3
-    bl __cvt_fp2unsigned
-    mr r5, r3
-    mr r4, r25
-    mr r7, r29
-    addi r3, r28, 0x124
-    addi r6, r25, 0x1
-    opword 0x4CC63182
-    bl OSReport
-    addi r25, r25, 0x2
-    addi r26, r26, 0x10
-    cmplwi r25, 0x20
-    blt lbl_80315D0C
-    addi r3, r28, 0x140
-    opword 0x4CC63182
-    bl OSReport
-    mr r26, r30
-    li r25, 0x0
-lbl_80315D60:
-    lfd f1, 0x1d0(r26)
-    bl __cvt_fp2unsigned
-    lfd f1, 0x1c8(r26)
-    mr r29, r3
-    bl __cvt_fp2unsigned
-    mr r5, r3
-    mr r4, r25
-    mr r7, r29
-    addi r3, r28, 0x154
-    addi r6, r25, 0x1
-    opword 0x4CC63182
-    bl OSReport
-    addi r25, r25, 0x2
-    addi r26, r26, 0x10
-    cmplwi r25, 0x20
-    blt lbl_80315D60
-    li r5, 0x0
-    lis r3, 0x8000
-    sth r5, 0x1a8(r1)
-    addi r4, r1, 0x8
-    sth r5, 0x1aa(r1)
-    lwz r0, 0xd8(r3)
-    cmplw r4, r0
-    bne lbl_80315DC4
-    stw r5, 0xd8(r3)
-lbl_80315DC4:
-    mr r3, r27
-    bl OSSetCurrentContext
-    mr r3, r31
-    bl OSRestoreInterrupts
-lbl_80315DD4:
-    addi r3, r28, 0x174
-    opword 0x4CC63182
-    bl OSReport
-    lwz r25, 0x4(r30)
-    li r26, 0x0
-    b lbl_80315E08
-lbl_80315DEC:
-    lwz r5, 0x0(r25)
-    mr r4, r25
-    lwz r6, 0x4(r25)
-    addi r3, r28, 0x19c
-    opword 0x4CC63182
-    bl OSReport
-    lwz r25, 0x0(r25)
-lbl_80315E08:
-    cmpwi r25, 0x0
-    beq lbl_80315E28
-    addis r0, r25, 0x1
-    cmplwi r0, 0xffff
-    beq lbl_80315E28
-    cmplwi r26, 0x10
-    addi r26, r26, 0x1
-    blt lbl_80315DEC
-lbl_80315E28:
-    addi r11, r1, 0x2f0
-    bl _restgpr_25
-    lwz r0, 0x2f4(r1)
-    mtlr r0
-    addi r1, r1, 0x2f0
-    blr
-}
-
-// asm_to_cpp: __OSContextInit
-asm void __OSContextInit(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    lis r4, OSSwitchFPUContext@ha
-    li r3, 0x7
-    stw r0, 0x14(r1)
-    addi r4, r4, OSSwitchFPUContext@l
-    bl __OSSetExceptionHandler
-    li r0, 0x0
-    lis r4, 0x8000
-    lis r3, at_721_803801B0@ha
-    stw r0, 0xd8(r4)
-    addi r3, r3, at_721_803801B0@l
-    opword 0x4CC63182
-    bl DBPrintf
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}

@@ -28,7 +28,7 @@ extern void bta_hh_find_cb();
 extern void bta_hh_get_acl_q_info();
 extern void bta_hh_hdl_event();
 extern void bta_hh_sm_execute();
-extern void fn_802A59E8();
+extern void bdcpy();
 extern void memset();
 
 // ----------------------------------------------------------------------------
@@ -75,7 +75,7 @@ lbl_802AB03C:
     addi r3, r1, 0x8
     addi r4, r29, 0x8
     li r30, 0x2
-    bl fn_802A59E8
+    bl bdcpy
     li r3, 0x9
     li r0, 0xff
     stb r3, 0xe(r1)
@@ -87,7 +87,7 @@ lbl_802AB060:
     bne lbl_802AB08C
     addi r3, r1, 0x8
     addi r4, r29, 0x8
-    bl fn_802A59E8
+    bl bdcpy
     li r3, 0x9
     li r0, 0xff
     stb r3, 0xe(r1)

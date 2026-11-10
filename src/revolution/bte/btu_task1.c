@@ -1,361 +1,356 @@
-#include "types.h"
+/******************************************************************************
+ *
+ *  NOTICE OF CHANGES
+ *  2026/10/20:
+ *      - Replace the 2012 Bluedroid BTU task loop with the RVL version
+ *        reconstructed from the retail binary. RVL runs the BTU handler
+ *        from a fiber (see bte_main.c) and keeps the 2012-only helpers
+ *        (quick timers, timer/event registration) out of the image.
+ *
+ *  Compile with REVOLUTION defined to include these changes.
+ *
+ ******************************************************************************/
 
-// Translation unit: src/revolution/bte/btu_task1.cpp
-// Total functions: 4
+/******************************************************************************
+ *
+ *  Copyright (C) 1999-2012 Broadcom Corporation
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at:
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ ******************************************************************************/
 
-// Small Data symbols (@sda21)
+/******************************************************************************
+ *
+ *  This file contains the main Bluetooth Upper Layer processing loop.
+ *  The Broadcom implementations of L2CAP RFCOMM, SDP and the BTIf run as one
+ *  GKI task. This btu_task switches between them.
+ *
+ ******************************************************************************/
+
+#include <revolution/OS.h>
+
+#include "bt_target.h"
+
+#include "bt_types.h"
+#include "btu.h"
+#include "gki.h"
+
+#include "bta_sys.h"
+
+#include "l2c_int.h"
+#include "sdpint.h"
+
+#include "btm_int.h"
+
+#include "hidh_int.h"
+
+#include "port_ext.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* Set by bta_sys_init() and used to rate-limit the BTU timers. */
+#define BTU_TASK_TICK_LIMIT 500
+
+typedef void (tUSER_TIMEOUT_FUNC)(TIMER_LIST_ENT* p_tle);
+
+/* Control block for the BTU task. */
+tBTU_CB btu_cb;
+
+/* Number of times the handler was entered while it was still running. */
+static UINT8 s_btu_task_reentry = 1;
+
+/* TRUE when no BTU handler is running (retail: 4-byte flag). */
+static UINT32 s_btu_task_idle = 1;
+
+/* Counts BTU handler invocations and the last tick the timers ran on. */
+static UINT32 s_btu_last_timer_tick;
+static UINT32 s_btu_tick_count;
+
+/*******************************************************************************
+**
+** Function         btu_task_init
+**
+** Description      Initialize the core stack control blocks and the BTU
+**                  task state. Called from BTA_Init before the task runs.
+**
+** Returns          void
+**
+*******************************************************************************/
+// btu_task_init: definicion C reemplazada por asm (ver abajo)
+void btu_task_init(void);
+
+
+/*******************************************************************************
+**
+** Function         btu_task_msg_handler
+**
+** Description      Process the BTU mailboxes and the expired BTU timers.
+**                  Runs on the BTU fiber.
+**
+** Returns          void
+**
+*******************************************************************************/
+void btu_task_msg_handler(void)
+{
+    BT_HDR* p_msg;
+    TIMER_LIST_ENT* p_tle;
+    UINT16 event;
+    UINT16 mask;
+    UINT8 i;
+    BOOLEAN handled = FALSE;
+    BOOLEAN found;
+
+    /* Sampling the tick counter matches the retail handler. */
+    OSGetTime();
+
+    s_btu_tick_count++;
+
+    GKI_disable();
+
+    if (s_btu_task_idle)
+    {
+        s_btu_task_idle = FALSE;
+        s_btu_task_reentry = 1;
+    }
+    else
+    {
+        s_btu_task_reentry++;
+        GKI_enable();
+        return;
+    }
+
+    GKI_enable();
+
+    mask = TASK_MBOX_0_EVT_MASK | TASK_MBOX_2_EVT_MASK;
+
+    if (s_btu_tick_count > s_btu_last_timer_tick + BTU_TASK_TICK_LIMIT)
+    {
+        mask |= TIMER_0_EVT_MASK | TIMER_1_EVT_MASK;
+        s_btu_last_timer_tick = s_btu_tick_count;
+    }
+
+    while (!handled)
+    {
+        handled = TRUE;
+
+        if (mask & TASK_MBOX_0_EVT_MASK)
+        {
+            while ((p_msg = (BT_HDR*)GKI_read_mbox(BTU_HCI_RCV_MBOX)) != NULL)
+            {
+                handled = FALSE;
+
+                event = (UINT16)(p_msg->event & BT_EVT_MASK);
+
+                switch (event)
+                {
+                    case BT_EVT_TO_BTU_HCI_ACL:
+                        l2c_rcv_acl_data(p_msg);
+                        break;
+
+                    case BT_EVT_TO_BTU_L2C_SEG_XMIT:
+                        l2c_link_segments_xmitted(p_msg);
+                        break;
+
+                    case BT_EVT_TO_BTU_HCI_SCO:
+                        btm_route_sco_data(p_msg);
+                        break;
+
+                    case BT_EVT_TO_BTU_HCI_EVT:
+                        btu_hcif_process_event(p_msg);
+                        GKI_freebuf(p_msg);
+                        break;
+
+                    case BT_EVT_TO_BTU_HCI_CMD:
+                        btu_hcif_send_cmd(p_msg);
+                        break;
+
+                    default:
+                        i = 0;
+                        found = FALSE;
+
+                        for (; !found && i < BTU_MAX_REG_EVENT; i++)
+                        {
+                            if (btu_cb.event_reg[i].event_cb == NULL)
+                                continue;
+
+                            if (event == btu_cb.event_reg[i].event_range)
+                            {
+                                if (btu_cb.event_reg[i].event_cb)
+                                {
+                                    btu_cb.event_reg[i].event_cb(p_msg);
+                                    found = TRUE;
+                                }
+                            }
+                        }
+
+                        if (found == FALSE)
+                            GKI_freebuf(p_msg);
+
+                        break;
+                }
+            }
+        }
+
+        if (mask & TIMER_0_EVT_MASK)
+        {
+            GKI_update_timer_list(&btu_cb.timer_queue, 1);
+            mask &= ~TIMER_0_EVT_MASK;
+
+            while (btu_cb.timer_queue.p_first != NULL &&
+                   btu_cb.timer_queue.p_first->ticks == 0)
+            {
+                p_tle = btu_cb.timer_queue.p_first;
+
+                handled = FALSE;
+                GKI_remove_from_timer_list(&btu_cb.timer_queue, p_tle);
+
+                switch (p_tle->event)
+                {
+                    case BTU_TTYPE_BTM_DEV_CTL:
+                        btm_dev_timeout(p_tle);
+                        break;
+
+                    case BTU_TTYPE_BTM_ACL:
+                        btm_acl_timeout(p_tle);
+                        break;
+
+                    case BTU_TTYPE_L2CAP_LINK:
+                    case BTU_TTYPE_L2CAP_CHNL:
+                    case BTU_TTYPE_L2CAP_HOLD:
+                        l2c_process_timeout(p_tle);
+                        break;
+
+                    case BTU_TTYPE_SDP:
+                        sdp_conn_timeout((tCONN_CB*)p_tle->param);
+                        break;
+
+                    case BTU_TTYPE_BTM_RMT_NAME:
+                        btm_inq_rmt_name_failed();
+                        break;
+
+                    case 8:
+                        /* RVL discovery database timeout */
+                        btm_discovery_db_timeout();
+                        break;
+
+                    case BTU_TTYPE_RFCOMM_MFC:
+                    case BTU_TTYPE_RFCOMM_PORT:
+                        rfcomm_process_timeout(p_tle);
+                        break;
+
+                    case BTU_TTYPE_BTU_CMD_CMPL:
+                        btu_hcif_cmd_timeout();
+                        break;
+
+                    case BTU_TTYPE_HID_HOST_REPAGE_TO:
+                        hidh_proc_repage_timeout(p_tle);
+                        break;
+
+                    case BTU_TTYPE_USER_FUNC:
+                        (*((tUSER_TIMEOUT_FUNC*)p_tle->param))(p_tle);
+                        break;
+
+                    default:
+                        i = 0;
+                        found = FALSE;
+
+                        for (; !found && i < BTU_MAX_REG_TIMER; i++)
+                        {
+                            if (btu_cb.timer_reg[i].timer_cb == NULL)
+                                continue;
+
+                            if (btu_cb.timer_reg[i].p_tle == p_tle)
+                            {
+                                btu_cb.timer_reg[i].timer_cb(p_tle);
+                                found = TRUE;
+                            }
+                        }
+
+                        break;
+                }
+            }
+        }
+
+        if (mask & TASK_MBOX_2_EVT_MASK)
+        {
+            while ((p_msg = (BT_HDR*)GKI_read_mbox(TASK_MBOX_2)) != NULL)
+            {
+                handled = FALSE;
+                bta_sys_event(p_msg);
+            }
+        }
+
+        if (mask & TIMER_1_EVT_MASK)
+        {
+            mask &= ~TIMER_1_EVT_MASK;
+            bta_sys_timer_update();
+        }
+
+        /* Retail checks an exit event bit that nothing sets in this build. */
+        if (mask & 0x8000)
+            break;
+    }
+
+    s_btu_task_idle = TRUE;
+}
+
+/*******************************************************************************
+**
+** Function         btu_start_timer
+**
+** Description      Start a BTU timer.
+**
+** Returns          void
+**
+*******************************************************************************/
+// btu_start_timer: definicion C reemplazada por asm (ver abajo)
+void btu_start_timer(TIMER_LIST_ENT* p_tle, UINT16 type, UINT32 timeout);
+
+
+/*******************************************************************************
+**
+** Function         btu_stop_timer
+**
+** Description      Stop a BTU timer.
+**
+** Returns          void
+**
+*******************************************************************************/
+// btu_stop_timer: definicion C reemplazada por asm (ver abajo)
+void btu_stop_timer(TIMER_LIST_ENT* p_tle);
+
+
+#ifdef __cplusplus
+}
+#endif
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern float lbl_8049CF98;
 extern float lbl_8049CF9C;
 extern float lbl_8049DFF8;
 extern float lbl_8049DFFC;
-
-// Global data symbols (@ha/@l)
 extern u8 lbl_80453A50[];
-
-// Forward declarations
-extern void GKI_disable();
-extern void GKI_enable();
-extern void GKI_freebuf();
-extern void GKI_read_mbox();
-extern void GKI_remove_from_timer_list();
-extern void OSGetTime();
-extern void _restgpr_26();
-extern void _savegpr_26();
-extern void bta_sys_event();
-extern void bta_sys_init();
-extern void bta_sys_timer_update();
-extern void btm_acl_timeout();
-extern void btm_dev_timeout();
-extern void btm_discovery_timeout();
-extern void btm_inq_rmt_name_failed();
-extern void btm_route_sco_data();
-extern void btu_hcif_cmd_timeout();
-extern void btu_hcif_process_event();
-extern void btu_hcif_send_cmd();
-extern void btu_start_timer();
-extern void btu_stop_timer();
-extern void btu_task_init();
-extern void btu_task_msg_handler();
-extern void fn_802A3A2C();
+extern void btu_init_core();
+void btu_start_timer(TIMER_LIST_ENT* p_tle, UINT16 type, UINT32 timeout);
+void btu_stop_timer(TIMER_LIST_ENT* p_tle);
+void btu_task_init(void);
 extern void fn_802A3AB8();
 extern void fn_802A52B0();
-extern void fn_802B6F60();
-extern void hidh_proc_repage_timeout();
-extern void l2c_link_segments_xmitted();
-extern void l2c_process_timeout();
-extern void l2c_rcv_acl_data();
-extern void rfcomm_process_timeout();
-extern void sdp_conn_timeout();
 
-// ----------------------------------------------------------------------------
-// btu_task_init
-// ----------------------------------------------------------------------------
-// asm_to_cpp: btu_task_init
-asm void btu_task_init() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    li r3, 0x1
-    stw r0, 0x14(r1)
-    li r0, 0x0
-    stb r3, lbl_8049CF98
-    stw r3, lbl_8049CF9C
-    stw r0, lbl_8049DFF8
-    stw r0, lbl_8049DFFC
-    bl fn_802B6F60
-    bl fn_802A52B0
-    bl bta_sys_init
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// btu_task_msg_handler
-// ----------------------------------------------------------------------------
-// asm_to_cpp: btu_task_msg_handler
-asm void btu_task_msg_handler() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_26
-    li r30, 0x0
-    bl OSGetTime
-    lwz r3, lbl_8049DFF8
-    addi r0, r3, 0x1
-    stw r0, lbl_8049DFF8
-    bl GKI_disable
-    lwz r0, lbl_8049CF9C
-    cmpwi r0, 0x0
-    beq lbl_802A5624
-    li r3, 0x0
-    li r0, 0x1
-    stw r3, lbl_8049CF9C
-    stb r0, lbl_8049CF98
-    b lbl_802A5638
-lbl_802A5624:
-    lbz r3, lbl_8049CF98
-    addi r0, r3, 0x1
-    stb r0, lbl_8049CF98
-    bl GKI_enable
-    b lbl_802A594C
-lbl_802A5638:
-    bl GKI_enable
-    lwz r3, lbl_8049DFFC
-    li r31, 0x5
-    lwz r4, lbl_8049DFF8
-    addi r0, r3, 0x1f4
-    cmplw r4, r0
-    ble lbl_802A565C
-    stw r4, lbl_8049DFFC
-    ori r31, r31, 0x30
-lbl_802A565C:
-    lis r3, lbl_80453A50@ha
-    addi r29, r3, lbl_80453A50@l
-    b lbl_802A593C
-lbl_802A5668:
-    clrlwi. r0, r31, 31
-    li r30, 0x1
-    beq lbl_802A5780
-    b lbl_802A576C
-lbl_802A5678:
-    lhz r0, 0x0(r3)
-    li r30, 0x0
-    rlwinm r28, r0, 0, 16, 23
-    cmpwi r28, 0x1200
-    beq lbl_802A56D8
-    bge lbl_802A56A8
-    cmpwi r28, 0x1100
-    beq lbl_802A56C0
-    bge lbl_802A5704
-    cmpwi r28, 0x1000
-    beq lbl_802A56E4
-    b lbl_802A5704
-lbl_802A56A8:
-    cmpwi r28, 0x1900
-    beq lbl_802A56CC
-    bge lbl_802A5704
-    cmpwi r28, 0x1600
-    beq lbl_802A56F8
-    b lbl_802A5704
-lbl_802A56C0:
-    mr r3, r27
-    bl l2c_rcv_acl_data
-    b lbl_802A576C
-lbl_802A56CC:
-    mr r3, r27
-    bl l2c_link_segments_xmitted
-    b lbl_802A576C
-lbl_802A56D8:
-    mr r3, r27
-    bl btm_route_sco_data
-    b lbl_802A576C
-lbl_802A56E4:
-    mr r3, r27
-    bl btu_hcif_process_event
-    mr r3, r27
-    bl GKI_freebuf
-    b lbl_802A576C
-lbl_802A56F8:
-    mr r3, r27
-    bl btu_hcif_send_cmd
-    b lbl_802A576C
-lbl_802A5704:
-    li r26, 0x0
-    li r4, 0x0
-    b lbl_802A5748
-lbl_802A5710:
-    clrlslwi r0, r26, 24, 3
-    add r3, r29, r0
-    lwz r12, 0x14(r3)
-    cmpwi cr1, r12, 0x0
-    beq cr1, lbl_802A5744
-    lhz r0, 0x10(r3)
-    cmplw r28, r0
-    bne lbl_802A5744
-    beq cr1, lbl_802A5744
-    mr r3, r27
-    mtctr r12
-    bctrl
-    li r4, 0x1
-lbl_802A5744:
-    addi r26, r26, 0x1
-lbl_802A5748:
-    cmpwi r4, 0x0
-    bne lbl_802A575C
-    clrlwi r0, r26, 24
-    cmplwi r0, 0x6
-    blt lbl_802A5710
-lbl_802A575C:
-    cmpwi r4, 0x0
-    bne lbl_802A576C
-    mr r3, r27
-    bl GKI_freebuf
-lbl_802A576C:
-    li r3, 0x0
-    bl GKI_read_mbox
-    cmpwi r3, 0x0
-    mr r27, r3
-    bne lbl_802A5678
-lbl_802A5780:
-    rlwinm. r0, r31, 0, 27, 27
-    beq lbl_802A58FC
-    addi r3, r29, 0x40
-    li r4, 0x1
-    bl fn_802A3A2C
-    rlwinm r0, r31, 0, 28, 26
-    clrlwi r31, r0, 16
-    b lbl_802A58E4
-lbl_802A57A0:
-    mr r4, r28
-    addi r3, r29, 0x40
-    li r30, 0x0
-    bl GKI_remove_from_timer_list
-    lhz r0, 0x14(r28)
-    cmpwi r0, 0xa
-    beq lbl_802A584C
-    bge lbl_802A57EC
-    cmpwi r0, 0x5
-    beq lbl_802A5840
-    bge lbl_802A57DC
-    cmpwi r0, 0x1
-    beq lbl_802A581C
-    bge lbl_802A5834
-    b lbl_802A5890
-lbl_802A57DC:
-    cmpwi r0, 0x8
-    beq lbl_802A5854
-    bge lbl_802A5828
-    b lbl_802A5890
-lbl_802A57EC:
-    cmpwi r0, 0x3c
-    beq lbl_802A5868
-    bge lbl_802A5810
-    cmpwi r0, 0x16
-    beq lbl_802A587C
-    bge lbl_802A5890
-    cmpwi r0, 0xd
-    bge lbl_802A5890
-    b lbl_802A585C
-lbl_802A5810:
-    cmpwi r0, 0x42
-    beq lbl_802A5870
-    b lbl_802A5890
-lbl_802A581C:
-    mr r3, r28
-    bl btm_dev_timeout
-    b lbl_802A58E4
-lbl_802A5828:
-    mr r3, r28
-    bl btm_acl_timeout
-    b lbl_802A58E4
-lbl_802A5834:
-    mr r3, r28
-    bl l2c_process_timeout
-    b lbl_802A58E4
-lbl_802A5840:
-    lwz r3, 0x10(r28)
-    bl sdp_conn_timeout
-    b lbl_802A58E4
-lbl_802A584C:
-    bl btm_inq_rmt_name_failed
-    b lbl_802A58E4
-lbl_802A5854:
-    bl btm_discovery_timeout
-    b lbl_802A58E4
-lbl_802A585C:
-    mr r3, r28
-    bl rfcomm_process_timeout
-    b lbl_802A58E4
-lbl_802A5868:
-    bl btu_hcif_cmd_timeout
-    b lbl_802A58E4
-lbl_802A5870:
-    mr r3, r28
-    bl hidh_proc_repage_timeout
-    b lbl_802A58E4
-lbl_802A587C:
-    lwz r12, 0x10(r28)
-    mr r3, r28
-    mtctr r12
-    bctrl
-    b lbl_802A58E4
-lbl_802A5890:
-    li r27, 0x0
-    li r4, 0x0
-    b lbl_802A58D0
-lbl_802A589C:
-    clrlslwi r0, r27, 24, 3
-    add r3, r29, r0
-    lwz r12, 0x4(r3)
-    cmpwi r12, 0x0
-    beq lbl_802A58CC
-    lwz r0, 0x0(r3)
-    cmplw r0, r28
-    bne lbl_802A58CC
-    mr r3, r28
-    mtctr r12
-    bctrl
-    li r4, 0x1
-lbl_802A58CC:
-    addi r27, r27, 0x1
-lbl_802A58D0:
-    cmpwi r4, 0x0
-    bne lbl_802A58E4
-    clrlwi r0, r27, 24
-    cmplwi r0, 0x2
-    blt lbl_802A589C
-lbl_802A58E4:
-    lwz r28, 0x40(r29)
-    cmpwi r28, 0x0
-    beq lbl_802A58FC
-    lwz r0, 0xc(r28)
-    cmpwi r0, 0x0
-    beq lbl_802A57A0
-lbl_802A58FC:
-    rlwinm. r0, r31, 0, 29, 29
-    beq lbl_802A5920
-    b lbl_802A5910
-lbl_802A5908:
-    li r30, 0x0
-    bl bta_sys_event
-lbl_802A5910:
-    li r3, 0x2
-    bl GKI_read_mbox
-    cmpwi r3, 0x0
-    bne lbl_802A5908
-lbl_802A5920:
-    rlwinm. r0, r31, 0, 26, 26
-    beq lbl_802A5934
-    rlwinm r0, r31, 0, 27, 25
-    clrlwi r31, r0, 16
-    bl bta_sys_timer_update
-lbl_802A5934:
-    rlwinm. r0, r31, 0, 16, 16
-    bne lbl_802A5944
-lbl_802A593C:
-    cmpwi r30, 0x0
-    beq lbl_802A5668
-lbl_802A5944:
-    li r0, 0x1
-    stw r0, lbl_8049CF9C
-lbl_802A594C:
-    addi r11, r1, 0x20
-    bl _restgpr_26
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// btu_start_timer
-// ----------------------------------------------------------------------------
 // asm_to_cpp: btu_start_timer
-asm void btu_start_timer() {
+asm void btu_start_timer(TIMER_LIST_ENT* p_tle, UINT16 type, UINT32 timeout) {
     nofralloc
     stwu r1, -0x20(r1)
     mflr r0
@@ -387,11 +382,8 @@ asm void btu_start_timer() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// btu_stop_timer
-// ----------------------------------------------------------------------------
 // asm_to_cpp: btu_stop_timer
-asm void btu_stop_timer() {
+asm void btu_stop_timer(TIMER_LIST_ENT* p_tle) {
     nofralloc
     lis r5, lbl_80453A50@ha
     mr r4, r3
@@ -400,3 +392,23 @@ asm void btu_stop_timer() {
     b GKI_remove_from_timer_list
 }
 
+// asm_to_cpp: btu_task_init
+asm void btu_task_init(void) {
+    nofralloc
+    stwu r1, -0x10(r1)
+    mflr r0
+    li r3, 0x1
+    stw r0, 0x14(r1)
+    li r0, 0x0
+    stb r3, lbl_8049CF98
+    stw r3, lbl_8049CF9C
+    stw r0, lbl_8049DFF8
+    stw r0, lbl_8049DFFC
+    bl btu_init_core
+    bl fn_802A52B0
+    bl bta_sys_init
+    lwz r0, 0x14(r1)
+    mtlr r0
+    addi r1, r1, 0x10
+    blr
+}

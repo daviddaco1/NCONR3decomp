@@ -88,7 +88,7 @@ extern void fn_802E157C();
 extern void fn_802E15EC();
 extern void fn_802E1604();
 extern void fn_802E1618();
-extern void fn_802E1DE4();
+extern void GXSetCoPlanar();
 extern void fn_802E1E20();
 extern void fn_802E413C();
 extern void fn_802E430C();
@@ -339,7 +339,7 @@ lbl_802DEB8C:
     bl GXSetProjectionv
     bl fn_802E1E20
     li r3, 0x0
-    bl fn_802E1DE4
+    bl GXSetCoPlanar
     li r3, 0x2
     bl GXSetCullMode
     li r3, 0x0

@@ -9,14 +9,32 @@ Uso (desde la raiz del repo, con un build completo hecho):
   python tools/m2c_pass.py "<flags>" <split> [split ...]
   ej: python tools/m2c_pass.py "-O4,s|-schedule off|-func_align 4" kib_eye.cpp
   (los flags se separan con '|')"""
-import json, os, re, subprocess, sys
+import json, os, re, shutil, subprocess, sys, time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from m2c_fix import fixup  # noqa: E402
+from m2c_cpp import m2c_input  # noqa: E402  (cror numerico + marcos alineados)
 
 M2C = os.environ.get('M2C_DIR') or os.path.abspath('build/m2c')
 HEADER = '#include "types.h"\n#include "m2c_macros.h"\n#include "m2c_protos.h"\n\n'
 DEF = re.compile(r'^[A-Za-z_][^;\n]*?\b(\w+)\(([^;{]*)\)\s*\{\s*$')
+
+
+def header_for(c):
+    """Cabecera del C candidato. Con M2C_PROTOS=ctx, en vez de include/m2c_protos.h (firmas
+    viejas, chocan con las que m2c toma de build/m2c_ctx.h) declara las funciones llamadas y no
+    definidas en el archivo con su firma del contexto."""
+    if os.environ.get('M2C_PROTOS') != 'ctx' or not os.path.exists('build/m2c_ctx.h'):
+        return HEADER + c
+    ctx = {}
+    for l in open('build/m2c_ctx.h'):
+        m = re.match(r'^([^(;]*?)\b(\w+)\((.*)\);$', l.strip())
+        if m and not l.startswith('typedef'):
+            ctx[m.group(2)] = l.strip()
+    defined = {m.group(1) for m in DEF.finditer(c)} | set(re.findall(r'^[A-Za-z_][^\n(;]*?\b(\w+)\([^;\n]*\);$', c, re.M))
+    called = set(re.findall(r'\b(\w+)\s*\(', c))
+    protos = [ctx[n] for n in sorted(called) if n in ctx and n not in defined]
+    return '#include "types.h"\n#include "m2c_macros.h"\n\n' + '\n'.join(protos) + '\n\n' + c
 
 
 def base(split):
@@ -26,7 +44,7 @@ def base(split):
 def run_m2c(split):
     ctx = ['--context', os.path.abspath('build/m2c_ctx.h')] if os.path.exists('build/m2c_ctx.h') else []
     r = subprocess.run([sys.executable, os.path.join(M2C, 'm2c.py'), '-t', 'ppc-mwcc-c', '--valid-syntax', *ctx,
-                        os.path.abspath(f'build/RNEPDA/asm/{base(split)}.s')],
+                        m2c_input(split)],
                        capture_output=True, text=True, cwd=M2C)
     return fixup(r.stdout) if r.stdout.strip() else None  # m2c sale con error si alguna funcion fallo
 
@@ -84,6 +102,29 @@ def main():
     splits = sys.argv[2:]
     fl = '[' + ', '.join(f'"{f}"' for f in flags) + ']'
     cfg = open('configure.py', newline='').read()
+    # Rollback seguro: foto de la entrada de configure.py y de todo archivo que la pasada puede
+    # tocar (para un split "x.c", mix_asm escribe src/x.c = el mismo fuente asm). Toda reversion
+    # restaura esta foto byte a byte (antes: regeneraba el asm con asm_to_cpp.py, que no siempre
+    # reproduce el versionado, y perdia source="x.s"/flags). Copia en disco ante interrupciones.
+    pat = lambda sp: re.compile(r'(?:AsmObject|Object)\((?:NonMatching, )?"' + re.escape(sp) + r'"[^\n]*?\)(?=,\r?\n)')
+    orig_entry = {sp: pat(sp).search(cfg).group(0) for sp in splits}
+    touch = lambda sp: sorted({f'src/{sp}', f'src/{base(sp)}.c', f'src/_m2c/{base(sp)}.c'})
+    snap = {p: (open(p, 'rb').read() if os.path.exists(p) else None) for sp in splits for p in touch(sp)}
+    bk = os.path.join('build', 'm2c_pass_backup', time.strftime('%Y%m%d_%H%M%S'))
+    for p, b in list(snap.items()) + [('configure.py', open('configure.py', 'rb').read())]:
+        if b is not None:
+            os.makedirs(os.path.dirname(os.path.join(bk, p)) or bk, exist_ok=True)
+            open(os.path.join(bk, p), 'wb').write(b)
+    print('backup:', bk, flush=True)
+
+    def restore(cfg, sp):
+        for p in touch(sp):
+            if snap[p] is None:
+                if os.path.exists(p):
+                    os.remove(p)
+            else:
+                open(p, 'wb').write(snap[p])
+        return set_object(cfg, sp, orig_entry[sp])
     cand, forced = {}, {}
     for sp in splits:
         c = run_m2c(sp)
@@ -98,7 +139,7 @@ def main():
     configure()
     for sp, path in list(cand.items()):
         forced[sp] = []
-        for _ in range(80):
+        for _ in range(400):
             ok, log = compile_one(sp)
             if ok:
                 break
@@ -119,9 +160,7 @@ def main():
             del cand[sp]
     for sp in splits:
         if sp not in cand:
-            cfg = set_object(cfg, sp, f'AsmObject("{sp}")')
-            if os.path.exists(f'src/_m2c/{base(sp)}.c'):
-                os.remove(f'src/_m2c/{base(sp)}.c')
+            cfg = restore(cfg, sp)
     open('configure.py', 'w', newline='').write(cfg)
     configure()
     subprocess.run(['ninja', '-k', '0'], capture_output=True)
@@ -142,8 +181,7 @@ def main():
             print(sp, 'forzadas', forced[sp], 'fuzzy', [(f['name'], f.get('fuzzy_match_percent')) for f in fs])
         if not good:
             print(f'{sp}: ninguna funcion matchea en C')
-            cfg = set_object(cfg, sp, f'AsmObject("{sp}")')
-            os.remove(cand[sp])
+            cfg = restore(cfg, sp)
             del cand[sp]
             continue
         cfg = set_object(cfg, sp, f'Object(NonMatching, "{sp}", source="{base(sp)}.c", extra_cflags={fl})')
@@ -156,11 +194,14 @@ def main():
         good, bad = results[sp]
         r = subprocess.run([sys.executable, 'tools/mix_asm.py', sp, cand[sp], *bad, f'--out={base(sp)}.c'],
                            capture_output=True, text=True)
+        if r.returncode and os.environ.get('M2C_DEBUG') and os.path.exists(f'src/{base(sp)}.c'):
+            os.makedirs('build/m2c_pass_fail', exist_ok=True)
+            shutil.copy2(f'src/{base(sp)}.c', f'build/m2c_pass_fail/{os.path.basename(base(sp))}.c')
+            shutil.copy2(cand[sp], f'build/m2c_pass_fail/{os.path.basename(base(sp))}.m2c.c')
         os.remove(cand[sp])
         if r.returncode:
-            cfg = set_object(cfg, sp, f'AsmObject("{sp}")')
-            if os.path.exists(f'src/{base(sp)}.c'):
-                os.remove(f'src/{base(sp)}.c')
+            cfg = restore(cfg, sp)
+            del cand[sp]
             print('mixto fallo', sp, (r.stderr or '').strip().splitlines()[-1:])
             if os.environ.get('M2C_DEBUG'):
                 print(r.stderr[-2500:])
@@ -176,21 +217,12 @@ def main():
     for sp in list(cand):
         mm = rep.get(base(sp), {}).get('measures', {})
         if not os.path.exists(obj(sp)) or mm.get('matched_code') != mm.get('total_code'):
-            print('revertido a asm', sp)
-            cfg = set_object(cfg, sp, f'AsmObject("{sp}")')
-            subprocess.run([sys.executable, 'tools/asm_to_cpp.py', f'build/RNEPDA/asm/{base(sp)}.s',
-                            f'src/{sp}', base(sp)], check=True, capture_output=True)
-            if os.path.exists(f'src/{base(sp)}.c') and sp != f'{base(sp)}.c':
-                os.remove(f'src/{base(sp)}.c')
-    # todo AsmObject necesita su fuente asm (puede faltar si la TU ya era un mixto)
-    for sp in splits:
-        if f'AsmObject("{sp}")' in cfg and not os.path.exists(f'src/{sp}'):
-            subprocess.run([sys.executable, 'tools/asm_to_cpp.py', f'build/RNEPDA/asm/{base(sp)}.s',
-                            f'src/{sp}', base(sp)], check=True, capture_output=True)
-            if os.path.exists(f'src/{base(sp)}.c') and sp != f'{base(sp)}.c':
-                os.remove(f'src/{base(sp)}.c')
+            print('revertido', sp)
+            cfg = restore(cfg, sp)
     open('configure.py', 'w', newline='').write(cfg)
     configure()
+    # recompilar lo restaurado: que ningun .o viejo enmascare (gotcha 3)
+    subprocess.run(['ninja', '-k', '0'], capture_output=True)
 
 
 if __name__ == '__main__':

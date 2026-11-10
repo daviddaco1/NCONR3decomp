@@ -227,6 +227,9 @@ void fn_80297720(void) {
 
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
+extern void OSGetAppGamename();
+extern void SCGetProductGameRegion();
+extern void WPADiSendReadData();
 extern u8 lbl_80410B60[];
 extern void BTA_DisableBluetooth();
 extern void BTA_DmSearch();
@@ -414,7 +417,7 @@ lbl_802942F4:
     mr r7, r28
     addi r3, r31, 0x160
     oris r6, r27, 0x4a4
-    bl fn_8028EC4C
+    bl WPADiSendReadData
     neg r4, r3
     li r0, -0x2
     or r3, r4, r3
@@ -1077,7 +1080,7 @@ lbl_80294BF4:
     bl memcmp
     cmpwi r3, 0x0
     bne lbl_80294C30
-    bl fn_803249E8
+    bl SCGetProductGameRegion
     extsb. r0, r3
     bne lbl_80294C30
     li r28, 0x64
@@ -2285,7 +2288,7 @@ lbl_80295C08:
     lwz r0, lbl_8049CED0
     cmpwi r0, 0x0
     beq lbl_80295D60
-    bl fn_803249E8
+    bl SCGetProductGameRegion
     extsb. r0, r3
     bne lbl_80295D58
     li r0, 0x0
@@ -3388,7 +3391,7 @@ lbl_80296B5C:
     bl fn_8029ABCC
     b lbl_80296FA0
 lbl_80296B74:
-    bl fn_803249E8
+    bl SCGetProductGameRegion
     extsb. r0, r3
     bne lbl_80296BC0
     mr r4, r27
@@ -3562,7 +3565,7 @@ lbl_80296DDC:
     bl fn_8029ABCC
     b lbl_80296FA0
 lbl_80296E0C:
-    bl fn_80313ECC
+    bl OSGetAppGamename
     mr r4, r29
     li r5, 0x4
     bl memcmp
@@ -3723,7 +3726,7 @@ lbl_80297004:
     li r30, 0x3
     cmpwi r0, 0x0
     beq lbl_8029707C
-    bl fn_803249E8
+    bl SCGetProductGameRegion
     extsb. r0, r3
     bne lbl_8029707C
     li r0, 0x0

@@ -60,7 +60,7 @@ extern "C" void fn_801E7F18();
 extern "C" void fn_801E84D4();
 extern "C" void fn_801E8A90();
 extern "C" void fn_8030DE44();
-extern "C" void fn_803153F0();
+extern "C" void LCQueueWait();
 
 // ----------------------------------------------------------------------------
 // GetIndMtxOp__Q34nw4r3g3d6detailFQ34nw4r3g3d6ResMatQ34nw4r3g3d7ResNodeQ34nw4r3g3d6ResShp
@@ -1097,7 +1097,7 @@ extern "C" asm void DrawResMdlDirectly__Q24nw4r3g3dFQ34nw4r3g3d6ResMdlPCQ34nw4r4
     rlwinm. r0, r31, 0, 27, 27
     bne lbl_801E7CA0
     li r3, 0x0
-    bl fn_803153F0
+    bl LCQueueWait
     bl PPCSync
 lbl_801E7CA0:
     cmpwi r26, 0x0

@@ -70,7 +70,7 @@ extern "C" void _savegpr_22();
 extern "C" void fn_801D0D24();
 extern "C" void fn_801EC838();
 extern "C" void fn_801F3CE4();
-extern "C" void fn_803150C4();
+extern "C" void DCStoreRange();
 
 // ----------------------------------------------------------------------------
 // ScnMdlSmpl_G3DPROC_GATHER_SCNOBJ__Q34nw4r3g3d12ScnMdlSimpleFUlPQ34nw4r3g3d13IScnObjGather
@@ -162,7 +162,7 @@ lbl_801EF7A0:
     lhz r0, 0x102(r29)
     lwz r3, 0xec(r29)
     mulli r4, r0, 0x30
-    bl fn_803150C4
+    bl DCStoreRange
     lwz r5, 0xf8(r29)
     cmpwi r5, 0x0
     beq lbl_801EF7F4
@@ -540,7 +540,7 @@ lbl_801EFCF0:
     lhz r0, 0x102(r29)
     lwz r3, 0xec(r29)
     mulli r4, r0, 0x30
-    bl fn_803150C4
+    bl DCStoreRange
     lwz r5, 0xf8(r29)
     cmpwi r5, 0x0
     beq lbl_801EFD44

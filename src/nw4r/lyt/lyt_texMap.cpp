@@ -40,72 +40,18 @@ void TexMap::Get(GXTlutObj *pTLUTObj) const {
 }
 
 // Set__Q34nw4r3lyt6TexMapFRC9_GXTexObj
-void TexMap::Set(const GXTexObj &pTexObj) {
-    void *pImage;
-    u16 width, height;
-    GXTexFmt format;
-    GXTexWrapMode wrapS, wrapT;
-    u8 mipmap;
-    GXGetTexObjAll(&pTexObj, &pImage, &width, &height, &format, &wrapS, &wrapT, &mipmap);
-    SetImage(pImage);
-    SetSize(width, height);
-    SetTexelFormat(format);
-    SetWrapMode(wrapS, wrapT);
-    SetMipMap(mipmap);
+// Set__Q34nw4r3lyt6TexMapFP10TPLPaletteUl: definicion C reemplazada por asm (ver abajo)
 
-    GXTexFilter minFilter, magFilter;
-    f32 minLOD, maxLOD, LODBias;
-    u8 biasClampEnable, edgeLODEnable;
-    GXAnisotropy anisotropy;
-    GXGetTexObjLODAll(
-        &pTexObj, &minFilter, &magFilter, &minLOD, &maxLOD, &LODBias, &biasClampEnable, &edgeLODEnable, &anisotropy
-    );
-    SetFilter(minFilter, magFilter);
-    SetLOD(minLOD, maxLOD);
-    SetLODBias(LODBias);
-    SetBiasClampEnable(biasClampEnable);
-    SetEdgeLODEnable(edgeLODEnable);
-    SetAnisotropy(anisotropy);
-}
 
 // Set__Q34nw4r3lyt6TexMapFRC10_GXTlutObj
 
 // Set__Q34nw4r3lyt6TexMapFP10TPLPaletteUl
-void TexMap::Set(TPLPalette *pal, u32 id) {
-    // Not yet converted from offset to pointer (unbound)
-    if ((unsigned int)pal->descriptors < 0x80000000) {
-        TPLBind(pal);
-    }
+// Set__Q34nw4r3lyt6TexMapFP10TPLPaletteUl: definicion C reemplazada por asm (ver abajo)
 
-    Set(TPLGet(pal, id));
-}
 
 // Set__Q34nw4r3lyt6TexMapFPC13TPLDescriptor
-void TexMap::Set(const TPLDescriptor *pTPLDesc) {
-    TPLHeader *tplHead = pTPLDesc->texHeader;
-    SetImage(tplHead->data);
-    SetSize(tplHead->width, tplHead->height);
-    SetTexelFormat(static_cast<GXTexFmt>(tplHead->format));
+// Set__Q34nw4r3lyt6TexMapFP10TPLPaletteUl: definicion C reemplazada por asm (ver abajo)
 
-    bool bMipMap = (tplHead->minLod != tplHead->maxLod);
-    SetMipMap(bMipMap);
-
-    SetFilter(tplHead->minFilt, tplHead->magFilt);
-    SetLOD(tplHead->minLod, tplHead->maxLod);
-    SetLODBias(tplHead->lodBias);
-    SetEdgeLODEnable(tplHead->edgeLodEnable);
-
-    TPLClutHeader *pTPLCLUTHeader = pTPLDesc->clutHeader;
-    if (pTPLCLUTHeader != NULL) {
-        SetPalette(pTPLCLUTHeader->data);
-        SetPaletteFormat(pTPLCLUTHeader->format);
-        SetPaletteEntryNum(pTPLCLUTHeader->numEntries);
-    } else {
-        SetPalette(NULL);
-        SetPaletteFormat(GX_TL_IA8);
-        SetPaletteEntryNum(0);
-    }
-}
 
 // ReplaceImage__Q34nw4r3lyt6TexMapFRC10_GXTlutObj
 void TexMap::ReplaceImage(const GXTexObj &pTexObj) {
@@ -213,7 +159,42 @@ void TexMap::SetNoWrap(const TPLDescriptor *pDescriptor) {
 // ---- Funciones aun sin C que matchee (asm generado) ----
 extern "C" float lbl_804A1F28;
 extern "C" float lbl_804A1F30;
+extern "C" void Set__Q34nw4r3lyt6TexMapFP10TPLPaletteUl();
 extern "C" void Set__Q34nw4r3lyt6TexMapFPC13TPLDescriptor();
+
+// asm_to_cpp: Set__Q34nw4r3lyt6TexMapFP10TPLPaletteUl
+extern "C" asm void Set__Q34nw4r3lyt6TexMapFP10TPLPaletteUl() {
+    nofralloc
+    stwu r1, -0x20(r1)
+    mflr r0
+    stw r0, 0x24(r1)
+    lis r0, 0x8000
+    stw r31, 0x1c(r1)
+    mr r31, r5
+    stw r30, 0x18(r1)
+    mr r30, r4
+    stw r29, 0x14(r1)
+    mr r29, r3
+    lwz r6, 0x8(r4)
+    cmplw r6, r0
+    bge lbl_801FEDB0
+    mr r3, r30
+    bl TPLBind
+lbl_801FEDB0:
+    mr r3, r30
+    mr r4, r31
+    bl TPLGet
+    mr r4, r3
+    mr r3, r29
+    bl Set__Q34nw4r3lyt6TexMapFPC13TPLDescriptor
+    lwz r0, 0x24(r1)
+    lwz r31, 0x1c(r1)
+    lwz r30, 0x18(r1)
+    lwz r29, 0x14(r1)
+    mtlr r0
+    addi r1, r1, 0x20
+    blr
+}
 
 // asm_to_cpp: Set__Q34nw4r3lyt6TexMapFPC13TPLDescriptor
 extern "C" asm void Set__Q34nw4r3lyt6TexMapFPC13TPLDescriptor() {

@@ -66,8 +66,8 @@ extern void _savegpr_27();
 extern void atoi();
 extern void fn_802592B4();
 extern void fn_8019B578();
-extern void fn_80253528();
-extern void fn_802535C4();
+extern void ArrayNew();
+extern void ArrayFree();
 extern void fn_80256120();
 extern void fn_8025651C();
 extern void fn_802565E8();
@@ -1725,7 +1725,7 @@ lbl_8025A718:
     li r3, 0x8
     addi r5, r5, gpiStatusInfoKeyFree@l
     li r4, 0x1
-    bl fn_80253528
+    bl ArrayNew
     lwz r4, 0xc(r25)
     stw r3, 0x38(r4)
     lwz r24, 0xc(r25)
@@ -3069,7 +3069,7 @@ lbl_8025B95C:
     lwz r3, 0x38(r3)
     cmpwi r3, 0x0
     beq lbl_8025BA14
-    bl fn_802535C4
+    bl ArrayFree
     lwz r3, 0x8(r1)
     lwz r3, 0xc(r3)
     stw r31, 0x38(r3)

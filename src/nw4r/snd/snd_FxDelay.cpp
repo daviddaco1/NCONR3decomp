@@ -1,32 +1,172 @@
-#include "types.h"
+#include <nw4r/snd.h>
 
-// Translation unit: src/nw4r/snd/unk_8020BD8C.cpp
-// Total functions: 18
+namespace nw4r {
+namespace snd {
+namespace detail {
 
-// Small Data symbols (@sda21)
+const s16
+    EnvGenerator::DecibelSquareTable[EnvGenerator::DECIBEL_SQUARE_TABLE_SIZE] =
+        {-723, -722, -721, -651, -601, -562, -530, -503, -480, -460, -442, -425,
+         -410, -396, -383, -371, -360, -349, -339, -330, -321, -313, -305, -297,
+         -289, -282, -276, -269, -263, -257, -251, -245, -239, -234, -229, -224,
+         -219, -214, -210, -205, -201, -196, -192, -188, -184, -180, -176, -173,
+         -169, -165, -162, -158, -155, -152, -149, -145, -142, -139, -136, -133,
+         -130, -127, -125, -122, -119, -116, -114, -111, -109, -106, -103, -101,
+         -99,  -96,  -94,  -91,  -89,  -87,  -85,  -82,  -80,  -78,  -76,  -74,
+         -72,  -70,  -68,  -66,  -64,  -62,  -60,  -58,  -56,  -54,  -52,  -50,
+         -49,  -47,  -45,  -43,  -42,  -40,  -38,  -36,  -35,  -33,  -31,  -30,
+         -28,  -27,  -25,  -23,  -22,  -20,  -19,  -17,  -16,  -14,  -13,  -11,
+         -10,  -8,   -7,   -6,   -4,   -3,   -1,   0};
+
+const volatile f32 EnvGenerator::VOLUME_INIT = VOLUME_MIN_DB;
+
+EnvGenerator::EnvGenerator() {
+    Init();
+}
+
+void EnvGenerator::Init(f32 db) {
+    SetAttack(ATTACK_INIT);
+    SetDecay(DECAY_INIT);
+    SetSustain(SUSTAIN_INIT);
+    SetRelease(RELEASE_INIT);
+    Reset(db);
+}
+
+void EnvGenerator::Reset(f32 db) {
+    mValue = db * 10.0f;
+    mStatus = STATUS_ATTACK;
+}
+
+f32 EnvGenerator::GetValue() const {
+    if (mStatus == STATUS_ATTACK && mAttack == 0.0f) {
+        return 0.0f;
+    }
+
+    return mValue / 10.0f;
+}
+
+void EnvGenerator::Update(int msec) {
+    switch (mStatus) {
+    case STATUS_ATTACK: {
+        while (msec > 0) {
+            mValue *= mAttack;
+            msec--;
+
+            if (mValue > -(1.0f / 32.0f)) {
+                mValue = 0.0f;
+                mStatus = STATUS_DECAY;
+            }
+        }
+
+        if (mStatus != STATUS_DECAY) {
+            break;
+        }
+
+        // FALLTHROUGH
+    }
+
+    case STATUS_DECAY: {
+        f32 decay = CalcDecibelSquare(mSustain);
+        mValue -= mDecay * msec;
+
+        if (mValue > decay) {
+            break;
+        }
+
+        mValue = decay;
+        mStatus = STATUS_SUSTAIN;
+        break;
+    }
+
+    case STATUS_SUSTAIN: {
+        break;
+    }
+
+    case STATUS_RELEASE: {
+        mValue -= mRelease * msec;
+        break;
+    }
+    }
+}
+
+void EnvGenerator::SetAttack(int attack) {
+    static const f32 attackTable[128] = {
+        0.9992175f, 0.9984326f, 0.9976452f, 0.9968553f, 0.9960629f, 0.9952679f,
+        0.9944704f, 0.9936704f, 0.9928677f, 0.9920625f, 0.9912546f, 0.9904441f,
+        0.9896309f, 0.9888151f, 0.9879965f, 0.9871752f, 0.9863512f, 0.9855244f,
+        0.9846949f, 0.9838625f, 0.9830273f, 0.9821893f, 0.9813483f, 0.9805045f,
+        0.9796578f, 0.9788081f, 0.9779555f, 0.9770999f, 0.9762413f, 0.9753797f,
+        0.9745150f, 0.9736472f, 0.9727763f, 0.9719023f, 0.9710251f, 0.9701448f,
+        0.9692612f, 0.9683744f, 0.9674844f, 0.9665910f, 0.9656944f, 0.9647944f,
+        0.9638910f, 0.9629842f, 0.9620740f, 0.9611604f, 0.9602433f, 0.9593226f,
+        0.9583984f, 0.9574706f, 0.9565392f, 0.9556042f, 0.9546655f, 0.9537231f,
+        0.9527769f, 0.9518270f, 0.9508732f, 0.9499157f, 0.9489542f, 0.9479888f,
+        0.9470195f, 0.9460462f, 0.9450689f, 0.9440875f, 0.9431020f, 0.9421124f,
+        0.9411186f, 0.9401206f, 0.9391184f, 0.9381118f, 0.9371009f, 0.9360856f,
+        0.9350659f, 0.9340417f, 0.9330131f, 0.9319798f, 0.9309420f, 0.9298995f,
+        0.9288523f, 0.9278004f, 0.9267436f, 0.9256821f, 0.9246156f, 0.9235442f,
+        0.9224678f, 0.9213864f, 0.9202998f, 0.9192081f, 0.9181112f, 0.9170091f,
+        0.9159016f, 0.9147887f, 0.9136703f, 0.9125465f, 0.9114171f, 0.9102821f,
+        0.9091414f, 0.9079949f, 0.9068427f, 0.9056845f, 0.9045204f, 0.9033502f,
+        0.9021740f, 0.9009916f, 0.8998029f, 0.8986080f, 0.8974066f, 0.8961988f,
+        0.8949844f, 0.8900599f, 0.8824622f, 0.8759247f, 0.8691861f, 0.8636406f,
+        0.8535788f, 0.8430189f, 0.8286135f, 0.8149099f, 0.8002172f, 0.7780663f,
+        0.7554750f, 0.7242125f, 0.6828239f, 0.6329169f, 0.5592135f, 0.4551411f,
+        0.3298770f, 0.0000000f};
+
+    mAttack = attackTable[attack];
+}
+
+void EnvGenerator::SetDecay(int decay) {
+    mDecay = CalcRelease(decay);
+}
+
+void EnvGenerator::SetSustain(int sustain) {
+    mSustain = sustain;
+}
+
+void EnvGenerator::SetRelease(int release) {
+    mRelease = CalcRelease(release);
+}
+
+f32 EnvGenerator::CalcRelease(int release) {
+    if (release == 127) {
+        return 65535.0f;
+    }
+
+    if (release == 127 - 1) {
+        return 24.0f;
+    }
+
+    if (release < 50) {
+        return (release * 2 + 1) / 128.0f / 5.0f;
+    }
+
+    return 60.0f / (127 - 1 - release) / 5.0f;
+}
+
+int EnvGenerator::CalcDecibelSquare(int scale) {
+    return DecibelSquareTable[scale];
+}
+
+} // namespace detail
+} // namespace snd
+} // namespace nw4r
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern "C" float lbl_804A2090;
 extern "C" float lbl_804A2094;
 extern "C" float lbl_804A2098;
 extern "C" float lbl_804A209C;
 extern "C" float lbl_804A20A0;
 extern "C" float lbl_804A20A8;
-extern "C" float lbl_804A20B0;
-extern "C" float lbl_804A20B4;
-extern "C" float lbl_804A20B8;
-extern "C" float lbl_804A20BC;
-
-// Global data symbols (@ha/@l)
 extern "C" u8 lbl_8033EBF8[];
 extern "C" u8 lbl_8033ECF8[];
-
-// Forward declarations
 extern "C" void AttachExternalSoundPlayer__Q44nw4r3snd6detail10BasicSoundFPQ44nw4r3snd6detail19ExternalSoundPlayer();
 extern "C" void DetachExternalSoundPlayer__Q44nw4r3snd6detail10BasicSoundFPQ44nw4r3snd6detail19ExternalSoundPlayer();
 extern "C" void Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode();
 extern "C" void GetInstance__Q44nw4r3snd6detail11SoundThreadFv();
 extern "C" void Insert__Q44nw4r2ut6detail12LinkListImplFQ54nw4r2ut6detail12LinkListImpl8IteratorPQ34nw4r2ut12LinkListNode();
-extern "C" void OSLockMutex();
-extern "C" void OSUnlockMutex();
 extern "C" void __ct__Q44nw4r3snd6detail9FrameHeapFv();
 extern "C" void __dt__Q34nw4r2ut19DvdLockedFileStreamFv();
 extern "C" void __dt__Q44nw4r2ut6detail12LinkListImplFv();
@@ -39,41 +179,126 @@ extern "C" void fn_8020BD94();
 extern "C" void fn_8020BD9C();
 extern "C" void fn_8020BDF4();
 extern "C" void fn_8020BE38();
-extern "C" void fn_8020BE78();
-extern "C" void fn_8020BE90();
 extern "C" void fn_8020BEBC();
-extern "C" void fn_8020C018();
 extern "C" void fn_8020C030();
-extern "C" void fn_8020C048();
-extern "C" void fn_8020C0E8();
-extern "C" void fn_8020C0F0();
 extern "C" void fn_8020C190();
 extern "C" void fn_8020C330();
 extern "C" void fn_8020C378();
 extern "C" void fn_8030C6F0();
 extern "C" void fn_8030C840();
 
-// ----------------------------------------------------------------------------
-// fn_8020BD8C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: __ct__Q44nw4r3snd6detail9FrameHeapFv
+extern "C" asm void __ct__Q44nw4r3snd6detail9FrameHeapFv() {
+    nofralloc
+    li r0, 0x0
+    addi r4, r3, 0x8
+    stw r0, 0x8(r3)
+    stw r0, 0xc(r3)
+    stw r0, 0x0(r3)
+    stw r0, 0x4(r3)
+    stw r4, 0x8(r3)
+    stw r4, 0xc(r3)
+    blr
+}
+
+// asm_to_cpp: __dt__Q44nw4r3snd6detail9FrameHeapFv
+extern "C" asm void __dt__Q44nw4r3snd6detail9FrameHeapFv() {
+    nofralloc
+    stwu r1, -0x20(r1)
+    mflr r0
+    stw r0, 0x24(r1)
+    addi r11, r1, 0x20
+    bl _savegpr_27
+    cmpwi r3, 0x0
+    mr r27, r3
+    mr r28, r4
+    beq lbl_8020C558
+    lwz r0, 0x0(r3)
+    cmpwi r0, 0x0
+    beq lbl_8020C538
+    beq lbl_8020C538
+    lwz r0, 0x4(r3)
+    cmpwi r0, 0x0
+    beq lbl_8020C51C
+    addi r31, r3, 0x8
+    b lbl_8020C510
+lbl_8020C4A8:
+    lwz r29, 0x4(r31)
+    cmpwi r29, 0x0
+    beq lbl_8020C504
+    addi r30, r29, 0xc
+    b lbl_8020C4E8
+lbl_8020C4BC:
+    lwz r30, 0x4(r30)
+    cmpwi r30, 0x0
+    beq lbl_8020C4E8
+    lwz r12, 0x10(r30)
+    cmpwi r12, 0x0
+    beq lbl_8020C4E8
+    lwz r3, 0x8(r30)
+    lwz r4, 0xc(r30)
+    lwz r5, 0x14(r30)
+    mtctr r12
+    bctrl
+lbl_8020C4E8:
+    lwz r0, 0xc(r29)
+    cmplw r30, r0
+    bne lbl_8020C4BC
+    addic. r3, r29, 0x8
+    beq lbl_8020C504
+    li r4, 0x0
+    bl __dt__Q44nw4r2ut6detail12LinkListImplFv
+lbl_8020C504:
+    mr r4, r29
+    addi r3, r27, 0x4
+    bl Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode
+lbl_8020C510:
+    lwz r0, 0x4(r27)
+    cmpwi r0, 0x0
+    bne lbl_8020C4A8
+lbl_8020C51C:
+    lwz r3, 0x0(r27)
+    li r4, 0x3
+    bl fn_8030C840
+    lwz r3, 0x0(r27)
+    bl fn_8030C6F0
+    li r0, 0x0
+    stw r0, 0x0(r27)
+lbl_8020C538:
+    addic. r3, r27, 0x4
+    beq lbl_8020C548
+    li r4, 0x0
+    bl __dt__Q44nw4r2ut6detail12LinkListImplFv
+lbl_8020C548:
+    cmpwi r28, 0x0
+    ble lbl_8020C558
+    mr r3, r27
+    bl dtor_80136CFC
+lbl_8020C558:
+    addi r11, r1, 0x20
+    mr r3, r27
+    bl _restgpr_27
+    lwz r0, 0x24(r1)
+    mtlr r0
+    addi r1, r1, 0x20
+    blr
+}
+
+// asm_to_cpp: fn_8020BD8C
 extern "C" asm void fn_8020BD8C() {
     nofralloc
     li r3, 0x0
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8020BD94
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8020BD94
 extern "C" asm void fn_8020BD94() {
     nofralloc
     li r3, 0x0
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8020BD9C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8020BD9C
 extern "C" asm void fn_8020BD9C() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -101,9 +326,7 @@ lbl_8020BDD8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8020BDF4
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8020BDF4
 extern "C" asm void fn_8020BDF4() {
     nofralloc
     lfs f1, lbl_804A2090
@@ -125,9 +348,7 @@ extern "C" asm void fn_8020BDF4() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8020BE38
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8020BE38
 extern "C" asm void fn_8020BE38() {
     nofralloc
     lfs f0, lbl_804A2098
@@ -148,41 +369,7 @@ extern "C" asm void fn_8020BE38() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8020BE78
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_8020BE78() {
-    nofralloc
-    lfs f0, lbl_804A2098
-    li r0, 0x0
-    stw r0, 0x0(r3)
-    fmuls f0, f0, f1
-    stfs f0, 0x4(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8020BE90
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_8020BE90() {
-    nofralloc
-    lwz r0, 0x0(r3)
-    cmpwi r0, 0x0
-    bne lbl_8020BEAC
-    lfs f1, lbl_804A209C
-    lfs f0, 0x10(r3)
-    fcmpu cr0, f1, f0
-    beqlr
-lbl_8020BEAC:
-    lfs f1, 0x4(r3)
-    lfs f0, lbl_804A2098
-    fdivs f1, f1, f0
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8020BEBC
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8020BEBC
 extern "C" asm void fn_8020BEBC() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -284,22 +471,7 @@ lbl_8020C010:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8020C018
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_8020C018() {
-    nofralloc
-    lis r5, lbl_8033ECF8@ha
-    slwi r0, r4, 2
-    addi r5, r5, lbl_8033ECF8@l
-    lfsx f0, r5, r0
-    stfs f0, 0x10(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8020C030
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8020C030
 extern "C" asm void fn_8020C030() {
     nofralloc
     addi r0, r4, 0x1
@@ -310,120 +482,7 @@ extern "C" asm void fn_8020C030() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8020C048
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_8020C048() {
-    nofralloc
-    cmpwi r4, 0x7f
-    stwu r1, -0x20(r1)
-    bne lbl_8020C05C
-    lfs f0, lbl_804A2094
-    b lbl_8020C0DC
-lbl_8020C05C:
-    cmpwi r4, 0x7e
-    bne lbl_8020C06C
-    lfs f0, lbl_804A20B0
-    b lbl_8020C0DC
-lbl_8020C06C:
-    cmpwi r4, 0x32
-    bge lbl_8020C0AC
-    slwi r4, r4, 1
-    lis r0, 0x4330
-    addi r4, r4, 0x1
-    stw r0, 0x8(r1)
-    xoris r0, r4, 0x8000
-    lfd f3, lbl_804A20A8
-    stw r0, 0xc(r1)
-    lfs f1, lbl_804A20B4
-    lfd f2, 0x8(r1)
-    lfs f0, lbl_804A20B8
-    fsubs f2, f2, f3
-    fmuls f1, f2, f1
-    fdivs f0, f1, f0
-    b lbl_8020C0DC
-lbl_8020C0AC:
-    subfic r4, r4, 0x7e
-    lis r0, 0x4330
-    xoris r4, r4, 0x8000
-    stw r0, 0x10(r1)
-    lfd f3, lbl_804A20A8
-    stw r4, 0x14(r1)
-    lfs f1, lbl_804A20BC
-    lfd f2, 0x10(r1)
-    lfs f0, lbl_804A20B8
-    fsubs f2, f2, f3
-    fdivs f1, f1, f2
-    fdivs f0, f1, f0
-lbl_8020C0DC:
-    stfs f0, 0x8(r3)
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8020C0E8
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_8020C0E8() {
-    nofralloc
-    stb r4, 0x14(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8020C0F0
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_8020C0F0() {
-    nofralloc
-    cmpwi r4, 0x7f
-    stwu r1, -0x20(r1)
-    bne lbl_8020C104
-    lfs f0, lbl_804A2094
-    b lbl_8020C184
-lbl_8020C104:
-    cmpwi r4, 0x7e
-    bne lbl_8020C114
-    lfs f0, lbl_804A20B0
-    b lbl_8020C184
-lbl_8020C114:
-    cmpwi r4, 0x32
-    bge lbl_8020C154
-    slwi r4, r4, 1
-    lis r0, 0x4330
-    addi r4, r4, 0x1
-    stw r0, 0x8(r1)
-    xoris r0, r4, 0x8000
-    lfd f3, lbl_804A20A8
-    stw r0, 0xc(r1)
-    lfs f1, lbl_804A20B4
-    lfd f2, 0x8(r1)
-    lfs f0, lbl_804A20B8
-    fsubs f2, f2, f3
-    fmuls f1, f2, f1
-    fdivs f0, f1, f0
-    b lbl_8020C184
-lbl_8020C154:
-    subfic r4, r4, 0x7e
-    lis r0, 0x4330
-    xoris r4, r4, 0x8000
-    stw r0, 0x10(r1)
-    lfd f3, lbl_804A20A8
-    stw r4, 0x14(r1)
-    lfs f1, lbl_804A20BC
-    lfd f2, 0x10(r1)
-    lfs f0, lbl_804A20B8
-    fsubs f2, f2, f3
-    fdivs f1, f1, f2
-    fdivs f0, f1, f0
-lbl_8020C184:
-    stfs f0, 0xc(r3)
-    addi r1, r1, 0x20
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_8020C190
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8020C190
 extern "C" asm void fn_8020C190() {
     nofralloc
     stwu r1, -0x20(r1)
@@ -547,9 +606,7 @@ lbl_8020C310:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8020C330
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8020C330
 extern "C" asm void fn_8020C330() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -572,9 +629,7 @@ extern "C" asm void fn_8020C330() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_8020C378
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_8020C378
 extern "C" asm void fn_8020C378() {
     nofralloc
     lwz r5, 0xc(r3)
@@ -637,105 +692,3 @@ lbl_8020C434:
     li r3, 0x1
     blr
 }
-
-// ----------------------------------------------------------------------------
-// __ct__Q44nw4r3snd6detail9FrameHeapFv
-// ----------------------------------------------------------------------------
-extern "C" asm void __ct__Q44nw4r3snd6detail9FrameHeapFv() {
-    nofralloc
-    li r0, 0x0
-    addi r4, r3, 0x8
-    stw r0, 0x8(r3)
-    stw r0, 0xc(r3)
-    stw r0, 0x0(r3)
-    stw r0, 0x4(r3)
-    stw r4, 0x8(r3)
-    stw r4, 0xc(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// __dt__Q44nw4r3snd6detail9FrameHeapFv
-// ----------------------------------------------------------------------------
-extern "C" asm void __dt__Q44nw4r3snd6detail9FrameHeapFv() {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_27
-    cmpwi r3, 0x0
-    mr r27, r3
-    mr r28, r4
-    beq lbl_8020C558
-    lwz r0, 0x0(r3)
-    cmpwi r0, 0x0
-    beq lbl_8020C538
-    beq lbl_8020C538
-    lwz r0, 0x4(r3)
-    cmpwi r0, 0x0
-    beq lbl_8020C51C
-    addi r31, r3, 0x8
-    b lbl_8020C510
-lbl_8020C4A8:
-    lwz r29, 0x4(r31)
-    cmpwi r29, 0x0
-    beq lbl_8020C504
-    addi r30, r29, 0xc
-    b lbl_8020C4E8
-lbl_8020C4BC:
-    lwz r30, 0x4(r30)
-    cmpwi r30, 0x0
-    beq lbl_8020C4E8
-    lwz r12, 0x10(r30)
-    cmpwi r12, 0x0
-    beq lbl_8020C4E8
-    lwz r3, 0x8(r30)
-    lwz r4, 0xc(r30)
-    lwz r5, 0x14(r30)
-    mtctr r12
-    bctrl
-lbl_8020C4E8:
-    lwz r0, 0xc(r29)
-    cmplw r30, r0
-    bne lbl_8020C4BC
-    addic. r3, r29, 0x8
-    beq lbl_8020C504
-    li r4, 0x0
-    bl __dt__Q44nw4r2ut6detail12LinkListImplFv
-lbl_8020C504:
-    mr r4, r29
-    addi r3, r27, 0x4
-    bl Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode
-lbl_8020C510:
-    lwz r0, 0x4(r27)
-    cmpwi r0, 0x0
-    bne lbl_8020C4A8
-lbl_8020C51C:
-    lwz r3, 0x0(r27)
-    li r4, 0x3
-    bl fn_8030C840
-    lwz r3, 0x0(r27)
-    bl fn_8030C6F0
-    li r0, 0x0
-    stw r0, 0x0(r27)
-lbl_8020C538:
-    addic. r3, r27, 0x4
-    beq lbl_8020C548
-    li r4, 0x0
-    bl __dt__Q44nw4r2ut6detail12LinkListImplFv
-lbl_8020C548:
-    cmpwi r28, 0x0
-    ble lbl_8020C558
-    mr r3, r27
-    bl dtor_80136CFC
-lbl_8020C558:
-    addi r11, r1, 0x20
-    mr r3, r27
-    bl _restgpr_27
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-

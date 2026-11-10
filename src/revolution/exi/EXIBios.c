@@ -49,7 +49,7 @@ extern void _restgpr_27();
 extern void _savegpr_25();
 extern void _savegpr_26();
 extern void _savegpr_27();
-extern void fn_80313EAC();
+extern void __OSGetDIConfig();
 extern void memmove();
 
 // ----------------------------------------------------------------------------
@@ -478,7 +478,7 @@ lbl_802DA258:
     clrrwi r0, r0, 2
     stw r0, 0xc(r31)
 lbl_802DA264:
-    bl fn_80313EAC
+    bl __OSGetDIConfig
     cmplwi r3, 0xff
     bne lbl_802DA2E4
     bl OSGetConsoleType

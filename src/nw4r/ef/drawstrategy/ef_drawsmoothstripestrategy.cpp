@@ -1,9 +1,68 @@
-#include "types.h"
+#include <nw4r/g3d.h>
 
-// Translation unit: src/nw4r/ef/drawstrategy/ef_drawsmoothstripestrategy.cpp
-// Total functions: 34
+#include <revolution/GX.h>
 
-// Small Data symbols (@sda21)
+#include <cstring>
+
+namespace nw4r {
+namespace g3d {
+
+bool ResName::operator==(const ResName rhs) const {
+    if (GetLength() == rhs.GetLength()) {
+        return std::strcmp(GetName(), rhs.GetName()) == 0;
+    }
+
+    return false;
+}
+
+namespace detail {
+
+void ResWriteBPCmd(u8* pPtr, u32 reg) {
+    ResWrite_u8(pPtr + 0, GX_FIFO_CMD_LOAD_BP_REG);
+    ResWrite_u32(pPtr + 1, reg);
+}
+
+void ResWriteBPCmd(u8* pPtr, u32 reg, u32 mask) {
+    ResWrite_u8(pPtr + 0, GX_FIFO_CMD_LOAD_BP_REG);
+
+    u32 orig;
+    ResReadBPCmd(pPtr + 0, &orig);
+
+    // Insert register value into the original command using the mask
+    orig &= ~mask;
+    reg &= mask;
+
+    ResWrite_u32(pPtr + 1, reg | orig);
+}
+
+void ResWriteCPCmd(u8* pPtr, u8 addr, u32 value) {
+    ResWrite_u8(pPtr + 0, GX_FIFO_CMD_LOAD_CP_REG);
+    ResWrite_u8(pPtr + 1, addr);
+    ResWrite_u32(pPtr + 2, value);
+}
+
+void ResWriteXFCmd(u8* pPtr, u16 addr, u32 value) {
+    ResWrite_u8(pPtr + 0, GX_FIFO_CMD_LOAD_XF_REG);
+    ResWrite_u16(pPtr + 1, 0x0000); // No size (single write)
+    ResWrite_u16(pPtr + 3, addr);
+    ResWrite_u32(pPtr + 5, value);
+}
+
+void ResWriteSSMask(u8* pPtr, u32 value) {
+    u32 orig = ResRead_u32(pPtr + 1);
+
+    // Overwrite BP register ID
+    orig |= value;
+    orig |= GX_BP_REG_SSMASK << GX_BP_OPCODE_SHIFT;
+
+    ResWriteBPCmd(pPtr + 0, orig);
+}
+
+} // namespace detail
+} // namespace g3d
+} // namespace nw4r
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern "C" float lbl_8049D9A0;
 extern "C" float lbl_8049D9A1;
 extern "C" float lbl_8049D9A2;
@@ -19,8 +78,8 @@ extern "C" float lbl_804A1B98;
 extern "C" float lbl_804A1BA0;
 extern "C" float lbl_804A1BA4;
 extern "C" float lbl_804A1BA8;
-
-// Global data symbols (@ha/@l)
+extern "C" u8 CalcAhead_EmitterDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle[];
+extern "C" u8 CalcAhead_NoDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle[];
 extern "C" u8 jumptable_803609E8[];
 extern "C" u8 jumptable_80360A4C[];
 extern "C" u8 jumptable_80360AB0[];
@@ -28,20 +87,8 @@ extern "C" u8 lbl_80360AD0[];
 extern "C" u8 lbl_803E6550[];
 extern "C" u8 lbl_803E6568[];
 extern "C" u8 lbl_803E65B0[];
-
-// Forward declarations
 extern "C" void FrSqrt__Q24nw4r4mathFf();
-extern "C" void GXBegin();
 extern "C" void GXClearVtxDesc();
-extern "C" void GXEnableTexOffsets();
-extern "C" void GXGetProjectionv();
-extern "C" void GXLoadPosMtxImm();
-extern "C" void GXSetCullMode();
-extern "C" void GXSetCurrentMtx();
-extern "C" void GXSetVtxAttrFmt();
-extern "C" void GXSetVtxDesc();
-extern "C" void PSMTXConcat();
-extern "C" void PSMTXInverse();
 extern "C" void SinCosFIdx__Q24nw4r4mathFPfPff();
 extern "C" void VEC3TransformNormal__Q24nw4r4mathFPQ34nw4r4math4VEC3PCQ34nw4r4math5MTX34PCQ34nw4r4math4VEC3();
 extern "C" void __ct__Q34nw4r2ef16DrawStrategyImplFv();
@@ -68,9 +115,7 @@ extern "C" void fn_801BF940();
 extern "C" void fn_801C0E98();
 extern "C" void fn_801C2CF4();
 extern "C" void fn_801C2DC8();
-extern "C" void fn_801C2E84();
 extern "C" void fn_801C3624();
-extern "C" void fn_801C53B8();
 extern "C" void fn_801C6B84();
 extern "C" void fn_801C6B98();
 extern "C" void fn_801C9DAC();
@@ -104,16 +149,9 @@ extern "C" void fn_801CE9C4();
 extern "C" void fn_801CE9D4();
 extern "C" void fn_801CE9EC();
 extern "C" void fn_801CE9F8();
-extern "C" void fn_801CEA04();
-extern "C" void fn_801CEA54();
-extern "C" void fn_801CEA7C();
-extern "C" void fn_8030D7E0();
 extern "C" void fn_8030DEEC();
-extern "C" void strcmp();
 
-// ----------------------------------------------------------------------------
-// fn_801C9DAC
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801C9DAC
 extern "C" asm void fn_801C9DAC() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -133,9 +171,7 @@ extern "C" asm void fn_801C9DAC() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801C9DE8
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801C9DE8
 extern "C" asm void fn_801C9DE8() {
     nofralloc
     stwu r1, -0x130(r1)
@@ -359,11 +395,11 @@ lbl_801CA068:
     mr r4, r29
     mr r5, r25
     addi r3, r1, 0xa0
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     mr r4, r30
     addi r3, r1, 0xa0
     addi r5, r25, 0xc
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     stfs f31, 0x18(r25)
     opword 0xE3E10128
     lfd f31, 0x120(r1)
@@ -379,9 +415,7 @@ lbl_801CA068:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CA180
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CA180
 extern "C" asm void fn_801CA180() {
     nofralloc
     stwu r1, -0x150(r1)
@@ -682,9 +716,7 @@ lbl_801CA4B0:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CA5E8
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CA5E8
 extern "C" asm void fn_801CA5E8() {
     nofralloc
     stwu r1, -0x110(r1)
@@ -857,9 +889,7 @@ lbl_801CA840:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CA878
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CA878
 extern "C" asm void fn_801CA878() {
     nofralloc
     stwu r1, -0xc0(r1)
@@ -987,9 +1017,7 @@ lbl_801CAA4C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CAA5C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CAA5C
 extern "C" asm void fn_801CAA5C() {
     nofralloc
     stwu r1, -0x380(r1)
@@ -1581,17 +1609,13 @@ lbl_801CB304:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CB35C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CB35C
 extern "C" asm void fn_801CB35C() {
     nofralloc
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CB360
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CB360
 extern "C" asm void fn_801CB360() {
     nofralloc
     stwu r1, -0xf0(r1)
@@ -1813,9 +1837,7 @@ lbl_801CB624:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CB6AC
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CB6AC
 extern "C" asm void fn_801CB6AC() {
     nofralloc
     lhz r0, 0x0(r4)
@@ -1823,9 +1845,7 @@ extern "C" asm void fn_801CB6AC() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CB6B8
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CB6B8
 extern "C" asm void fn_801CB6B8() {
     nofralloc
     lbz r0, 0xb2(r4)
@@ -1833,17 +1853,13 @@ extern "C" asm void fn_801CB6B8() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CB6C4
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CB6C4
 extern "C" asm void fn_801CB6C4() {
     nofralloc
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CB6C8
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CB6C8
 extern "C" asm void fn_801CB6C8() {
     nofralloc
     stwu r1, -0x140(r1)
@@ -2118,9 +2134,7 @@ lbl_801CBA0C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CBAE8
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CBAE8
 extern "C" asm void fn_801CBAE8() {
     nofralloc
     stwu r1, -0x150(r1)
@@ -2430,9 +2444,7 @@ lbl_801CBF0C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CBF8C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CBF8C
 extern "C" asm void fn_801CBF8C() {
     nofralloc
     lwz r5, 0x3c(r3)
@@ -2460,9 +2472,7 @@ lbl_801CBFCC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CBFD4
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CBFD4
 extern "C" asm void fn_801CBFD4() {
     nofralloc
     lwz r9, 0x0(r4)
@@ -2481,9 +2491,7 @@ extern "C" asm void fn_801CBFD4() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CC00C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CC00C
 extern "C" asm void fn_801CC00C() {
     nofralloc
     lwz r9, 0x0(r4)
@@ -2503,9 +2511,7 @@ extern "C" asm void fn_801CC00C() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CC048
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CC048
 extern "C" asm void fn_801CC048() {
     nofralloc
     stwu r1, -0x110(r1)
@@ -2708,9 +2714,7 @@ lbl_801CC2D4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CC348
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CC348
 extern "C" asm void fn_801CC348() {
     nofralloc
     stwu r1, -0x160(r1)
@@ -2958,9 +2962,7 @@ lbl_801CC624:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CC6FC
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CC6FC
 extern "C" asm void fn_801CC6FC() {
     nofralloc
     stwu r1, -0x180(r1)
@@ -3326,9 +3328,7 @@ lbl_801CCC00:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CCC6C
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CCC6C
 extern "C" asm void fn_801CCC6C() {
     nofralloc
     stwu r1, -0x70(r1)
@@ -3877,9 +3877,7 @@ lbl_801CD408:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CD440
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CD440
 extern "C" asm void fn_801CD440() {
     nofralloc
     stwu r1, -0x290(r1)
@@ -3943,7 +3941,7 @@ lbl_801CD524:
     mr r3, r25
     addi r4, r25, 0x8c
     addi r5, r1, 0x38
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0x38
     mr r4, r3
     bl fn_801B9B90
@@ -4093,7 +4091,7 @@ lbl_801CD75C:
     mr r3, r25
     addi r4, r25, 0x8c
     addi r5, r1, 0x20
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     addi r3, r1, 0x20
     mr r4, r3
     bl fn_801B9B90
@@ -4562,9 +4560,7 @@ lbl_801CDE04:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CDE24
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CDE24
 extern "C" asm void fn_801CDE24() {
     nofralloc
     stwu r1, -0x80(r1)
@@ -4744,9 +4740,7 @@ lbl_801CE0AC:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CE0C4
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CE0C4
 extern "C" asm void fn_801CE0C4() {
     nofralloc
     lwz r4, 0x24(r4)
@@ -4765,14 +4759,14 @@ extern "C" asm void fn_801CE0C4() {
     lis r3, fn_801C2DC8@ha
     addi r3, r3, fn_801C2DC8@l
     blr
-    lis r3, fn_801C2E84@ha
-    addi r3, r3, fn_801C2E84@l
+    lis r3, CalcAhead_EmitterDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle@ha
+    addi r3, r3, CalcAhead_EmitterDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle@l
     blr
     lis r3, fn_801CE178@ha
     addi r3, r3, fn_801CE178@l
     blr
-    lis r3, fn_801C53B8@ha
-    addi r3, r3, fn_801C53B8@l
+    lis r3, CalcAhead_NoDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle@ha
+    addi r3, r3, CalcAhead_NoDesign__Q34nw4r2ef16DrawStrategyImplFPQ34nw4r4math4VEC3PQ44nw4r2ef16DrawStrategyImpl12AheadContextPQ34nw4r2ef8Particle@l
     blr
     lbz r0, 0x14e(r4)
     clrlwi r0, r0, 29
@@ -4800,9 +4794,7 @@ lbl_801CE16C:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CE178
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CE178
 extern "C" asm void fn_801CE178() {
     nofralloc
     stwu r1, -0x10(r1)
@@ -4885,9 +4877,7 @@ lbl_801CE278:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CE290
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CE290
 extern "C" asm void fn_801CE290() {
     nofralloc
     stwu r1, -0x50(r1)
@@ -5061,9 +5051,7 @@ lbl_801CE4D8:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CE4F8
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CE4F8
 extern "C" asm void fn_801CE4F8() {
     nofralloc
     stwu r1, -0x50(r1)
@@ -5263,9 +5251,7 @@ lbl_801CE788:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CE7A8
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CE7A8
 extern "C" asm void fn_801CE7A8() {
     nofralloc
     stwu r1, -0x30(r1)
@@ -5418,9 +5404,7 @@ lbl_801CE9A4:
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CE9C4
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CE9C4
 extern "C" asm void fn_801CE9C4() {
     nofralloc
     lwz r4, 0x0(r4)
@@ -5429,9 +5413,7 @@ extern "C" asm void fn_801CE9C4() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CE9D4
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CE9D4
 extern "C" asm void fn_801CE9D4() {
     nofralloc
     lwz r4, 0x0(r4)
@@ -5442,9 +5424,7 @@ extern "C" asm void fn_801CE9D4() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CE9EC
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CE9EC
 extern "C" asm void fn_801CE9EC() {
     nofralloc
     lwz r3, 0x0(r3)
@@ -5452,77 +5432,10 @@ extern "C" asm void fn_801CE9EC() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801CE9F8
-// ----------------------------------------------------------------------------
+// asm_to_cpp: fn_801CE9F8
 extern "C" asm void fn_801CE9F8() {
     nofralloc
     lwz r3, 0x0(r3)
     addi r3, r3, 0x10
     blr
 }
-
-// ----------------------------------------------------------------------------
-// fn_801CEA04
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_801CEA04() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    lwz r4, 0x0(r4)
-    stw r0, 0x14(r1)
-    lwz r5, 0x0(r3)
-    lwz r0, 0x0(r4)
-    lwz r3, 0x0(r5)
-    cmplw r3, r0
-    bne lbl_801CEA40
-    addi r3, r5, 0x4
-    addi r4, r4, 0x4
-    bl strcmp
-    cntlzw r0, r3
-    srwi r3, r0, 5
-    b lbl_801CEA44
-lbl_801CEA40:
-    li r3, 0x0
-lbl_801CEA44:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_801CEA54
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_801CEA54() {
-    nofralloc
-    srwi r6, r4, 24
-    extrwi r5, r4, 8, 8
-    extrwi r0, r4, 8, 16
-    li r7, 0x61
-    stb r7, 0x0(r3)
-    stb r6, 0x1(r3)
-    stb r5, 0x2(r3)
-    stb r0, 0x3(r3)
-    stb r4, 0x4(r3)
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_801CEA7C
-// ----------------------------------------------------------------------------
-extern "C" asm void fn_801CEA7C() {
-    nofralloc
-    srwi r7, r5, 24
-    extrwi r6, r5, 8, 8
-    extrwi r0, r5, 8, 16
-    li r8, 0x8
-    stb r8, 0x0(r3)
-    stb r4, 0x1(r3)
-    stb r7, 0x2(r3)
-    stb r6, 0x3(r3)
-    stb r0, 0x4(r3)
-    stb r5, 0x5(r3)
-    blr
-}
-

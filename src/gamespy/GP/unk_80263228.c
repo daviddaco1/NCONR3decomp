@@ -74,7 +74,7 @@ extern void atoi();
 extern void connect();
 extern void fn_802557FC();
 extern void fn_80255D78();
-extern void fn_8025658C();
+extern void _strlwr();
 extern void fn_802565F0();
 extern void fn_80256638();
 extern void fn_80256C4C();
@@ -614,7 +614,7 @@ lbl_802638A4:
 lbl_802638B8:
     lwz r3, 0xc(r1)
     addi r3, r3, 0xa0
-    bl fn_8025658C
+    bl _strlwr
     cmpwi r25, 0x0
     bne lbl_802638DC
     lwz r3, 0xc(r1)

@@ -10,8 +10,8 @@ M2C_UNK GXSetVtxDesc();             /* extern */
 u64 OSGetTime();                                    /* extern */
 M2C_UNK OSSetAlarm(s8 *, void (*)(), M2C_UNK, s32, void (*)()); /* extern */
 M2C_UNK OSSetPeriodicAlarm(s8 *, s32, u64, u32, M2C_UNK, s32, void (*)(), M2C_UNK); /* extern */
-s32 fn_8028AD00(s32, s8 *, void (*)(s32, s32));   /* extern */
-M2C_UNK fn_8028B73C(s32, void (*)(s32, s32), void (*)(s32, s32), M2C_UNK); /* extern */
+s32 WPADGetInfoAsync(s32, s8 *, void (*)(s32, s32));   /* extern */
+M2C_UNK WPADControlSpeaker(s32, void (*)(s32, s32), void (*)(s32, s32), M2C_UNK); /* extern */
 M2C_UNK **fn_8030CAF0(...);             /* extern */
 M2C_UNK fn_8030CB00(...);               /* extern */
 M2C_UNK memset();                       /* extern */
@@ -521,7 +521,7 @@ s32 fn_802E8630(s32 *arg0, s8 *arg1) {
     if ((fn_802E8F80(M2C_FIELD(arg0, s32 *, 0x20), temp_r0) != 0) || ((s32) M2C_FIELD(arg0, u8 *, 0x1C) != 0)) {
         return -2;
     }
-    return fn_8028AD00(M2C_FIELD(arg0, s32 *, 0), arg1, fn_802E86B4);
+    return WPADGetInfoAsync(M2C_FIELD(arg0, s32 *, 0), arg1, fn_802E86B4);
 }
 
 // fn_802E86B4: definicion C reemplazada por asm (ver abajo)
@@ -795,6 +795,8 @@ void fn_802F2744(s8 *arg0, s32 arg1, s8 *arg2);
 
 
 // ---- Funciones aun sin C que matchee (asm generado) ----
+extern void AICheckInit();
+extern void PSMTXMultVec();
 extern u8 jumptable_8037C478[];
 extern u8 jumptable_8037C4C8[];
 extern u8 jumptable_8037C4F0[];
@@ -2285,7 +2287,7 @@ lbl_802E7758:
     addi r4, r1, 0x8
     addi r5, r1, 0x28
     stfs f0, 0x10(r1)
-    bl fn_8030D7E0
+    bl PSMTXMultVec
     lwz r4, 0x2c(r30)
     mr r5, r31
     addi r3, r1, 0x18
@@ -2636,7 +2638,7 @@ lbl_802E7C80:
     mr r3, r30
     li r4, 0x0
     li r5, 0x0
-    bl fn_8028B73C
+    bl WPADControlSpeaker
     b lbl_802E7CC8
 lbl_802E7C94:
     lis r29, lbl_804623B8@ha
@@ -2707,7 +2709,7 @@ lbl_802E7D54:
     mr r3, r28
     li r4, 0x2
     li r5, 0x0
-    bl fn_8028B73C
+    bl WPADControlSpeaker
     mulli r0, r28, 0x30
     lis r3, lbl_804622F8@ha
     mr r4, r28
@@ -2776,7 +2778,7 @@ asm void fn_802E7E34() {
     mr r3, r30
     li r4, 0x3
     li r5, 0x0
-    bl fn_8028B73C
+    bl WPADControlSpeaker
 lbl_802E7E80:
     li r0, 0x0
     stb r0, 0x41(r31)
@@ -2902,7 +2904,7 @@ asm void fn_802E8000() {
     stw r30, 0x8(r1)
     mr r30, r3
     lwz r3, 0x0(r3)
-    bl fn_8028B73C
+    bl WPADControlSpeaker
     li r3, 0x0
     bl fn_8028EE58
     lwz r3, 0x0(r30)
@@ -3177,7 +3179,7 @@ lbl_802E83F4:
     mr r3, r27
     li r4, 0x2
     li r5, 0x0
-    bl fn_8028B73C
+    bl WPADControlSpeaker
     mulli r0, r27, 0x30
     lis r3, lbl_804622F8@ha
     mr r4, r27
@@ -3218,7 +3220,7 @@ lbl_802E84CC:
     mr r3, r27
     li r4, 0x2
     li r5, 0x0
-    bl fn_8028B73C
+    bl WPADControlSpeaker
     mulli r0, r27, 0x30
     lis r3, lbl_804622F8@ha
     mr r4, r27
@@ -3709,7 +3711,7 @@ asm void fn_802E8C38() {
     lis r5, fn_802E8C68@ha
     li r4, 0x1
     addi r5, r5, fn_802E8C68@l
-    bl fn_8028B73C
+    bl WPADControlSpeaker
     lwz r0, 0x14(r1)
     mtlr r0
     addi r1, r1, 0x10
@@ -3744,7 +3746,7 @@ lbl_802E8CA4:
     add r6, r6, r0
     li r4, 0x4
     stb r7, 0x5c(r6)
-    bl fn_8028B73C
+    bl WPADControlSpeaker
     b lbl_802E8D34
 lbl_802E8CD0:
     mulli r0, r3, 0x68
@@ -3791,7 +3793,7 @@ asm void fn_802E8D48() {
     lis r5, fn_802E8D78@ha
     li r4, 0x4
     addi r5, r5, fn_802E8D78@l
-    bl fn_8028B73C
+    bl WPADControlSpeaker
     lwz r0, 0x14(r1)
     mtlr r0
     addi r1, r1, 0x10
@@ -3882,7 +3884,7 @@ asm void fn_802E8E5C() {
     mr r3, r31
     addi r5, r5, fn_802E8C68@l
     li r4, 0x1
-    bl fn_8028B73C
+    bl WPADControlSpeaker
     mulli r4, r31, 0x68
     li r3, 0x0
     li r0, 0x1
@@ -4424,7 +4426,7 @@ asm void fn_802E95A4(s32 arg0, s8 *arg1, u32 arg2) {
     stw r29, 0x24(r1)
     mr r29, r3
     blt lbl_802E977C
-    bl fn_8029AD3C
+    bl AICheckInit
     cmpwi r3, 0x0
     bne lbl_802E95F0
     li r3, 0x0

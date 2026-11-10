@@ -56,8 +56,8 @@ extern "C" void fn_802F3984();
 extern "C" void fn_802F3A7C();
 extern "C" void fn_8030CAF0();
 extern "C" void fn_8030CB00();
-extern "C" void fn_803299FC();
-extern "C" void fn_80329B10();
+extern "C" void TPLBind();
+extern "C" void TPLGet();
 extern "C" void strncmp();
 
 // ----------------------------------------------------------------------------
@@ -1066,11 +1066,11 @@ extern "C" asm void InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLP
     cmplw r6, r0
     bge lbl_802F3C68
     mr r3, r29
-    bl fn_803299FC
+    bl TPLBind
 lbl_802F3C68:
     mr r3, r29
     mr r4, r30
-    bl fn_80329B10
+    bl TPLGet
     lwz r9, 0x0(r3)
     mr r30, r3
     lwz r0, 0x4(r3)

@@ -88,7 +88,7 @@ s32 BTA_EnableBluetooth(s32 arg0);
 extern void _restgpr_27();
 extern void _savegpr_27();
 extern void bta_sys_register();
-extern void fn_802A59E8();
+extern void bdcpy();
 extern void strncpy();
 
 // asm_to_cpp: BTA_EnableBluetooth
@@ -270,7 +270,7 @@ asm void BTA_DmPinReply() {
     mr r4, r27
     sth r0, 0x0(r3)
     addi r3, r3, 0x8
-    bl fn_802A59E8
+    bl bdcpy
     cmpwi r28, 0x0
     stb r28, 0xe(r31)
     beq lbl_802A8790

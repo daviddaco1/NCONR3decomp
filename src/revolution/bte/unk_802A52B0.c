@@ -5,7 +5,7 @@
 void fn_802A52B0();
 
 void fn_802A52B0(void) {
-    fn_802C3DE0();
+    RFCOMM_Init();
     fn_802B70B8();
     fn_802BA98C();
     HID_HostInit();

@@ -1,32 +1,49 @@
 #include "types.h"
+#include "m2c_macros.h"
+#include "m2c_protos.h"
 
-// Translation unit: src/MSL_C.PPCEABI.bare.H/unk_801A3278.cpp
-// Total functions: 6
+f32 fn_801A3278();
+f32 fn_801A32A0();
+f32 fn_801A32CC();
+f32 fn_801A32F4();
+f32 fn_801A331C();
+f32 fn_801A3344();
 
-// Forward declarations
+f32 fn_801A3278(f64 farg0);
+
+f32 fn_801A32A0(f64 farg0, f64 farg1);
+
+f32 fn_801A32CC(f64 farg0) {
+    return (f32) cos((f64) (f32) farg0);
+}
+
+f32 fn_801A32F4(f64 farg0) {
+    return (f32) sin((f64) (f32) farg0);
+}
+
+// fn_801A331C: definicion C reemplazada por asm (ver abajo)
+f32 fn_801A331C(f64 farg0, s32 arg1);
+
+
+f32 fn_801A3344(f64 farg0) {
+    return (f32) tan((f64) (f32) farg0);
+}
+
+// ---- Funciones aun sin C que matchee (asm generado) ----
 extern void acos();
 extern void atan2();
-extern void cos();
-extern void fn_801A3278();
-extern void fn_801A32A0();
-extern void fn_801A32CC();
-extern void fn_801A32F4();
-extern void fn_801A331C();
-extern void fn_801A3344();
-extern void sin();
-extern void sqrt();
-extern void tan();
+f32 fn_801A3278();
+f32 fn_801A32A0();
+f32 fn_801A331C(f64 farg0, s32 arg1);
 
-// ----------------------------------------------------------------------------
-// fn_801A3278
-// ----------------------------------------------------------------------------
-asm void fn_801A3278() {
+// asm_to_cpp: fn_801A331C
+asm f32 fn_801A331C(f64 farg0, s32 arg1) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
     frsp f1, f1
     stw r0, 0x14(r1)
-    bl acos
+    bl sqrt
     lwz r0, 0x14(r1)
     frsp f1, f1
     mtlr r0
@@ -34,10 +51,8 @@ asm void fn_801A3278() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801A32A0
-// ----------------------------------------------------------------------------
-asm void fn_801A32A0() {
+// asm_to_cpp: fn_801A32A0
+asm f32 fn_801A32A0() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -52,71 +67,17 @@ asm void fn_801A32A0() {
     blr
 }
 
-// ----------------------------------------------------------------------------
-// fn_801A32CC
-// ----------------------------------------------------------------------------
-asm void fn_801A32CC() {
+// asm_to_cpp: fn_801A3278
+asm f32 fn_801A3278() {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
     frsp f1, f1
     stw r0, 0x14(r1)
-    bl cos
+    bl acos
     lwz r0, 0x14(r1)
     frsp f1, f1
     mtlr r0
     addi r1, r1, 0x10
     blr
 }
-
-// ----------------------------------------------------------------------------
-// fn_801A32F4
-// ----------------------------------------------------------------------------
-asm void fn_801A32F4() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    frsp f1, f1
-    stw r0, 0x14(r1)
-    bl sin
-    lwz r0, 0x14(r1)
-    frsp f1, f1
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_801A331C
-// ----------------------------------------------------------------------------
-asm void fn_801A331C() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    frsp f1, f1
-    stw r0, 0x14(r1)
-    bl sqrt
-    lwz r0, 0x14(r1)
-    frsp f1, f1
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-// ----------------------------------------------------------------------------
-// fn_801A3344
-// ----------------------------------------------------------------------------
-asm void fn_801A3344() {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    frsp f1, f1
-    stw r0, 0x14(r1)
-    bl tan
-    lwz r0, 0x14(r1)
-    frsp f1, f1
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-

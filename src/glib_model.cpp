@@ -1,119 +1,6 @@
 #include "types.h"
 #include "m2c_macros.h"
 
-struct M2C_VC_0 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);        };
-struct M2C_VC_1 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);        };
-struct M2C_VC_2 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f();        };
-struct M2C_VC_3 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);        };
-struct M2C_VC_4 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);        };
-struct M2C_VC_5 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);        };
-struct M2C_VC_6 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);        };
-struct M2C_VC_7 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);        };
-struct M2C_VC_8 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);        };
-struct M2C_VC_9 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);        };
-struct M2C_VC_10 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);        };
-struct M2C_VC_11 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);        };
-struct M2C_VC_12 { virtual s32 f(s32 *);        };
-struct M2C_VC_13 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);        };
-struct M2C_VC_14 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);       };
-struct M2C_VC_15 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);       };
-struct M2C_VC_16 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f();       };
-struct M2C_VC_17 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);       };
-struct M2C_VC_18 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);       };
-struct M2C_VC_19 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);       };
-struct M2C_VC_20 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);       };
-struct M2C_VC_21 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);       };
-struct M2C_VC_22 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);       };
-struct M2C_VC_23 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);       };
-struct M2C_VC_24 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);       };
-struct M2C_VC_25 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);       };
-struct M2C_VC_26 { virtual s32 f(s32 *);       };
-struct M2C_VC_27 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);       };
-struct M2C_VC_28 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);      };
-struct M2C_VC_29 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);      };
-struct M2C_VC_30 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f();      };
-struct M2C_VC_31 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);      };
-struct M2C_VC_32 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);      };
-struct M2C_VC_33 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);      };
-struct M2C_VC_34 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);      };
-struct M2C_VC_35 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);      };
-struct M2C_VC_36 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);      };
-struct M2C_VC_37 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);      };
-struct M2C_VC_38 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);      };
-struct M2C_VC_39 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);      };
-struct M2C_VC_40 { virtual s32 f(s32 *);      };
-struct M2C_VC_41 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);      };
-struct M2C_VC_42 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);     };
-struct M2C_VC_43 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);     };
-struct M2C_VC_44 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f();     };
-struct M2C_VC_45 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);     };
-struct M2C_VC_46 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);     };
-struct M2C_VC_47 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);     };
-struct M2C_VC_48 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);     };
-struct M2C_VC_49 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);     };
-struct M2C_VC_50 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);     };
-struct M2C_VC_51 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);     };
-struct M2C_VC_52 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);     };
-struct M2C_VC_53 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);     };
-struct M2C_VC_54 { virtual s32 f(s32 *);     };
-struct M2C_VC_55 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);     };
-struct M2C_VC_56 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);    };
-struct M2C_VC_57 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);    };
-struct M2C_VC_58 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f();    };
-struct M2C_VC_59 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);    };
-struct M2C_VC_60 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);    };
-struct M2C_VC_61 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);    };
-struct M2C_VC_62 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);    };
-struct M2C_VC_63 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);    };
-struct M2C_VC_64 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);    };
-struct M2C_VC_65 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);    };
-struct M2C_VC_66 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);    };
-struct M2C_VC_67 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);    };
-struct M2C_VC_68 { virtual s32 f(s32 *);    };
-struct M2C_VC_69 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);    };
-struct M2C_VC_70 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);   };
-struct M2C_VC_71 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);   };
-struct M2C_VC_72 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f();   };
-struct M2C_VC_73 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);   };
-struct M2C_VC_74 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);   };
-struct M2C_VC_75 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);   };
-struct M2C_VC_76 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);   };
-struct M2C_VC_77 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);   };
-struct M2C_VC_78 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);   };
-struct M2C_VC_79 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);   };
-struct M2C_VC_80 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);   };
-struct M2C_VC_81 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);   };
-struct M2C_VC_82 { virtual s32 f(s32 *);   };
-struct M2C_VC_83 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);   };
-struct M2C_VC_84 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);  };
-struct M2C_VC_85 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);  };
-struct M2C_VC_86 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f();  };
-struct M2C_VC_87 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);  };
-struct M2C_VC_88 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);  };
-struct M2C_VC_89 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);  };
-struct M2C_VC_90 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);  };
-struct M2C_VC_91 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);  };
-struct M2C_VC_92 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);  };
-struct M2C_VC_93 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);  };
-struct M2C_VC_94 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);  };
-struct M2C_VC_95 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);  };
-struct M2C_VC_96 { virtual s32 f(s32 *);  };
-struct M2C_VC_97 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);  };
-struct M2C_VC_98 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32); };
-struct M2C_VC_99 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32); };
-struct M2C_VC_100 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f(); };
-struct M2C_VC_101 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32); };
-struct M2C_VC_102 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK); };
-struct M2C_VC_103 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK); };
-struct M2C_VC_104 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32); };
-struct M2C_VC_105 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *); };
-struct M2C_VC_106 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32); };
-struct M2C_VC_107 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32); };
-struct M2C_VC_108 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *); };
-struct M2C_VC_109 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK); };
-struct M2C_VC_110 { virtual s32 f(s32 *); };
-struct M2C_VC_111 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32); };
-
 typedef void (*GlibModelCallback)(void *target, void *a, void *b, void *c);
 struct GlibModelListener_80031594 {
     void *vtable;
@@ -124,8 +11,300 @@ struct GlibModelListener_80031594 {
     GlibModelCallback cb4;
     GlibModelCallback cb5;
 };
+struct M2C_VC_0 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);                   };
+struct M2C_VC_1 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);                   };
+struct M2C_VC_2 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f();                   };
+struct M2C_VC_3 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);                   };
+struct M2C_VC_4 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);                   };
+struct M2C_VC_5 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);                   };
+struct M2C_VC_6 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);                   };
+struct M2C_VC_7 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);                   };
+struct M2C_VC_8 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);                   };
+struct M2C_VC_9 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);                   };
+struct M2C_VC_10 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);                   };
+struct M2C_VC_11 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);                   };
+struct M2C_VC_12 { virtual s32 f(s32 *);                   };
+struct M2C_VC_13 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);                   };
+struct M2C_VC_14 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);                  };
+struct M2C_VC_15 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);                  };
+struct M2C_VC_16 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f();                  };
+struct M2C_VC_17 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);                  };
+struct M2C_VC_18 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);                  };
+struct M2C_VC_19 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);                  };
+struct M2C_VC_20 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);                  };
+struct M2C_VC_21 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);                  };
+struct M2C_VC_22 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);                  };
+struct M2C_VC_23 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);                  };
+struct M2C_VC_24 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);                  };
+struct M2C_VC_25 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);                  };
+struct M2C_VC_26 { virtual s32 f(s32 *);                  };
+struct M2C_VC_27 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);                  };
+struct M2C_VC_28 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);                 };
+struct M2C_VC_29 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);                 };
+struct M2C_VC_30 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f();                 };
+struct M2C_VC_31 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);                 };
+struct M2C_VC_32 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);                 };
+struct M2C_VC_33 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);                 };
+struct M2C_VC_34 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);                 };
+struct M2C_VC_35 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);                 };
+struct M2C_VC_36 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);                 };
+struct M2C_VC_37 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);                 };
+struct M2C_VC_38 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);                 };
+struct M2C_VC_39 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);                 };
+struct M2C_VC_40 { virtual s32 f(s32 *);                 };
+struct M2C_VC_41 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);                 };
+struct M2C_VC_42 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);                };
+struct M2C_VC_43 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);                };
+struct M2C_VC_44 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f();                };
+struct M2C_VC_45 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);                };
+struct M2C_VC_46 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);                };
+struct M2C_VC_47 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);                };
+struct M2C_VC_48 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);                };
+struct M2C_VC_49 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);                };
+struct M2C_VC_50 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);                };
+struct M2C_VC_51 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);                };
+struct M2C_VC_52 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);                };
+struct M2C_VC_53 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);                };
+struct M2C_VC_54 { virtual s32 f(s32 *);                };
+struct M2C_VC_55 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);                };
+struct M2C_VC_56 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);               };
+struct M2C_VC_57 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);               };
+struct M2C_VC_58 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f();               };
+struct M2C_VC_59 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);               };
+struct M2C_VC_60 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);               };
+struct M2C_VC_61 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);               };
+struct M2C_VC_62 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);               };
+struct M2C_VC_63 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);               };
+struct M2C_VC_64 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);               };
+struct M2C_VC_65 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);               };
+struct M2C_VC_66 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);               };
+struct M2C_VC_67 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);               };
+struct M2C_VC_68 { virtual s32 f(s32 *);               };
+struct M2C_VC_69 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);               };
+struct M2C_VC_70 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);              };
+struct M2C_VC_71 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);              };
+struct M2C_VC_72 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f();              };
+struct M2C_VC_73 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);              };
+struct M2C_VC_74 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);              };
+struct M2C_VC_75 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);              };
+struct M2C_VC_76 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);              };
+struct M2C_VC_77 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);              };
+struct M2C_VC_78 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);              };
+struct M2C_VC_79 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);              };
+struct M2C_VC_80 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);              };
+struct M2C_VC_81 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);              };
+struct M2C_VC_82 { virtual s32 f(s32 *);              };
+struct M2C_VC_83 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);              };
+struct M2C_VC_84 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);             };
+struct M2C_VC_85 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);             };
+struct M2C_VC_86 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f();             };
+struct M2C_VC_87 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);             };
+struct M2C_VC_88 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);             };
+struct M2C_VC_89 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);             };
+struct M2C_VC_90 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);             };
+struct M2C_VC_91 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);             };
+struct M2C_VC_92 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);             };
+struct M2C_VC_93 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);             };
+struct M2C_VC_94 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);             };
+struct M2C_VC_95 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);             };
+struct M2C_VC_96 { virtual s32 f(s32 *);             };
+struct M2C_VC_97 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);             };
+struct M2C_VC_98 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);            };
+struct M2C_VC_99 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);            };
+struct M2C_VC_100 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f();            };
+struct M2C_VC_101 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);            };
+struct M2C_VC_102 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);            };
+struct M2C_VC_103 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);            };
+struct M2C_VC_104 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);            };
+struct M2C_VC_105 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);            };
+struct M2C_VC_106 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);            };
+struct M2C_VC_107 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);            };
+struct M2C_VC_108 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);            };
+struct M2C_VC_109 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);            };
+struct M2C_VC_110 { virtual s32 f(s32 *);            };
+struct M2C_VC_111 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);            };
+struct M2C_VC_112 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);           };
+struct M2C_VC_113 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);           };
+struct M2C_VC_114 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f();           };
+struct M2C_VC_115 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);           };
+struct M2C_VC_116 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);           };
+struct M2C_VC_117 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);           };
+struct M2C_VC_118 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);           };
+struct M2C_VC_119 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);           };
+struct M2C_VC_120 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);           };
+struct M2C_VC_121 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);           };
+struct M2C_VC_122 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);           };
+struct M2C_VC_123 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);           };
+struct M2C_VC_124 { virtual s32 f(s32 *);           };
+struct M2C_VC_125 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);           };
+struct M2C_VC_126 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);          };
+struct M2C_VC_127 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);          };
+struct M2C_VC_128 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual M2C_UNK f();          };
+struct M2C_VC_129 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);          };
+struct M2C_VC_130 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);          };
+struct M2C_VC_131 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);          };
+struct M2C_VC_132 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);          };
+struct M2C_VC_133 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);          };
+struct M2C_VC_134 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);          };
+struct M2C_VC_135 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);          };
+struct M2C_VC_136 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);          };
+struct M2C_VC_137 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);          };
+struct M2C_VC_138 { virtual s32 f(s32 *);          };
+struct M2C_VC_139 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);          };
+struct M2C_VC_140 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);         };
+struct M2C_VC_141 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);         };
+struct M2C_VC_142 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual s32 f();         };
+struct M2C_VC_143 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);         };
+struct M2C_VC_144 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);         };
+struct M2C_VC_145 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);         };
+struct M2C_VC_146 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual s32 f(s32, M2C_UNK);         };
+struct M2C_VC_147 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);         };
+struct M2C_VC_148 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);         };
+struct M2C_VC_149 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);         };
+struct M2C_VC_150 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);         };
+struct M2C_VC_151 { virtual void v0(); virtual u64 f(M2C_UNK, M2C_UNK, M2C_UNK);         };
+struct M2C_VC_152 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);         };
+struct M2C_VC_153 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);         };
+struct M2C_VC_154 { virtual s32 f(s32 *);         };
+struct M2C_VC_155 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);         };
+struct M2C_VC_156 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);        };
+struct M2C_VC_157 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);        };
+struct M2C_VC_158 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual s32 f();        };
+struct M2C_VC_159 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);        };
+struct M2C_VC_160 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);        };
+struct M2C_VC_161 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);        };
+struct M2C_VC_162 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual s32 f(s32, M2C_UNK);        };
+struct M2C_VC_163 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);        };
+struct M2C_VC_164 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);        };
+struct M2C_VC_165 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);        };
+struct M2C_VC_166 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);        };
+struct M2C_VC_167 { virtual void v0(); virtual u64 f(M2C_UNK, M2C_UNK, M2C_UNK);        };
+struct M2C_VC_168 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);        };
+struct M2C_VC_169 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);        };
+struct M2C_VC_170 { virtual s32 f(s32 *);        };
+struct M2C_VC_171 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);        };
+struct M2C_VC_172 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);       };
+struct M2C_VC_173 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);       };
+struct M2C_VC_174 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual s32 f();       };
+struct M2C_VC_175 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);       };
+struct M2C_VC_176 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);       };
+struct M2C_VC_177 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);       };
+struct M2C_VC_178 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual s32 f(s32, M2C_UNK);       };
+struct M2C_VC_179 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);       };
+struct M2C_VC_180 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);       };
+struct M2C_VC_181 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);       };
+struct M2C_VC_182 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);       };
+struct M2C_VC_183 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);       };
+struct M2C_VC_184 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);       };
+struct M2C_VC_185 { virtual s32 f(s32 *);       };
+struct M2C_VC_186 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);       };
+struct M2C_VC_187 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);      };
+struct M2C_VC_188 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);      };
+struct M2C_VC_189 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual s32 f();      };
+struct M2C_VC_190 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);      };
+struct M2C_VC_191 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);      };
+struct M2C_VC_192 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);      };
+struct M2C_VC_193 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual s32 f(s32, M2C_UNK);      };
+struct M2C_VC_194 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);      };
+struct M2C_VC_195 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);      };
+struct M2C_VC_196 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);      };
+struct M2C_VC_197 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);      };
+struct M2C_VC_198 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);      };
+struct M2C_VC_199 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);      };
+struct M2C_VC_200 { virtual s32 f(s32 *);      };
+struct M2C_VC_201 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);      };
+struct M2C_VC_202 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);     };
+struct M2C_VC_203 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);     };
+struct M2C_VC_204 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual s32 f();     };
+struct M2C_VC_205 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);     };
+struct M2C_VC_206 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);     };
+struct M2C_VC_207 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);     };
+struct M2C_VC_208 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual s32 f(s32, M2C_UNK);     };
+struct M2C_VC_209 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);     };
+struct M2C_VC_210 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);     };
+struct M2C_VC_211 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);     };
+struct M2C_VC_212 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);     };
+struct M2C_VC_213 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);     };
+struct M2C_VC_214 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);     };
+struct M2C_VC_215 { virtual s32 f(s32 *);     };
+struct M2C_VC_216 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);     };
+struct M2C_VC_217 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);    };
+struct M2C_VC_218 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);    };
+struct M2C_VC_219 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual s32 f();    };
+struct M2C_VC_220 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);    };
+struct M2C_VC_221 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);    };
+struct M2C_VC_222 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);    };
+struct M2C_VC_223 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual s32 f(s32, M2C_UNK);    };
+struct M2C_VC_224 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);    };
+struct M2C_VC_225 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);    };
+struct M2C_VC_226 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);    };
+struct M2C_VC_227 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);    };
+struct M2C_VC_228 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);    };
+struct M2C_VC_229 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);    };
+struct M2C_VC_230 { virtual s32 f(s32 *);    };
+struct M2C_VC_231 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);    };
+struct M2C_VC_232 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);   };
+struct M2C_VC_233 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);   };
+struct M2C_VC_234 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual s32 f();   };
+struct M2C_VC_235 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);   };
+struct M2C_VC_236 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);   };
+struct M2C_VC_237 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);   };
+struct M2C_VC_238 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual s32 f(s32, M2C_UNK);   };
+struct M2C_VC_239 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);   };
+struct M2C_VC_240 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);   };
+struct M2C_VC_241 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);   };
+struct M2C_VC_242 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);   };
+struct M2C_VC_243 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);   };
+struct M2C_VC_244 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);   };
+struct M2C_VC_245 { virtual s32 f(s32 *);   };
+struct M2C_VC_246 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);   };
+struct M2C_VC_247 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32);  };
+struct M2C_VC_248 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32);  };
+struct M2C_VC_249 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual s32 f();  };
+struct M2C_VC_250 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32);  };
+struct M2C_VC_251 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK);  };
+struct M2C_VC_252 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK);  };
+struct M2C_VC_253 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual s32 f(s32, M2C_UNK);  };
+struct M2C_VC_254 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32);  };
+struct M2C_VC_255 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *);  };
+struct M2C_VC_256 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32);  };
+struct M2C_VC_257 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32);  };
+struct M2C_VC_258 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *);  };
+struct M2C_VC_259 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK);  };
+struct M2C_VC_260 { virtual s32 f(s32 *);  };
+struct M2C_VC_261 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32);  };
+struct M2C_VC_262 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32); };
+struct M2C_VC_263 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual M2C_UNK f(s32); };
+struct M2C_VC_264 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual s32 f(); };
+struct M2C_VC_265 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual M2C_UNK f(s32); };
+struct M2C_VC_266 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s32, M2C_UNK); };
+struct M2C_VC_267 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, M2C_UNK); };
+struct M2C_VC_268 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual s32 f(s32, M2C_UNK); };
+struct M2C_VC_269 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32); };
+struct M2C_VC_270 { virtual void v0(); virtual M2C_UNK f(M2C_UNK, M2C_UNK, s32 *); };
+struct M2C_VC_271 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual M2C_UNK f(s32, s32); };
+struct M2C_VC_272 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual M2C_UNK f(s32, f32 *, f32); };
+struct M2C_VC_273 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual M2C_UNK f(s8 *); };
+struct M2C_VC_274 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual M2C_UNK f(s8 **, M2C_UNK); };
+struct M2C_VC_275 { virtual s32 f(s32 *); };
+struct M2C_VC_276 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual s32 f(s32); };
 
 extern "C" {
+
+struct S_fn_8002EB6C_arg0 {
+    u8 pad_0[0xC];
+    s8 ** f_C;
+    u8 pad_10[0x64];
+    s32 f_74;
+    f32 f_78;
+    f32 f_7C;
+};
+struct S_fn_8002ED44_arg0 {
+    u8 pad_0[0x8];
+    s32 f_8;
+    u8 pad_C[0x10];
+    s32 f_1C;
+};
 
 extern u8 lbl_8033C738[];
 extern u8 lbl_8033C758[];
@@ -218,8 +397,9 @@ extern float lbl_8049C268;
 extern float lbl_8049C26C;
 extern float lbl_8049C270;
 extern float lbl_8049E868;
-extern float lbl_8049E870;
+__declspec(section ".sdata2") extern const f32 lbl_8049E870[];
 
+void CalcChrAnmResult__Q34nw4r3g3d7ResNodeCFPQ34nw4r3g3d12ChrAnmResult(s8 **arg0, s8 *arg1);
 void Clear__Q44nw4r2ut6detail12LinkListImplFv(s8 *arg0);
 s8 * Construct__Q34nw4r3g3d14AnmObjChrBlendFP12MEMAllocatorPUlQ34nw4r3g3d6ResMdli(s32 arg0, s32 *arg1, s32 *arg2, s32 arg3);
 s8 * Construct__Q34nw4r3g3d6ScnMdlFP12MEMAllocatorPUlQ34nw4r3g3d6ResMdlUli(s32 arg0, s32 *arg1, s8 **arg2, u32 arg3, s32 arg4);
@@ -245,8 +425,13 @@ void GetMtx__Q34nw4r3g3d12ChrAnmResultCFPQ34nw4r4math5MTX34(s32 *arg0, s32 arg1)
 s32 GetMtx__Q34nw4r3g3d6ScnObjCFQ44nw4r3g3d6ScnObj13ScnObjMtxTypePQ34nw4r4math5MTX34(s32 arg0, u32 arg1, s8 *arg2);
 s32 GetResGenMode__Q44nw4r3g3d6ScnMdl15CopiedMatAccessFb(s8 *arg0, s32 arg1);
 s32 GetResMatChan__Q44nw4r3g3d6ScnMdl15CopiedMatAccessFb(s8 *arg0, s32 arg1);
+s32 GetResMatMisc__Q44nw4r3g3d6ScnMdl15CopiedMatAccessFb(s8 *arg0, s32 arg1);
+s32 GetResMatNumEntries__Q34nw4r3g3d6ResMdlCFv(s8 **arg0);
+s8 * GetResMat__Q34nw4r3g3d6ResMdlCFUl(s8 **arg0, s32 arg1);
 s32 GetResNodeNumEntries__Q34nw4r3g3d6ResMdlCFv(s8 **arg0);
 s8 * GetResNode__Q34nw4r3g3d6ResMdlCFUl(s8 **arg0, s32 arg1);
+s8 * GetResShp__Q34nw4r3g3d6ResMdlCFi(s8 **arg0, s32 arg1);
+s32 GetResTexObj__Q44nw4r3g3d6ScnMdl15CopiedMatAccessFb(s8 *arg0, s32 arg1);
 s8 * GetResUserData__Q34nw4r3g3d9ResAnmChrFv(s8 **arg0);
 s8 * GetResVtxPos__Q34nw4r3g3d6ResMdlCFi(s8 **arg0, s32 arg1);
 M2C_UNK GetResVtxPos__Q34nw4r3g3d6ResShpCFv(s8 **arg0);
@@ -306,12 +491,12 @@ f32 fn_80018B94(s32 arg0, s32 arg1, s32 arg2);
 f32 fn_8001B930(s32 arg0, s32 arg1, s32 arg2);
 M2C_UNK fn_8001B954(s32 arg0);
 void fn_80027AF8(void);
-s32 fn_80027AFC(s32 arg0, s32 arg1);
+s32 fn_80027AFC(void);
 M2C_UNK fn_80027B04(s32 arg0, s32 arg1);
 void fn_80027B74(s32 arg0);
 s32 fn_80027B7C(s32 *arg0);
 s8 * fn_80027B84(s8 *arg0, s32 arg1);
-s32 fn_80027CAC();
+M2C_UNK fn_80027CAC(s32 arg0_x);
 s32 fn_80027CCC(s32 arg0);
 void fn_80027D18(s8 *arg0, s32 arg1);
 M2C_UNK fn_80028228(s32 arg0, s32 *arg1);
@@ -333,7 +518,7 @@ s32 fn_8002AE00(s8 *arg0);
 s32 fn_8002AE08(s32 arg0);
 M2C_UNK fn_8002AE3C(s32 arg0);
 void fn_8002AE40(s32 arg0);
-void fn_8002AF44(f32 farg0, f32 farg1, f32 farg2, s32 arg3);
+void fn_8002AF44(s32 arg3, f32 farg0, f32 farg1, f32 farg2);
 void fn_8002AF5C(s32 arg0);
 M2C_UNK fn_8002AF60(s8 *arg0, f32 farg0, f32 farg1, f32 farg2);
 s32 fn_8002B060(s32 arg0, s32 arg1);
@@ -347,18 +532,18 @@ void fn_8002E494(s32 *arg0, s32 *arg1);
 void fn_8002E4A0(s8 *arg0, s32 arg1, u32 arg2);
 s32 * fn_8002E628(s32 *arg0, s32 arg1);
 void fn_8002E658(s32 *arg0, s32 *arg1);
-void fn_8002E664(s8 *arg0);
-void fn_8002E854(s8 *arg0);
+s32 fn_8002E664(s8 *arg0);
+s32 fn_8002E854(s8 *arg0);
 s32 fn_8002E958(s8 *arg0);
 void fn_8002E9E8(s8 *arg0, s32 arg1, s32 arg2, s32 arg3);
-s32 fn_8002EB6C(s8 *arg0, s32 arg1, s32 arg2);
+s32 fn_8002EB6C(S_fn_8002EB6C_arg0 *arg0, s32 arg1, s32 arg2);
 s32 fn_8002EC5C(s8 *arg0, u32 arg1);
 void fn_8002ECF8(s8 *arg0);
-s32 fn_8002ED44(s8 *arg0, s32 arg1);
+s32 fn_8002ED44(S_fn_8002ED44_arg0 *arg0, s32 arg1);
 s32 fn_8002ED88(s8 *arg0);
 void fn_8002EDC8(s8 *arg0, M2C_UNK *arg1);
 u32 fn_8002EF2C(s32 arg0, s32 arg1);
-void fn_8002EFE0(s32 arg0, s32 arg1);
+s32 fn_8002EFE0(s32 arg0, s32 arg1);
 void fn_8002F0AC(s8 *arg0, s32 arg1);
 s8 * fn_8002F230(s8 *arg0, s32 arg1);
 void fn_8002F260(s32 *arg0, s32 *arg1);
@@ -372,7 +557,7 @@ s32 fn_80030590(M2C_UNK *arg0, s32 arg1, s32 arg2);
 void fn_80030788(s8 *arg0);
 void fn_8003094C(s8 *arg0);
 s32 fn_80030A80(s8 *arg0, s32 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
-M2C_UNK * fn_80030CC4(M2C_UNK *arg0, s32 arg1, s32 arg2);
+s32 * fn_80030CC4(s32 *arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_80030D78(s8 *arg0, M2C_UNK *arg1);
 void fn_80030DEC(s32 arg0);
 s32 * fn_80030DF4(s32 *arg0, s32 arg1);
@@ -384,8 +569,8 @@ void fn_80030E40(s32 arg0);
 s32 * fn_80030E44(s32 *arg0, s32 arg1);
 void fn_80030E74(s32 *arg0, s32 *arg1);
 void fn_80030E80(s32 *arg0, s32 *arg1);
-M2C_UNK fn_80030EA4(s32 *arg0);
-void fn_80030EE0(s32 *arg0);
+s32 fn_80030EA4(s32 *arg0);
+M2C_UNK fn_80030EE0(s32 *arg0);
 s32 fn_80030F44(void);
 M2C_UNK fn_80030F4C(s32 *arg0);
 s32 fn_80030FB0(s32 arg0, s32 arg1);
@@ -409,7 +594,7 @@ s32 fn_800311D0(s8 *arg0);
 s32 fn_800311E0(s32 arg0);
 void fn_80031208(s8 *arg0, s32 arg1);
 void fn_80031218(s32 arg0);
-s32 fn_80031220();
+M2C_UNK fn_80031220(s32 arg0_x, s32 arg1_x, s32 arg2_x);
 void fn_80031244(s8 **arg0, s32 arg1);
 s32 fn_80031294(s32 *arg0);
 void fn_8003129C(s32 arg0, s8 **arg1);
@@ -454,14 +639,14 @@ s32 * fn_80031900(s32 *arg0, f32 *arg1, s32 *arg2);
 s32 * fn_80031960(s32 *arg0, s32 arg1);
 void fn_80031990(s32 *arg0, s32 *arg1);
 s32 * fn_8003199C(s32 *arg0, s8 *arg1, s32 *arg2);
-void fn_800319FC(f32 farg0, s32 arg1, s32 arg2);
-void fn_80031A0C(f32 farg0, f32 farg1, f32 farg2, s32 arg3);
+void fn_800319FC(s32 arg1, s32 arg2, f32 farg0);
+void fn_80031A0C(s32 arg3, f32 farg0, f32 farg1, f32 farg2);
 s32 fn_80031A24(s32 arg0, M2C_UNK *arg1);
 s32 * fn_80031A74(s32 *arg0, s32 arg1);
 void fn_80031AA4(s32 *arg0, s32 *arg1);
 s32 * fn_80031AB0(s32 *arg0);
 f32 * fn_80031AF4(f32 *arg0, f32 *arg1);
-void fn_80031B2C(f32 farg0, s32 arg1);
+void fn_80031B2C(s32 arg1, f32 farg0);
 s32 fn_80031B38(s32 *arg0);
 s32 * fn_80031B48(s32 *arg0, s32 arg1);
 void fn_80031B78(s32 *arg0, s32 *arg1);
@@ -486,9 +671,9 @@ s32 fn_80031CB4(s32 *arg0);
 s32 fn_80031CBC(s32 *arg0);
 s32 * fn_80031CCC(s32 *arg0, s32 arg1);
 void fn_80031CFC(s32 *arg0, s32 *arg1);
-M2C_UNK fn_80031D08(s32 *arg0);
+s32 fn_80031D08(s32 *arg0);
 s8 * fn_80031D44(s8 **arg0, s32 arg1);
-void fn_80031D60(s32 *arg0);
+M2C_UNK fn_80031D60(s32 *arg0);
 s32 fn_80031DC4(s32 *arg0);
 s32 fn_80031DCC(void);
 s32 fn_80031DD8(s32 *arg0);
@@ -515,18 +700,18 @@ void fn_80031FFC(s8 **arg0, u8 arg1);
 void fn_80032008(s8 **arg0, s32 arg1);
 s32 fn_80032010(s8 **arg0, s32 arg1);
 s32 fn_800320A4(s8 **arg0);
-M2C_UNK fn_80032118(s32 *arg0);
-void fn_80032154(s8 **arg0);
+s32 fn_80032118(s32 *arg0);
+M2C_UNK fn_80032154(s8 **arg0);
 s32 fn_800321B8(void);
 s32 fn_800321C0(s8 **arg0, s32 arg1);
 s32 fn_80032234(s8 **arg0, s32 arg1);
 s8 * fn_800322B4(s8 *arg0, s32 arg1);
 s32 fn_80032318(s32 arg0);
-void fn_8003233C(s32 *arg0);
+M2C_UNK fn_8003233C(s32 *arg0);
 s32 fn_800323A0(void);
 M2C_UNK fn_800323AC(s32 *arg0);
 M2C_UNK fn_80032414(s32 *arg0);
-void fn_8003247C(s32 *arg0);
+M2C_UNK fn_8003247C(s32 *arg0);
 M2C_UNK fn_800324E0(s32 *arg0);
 s32 fn_80032548(s32 arg0);
 s32 fn_8003256C(s32 arg0, s32 *arg1);
@@ -538,7 +723,7 @@ s32 fn_800326F8(s32 arg0);
 M2C_UNK fn_8003272C(s8 **arg0);
 s32 fn_80032790(void);
 s32 fn_80032798(s32 arg0);
-void fn_800327BC(s32 *arg0);
+M2C_UNK fn_800327BC(s32 *arg0);
 s8 * fn_80032820(s32 arg0);
 M2C_UNK fn_80032858(s32 *arg0);
 s32 fn_800328BC(void);
@@ -550,7 +735,7 @@ void fn_80032924(void);
 void fn_80032928(s8 *arg0, u16 arg1);
 u16 fn_80032934(s8 *arg0);
 s32 fn_8003293C(s32 *arg0, void *arg1);
-s32 fn_80032954();
+M2C_UNK fn_80032954(s32 arg0_x, s32 arg1_x);
 void fn_8003297C(void **arg0, void *arg1);
 void fn_80032998(void **arg0, void *arg1);
 void fn_800329B4(s8 **arg0, u8 arg1);
@@ -624,14 +809,13 @@ s8 * fn_8018622C(s8 *arg0);
 s8 * fn_801862FC(s8 *arg0);
 s32 fn_80186374(s8 *arg0, s32 arg1);
 s32 fn_801863E0(s8 *arg0);
-void fn_801A9384(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7);
+void fn_801A9384(s32 arg0, s32 arg1, s32 arg2, ...);
 s8 * fn_801D0D24(s8 **arg0, s32 arg1);
 s32 fn_801D0D78(s8 **arg0);
 s32 fn_801D1E58(s32 *arg0, s32 arg1, s32 *arg2, s8 *arg3);
-void fn_801D41BC(s8 **arg0, s32 *arg1, s32 *arg2, u8 *arg3);
-void fn_801D4934(s8 **arg0, s8 *arg1);
+s32 fn_801D41BC(s8 **arg0, s32 *arg1, s32 *arg2, u8 *arg3);
 void fn_801D7300(s8 *arg0, s8 *arg1);
-void fn_801E635C(s8 *arg0, f32 farg0, f32 farg1, f32 farg2);
+s32 fn_801E635C(s8 *arg0, f32 farg0, f32 farg1, f32 farg2);
 void fn_801EC790(s8 *arg0, s32 arg1);
 void fn_801EC824(s8 *arg0, s32 arg1);
 s32 fn_801F140C(s8 *arg0, s32 arg1);
@@ -639,6 +823,1187 @@ s32 fn_801F1454(s8 *arg0, s32 arg1);
 f32 fn_802019BC(void);
 s32 fn_8030CAF0(void);
 s32 strcmp(s32 arg0, s32 arg1);
+
+
+void fn_8002E494(s32 *arg0, s32 *arg1) {
+    *arg0 = *arg1;
+}
+
+s32 * fn_8002E628(s32 *arg0, s32 arg1) {
+    fn_8002E658((s32 *) (arg0), (s32 *) ((s32 *) arg1));
+    return (s32 *) (arg0);
+}
+
+void fn_8002E658(s32 *arg0, s32 *arg1) {
+    *arg0 = *arg1;
+}
+
+void fn_8002ECF8(s8 *arg0) {
+    if (((s32) M2C_FIELD(arg0, s32 *, 0x1C) != 0) && (fn_800311BC((s8 *) (arg0), (s32) (0x400)) != 0)) {
+        fn_80031218((s32) (M2C_FIELD(arg0, s32 *, 8)));
+    }
+}
+
+s32 fn_8002ED88(s8 *arg0) {
+    if (fn_800311AC((s8 *) (arg0)) != 0) {
+        return (s32) (M2C_FIELD(arg0, s32 *, 0x14));
+    }
+    return (s32) (M2C_FIELD(arg0, s32 *, 8));
+}
+
+s8 * fn_8002F230(s8 *arg0, s32 arg1) {
+    fn_8002F260((s32 *) ((s32 *) arg0), (s32 *) ((s32 *) arg1));
+    return (s8 *) (arg0);
+}
+
+void fn_8002F260(s32 *arg0, s32 *arg1) {
+    *arg0 = *arg1;
+}
+
+s8 * dtor_80030D1C(s8 *arg0, s16 arg1) {
+    if (arg0 != NULL) {
+        __dt__Q44nw4r2ut6detail12LinkListImplFv((s8 *) (arg0), (s32) (0));
+        if (arg1 > 0) {
+            dtor_80136CFC((s32) ((s32) arg0));
+        }
+    }
+    return (s8 *) (arg0);
+}
+
+void fn_80030DEC(s32 arg0) {
+    DCStore__Q34nw4r3g3d9ResMatPixFb((s32) ((s8 *) arg0), (s32) (0));
+}
+
+s32 * fn_80030DF4(s32 *arg0, s32 arg1) {
+    fn_80030E24((s32 *) (arg0), (s32 *) ((s32 *) arg1));
+    return (s32 *) (arg0);
+}
+
+void fn_80030E24(s32 *arg0, s32 *arg1) {
+    *arg0 = *arg1;
+}
+
+void fn_80030E30(s32 arg0) {
+}
+
+void fn_80030E34(s32 arg0, s32 arg1, s32 arg2) {
+    SetEffectMtx__Q34nw4r3g3d9ResTexSrtFUlPCQ34nw4r4math5MTX34((s32 *) ((s32 *) arg0), (u32) ((u32) arg1), (s8 *) ((s8 *) arg2));
+}
+
+void fn_80030E38(s32 arg0) {
+    DCStore__Q34nw4r3g3d14ResMatTevColorFb((s32) ((s8 *) arg0), (s32) (0));
+}
+
+void fn_80030E40(s32 arg0) {
+}
+
+s32 * fn_80030E44(s32 *arg0, s32 arg1) {
+    fn_80030E74((s32 *) (arg0), (s32 *) ((s32 *) arg1));
+    return (s32 *) (arg0);
+}
+
+void fn_80030E74(s32 *arg0, s32 *arg1) {
+    *arg0 = *arg1;
+}
+
+void fn_80030E80(s32 *arg0, s32 *arg1) {
+    M2C_FIELD(arg0, u8 *, 0) = (u8) ((u8) M2C_FIELD(arg1, u8 *, 0));
+    M2C_FIELD(arg0, u8 *, 1) = (u8) ((u8) M2C_FIELD(arg1, u8 *, 1));
+    M2C_FIELD(arg0, u8 *, 2) = (u8) ((u8) M2C_FIELD(arg1, u8 *, 2));
+    M2C_FIELD(arg0, u8 *, 3) = (u8) ((u8) M2C_FIELD(arg1, u8 *, 3));
+}
+
+s32 fn_80030F44(void) {
+    return (s32) ((s32) &lbl_8049C230);
+}
+
+s32 fn_80030FB0(s32 arg0, s32 arg1) {
+    s32 sp8;
+
+    return (s32) (*fn_80030FE4((s32 *) (&sp8), (s32) (fn_80030F4C((s32 *) ((s32 *) arg0)) + 0x3F0)));
+}
+
+s8 ** fn_80031048(s8 **arg0) {
+    s32 sp8;
+    s32 var_r31;
+
+    var_r31 = (s32) (0);
+    if (arg0 != NULL) {
+        sp8 = (s32) (fn_800310F0());
+        if (((M2C_VC_12 *)(arg0))->f((s32 *) (&sp8)) != 0) {
+            var_r31 = (s32) (1);
+        }
+    }
+    if (var_r31 != 0) {
+        return (s8 **) (arg0);
+    }
+    return (s8 **) (NULL);
+}
+
+s32 fn_800310C4(s32 arg0, s32 arg1) {
+    return (s32) (arg1);
+}
+
+void fn_800310CC(s32 arg0, s32 arg1, s32 arg2) {
+    fn_802019BC();
+}
+
+s32 fn_800310D0(s32 *arg0, s32 arg1) {
+    *arg0 = arg1;
+    return (s32) ((s32) arg0);
+}
+
+void fn_800310D8(s32 arg0) {
+}
+
+s32 fn_800310DC(s32 *arg0) {
+    return (s32) (*arg0 + 4);
+}
+
+s32 fn_800310E8(s32 **arg0, s32 *arg1) {
+    *arg0 = arg1;
+    return (s32) ((s32) arg0);
+}
+
+s32 fn_80031120(s32 arg0, s32 *arg1) {
+    return (s32) (fn_80186374((s8 *) ((s8 *) arg0), (s32) (fn_8002AE3C((s32) ((s32) arg1)))) != 0);
+}
+
+void fn_80031164(s32 *arg0, s32 arg1) {
+    *arg0 &= ~arg1;
+}
+
+s32 fn_80031174(s32 *arg0, s32 arg1) {
+    return (s32) ((*arg0 & arg1) != 0);
+}
+
+void fn_80031188(s32 *arg0, s32 arg1) {
+    *arg0 &= ~arg1;
+}
+
+s32 fn_80031198(s32 *arg0, s32 arg1) {
+    return (s32) ((*arg0 & arg1) != 0);
+}
+
+s32 fn_800311AC(s8 *arg0) {
+    return (s32) (M2C_FIELD(arg0, s32 *, 0x14) != 0);
+}
+
+s32 fn_800311BC(s8 *arg0, s32 arg1) {
+    return (s32) ((M2C_FIELD(arg0, s32 *, 0x20) & arg1) != 0);
+}
+
+s32 fn_800311D0(s8 *arg0) {
+    return (s32) (M2C_FIELD(arg0, s32 *, 0x10) != 0);
+}
+
+s32 fn_800311E0(s32 arg0) {
+    return (s32) (fn_801863E0((s8 *) ((s8 *) arg0)) != 0);
+}
+
+void fn_80031208(s8 *arg0, s32 arg1) {
+    M2C_FIELD(arg0, s32 *, 0x20) = (s32) ((s32) (M2C_FIELD(arg0, s32 *, 0x20) | arg1));
+}
+
+void fn_80031218(s32 arg0) {
+    fn_80031FF0((s8 **) ((s8 **) arg0), (u16) (0U));
+}
+
+void fn_80031244(s8 **arg0, s32 arg1) {
+    if (arg1 != 0) {
+        EnableScnMdlCallbackTiming__Q34nw4r3g3d12ScnMdlSimpleFQ44nw4r3g3d6ScnObj6Timing((s8 *) (arg0), (s32) (2));
+        fn_80031FF0((s8 **) (arg0), (u16) (0U));
+        return;
+    }
+    DisableScnMdlCallbackTiming__Q34nw4r3g3d12ScnMdlSimpleFQ44nw4r3g3d6ScnObj6Timing((s8 *) (arg0), (s32) (2));
+}
+
+s32 fn_80031294(s32 *arg0) {
+    return (s32) (fn_8002AE00((s8 *) (M2C_FIELD(arg0, s8 **, 8))));
+}
+
+void fn_8003129C(s32 arg0, s8 **arg1) {
+    fn_80032008((s8 **) (arg1), (s32) (arg0));
+    fn_80031FFC((s8 **) (arg1), (u8) (0U));
+    fn_80031FF0((s8 **) (arg1), (u16) (0U));
+}
+
+s8 * fn_800312EC(s8 *arg0, s32 arg1) {
+    fn_8003290C((M2C_UNK **) ((s32 **) arg0));
+    M2C_FIELD(arg0, s8 **, 0) = (s8 *) (&lbl_80346E40);
+    M2C_FIELD(arg0, s32 *, 4) = (s32) (arg1);
+    M2C_FIELD(arg0, s32 *, 8) = (s32) (0);
+    M2C_FIELD(arg0, s32 *, 0xC) = (s32) (0);
+    M2C_FIELD(arg0, s32 *, 0x10) = (s32) (0);
+    return (s8 *) (arg0);
+}
+
+s32 fn_80031348(s32 arg0, s32 arg1) {
+    return (s32) (arg1);
+}
+
+void fn_80031350(s8 *arg0, s32 arg1, s32 arg2) {
+    if (arg2 != 0) {
+        fn_801EC790(arg0, arg1);
+    } else {
+        EnableScnObjCallbackTiming__Q34nw4r3g3d6ScnObjFQ44nw4r3g3d6ScnObj6Timing(arg0, arg1);
+    }
+}
+
+void fn_80031360(s8 *arg0, s32 arg1, s32 arg2) {
+    if (arg2 != 0) {
+        EnableScnObjCallbackExecOp__Q34nw4r3g3d6ScnObjFQ44nw4r3g3d6ScnObj6ExecOp(arg0, arg1);
+    } else {
+        fn_801EC824(arg0, arg1);
+    }
+}
+
+void fn_80031370(s32 *arg0, s32 arg1) {
+    arg0[6] = arg1;
+}
+
+void fn_80031378(s32 *arg0, s32 arg1) {
+    arg0[5] = arg1;
+}
+
+void fn_80031380(s32 *arg0, s32 arg1) {
+    arg0[3] = arg1;
+}
+
+void fn_80031388(s32 *arg0, s32 arg1) {
+    arg0[2] = arg1;
+}
+
+void fn_80031390(s8 *arg0, s8 **arg1) {
+    fn_800329C0((s8 **) (arg1), (s8 *) (arg0));
+    fn_800329B4((s8 **) (arg1), (u8) (0U));
+}
+
+s8 * fn_800313D4(s8 *arg0, s32 arg1) {
+    fn_80032A0C((M2C_UNK **) ((s32 **) arg0));
+    M2C_FIELD(arg0, s8 **, 0) = (s8 *) (&lbl_80346E80);
+    M2C_FIELD(arg0, s32 *, 4) = (s32) (arg1);
+    M2C_FIELD(arg0, s32 *, 8) = (s32) (0);
+    M2C_FIELD(arg0, s32 *, 0xC) = (s32) (0);
+    M2C_FIELD(arg0, s32 *, 0x10) = (s32) (0);
+    M2C_FIELD(arg0, s32 *, 0x14) = (s32) (0);
+    M2C_FIELD(arg0, s32 *, 0x18) = (s32) (0);
+    return (s8 *) (arg0);
+}
+
+s8 * fn_80031438(s32 arg0, s8 *arg1) {
+    return (s8 *) (arg1);
+}
+
+void fn_80031440(s32 arg0) {
+    fn_80186078((s8 *) ((s8 *) arg0), (s32) (0));
+}
+
+void fn_80031448(s32 arg0) {
+    fn_8018622C((s8 *) ((s8 *) arg0));
+}
+
+s8 * fn_8003144C(s8 *arg0, s8 *arg1) {
+    fn_80031498((s32 *) ((s32 *) arg0), (s32 *) ((s32 *) arg1));
+    fn_80031494((s32) ((s32) (arg0 + 4)), (s32) ((s32) (arg1 + 4)));
+    return (s8 *) (arg0);
+}
+
+void fn_80031494(s32 arg0, s32 arg1) {
+}
+
+void fn_80031498(s32 *arg0, s32 *arg1) {
+    *arg0 = *arg1;
+}
+
+void fn_800314A4(s32 arg0) {
+    fn_80033ACC((s8 *) ((s8 *) arg0));
+}
+
+void fn_800314A8(s32 arg0) {
+    fn_801862FC((s8 *) ((s8 *) arg0));
+}
+
+s8 * fn_800314AC(s32 arg0) {
+    return (s8 *) (arg0 + 0x20);
+}
+
+s32 fn_800314B4(s32 arg0) {
+    return (s32) (arg0 != 0);
+}
+
+s32 fn_800314C0(void) {
+    return (s32) (fn_800340BC() != 0);
+}
+
+u32 fn_800314E8(s32 arg0) {
+    return (u32) (fn_80032A1C((s8 *) (arg0)) - 1);
+}
+
+s32 fn_8003150C(void) {
+    return (s32) (3);
+}
+
+s32 fn_80031514(s32 arg0, u16 arg1) {
+    return (s32) ((arg1 - 3) == 0);
+}
+
+s8 * fn_80031528(s8 *arg0, s16 arg1) {
+    if (arg0 != NULL) {
+        dtor_80030D1C((s8 *) (arg0 + 0x20), (s16) (-1));
+        dtor_80033590((s8 *) (arg0), (s16) (0));
+        if (arg1 > 0) {
+            fn_80027B74((s32) ((s32) arg0));
+        }
+    }
+    return (s8 *) (arg0);
+}
+
+void fn_80031594(GlibModelListener_80031594 *self, void *a, void *b, void *dummy, void *c) {
+    if (self->cb1 != 0) {
+        self->cb1(self->target, a, b, c);
+    }
+}
+
+void fn_800315B4(GlibModelListener_80031594 *self, void *a, void *b, void *dummy, void *c) {
+    if (self->cb2 != 0) {
+        self->cb2(self->target, a, b, c);
+    }
+}
+
+void fn_800315D4(GlibModelListener_80031594 *self, void *a, void *b, void *dummy, void *c) {
+    if (self->cb3 != 0) {
+        self->cb3(self->target, a, b, c);
+    }
+}
+
+void fn_800315F4(GlibModelListener_80031594 *self, void *a, void *b, void *dummy, void *c) {
+    if (self->cb4 != 0) {
+        self->cb4(self->target, a, b, c);
+    }
+}
+
+void fn_80031614(GlibModelListener_80031594 *self, void *a, void *b, void *dummy, void *c) {
+    if (self->cb5 != 0) {
+        self->cb5(self->target, a, b, c);
+    }
+}
+
+s32 fn_80031634(s32 arg0, s16 arg1) {
+    if (arg0 != 0) {
+        fn_800329C8((s32) (arg0), (s16) (0));
+        if (arg1 > 0) {
+            fn_80031690((s32) (arg0));
+        }
+    }
+    return (s32) (arg0);
+}
+
+void fn_80031690(s32 arg0) {
+}
+
+void fn_8003184C(s8 *arg0, s32 *arg1) {
+    if (((M2C_UNK (*)(s32, M2C_UNK, s32)) M2C_FIELD(arg0, M2C_UNK (**)(s32, M2C_UNK, s32), 0x10)) != NULL) {
+        M2C_FIELD(arg0, M2C_UNK (**)(s32, M2C_UNK, s32), 0x10)(M2C_FIELD(arg0, s32 *, 4), 0, fn_8002AE3C((s32) ((s32) arg1)));
+    }
+}
+
+s32 fn_800318A0(s32 arg0, s16 arg1) {
+    if (arg0 != 0) {
+        fn_800328C8((s32) (arg0), (s16) (0));
+        if (arg1 > 0) {
+            fn_800318FC((s32) (arg0));
+        }
+    }
+    return (s32) (arg0);
+}
+
+void fn_800318FC(s32 arg0) {
+}
+
+s32 * fn_80031900(s32 *arg0, f32 *arg1, s32 *arg2) {
+    s32 temp_r31;
+
+    temp_r31 = (s32) (fn_8002AE3C((s32) ((s32) arg0)));
+    PSMTXScaleApply((s32) (fn_80018B90((s32) ((s32) arg2))), (s32) (temp_r31), M2C_FIELD(arg1, f32 *, 0), M2C_FIELD(arg1, f32 *, 4), M2C_FIELD(arg1, f32 *, 8));
+    return (s32 *) (arg0);
+}
+
+s32 * fn_80031960(s32 *arg0, s32 arg1) {
+    fn_80031990((s32 *) (arg0), (s32 *) ((s32 *) arg1));
+    return (s32 *) (arg0);
+}
+
+void fn_80031990(s32 *arg0, s32 *arg1) {
+    *arg0 = *arg1;
+}
+
+s32 * fn_8003199C(s32 *arg0, s8 *arg1, s32 *arg2) {
+    s32 temp_r31;
+
+    temp_r31 = (s32) (fn_8002AE3C((s32) ((s32) arg0)));
+    PSMTXTransApply((s32) (fn_80018B90((s32) ((s32) arg2))), (s32) (temp_r31), M2C_FIELD(arg1, f32 *, 0), M2C_FIELD(arg1, f32 *, 4), M2C_FIELD(arg1, f32 *, 8));
+    return (s32 *) (arg0);
+}
+
+s32 * fn_80031A74(s32 *arg0, s32 arg1) {
+    fn_80031AA4((s32 *) (arg0), (s32 *) ((s32 *) arg1));
+    return (s32 *) (arg0);
+}
+
+void fn_80031AA4(s32 *arg0, s32 *arg1) {
+    *arg0 = *arg1;
+}
+
+s32 * fn_80031AB0(s32 *arg0) {
+    fn_8002AF5C((s32) ((s32) ((s8 *)arg0 + 4)));
+    fn_8002AF5C((s32) ((s32) ((s8 *)arg0 + 0x10)));
+    fn_8002AE40((s32) ((s32) ((s8 *)arg0 + 0x1C)));
+    return (s32 *) (arg0);
+}
+
+f32 * fn_80031AF4(f32 *arg0, f32 *arg1) {
+    fn_80018B94((s32) ((s32) arg0), (s32) ((s32) arg0), (s32) ((s32) arg1));
+    return arg0;
+}
+
+s32 fn_80031B38(s32 *arg0) {
+    return (s32) (*arg0 != 0);
+}
+
+s32 * fn_80031B48(s32 *arg0, s32 arg1) {
+    fn_80031B78((s32 *) (arg0), (s32 *) ((s32 *) arg1));
+    return (s32 *) (arg0);
+}
+
+void fn_80031B78(s32 *arg0, s32 *arg1) {
+    *arg0 = *arg1;
+}
+
+s8 * fn_80031B84(s8 **arg0, s32 arg1) {
+    s8 *base = *arg0;
+    if (arg1 != 0) {
+        return base + arg1;
+    }
+    return 0;
+}
+
+s32 fn_80031BA0(s32 *arg0) {
+    return (s32) (*arg0);
+}
+
+s32 fn_80031BA8(s32 *arg0) {
+    return (s32) (*arg0);
+}
+
+s32 fn_80031BB0(s32 *arg0) {
+    return (s32) (*arg0 != 0);
+}
+
+s8 * fn_80031BC0(s8 **arg0) {
+    return (s8 *) (*arg0);
+}
+
+s32 fn_80031BC8(s8 **arg0) {
+    return (s32) (*arg0 != NULL);
+}
+
+s8 * fn_80031BD8(s8 **arg0, s32 arg1) {
+    s8 *base = *arg0;
+    if (arg1 != 0) {
+        return base + arg1;
+    }
+    return 0;
+}
+
+s32 fn_80031BF4(s32 *arg0) {
+    return (s32) (*arg0);
+}
+
+s8 * fn_80031BFC(s8 **arg0, s32 arg1) {
+    s8 *base = *arg0;
+    if (arg1 != 0) {
+        return base + arg1;
+    }
+    return 0;
+}
+
+s8 * fn_80031C18(s8 **arg0, s32 arg1) {
+    s8 *base = *arg0;
+    if (arg1 != 0) {
+        return base + arg1;
+    }
+    return 0;
+}
+
+s32 fn_80031C34(s32 *arg0) {
+    return (s32) (*arg0);
+}
+
+s8 * fn_80031C3C(s8 **arg0, s32 arg1) {
+    s8 *base = *arg0;
+    if (arg1 != 0) {
+        return base + arg1;
+    }
+    return 0;
+}
+
+s32 fn_80031C58(s32 *arg0) {
+    return (s32) (*arg0 != 0);
+}
+
+s32 * fn_80031C68(s32 *arg0, s32 arg1) {
+    fn_80031C98((s32 *) (arg0), (s32 *) ((s32 *) arg1));
+    return (s32 *) (arg0);
+}
+
+void fn_80031C98(s32 *arg0, s32 *arg1) {
+    *arg0 = *arg1;
+}
+
+void fn_80031CA4(s32 *arg0, s32 arg1) {
+    *arg0 = arg1;
+}
+
+void fn_80031CAC(s32 *arg0, s32 arg1) {
+    *arg0 = arg1;
+}
+
+s32 fn_80031CB4(s32 *arg0) {
+    return (s32) (*arg0);
+}
+
+s32 fn_80031CBC(s32 *arg0) {
+    return (s32) (*arg0 != 0);
+}
+
+s32 * fn_80031CCC(s32 *arg0, s32 arg1) {
+    fn_80031CFC((s32 *) (arg0), (s32 *) ((s32 *) arg1));
+    return (s32 *) (arg0);
+}
+
+void fn_80031CFC(s32 *arg0, s32 *arg1) {
+    *arg0 = *arg1;
+}
+
+s8 * fn_80031D44(s8 **arg0, s32 arg1) {
+    s8 *base = *arg0;
+    if (arg1 != 0) {
+        return base + arg1;
+    }
+    return 0;
+}
+
+s32 fn_80031DC4(s32 *arg0) {
+    return (s32) (*arg0);
+}
+
+s32 fn_80031DCC(void) {
+    return (s32) ((s32) &lbl_80347730);
+}
+
+s32 fn_80031DD8(s32 *arg0) {
+    return (s32) (*arg0 != 0);
+}
+
+s32 * fn_80031DE8(s32 *arg0, s32 arg1) {
+    fn_80031E18((s32 *) (arg0), (s32 *) ((s32 *) arg1));
+    return (s32 *) (arg0);
+}
+
+void fn_80031E18(s32 *arg0, s32 *arg1) {
+    *arg0 = *arg1;
+}
+
+void fn_80031E88(s32 *arg0, s32 arg1) {
+    *arg0 = arg1;
+}
+
+s32 fn_80031E90(s32 *arg0) {
+    return (s32) (*arg0 != 0);
+}
+
+s32 fn_80031EA0(s32 *arg0) {
+    return (s32) (*arg0);
+}
+
+s32 fn_80031EA8(s32 *arg0) {
+    return (s32) (*arg0);
+}
+
+s32 fn_80031EB0(s32 *arg0) {
+    return (s32) (*arg0 != 0);
+}
+
+s32 * fn_80031EC0(s32 *arg0, s32 arg1) {
+    fn_80031EF0((s32 *) (arg0), (s32 *) ((s32 *) arg1));
+    return (s32 *) (arg0);
+}
+
+void fn_80031EF0(s32 *arg0, s32 *arg1) {
+    *arg0 = *arg1;
+}
+
+s8 * fn_80031EFC(s8 **arg0) {
+    return (s8 *) (*arg0);
+}
+
+s8 ** fn_80031F04(s8 **arg0, s32 arg1) {
+    fn_80031F34((s32 *) ((s32 *) arg0), (s32 *) ((s32 *) arg1));
+    return (s8 **) (arg0);
+}
+
+void fn_80031F34(s32 *arg0, s32 *arg1) {
+    *arg0 = *arg1;
+}
+
+void fn_80031F40(s32 *arg0, s32 arg1) {
+    *arg0 = arg1;
+}
+
+void fn_80031F48(s32 *arg0, s32 arg1) {
+    *arg0 = arg1;
+}
+
+s32 fn_80031F50(s32 arg0, s32 arg1) {
+    fn_80016D88((s32 *) ((s32 *) arg0), (s32 *) ((s32 *) arg1));
+    return (s32) (arg0);
+}
+
+void fn_80031F80(s8 *arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
+    M2C_FIELD(arg0, u8 *, 0) = (u8) (arg1);
+    M2C_FIELD(arg0, u8 *, 1) = (u8) (arg2);
+    M2C_FIELD(arg0, u8 *, 2) = (u8) (arg3);
+    M2C_FIELD(arg0, u8 *, 3) = (u8) (arg4);
+}
+
+s32 * dtor_80031FA4(s32 *arg0, s16 arg1) {
+    if ((arg0 != NULL) && (arg1 > 0)) {
+        dtor_80136CFC((s32) ((s32) arg0));
+    }
+    return (s32 *) (arg0);
+}
+
+s32 fn_80031FE8(s8 **arg0) {
+    return (s32) (M2C_FIELD(arg0, s32 *, 0xEC));
+}
+
+void fn_80031FF0(s8 **arg0, u16 arg1) {
+    M2C_FIELD(arg0, u16 *, 0x122) = (u16) (arg1);
+}
+
+void fn_80031FFC(s8 **arg0, u8 arg1) {
+    M2C_FIELD(arg0, u8 *, 0x121) = (u8) (arg1);
+}
+
+void fn_80032008(s8 **arg0, s32 arg1) {
+    M2C_FIELD(arg0, s32 *, 0x11C) = (s32) (arg1);
+}
+
+s32 fn_800321B8(void) {
+    return (s32) ((s32) &lbl_8049C258);
+}
+
+s32 fn_80032318(s32 arg0) {
+    return (s32) (M2C_FIELD(fn_8003DAF0((s8 **) ((s8 **) arg0)), s32 *, 8));
+}
+
+s32 fn_800323A0(void) {
+    return (s32) ((s32) &lbl_80347540);
+}
+
+s32 fn_80032548(s32 arg0) {
+    return (s32) (M2C_FIELD(fn_8003DAF0((s8 **) ((s8 **) arg0)), s32 *, 0xc));
+}
+
+s32 fn_8003256C(s32 arg0, s32 *arg1) {
+    s32 spC;
+    s32 sp8;
+
+    return (s32) (*fn_800325C0((s32 *) (&spC), (s32) (__vc__Q34nw4r3g3d6ResDicCFPCc((s8 **) (fn_80032694((M2C_UNK *) (&sp8), (s32) (fn_80032624((s32 *) ((s32 *) arg0)) + 4))), (s32) ((s32) arg1)))));
+}
+
+s32 fn_80032688(void) {
+    return (s32) ((s32) &lbl_803474C4);
+}
+
+s32 fn_800326F8(s32 arg0) {
+    s32 sp8;
+
+    return (s32) (*fn_80031E24((s32 *) (&sp8), (s32) (fn_8003272C((s8 **) ((s8 **) arg0)) + 0x24)));
+}
+
+s32 fn_80032790(void) {
+    return (s32) ((s32) &lbl_8049C244);
+}
+
+s32 fn_80032798(s32 arg0) {
+    return (s32) (M2C_FIELD(fn_8003DAF0((s8 **) ((s8 **) arg0)), s32 *, 0x40));
+}
+
+s8 * fn_80032820(s32 arg0) {
+    s32 temp_r0;
+    s8 *temp_r3;
+
+    temp_r3 = (s8 *) (fn_80032858((s32 *) ((s32 *) arg0)));
+    temp_r0 = (s32) (M2C_FIELD(temp_r3, s32 *, 8));
+    if (temp_r0 != 0) {
+        return (s8 *) (temp_r3 + temp_r0);
+    }
+    return (s8 *) (NULL);
+}
+
+s32 fn_800328BC(void) {
+    return (s32) ((s32) &lbl_80347318);
+}
+
+s32 fn_800328C8(s32 arg0, s16 arg1) {
+    if ((arg0 != 0) && (arg1 > 0)) {
+        dtor_80136CFC((s32) (arg0));
+    }
+    return (s32) (arg0);
+}
+
+void fn_8003290C(M2C_UNK **arg0) {
+    *arg0 = (M2C_UNK *)lbl_80346FD0;
+}
+
+void fn_8003291C(void) {
+}
+
+void fn_80032920(void) {
+}
+
+void fn_80032924(void) {
+}
+
+void fn_80032928(s8 *arg0, u16 arg1) {
+    M2C_FIELD(arg0, u16 *, 6) = (u16) (arg1);
+}
+
+u16 fn_80032934(s8 *arg0) {
+    return (u16) (M2C_FIELD(arg0, u16 *, 6));
+}
+
+s32 fn_8003293C(s32 *arg0, void *arg1) {
+    if (arg1 != 0) {
+        return fn_80031A24(*arg0, (M2C_UNK *)arg1);
+    }
+    return fn_8002AE08(*arg0);
+}
+
+#pragma dont_inline on
+void fn_8003297C(void **arg0, void *arg1) {
+    if (arg1 != 0) {
+        fn_80031A24((s32)arg1, (M2C_UNK *)arg0[0]);
+    }
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+void fn_80032998(void **arg0, void *arg1) {
+    if (arg1 != 0) {
+        fn_8002B060((s32)arg1, (s32)arg0[1]);
+    }
+}
+#pragma dont_inline reset
+
+void fn_800329B4(s8 **arg0, u8 arg1) {
+    M2C_FIELD(arg0, u8 *, 0xD9) = (u8) (arg1);
+}
+
+void fn_800329C0(s8 **arg0, s8 *arg1) {
+    M2C_FIELD(arg0, s8 **, 0xD4) = (s8 *) (arg1);
+}
+
+s32 fn_800329C8(s32 arg0, s16 arg1) {
+    if ((arg0 != 0) && (arg1 > 0)) {
+        dtor_80136CFC((s32) (arg0));
+    }
+    return (s32) (arg0);
+}
+
+void fn_80032A0C(M2C_UNK **arg0) {
+    *arg0 = (M2C_UNK *)lbl_80346F70;
+}
+
+s32 fn_80032A1C(s8 *arg0) {
+    return (s32) (M2C_FIELD(arg0, s32 *, 0xE0));
+}
+
+s32 fn_80032A68(s8 **arg0) {
+    return (s32) (M2C_FIELD(arg0, s32 *, 0xE4) == 0);
+}
+
+s32 fn_80032AD8(s8 **arg0) {
+    return (s32) (M2C_FIELD(arg0, s32 *, 0xE4));
+}
+
+void fn_80032AE0(void) {
+}
+
+void fn_80032AE4(void) {
+}
+
+void fn_80032AE8(void) {
+}
+
+void fn_80032AEC(void) {
+}
+
+void fn_80032AF0(void) {
+}
+
+s32 fn_80032AF4(s32 arg0, s32 *arg1) {
+    s32 spC;
+    s32 sp8;
+
+    spC = (s32) (fn_80032BFC());
+    if (fn_80028264((s32 *) (arg1), (s32 *) (&spC)) != 0) {
+        return (s32) (1);
+    }
+    sp8 = (s32) (*arg1);
+    return (s32) (fn_80032B60((s32) (arg0), (s32 *) (&sp8)));
+}
+
+s32 fn_80032B60(s32 arg0, s32 *arg1) {
+    s32 spC;
+    s32 sp8;
+
+    spC = (s32) (fn_80032BCC());
+    if (fn_80028264((s32 *) (arg1), (s32 *) (&spC)) != 0) {
+        return (s32) (1);
+    }
+    sp8 = (s32) (*arg1);
+    return (s32) (fn_80028228((s32) (arg0), (s32 *) (&sp8)));
+}
+
+s32 fn_80032C2C(s32 *arg0, s32 *arg1) {
+    s32 spC;
+    s32 sp8;
+
+    sp8 = (s32) (*arg1);
+    spC = (s32) (*arg0);
+    return (s32) (fn_80032C6C((s32 *) (&spC), (s32 *) (&sp8)) == 0);
+}
+
+s32 fn_80032C6C(s32 *arg0, s32 *arg1) {
+    s32 spC;
+    s32 sp8;
+
+    sp8 = (s32) (*arg1);
+    spC = (s32) (*arg0);
+    return (s32) (fn_80028E40((s32 *) (&spC), (s32 *) (&sp8)));
+}
+
+s32 fn_80032CA4(s32 arg0) {
+    s32 spC;
+    s32 sp8;
+
+    sp8 = (s32) (fn_80028EC8((s32) (arg0)));
+    return (s32) (*fn_80032CD8((s32 *) (&spC), (s32) ((s32) &sp8)));
+}
+
+s32 * fn_80032CD8(s32 *arg0, s32 arg1) {
+    fn_80028EBC((s32 *) (arg0), (s32 *) ((s32 *) arg1));
+    return (s32 *) (arg0);
+}
+
+s32 fn_80032D08(s32 *arg0, s32 arg1) {
+    s32 sp8;
+
+    fn_80032F9C((s32 *) (&sp8), (s32) ((s32) arg0));
+    fn_80032D48((s32 *) (arg0));
+    return (s32) (sp8);
+}
+
+s32 * fn_80032D48(s32 *arg0) {
+    fn_80028F70((M2C_UNK **) ((s32 **) arg0));
+    return (s32 *) (arg0);
+}
+
+s32 * fn_80032E20(s32 *arg0, s32 arg1) {
+    fn_80028EBC((s32 *) (arg0), (s32 *) ((s32 *) arg1));
+    return (s32 *) (arg0);
+}
+
+s32 fn_80032EA0(s32 arg0) {
+    s32 spC;
+    s32 sp8;
+
+    sp8 = (s32) (fn_80028EC8((s32) (arg0)));
+    return (s32) (*fn_80028E8C((s32 *) (&spC), (s32) ((s32) &sp8)));
+}
+
+s32 fn_80032F28(s32 arg0) {
+    return (s32) (fn_80032F4C((s32) (fn_80029024((s32 *) ((s32 *) arg0)))));
+}
+
+s32 * fn_80032F9C(s32 *arg0, s32 arg1) {
+    fn_80028EBC((s32 *) (arg0), (s32 *) ((s32 *) arg1));
+    return (s32 *) (arg0);
+}
+
+s32 fn_80032FCC(s32 arg0) {
+    s32 spC;
+    s32 sp8;
+
+    sp8 = (s32) (fn_80028EC8((s32) (arg0)));
+    return (s32) (*fn_80028E8C((s32 *) (&spC), (s32) ((s32) &sp8)));
+}
+
+s32 fn_80033000(s32 *arg0, s32 *arg1) {
+    s32 spC;
+    s32 sp8;
+
+    sp8 = (s32) (*arg1);
+    spC = (s32) (*arg0);
+    return (s32) (fn_80033040((s32 *) (&spC), (s32 *) (&sp8)) == 0);
+}
+
+s32 fn_80033040(s32 *arg0, s32 *arg1) {
+    s32 spC;
+    s32 sp8;
+
+    sp8 = (s32) (*arg1);
+    spC = (s32) (*arg0);
+    return (s32) (fn_80028E40((s32 *) (&spC), (s32 *) (&sp8)));
+}
+
+s32 fn_80033078(s32 *arg0, s32 arg1) {
+    s32 sp8;
+
+    fn_8003315C((s32 *) (&sp8), (s32) ((s32) arg0));
+    fn_800330B8((s32 *) (arg0));
+    return (s32) (sp8);
+}
+
+s32 * fn_800330B8(s32 *arg0) {
+    fn_80028F70((M2C_UNK **) ((s32 **) arg0));
+    return (s32 *) (arg0);
+}
+
+void fn_800330E8(s32 arg0) {
+    fn_8003310C((s32) (fn_80029024((s32 *) ((s32 *) arg0))));
+}
+
+s32 * fn_8003315C(s32 *arg0, s32 arg1) {
+    fn_80028EBC((s32 *) (arg0), (s32 *) ((s32 *) arg1));
+    return (s32 *) (arg0);
+}
+
+s32 fn_8003318C(s32 arg0) {
+    s32 spC;
+    s32 sp8;
+
+    sp8 = (s32) (fn_80028EC8((s32) (arg0)));
+    return (s32) (*fn_80028E8C((s32 *) (&spC), (s32) ((s32) &sp8)));
+}
+
+s8 * fn_800332B8(s8 *arg0) {
+    fn_800291EC((s8 *) (arg0));
+    return (s8 *) (arg0);
+}
+
+s8 * fn_800332E8(s8 *arg0) {
+    fn_800291EC((s8 *) (arg0));
+    return (s8 *) (arg0);
+}
+
+s32 fn_80033318(s8 *arg0, s32 arg1) {
+    s32 spC;
+    s8 *sp8;
+
+    sp8 = (s8 *) (Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode((s32 *) ((s32 *) arg0), (s8 *) (fn_80043B10((s32) (arg1)))));
+    return (s32) (*fn_80039CD0((s32 *) (&spC), (s32) ((s32) &sp8)));
+}
+
+void fn_80033368(s32 arg0, s32 arg1) {
+    fn_80027D18((s8 *) (arg0 + 0x14), (s32) (arg1));
+}
+
+void fn_80033370(s32 arg0, s32 arg1) {
+    fn_80027D18((s8 *) (arg0 + 0x14), (s32) (arg1));
+}
+
+void fn_800334D8(s8 *arg0, s32 arg1) {
+    fn_800331C0((s8 *) (arg0 + 0x14), (s32) (arg1));
+}
+
+s8 * dtor_80033658(s8 *arg0, s16 arg1) {
+    if (arg0 != NULL) {
+        __dt__Q44nw4r2ut6detail12LinkListImplFv((s8 *) (arg0), (s32) (0));
+        if (arg1 > 0) {
+            dtor_80136CFC((s32) ((s32) arg0));
+        }
+    }
+    return (s8 *) (arg0);
+}
+
+void fn_80033A04(void) {
+    fn_8030CAF0();
+}
+
+s32 fn_80033A08(void) {
+    return (s32) (fn_80033A0C());
+}
+
+s32 fn_80031A24(s32 arg0, M2C_UNK *arg1) {
+    s32 temp_r31;
+
+    temp_r31 = (s32) (fn_8002AE3C((s32) (arg0)));
+    PSMTXCopy((s32) (fn_80018B90((s32) ((s32) arg1))), (s32) (temp_r31));
+    return (s32) (arg0);
+}
+
+s32 fn_8002EB6C(S_fn_8002EB6C_arg0 *arg0, s32 arg1, s32 arg2) {
+    s32 var_r30;
+    s8 **temp_r3;
+    s8 **temp_r3_2;
+    s8 **temp_r3_3;
+    s8 **temp_r3_4;
+
+    if (arg2 == 0) {
+        var_r30 = (s32) (0);
+        do {
+            if (fn_80032010((s8 **) (arg0->f_C), (s32) (var_r30)) != 0) {
+                temp_r3 = (s8 **) (arg0->f_C);
+                ((M2C_VC_127 *)(temp_r3))->f((s32) (var_r30));
+                temp_r3_2 = (s8 **) (arg0->f_C);
+                ((M2C_VC_126 *)(temp_r3_2))->f((s32) (var_r30), lbl_8049E870[1]);
+            }
+            var_r30 += 1;
+        } while (var_r30 < 4);
+        arg0->f_74 = 0;
+        arg0->f_78 = (f32) lbl_8049E870[1];
+        arg0->f_7C = (f32) lbl_8049E870[1];
+    }
+    temp_r3_3 = (s8 **) (arg0->f_C);
+    ((M2C_VC_134 *)(temp_r3_3))->f((s32) (arg2), (s32) (arg1));
+    temp_r3_4 = (s8 **) (arg0->f_C);
+    ((M2C_VC_126 *)(temp_r3_4))->f((s32) (arg2), lbl_8049E870[0]);
+    return (s32) (1);
+}
+
+s32 fn_80030EA4(s32 *arg0) {
+    return (s32) (fn_80031B84((s8 **) (arg0), (s32) (M2C_FIELD(fn_80030EE0((s32 *) (arg0)), s32 *, 8))));
+}
+
+s32 fn_80031D08(s32 *arg0) {
+    return (s32) (fn_80031D44((s8 **) (arg0), (s32) (M2C_FIELD(fn_80031D60((s32 *) (arg0)), s32 *, 8))));
+}
+
+s32 fn_80032118(s32 *arg0) {
+    return (s32) (fn_80031BD8((s8 **) (arg0), (s32) (M2C_FIELD(fn_80032154((s8 **) ((s8 **) arg0)), s32 *, 8))));
+}
+
+s32 fn_80032E50(s32 arg0) {
+    if (arg0 == 0) {
+        fn_801A9384((s32) &lbl_803471CC, 0x233, (s32) &lbl_803471A8);
+    }
+    return (s32) (arg0 + 0x128);
+}
+
+s32 fn_80032F4C(s32 arg0) {
+    if (arg0 == 0) {
+        fn_801A9384((s32) &lbl_8034722C, 0x23D, (s32) &lbl_80347208);
+    }
+    return (s32) (arg0 - 0x120);
+}
+
+s32 fn_8003310C(s32 arg0) {
+    if (arg0 == 0) {
+        fn_801A9384((s32) &lbl_8034719C, 0x23D, (s32) &lbl_80347178);
+    }
+    return (s32) (arg0 - 0x128);
+}
+
+s32 fn_80033268(s32 arg0) {
+    if (arg0 == 0) {
+        fn_801A9384((s32) &lbl_8034716C, 0x233, (s32) &lbl_80347148);
+    }
+    return (s32) (arg0 + 0x120);
+}
+
+#pragma dont_inline on
+s32 * fn_80030FE4(s32 *arg0, s32 arg1) {
+    fn_80031F40((s32 *) (arg0), (s32) (arg1));
+    if ((s32) (arg1 & 3) != 0) {
+        fn_801A9384((s32) &lbl_80347308, 0x1D1, (s32) &lbl_803472E0);
+    }
+    return (s32 *) (arg0);
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+s32 * fn_80031E24(s32 *arg0, s32 arg1) {
+    fn_80031E88((s32 *) (arg0), (s32) (arg1));
+    if ((s32) (arg1 & 3) != 0) {
+        fn_801A9384((s32) &lbl_8034771C, 0x151, (s32) &lbl_803476F4);
+    }
+    return (s32 *) (arg0);
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+s8 * fn_800322B4(s8 *arg0, s32 arg1) {
+    fn_80031F48((s32 *) ((s32 *) arg0), (s32) (arg1));
+    if ((s32) (arg1 & 3) != 0) {
+        fn_801A9384((s32) &lbl_803473D8, 0x2C, (s32) &lbl_803473B0);
+    }
+    return (s8 *) (arg0);
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+s32 * fn_800325C0(s32 *arg0, s32 arg1) {
+    fn_80031CA4((s32 *) (arg0), (s32) (arg1));
+    if ((s32) (arg1 & 3) != 0) {
+        fn_801A9384((s32) &lbl_80347528, 0x26, (s32) &lbl_80347500);
+    }
+    return (s32 *) (arg0);
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+M2C_UNK * fn_80032694(M2C_UNK *arg0, s32 arg1) {
+    fn_80031CAC((s32 *) (arg0), (s32) (arg1));
+    if ((s32) (arg1 & 3) != 0) {
+        fn_801A9384((s32) &lbl_803476E0, 0x54, (s32) &lbl_803476B8);
+    }
+    return (M2C_UNK *) (arg0);
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+s32 fn_80032A78(s8 **arg0) {
+    if (fn_80032A68((s8 **) (arg0)) != 0) {
+        return (s32) (0);
+    }
+    return (s32) (((M2C_VC_171 *)(arg0))->f((s32) (fn_80032AD8((s8 **) (arg0)) - 1)));
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+s32 * fn_80030CC4(s32 *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    fn_800336B4((s8 *) (arg0), (s32) (arg1), (s32) (arg2), (u32) (arg3));
+    M2C_FIELD(arg0, s8 **, 4) = (s8 *) (&lbl_80346EC8);
+    fn_800332B8((s8 *) ((s8 *)arg0 + 0x20));
+    M2C_FIELD(arg0, s32 *, 0x2C) = (s32) (0);
+    M2C_FIELD(arg0, s32 *, 0x30) = (s32) (0);
+    Clear__Q44nw4r2ut6detail12LinkListImplFv((s8 *) ((s8 *)arg0 + 0x20));
+    return (s32 *) (arg0);
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
+s32 fn_8002ED44(S_fn_8002ED44_arg0 *arg0, s32 arg1) {    if (arg0->f_1C != 0) {
+        fn_80031220((s32) (arg0->f_1C), (s32) (arg0->f_8), (s32) (arg1));
+        return (s32) (1);
+    }
+    return (s32) (0);
+}
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_8002D81C
 asm s32 fn_8002D81C(M2C_UNK *arg0, s32 arg1, s32 *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
@@ -658,11 +2023,11 @@ asm s32 fn_8002D81C(M2C_UNK *arg0, s32 arg1, s32 *arg2, s32 arg3, s32 arg4, s32 
     mr r23, r9
     li r25, 0x0
     mr r3, r18
-    bl fn_801D0D78
+    bl GetResNodeNumEntries__Q34nw4r3g3d6ResMdlCFv
     mr r24, r3
     mulli r15, r3, 0x280
     mr r3, r18
-    bl GetResNodeNumEntries__Q34nw4r3g3d6ResMdlCFv
+    bl GetResMatNumEntries__Q34nw4r3g3d6ResMdlCFv
     mr r26, r3
     mulli r22, r3, 0xd0
     subfic r0, r23, 0x0
@@ -1019,7 +2384,7 @@ lbl_8002DD54:
     bl __ct__Q44nw4r3g3d6ScnMdl15CopiedMatAccessFPQ34nw4r3g3d6ScnMdlUl
     addi r3, r1, 0x10
     li r4, 0x0
-    bl fn_801F140C
+    bl GetResTexObj__Q44nw4r3g3d6ScnMdl15CopiedMatAccessFb
     stw r3, 0x8(r1)
     addi r3, r1, 0xc
     addi r4, r1, 0x8
@@ -1269,7 +2634,7 @@ lbl_8002E0CC:
     beq lbl_8002E1A8
     addi r3, r1, 0x80
     li r4, 0x0
-    bl fn_801F1454
+    bl GetResMatMisc__Q44nw4r3g3d6ScnMdl15CopiedMatAccessFb
     stw r3, 0x1c(r1)
     addi r3, r1, 0x38
     addi r4, r1, 0x1c
@@ -1325,7 +2690,7 @@ lbl_8002E1A8:
     beq lbl_8002E214
     addi r3, r1, 0x80
     li r4, 0x0
-    bl fn_801F1454
+    bl GetResMatMisc__Q44nw4r3g3d6ScnMdl15CopiedMatAccessFb
     stw r3, 0x10(r1)
     addi r3, r1, 0x30
     addi r4, r1, 0x10
@@ -1527,10 +2892,6 @@ lbl_8002E47C:
     blr
 }
 
-void fn_8002E494(s32 *arg0, s32 *arg1) {
-    *arg0 = *arg1;
-}
-
 // asm_to_cpp: fn_8002E4A0
 asm void fn_8002E4A0(s8 *arg0, s32 arg1, u32 arg2) {
     nofralloc
@@ -1642,17 +3003,8 @@ lbl_8002E610:
     blr
 }
 
-s32 * fn_8002E628(s32 *arg0, s32 arg1) {
-    fn_8002E658((s32 *) (arg0), (s32 *) ((s32 *) arg1));
-    return (s32 *) (arg0);
-}
-
-void fn_8002E658(s32 *arg0, s32 *arg1) {
-    *arg0 = *arg1;
-}
-
 // asm_to_cpp: fn_8002E664
-asm void fn_8002E664(s8 *arg0) {
+asm s32 fn_8002E664(s8 *arg0) {
     nofralloc
     stwu r1, -0x60(r1)
     mflr r0
@@ -1788,7 +3140,7 @@ lbl_8002E830:
 }
 
 // asm_to_cpp: fn_8002E854
-asm void fn_8002E854(s8 *arg0) {
+asm s32 fn_8002E854(s8 *arg0) {
     nofralloc
     stwu r1, -0x40(r1)
     mflr r0
@@ -2008,74 +3360,6 @@ lbl_8002EAE8:
     blr
 }
 
-// asm_to_cpp: fn_8002EB6C
-asm s32 fn_8002EB6C(s8 *arg0, s32 arg1, s32 arg2) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_27
-    mr r27, r3
-    mr r28, r4
-    mr r29, r5
-    cmpwi r5, 0x0
-    bne lbl_8002EC08
-    li r30, 0x0
-    la r31, lbl_8049E870
-lbl_8002EB9C:
-    lwz r3, 0xc(r27)
-    mr r4, r30
-    bl fn_80032010
-    cmpwi r3, 0x0
-    beq lbl_8002EBE4
-    lwz r3, 0xc(r27)
-    mr r4, r30
-    lwz r12, 0x0(r3)
-    lwz r12, 0x40(r12)
-    mtctr r12
-    bctrl
-    lwz r3, 0xc(r27)
-    mr r4, r30
-    lfs f1, 0x4(r31)
-    lwz r12, 0x0(r3)
-    lwz r12, 0x48(r12)
-    mtctr r12
-    bctrl
-lbl_8002EBE4:
-    addi r30, r30, 0x1
-    cmpwi r30, 0x4
-    blt lbl_8002EB9C
-    li r0, 0x0
-    stw r0, 0x74(r27)
-    la r3, lbl_8049E870
-    lfs f0, 0x4(r3)
-    stfs f0, 0x78(r27)
-    stfs f0, 0x7c(r27)
-lbl_8002EC08:
-    lwz r3, 0xc(r27)
-    mr r4, r29
-    mr r5, r28
-    lwz r12, 0x0(r3)
-    lwz r12, 0x3c(r12)
-    mtctr r12
-    bctrl
-    lwz r3, 0xc(r27)
-    mr r4, r29
-    lfs f1, lbl_8049E870
-    lwz r12, 0x0(r3)
-    lwz r12, 0x48(r12)
-    mtctr r12
-    bctrl
-    li r3, 0x1
-    addi r11, r1, 0x20
-    bl _restgpr_27
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
 // asm_to_cpp: fn_8002EC5C
 asm s32 fn_8002EC5C(s8 *arg0, u32 arg1) {
     nofralloc
@@ -2123,43 +3407,6 @@ lbl_8002ECE0:
     blr
 }
 
-void fn_8002ECF8(s8 *arg0) {
-    if (((s32) M2C_FIELD(arg0, s32 *, 0x1C) != 0) && (fn_800311BC((s8 *) (arg0), (s32) (0x400)) != 0)) {
-        fn_80031218((s32) (M2C_FIELD(arg0, s32 *, 8)));
-    }
-}
-
-// asm_to_cpp: fn_8002ED44
-asm s32 fn_8002ED44(s8 *arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    mr r6, r3
-    mr r5, r4
-    lwz r3, 0x1c(r3)
-    cmpwi r3, 0x0
-    beq lbl_8002ED74
-    lwz r4, 0x8(r6)
-    bl fn_80031220
-    li r3, 0x1
-    b lbl_8002ED78
-lbl_8002ED74:
-    li r3, 0x0
-lbl_8002ED78:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-s32 fn_8002ED88(s8 *arg0) {
-    if (fn_800311AC((s8 *) (arg0)) != 0) {
-        return (s32) (M2C_FIELD(arg0, s32 *, 0x14));
-    }
-    return (s32) (M2C_FIELD(arg0, s32 *, 8));
-}
-
 // asm_to_cpp: fn_8002EDC8
 asm void fn_8002EDC8(s8 *arg0, M2C_UNK *arg1) {
     nofralloc
@@ -2205,7 +3452,7 @@ lbl_8002EE14:
     bl GetMtx__Q34nw4r3g3d12ChrAnmResultCFPQ34nw4r4math5MTX34
     addi r3, r1, 0x14
     mr r4, r28
-    bl fn_801D0D24
+    bl GetResNode__Q34nw4r3g3d6ResMdlCFUl
     stw r3, 0x8(r1)
     addi r3, r1, 0x10
     addi r4, r1, 0x8
@@ -2214,7 +3461,7 @@ lbl_8002EE14:
     bl fn_80031AB0
     addi r3, r1, 0x10
     addi r4, r1, 0x58
-    bl fn_801D4934
+    bl CalcChrAnmResult__Q34nw4r3g3d7ResNodeCFPQ34nw4r3g3d12ChrAnmResult
     addi r3, r1, 0x18
     bl fn_8002AF5C
     addi r3, r1, 0x58
@@ -2274,14 +3521,14 @@ asm u32 fn_8002EF2C(s32 arg0, s32 arg1) {
     cmpwi r29, 0x0
     beq lbl_8002EFC0
     addi r3, r1, 0x14
-    bl fn_801D0D78
+    bl GetResNodeNumEntries__Q34nw4r3g3d6ResMdlCFv
     mr r31, r3
     li r30, 0x0
     b lbl_8002EFB8
 lbl_8002EF74:
     addi r3, r1, 0x14
     mr r4, r30
-    bl fn_801D0D24
+    bl GetResNode__Q34nw4r3g3d6ResMdlCFUl
     stw r3, 0x8(r1)
     addi r3, r1, 0x10
     addi r4, r1, 0x8
@@ -2313,7 +3560,7 @@ lbl_8002EFC8:
 }
 
 // asm_to_cpp: fn_8002EFE0
-asm void fn_8002EFE0(s32 arg0, s32 arg1) {
+asm s32 fn_8002EFE0(s32 arg0, s32 arg1) {
     nofralloc
     stwu r1, -0x30(r1)
     mflr r0
@@ -2330,14 +3577,14 @@ asm void fn_8002EFE0(s32 arg0, s32 arg1) {
     cmpwi r27, 0x0
     beq lbl_8002F094
     addi r3, r1, 0x14
-    bl fn_801D0D78
+    bl GetResNodeNumEntries__Q34nw4r3g3d6ResMdlCFv
     mr r30, r3
     li r29, 0x0
     b lbl_8002F08C
 lbl_8002F02C:
     addi r3, r1, 0x14
     mr r4, r29
-    bl fn_801D0D24
+    bl GetResNode__Q34nw4r3g3d6ResMdlCFUl
     stw r3, 0x8(r1)
     addi r3, r1, 0x10
     addi r4, r1, 0x8
@@ -2393,7 +3640,7 @@ asm void fn_8002F0AC(s8 *arg0, s32 arg1) {
     cmpwi r24, 0x0
     beq lbl_8002F218
     addi r3, r1, 0x24
-    bl fn_801D0D78
+    bl GetResNodeNumEntries__Q34nw4r3g3d6ResMdlCFv
     mr r26, r3
     li r25, 0x0
     li r31, 0x0
@@ -2402,7 +3649,7 @@ asm void fn_8002F0AC(s8 *arg0, s32 arg1) {
 lbl_8002F100:
     addi r3, r1, 0x24
     mr r4, r25
-    bl fn_801D0D24
+    bl GetResNode__Q34nw4r3g3d6ResMdlCFUl
     stw r3, 0x10(r1)
     addi r3, r1, 0x20
     addi r4, r1, 0x10
@@ -2489,15 +3736,6 @@ lbl_8002F218:
     blr
 }
 
-s8 * fn_8002F230(s8 *arg0, s32 arg1) {
-    fn_8002F260((s32 *) ((s32 *) arg0), (s32 *) ((s32 *) arg1));
-    return (s8 *) (arg0);
-}
-
-void fn_8002F260(s32 *arg0, s32 *arg1) {
-    *arg0 = *arg1;
-}
-
 // asm_to_cpp: fn_8002F26C
 asm s32 fn_8002F26C(M2C_UNK *arg0, s32 arg1, f32 *arg2) {
     nofralloc
@@ -2564,7 +3802,7 @@ lbl_8002F34C:
     slwi r4, r0, 8
     lbz r0, 0x4(r22)
     or r4, r4, r0
-    bl GetResVtxPos__Q34nw4r3g3d6ResMdlCFi
+    bl GetResShp__Q34nw4r3g3d6ResMdlCFi
     stw r3, 0x10(r1)
     addi r3, r1, 0x28
     addi r4, r1, 0x10
@@ -2929,7 +4167,7 @@ lbl_8002F864:
     slwi r4, r0, 8
     lbz r0, 0x4(r23)
     or r4, r4, r0
-    bl GetResVtxPos__Q34nw4r3g3d6ResMdlCFi
+    bl GetResShp__Q34nw4r3g3d6ResMdlCFi
     stw r3, 0x10(r1)
     addi r3, r1, 0x28
     addi r4, r1, 0x10
@@ -3542,14 +4780,14 @@ lbl_8003008C:
 lbl_800300F4:
     addi r3, r31, 0x2c
     mr r4, r28
-    bl fn_801D0D24
+    bl GetResNode__Q34nw4r3g3d6ResMdlCFUl
     stw r3, 0x14(r31)
     addi r3, r31, 0x28
     addi r4, r31, 0x14
     bl fn_8003144C
     addi r3, r31, 0x28
     addi r4, r31, 0x60
-    bl fn_801D4934
+    bl CalcChrAnmResult__Q34nw4r3g3d7ResNodeCFPQ34nw4r3g3d12ChrAnmResult
     mulli r30, r28, 0x280
     addi r3, r31, 0x60
     lwz r0, 0xd0(r29)
@@ -3592,7 +4830,7 @@ lbl_8003019C:
 lbl_800301B4:
     addi r3, r31, 0x2c
     mr r4, r25
-    bl GetResNode__Q34nw4r3g3d6ResMdlCFUl
+    bl GetResMat__Q34nw4r3g3d6ResMdlCFUl
     stw r3, 0x10(r31)
     addi r3, r31, 0x24
     addi r4, r31, 0x10
@@ -4380,43 +5618,6 @@ lbl_80030CAC:
     blr
 }
 
-// asm_to_cpp: fn_80030CC4
-asm M2C_UNK * fn_80030CC4(M2C_UNK *arg0, s32 arg1, s32 arg2) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    bl fn_800336B4
-    lis r3, lbl_80346EC8@ha
-    addi r0, r3, lbl_80346EC8@l
-    stw r0, 0x4(r31)
-    addi r3, r31, 0x20
-    bl fn_800332B8
-    li r0, 0x0
-    stw r0, 0x2c(r31)
-    stw r0, 0x30(r31)
-    addi r3, r31, 0x20
-    bl Clear__Q44nw4r2ut6detail12LinkListImplFv
-    mr r3, r31
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-s8 * dtor_80030D1C(s8 *arg0, s16 arg1) {
-    if (arg0 != NULL) {
-        __dt__Q44nw4r2ut6detail12LinkListImplFv((s8 *) (arg0), (s32) (0));
-        if (arg1 > 0) {
-            dtor_80136CFC((s32) ((s32) arg0));
-        }
-    }
-    return (s8 *) (arg0);
-}
-
 // asm_to_cpp: fn_80030D78
 asm void fn_80030D78(s8 *arg0, M2C_UNK *arg1) {
     nofralloc
@@ -4454,71 +5655,8 @@ lbl_80030DC4:
     blr
 }
 
-void fn_80030DEC(s32 arg0) {
-    DCStore__Q34nw4r3g3d9ResMatPixFb((s32) ((s8 *) arg0), (s32) (0));
-}
-
-s32 * fn_80030DF4(s32 *arg0, s32 arg1) {
-    fn_80030E24((s32 *) (arg0), (s32 *) ((s32 *) arg1));
-    return (s32 *) (arg0);
-}
-
-void fn_80030E24(s32 *arg0, s32 *arg1) {
-    *arg0 = *arg1;
-}
-
-void fn_80030E30(s32 arg0) {
-}
-
-void fn_80030E34(s32 arg0, s32 arg1, s32 arg2) {
-    SetEffectMtx__Q34nw4r3g3d9ResTexSrtFUlPCQ34nw4r4math5MTX34((s32 *) ((s32 *) arg0), (u32) ((u32) arg1), (s8 *) ((s8 *) arg2));
-}
-
-void fn_80030E38(s32 arg0) {
-    DCStore__Q34nw4r3g3d14ResMatTevColorFb((s32) ((s8 *) arg0), (s32) (0));
-}
-
-void fn_80030E40(s32 arg0) {
-}
-
-s32 * fn_80030E44(s32 *arg0, s32 arg1) {
-    fn_80030E74((s32 *) (arg0), (s32 *) ((s32 *) arg1));
-    return (s32 *) (arg0);
-}
-
-void fn_80030E74(s32 *arg0, s32 *arg1) {
-    *arg0 = *arg1;
-}
-
-void fn_80030E80(s32 *arg0, s32 *arg1) {
-    M2C_FIELD(arg0, u8 *, 0) = (u8) ((u8) M2C_FIELD(arg1, u8 *, 0));
-    M2C_FIELD(arg0, u8 *, 1) = (u8) ((u8) M2C_FIELD(arg1, u8 *, 1));
-    M2C_FIELD(arg0, u8 *, 2) = (u8) ((u8) M2C_FIELD(arg1, u8 *, 2));
-    M2C_FIELD(arg0, u8 *, 3) = (u8) ((u8) M2C_FIELD(arg1, u8 *, 3));
-}
-
-// asm_to_cpp: fn_80030EA4
-asm M2C_UNK fn_80030EA4(s32 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    bl fn_80030EE0
-    mr r4, r3
-    mr r3, r31
-    lwz r4, 0x8(r4)
-    bl fn_80031B84
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
 // asm_to_cpp: fn_80030EE0
-asm void fn_80030EE0(s32 *arg0) {
+asm M2C_UNK fn_80030EE0(s32 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -4546,10 +5684,6 @@ lbl_80030F28:
     mtlr r0
     addi r1, r1, 0x10
     blr
-}
-
-s32 fn_80030F44(void) {
-    return (s32) ((s32) &lbl_8049C230);
 }
 
 // asm_to_cpp: fn_80030F4C
@@ -4583,85 +5717,6 @@ lbl_80030F94:
     blr
 }
 
-s32 fn_80030FB0(s32 arg0, s32 arg1) {
-    s32 sp8;
-
-    return (s32) (*fn_80030FE4((s32 *) (&sp8), (s32) (fn_80030F4C((s32 *) ((s32 *) arg0)) + 0x3F0)));
-}
-
-// asm_to_cpp: fn_80030FE4
-asm s32 * fn_80030FE4(s32 *arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    mr r31, r4
-    bl fn_80031F40
-    clrlwi r0, r31, 30
-    cmpwi r0, 0x0
-    beq lbl_8003102C
-    lis r3, lbl_80347308@ha
-    addi r3, r3, lbl_80347308@l
-    li r4, 0x1d1
-    lis r5, lbl_803472E0@ha
-    addi r5, r5, lbl_803472E0@l
-    opword 0x4CC63182
-    bl fn_801A9384
-lbl_8003102C:
-    mr r3, r30
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-s8 ** fn_80031048(s8 **arg0) {
-    s32 sp8;
-    s32 var_r31;
-
-    var_r31 = (s32) (0);
-    if (arg0 != NULL) {
-        sp8 = (s32) (fn_800310F0());
-        if (((M2C_VC_12 *)(arg0))->f((s32 *) (&sp8)) != 0) {
-            var_r31 = (s32) (1);
-        }
-    }
-    if (var_r31 != 0) {
-        return (s8 **) (arg0);
-    }
-    return (s8 **) (NULL);
-}
-
-s32 fn_800310C4(s32 arg0, s32 arg1) {
-    return (s32) (arg1);
-}
-
-void fn_800310CC(s32 arg0, s32 arg1, s32 arg2) {
-    fn_802019BC();
-}
-
-s32 fn_800310D0(s32 *arg0, s32 arg1) {
-    *arg0 = arg1;
-    return (s32) ((s32) arg0);
-}
-
-void fn_800310D8(s32 arg0) {
-}
-
-s32 fn_800310DC(s32 *arg0) {
-    return (s32) (*arg0 + 4);
-}
-
-s32 fn_800310E8(s32 **arg0, s32 *arg1) {
-    *arg0 = arg1;
-    return (s32) ((s32) arg0);
-}
-
 // asm_to_cpp: fn_800310F0
 asm s32 fn_800310F0(void) {
     nofralloc
@@ -4679,52 +5734,8 @@ asm s32 fn_800310F0(void) {
     blr
 }
 
-s32 fn_80031120(s32 arg0, s32 *arg1) {
-    return (s32) (fn_80186374((s8 *) ((s8 *) arg0), (s32) (fn_8002AE3C((s32) ((s32) arg1)))) != 0);
-}
-
-void fn_80031164(s32 *arg0, s32 arg1) {
-    *arg0 &= ~arg1;
-}
-
-s32 fn_80031174(s32 *arg0, s32 arg1) {
-    return (s32) ((*arg0 & arg1) != 0);
-}
-
-void fn_80031188(s32 *arg0, s32 arg1) {
-    *arg0 &= ~arg1;
-}
-
-s32 fn_80031198(s32 *arg0, s32 arg1) {
-    return (s32) ((*arg0 & arg1) != 0);
-}
-
-s32 fn_800311AC(s8 *arg0) {
-    return (s32) (M2C_FIELD(arg0, s32 *, 0x14) != 0);
-}
-
-s32 fn_800311BC(s8 *arg0, s32 arg1) {
-    return (s32) ((M2C_FIELD(arg0, s32 *, 0x20) & arg1) != 0);
-}
-
-s32 fn_800311D0(s8 *arg0) {
-    return (s32) (M2C_FIELD(arg0, s32 *, 0x10) != 0);
-}
-
-s32 fn_800311E0(s32 arg0) {
-    return (s32) (fn_801863E0((s8 *) ((s8 *) arg0)) != 0);
-}
-
-void fn_80031208(s8 *arg0, s32 arg1) {
-    M2C_FIELD(arg0, s32 *, 0x20) = (s32) ((s32) (M2C_FIELD(arg0, s32 *, 0x20) | arg1));
-}
-
-void fn_80031218(s32 arg0) {
-    fn_80031FF0((s8 **) ((s8 **) arg0), (u16) (0U));
-}
-
 // asm_to_cpp: fn_80031220
-asm s32 fn_80031220() {
+asm M2C_UNK fn_80031220(s32 arg0_x, s32 arg1_x, s32 arg2_x) {
     nofralloc
     stw r5, 0xc(r3)
     cmpwi r5, 0x0
@@ -4736,199 +5747,6 @@ lbl_80031238:
     mr r3, r4
     li r4, 0x0
     b fn_80031244
-}
-
-void fn_80031244(s8 **arg0, s32 arg1) {
-    if (arg1 != 0) {
-        EnableScnMdlCallbackTiming__Q34nw4r3g3d12ScnMdlSimpleFQ44nw4r3g3d6ScnObj6Timing((s8 *) (arg0), (s32) (2));
-        fn_80031FF0((s8 **) (arg0), (u16) (0U));
-        return;
-    }
-    DisableScnMdlCallbackTiming__Q34nw4r3g3d12ScnMdlSimpleFQ44nw4r3g3d6ScnObj6Timing((s8 *) (arg0), (s32) (2));
-}
-
-s32 fn_80031294(s32 *arg0) {
-    return (s32) (fn_8002AE00((s8 *) (M2C_FIELD(arg0, s8 **, 8))));
-}
-
-void fn_8003129C(s32 arg0, s8 **arg1) {
-    fn_80032008((s8 **) (arg1), (s32) (arg0));
-    fn_80031FFC((s8 **) (arg1), (u8) (0U));
-    fn_80031FF0((s8 **) (arg1), (u16) (0U));
-}
-
-s8 * fn_800312EC(s8 *arg0, s32 arg1) {
-    fn_8003290C((M2C_UNK **) ((s32 **) arg0));
-    M2C_FIELD(arg0, s8 **, 0) = (s8 *) (&lbl_80346E40);
-    M2C_FIELD(arg0, s32 *, 4) = (s32) (arg1);
-    M2C_FIELD(arg0, s32 *, 8) = (s32) (0);
-    M2C_FIELD(arg0, s32 *, 0xC) = (s32) (0);
-    M2C_FIELD(arg0, s32 *, 0x10) = (s32) (0);
-    return (s8 *) (arg0);
-}
-
-s32 fn_80031348(s32 arg0, s32 arg1) {
-    return (s32) (arg1);
-}
-
-void fn_80031350(s8 *arg0, s32 arg1, s32 arg2) {
-    if (arg2 != 0) {
-        fn_801EC790(arg0, arg1);
-    } else {
-        EnableScnObjCallbackTiming__Q34nw4r3g3d6ScnObjFQ44nw4r3g3d6ScnObj6Timing(arg0, arg1);
-    }
-}
-
-void fn_80031360(s8 *arg0, s32 arg1, s32 arg2) {
-    if (arg2 != 0) {
-        EnableScnObjCallbackExecOp__Q34nw4r3g3d6ScnObjFQ44nw4r3g3d6ScnObj6ExecOp(arg0, arg1);
-    } else {
-        fn_801EC824(arg0, arg1);
-    }
-}
-
-void fn_80031370(s32 *arg0, s32 arg1) {
-    arg0[6] = arg1;
-}
-
-void fn_80031378(s32 *arg0, s32 arg1) {
-    arg0[5] = arg1;
-}
-
-void fn_80031380(s32 *arg0, s32 arg1) {
-    arg0[3] = arg1;
-}
-
-void fn_80031388(s32 *arg0, s32 arg1) {
-    arg0[2] = arg1;
-}
-
-void fn_80031390(s8 *arg0, s8 **arg1) {
-    fn_800329C0((s8 **) (arg1), (s8 *) (arg0));
-    fn_800329B4((s8 **) (arg1), (u8) (0U));
-}
-
-s8 * fn_800313D4(s8 *arg0, s32 arg1) {
-    fn_80032A0C((M2C_UNK **) ((s32 **) arg0));
-    M2C_FIELD(arg0, s8 **, 0) = (s8 *) (&lbl_80346E80);
-    M2C_FIELD(arg0, s32 *, 4) = (s32) (arg1);
-    M2C_FIELD(arg0, s32 *, 8) = (s32) (0);
-    M2C_FIELD(arg0, s32 *, 0xC) = (s32) (0);
-    M2C_FIELD(arg0, s32 *, 0x10) = (s32) (0);
-    M2C_FIELD(arg0, s32 *, 0x14) = (s32) (0);
-    M2C_FIELD(arg0, s32 *, 0x18) = (s32) (0);
-    return (s8 *) (arg0);
-}
-
-s8 * fn_80031438(s32 arg0, s8 *arg1) {
-    return (s8 *) (arg1);
-}
-
-void fn_80031440(s32 arg0) {
-    fn_80186078((s8 *) ((s8 *) arg0), (s32) (0));
-}
-
-void fn_80031448(s32 arg0) {
-    fn_8018622C((s8 *) ((s8 *) arg0));
-}
-
-s8 * fn_8003144C(s8 *arg0, s8 *arg1) {
-    fn_80031498((s32 *) ((s32 *) arg0), (s32 *) ((s32 *) arg1));
-    fn_80031494((s32) ((s32) (arg0 + 4)), (s32) ((s32) (arg1 + 4)));
-    return (s8 *) (arg0);
-}
-
-void fn_80031494(s32 arg0, s32 arg1) {
-}
-
-void fn_80031498(s32 *arg0, s32 *arg1) {
-    *arg0 = *arg1;
-}
-
-void fn_800314A4(s32 arg0) {
-    fn_80033ACC((s8 *) ((s8 *) arg0));
-}
-
-void fn_800314A8(s32 arg0) {
-    fn_801862FC((s8 *) ((s8 *) arg0));
-}
-
-s8 * fn_800314AC(s32 arg0) {
-    return (s8 *) (arg0 + 0x20);
-}
-
-s32 fn_800314B4(s32 arg0) {
-    return (s32) (arg0 != 0);
-}
-
-s32 fn_800314C0(void) {
-    return (s32) (fn_800340BC() != 0);
-}
-
-u32 fn_800314E8(s32 arg0) {
-    return (u32) (fn_80032A1C((s8 *) (arg0)) - 1);
-}
-
-s32 fn_8003150C(void) {
-    return (s32) (3);
-}
-
-s32 fn_80031514(s32 arg0, u16 arg1) {
-    return (s32) ((arg1 - 3) == 0);
-}
-
-s8 * fn_80031528(s8 *arg0, s16 arg1) {
-    if (arg0 != NULL) {
-        dtor_80030D1C((s8 *) (arg0 + 0x20), (s16) (-1));
-        dtor_80033590((s8 *) (arg0), (s16) (0));
-        if (arg1 > 0) {
-            fn_80027B74((s32) ((s32) arg0));
-        }
-    }
-    return (s8 *) (arg0);
-}
-
-void fn_80031594(GlibModelListener_80031594 *self, void *a, void *b, void *dummy, void *c) {
-    if (self->cb1 != 0) {
-        self->cb1(self->target, a, b, c);
-    }
-}
-
-void fn_800315B4(GlibModelListener_80031594 *self, void *a, void *b, void *dummy, void *c) {
-    if (self->cb2 != 0) {
-        self->cb2(self->target, a, b, c);
-    }
-}
-
-void fn_800315D4(GlibModelListener_80031594 *self, void *a, void *b, void *dummy, void *c) {
-    if (self->cb3 != 0) {
-        self->cb3(self->target, a, b, c);
-    }
-}
-
-void fn_800315F4(GlibModelListener_80031594 *self, void *a, void *b, void *dummy, void *c) {
-    if (self->cb4 != 0) {
-        self->cb4(self->target, a, b, c);
-    }
-}
-
-void fn_80031614(GlibModelListener_80031594 *self, void *a, void *b, void *dummy, void *c) {
-    if (self->cb5 != 0) {
-        self->cb5(self->target, a, b, c);
-    }
-}
-
-s32 fn_80031634(s32 arg0, s16 arg1) {
-    if (arg0 != 0) {
-        fn_800329C8((s32) (arg0), (s16) (0));
-        if (arg1 > 0) {
-            fn_80031690((s32) (arg0));
-        }
-    }
-    return (s32) (arg0);
-}
-
-void fn_80031690(s32 arg0) {
 }
 
 // asm_to_cpp: fn_80031694
@@ -5055,52 +5873,8 @@ lbl_80031834:
     blr
 }
 
-void fn_8003184C(s8 *arg0, s32 *arg1) {
-    if (((M2C_UNK (*)(s32, M2C_UNK, s32)) M2C_FIELD(arg0, M2C_UNK (**)(s32, M2C_UNK, s32), 0x10)) != NULL) {
-        M2C_FIELD(arg0, M2C_UNK (**)(s32, M2C_UNK, s32), 0x10)(M2C_FIELD(arg0, s32 *, 4), 0, fn_8002AE3C((s32) ((s32) arg1)));
-    }
-}
-
-s32 fn_800318A0(s32 arg0, s16 arg1) {
-    if (arg0 != 0) {
-        fn_800328C8((s32) (arg0), (s16) (0));
-        if (arg1 > 0) {
-            fn_800318FC((s32) (arg0));
-        }
-    }
-    return (s32) (arg0);
-}
-
-void fn_800318FC(s32 arg0) {
-}
-
-s32 * fn_80031900(s32 *arg0, f32 *arg1, s32 *arg2) {
-    s32 temp_r31;
-
-    temp_r31 = (s32) (fn_8002AE3C((s32) ((s32) arg0)));
-    PSMTXScaleApply((s32) (fn_80018B90((s32) ((s32) arg2))), (s32) (temp_r31), M2C_FIELD(arg1, f32 *, 0), M2C_FIELD(arg1, f32 *, 4), M2C_FIELD(arg1, f32 *, 8));
-    return (s32 *) (arg0);
-}
-
-s32 * fn_80031960(s32 *arg0, s32 arg1) {
-    fn_80031990((s32 *) (arg0), (s32 *) ((s32 *) arg1));
-    return (s32 *) (arg0);
-}
-
-void fn_80031990(s32 *arg0, s32 *arg1) {
-    *arg0 = *arg1;
-}
-
-s32 * fn_8003199C(s32 *arg0, s8 *arg1, s32 *arg2) {
-    s32 temp_r31;
-
-    temp_r31 = (s32) (fn_8002AE3C((s32) ((s32) arg0)));
-    PSMTXTransApply((s32) (fn_80018B90((s32) ((s32) arg2))), (s32) (temp_r31), M2C_FIELD(arg1, f32 *, 0), M2C_FIELD(arg1, f32 *, 4), M2C_FIELD(arg1, f32 *, 8));
-    return (s32 *) (arg0);
-}
-
 // asm_to_cpp: fn_800319FC
-asm void fn_800319FC(f32 farg0, s32 arg1, s32 arg2) {
+asm void fn_800319FC(s32 arg1, s32 arg2, f32 farg0) {
     nofralloc
     la r5, lbl_8049E870
     lfs f0, 0xc(r5)
@@ -5109,7 +5883,7 @@ asm void fn_800319FC(f32 farg0, s32 arg1, s32 arg2) {
 }
 
 // asm_to_cpp: fn_80031A0C
-asm void fn_80031A0C(f32 farg0, f32 farg1, f32 farg2, s32 arg3) {
+asm void fn_80031A0C(s32 arg3, f32 farg0, f32 farg1, f32 farg2) {
     nofralloc
     la r4, lbl_8049E870
     lfs f0, 0xc(r4)
@@ -5119,209 +5893,16 @@ asm void fn_80031A0C(f32 farg0, f32 farg1, f32 farg2, s32 arg3) {
     b MTX34RotXYZFIdx__Q24nw4r4mathFPQ34nw4r4math5MTX34fff
 }
 
-// asm_to_cpp: fn_80031A24
-asm s32 fn_80031A24(s32 arg0, M2C_UNK *arg1) {
-    nofralloc
-    stwu r1, -0x20(r1)
-    mflr r0
-    stw r0, 0x24(r1)
-    addi r11, r1, 0x20
-    bl _savegpr_29
-    mr r29, r3
-    mr r30, r4
-    bl fn_8002AE3C
-    mr r31, r3
-    mr r3, r30
-    bl fn_80018B90
-    mr r4, r31
-    bl PSMTXCopy
-    mr r3, r29
-    addi r11, r1, 0x20
-    bl _restgpr_29
-    lwz r0, 0x24(r1)
-    mtlr r0
-    addi r1, r1, 0x20
-    blr
-}
-
-s32 * fn_80031A74(s32 *arg0, s32 arg1) {
-    fn_80031AA4((s32 *) (arg0), (s32 *) ((s32 *) arg1));
-    return (s32 *) (arg0);
-}
-
-void fn_80031AA4(s32 *arg0, s32 *arg1) {
-    *arg0 = *arg1;
-}
-
-s32 * fn_80031AB0(s32 *arg0) {
-    fn_8002AF5C((s32) ((s32) ((s8 *)arg0 + 4)));
-    fn_8002AF5C((s32) ((s32) ((s8 *)arg0 + 0x10)));
-    fn_8002AE40((s32) ((s32) ((s8 *)arg0 + 0x1C)));
-    return (s32 *) (arg0);
-}
-
-f32 * fn_80031AF4(f32 *arg0, f32 *arg1) {
-    fn_80018B94((s32) ((s32) arg0), (s32) ((s32) arg0), (s32) ((s32) arg1));
-    return arg0;
-}
-
 // asm_to_cpp: fn_80031B2C
-asm void fn_80031B2C(f32 farg0, s32 arg1) {
+asm void fn_80031B2C(s32 arg1, f32 farg0) {
     nofralloc
     lfs f0, lbl_8049E870
     fdivs f1, f0, f1
     b fn_8002B0F8
 }
 
-s32 fn_80031B38(s32 *arg0) {
-    return (s32) (*arg0 != 0);
-}
-
-s32 * fn_80031B48(s32 *arg0, s32 arg1) {
-    fn_80031B78((s32 *) (arg0), (s32 *) ((s32 *) arg1));
-    return (s32 *) (arg0);
-}
-
-void fn_80031B78(s32 *arg0, s32 *arg1) {
-    *arg0 = *arg1;
-}
-
-s8 * fn_80031B84(s8 **arg0, s32 arg1) {
-    s8 *base = *arg0;
-    if (arg1 != 0) {
-        return base + arg1;
-    }
-    return 0;
-}
-
-s32 fn_80031BA0(s32 *arg0) {
-    return (s32) (*arg0);
-}
-
-s32 fn_80031BA8(s32 *arg0) {
-    return (s32) (*arg0);
-}
-
-s32 fn_80031BB0(s32 *arg0) {
-    return (s32) (*arg0 != 0);
-}
-
-s8 * fn_80031BC0(s8 **arg0) {
-    return (s8 *) (*arg0);
-}
-
-s32 fn_80031BC8(s8 **arg0) {
-    return (s32) (*arg0 != NULL);
-}
-
-s8 * fn_80031BD8(s8 **arg0, s32 arg1) {
-    s8 *base = *arg0;
-    if (arg1 != 0) {
-        return base + arg1;
-    }
-    return 0;
-}
-
-s32 fn_80031BF4(s32 *arg0) {
-    return (s32) (*arg0);
-}
-
-s8 * fn_80031BFC(s8 **arg0, s32 arg1) {
-    s8 *base = *arg0;
-    if (arg1 != 0) {
-        return base + arg1;
-    }
-    return 0;
-}
-
-s8 * fn_80031C18(s8 **arg0, s32 arg1) {
-    s8 *base = *arg0;
-    if (arg1 != 0) {
-        return base + arg1;
-    }
-    return 0;
-}
-
-s32 fn_80031C34(s32 *arg0) {
-    return (s32) (*arg0);
-}
-
-s8 * fn_80031C3C(s8 **arg0, s32 arg1) {
-    s8 *base = *arg0;
-    if (arg1 != 0) {
-        return base + arg1;
-    }
-    return 0;
-}
-
-s32 fn_80031C58(s32 *arg0) {
-    return (s32) (*arg0 != 0);
-}
-
-s32 * fn_80031C68(s32 *arg0, s32 arg1) {
-    fn_80031C98((s32 *) (arg0), (s32 *) ((s32 *) arg1));
-    return (s32 *) (arg0);
-}
-
-void fn_80031C98(s32 *arg0, s32 *arg1) {
-    *arg0 = *arg1;
-}
-
-void fn_80031CA4(s32 *arg0, s32 arg1) {
-    *arg0 = arg1;
-}
-
-void fn_80031CAC(s32 *arg0, s32 arg1) {
-    *arg0 = arg1;
-}
-
-s32 fn_80031CB4(s32 *arg0) {
-    return (s32) (*arg0);
-}
-
-s32 fn_80031CBC(s32 *arg0) {
-    return (s32) (*arg0 != 0);
-}
-
-s32 * fn_80031CCC(s32 *arg0, s32 arg1) {
-    fn_80031CFC((s32 *) (arg0), (s32 *) ((s32 *) arg1));
-    return (s32 *) (arg0);
-}
-
-void fn_80031CFC(s32 *arg0, s32 *arg1) {
-    *arg0 = *arg1;
-}
-
-// asm_to_cpp: fn_80031D08
-asm M2C_UNK fn_80031D08(s32 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    bl fn_80031D60
-    mr r4, r3
-    mr r3, r31
-    lwz r4, 0x8(r4)
-    bl fn_80031D44
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-s8 * fn_80031D44(s8 **arg0, s32 arg1) {
-    s8 *base = *arg0;
-    if (arg1 != 0) {
-        return base + arg1;
-    }
-    return 0;
-}
-
 // asm_to_cpp: fn_80031D60
-asm void fn_80031D60(s32 *arg0) {
+asm M2C_UNK fn_80031D60(s32 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -5351,186 +5932,20 @@ lbl_80031DA8:
     blr
 }
 
-s32 fn_80031DC4(s32 *arg0) {
-    return (s32) (*arg0);
-}
+#pragma dont_inline on
+s32 fn_80032010(s8 **arg0, s32 arg1) {
+    s32 var_r5;
 
-s32 fn_80031DCC(void) {
-    return (s32) ((s32) &lbl_80347730);
-}
-
-s32 fn_80031DD8(s32 *arg0) {
-    return (s32) (*arg0 != 0);
-}
-
-s32 * fn_80031DE8(s32 *arg0, s32 arg1) {
-    fn_80031E18((s32 *) (arg0), (s32 *) ((s32 *) arg1));
-    return (s32 *) (arg0);
-}
-
-void fn_80031E18(s32 *arg0, s32 *arg1) {
-    *arg0 = *arg1;
-}
-
-// asm_to_cpp: fn_80031E24
-asm s32 * fn_80031E24(s32 *arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    mr r31, r4
-    bl fn_80031E88
-    clrlwi r0, r31, 30
-    cmpwi r0, 0x0
-    beq lbl_80031E6C
-    lis r3, lbl_8034771C@ha
-    addi r3, r3, lbl_8034771C@l
-    li r4, 0x151
-    lis r5, lbl_803476F4@ha
-    addi r5, r5, lbl_803476F4@l
-    opword 0x4CC63182
-    bl fn_801A9384
-lbl_80031E6C:
-    mr r3, r30
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-void fn_80031E88(s32 *arg0, s32 arg1) {
-    *arg0 = arg1;
-}
-
-s32 fn_80031E90(s32 *arg0) {
-    return (s32) (*arg0 != 0);
-}
-
-s32 fn_80031EA0(s32 *arg0) {
-    return (s32) (*arg0);
-}
-
-s32 fn_80031EA8(s32 *arg0) {
-    return (s32) (*arg0);
-}
-
-s32 fn_80031EB0(s32 *arg0) {
-    return (s32) (*arg0 != 0);
-}
-
-s32 * fn_80031EC0(s32 *arg0, s32 arg1) {
-    fn_80031EF0((s32 *) (arg0), (s32 *) ((s32 *) arg1));
-    return (s32 *) (arg0);
-}
-
-void fn_80031EF0(s32 *arg0, s32 *arg1) {
-    *arg0 = *arg1;
-}
-
-s8 * fn_80031EFC(s8 **arg0) {
-    return (s8 *) (*arg0);
-}
-
-s8 ** fn_80031F04(s8 **arg0, s32 arg1) {
-    fn_80031F34((s32 *) ((s32 *) arg0), (s32 *) ((s32 *) arg1));
-    return (s8 **) (arg0);
-}
-
-void fn_80031F34(s32 *arg0, s32 *arg1) {
-    *arg0 = *arg1;
-}
-
-void fn_80031F40(s32 *arg0, s32 arg1) {
-    *arg0 = arg1;
-}
-
-void fn_80031F48(s32 *arg0, s32 arg1) {
-    *arg0 = arg1;
-}
-
-s32 fn_80031F50(s32 arg0, s32 arg1) {
-    fn_80016D88((s32 *) ((s32 *) arg0), (s32 *) ((s32 *) arg1));
-    return (s32) (arg0);
-}
-
-void fn_80031F80(s8 *arg0, u8 arg1, u8 arg2, u8 arg3, u8 arg4) {
-    M2C_FIELD(arg0, u8 *, 0) = (u8) (arg1);
-    M2C_FIELD(arg0, u8 *, 1) = (u8) (arg2);
-    M2C_FIELD(arg0, u8 *, 2) = (u8) (arg3);
-    M2C_FIELD(arg0, u8 *, 3) = (u8) (arg4);
-}
-
-s32 * dtor_80031FA4(s32 *arg0, s16 arg1) {
-    if ((arg0 != NULL) && (arg1 > 0)) {
-        dtor_80136CFC((s32) ((s32) arg0));
+    var_r5 = (s32) (0);
+    if ((arg1 >= 0) && (arg1 <= (s32) (M2C_FIELD(arg0, s32 *, 0x18) - 1))) {
+        var_r5 = (s32) (1);
     }
-    return (s32 *) (arg0);
+    if (var_r5 == 0) {
+        fn_801A9384((s32) &lbl_80347270, 0x98, (s32) &lbl_80347238, arg1, 0, M2C_FIELD(arg0, s32 *, 0x18) - 1);
+    }
+    return (s32) (*(s32 *)(M2C_FIELD(arg0, s8 **, 0x1C) + (arg1 * 4)));
 }
-
-s32 fn_80031FE8(s8 **arg0) {
-    return (s32) (M2C_FIELD(arg0, s32 *, 0xEC));
-}
-
-void fn_80031FF0(s8 **arg0, u16 arg1) {
-    M2C_FIELD(arg0, u16 *, 0x122) = (u16) (arg1);
-}
-
-void fn_80031FFC(s8 **arg0, u8 arg1) {
-    M2C_FIELD(arg0, u8 *, 0x121) = (u8) (arg1);
-}
-
-void fn_80032008(s8 **arg0, s32 arg1) {
-    M2C_FIELD(arg0, s32 *, 0x11C) = (s32) (arg1);
-}
-
-// asm_to_cpp: fn_80032010
-asm s32 fn_80032010(s8 **arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    mr r31, r4
-    li r5, 0x0
-    cmpwi r4, 0x0
-    blt lbl_8003204C
-    lwz r3, 0x18(r3)
-    subi r0, r3, 0x1
-    cmpw r4, r0
-    bgt lbl_8003204C
-    li r5, 0x1
-lbl_8003204C:
-    cmpwi r5, 0x0
-    bne lbl_80032080
-    lis r3, lbl_80347270@ha
-    addi r3, r3, lbl_80347270@l
-    li r4, 0x98
-    lis r5, lbl_80347238@ha
-    addi r5, r5, lbl_80347238@l
-    mr r6, r31
-    li r7, 0x0
-    lwz r8, 0x18(r30)
-    subi r8, r8, 0x1
-    opword 0x4CC63182
-    bl fn_801A9384
-lbl_80032080:
-    lwz r3, 0x1c(r30)
-    slwi r0, r31, 2
-    lwzx r3, r3, r0
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
+#pragma dont_inline reset
 
 // asm_to_cpp: fn_800320A4
 asm s32 fn_800320A4(s8 **arg0) {
@@ -5569,28 +5984,8 @@ lbl_80032104:
     blr
 }
 
-// asm_to_cpp: fn_80032118
-asm M2C_UNK fn_80032118(s32 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    bl fn_80032154
-    mr r4, r3
-    mr r3, r31
-    lwz r4, 0x8(r4)
-    bl fn_80031BD8
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
 // asm_to_cpp: fn_80032154
-asm void fn_80032154(s8 **arg0) {
+asm M2C_UNK fn_80032154(s8 **arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -5618,10 +6013,6 @@ lbl_8003219C:
     mtlr r0
     addi r1, r1, 0x10
     blr
-}
-
-s32 fn_800321B8(void) {
-    return (s32) ((s32) &lbl_8049C258);
 }
 
 // asm_to_cpp: fn_800321C0
@@ -5701,43 +6092,8 @@ lbl_800322A0:
     blr
 }
 
-// asm_to_cpp: fn_800322B4
-asm s8 * fn_800322B4(s8 *arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    mr r31, r4
-    bl fn_80031F48
-    clrlwi r0, r31, 30
-    cmpwi r0, 0x0
-    beq lbl_800322FC
-    lis r3, lbl_803473D8@ha
-    addi r3, r3, lbl_803473D8@l
-    li r4, 0x2c
-    lis r5, lbl_803473B0@ha
-    addi r5, r5, lbl_803473B0@l
-    opword 0x4CC63182
-    bl fn_801A9384
-lbl_800322FC:
-    mr r3, r30
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-s32 fn_80032318(s32 arg0) {
-    return (s32) (M2C_FIELD(fn_8003DAF0((s8 **) ((s8 **) arg0)), s32 *, 8));
-}
-
 // asm_to_cpp: fn_8003233C
-asm void fn_8003233C(s32 *arg0) {
+asm M2C_UNK fn_8003233C(s32 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -5765,10 +6121,6 @@ lbl_80032384:
     mtlr r0
     addi r1, r1, 0x10
     blr
-}
-
-s32 fn_800323A0(void) {
-    return (s32) ((s32) &lbl_80347540);
 }
 
 // asm_to_cpp: fn_800323AC
@@ -5836,7 +6188,7 @@ lbl_80032450:
 }
 
 // asm_to_cpp: fn_8003247C
-asm void fn_8003247C(s32 *arg0) {
+asm M2C_UNK fn_8003247C(s32 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -5898,48 +6250,6 @@ lbl_8003251C:
     blr
 }
 
-s32 fn_80032548(s32 arg0) {
-    return (s32) (M2C_FIELD(fn_8003DAF0((s8 **) ((s8 **) arg0)), s32 *, 0xc));
-}
-
-s32 fn_8003256C(s32 arg0, s32 *arg1) {
-    s32 spC;
-    s32 sp8;
-
-    return (s32) (*fn_800325C0((s32 *) (&spC), (s32) (__vc__Q34nw4r3g3d6ResDicCFPCc((s8 **) (fn_80032694((M2C_UNK *) (&sp8), (s32) (fn_80032624((s32 *) ((s32 *) arg0)) + 4))), (s32) ((s32) arg1)))));
-}
-
-// asm_to_cpp: fn_800325C0
-asm s32 * fn_800325C0(s32 *arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    mr r31, r4
-    bl fn_80031CA4
-    clrlwi r0, r31, 30
-    cmpwi r0, 0x0
-    beq lbl_80032608
-    lis r3, lbl_80347528@ha
-    addi r3, r3, lbl_80347528@l
-    li r4, 0x26
-    lis r5, lbl_80347500@ha
-    addi r5, r5, lbl_80347500@l
-    opword 0x4CC63182
-    bl fn_801A9384
-lbl_80032608:
-    mr r3, r30
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
 // asm_to_cpp: fn_80032624
 asm M2C_UNK fn_80032624(s32 *arg0) {
     nofralloc
@@ -5969,47 +6279,6 @@ lbl_8003266C:
     mtlr r0
     addi r1, r1, 0x10
     blr
-}
-
-s32 fn_80032688(void) {
-    return (s32) ((s32) &lbl_803474C4);
-}
-
-// asm_to_cpp: fn_80032694
-asm M2C_UNK * fn_80032694(M2C_UNK *arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    mr r31, r4
-    bl fn_80031CAC
-    clrlwi r0, r31, 30
-    cmpwi r0, 0x0
-    beq lbl_800326DC
-    lis r3, lbl_803476E0@ha
-    addi r3, r3, lbl_803476E0@l
-    li r4, 0x54
-    lis r5, lbl_803476B8@ha
-    addi r5, r5, lbl_803476B8@l
-    opword 0x4CC63182
-    bl fn_801A9384
-lbl_800326DC:
-    mr r3, r30
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-s32 fn_800326F8(s32 arg0) {
-    s32 sp8;
-
-    return (s32) (*fn_80031E24((s32 *) (&sp8), (s32) (fn_8003272C((s8 **) ((s8 **) arg0)) + 0x24)));
 }
 
 // asm_to_cpp: fn_8003272C
@@ -6043,16 +6312,8 @@ lbl_80032774:
     blr
 }
 
-s32 fn_80032790(void) {
-    return (s32) ((s32) &lbl_8049C244);
-}
-
-s32 fn_80032798(s32 arg0) {
-    return (s32) (M2C_FIELD(fn_8003DAF0((s8 **) ((s8 **) arg0)), s32 *, 0x40));
-}
-
 // asm_to_cpp: fn_800327BC
-asm void fn_800327BC(s32 *arg0) {
+asm M2C_UNK fn_800327BC(s32 *arg0) {
     nofralloc
     stwu r1, -0x10(r1)
     mflr r0
@@ -6080,18 +6341,6 @@ lbl_80032804:
     mtlr r0
     addi r1, r1, 0x10
     blr
-}
-
-s8 * fn_80032820(s32 arg0) {
-    s32 temp_r0;
-    s8 *temp_r3;
-
-    temp_r3 = (s8 *) (fn_80032858((s32 *) ((s32 *) arg0)));
-    temp_r0 = (s32) (M2C_FIELD(temp_r3, s32 *, 8));
-    if (temp_r0 != 0) {
-        return (s8 *) (temp_r3 + temp_r0);
-    }
-    return (s8 *) (NULL);
 }
 
 // asm_to_cpp: fn_80032858
@@ -6125,47 +6374,8 @@ lbl_800328A0:
     blr
 }
 
-s32 fn_800328BC(void) {
-    return (s32) ((s32) &lbl_80347318);
-}
-
-s32 fn_800328C8(s32 arg0, s16 arg1) {
-    if ((arg0 != 0) && (arg1 > 0)) {
-        dtor_80136CFC((s32) (arg0));
-    }
-    return (s32) (arg0);
-}
-
-void fn_8003290C(M2C_UNK **arg0) {
-    *arg0 = (M2C_UNK *)lbl_80346FD0;
-}
-
-void fn_8003291C(void) {
-}
-
-void fn_80032920(void) {
-}
-
-void fn_80032924(void) {
-}
-
-void fn_80032928(s8 *arg0, u16 arg1) {
-    M2C_FIELD(arg0, u16 *, 6) = (u16) (arg1);
-}
-
-u16 fn_80032934(s8 *arg0) {
-    return (u16) (M2C_FIELD(arg0, u16 *, 6));
-}
-
-s32 fn_8003293C(s32 *arg0, void *arg1) {
-    if (arg1 != 0) {
-        return fn_80031A24(*arg0, (M2C_UNK *)arg1);
-    }
-    return fn_8002AE08(*arg0);
-}
-
 // asm_to_cpp: fn_80032954
-asm s32 fn_80032954() {
+asm M2C_UNK fn_80032954(s32 arg0_x, s32 arg1_x) {
     nofralloc
     cmpwi r4, 0x0
     beq lbl_8003296C
@@ -6178,43 +6388,6 @@ lbl_8003296C:
     fmr f2, f1
     fmr f3, f1
     b fn_801E635C
-}
-
-#pragma dont_inline on
-void fn_8003297C(void **arg0, void *arg1) {
-    if (arg1 != 0) {
-        fn_80031A24((s32)arg1, (M2C_UNK *)arg0[0]);
-    }
-}
-
-void fn_80032998(void **arg0, void *arg1) {
-    if (arg1 != 0) {
-        fn_8002B060((s32)arg1, (s32)arg0[1]);
-    }
-}
-#pragma dont_inline reset
-
-void fn_800329B4(s8 **arg0, u8 arg1) {
-    M2C_FIELD(arg0, u8 *, 0xD9) = (u8) (arg1);
-}
-
-void fn_800329C0(s8 **arg0, s8 *arg1) {
-    M2C_FIELD(arg0, s8 **, 0xD4) = (s8 *) (arg1);
-}
-
-s32 fn_800329C8(s32 arg0, s16 arg1) {
-    if ((arg0 != 0) && (arg1 > 0)) {
-        dtor_80136CFC((s32) (arg0));
-    }
-    return (s32) (arg0);
-}
-
-void fn_80032A0C(M2C_UNK **arg0) {
-    *arg0 = (M2C_UNK *)lbl_80346F70;
-}
-
-s32 fn_80032A1C(s8 *arg0) {
-    return (s32) (M2C_FIELD(arg0, s32 *, 0xE0));
 }
 
 // asm_to_cpp: fn_80032A24
@@ -6239,84 +6412,6 @@ lbl_80032A44:
     mtlr r0
     addi r1, r1, 0x10
     blr
-}
-
-s32 fn_80032A68(s8 **arg0) {
-    return (s32) (M2C_FIELD(arg0, s32 *, 0xE4) == 0);
-}
-
-// asm_to_cpp: fn_80032A78
-asm s32 fn_80032A78(s8 **arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    bl fn_80032A68
-    cmpwi r3, 0x0
-    beq lbl_80032AA0
-    li r3, 0x0
-    b lbl_80032AC4
-lbl_80032AA0:
-    mr r3, r31
-    bl fn_80032AD8
-    mr r4, r3
-    mr r3, r31
-    subi r4, r4, 0x1
-    lwz r12, 0x0(r3)
-    lwz r12, 0x38(r12)
-    mtctr r12
-    bctrl
-lbl_80032AC4:
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-s32 fn_80032AD8(s8 **arg0) {
-    return (s32) (M2C_FIELD(arg0, s32 *, 0xE4));
-}
-
-void fn_80032AE0(void) {
-}
-
-void fn_80032AE4(void) {
-}
-
-void fn_80032AE8(void) {
-}
-
-void fn_80032AEC(void) {
-}
-
-void fn_80032AF0(void) {
-}
-
-s32 fn_80032AF4(s32 arg0, s32 *arg1) {
-    s32 spC;
-    s32 sp8;
-
-    spC = (s32) (fn_80032BFC());
-    if (fn_80028264((s32 *) (arg1), (s32 *) (&spC)) != 0) {
-        return (s32) (1);
-    }
-    sp8 = (s32) (*arg1);
-    return (s32) (fn_80032B60((s32) (arg0), (s32 *) (&sp8)));
-}
-
-s32 fn_80032B60(s32 arg0, s32 *arg1) {
-    s32 spC;
-    s32 sp8;
-
-    spC = (s32) (fn_80032BCC());
-    if (fn_80028264((s32 *) (arg1), (s32 *) (&spC)) != 0) {
-        return (s32) (1);
-    }
-    sp8 = (s32) (*arg1);
-    return (s32) (fn_80028228((s32) (arg0), (s32 *) (&sp8)));
 }
 
 // asm_to_cpp: fn_80032BCC
@@ -6351,50 +6446,6 @@ asm s32 fn_80032BFC(void) {
     mtlr r0
     addi r1, r1, 0x10
     blr
-}
-
-s32 fn_80032C2C(s32 *arg0, s32 *arg1) {
-    s32 spC;
-    s32 sp8;
-
-    sp8 = (s32) (*arg1);
-    spC = (s32) (*arg0);
-    return (s32) (fn_80032C6C((s32 *) (&spC), (s32 *) (&sp8)) == 0);
-}
-
-s32 fn_80032C6C(s32 *arg0, s32 *arg1) {
-    s32 spC;
-    s32 sp8;
-
-    sp8 = (s32) (*arg1);
-    spC = (s32) (*arg0);
-    return (s32) (fn_80028E40((s32 *) (&spC), (s32 *) (&sp8)));
-}
-
-s32 fn_80032CA4(s32 arg0) {
-    s32 spC;
-    s32 sp8;
-
-    sp8 = (s32) (fn_80028EC8((s32) (arg0)));
-    return (s32) (*fn_80032CD8((s32 *) (&spC), (s32) ((s32) &sp8)));
-}
-
-s32 * fn_80032CD8(s32 *arg0, s32 arg1) {
-    fn_80028EBC((s32 *) (arg0), (s32 *) ((s32 *) arg1));
-    return (s32 *) (arg0);
-}
-
-s32 fn_80032D08(s32 *arg0, s32 arg1) {
-    s32 sp8;
-
-    fn_80032F9C((s32 *) (&sp8), (s32) ((s32) arg0));
-    fn_80032D48((s32 *) (arg0));
-    return (s32) (sp8);
-}
-
-s32 * fn_80032D48(s32 *arg0) {
-    fn_80028F70((M2C_UNK **) ((s32 **) arg0));
-    return (s32 *) (arg0);
 }
 
 // asm_to_cpp: fn_80032D78
@@ -6449,45 +6500,6 @@ asm s32 fn_80032DC4(s8 *arg0, s32 *arg1, s32 arg2) {
     blr
 }
 
-s32 * fn_80032E20(s32 *arg0, s32 arg1) {
-    fn_80028EBC((s32 *) (arg0), (s32 *) ((s32 *) arg1));
-    return (s32 *) (arg0);
-}
-
-// asm_to_cpp: fn_80032E50
-asm s32 fn_80032E50(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    cmpwi r3, 0x0
-    bne lbl_80032E88
-    lis r3, lbl_803471CC@ha
-    addi r3, r3, lbl_803471CC@l
-    li r4, 0x233
-    lis r5, lbl_803471A8@ha
-    addi r5, r5, lbl_803471A8@l
-    opword 0x4CC63182
-    bl fn_801A9384
-lbl_80032E88:
-    addi r3, r31, 0x128
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-s32 fn_80032EA0(s32 arg0) {
-    s32 spC;
-    s32 sp8;
-
-    sp8 = (s32) (fn_80028EC8((s32) (arg0)));
-    return (s32) (*fn_80028E8C((s32 *) (&spC), (s32) ((s32) &sp8)));
-}
-
 // asm_to_cpp: fn_80032ED4
 asm s32 fn_80032ED4(s32 arg0) {
     nofralloc
@@ -6513,123 +6525,6 @@ lbl_80032F10:
     mtlr r0
     addi r1, r1, 0x10
     blr
-}
-
-s32 fn_80032F28(s32 arg0) {
-    return (s32) (fn_80032F4C((s32) (fn_80029024((s32 *) ((s32 *) arg0)))));
-}
-
-// asm_to_cpp: fn_80032F4C
-asm s32 fn_80032F4C(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    cmpwi r3, 0x0
-    bne lbl_80032F84
-    lis r3, lbl_8034722C@ha
-    addi r3, r3, lbl_8034722C@l
-    li r4, 0x23d
-    lis r5, lbl_80347208@ha
-    addi r5, r5, lbl_80347208@l
-    opword 0x4CC63182
-    bl fn_801A9384
-lbl_80032F84:
-    subi r3, r31, 0x120
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-s32 * fn_80032F9C(s32 *arg0, s32 arg1) {
-    fn_80028EBC((s32 *) (arg0), (s32 *) ((s32 *) arg1));
-    return (s32 *) (arg0);
-}
-
-s32 fn_80032FCC(s32 arg0) {
-    s32 spC;
-    s32 sp8;
-
-    sp8 = (s32) (fn_80028EC8((s32) (arg0)));
-    return (s32) (*fn_80028E8C((s32 *) (&spC), (s32) ((s32) &sp8)));
-}
-
-s32 fn_80033000(s32 *arg0, s32 *arg1) {
-    s32 spC;
-    s32 sp8;
-
-    sp8 = (s32) (*arg1);
-    spC = (s32) (*arg0);
-    return (s32) (fn_80033040((s32 *) (&spC), (s32 *) (&sp8)) == 0);
-}
-
-s32 fn_80033040(s32 *arg0, s32 *arg1) {
-    s32 spC;
-    s32 sp8;
-
-    sp8 = (s32) (*arg1);
-    spC = (s32) (*arg0);
-    return (s32) (fn_80028E40((s32 *) (&spC), (s32 *) (&sp8)));
-}
-
-s32 fn_80033078(s32 *arg0, s32 arg1) {
-    s32 sp8;
-
-    fn_8003315C((s32 *) (&sp8), (s32) ((s32) arg0));
-    fn_800330B8((s32 *) (arg0));
-    return (s32) (sp8);
-}
-
-s32 * fn_800330B8(s32 *arg0) {
-    fn_80028F70((M2C_UNK **) ((s32 **) arg0));
-    return (s32 *) (arg0);
-}
-
-void fn_800330E8(s32 arg0) {
-    fn_8003310C((s32) (fn_80029024((s32 *) ((s32 *) arg0))));
-}
-
-// asm_to_cpp: fn_8003310C
-asm s32 fn_8003310C(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    cmpwi r3, 0x0
-    bne lbl_80033144
-    lis r3, lbl_8034719C@ha
-    addi r3, r3, lbl_8034719C@l
-    li r4, 0x23d
-    lis r5, lbl_80347178@ha
-    addi r5, r5, lbl_80347178@l
-    opword 0x4CC63182
-    bl fn_801A9384
-lbl_80033144:
-    subi r3, r31, 0x128
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-s32 * fn_8003315C(s32 *arg0, s32 arg1) {
-    fn_80028EBC((s32 *) (arg0), (s32 *) ((s32 *) arg1));
-    return (s32 *) (arg0);
-}
-
-s32 fn_8003318C(s32 arg0) {
-    s32 spC;
-    s32 sp8;
-
-    sp8 = (s32) (fn_80028EC8((s32) (arg0)));
-    return (s32) (*fn_80028E8C((s32 *) (&spC), (s32) ((s32) &sp8)));
 }
 
 // asm_to_cpp: fn_800331C0
@@ -6682,58 +6577,6 @@ asm s32 fn_8003320C(s8 *arg0, s32 *arg1, s32 arg2) {
     mtlr r0
     addi r1, r1, 0x20
     blr
-}
-
-// asm_to_cpp: fn_80033268
-asm s32 fn_80033268(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    cmpwi r3, 0x0
-    bne lbl_800332A0
-    lis r3, lbl_8034716C@ha
-    addi r3, r3, lbl_8034716C@l
-    li r4, 0x233
-    lis r5, lbl_80347148@ha
-    addi r5, r5, lbl_80347148@l
-    opword 0x4CC63182
-    bl fn_801A9384
-lbl_800332A0:
-    addi r3, r31, 0x120
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
-}
-
-s8 * fn_800332B8(s8 *arg0) {
-    fn_800291EC((s8 *) (arg0));
-    return (s8 *) (arg0);
-}
-
-s8 * fn_800332E8(s8 *arg0) {
-    fn_800291EC((s8 *) (arg0));
-    return (s8 *) (arg0);
-}
-
-s32 fn_80033318(s8 *arg0, s32 arg1) {
-    s32 spC;
-    s8 *sp8;
-
-    sp8 = (s8 *) (Erase__Q44nw4r2ut6detail12LinkListImplFPQ34nw4r2ut12LinkListNode((s32 *) ((s32 *) arg0), (s8 *) (fn_80043B10((s32) (arg1)))));
-    return (s32) (*fn_80039CD0((s32 *) (&spC), (s32) ((s32) &sp8)));
-}
-
-void fn_80033368(s32 arg0, s32 arg1) {
-    fn_80027D18((s8 *) (arg0 + 0x14), (s32) (arg1));
-}
-
-void fn_80033370(s32 arg0, s32 arg1) {
-    fn_80027D18((s8 *) (arg0 + 0x14), (s32) (arg1));
 }
 
 // asm_to_cpp: fn_80033378
@@ -6836,10 +6679,6 @@ lbl_800334C0:
     mtlr r0
     addi r1, r1, 0x20
     blr
-}
-
-void fn_800334D8(s8 *arg0, s32 arg1) {
-    fn_800331C0((s8 *) (arg0 + 0x14), (s32) (arg1));
 }
 
 // asm_to_cpp: fn_800334E0
@@ -6952,16 +6791,6 @@ lbl_8003363C:
     mtlr r0
     addi r1, r1, 0x20
     blr
-}
-
-s8 * dtor_80033658(s8 *arg0, s16 arg1) {
-    if (arg0 != NULL) {
-        __dt__Q44nw4r2ut6detail12LinkListImplFv((s8 *) (arg0), (s32) (0));
-        if (arg1 > 0) {
-            dtor_80136CFC((s32) ((s32) arg0));
-        }
-    }
-    return (s8 *) (arg0);
 }
 
 // asm_to_cpp: fn_800336B4
@@ -7202,14 +7031,6 @@ lbl_800339EC:
     mtlr r0
     addi r1, r1, 0x10
     blr
-}
-
-void fn_80033A04(void) {
-    fn_8030CAF0();
-}
-
-s32 fn_80033A08(void) {
-    return (s32) (fn_80033A0C());
 }
 
 } // extern "C"

@@ -28,11 +28,11 @@ extern "C" void _savegpr_25();
 extern "C" void fn_801D0D24();
 extern "C" void fn_801D0D78();
 extern "C" void fn_801D4798();
-extern "C" void fn_801D4934();
+extern "C" void CalcChrAnmResult__Q34nw4r3g3d7ResNodeCFPQ34nw4r3g3d12ChrAnmResult();
 extern "C" void fn_801E635C();
 extern "C" void fn_801E63DC();
 extern "C" void fn_801E69A0();
-extern "C" void fn_801E9D30();
+extern "C" void CalcWorldMtx_Basic__Q44nw4r3g3d6detail3dccFPQ34nw4r4math5MTX34PQ34nw4r4math4VEC3PCQ34nw4r4math5MTX34PCQ34nw4r4math4VEC3UlPCQ34nw4r3g3d12ChrAnmResult();
 
 // ----------------------------------------------------------------------------
 // fn_801E635C
@@ -191,7 +191,7 @@ lbl_801E655C:
 lbl_801E6570:
     addi r3, r1, 0x14
     addi r4, r1, 0x24
-    bl fn_801D4934
+    bl CalcChrAnmResult__Q34nw4r3g3d7ResNodeCFPQ34nw4r3g3d12ChrAnmResult
     addi r31, r1, 0x24
 lbl_801E6580:
     cmpwi r28, 0x0
@@ -349,7 +349,7 @@ lbl_801E67B4:
     mr r6, r24
     mr r7, r23
     mr r8, r31
-    bl fn_801E9D30
+    bl CalcWorldMtx_Basic__Q44nw4r3g3d6detail3dccFPQ34nw4r4math5MTX34PQ34nw4r4math4VEC3PCQ34nw4r4math5MTX34PCQ34nw4r4math4VEC3UlPCQ34nw4r3g3d12ChrAnmResult
     stw r3, 0x0(r15)
 lbl_801E67DC:
     lwz r3, 0x14(r1)
