@@ -364,10 +364,10 @@ void fn_8018AD48(s8 *arg0, s8 *arg1);
 void fn_8018AD5C(s32 arg0, s8 *arg1);
 s32 fn_8018ADA4(s8 *arg0);
 s32 fn_8018ADC0(s8 *arg0);
-u16 fn_8018AE04(s8 *arg0);
-u16 fn_8018AE0C(s8 *arg0);
-M2C_UNK fn_8018AE14(s32 arg0_x);
-M2C_UNK fn_8018AE30(s32 arg0_x);
+s32 fn_8018AE04(s8 *arg0);
+s32 fn_8018AE0C(s8 *arg0);
+s32 fn_8018AE14(s8 *arg0);
+s32 fn_8018AE30(s8 *arg0);
 s8 * fn_8018AE4C(s8 *arg0);
 s8 * fn_8018AE68(s8 *arg0);
 void fn_8018AEE8(s8 *arg0, s8 *arg1);
@@ -903,13 +903,15 @@ s32 fn_8018ADA4(s8 *arg0) {
     return fn_8018ADC0(obj);
 }
 
-u16 fn_8018AE04(s8 *arg0) {
-    return (u16) (M2C_FIELD(arg0, u16 *, 0xC));
+#pragma dont_inline on
+s32 fn_8018AE04(s8 *arg0) {
+    return (s32) (M2C_FIELD(arg0, u16 *, 0xC));
 }
 
-u16 fn_8018AE0C(s8 *arg0) {
-    return (u16) (M2C_FIELD(arg0, u16 *, 0x18));
+s32 fn_8018AE0C(s8 *arg0) {
+    return (s32) (M2C_FIELD(arg0, u16 *, 0x18));
 }
+#pragma dont_inline reset
 
 s8 * fn_8018AE4C(s8 *arg0) {
     s8 *obj = *(s8 **)(arg0 + 0x10);
@@ -5556,52 +5558,22 @@ lbl_8018AD30:
     blr
 }
 
-// asm_to_cpp: fn_8018ADC0
-asm s32 fn_8018ADC0(s8 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    bl fn_8018AE04
-    mr r31, r3
-    mr r3, r30
-    bl fn_8018AE0C
-    add r3, r3, r31
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_8018ADC0(s8 *arg0) {
+    s32 a = fn_8018AE04(arg0);
+    s32 b = fn_8018AE0C(arg0);
+    return b + a;
 }
 
-// asm_to_cpp: fn_8018AE14
-asm M2C_UNK fn_8018AE14(s32 arg0_x) {
-    nofralloc
-    lwz r3, 0x8(r3)
-    cmpwi r3, 0x0
-    bne lbl_8018AE28
-    li r3, 0x0
-    blr
-lbl_8018AE28:
-    b fn_8018AE0C
-    blr
+s32 fn_8018AE14(s8 *arg0) {
+    s8 *obj = *(s8 **)(arg0 + 8);
+    if (obj == 0) return 0;
+    return fn_8018AE0C(obj);
 }
 
-// asm_to_cpp: fn_8018AE30
-asm M2C_UNK fn_8018AE30(s32 arg0_x) {
-    nofralloc
-    lwz r3, 0x8(r3)
-    cmpwi r3, 0x0
-    bne lbl_8018AE44
-    li r3, 0x0
-    blr
-lbl_8018AE44:
-    b fn_8018AE04
-    blr
+s32 fn_8018AE30(s8 *arg0) {
+    s8 *obj = *(s8 **)(arg0 + 8);
+    if (obj == 0) return 0;
+    return fn_8018AE04(obj);
 }
 
 // asm_to_cpp: fn_8018AE68
@@ -6016,15 +5988,9 @@ lbl_8018B51C:
     blr
 }
 
-// asm_to_cpp: fn_8018B588
-asm s32 * fn_8018B588(s32 arg0, s32 arg1) {
-    nofralloc
-    subi r0, r4, 0x1
-    nor r5, r0, r0
-    add r3, r4, r3
-    subi r0, r3, 0x1
-    and r3, r5, r0
-    blr
+s32 * fn_8018B588(s32 arg0, s32 arg1) {
+    register u32 mask = ~(arg1 - 1);
+    return (s32 *)(mask & (arg1 + arg0 - 1));
 }
 
 // asm_to_cpp: fn_8018B634

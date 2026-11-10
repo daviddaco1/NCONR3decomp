@@ -38,7 +38,12 @@ s32 * fn_80031A74(s32 *arg0, s32 arg1);
 M2C_UNK fn_8003452C(s32 *arg0);
 void fn_800CA050(S_fn_800CA050_arg0 *arg0, S_fn_800CA050_arg1 *arg1);
 void fn_800CA0DC(s8 *arg0, s8 *arg1);
-s32 fn_800CA1BC(u64 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
+struct EyeItem {
+    u32 id;
+    u32 flag;
+};
+
+s32 fn_800CA1BC(void *arg0, s32 count1, const EyeItem *items1, s32 count2, const EyeItem *items2);
 s32 fn_800CA290(void);
 s32 fn_800CA45C(s8 *arg0, s32 *arg1, s32 arg2, s32 arg3);
 s32 fn_800CA4D4(s32 *arg0, u32 *arg1, s32 arg2, s32 arg3, s8 *arg4);
@@ -122,68 +127,24 @@ asm void fn_800CA0DC(s8 *arg0, s8 *arg1) {
     blr
 }
 
-// asm_to_cpp: fn_800CA1BC
-asm s32 fn_800CA1BC(u64 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    nofralloc
-    stwu r1, -0x30(r1)
-    mflr r0
-    stw r0, 0x34(r1)
-    addi r11, r1, 0x30
-    bl _savegpr_24
-    mr r31, r3
-    mr r24, r4
-    mr r25, r5
-    mr r26, r6
-    mr r27, r7
-    li r28, 0x0
-    li r30, 0x0
-    b lbl_800CA224
-lbl_800CA1F0:
-    add r29, r25, r30
-    mr r3, r31
-    lwz r4, 0x0(r29)
-    bl fn_8018149C
-    cmpwi r3, 0x0
-    beq lbl_800CA21C
-    lwz r4, 0x0(r3)
-    lwz r0, 0x4(r29)
-    oris r0, r0, 0x80
-    or r0, r4, r0
-    stw r0, 0x0(r3)
-lbl_800CA21C:
-    addi r28, r28, 0x1
-    addi r30, r30, 0x8
-lbl_800CA224:
-    cmpw r28, r24
-    blt lbl_800CA1F0
-    li r28, 0x0
-    li r30, 0x0
-    b lbl_800CA26C
-lbl_800CA238:
-    add r29, r27, r30
-    mr r3, r31
-    lwz r4, 0x0(r29)
-    bl fn_8018149C
-    cmpwi r3, 0x0
-    beq lbl_800CA264
-    lwz r4, 0x0(r3)
-    lwz r0, 0x4(r29)
-    oris r0, r0, 0x40
-    or r0, r4, r0
-    stw r0, 0x0(r3)
-lbl_800CA264:
-    addi r28, r28, 0x1
-    addi r30, r30, 0x8
-lbl_800CA26C:
-    cmpw r28, r26
-    blt lbl_800CA238
-    li r3, 0x1
-    addi r11, r1, 0x30
-    bl _restgpr_24
-    lwz r0, 0x34(r1)
-    mtlr r0
-    addi r1, r1, 0x30
-    blr
+s32 fn_800CA1BC(void *arg0, s32 count1, const EyeItem *items1, s32 count2, const EyeItem *items2) {
+    const EyeItem *item;
+
+    for (s32 i = 0; i < count1; i++) {
+        item = &items1[i];
+        u32 *p = (u32 *)fn_8018149C((s8 *)arg0, item->id);
+        if (p != NULL) {
+            *p |= (item->flag | 0x800000);
+        }
+    }
+    for (s32 i = 0; i < count2; i++) {
+        item = &items2[i];
+        u32 *p = (u32 *)fn_8018149C((s8 *)arg0, item->id);
+        if (p != NULL) {
+            *p |= (item->flag | 0x400000);
+        }
+    }
+    return 1;
 }
 
 // asm_to_cpp: fn_800CA290

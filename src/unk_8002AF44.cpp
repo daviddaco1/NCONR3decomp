@@ -5,7 +5,7 @@
 extern "C" {
 
 
-extern float lbl_8049E7C8;
+__declspec(section ".sdata2") extern const f32 lbl_8049E7C8[];
 extern float lbl_8049E7F0;
 extern float lbl_8049E830;
 extern float lbl_8049E838;
@@ -30,7 +30,7 @@ void GXSetZMode(s32 arg0, s32 arg1, s32 arg2);
 M2C_UNK * GetRenderModeObj__Q34nw4r3g3d8G3DStateFv(void);
 void Invalidate__Q34nw4r3g3d8G3DStateFUl(s32 arg0);
 void MTX34RotAxisFIdx__Q24nw4r4mathFPQ34nw4r4math5MTX34PCQ34nw4r4math4VEC3f(void *arg0, void *arg1, f32 farg0);
-f32 MTX34RotXYZFIdx__Q24nw4r4mathFPQ34nw4r4math5MTX34fff(f32 farg2, s32 arg1, s32 arg2, s32 arg3);
+void MTX34RotXYZFIdx__Q24nw4r4mathFPQ34nw4r4math5MTX34fff(s32 arg0, f32 farg0, f32 farg1, f32 farg2);
 void SetViewportZRange__Q34nw4r3g3d6CameraFff(s8 **arg0, f32 farg0, f32 farg1);
 void SetViewport__Q34nw4r3g3d6CameraFffff(s8 **arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3);
 s32 _restgpr_27();
@@ -202,15 +202,9 @@ s32 fn_8002BA18(s8 *arg0) {
     return (s32) (M2C_FIELD(arg0, s32 *, 0x3C) != 0);
 }
 
-// asm_to_cpp: fn_8002AF44
-asm void fn_8002AF44(s32 arg3, f32 farg0, f32 farg1, f32 farg2) {
-    nofralloc
-    la r4, lbl_8049E7C8
-    lfs f0, 0x20(r4)
-    fmuls f1, f0, f1
-    fmuls f2, f0, f2
-    fmuls f3, f0, f3
-    b MTX34RotXYZFIdx__Q24nw4r4mathFPQ34nw4r4math5MTX34fff
+void fn_8002AF44(s32 arg0, f32 farg0, f32 farg1, f32 farg2) {
+    f32 scale = lbl_8049E7C8[8];
+    MTX34RotXYZFIdx__Q24nw4r4mathFPQ34nw4r4math5MTX34fff(arg0, scale * farg0, scale * farg1, scale * farg2);
 }
 
 // asm_to_cpp: fn_8002B13C

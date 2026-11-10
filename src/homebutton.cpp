@@ -5413,17 +5413,9 @@ lbl_80181FFC:
     blr
 }
 
-// asm_to_cpp: fn_80182048
-asm void fn_80182048(s32 *arg0) {
-    nofralloc
-    lis r5, lbl_803D1CA0@ha
-    lha r4, lbl_803D1CA0@l(r5)
-    addi r0, r4, 0x1
-    sth r0, lbl_803D1CA0@l(r5)
-    addi r4, r3, 0x4
-    addi r5, r5, lbl_803D1CA0@l
-    addi r5, r5, 0x4
-    b fn_8001D9A4
+void fn_80182048(s32 *arg0) {
+    (*(s16 *)lbl_803D1CA0)++;
+    fn_8001D9A4((s32)arg0, (s32)arg0 + 4, (s8 *)(lbl_803D1CA0 + 4));
 }
 
 // asm_to_cpp: fn_80182084

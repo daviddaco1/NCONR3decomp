@@ -5,11 +5,11 @@
 extern "C" {
 
 
-extern u8 lbl_803480B0[];
-extern u8 lbl_803480D0[];
-extern u8 lbl_803480E0[];
+extern const char lbl_803480B0[];
+extern const char lbl_803480D0[];
+extern const char lbl_803480E0[];
 extern s32 lbl_8049C288;
-extern float lbl_8049C290;
+__declspec(section ".sdata2") extern const char lbl_8049C290[];
 extern float lbl_8049E898;
 
 s32 Bind__Q34nw4r3g3d7ResFileFQ34nw4r3g3d7ResFile(s32 *arg0, s32 *arg1);
@@ -84,6 +84,7 @@ s32 fn_80035FA0(s32 arg0) {
     return (s32) (GetResAnmShp__Q34nw4r3g3d7ResFileCFPCc((s32 *) (&sp8)));
 }
 
+#pragma dont_inline on
 void fn_8003611C(s32 *arg0) {
     s32 sp8;
 
@@ -112,35 +113,16 @@ void fn_800361B4(s32 *arg0, s32 *arg1) {
 s32 * fn_80036254(void) {
     return (s32 *) (&lbl_8049C288);
 }
+#pragma dont_inline reset
 
-// asm_to_cpp: fn_80035E80
-asm void fn_80035E80(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    mr r4, r3
-    addi r3, r1, 0x8
-    bl fn_80016E44
-    addi r3, r1, 0x8
-    bl CheckRevision__Q34nw4r3g3d7ResFileCFv
-    cmpwi r3, 0x0
-    bne lbl_80035EC0
-    lis r3, lbl_803480E0@ha
-    addi r3, r3, lbl_803480E0@l
-    li r4, 0x21
-    addi r5, r3, 0x19
-    opword 0x4CC63182
-    bl fn_801A9384
-lbl_80035EC0:
-    addi r3, r1, 0x8
-    bl Init__Q34nw4r3g3d7ResFileFv
-    addi r3, r1, 0x8
-    bl fn_8003611C
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_80035E80(s32 arg0) {
+    s32 file;
+    fn_80016E44((s32)&file, arg0);
+    if (!CheckRevision__Q34nw4r3g3d7ResFileCFv(&file)) {
+        fn_801A9384((s32)lbl_803480E0, 33, (s32)(lbl_803480E0 + 0x19));
+    }
+    Init__Q34nw4r3g3d7ResFileFv(&file);
+    fn_8003611C(&file);
 }
 
 // asm_to_cpp: fn_80035FD0
@@ -239,35 +221,11 @@ s32 fn_800361C0(s32 arg0) {
     return (s32) ((M2C_FIELD(fn_800361F0((s32 *) ((s32 *) arg0)), s32 *, 0x18) & 1) != 0);
 }
 
-// asm_to_cpp: fn_800361F0
-asm M2C_UNK fn_800361F0(s32 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r3
-    bl fn_80016D48
-    cmpwi r3, 0x0
-    bne lbl_80036238
-    bl fn_80036254
-    mr r6, r3
-    lis r3, lbl_803480D0@ha
-    addi r3, r3, lbl_803480D0@l
-    li r4, 0x26
-    lis r5, lbl_803480B0@ha
-    addi r5, r5, lbl_803480B0@l
-    la r7, lbl_8049C290
-    opword 0x4CC63182
-    bl fn_801A9384
-lbl_80036238:
-    mr r3, r31
-    bl fn_8003617C
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+M2C_UNK fn_800361F0(s32 *arg0) {
+    if (fn_80016D48(arg0) == 0) {
+        fn_801A9384((s32)lbl_803480D0, 38, (s32)lbl_803480B0, fn_80036254(), lbl_8049C290);
+    }
+    return (M2C_UNK)fn_8003617C(arg0);
 }
 
 } // extern "C"

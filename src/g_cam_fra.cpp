@@ -2824,31 +2824,12 @@ lbl_8009AF34:
     blr
 }
 
-// asm_to_cpp: fn_8009AFDC
-asm s32 fn_8009AFDC(void) {
-    nofralloc
-    lis r3, lbl_803A1C00@ha
-    addi r3, r3, lbl_803A1C00@l
-    lwz r3, 0xc(r3)
-    cmpwi r3, 0x1
-    bne lbl_8009AFF8
-    li r3, 0x1
-    blr
-lbl_8009AFF8:
-    cmpwi r3, 0x0
-    bne lbl_8009B008
-    li r3, 0x0
-    blr
-lbl_8009B008:
-    cmpwi r3, 0x2
-    bne lbl_8009B018
-    li r3, 0x0
-    blr
-lbl_8009B018:
-    subi r3, r3, 0x3
-    subic r0, r3, 0x1
-    subfe r3, r0, r3
-    blr
+s32 fn_8009AFDC(void) {
+    s32 val = *(s32*)(lbl_803A1C00 + 0xC);
+    if (val == 1) return 1;
+    if (val == 0) return 0;
+    if (val == 2) return 0;
+    return (u32)(val - 3) != 0;
 }
 
 // asm_to_cpp: fn_8009B028

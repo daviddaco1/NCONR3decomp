@@ -222,7 +222,7 @@ void fn_80124684(s8 *arg0, s32 arg1, s32 arg2);
 void fn_801246FC(void);
 void fn_80124700(s8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 void fn_8012479C(s8 *arg0);
-M2C_UNK fn_801247F0(s32 arg0_x);
+void fn_801247F0(void *arg0);
 void fn_801247FC(s32 arg0, s32 arg1);
 void fn_80124860(s8 *arg0);
 void fn_801248B0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7);
@@ -2928,12 +2928,8 @@ lbl_80124670:
     blr
 }
 
-// asm_to_cpp: fn_801247F0
-asm M2C_UNK fn_801247F0(s32 arg0_x) {
-    nofralloc
-    lwz r12, 0x8(r3)
-    mtctr r12
-    bctr
+void fn_801247F0(void *arg0) {
+    ((void (*)(void*))*(void**)((char*)arg0 + 8))(arg0);
 }
 
 // asm_to_cpp: fn_80124860

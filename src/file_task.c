@@ -13163,44 +13163,39 @@ lbl_80171EA8:
     blr
 }
 
-// asm_to_cpp: fn_80171F20
-asm void fn_80171F20(s32 arg0, s32 arg1) {
-    nofralloc
-    slwi r0, r4, 8
-    or r3, r0, r3
-    slwi r0, r3, 16
-    or r0, r3, r0
-    mtspr GQR7, r0
-    blr
+void fn_80171F20(s32 arg0, s32 arg1) {
+    register u32 val;
+    val = (arg1 << 8) | arg0;
+    val = (val << 16) | val;
+    asm {
+        mtspr GQR7, val
+    }
 }
 
-// asm_to_cpp: fn_80171F38
-asm void fn_80171F38(s32 arg0, s32 arg1) {
-    nofralloc
-    slwi r0, r4, 8
-    or r3, r0, r3
-    slwi r0, r3, 16
-    or r0, r3, r0
-    mtspr GQR6, r0
-    blr
+void fn_80171F38(s32 arg0, s32 arg1) {
+    register u32 val;
+    val = (arg1 << 8) | arg0;
+    val = (val << 16) | val;
+    asm {
+        mtspr GQR6, val
+    }
 }
 
-// asm_to_cpp: fn_80171F50
-asm s32 fn_80171F50(void) {
-    nofralloc
-    li r3, 0x4
-    oris r3, r3, 0x4
-    mtspr GQR2, r3
-    li r3, 0x5
-    oris r3, r3, 0x5
-    mtspr GQR3, r3
-    li r3, 0x6
-    oris r3, r3, 0x6
-    mtspr GQR4, r3
-    li r3, 0x7
-    oris r3, r3, 0x7
-    mtspr GQR5, r3
-    blr
+s32 fn_80171F50(void) {
+    register u32 val;
+    val = 4;
+    val |= 0x40000;
+    asm { mtspr GQR2, val }
+    val = 5;
+    val |= 0x50000;
+    asm { mtspr GQR3, val }
+    val = 6;
+    val |= 0x60000;
+    asm { mtspr GQR4, val }
+    val = 7;
+    val |= 0x70000;
+    asm { mtspr GQR5, val }
+    return val;
 }
 
 // asm_to_cpp: fn_80171F84

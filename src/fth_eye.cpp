@@ -4,7 +4,11 @@
 
 extern "C" {
 
-extern float lbl_8049ECE0;
+struct Vec4 {
+    f32 x, y, z, w;
+};
+
+__declspec(section ".sdata2") extern const f32 lbl_8049ECE0[];
 
 s32 _restgpr_25();
 s32 _restgpr_28();
@@ -18,8 +22,8 @@ f32 fn_8001DA9C(f32 farg0);
 void fn_80020D20(M2C_UNK *arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3);
 void fn_800543C4(s32 arg0, s32 arg1);
 s32 fn_800543CC(s8 *arg0, s32 arg1, s8 *arg2);
-M2C_UNK fn_80054634(s32 arg0, s32 arg1, s32 arg2);
-void fn_800546D4(s32 arg0, s32 arg1);
+s32 fn_80054634(s32 arg0, s32 arg1, s32 arg2);
+void fn_800546D4(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_80054AD0(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_80054ECC(s8 *arg0, s8 *arg1);
 void fn_800F5B14(s8 *arg0, s8 *arg1, s32 arg2, s32 arg3);
@@ -85,53 +89,29 @@ s32 fn_800543CC(s8 *arg0, s32 arg1, s8 *arg2) {
     return (s32) (fn_80054634((s32) ((s32) arg0), (s32) (arg1), (s32) ((s32) temp_r3)));
 }
 
-// asm_to_cpp: fn_80054634
-asm M2C_UNK fn_80054634(s32 arg0, s32 arg1, s32 arg2) {
-    nofralloc
-    clrlwi r11, r1, 28
-    subfic r11, r11, -0x40
-    mr r12, r1
-    stwux r1, r1, r11
-    mflr r0
-    stw r0, 0x4(r12)
-    mr r11, r12
-    bl _savegpr_28
-    mr r28, r3
-    mr r29, r4
-    mr r30, r5
-    lfs f2, lbl_8049ECE0
-    lwz r6, 0x3780(r4)
-    lwz r31, 0x20(r6)
-    la r6, lbl_8049ECE0
-    lfs f1, 0x8(r6)
-    stfs f1, 0x10(r1)
-    stfs f2, 0x14(r1)
-    stfs f2, 0x18(r1)
-    stfs f1, 0x1c(r1)
-    stfs f2, 0x20(r1)
-    lfs f0, 0x14(r6)
-    stfs f0, 0x24(r1)
-    stfs f2, 0x28(r1)
-    stfs f1, 0x2c(r1)
-    mr r6, r31
-    bl fn_800546D4
-    mr r3, r28
-    mr r4, r29
-    mr r5, r30
-    mr r6, r31
-    bl fn_80054AD0
-    li r3, 0x1
-    lwz r10, 0x0(r1)
-    mr r11, r10
-    bl _restgpr_28
-    lwz r0, 0x4(r10)
-    mtlr r0
-    mr r1, r10
-    blr
+s32 fn_80054634(s32 arg0, s32 arg1, s32 arg2) {
+    Vec4 a;
+    Vec4 b __attribute__((aligned(16)));
+    f32 f2 = lbl_8049ECE0[0];
+    s32 val = *(s32*)(*(s32*)((s8*)arg1 + 0x3780) + 0x20);
+
+    b.x = lbl_8049ECE0[2];
+    b.y = f2;
+    b.z = f2;
+    b.w = lbl_8049ECE0[2];
+
+    a.x = f2;
+    a.y = lbl_8049ECE0[5];
+    a.z = f2;
+    a.w = lbl_8049ECE0[2];
+
+    fn_800546D4(arg0, arg1, arg2, val);
+    fn_80054AD0(arg0, arg1, arg2, val);
+    return 1;
 }
 
 // asm_to_cpp: fn_800546D4
-asm void fn_800546D4(s32 arg0, s32 arg1) {
+asm void fn_800546D4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     nofralloc
     clrlwi r11, r1, 28
     subfic r11, r11, -0x120

@@ -4,7 +4,11 @@
 
 extern "C" {
 
-extern float lbl_8049F750;
+__declspec(section ".sdata2") extern const f32 lbl_8049F750[];
+
+struct Vec4 {
+    f32 x, y, z, w;
+};
 
 s32 _restgpr_29();
 s32 _savegpr_29();
@@ -115,29 +119,19 @@ s32 fn_800B5A14(s8 *arg0, s32 arg1, s8 *arg2) {
     return (s32) (fn_800B5FA0((s32) ((s32) arg0), (s32) (arg1), (s32) ((s32) temp_r3)));
 }
 
-// asm_to_cpp: fn_800B5FA0
-asm s32 fn_800B5FA0(s32 arg0, s32 arg1, s32 arg2) {
-    nofralloc
-    clrlwi r11, r1, 28
-    subfic r11, r11, -0x30
-    mr r12, r1
-    stwux r1, r1, r11
-    lfs f1, lbl_8049F750
-    stfs f1, 0x20(r1)
-    la r3, lbl_8049F750
-    lfs f0, 0x8(r3)
-    stfs f0, 0x24(r1)
-    stfs f1, 0x28(r1)
-    lfs f0, 0x4(r3)
-    stfs f0, 0x2c(r1)
-    stfs f0, 0x10(r1)
-    stfs f1, 0x14(r1)
-    stfs f1, 0x18(r1)
-    stfs f0, 0x1c(r1)
-    li r3, 0x1
-    lwz r10, 0x0(r1)
-    mr r1, r10
-    blr
+s32 fn_800B5FA0(s32 arg0, s32 arg1, s32 arg2) {
+    Vec4 a;
+    Vec4 b __attribute__((aligned(16)));
+
+    a.x = lbl_8049F750[0];
+    a.y = lbl_8049F750[2];
+    a.z = lbl_8049F750[0];
+    a.w = lbl_8049F750[1];
+    b.x = lbl_8049F750[1];
+    b.y = lbl_8049F750[0];
+    b.z = lbl_8049F750[0];
+    b.w = lbl_8049F750[1];
+    return 1;
 }
 
 } // extern "C"

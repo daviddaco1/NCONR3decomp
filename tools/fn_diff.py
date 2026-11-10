@@ -39,7 +39,10 @@ def target(split, fn):
 
 def compiled(path, fn):
     o = 'build/fn_diff/o.o'
-    r = subprocess.run([os.path.abspath('build/compilers/Wii/1.0/mwcceppc.exe'), *shlex.split(FLAGS), '-c', path, '-o', o],
+    flags = FLAGS
+    if path.endswith('.cpp'):
+        flags = flags.replace('-lang=c', '-lang=c++') + ' -fp_contract off -opt nocse'
+    r = subprocess.run([os.path.abspath('build/compilers/Wii/1.0/mwcceppc.exe'), *shlex.split(flags), '-c', path, '-o', o],
                        capture_output=True, text=True)
     if r.returncode:
         sys.exit((r.stdout + r.stderr)[-1500:] or 'mwcc fallo')
