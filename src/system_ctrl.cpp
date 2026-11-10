@@ -129,7 +129,7 @@ s32 fn_8007054C(s8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 farg0);
 void fn_80070644(s32 arg0);
 void fn_80070698(s32 arg0);
 void fn_800706EC(s32 arg0);
-M2C_UNK fn_80070740(s32 arg0_x);
+s32 fn_80070740(s8 *arg0);
 void fn_80070760(f32 *arg0, s32 *arg1);
 s32 fn_800707D8(s32 *arg0);
 void fn_800707EC(f32 *arg0, f32 *arg1, f32 *arg2, s32 *arg3);
@@ -311,6 +311,7 @@ void fn_8007092C(s32 *arg0) {
     *arg0 &= 0xFFFFFFFE;
 }
 
+#pragma dont_inline on
 s32 fn_8007093C(s32 *arg0) {
     s32 temp_r4;
 
@@ -321,6 +322,7 @@ s32 fn_8007093C(s32 *arg0) {
     }
     return (s32) ((s32) arg0);
 }
+#pragma dont_inline reset
 
 void fn_80071FB4(s8 *arg0) {
     M2C_FIELD(arg0, s32 *, 0x13E8) = (s32) (0);
@@ -1933,17 +1935,11 @@ lbl_80070628:
     blr
 }
 
-// asm_to_cpp: fn_80070740
-asm M2C_UNK fn_80070740(s32 arg0_x) {
-    nofralloc
-    lwz r3, 0x948(r3)
-    cmpwi r3, 0x0
-    beqlr
-    lwz r0, 0x0(r3)
-    rlwinm r0, r0, 0, 18, 16
-    stw r0, 0x0(r3)
-    b fn_8007093C
-    blr
+s32 fn_80070740(s8 *arg0) {
+    s32 *obj = *(s32 **)(arg0 + 0x948);
+    if (obj == 0) return 0;
+    *obj &= ~0x4000;
+    return fn_8007093C(obj);
 }
 
 // asm_to_cpp: fn_80070958

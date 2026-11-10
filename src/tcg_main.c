@@ -1534,18 +1534,11 @@ lbl_80122D10:
     blr
 }
 
-// asm_to_cpp: fn_80122D38
-asm void fn_80122D38(u32 arg0, s32 arg1, s32 arg2) {
-    nofralloc
-    cmplwi r3, 0x1
-    bgtlr
-    slwi r0, r3, 3
-    lis r3, lbl_803A4470@ha
-    addi r3, r3, lbl_803A4470@l
-    stwx r4, r3, r0
-    add r3, r3, r0
-    stw r5, 0x4(r3)
-    blr
+void fn_80122D38(u32 arg0, s32 arg1, s32 arg2) {
+    if (arg0 <= 1) {
+        *(s32 *)((s8 *)lbl_803A4470 + arg0 * 8) = arg1;
+        *(s32 *)((s8 *)lbl_803A4470 + arg0 * 8 + 4) = arg2;
+    }
 }
 
 // asm_to_cpp: fn_80122DA4

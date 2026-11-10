@@ -520,18 +520,12 @@ f32 fn_80092724(void) {
 }
 #pragma dont_inline reset
 
-// asm_to_cpp: fn_800917B4
-asm s32 fn_800917B4(s32 arg0) {
-    nofralloc
-    lis r4, lbl_80395728@ha
-    addi r4, r4, lbl_80395728@l
-    mulli r0, r3, 0x78
-    add r3, r4, r0
-    lwz r3, 0x28(r3)
-    subfic r0, r3, 0x0
-    subfe r0, r0, r0
-    and r3, r3, r0
-    blr
+s32 fn_800917B4(s32 arg0) {
+    s32 val = *(s32 *)((s8 *)lbl_80395728 + arg0 * 0x78 + 0x28);
+    if (val != 0) {
+        return val;
+    }
+    return 0;
 }
 
 // asm_to_cpp: fn_800917D8

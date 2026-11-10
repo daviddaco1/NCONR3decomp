@@ -60,7 +60,7 @@ f32 fn_800694C0(u16 arg0);
 M2C_UNK fn_800694F0(u16 arg0);
 M2C_UNK fn_80069524(u16 arg0, s32 arg1);
 void fn_80069558(s32 arg0, u16 *arg1);
-f32 fn_80069588(s32 arg0_x);
+f32 fn_80069588(void *arg0);
 void fn_800868F4(s32 arg0);
 s32 fn_8008AE14(void);
 f32 fn_80172688(f32 farg0);
@@ -1925,11 +1925,12 @@ asm void fn_80069558(s32 arg0, u16 *arg1) {
     blr
 }
 
-// asm_to_cpp: fn_80069588
-asm f32 fn_80069588(s32 arg0_x) {
-    nofralloc
-    opword 0xE023B000
-    blr
+f32 fn_80069588(register void *arg0) {
+    register f32 ret;
+    asm {
+        psq_l ret, 0(arg0), 1, 3
+    }
+    return ret;
 }
 
 } // extern "C"

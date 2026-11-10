@@ -1874,17 +1874,9 @@ lbl_8007B1C0:
     blr
 }
 
-// asm_to_cpp: fn_8007B1DC
-asm u32 * fn_8007B1DC(u32 *arg0, u32 *arg1, s32 arg2) {
-    nofralloc
-    lwz r0, 0x0(r4)
-    add r0, r0, r5
-    stw r0, 0x0(r4)
-    mr r4, r5
-    b lbl_8007B1F0
-lbl_8007B1F0:
-    add r3, r3, r4
-    blr
+u32 * fn_8007B1DC(u32 *arg0, u32 *arg1, s32 arg2) {
+    *arg1 += arg2;
+    return (u32 *)((s8 *)arg0 + arg2);
 }
 
 // asm_to_cpp: fn_8007B24C

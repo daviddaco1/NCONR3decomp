@@ -73,7 +73,7 @@ void fn_80033EA0(s32 *arg0, s32 *arg1);
 s32 fn_80033F08(s32 *arg0);
 s32 fn_80033F50(s8 *arg0, s32 arg1, s32 arg2, f32 *arg3);
 void fn_80034064(s32 *arg0);
-s32 fn_800340BC(s32 arg0_x);
+s32 fn_800340BC(s32 *arg0);
 void fn_800340D8(s32 *arg0, s32 arg1);
 void fn_80034128(s32 *arg0, s8 *arg1);
 void fn_80034178(s32 *arg0, s32 arg1);
@@ -731,17 +731,11 @@ lbl_80034048:
     blr
 }
 
-// asm_to_cpp: fn_800340BC
-asm s32 fn_800340BC(s32 arg0_x) {
-    nofralloc
-    lwz r0, 0x0(r3)
-    rlwinm r0, r0, 0, 19, 19
-    cmpwi r0, 0x0
-    beq lbl_800340D0
-    b fn_80186638
-lbl_800340D0:
-    li r3, 0x0
-    blr
+s32 fn_800340BC(s32 *arg0) {
+    if (*arg0 & 0x1000) {
+        return fn_80186638((s8 *)arg0);
+    }
+    return 0;
 }
 
 // asm_to_cpp: fn_80034178

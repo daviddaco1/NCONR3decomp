@@ -2832,16 +2832,8 @@ s32 fn_8009AFDC(void) {
     return (u32)(val - 3) != 0;
 }
 
-// asm_to_cpp: fn_8009B028
-asm void fn_8009B028(s32 arg0, s32 arg1) {
-    nofralloc
-    lis r5, lbl_803A1C00@ha
-    addi r5, r5, lbl_803A1C00@l
-    mulli r0, r3, 0x18
-    add r3, r5, r0
-    addi r3, r3, 0x10
-    li r5, 0x18
-    b memcpy
+void fn_8009B028(s32 arg0, s32 arg1) {
+    memcpy((s32)&lbl_803A1C00[arg0 * 0x18 + 0x10], arg1, 0x18);
 }
 
 // asm_to_cpp: fn_8009B194

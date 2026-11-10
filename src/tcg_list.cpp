@@ -124,7 +124,7 @@ void fn_8012F03C(s32 arg0);
 s32 fn_8012F0A8(s32 arg0, s32 arg1);
 s32 fn_8012F11C(s32 arg0, s32 arg1);
 s8 * fn_8012F15C(s32 arg0);
-s32 fn_8012F18C(s32 arg0, s32 arg1);
+void fn_8012F18C(s32 arg0, s32 arg1);
 void fn_8012F1A4(s8 *arg0);
 s32 fn_8012F29C(s8 *arg0, s8 *arg1, s32 arg2, s32 arg3);
 s32 fn_8012F3A8(s8 *arg0, s32 arg1, s32 arg2);
@@ -1274,15 +1274,8 @@ lbl_8012F104:
     blr
 }
 
-// asm_to_cpp: fn_8012F18C
-asm s32 fn_8012F18C(s32 arg0, s32 arg1) {
-    nofralloc
-    lis r5, lbl_803A4530@ha
-    addi r5, r5, lbl_803A4530@l
-    mulli r0, r3, 0xc
-    add r3, r5, r0
-    stw r4, 0x8(r3)
-    blr
+void fn_8012F18C(s32 arg0, s32 arg1) {
+    *(s32 *)((s8 *)lbl_803A4530 + arg0 * 12 + 8) = arg1;
 }
 
 // asm_to_cpp: fn_8012F1A4

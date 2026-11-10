@@ -330,7 +330,7 @@ void fn_80027B74(s32 arg0);
 void fn_80027B78(s32 arg0);
 s32 fn_80027B7C(s32 *arg0);
 s8 * fn_80027B84(s8 *arg0, s32 arg1);
-M2C_UNK fn_80027CAC(s32 arg0_x);
+void fn_80027CAC(void *arg0);
 s32 fn_80027CCC(s32 arg0);
 void fn_80027CD8(s32 arg0, s32 arg1);
 s32 fn_80027CE0(s8 *arg0);
@@ -4371,17 +4371,12 @@ lbl_80027C94:
     blr
 }
 
-// asm_to_cpp: fn_80027CAC
-asm M2C_UNK fn_80027CAC(s32 arg0_x) {
-    nofralloc
-    cmpwi r3, 0x0
-    beqlr
-    li r4, 0x1
-    lwz r12, 0x4(r3)
-    lwz r12, 0x8(r12)
-    mtctr r12
-    bctr
-    blr
+void fn_80027CAC(void *arg0) {
+    if (arg0 != 0) {
+        typedef void (*DtorFn)(void *, s32);
+        DtorFn dtor = *(DtorFn *)(*(s8 **)((s8 *)arg0 + 4) + 8);
+        dtor(arg0, 1);
+    }
 }
 
 // asm_to_cpp: fn_80027CE8
