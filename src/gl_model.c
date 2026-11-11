@@ -3437,24 +3437,22 @@ lbl_80185B9C:
     blr
 }
 
-// asm_to_cpp: fn_80185BA4
-asm f32 fn_80185BA4(s8 *arg0, s32 arg1) {
-    nofralloc
-    lwz r3, 0x1c(r3)
-    lwz r3, 0x4(r3)
-    lwz r5, 0x10(r3)
-    lha r0, 0x4(r3)
-    cmpwi r0, 0x0
-    bge lbl_80185BD4
-    lha r0, 0x6(r3)
-    cmpw r4, r0
-    bge lbl_80185BD4
-    slwi r0, r4, 2
-    lfsx f1, r5, r0
-    blr
-lbl_80185BD4:
-    lfs f1, lbl_804A0FE0
-    blr
+f32 fn_80185BA4(s8 *arg0, s32 arg1) {
+    u8 *r3;
+    f32 *r5;
+    s16 flag;
+    s16 limit;
+    r3 = *(u8 **)(arg0 + 0x1C);
+    r3 = *(u8 **)(r3 + 4);
+    r5 = *(f32 **)(r3 + 0x10);
+    flag = *(s16 *)(r3 + 4);
+    if (flag < 0) {
+        limit = *(s16 *)(r3 + 6);
+        if (arg1 < limit) {
+            return r5[arg1];
+        }
+    }
+    return lbl_804A0FE0[0];
 }
 
 // asm_to_cpp: fn_80185BDC

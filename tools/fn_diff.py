@@ -38,7 +38,7 @@ def target(split, fn):
 
 
 def compiled(path, fn):
-    o = 'build/fn_diff/o.o'
+    o = f'build/fn_diff/{fn}.o'
     flags = FLAGS
     if path.endswith('.cpp'):
         flags = flags.replace('-lang=c', '-lang=c++') + ' -fp_contract off -opt nocse'

@@ -784,22 +784,14 @@ lbl_8012E5DC:
     blr
 }
 
-// asm_to_cpp: fn_8012E5F4
-asm s32 fn_8012E5F4(M2C_UNK *arg0, u32 arg1) {
-    nofralloc
-    b lbl_8012E60C
-lbl_8012E5F8:
-    cmplw r3, r4
-    bne lbl_8012E608
-    li r3, 0x1
-    blr
-lbl_8012E608:
-    lwz r3, 0x0(r3)
-lbl_8012E60C:
-    cmpwi r3, 0x0
-    bne lbl_8012E5F8
-    li r3, 0x0
-    blr
+s32 fn_8012E5F4(M2C_UNK *arg0, u32 arg1) {
+    while (arg0 != 0) {
+        if ((u32)arg0 == arg1) {
+            return 1;
+        }
+        arg0 = *(M2C_UNK **)arg0;
+    }
+    return 0;
 }
 
 // asm_to_cpp: fn_8012E79C
@@ -829,22 +821,11 @@ lbl_8012E7D8:
     blr
 }
 
-// asm_to_cpp: fn_8012E8D0
-asm s32 fn_8012E8D0(u32 arg0) {
-    nofralloc
-    cmplwi r3, 0xfe
-    ble lbl_8012E8F8
-    lis r4, 0x1
-    subi r0, r4, 0x1
-    subf r0, r0, r3
-    subic r0, r0, 0x1
-    subfe r3, r0, r0
-    li r0, 0x3
-    andc r3, r0, r3
-    blr
-lbl_8012E8F8:
-    li r3, 0x1
-    blr
+s32 fn_8012E8D0(u32 arg0) {
+    if (arg0 > 0xFE) {
+        return (arg0 == 0xFFFF) ? 0 : 3;
+    }
+    return 1;
 }
 
 // asm_to_cpp: fn_8012E91C
@@ -1125,24 +1106,17 @@ lbl_8012EDA4:
     blr
 }
 
-// asm_to_cpp: fn_8012EDB4
-asm s32 fn_8012EDB4(u32 *arg0) {
-    nofralloc
-    li r4, 0x0
-lbl_8012EDB8:
-    lwz r0, 0x0(r3)
-    cmplwi r0, 0xffff
-    beq lbl_8012EDD0
-    addi r4, r4, 0x1
-    addi r3, r3, 0x4
-    b lbl_8012EDB8
-lbl_8012EDD0:
-    cmpwi r4, 0x0
-    bne lbl_8012EDDC
-    li r4, 0x1
-lbl_8012EDDC:
-    mr r3, r4
-    blr
+s32 fn_8012EDB4(u32 *arg0) {
+    s32 count = 0;
+    for (; ; count++, arg0++) {
+        if (*arg0 == 0xFFFF) {
+            break;
+        }
+    }
+    if (count == 0) {
+        count = 1;
+    }
+    return count;
 }
 
 // asm_to_cpp: fn_8012EEB4

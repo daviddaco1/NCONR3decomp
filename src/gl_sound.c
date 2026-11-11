@@ -151,7 +151,8 @@ void fn_8018E2FC(void);
 void fn_8018E300(void);
 void fn_8018E390(s8 *arg0);
 void fn_8018E3B0(s32 arg0, f32 farg0);
-void fn_8018E3F4(void);
+f32 fn_8018E3F4(void);
+f32 fn_8018E608(s32 arg0);
 void fn_8018E418(s32 arg0);
 s32 fn_8018E44C(void);
 s32 fn_8018E470(s32 *arg0);
@@ -168,7 +169,7 @@ void fn_8018E5B4(s32 arg0);
 void fn_8018E5FC(void);
 void fn_8018E600(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_8018E604(s32 arg0, s32 arg1);
-void fn_8018E608(s32 arg0);
+f32 fn_8018E608(s32 arg0);
 f32 fn_8018E610(s8 *arg0);
 s32 fn_8018E69C(s8 *arg0);
 f32 fn_8018E6B8(s8 *arg0);
@@ -433,8 +434,8 @@ void fn_8018E390(s8 *arg0) {
     M2C_FIELD(arg0, s32 *, 0xC) = (s32) (0x4000);
 }
 
-void fn_8018E3F4(void) {
-    fn_8018E608((s32) (GetInstance__Q44nw4r3snd6detail9AxManagerFv()));
+f32 fn_8018E3F4(void) {
+    return fn_8018E608((s32) (GetInstance__Q44nw4r3snd6detail9AxManagerFv()));
 }
 
 void fn_8018E418(s32 arg0) {
@@ -527,8 +528,8 @@ void fn_8018E604(s32 arg0, s32 arg1) {
     GetSoundPlayer__Q34nw4r3snd18SoundArchivePlayerFUl((s8 *) ((s8 *) arg0), (s32) (arg1));
 }
 
-void fn_8018E608(s32 arg0) {
-    fn_8018E610((s8 *) (arg0 + 0x1C));
+f32 fn_8018E608(s32 arg0) {
+    return fn_8018E610((s8 *) (arg0 + 0x1C));
 }
 
 f32 fn_8018E6B8(s8 *arg0) {
@@ -1595,25 +1596,11 @@ lbl_8018DC54:
     blr
 }
 
-// asm_to_cpp: fn_8018DC6C
-asm f32 fn_8018DC6C(void) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    bl AICheckInit
-    cmpwi r3, 0x0
-    beq lbl_8018DC8C
-    bl fn_8018E3F4
-    b lbl_8018DC94
-lbl_8018DC8C:
-    la r3, lbl_804A10A0
-    lfs f1, 0x4(r3)
-lbl_8018DC94:
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+f32 fn_8018DC6C(void) {
+    if (AICheckInit()) {
+        return fn_8018E3F4();
+    }
+    return lbl_804A10A0[1];
 }
 
 // asm_to_cpp: fn_8018DCA4
@@ -1710,16 +1697,8 @@ asm void fn_8018E3B0(s32 arg0, f32 farg0) {
     blr
 }
 
-// asm_to_cpp: fn_8018E69C
-asm s32 fn_8018E69C(s8 *arg0) {
-    nofralloc
-    lwz r5, 0xc(r3)
-    lwz r0, 0x8(r3)
-    srawi r4, r5, 31
-    srwi r3, r0, 31
-    subfc r0, r0, r5
-    adde r3, r4, r3
-    blr
+s32 fn_8018E69C(s8 *arg0) {
+    return *(s32 *)(arg0 + 0xC) >= *(s32 *)(arg0 + 0x8);
 }
 
 // asm_to_cpp: fn_8018E864

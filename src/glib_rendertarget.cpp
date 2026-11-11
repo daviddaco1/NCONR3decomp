@@ -1118,36 +1118,20 @@ lbl_80035A18:
     blr
 }
 
-// asm_to_cpp: fn_80035A30
-asm s32 fn_80035A30(s8 *arg0, u32 arg1) {
-    nofralloc
-    lwz r0, 0x14(r3)
-    cmplw r4, r0
-    bge lbl_80035A50
-    li r0, 0x1
-    lwz r3, 0x10(r3)
-    stbx r0, r3, r4
-    li r3, 0x1
-    blr
-lbl_80035A50:
-    li r3, 0x0
-    blr
+s32 fn_80035A30(s8 *arg0, u32 arg1) {
+    if (arg1 < *(u32 *)(arg0 + 0x14)) {
+        (*(u8 **)(arg0 + 0x10))[arg1] = 1;
+        return 1;
+    }
+    return 0;
 }
 
-// asm_to_cpp: fn_80035A58
-asm s32 fn_80035A58(s8 *arg0, u32 arg1) {
-    nofralloc
-    lwz r0, 0x14(r3)
-    cmplw r4, r0
-    bge lbl_80035A78
-    li r0, 0x0
-    lwz r3, 0x10(r3)
-    stbx r0, r3, r4
-    li r3, 0x1
-    blr
-lbl_80035A78:
-    li r3, 0x0
-    blr
+s32 fn_80035A58(s8 *arg0, u32 arg1) {
+    if (arg1 < *(u32 *)(arg0 + 0x14)) {
+        (*(u8 **)(arg0 + 0x10))[arg1] = 0;
+        return 1;
+    }
+    return 0;
 }
 
 #pragma dont_inline on
@@ -1343,21 +1327,11 @@ lbl_80035D80:
     blr
 }
 
-// asm_to_cpp: fn_80035DAC
-asm u32 fn_80035DAC(s8 *arg0, u32 arg1) {
-    nofralloc
-    lwz r0, 0x14(r3)
-    cmplw r4, r0
-    bge lbl_80035DD0
-    lwz r3, 0x10(r3)
-    lbzx r3, r3, r4
-    subi r0, r3, 0x1
-    cntlzw r0, r0
-    srwi r3, r0, 5
-    blr
-lbl_80035DD0:
-    li r3, 0x0
-    blr
+u32 fn_80035DAC(s8 *arg0, u32 arg1) {
+    if (arg1 < *(u32 *)(arg0 + 0x14)) {
+        return (*(u8 **)(arg0 + 0x10))[arg1] == 1;
+    }
+    return 0;
 }
 
 } // extern "C"

@@ -68,7 +68,7 @@ f32 fn_80092724(void);
 void fn_800927DC(s32 arg0);
 void fn_80092FFC(void);
 M2C_UNK fn_80094228(s32 arg0_x);
-M2C_UNK fn_80094700(void);
+s32 fn_80094700(void);
 s32 fn_800961EC(void);
 s32 fn_80096228(s32 arg0_pad);
 void fn_80096328(s32 arg0);
@@ -3025,23 +3025,14 @@ lbl_800946EC:
     blr
 }
 
-// asm_to_cpp: fn_80094700
-asm M2C_UNK fn_80094700(void) {
-    nofralloc
-    lis r3, lbl_80395728@ha
-    addi r3, r3, lbl_80395728@l
-    addi r6, r3, 0xfd8
-    li r3, 0x0
-    li r4, 0x0
-    li r0, 0x33
-    mtctr r0
-lbl_8009471C:
-    add r5, r6, r4
-    lwz r0, 0x20(r5)
-    add r3, r3, r0
-    addi r4, r4, 0x4
-    bdnz lbl_8009471C
-    blr
+s32 fn_80094700(void) {
+    u8 *base = (u8 *)lbl_80395728 + 0xfd8;
+    s32 sum = 0;
+    s32 i;
+    for (i = 0; i < 0x33; i++) {
+        sum += *(s32 *)(base + 0x20 + i * 4);
+    }
+    return sum;
 }
 
 } // extern "C"

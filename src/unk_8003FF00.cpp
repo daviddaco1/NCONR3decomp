@@ -11,7 +11,7 @@ extern float lbl_8049D658;
 extern float lbl_8049D698;
 extern float lbl_8049E980;
 extern float lbl_8049E988;
-extern M2C_UNK lbl_8049E990;
+__declspec(section ".sdata2") extern const f32 lbl_8049E990[];
 
 f32 Atan2FIdx__Q24nw4r4mathFff(f32 farg0, f32 farg1);
 f32 CosFIdx__Q24nw4r4mathFf(f32 farg0);
@@ -72,7 +72,7 @@ f32 fn_80040740(s8 *arg0, f32 *arg1, s8 *arg2);
 void fn_80040B74(void);
 void fn_80040D08(s8 *arg0, f32 *arg1);
 void fn_80040E60(s8 *arg0, f32 *arg1, s32 arg2);
-f32 fn_80041224(f32 *arg0, f32 *arg1, f32 *arg2, f32 farg0);
+void fn_80041224(f32 *arg0, f32 *arg1, f32 *arg2, f32 farg0);
 f32 fn_80041264(s32 arg0, s32 arg1, f32 farg0, f32 farg1);
 f32 fn_80041290(f32 farg0);
 f32 fn_800412A0(f32 farg0);
@@ -1294,25 +1294,10 @@ asm void fn_80040E60(s8 *arg0, f32 *arg1, s32 arg2) {
     blr
 }
 
-// asm_to_cpp: fn_80041224
-asm f32 fn_80041224(f32 *arg0, f32 *arg1, f32 *arg2, f32 farg0) {
-    nofralloc
-    la r6, lbl_8049E990
-    lfs f0, 0x10(r6)
-    fsubs f3, f0, f1
-    lfs f0, 0x0(r4)
-    fmuls f2, f1, f0
-    lfs f0, 0x0(r5)
-    fmuls f0, f3, f0
-    fadds f0, f2, f0
-    stfs f0, 0x0(r3)
-    lfs f0, 0x4(r4)
-    fmuls f1, f1, f0
-    lfs f0, 0x4(r5)
-    fmuls f0, f3, f0
-    fadds f0, f1, f0
-    stfs f0, 0x4(r3)
-    blr
+void fn_80041224(f32 *arg0, f32 *arg1, f32 *arg2, f32 farg0) {
+    f32 inv = lbl_8049E990[4] - farg0;
+    arg0[0] = farg0 * arg1[0] + inv * arg2[0];
+    arg0[1] = farg0 * arg1[1] + inv * arg2[1];
 }
 
 } // extern "C"

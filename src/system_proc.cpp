@@ -73,8 +73,8 @@ s32 fn_8006B79C();
 void fn_8006E26C(s32 *arg0);
 void fn_8006EA1C(s32 *arg0, s32 arg1, s32 arg2);
 void fn_8006EAFC(s8 *arg0);
-s16 fn_8006EB7C(s32 arg0);
-s16 fn_8006EBB4(s8 *arg0);
+s32 fn_8006EB7C(s8 *arg0);
+s32 fn_8006EBB4(s8 *arg0);
 void fn_8006EBF0(s8 *arg0, s32 *arg1, s32 *arg2);
 void fn_8006ECB8(s8 *arg0, s32 arg1);
 s32 fn_8006ED64(s8 *arg0);
@@ -6141,43 +6141,16 @@ lbl_8006EB70:
     blr
 }
 
-// asm_to_cpp: fn_8006EB7C
-asm s16 fn_8006EB7C(s32 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    addi r3, r3, 0x38
-    addi r4, r1, 0x8
-    li r5, 0x0
-    bl fn_8006EBF0
-    lwz r0, 0x8(r1)
-    slwi r0, r0, 16
-    srawi r3, r0, 16
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_8006EB7C(s8 *arg0) {
+    s32 sp8;
+    fn_8006EBF0(arg0 + 0x38, &sp8, 0);
+    return (s32)(sp8 << 16) >> 16;
 }
 
-// asm_to_cpp: fn_8006EBB4
-asm s16 fn_8006EBB4(s8 *arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    addi r3, r3, 0x38
-    li r4, 0x0
-    addi r5, r1, 0x8
-    bl fn_8006EBF0
-    lwz r3, 0x8(r1)
-    subi r0, r3, 0x4000
-    slwi r0, r0, 16
-    srawi r3, r0, 16
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_8006EBB4(s8 *arg0) {
+    s32 sp8;
+    fn_8006EBF0(arg0 + 0x38, 0, &sp8);
+    return (s32)((sp8 - 0x4000) << 16) >> 16;
 }
 
 // asm_to_cpp: fn_8006EBF0

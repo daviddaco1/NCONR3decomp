@@ -2215,21 +2215,19 @@ lbl_80070D60:
     blr
 }
 
-// asm_to_cpp: fn_80070DA0
-asm s32 fn_80070DA0(M2C_UNK *arg0, M2C_UNK *arg1, f32 *arg2, f32 *arg3, s32 arg4, f32 farg0) {
-    nofralloc
-    mulli r0, r7, 0xc
-    lfs f0, 0x84(r3)
-    stfsx f0, r4, r0
-    lfs f0, 0x4(r6)
-    add r4, r4, r0
-    stfs f0, 0x4(r4)
-    lfs f0, 0x8c(r3)
-    stfs f0, 0x8(r4)
-    slwi r0, r7, 2
-    stfsx f1, r5, r0
-    addi r3, r7, 0x1
-    blr
+struct Vec3_80070DA0 {
+    f32 x, y, z;
+};
+
+s32 fn_80070DA0(M2C_UNK *arg0, M2C_UNK *arg1, f32 *arg2, f32 *arg3, s32 arg4, f32 farg0) {
+    s32 offset = arg4 * 12;
+    *(f32 *)((u8 *)arg1 + offset) = *(f32 *)((s8 *)arg0 + 0x84);
+    f32 y = arg3[1];
+    Vec3_80070DA0 *dst = (Vec3_80070DA0 *)((u8 *)arg1 + offset);
+    dst->y = y;
+    dst->z = *(f32 *)((s8 *)arg0 + 0x8C);
+    arg2[arg4] = farg0;
+    return arg4 + 1;
 }
 
 // asm_to_cpp: fn_80070DD0

@@ -1148,39 +1148,37 @@ lbl_8005E2C0:
     blr
 }
 
-// asm_to_cpp: fn_8005E2CC
-asm s8 * fn_8005E2CC(u32 arg0) {
-    nofralloc
-    cmplwi r3, 0x18
-    bgt lbl_8005E2EC
-    lis r4, lbl_803906E0@ha
-    addi r4, r4, lbl_803906E0@l
-    slwi r0, r3, 3
-    add r3, r4, r0
-    lwz r3, 0x4(r3)
-    blr
-lbl_8005E2EC:
-    li r3, 0x0
-    blr
+s8 * fn_8005E2CC(u32 arg0) {
+    if (arg0 <= 0x18) {
+        return *(s8 **)((s8 *)lbl_803906E0 + arg0 * 8 + 4);
+    }
+    return 0;
 }
 
-// asm_to_cpp: fn_8005E4A4
-asm s32 * fn_8005E4A4(s8 *arg0) {
-    nofralloc
-    lwz r4, 0x3908(r3)
-lbl_8005E4A8:
-    cmpwi r4, 0x0
-    beq lbl_8005E4CC
-    lwz r3, 0x0(r4)
-    lwz r0, 0x0(r3)
-    rlwinm r0, r0, 0, 28, 28
-    cmpwi r0, 0x0
-    bnelr
-    lwz r4, 0x4(r4)
-    b lbl_8005E4A8
-lbl_8005E4CC:
-    li r3, 0x0
-    blr
+struct Node_8005E4A4 {
+    void *item;
+    Node_8005E4A4 *next;
+};
+
+struct Node2_8005E520 {
+    void *item;
+    u8 pad[4];
+    Node2_8005E520 *next;
+};
+
+s32 * fn_8005E4A4(s8 *arg0) {
+    Node_8005E4A4 *node = *(Node_8005E4A4 **)(arg0 + 0x3908);
+    for (; ; node = node->next) {
+        void *item;
+        if (node == 0) {
+            break;
+        }
+        item = node->item;
+        if (*(u32 *)item & 8) {
+            return (s32 *)item;
+        }
+    }
+    return 0;
 }
 
 // asm_to_cpp: fn_8005E4D4
@@ -1211,55 +1209,36 @@ lbl_8005E518:
     blr
 }
 
-// asm_to_cpp: fn_8005E520
-asm s8 * fn_8005E520(s8 *arg0) {
-    nofralloc
-    lwz r3, 0x3908(r3)
-    lwz r4, 0x8(r3)
-    b lbl_8005E544
-lbl_8005E52C:
-    lwz r3, 0x0(r4)
-    lwz r0, 0x70(r3)
-    clrlwi r0, r0, 31
-    cmpwi r0, 0x0
-    bne lbl_8005E54C
-    lwz r4, 0x8(r4)
-lbl_8005E544:
-    cmpwi r4, 0x0
-    bne lbl_8005E52C
-lbl_8005E54C:
-    cmpwi r4, 0x0
-    beq lbl_8005E55C
-    lwz r3, 0x0(r4)
-    blr
-lbl_8005E55C:
-    li r3, 0x0
-    blr
+s8 * fn_8005E520(s8 *arg0) {
+    Node2_8005E520 *head = *(Node2_8005E520 **)(arg0 + 0x3908);
+    Node2_8005E520 *node = head->next;
+    while (node != 0) {
+        s8 *item = (s8 *)node->item;
+        if (*(u32 *)(item + 0x70) & 1) {
+            break;
+        }
+        node = node->next;
+    }
+    if (node != 0) {
+        return (s8 *)node->item;
+    }
+    return 0;
 }
 
-// asm_to_cpp: fn_8005E564
-asm s8 * fn_8005E564(s8 *arg0, u32 arg1) {
-    nofralloc
-    lwz r3, 0x3908(r3)
-    lwz r5, 0x8(r3)
-    b lbl_8005E584
-lbl_8005E570:
-    lwz r3, 0x0(r5)
-    lwz r0, 0x18(r3)
-    cmplw r0, r4
-    beq lbl_8005E58C
-    lwz r5, 0x8(r5)
-lbl_8005E584:
-    cmpwi r5, 0x0
-    bne lbl_8005E570
-lbl_8005E58C:
-    cmpwi r5, 0x0
-    beq lbl_8005E59C
-    lwz r3, 0x0(r5)
-    blr
-lbl_8005E59C:
-    li r3, 0x0
-    blr
+s8 * fn_8005E564(s8 *arg0, u32 arg1) {
+    Node2_8005E520 *head = *(Node2_8005E520 **)(arg0 + 0x3908);
+    Node2_8005E520 *node = head->next;
+    while (node != 0) {
+        s8 *item = (s8 *)node->item;
+        if (*(u32 *)(item + 0x18) == arg1) {
+            break;
+        }
+        node = node->next;
+    }
+    if (node != 0) {
+        return (s8 *)node->item;
+    }
+    return 0;
 }
 
 // asm_to_cpp: fn_8005E5AC

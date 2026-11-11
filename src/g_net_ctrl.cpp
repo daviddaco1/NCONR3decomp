@@ -105,7 +105,7 @@ s32 fn_800AD6DC(void);
 s32 fn_800AD750(s32 arg0);
 s32 fn_800AD7DC(void);
 s32 fn_800ADCCC(u8 *arg0);
-s32 fn_800ADDB8(void);
+void fn_800ADDB8(void);
 s32 fn_800ADDF0(void);
 void fn_800ADE80(s32 *arg0, s32 *arg1, s32 arg2);
 void fn_800ADF1C(s32 *arg0, s32 arg1);
@@ -3155,24 +3155,11 @@ lbl_800ADDA4:
     blr
 }
 
-// asm_to_cpp: fn_800ADDB8
-asm s32 fn_800ADDB8(void) {
-    nofralloc
-    lis r3, lbl_8034D3D8@ha
-    addi r5, r3, lbl_8034D3D8@l
-    lis r3, lbl_8034D3E8@ha
-    addi r3, r3, lbl_8034D3E8@l
-    li r0, 0x10
-    mtctr r0
-lbl_800ADDD0:
-    lbz r4, 0x0(r5)
-    lbz r0, 0x0(r3)
-    xor r0, r4, r0
-    stb r0, 0x0(r5)
-    addi r3, r3, 0x1
-    addi r5, r5, 0x1
-    bdnz lbl_800ADDD0
-    blr
+void fn_800ADDB8(void) {
+    s32 i;
+    for (i = 0; i < 16; i++) {
+        lbl_8034D3D8[i] ^= lbl_8034D3E8[i];
+    }
 }
 
 // asm_to_cpp: fn_800ADDF0

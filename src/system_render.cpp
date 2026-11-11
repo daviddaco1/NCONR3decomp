@@ -21,8 +21,8 @@ extern u8 lbl_803C1A40[];
 extern float lbl_8049EE40;
 __declspec(section ".sdata2") extern const f32 lbl_8049EE48[];
 
-f32 CosFIdx__Q24nw4r4mathFf(f32 farg0, s32 arg1);
-f32 SinFIdx__Q24nw4r4mathFf(f32 farg0, s32 arg1);
+f32 CosFIdx__Q24nw4r4mathFf(f32 farg0);
+f32 SinFIdx__Q24nw4r4mathFf(f32 farg0);
 s32 _restgpr_28();
 s32 _restgpr_29();
 s32 _savegpr_28();
@@ -43,7 +43,7 @@ void fn_80067B60(s8 *arg0);
 s32 fn_80067C94(s8 *arg0);
 void fn_80067F84(s8 *arg0);
 void fn_800680C8(s8 *arg0);
-M2C_UNK fn_80068524(s32 arg0_x);
+M2C_UNK fn_80068524(s8 *arg0);
 f32 fn_8006854C(s8 *arg0);
 s32 fn_800685D0(s8 *arg0);
 f32 fn_80068718(f32 *arg0);
@@ -57,8 +57,8 @@ M2C_UNK fn_80069248(s8 *arg0, s32 *arg1);
 s32 fn_800692CC(s8 *arg0);
 void fn_80069410(s8 *arg0, f32 farg0);
 f32 fn_800694C0(u16 arg0);
-M2C_UNK fn_800694F0(u16 arg0);
-M2C_UNK fn_80069524(u16 arg0, s32 arg1);
+f32 fn_800694F0(u16 arg0);
+f32 fn_80069524(u16 arg0);
 void fn_80069558(s32 arg0, u16 *arg1);
 f32 fn_80069588(void *arg0);
 void fn_800868F4(s32 arg0);
@@ -812,20 +812,12 @@ lbl_800684E8:
     blr
 }
 
-// asm_to_cpp: fn_80068524
-asm M2C_UNK fn_80068524(s32 arg0_x) {
-    nofralloc
-    mr r5, r3
-    lwz r4, 0x3854(r3)
-    cmpwi r4, 0x0
-    beq lbl_80068540
-    addi r3, r3, 0x3894
-    addi r4, r4, 0x84
-    b fn_80019DAC
-lbl_80068540:
-    addi r3, r3, 0x3894
-    addi r4, r5, 0x84
-    b fn_80019DAC
+M2C_UNK fn_80068524(s8 *arg0) {
+    s8 *src = *(s8 **)(arg0 + 0x3854);
+    if (src != 0) {
+        return fn_80019DAC(arg0 + 0x3894, (f32 *)(src + 0x84));
+    }
+    return fn_80019DAC(arg0 + 0x3894, (f32 *)(arg0 + 0x84));
 }
 
 // asm_to_cpp: fn_8006854C
@@ -1872,57 +1864,16 @@ lbl_800693E0:
     blr
 }
 
-// asm_to_cpp: fn_800694F0
-asm M2C_UNK fn_800694F0(u16 arg0) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    clrlwi r3, r3, 16
-    bl fn_800694C0
-    la r3, lbl_8049EE48
-    lfs f0, 0x1c(r3)
-    fmuls f1, f0, f1
-    bl CosFIdx__Q24nw4r4mathFf
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+f32 fn_800694F0(u16 arg0) {
+    return CosFIdx__Q24nw4r4mathFf(lbl_8049EE48[7] * fn_800694C0(arg0));
 }
 
-// asm_to_cpp: fn_80069524
-asm M2C_UNK fn_80069524(u16 arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    clrlwi r3, r3, 16
-    bl fn_800694C0
-    la r3, lbl_8049EE48
-    lfs f0, 0x1c(r3)
-    fmuls f1, f0, f1
-    bl SinFIdx__Q24nw4r4mathFf
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+f32 fn_80069524(u16 arg0) {
+    return SinFIdx__Q24nw4r4mathFf(lbl_8049EE48[7] * fn_800694C0(arg0));
 }
 
-// asm_to_cpp: fn_80069558
-asm void fn_80069558(s32 arg0, u16 *arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    mr r31, r4
-    bl fn_80069588
-    stfs f1, 0x0(r31)
-    lwz r31, 0xc(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+void fn_80069558(s32 arg0, u16 *arg1) {
+    *(f32 *)arg1 = fn_80069588((void *)arg0);
 }
 
 f32 fn_80069588(register void *arg0) {

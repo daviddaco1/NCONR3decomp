@@ -475,26 +475,18 @@ lbl_80113338:
     blr
 }
 
-// asm_to_cpp: fn_80113348
-asm s32 fn_80113348(u32 arg0, s32 arg1) {
-    nofralloc
-    lis r5, lbl_803AA740@ha
-    addi r5, r5, lbl_803AA740@l
-    li r0, 0x4
-    mtctr r0
-lbl_80113358:
-    lwz r0, 0x0(r5)
-    cmplw r0, r3
-    bne lbl_80113374
-    slwi r0, r4, 2
-    add r3, r5, r0
-    lwz r3, 0x4(r3)
-    blr
-lbl_80113374:
-    addi r5, r5, 0x40
-    bdnz lbl_80113358
-    li r3, 0x0
-    blr
+s32 fn_80113348(u32 arg0, s32 arg1) {
+    struct EftEntry_80113348 {
+        u32 id;
+        u32 values[15];
+    } *entry = (struct EftEntry_80113348 *)lbl_803AA740;
+    int i;
+    for (i = 0; i < 4; i++, entry++) {
+        if (entry->id == arg0) {
+            return entry->values[arg1];
+        }
+    }
+    return 0;
 }
 
 // asm_to_cpp: fn_801133E4

@@ -2559,21 +2559,10 @@ lbl_8005CE74:
     blr
 }
 
-// asm_to_cpp: fn_8005CEB8
-asm u32 fn_8005CEB8(void) {
-    nofralloc
-    lwz r3, lbl_8049D4F4
-    addi r0, r3, 0x1
-    stw r0, lbl_8049D4F4
-    lwz r4, lbl_8049D4F0
-    lis r3, 0x3
-    addi r0, r3, 0x43fd
-    mullw r3, r4, r0
-    addis r3, r3, 0x27
-    subi r0, r3, 0x613d
-    stw r0, lbl_8049D4F0
-    srwi r3, r0, 16
-    blr
+u32 fn_8005CEB8(void) {
+    lbl_8049D4F4++;
+    lbl_8049D4F0 = lbl_8049D4F0 * 214013 + 2531011;
+    return lbl_8049D4F0 >> 16;
 }
 
 // asm_to_cpp: fn_8005CF00

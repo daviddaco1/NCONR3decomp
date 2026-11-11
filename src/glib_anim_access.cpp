@@ -1649,23 +1649,14 @@ lbl_8002AC7C:
     blr
 }
 
-// asm_to_cpp: fn_8002AE44
-asm f32 fn_8002AE44(f32 farg0, f32 farg1, f32 farg2) {
-    nofralloc
-    fcmpo cr0, f1, f3
-    ble lbl_8002AE50
-    b lbl_8002AE64
-lbl_8002AE50:
-    fcmpo cr0, f1, f2
-    bge lbl_8002AE5C
-    b lbl_8002AE60
-lbl_8002AE5C:
-    fmr f2, f1
-lbl_8002AE60:
-    fmr f3, f2
-lbl_8002AE64:
-    fmr f1, f3
-    blr
+f32 fn_8002AE44(f32 val, f32 min, f32 max) {
+    if (val <= max) {
+        if (val >= min) {
+            min = val;
+        }
+        max = min;
+    }
+    return max;
 }
 
 } // extern "C"

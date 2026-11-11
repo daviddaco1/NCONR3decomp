@@ -62,7 +62,7 @@ void fn_8003D3F4(s32 arg0);
 void fn_8003D448(s32 arg0, s32 arg1);
 void fn_8003D4A4(s32 arg0, s32 arg1);
 s32 fn_8003D500(s32 arg0, s32 arg1);
-void fn_8003D540(void);
+s32 * fn_8003D540(void);
 s32 fn_8003D544(s32 arg0);
 void fn_8003D578(s32 arg0);
 s32 fn_8003D57C(s8 *arg0, f32 farg0, f32 farg1);
@@ -159,8 +159,11 @@ void fn_8003D4A4(s32 arg0, s32 arg1) {
     }
 }
 
-void fn_8003D540(void) {
+#pragma dont_inline on
+s32 * fn_8003D540(void) {
+    return 0;
 }
+#pragma dont_inline reset
 
 s32 fn_8003D544(s32 arg0) {
     fn_8003D500((s32) (arg0), (s32) (-1));
@@ -255,25 +258,10 @@ lbl_8003D230:
     blr
 }
 
-// asm_to_cpp: fn_8003D500
-asm s32 fn_8003D500(s32 arg0, s32 arg1) {
-    nofralloc
-    stwu r1, -0x10(r1)
-    mflr r0
-    stw r0, 0x14(r1)
-    stw r31, 0xc(r1)
-    stw r30, 0x8(r1)
-    mr r30, r3
-    mr r31, r4
-    bl fn_8003D540
-    stw r31, 0x0(r3)
-    mr r3, r30
-    lwz r31, 0xc(r1)
-    lwz r30, 0x8(r1)
-    lwz r0, 0x14(r1)
-    mtlr r0
-    addi r1, r1, 0x10
-    blr
+s32 fn_8003D500(s32 arg0, s32 arg1) {
+    s32 *ptr = fn_8003D540();
+    *ptr = arg1;
+    return arg0;
 }
 
 // asm_to_cpp: fn_8003D5A4

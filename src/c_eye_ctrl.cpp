@@ -123,7 +123,7 @@ s32 fn_800A4E88(s32 arg0);
 s32 fn_800A4EE4(s32 arg0);
 s32 fn_800A4F40(void);
 s32 fn_800A4F48(s32 arg0, u32 *arg1);
-M2C_UNK fn_800A4FD0(s32 arg0_x, s32 arg1_x);
+s32 fn_800A4FD0(s32 arg0, s8 *arg1);
 void fn_800A5008(s32 arg0, s32 arg1);
 f32 fn_800A5030(f32 *arg0, f32 *arg1, f32 farg0, f32 farg1);
 s8 * fn_80122824(s32 arg0, s32 arg1, s32 arg2);
@@ -4214,25 +4214,16 @@ lbl_800A4FC0:
     blr
 }
 
-// asm_to_cpp: fn_800A4FD0
-asm M2C_UNK fn_800A4FD0(s32 arg0_x, s32 arg1_x) {
-    nofralloc
-    mr r0, r3
-    mr r5, r4
-    cmpwi r3, 0x9
-    blt lbl_800A4FE8
-    li r3, 0x0
-    blr
-lbl_800A4FE8:
-    cmpwi r3, 0x8
-    bne lbl_800A4FF8
-    li r3, 0x0
-    b fn_8003FADC
-lbl_800A4FF8:
-    li r3, 0x0
-    mr r4, r0
-    b fn_8003FA5C
-    blr
+s32 fn_800A4FD0(s32 arg0, s8 *arg1) {
+    s32 id = arg0;
+    s8 *ptr = arg1;
+    if (arg0 >= 9) {
+        return 0;
+    }
+    if (arg0 == 8) {
+        return fn_8003FADC(0, ptr);
+    }
+    return fn_8003FA5C(0, id, (s32 *)ptr);
 }
 
 // asm_to_cpp: fn_800A5030
