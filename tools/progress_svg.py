@@ -68,8 +68,7 @@ def color(unit):
     total = int(m.get("total_code", 0))
     if total <= 0:
         return "#30363d"
-    asm_code = sum(int(f.get("size", 0)) for f in asm_functions(unit))
-    real_code = int(m.get("matched_code", 0)) - asm_code
+    real_code = int(m.get("matched_code", 0))
     pct = max(0.0, 100.0 * real_code / total)
     if pct >= 100.0:
         return "#1fae3a"
@@ -78,23 +77,6 @@ def color(unit):
     # rojo (0%) -> amarillo (99%)
     g = int(60 + 160 * pct / 100)
     return f"#d6{g:02x}2a"
-
-
-def asm_functions(unit):
-    """Funciones asm matcheadas de una unidad: todas si es AsmObject, las marcadas
-    `// asm_to_cpp:` si es un fuente mixto (mismo criterio que configure.py progress)."""
-    meta = unit.get("metadata", {})
-    if "asm" in meta.get("progress_categories", []):
-        marked = None
-    else:
-        path = Path(meta.get("source_path", ""))
-        if not path.is_file():
-            return []
-        marked = set(re.findall(r"^// asm_to_cpp: (\S+)$", path.read_text(errors="replace"), re.M))
-    return [
-        f for f in unit.get("functions", [])
-        if (marked is None or f["name"] in marked) and f.get("fuzzy_match_percent", 0) == 100
-    ]
 
 
 def main():
@@ -108,14 +90,12 @@ def main():
     rects = squarify(units, 0, HEADER, W, H - HEADER)
 
     m = report["measures"]
-    asm = [f for u in report["units"] for f in asm_functions(u)]
-    asm_code = sum(int(f.get("size", 0)) for f in asm)
     total = int(m["total_code"])
-    real_c = int(m["matched_code"]) - asm_code
-    real_fns = int(m["matched_functions"]) - len(asm)
+    matched_c = int(m.get("matched_code", 0))
+    matched_fns = int(m.get("matched_functions", 0))
     title = (
-        f"Progress: {100 * real_c / total:.2f}% "
-        f"({real_fns}/{m['total_functions']} functions)"
+        f"Progress: {100 * matched_c / total:.2f}% "
+        f"({matched_fns}/{m['total_functions']} functions)"
     )
 
     parts = [

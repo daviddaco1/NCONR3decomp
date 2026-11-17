@@ -32,8 +32,6 @@ def main():
             continue  # auto_* de datos
         base, src = u.get('base_path'), md.get('source_path')
         if not base:
-            if 'asm' not in md['progress_categories']:  # AsmObject: enlaza el .o original
-                err(f'SIN FUENTE   {u["name"]}')
             continue
         used.add(os.path.normcase(os.path.normpath(base)))
         stem = lambda p: os.path.splitext(os.path.basename(p))[0].lower()

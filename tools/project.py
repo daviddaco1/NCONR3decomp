@@ -2046,19 +2046,12 @@ def calculate_progress(config: ProjectConfig) -> None:
         total_units = measures.get("total_units", 0)
         complete_units = measures.get("complete_units", 0)
 
-        # asm_* only present when progress_report_hook adds them
-        asm = "asm_code_percent" in measures
-        asm_pct = f", {measures['asm_code_percent']:.2f}% asm" if asm else ""
         progress_print(
-            f"  {name}: {fuzzy_match_percent:.2f}% fuzzy, {matched_code_percent:.2f}% matched, {complete_code_percent:.2f}% linked{asm_pct} ({complete_units} / {total_units} files)"
+            f"  {name}: {fuzzy_match_percent:.2f}% fuzzy, {matched_code_percent:.2f}% matched, {complete_code_percent:.2f}% linked ({complete_units} / {total_units} files)"
         )
         progress_print(
             f"    Code: {matched_code} / {total_code} bytes ({matched_functions} / {total_functions} functions)"
         )
-        if asm:
-            progress_print(
-                f"    Asm: {measures.get('asm_code', 0)} / {total_code} bytes ({measures.get('asm_functions', 0)} / {total_functions} functions)"
-            )
         progress_print(
             f"    Data: {matched_data} / {total_data} bytes ({matched_data_percent:.2f}%)"
         )

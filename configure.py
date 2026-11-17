@@ -476,11 +476,9 @@ NonMatching = False               # Object does not match and should not be link
 Equivalent = config.non_matching  # Object should be linked when configured with --non-matching
 
 
-# Objeto sin C descompilado todavia: no tiene fuente y se enlaza el .o original
-# extraido por dtk. Cuenta en la categoria "asm" (pendiente) para que
-# "game"/"sdk" midan solo C real.
+# Helper para objetos pendientes de descompilar (sin fuente aun, dtk enlaza el .o original)
 def AsmObject(name: str, **options: Any) -> Object:
-    return Object(NonMatching, name, progress_category="asm", **options)
+    return Object(NonMatching, name, **options)
 
 
 # Object is only matching for specific versions
@@ -503,7 +501,7 @@ config.libs = [
             Object(NonMatching, "Runtime.PPCEABI.H/__start.c"),
             Object(NonMatching, "Runtime.PPCEABI.H/__ppc_eabi_init.c"),
             Object(NonMatching, "Runtime.PPCEABI.H/exit.c"),
-            Object(NonMatching, "Runtime.PPCEABI.H/__va_arg.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/Runtime/__va_arg.c", cflags=cflags_mw_runtime, mw_version="Wii/1.0"),
+            Object(Matching, "Runtime.PPCEABI.H/__va_arg.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/Runtime/__va_arg.c", cflags=cflags_mw_runtime, mw_version="Wii/1.0"),
             Object(NonMatching, "Runtime.PPCEABI.H/NMWException.cp", cflags=cflags_mw_runtime_eh, mw_version="Wii/1.0"),
             Object(NonMatching, "Runtime.PPCEABI.H/ptmf.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/Runtime/ptmf.c", cflags=cflags_mw_runtime, mw_version="Wii/1.0"),
             Object(NonMatching, "Runtime.PPCEABI.H/runtime.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/Runtime/runtime.c", cflags=cflags_mw_runtime, mw_version="Wii/1.0"),
@@ -553,25 +551,25 @@ config.libs = [
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/k_tan.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/k_tan.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/s_atan.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_atan.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/s_ceil.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_ceil.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
-            Object(NonMatching, "MSL_C.PPCEABI.bare.H/s_copysign.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_copysign.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
+            Object(Matching, "MSL_C.PPCEABI.bare.H/s_copysign.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_copysign.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/s_cos.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_cos.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/s_floor.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_floor.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/s_frexp.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_frexp.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/s_ldexp.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_ldexp.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
-            Object(NonMatching, "MSL_C.PPCEABI.bare.H/s_modf.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_modf.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
+            Object(Matching, "MSL_C.PPCEABI.bare.H/s_modf.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_modf.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/s_sin.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_sin.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/s_tan.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/s_tan.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
-            Object(NonMatching, "MSL_C.PPCEABI.bare.H/w_acos.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_acos.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
-            Object(NonMatching, "MSL_C.PPCEABI.bare.H/w_asin.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_asin.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
-            Object(NonMatching, "MSL_C.PPCEABI.bare.H/w_atan2.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_atan2.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
-            Object(NonMatching, "MSL_C.PPCEABI.bare.H/w_fmod.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_fmod.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
+            Object(Matching, "MSL_C.PPCEABI.bare.H/w_acos.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_acos.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
+            Object(Matching, "MSL_C.PPCEABI.bare.H/w_asin.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_asin.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
+            Object(Matching, "MSL_C.PPCEABI.bare.H/w_atan2.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_atan2.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
+            Object(Matching, "MSL_C.PPCEABI.bare.H/w_fmod.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_fmod.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/w_log.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_log.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
-            Object(NonMatching, "MSL_C.PPCEABI.bare.H/w_log10.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
+            Object(Matching, "MSL_C.PPCEABI.bare.H/w_log10.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/e_sqrt.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/e_sqrt.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/unk_801A3278.c", source="MSL_C.PPCEABI.bare.H/unk_801A3278.c", extra_cflags=["-fp_contract off", "-func_align 16", "-relax_pointers"]),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/w_pow.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_pow.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/math_ppc.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/PPC_EABI/math_ppc.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
-            Object(NonMatching, "MSL_C.PPCEABI.bare.H/w_sqrt.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_sqrt.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
+            Object(Matching, "MSL_C.PPCEABI.bare.H/w_sqrt.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MSL_C/MSL_Common_Embedded/Math/Double_precision/w_sqrt.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
             Object(NonMatching, "MSL_C.PPCEABI.bare.H/extras.c", cflags=cflags_mslc, mw_version="Wii/1.0"),
         ],
     },
@@ -581,26 +579,26 @@ config.libs = [
         "cflags": cflags_runtime,
         "progress_category": "sdk",
         "objects": [
-            Object(NonMatching, "TRK_MINNOW_DOLPHIN/targsupp.s"),
-            Object(NonMatching, "TRK_MINNOW_DOLPHIN/__exception.s"),
+            Object(Matching, "TRK_MINNOW_DOLPHIN/targsupp.s"),
+            Object(Matching, "TRK_MINNOW_DOLPHIN/__exception.s"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/main.c", cflags=cflags_trk, mw_version="Wii/1.0a", extra_cflags=["-i libs/xenoblade/PowerPC_EABI_Support/src/MetroTRK/custconn"]),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/MWCriticalSection_gc.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/custconn/MWCriticalSection_gc.cpp", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/CircleBuffer.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/custconn/CircleBuffer.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
-            Object(NonMatching, "TRK_MINNOW_DOLPHIN/flush_cache.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/flush_cache.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
+            Object(Matching, "TRK_MINNOW_DOLPHIN/flush_cache.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/flush_cache.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/main_TRK.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/main_TRK.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/mainloop.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/mainloop.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/mem_TRK.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/mem_TRK.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/dispatch.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/dispatch.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/dolphin_trk.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/dolphin_trk.c", cflags=cflags_trk, mw_version="Wii/1.0"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/dolphin_trk_glue.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/dolphin_trk_glue.c", cflags=cflags_trk, mw_version="Wii/1.0"),
-            Object(NonMatching, "TRK_MINNOW_DOLPHIN/notify.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/notify.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
+            Object(Matching, "TRK_MINNOW_DOLPHIN/notify.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/notify.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/nubevent.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/nubevent.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/nubinit.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/nubinit.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/serpoll.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/serpoll.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
-            Object(NonMatching, "TRK_MINNOW_DOLPHIN/string_TRK.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/string_TRK.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
+            Object(Matching, "TRK_MINNOW_DOLPHIN/string_TRK.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/string_TRK.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/support.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/support.c", cflags=cflags_trk, mw_version="Wii/1.0"),
-            Object(NonMatching, "TRK_MINNOW_DOLPHIN/targcont.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/targcont.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
-            Object(NonMatching, "TRK_MINNOW_DOLPHIN/mpc_7xx_603e.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/mpc_7xx_603e.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
+            Object(Matching, "TRK_MINNOW_DOLPHIN/targcont.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/targcont.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
+            Object(Matching, "TRK_MINNOW_DOLPHIN/mpc_7xx_603e.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/mpc_7xx_603e.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/msg.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/msg.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/msgbuf.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/msgbuf.c", cflags=cflags_trk, mw_version="Wii/1.0a"),
             Object(NonMatching, "TRK_MINNOW_DOLPHIN/msghndlr.c", src_dir="libs", source="xenoblade/PowerPC_EABI_Support/src/MetroTRK/msghndlr.c", cflags=cflags_trk, mw_version="Wii/1.0"),
@@ -837,7 +835,7 @@ config.libs = [
             Object(NonMatching, "revolution/si/SIBios.c", cflags=cflags_petari_sdk, mw_version="GC/3.0a5.2", extra_cflags=["-lang=c99", "-func_align 4", "-DREVOLUTION", "-relax_pointers"]),
             Object(NonMatching, "revolution/usb/usb.c", cflags=cflags_sdk, mw_version="GC/3.0a5.2", extra_cflags=["-i libs/xenoblade/RVL_SDK/src/revolution/usb"]),
             Object(NonMatching, "revolution/ndevexi2ad/DebuggerDriver.c", cflags=cflags_sdk, mw_version="Wii/1.0", extra_cflags=["-relax_pointers", "-i libs/forecast/include", "-i libs/forecast/include/MSL_C/include"]),
-            Object(NonMatching, "revolution/ndevexi2ad/exi2.c", cflags=cflags_forecast_rvl, mw_version="GC/3.0a5.2", extra_cflags=["-i libs/forecast/src/revolution/NdevExi2AD"]),
+            Object(Matching, "revolution/ndevexi2ad/exi2.c", cflags=cflags_forecast_rvl, mw_version="GC/3.0a5.2", extra_cflags=["-i libs/forecast/src/revolution/NdevExi2AD"]),
             AsmObject("revolution/vi/i2c.c"),
             Object(NonMatching, "revolution/wpad/WPADHIDParser.c", source="revolution/wpad/WPADHIDParser.c", extra_cflags=["-fp_contract off", "-func_align 16", "-relax_pointers"]),
             Object(NonMatching, "revolution/wpad/WPADEncrypt.c", src_dir="libs", source="forecast/src/revolution/WPAD/WPADEncrypt.c", cflags=cflags_bte, mw_version="GC/3.0a5.2"),
@@ -866,7 +864,7 @@ config.libs = [
             Object(NonMatching, "revolution/hbm/nw4hbm/lyt/lyt_layout.cpp", cflags=cflags_hbm, mw_version="GC/3.0a5.2", extra_cflags=["-i libs/xenoblade/RVL_SDK/src/revolution/hbm/nw4hbm/lyt", "-func_align 4"]),
             Object(NonMatching, "revolution/hbm/nw4hbm/lyt/lyt_pane.cpp", cflags=cflags_hbm, mw_version="GC/3.0a5.2", extra_cflags=["-sdata2 0", "-i libs/xenoblade/RVL_SDK/src/revolution/hbm/nw4hbm/lyt", "-func_align 4"]),
             Object(NonMatching, "revolution/hbm/nw4hbm/lyt/lyt_picture.cpp", cflags=cflags_hbm, mw_version="Wii/1.0", extra_cflags=["-i include"]),
-            Object(NonMatching, "revolution/hbm/nw4hbm/ut/ut_CharStrmReader.cpp", cflags=cflags_hbm, mw_version="GC/3.0a5.2", extra_cflags=["-i libs/xenoblade/RVL_SDK/src/revolution/hbm/nw4hbm/ut", "-func_align 4"]),
+            Object(Matching, "revolution/hbm/nw4hbm/ut/ut_CharStrmReader.cpp", cflags=cflags_hbm, mw_version="GC/3.0a5.2", extra_cflags=["-i libs/xenoblade/RVL_SDK/src/revolution/hbm/nw4hbm/ut", "-func_align 4"]),
             Object(NonMatching, "revolution/homebuttonlib/nw4hbm/ut/ut_list.cpp", cflags=cflags_hbm, mw_version="GC/3.0a5.2", extra_cflags=["-i libs/xenoblade/RVL_SDK/src/revolution/hbm/nw4hbm/ut", "-func_align 4"]),
             Object(NonMatching, "revolution/homebuttonlib/nw4hbm/ut/ut_ResFontBase.cpp", cflags=cflags_hbm, mw_version="GC/3.0a5.2", extra_cflags=["-i libs/xenoblade/RVL_SDK/src/revolution/hbm/nw4hbm/ut", "-func_align 4"]),
             Object(NonMatching, "revolution/hbm/syn.c", source="revolution/hbm/syn.c", extra_cflags=["-fp_contract off", "-func_align 16", "-relax_pointers"]),
@@ -964,13 +962,13 @@ config.libs = [
             Object(NonMatching, "nw4r/ef/drawstrategy/ef_drawpointstrategy.cpp", cflags=cflags_forecast_ef, mw_version="GC/3.0a5.2"),
             Object(NonMatching, "nw4r/ef/drawstrategy/ef_drawstripestrategy.cpp", cflags=cflags_forecast_ef, mw_version="GC/3.0a5.2"),
             Object(NonMatching, "nw4r/ef/drawstrategy/ef_drawsmoothstripestrategy.cpp", cflags=cflags_forecast_ef, mw_version="Wii/1.0", extra_cflags=["-i libs/forecast/src/nw4r/g3d/res"]),
-            Object(NonMatching, "nw4r/g3d/res/unk_801D41BC.cpp", source="nw4r/g3d/res/unk_801D41BC.c", extra_cflags=["-O4,p", "-fp_contract off", "-func_align 4"]),
+            Object(Matching, "nw4r/g3d/res/unk_801D41BC.cpp", source="nw4r/g3d/res/unk_801D41BC.c", extra_cflags=["-O4,p", "-fp_contract off", "-func_align 4"]),
             Object(NonMatching, "nw4r/g3d/res/unk_801D4798.cpp", cflags=cflags_forecast_ef, mw_version="GC/3.0a5.2", extra_cflags=["-i libs/forecast/src/nw4r/g3d/res"]),
             Object(NonMatching, "nw4r/g3d/res/unk_801D7300.cpp", cflags=cflags_nw4r, mw_version="GC/3.0a5.2", extra_cflags=["-i libs/xenoblade/nw4r/src/g3d/res"]),
             AsmObject("nw4r/g3d/unk_801D8A9C.cpp"),
             Object(NonMatching, "nw4r/g3d/platform/unk_801DF830.cpp", cflags=cflags_forecast_ef, mw_version="GC/3.0a5.2", extra_cflags=["-i libs/forecast/src/nw4r/g3d/platform"]),
             AsmObject("nw4r/g3d/unk_801E3330.cpp"),
-            Object(NonMatching, "nw4r/g3d/unk_801E6240.cpp", cflags=cflags_nw4r, mw_version="Wii/1.0", extra_cflags=["-i libs/xenoblade/nw4r/src/g3d"]),
+            Object(Matching, "nw4r/g3d/unk_801E6240.cpp", cflags=cflags_nw4r, mw_version="Wii/1.0", extra_cflags=["-i libs/xenoblade/nw4r/src/g3d"]),
             AsmObject("nw4r/g3d/unk_801E635C.cpp"),
             Object(NonMatching, "nw4r/g3d/unk_801E9BD4.cpp", cflags=cflags_nw4r, mw_version="GC/3.0a5.2", extra_cflags=["-i libs/xenoblade/nw4r/src/g3d/dcc"]),
             AsmObject("nw4r/g3d/unk_801EDA40.cpp"),
@@ -982,7 +980,7 @@ config.libs = [
             AsmObject("nw4r/lyt/unk_80201418.cpp"),
             AsmObject("nw4r/math/unk_802016BC.cpp"),
             AsmObject("nw4r/math/unk_802019BC.cpp"),
-            Object(NonMatching, "nw4r/math/unk_80201F08.cpp", cflags=cflags_nw4r, mw_version="GC/3.0a5.2"),
+            Object(Matching, "nw4r/math/unk_80201F08.cpp", cflags=cflags_nw4r, mw_version="GC/3.0a5.2"),
             # libs/xenoblade/nw4r/src/snd/snd_FxDelay.cpp no matchea (fase 1: el 100% venÃ­a de un .o asm viejo)
             Object(NonMatching, "nw4r/snd/snd_FxDelay.cpp", cflags=cflags_nw4r, mw_version="GC/3.0a5.2", extra_cflags=["-i libs/xenoblade/nw4r/src/snd"]),
             # libs/xenoblade/nw4r/src/snd/snd_FxChorus.cpp no matchea (fase 1: el 100% venÃ­a de un .o asm viejo)
@@ -995,7 +993,7 @@ config.libs = [
             Object(NonMatching, "nw4r/snd/unk_8021D104.cpp", cflags=cflags_forecast_ef, mw_version="GC/3.0a5.2", extra_cflags=["-i libs/forecast/src/nw4r/ef/drawstrategy"]),
             AsmObject("nw4r/snd/unk_802216D4.cpp"),
             AsmObject("nw4r/snd/unk_80222B20.cpp"),
-            Object(NonMatching, "nw4r/ut/unk_80222F68.cpp", cflags=cflags_nw4r, mw_version="GC/3.0a5.2"),
+            Object(Matching, "nw4r/ut/unk_80222F68.cpp", cflags=cflags_nw4r, mw_version="GC/3.0a5.2"),
             Object(NonMatching, "nw4r/ut/unk_802237BC.cpp", cflags=cflags_nw4r, mw_version="GC/3.0a5.2"),
             Object(NonMatching, "nw4r/ut/unk_80224404.cpp", cflags=cflags_nw4r, mw_version="GC/3.0a5.2"),
             Object(NonMatching, "nw4r/ut/unk_80224BAC.cpp", cflags=cflags_nw4r, mw_version="GC/3.0a5.2"),
@@ -1033,14 +1031,14 @@ config.libs = [
             Object(NonMatching, "revolution/bte/unk_802A3F58.c", cflags=cflags_forecast_rvl, mw_version="GC/3.0a5.2", extra_cflags=["-i libs/forecast/src/revolution/BTE/hci/src"]),
             Object(NonMatching, "revolution/bte/unk_802A45F4.c", cflags=cflags_petari_sdk, mw_version="GC/3.0a5.2", extra_cflags=["-i include/petari_sdk/bte_private", "-i include/petari_sdk/RVL_SDK/include/revolution/bte", "-lang=c99", "-func_align 4", "-DREVOLUTION", "-relax_pointers"]),
             Object(NonMatching, "revolution/bte/unk_802A52B0.c", source="revolution/bte/unk_802A52B0.c", extra_cflags=["-fp_contract off", "-func_align 16", "-relax_pointers"]),
-            Object(NonMatching, "revolution/bte/unk_802A59E8.c", cflags=cflags_forecast_rvl, mw_version="GC/3.0a5.2", extra_cflags=["-i libs/forecast/src/revolution/BTE/bta/sys"]),
+            Object(Matching, "revolution/bte/unk_802A59E8.c", cflags=cflags_forecast_rvl, mw_version="GC/3.0a5.2", extra_cflags=["-i libs/forecast/src/revolution/BTE/bta/sys"]),
             Object(NonMatching, "revolution/bte/unk_802A6134.c", source="revolution/bte/unk_802A6134.c", extra_cflags=["-fp_contract off", "-func_align 16", "-relax_pointers"]),
             Object(NonMatching, "revolution/bte/unk_802A8920.c", cflags=cflags_forecast_rvl, mw_version="GC/3.0a5.2", extra_cflags=["-i libs/forecast/src/revolution/BTE/bta/dm"]),
             Object(NonMatching, "revolution/bte/unk_802B1218.c", cflags=cflags_forecast_rvl, mw_version="GC/3.0a5", extra_cflags=["-i libs/forecast/src/revolution/BTE/stack/btm"]),
             Object(NonMatching, "revolution/bte/unk_802B6F60.c", source="revolution/bte/unk_802B6F60.c", extra_cflags=["-fp_contract off", "-func_align 16", "-relax_pointers"]),
             Object(NonMatching, "revolution/bte/unk_802BA98C.c", cflags=cflags_forecast_rvl, mw_version="GC/3.0a5.2", extra_cflags=["-i libs/forecast/src/revolution/BTE/stack/hid"]),
             Object(NonMatching, "revolution/bte/unk_802C3DE0.c", cflags=cflags_forecast_rvl, mw_version="GC/3.0a5.2", extra_cflags=["-i libs/forecast/src/revolution/BTE/stack/rfcomm"]),
-            Object(NonMatching, "revolution/dsp/unk_802CFC3C.c", cflags=cflags_petari_sdk, mw_version="GC/3.0a5.2", extra_cflags=["-lang=c99", "-func_align 4", "-DREVOLUTION", "-relax_pointers"]),
+            Object(Matching, "revolution/dsp/unk_802CFC3C.c", cflags=cflags_petari_sdk, mw_version="GC/3.0a5.2", extra_cflags=["-lang=c99", "-func_align 4", "-DREVOLUTION", "-relax_pointers"]),
             Object(NonMatching, "revolution/dvd/unk_802D5C34.c", source="revolution/dvd/unk_802D5C34.c", extra_cflags=["-fp_contract off", "-func_align 16", "-relax_pointers"]),
             Object(NonMatching, "revolution/dvd/unk_802D6678.c", cflags=cflags_petari_sdk, mw_version="GC/3.0a5.2", extra_cflags=["-lang=c99", "-func_align 4", "-DREVOLUTION", "-relax_pointers"]),
             Object(NonMatching, "revolution/esp/unk_802D975C.c", cflags=cflags_sdk, mw_version="GC/3.0a5.2", extra_cflags=["-i libs/xenoblade/RVL_SDK/src/revolution/esp"]),
@@ -1066,10 +1064,10 @@ config.libs = [
             Object(NonMatching, "revolution/ipc/unk_80306F08.c", cflags=cflags_petari_sdk, mw_version="GC/3.0a5.2", extra_cflags=["-lang=c99", "-func_align 4", "-DREVOLUTION", "-relax_pointers"]),
             Object(NonMatching, "revolution/ipc/unk_803078EC.c", source="revolution/ipc/unk_803078EC.c", mw_version="GC/3.0a5.2", extra_cflags=["-lang=c++", "-fp_contract off", "-func_align 16", "-relax_pointers"]),
             Object(NonMatching, "revolution/mem/unk_8030CAF0.c", source="revolution/mem/unk_8030CAF0.c", extra_cflags=["-fp_contract off", "-func_align 16", "-relax_pointers"]),
-            Object(NonMatching, "revolution/mtx/unk_8030D7E0.c", cflags=cflags_forecast_rvl, mw_version="GC/3.0a5", extra_cflags=["-i libs/forecast/src/revolution/MTX"]),
+            Object(Matching, "revolution/mtx/unk_8030D7E0.c", cflags=cflags_forecast_rvl, mw_version="GC/3.0a5", extra_cflags=["-i libs/forecast/src/revolution/MTX"]),
             AsmObject("revolution/mtx/unk_8030DA54.c"),
             Object(NonMatching, "revolution/mtx/unk_8030E390.c", cflags=cflags_forecast_rvl, mw_version="GC/3.0a5", extra_cflags=["-i libs/forecast/src/revolution/NAND"]),
-            Object(NonMatching, "revolution/nand/unk_8030F8C4.c", cflags=cflags_petari_sdk, mw_version="GC/3.0a5.2", extra_cflags=["-lang=c99", "-func_align 4", "-DREVOLUTION", "-relax_pointers"]),
+            Object(Matching, "revolution/nand/unk_8030F8C4.c", cflags=cflags_petari_sdk, mw_version="GC/3.0a5.2", extra_cflags=["-lang=c99", "-func_align 4", "-DREVOLUTION", "-relax_pointers"]),
             Object(NonMatching, "revolution/nand/unk_80310C2C.c", cflags=cflags_forecast_rvl, mw_version="GC/3.0a5.2", extra_cflags=["-i libs/forecast/src/revolution/NAND"]),
             Object(NonMatching, "revolution/nand/unk_80311F28.c", cflags=cflags_petari_sdk, mw_version="GC/3.0a5.2", extra_cflags=["-lang=c99", "-func_align 4", "-DREVOLUTION", "-relax_pointers"]),
             # libs/xenoblade/RVL_SDK/src/revolution/os/OS.c no matchea (fase 1: el 100% venÃ­a de un .o asm viejo)
@@ -1247,38 +1245,11 @@ config.libs = [
     },
 ]
 
-# Los AsmObject cuentan tambien en la categoria de su lib (game/sdk); "asm" queda
-# como marca para que progress los descuente.
-for lib in config.libs:
-    for obj in lib["objects"]:
-        if obj.options["progress_category"] == "asm" and lib.get("progress_category"):
-            obj.options["progress_category"] = [lib["progress_category"], "asm"]
-
-
-# Optional callback to adjust link order. This can be used to add, remove, or reorder objects.
-# This is called once per module, with the module ID and the current link order.
-#
-# For example, this adds "dummy.c" to the end of the DOL link order if configured with --non-matching.
-# "dummy.c" *must* be configured as a Matching (or Equivalent) object in order to be linked.
-def link_order_callback(module_id: int, objects: List[str]) -> List[str]:
-    # Don't modify the link order for matching builds
-    if not config.non_matching:
-        return objects
-    if module_id == 0:  # DOL
-        return objects + ["dummy.c"]
-    return objects
-
-
-# Uncomment to enable the link order callback.
-# config.link_order_callback = link_order_callback
-
-
 # Optional extra categories for progress tracking
 # Adjust as desired for your project
 config.progress_categories = [
     ProgressCategory("game", "Game Code"),
     ProgressCategory("sdk", "SDK Code"),
-    ProgressCategory("asm", "Asm inline"),
 ]
 config.progress_each_module = args.verbose
 # Optional extra arguments to `objdiff-cli report generate`
@@ -1292,41 +1263,6 @@ if args.mode == "configure":
     # Write build.ninja and objdiff.json
     generate_build(config)
 elif args.mode == "progress":
-    # El asm (objetos AsmObject y funciones "// asm_to_cpp:" de fuentes mixtos) es
-    # el cÃ³digo del DOL copiado, no descompilado: se descuenta de matched/fuzzy y
-    # se muestra aparte como asm_code / asm_functions.
-    def strip_asm(report: Dict[str, Any]) -> None:
-        cats = {c["id"]: c["measures"] for c in report.get("categories", [])}
-        for unit in report["units"]:
-            meta = unit.get("metadata", {})
-            unit_cats = meta.get("progress_categories", [])
-            if "asm" in unit_cats:
-                is_asm = lambda f: True
-            else:
-                path = Path(meta.get("source_path", ""))
-                if not path.is_file():
-                    continue
-                marked = set(re.findall(r"^// asm_to_cpp: (\S+)$", path.read_text(errors="replace"), re.M))
-                is_asm = lambda f: f["name"] in marked
-            funcs = [
-                f for f in unit.get("functions", [])
-                if is_asm(f) and f.get("fuzzy_match_percent", 0) == 100
-            ]
-            size = sum(int(f.get("size", 0)) for f in funcs)
-            if not size:
-                continue
-            for m in [report["measures"]] + [cats[c] for c in unit_cats if c in cats]:
-                m["matched_code"] = m.get("matched_code", 0) - size
-                m["matched_functions"] = m.get("matched_functions", 0) - len(funcs)
-                m["fuzzy_match_percent"] = max(0, m.get("fuzzy_match_percent", 0) - 100 * size / m["total_code"])
-                m["asm_code"] = m.get("asm_code", 0) + size
-                m["asm_functions"] = m.get("asm_functions", 0) + len(funcs)
-        for m in [report["measures"]] + list(cats.values()):
-            if m.get("total_code"):
-                m["matched_code_percent"] = 100 * m.get("matched_code", 0) / m["total_code"]
-                m["asm_code_percent"] = 100 * m.get("asm_code", 0) / m["total_code"]
-
-    config.progress_report_hook = strip_asm
     config.print_progress_categories = ["game", "sdk"]
     calculate_progress(config)
 else:

@@ -7644,3 +7644,18 @@ Todas las llamadas por vtable sintética del juego resueltas contra las cabecera
 - Interfaces nuevas: `include/nw4r_lyt_layout.h`; `include/nw4r_g3d_obj.h` suma `ScnObj`,
   `ScnGroup`, `ScnMdlSimple` y `AnmScn`.
 - 0 regresiones por función, SHA-1 OK, check_workspace 0 problemas. C real 45.99%.
+
+## 2026-11-16 - Primeras TUs enlazadas con código propio (Matching): 27
+
+- Primera TU `Matching`: `revolution/os/unk_8031A368.c` (`__OSModuleInit` de OSLink). El enlace
+  usa el `.o` compilado desde `src/` y `build.sha1` sigue dando OK.
+- Criterio de candidatas: todas las funciones al 100% y mismas secciones que el `.o` de
+  `build/RNEPDA/obj/` (sin datos propios, porque los datos aún no están divididos). De 363
+  unidades al 100% cumplen 36; 188 compilan otro `.text` y 139 tienen datos propios.
+- Descartes al enlazar: `btm_dev` y `hidd_pm` (referencian `btm_cb`/`hd_cb`, locales en los
+  datos sin dividir); `unk_802A52B0`, `unk_802A6134`, `unk_802D5C34`, `OSPSInit`, `OSSync`
+  (`.text` alineada a 16 en el `.o` propio contra 4 en el original); `w_log` y `ptim` (destino
+  de relocation distinto: objdiff no compara destinos). En 0x801A3028 el símbolo `log` salta a
+  `__ieee754_log10`: el nombre de esa función y del split `w_log` está cruzado con `w_log10`.
+- Resultado: 27 TUs `Matching` (MSL math, MetroTRK, `__va_arg`, nw4r/hbm, BTE, DSP, MTX, NAND,
+  OS), 0.41% enlazado. SHA-1 OK, check_workspace 0 problemas. C real 45.99%.
