@@ -1,0 +1,188 @@
+// nw4r_compat: std:: wrappers over the repo's MSL headers so the nw4r sources build.
+// Only on the include path of the NW4R library in configure.py. Not matching-accurate
+// (std::sort in particular is a placeholder, not MSL's implementation).
+#ifndef NW4R_COMPAT_ALGORITHM
+#define NW4R_COMPAT_ALGORITHM
+namespace std {
+template <typename T> inline const T& min(const T& a, const T& b) { return b < a ? b : a; }
+template <typename T> inline const T& max(const T& a, const T& b) { return a < b ? b : a; }
+template <typename T> inline void swap(T& a, T& b) { T t = a; a = b; b = t; }
+template <typename It, typename T> inline It find(It first, It last, const T& v) {
+    for (; first != last && !(*first == v); ++first) {}
+    return first;
+}
+template <typename It> inline long distance(It first, It last) { return last - first; }
+// Quicksort (selection sort below 21 elements) with a rotating pivot index.
+inline long __pivot_ofs(long n, int idx) {
+    return n / 4 + idx % 5;
+}
+
+template <typename Cmp, typename It>
+void __sort132(It x, It y, It z, Cmp comp) {
+    bool a = !comp(*z, *x);
+    bool b = !comp(*y, *z);
+
+    if (a && b) {
+        return;
+    }
+
+    if (!a && !b) {
+        swap(*x, *y);
+        return;
+    }
+
+    if (comp(*y, *x)) {
+        swap(*x, *y);
+    }
+
+    if (a) {
+        swap(*y, *z);
+    } else {
+        swap(*x, *z);
+    }
+}
+
+// Inline so its locals are inline-expansion variables (coloured between the quicksort's
+// named locals and its temporaries); declared k, m, lm1 so lm1 is coloured first, then m, then k.
+template <typename Cmp, typename It> inline void __selection_sort(It first, It last, Cmp comp) {
+    if (first == last) {
+        return;
+    }
+
+    It k;
+    It m;
+    It lm1 = last - 1;
+    for (; first != lm1; ++first) {
+        m = first;
+        if (first != last) {
+            for (k = first + 1; k != last; ++k) {
+                if (comp(*k, *m)) {
+                    m = k;
+                }
+            }
+        }
+        if (m != first) {
+            swap(*m, *first);
+        }
+    }
+}
+
+template <typename It, typename Cmp> void sort(It first, It last, Cmp comp) {
+    static int sIdx = -4;
+
+    while (true) {
+        long len = last - first;
+        // k is the right-hand iterator of the equal-keys pass (i == first). It must be its
+        // own local declared between i and j: reusing j makes MWCC split off a new web whose
+        // register order is wrong in g3d_draw's MdlZ sort.
+        It i;
+        It k;
+        It j;
+        It lm1;
+
+        if (len <= 1) {
+            return;
+        }
+
+        if (len <= 20) {
+            __selection_sort<Cmp&>(first, last, comp);
+            return;
+        }
+
+        It p1 = first + __pivot_ofs(len, sIdx);
+        if (++sIdx >= 5) {
+            sIdx = -4;
+        }
+        It p2 = first + __pivot_ofs(len * 3, sIdx);
+        if (++sIdx >= 5) {
+            sIdx = -4;
+        }
+        lm1 = last - 1;
+        __sort132<Cmp&>(p1, p2, lm1, comp);
+
+        i = first;
+        j = lm1;
+
+        while (comp(*i, *lm1)) {
+            ++i;
+        }
+
+        do {
+            --j;
+        } while (i != j && !comp(*j, *lm1));
+
+        if (i < j) {
+            swap(*i, *j);
+            ++i;
+
+            while (true) {
+                while (comp(*i, *lm1)) {
+                    ++i;
+                }
+
+                do {
+                    --j;
+                } while (!comp(*j, *lm1));
+
+                if (i >= j) {
+                    break;
+                }
+
+                swap(*i, *j);
+                ++i;
+            }
+        }
+
+        if (i == first) {
+            swap(*i, *lm1);
+            k = last;
+            --k;
+            ++i;
+
+            if (!comp(*first, *k)) {
+                while (i != last && !comp(*first, *i)) {
+                    ++i;
+                }
+
+                if (i < k) {
+                    swap(*i, *k);
+                }
+            }
+
+            if (i < k) {
+                while (true) {
+                    while (!comp(*first, *i)) {
+                        ++i;
+                    }
+
+                    do {
+                        --k;
+                    } while (comp(*first, *k));
+
+                    if (i >= k) {
+                        break;
+                    }
+
+                    swap(*i, *k);
+                    ++i;
+                }
+            }
+
+            first = i;
+            continue;
+        }
+
+        if (i - first < last - i) {
+            sort<It, Cmp&>(first, i, comp);
+            first = i;
+        } else {
+            sort<It, Cmp&>(i, last, comp);
+            last = i;
+        }
+    }
+}
+template <typename It> void sort(It first, It last) {
+    for (It i = first; i != last; ++i) for (It j = i + 1; j != last; ++j) if (*j < *i) swap(*i, *j);
+}
+}
+#endif

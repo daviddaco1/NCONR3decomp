@@ -1,0 +1,286 @@
+#include <revolution/NWC24.h>
+#include <revolution/NWC24/NWC24Internal.h>
+#include <revolution/SC.h>
+
+#include <cstring>
+
+#define CHECK_CALLING_STATUS() CheckCallingStatus(__FUNCTION__)
+
+#define NWC24_TIME_DEVICE "/dev/net/kd/time"
+
+enum {
+    NWC24_IOCTL_SET_RTC_COUNTER = 23,
+    NWC24_IOCTL_GET_TIME_DIFFERENCE = 24,
+};
+
+#pragma pack(push, 1)
+typedef struct CommonBuffer {
+    u32 rtc;   // at 0x0
+    u32 flags; // at 0x4
+    u8 padding[32 - 0x8];
+} CommonBuffer;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct CommonResult {
+    s32 result; // at 0x0
+    s64 diff;   // at 0x4
+    u8 padding[32 - 0xC];
+} CommonResult;
+#pragma pack(pop)
+
+static BOOL nwc24TimeInitialized = FALSE;
+static u32 nwc24TimeRtc = 0;
+static s64 nwc24TimeDifference = 0;
+
+static CommonResult nwc24TimeCommonResult ALIGN(32);
+static CommonBuffer nwc24TimeCommonBuffer ALIGN(32);
+static OSMutex nwc24TimeCommandMutex ALIGN(32);
+
+// Unused from NWC24iStrTime, but pooled in
+static u8 buf[128];
+DECOMP_FORCEACTIVE(NWC24Time_c, buf);
+
+// Forward declarations
+static NWC24Err GetRTC(u32* pRTC);
+static NWC24Err CheckCallingStatus(const char* pUser);
+static void InitMutex(void);
+static void LockRight(void);
+static void UnlockRight(void);
+
+NWC24Err NWC24iGetUniversalTime(s64* pTime) {
+    static s64 whenCached = 0;
+    NWC24Err result;
+
+    if (pTime == NULL) {
+        nwc24TimeDifference = 0;
+        return NWC24_ERR_INVALID_VALUE;
+    }
+
+    if (whenCached == 0 ||
+        whenCached + OS_SEC_TO_TICKS(1) <= __OSGetSystemTime() ||
+        nwc24TimeRtc == 0) {
+
+        result = NWC24iGetTimeDifference(&nwc24TimeDifference);
+        if (result < 0) {
+            return result;
+        }
+
+        result = GetRTC(&nwc24TimeRtc);
+        if (result != NWC24_OK) {
+            return result;
+        }
+
+        whenCached = __OSGetSystemTime();
+    }
+
+    *pTime = nwc24TimeDifference + nwc24TimeRtc;
+    return NWC24_OK;
+}
+
+NWC24Err NWC24iGetTimeDifference(s64* pTimeDiff) {
+    s32 fd;
+    NWC24Err result;
+    NWC24Err close;
+
+    result = CHECK_CALLING_STATUS();
+    if (result < 0) {
+        return result;
+    }
+
+    LockRight();
+    {
+        result = NWC24_OPEN_DEVICE(NWC24_TIME_DEVICE, &fd, IPC_OPEN_NONE);
+
+        if (result >= 0) {
+            result = NWC24_IOCTL_DEVICE(             //
+                fd, NWC24_IOCTL_GET_TIME_DIFFERENCE, //
+                NULL, 0,                             //
+                &nwc24TimeCommonResult, sizeof(CommonResult));
+
+            if (result >= 0) {
+                result = nwc24TimeCommonResult.result;
+
+                // Cast is necessary
+                if (result == 0 && pTimeDiff != (void*)NULL) {
+                    *pTimeDiff = nwc24TimeCommonResult.diff;
+                }
+            }
+
+            close = NWC24_CLOSE_DEVICE(fd);
+            if (result >= 0) {
+                result = close;
+            }
+        }
+    }
+    UnlockRight();
+
+    return result;
+}
+
+NWC24Err NWC24iSetRtcCounter(u32 rtc, u32 flags) {
+    s32 fd;
+    NWC24Err result;
+    NWC24Err close;
+
+    result = CHECK_CALLING_STATUS();
+    if (result < 0) {
+        return result;
+    }
+
+    LockRight();
+    {
+        result = NWC24_OPEN_DEVICE(NWC24_TIME_DEVICE, &fd, IPC_OPEN_NONE);
+
+        if (result >= 0) {
+            nwc24TimeCommonBuffer.rtc = rtc;
+            nwc24TimeCommonBuffer.flags = flags;
+
+            result = NWC24_IOCTL_DEVICE(                      //
+                fd, NWC24_IOCTL_SET_RTC_COUNTER,              //
+                &nwc24TimeCommonBuffer, sizeof(CommonBuffer), //
+                &nwc24TimeCommonResult, sizeof(CommonResult));
+
+            if (result >= 0) {
+                result = nwc24TimeCommonResult.result;
+            }
+
+            close = NWC24_CLOSE_DEVICE(fd);
+            if (result >= 0) {
+                result = close;
+            }
+        }
+    }
+    UnlockRight();
+
+    return result;
+}
+
+NWC24Err NWC24iSynchronizeRtcCounter(BOOL forceSave) {
+    u32 rtc;
+    NWC24Err result;
+
+    result = GetRTC(&rtc);
+    if (result != NWC24_OK) {
+        return result;
+    }
+
+    return NWC24iSetRtcCounter(rtc, forceSave ? 1 : 0);
+}
+
+static NWC24Err GetRTC(u32* pRTC) {
+    u32 status;
+
+    do {
+        status = SCCheckStatus();
+
+        if (status == SC_STATUS_FATAL) {
+            return NWC24_ERR_FATAL;
+        }
+    } while (status != SC_STATUS_OK);
+
+    *pRTC = OS_TICKS_TO_SEC(OSGetTime()) - SCGetCounterBias();
+    return NWC24_OK;
+}
+
+static NWC24Err CheckCallingStatus(const char* pUser) {
+#pragma unused(pUser)
+
+    if (OSGetCurrentThread() == NULL) {
+        return NWC24_ERR_FATAL;
+    }
+
+    return NWC24_OK;
+}
+
+static void InitMutex(void) {
+    BOOL enabled = OSDisableInterrupts();
+
+    if (!nwc24TimeInitialized) {
+        OSInitMutex(&nwc24TimeCommandMutex);
+
+        memset(&nwc24TimeCommonBuffer, 0, sizeof(CommonBuffer));
+        memset(&nwc24TimeCommonResult, 0, sizeof(CommonResult));
+
+        nwc24TimeInitialized = TRUE;
+    }
+
+    OSRestoreInterrupts(enabled);
+}
+
+static void LockRight(void) {
+    if (!nwc24TimeInitialized) {
+        InitMutex();
+    }
+
+    OSLockMutex(&nwc24TimeCommandMutex);
+}
+
+static void UnlockRight(void) {
+    OSUnlockMutex(&nwc24TimeCommandMutex);
+}
+
+extern u8 lbl_803422F8[];
+extern void __shl2i();
+extern void __shr2u();
+
+
+
+
+
+static const u8 TtableInv[16] = {13, 5, 9, 7, 0, 15, 10, 2, 12, 3, 14, 1, 8, 6, 11, 4};
+static const u8 ExcTable[8] = {1, 5, 0, 4, 2, 3, 6, 7};
+
+unsigned long long fn_803348E8(u64 v);
+
+static int checkCRC(u64 v) {
+    int i;
+
+    for (i = 0; i < 43; i++) {
+        if (((v >> (53 - (i + 1))) & 1) != 0)
+            v ^= 1589ULL << (42 - i);
+    }
+
+    return v != 0;
+}
+
+NWC24Err fn_80334850(u64 userId) {
+    u64 idDecoded = fn_803348E8(userId);
+    if (!checkCRC(idDecoded)) {
+        return NWC24_OK;
+    }
+
+    return NWC24_ERR_ID_CRC;
+}
+
+static u8 getbyte(u64 value, u8 index) {
+    return (value >> (index * 8)) & 0xFF;
+}
+
+static u64 setbyte(u64 value, u8 index, u8 set) {
+    return (value & ~(0xFFULL << ((u64)8 * index))) | ((u64)set << ((u64)8 * index));
+}
+
+u64 fn_803348E8(u64 v) {
+    u64 uidtemp;
+    u8 i;
+
+    v &= 0x1FFFFFFFFFFFFFULL;
+    v ^= 0x5E5E5E5E5E5EULL;
+    v &= 0x1FFFFFFFFFFFFFULL;
+    v |= (((v & 0xFF) << 5) & 0x20) << 48;
+    v >>= 1;
+
+    uidtemp = v;
+    for (i = 0; i < 6; ++i) {
+        v = setbyte(v, i, getbyte(uidtemp, ExcTable[i]));
+    }
+
+    for (i = 0; i < 6; ++i) {
+        v = setbyte(v, i, (TtableInv[(getbyte(v, i) >> 4) & 0xF] << 4) | TtableInv[getbyte(v, i) & 0xF]);
+    }
+
+    v = ((v & 0x7FFFFFFFFFFULL) << 10) | ((v >> 43) & 0x3FF);
+    v ^= 0xB3B3B3B3B3B3ULL;
+    return v;
+}
