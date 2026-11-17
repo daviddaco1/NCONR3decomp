@@ -12691,7 +12691,7 @@ void l2cu_send_peer_echo_rsp();
 void l2cu_send_peer_info_rsp();
 s32 labs();
 f64 ldexp();
-void log();
+void log10();
 M2C_UNK pow();
 s8 * long2str();
 s8 * longlong2str();

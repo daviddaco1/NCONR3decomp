@@ -7659,3 +7659,19 @@ Todas las llamadas por vtable sintética del juego resueltas contra las cabecera
   `__ieee754_log10`: el nombre de esa función y del split `w_log` está cruzado con `w_log10`.
 - Resultado: 27 TUs `Matching` (MSL math, MetroTRK, `__va_arg`, nw4r/hbm, BTE, DSP, MTX, NAND,
   OS), 0.41% enlazado. SHA-1 OK, check_workspace 0 problemas. C real 45.99%.
+
+## 2026-11-16 - Matching: 33 TUs (alineación y log10/pow)
+
+- `-func_align 4` en `unk_802A52B0`, `unk_802A6134`, `unk_802D5C34` (tenían `-func_align 16`
+  explícito), `OSPSInit` y `OSSync` (heredado de `cflags_sdk`): sus direcciones en el DOL no
+  son múltiplo de 16. Pasan a `Matching`.
+- MSL: nombres corregidos contra los destinos de las ramas. 0x801A3028 es `log10`
+  (`b __ieee754_log10`, split `w_log10.c`, fuente de referencia), 0x801A302C es `pow`
+  (`b __ieee754_pow`, split `w_pow.c`; el fuente propio se movió de `w_log10.c` a `w_pow.c`)
+  y 0x801A336C (`nan`) se une a `math_ppc.c` (0x801A336C-0x801A3374), donde vive en MSL.
+  `log` no está en el DOL. `w_log10` pasa a `Matching`.
+- `rename_symbols.py` reemplaza el nombre como palabra en todo `src/`: con `log` tocó
+  comentarios, un `#include` y un string (`nanderr.log`). Revertidos; para nombres comunes
+  editar `symbols.txt` y `m2c_protos.h` a mano.
+- 33 TUs `Matching` (0.42% enlazado), SHA-1 OK, check_workspace 0 problemas. Sin cambios en C
+  real por este lote.
