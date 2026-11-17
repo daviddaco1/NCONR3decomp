@@ -2,7 +2,7 @@
 """Genera docs/progress.svg (treemap estilo decomp.dev) desde build/RNEPDA/report.json.
 
 Cada rectángulo es una unidad (TU), con área proporcional a su tamaño de código.
-Color: verde = C real matcheado, azul = asm inline (matchea pero no es C),
+Color: azul = enlazado (linked), verde = matcheado (100%),
 rojo->amarillo = fuzzy match parcial, gris oscuro = sin empezar.
 
 Uso: python tools/progress_svg.py [report.json] [salida.svg]
@@ -63,11 +63,18 @@ def layout(row, x, y, w, h, out):
     return x, y + rh, w, h - rh
 
 
+def is_linked(unit):
+    m = unit.get("measures", {})
+    return float(m.get("complete_code_percent", 0)) >= 100 or int(m.get("complete_units", 0)) >= 1
+
+
 def color(unit):
     m = unit["measures"]
     total = int(m.get("total_code", 0))
     if total <= 0:
         return "#30363d"
+    if is_linked(unit):
+        return "#1f6feb"
     real_code = int(m.get("matched_code", 0))
     pct = max(0.0, 100.0 * real_code / total)
     if pct >= 100.0:
@@ -93,9 +100,13 @@ def main():
     total = int(m["total_code"])
     matched_c = int(m.get("matched_code", 0))
     matched_fns = int(m.get("matched_functions", 0))
+    complete_c = int(m.get("complete_code", 0))
+    complete_units = int(m.get("complete_units", 0))
+
     title = (
-        f"Progress: {100 * matched_c / total:.2f}% "
-        f"({matched_fns}/{m['total_functions']} functions)"
+        f"Progress: {100 * matched_c / total:.2f}% matched, "
+        f"{100 * complete_c / total:.2f}% linked "
+        f"({matched_fns}/{m['total_functions']} functions, {complete_units} files linked)"
     )
 
     parts = [
@@ -104,8 +115,12 @@ def main():
         '<g font-family="Segoe UI,Helvetica,Arial,sans-serif" fill="#e6edf3">',
         f'<text x="8" y="22" font-size="16" font-weight="bold">{escape(title)}</text>',
     ]
-    legend = [("#1fae3a", "Matched"),
-              ("#d6a02a", "Partial"), ("#30363d", "Remaining")]
+    legend = [
+        ("#1f6feb", "Linked"),
+        ("#1fae3a", "Matched"),
+        ("#d6a02a", "Partial"),
+        ("#30363d", "Remaining"),
+    ]
     lx = 8
     for c, label in legend:
         parts.append(f'<rect x="{lx}" y="34" width="12" height="12" fill="{c}"/>')
@@ -114,7 +129,8 @@ def main():
     parts.append("</g>")
     for x, y, w, h, u in rects:
         pct = u["measures"].get("fuzzy_match_percent", 0.0)
-        tip = escape(f"{u['name']} — {pct:.2f}% ({int(u['measures']['total_code'])} bytes)")
+        status = "Linked" if is_linked(u) else ("Matched" if pct >= 100.0 else f"{pct:.2f}%")
+        tip = escape(f"{u['name']} — {status} ({int(u['measures']['total_code'])} bytes)")
         parts.append(
             f'<rect x="{x:.2f}" y="{y:.2f}" width="{w:.2f}" height="{h:.2f}" '
             f'fill="{color(u)}" stroke="#0d1117" stroke-width="0.5"><title>{tip}</title></rect>'
